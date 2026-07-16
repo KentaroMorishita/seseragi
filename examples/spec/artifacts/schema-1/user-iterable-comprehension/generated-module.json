@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "module": "artifact/user-iterable-comprehension",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.iterator",
+      "core.adt",
+      "core.int64",
+      "core.iterator.unfold",
+      "core.maybe",
+      "core.bool",
+      "core.maybe.just",
+      "core.int64.add",
+      "core.maybe.nothing",
+      "core.int64.multiply",
+      "core.iterator.comprehend",
+      "core.int64.remainder",
+      "core.string",
+      "core.unit",
+      "effect.console.println",
+      "core.array.reduce"
+    ]
+  },
+  "exports": [
+    "Countdown",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Iterable<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>",
+      "trait": "Iterable",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Countdown",
+          "arguments": []
+        },
+        {
+          "kind": "bigint"
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Iterable$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

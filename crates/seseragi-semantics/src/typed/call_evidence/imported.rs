@@ -24,6 +24,96 @@ pub(super) fn select_imported_instance(
     )
 }
 
+pub(super) fn infer_imported_functional_instance(
+    trait_identity: &str,
+    trait_name: &str,
+    collection: &TypedType,
+    resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
+) -> Option<(TypedType, TypedInstanceEvidence)> {
+    let matches = resolution
+        .resolved()
+        .dependency_instances
+        .iter()
+        .filter_map(|instance| {
+            infer_functional_instance_candidate(
+                instance,
+                trait_identity,
+                trait_name,
+                collection,
+                resolution,
+                scoped,
+            )
+        })
+        .take(2)
+        .collect::<Vec<_>>();
+    let [selected] = matches.as_slice() else {
+        return None;
+    };
+    Some(selected.clone())
+}
+
+fn infer_functional_instance_candidate(
+    instance: &crate::ResolvedDependencyInstance,
+    trait_identity: &str,
+    trait_name: &str,
+    collection: &TypedType,
+    resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
+) -> Option<(TypedType, TypedInstanceEvidence)> {
+    if instance.trait_identity != trait_identity {
+        return None;
+    }
+    let InterfaceType::Apply { arguments, .. } = &instance.head else {
+        return None;
+    };
+    let [collection_template, element_template] = arguments.as_slice() else {
+        return None;
+    };
+    let collection_template = resolution.semantic_value_from_imported_type(
+        collection_template.clone(),
+        &instance.provider_module,
+        &instance.type_parameters,
+    )?;
+    let collection_template = super::local::normalize_partial_constructor_template(
+        &collection_template.type_ref,
+        collection,
+    );
+    let mut substitutions = BTreeMap::<String, TypedType>::new();
+    infer_type_parameters(
+        &collection_template,
+        collection,
+        &instance.type_parameters,
+        &mut substitutions,
+    );
+    let expected_collection = substitute_type_parameters(&collection_template, &substitutions);
+    if !semantic_values_are_compatible(
+        &resolution.semantic_value_from_typed_type(&expected_collection),
+        &resolution.semantic_value_from_typed_type(collection),
+    ) {
+        return None;
+    }
+    let element_template = resolution.semantic_value_from_imported_type(
+        element_template.clone(),
+        &instance.provider_module,
+        &instance.type_parameters,
+    )?;
+    let element = substitute_type_parameters(&element_template.type_ref, &substitutions);
+    let constraint = TypedConstraint {
+        name: trait_name.to_owned(),
+        arguments: vec![collection.clone(), element.clone()],
+    };
+    match_imported_instance(
+        instance,
+        trait_identity,
+        &constraint,
+        resolution,
+        scoped,
+        &mut Vec::new(),
+    )
+    .map(|evidence| (element, evidence))
+}
+
 fn select_imported_instance_with_stack(
     trait_identity: &str,
     constraint: &TypedConstraint,

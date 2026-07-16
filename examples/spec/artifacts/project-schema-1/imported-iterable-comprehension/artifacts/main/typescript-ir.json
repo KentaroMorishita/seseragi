@@ -1,0 +1,275 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-iterable-comprehension::main",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.multiply",
+    "core.iterator.comprehend",
+    "core.bool",
+    "core.int64.remainder",
+    "core.string",
+    "core.unit",
+    "effect.console.println",
+    "core.array.reduce",
+    "core.int64.add"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.multiply",
+      "local": "_ssrg_int64_multiply"
+    },
+    {
+      "feature": "core.iterator.comprehend",
+      "local": "_ssrg_iterator_comprehend"
+    },
+    {
+      "feature": "core.int64.remainder",
+      "local": "_ssrg_int64_remainder"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.array.reduce",
+      "local": "_ssrg_array_reduce"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-iterable-comprehension::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "Countdown",
+          "local": "Countdown",
+          "sourceLocal": "Countdown",
+          "canonical": "fixture/imported-iterable-comprehension::domain::Countdown",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 18
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Iterable$0",
+          "local": "__ssrg$instance$Iterable$0",
+          "sourceLocal": "std/prelude::Iterable<fixture/imported-iterable-comprehension::domain::Countdown,std/prelude::Int>",
+          "canonical": "std/prelude::Iterable<fixture/imported-iterable-comprehension::domain::Countdown,std/prelude::Int>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 36
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 36
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "oddSquares",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "Countdown",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_iterator_comprehend",
+        "arguments": [
+          {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "identifier",
+              "name": "__ssrg$instance$Iterable$0"
+            },
+            "method": "iterate",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "values"
+              }
+            ]
+          },
+          {
+            "kind": "lambda",
+            "parameter": "value",
+            "body": {
+              "kind": "binary",
+              "operator": "!==",
+              "left": {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int64_remainder",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "2"
+                  }
+                ]
+              },
+              "right": {
+                "kind": "bigint",
+                "value": "0"
+              }
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": "value",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_multiply",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 38,
+        "end": 137
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderTotal",
+      "parameters": [
+        {
+          "name": "total",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "total"
+        },
+        "scrutineeType": {
+          "kind": "bigint"
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "bigint-equals",
+                "path": [],
+                "value": "35"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "imported Iterable total: 35"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "unexpected imported Iterable total"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 139,
+        "end": 282
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "renderTotal",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_reduce",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "0"
+                  },
+                  {
+                    "kind": "curried-runtime-reference",
+                    "name": "_ssrg_int64_add",
+                    "arity": 2
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "oddSquares",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "Countdown",
+                        "arguments": [
+                          {
+                            "kind": "bigint",
+                            "value": "5"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 284,
+        "end": 382
+      }
+    }
+  ]
+}

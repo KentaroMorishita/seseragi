@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "file": "dist/imported-iterable-comprehension/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-iterable-comprehension::domain"
+  ],
+  "sourcesContent": [
+    "pub type Countdown =\n  | Countdown Int\n\nfn advance limit: Int -> current: Int -> Maybe<(Int, Int)> =\n  if current <= limit then\n    Just (current, current + 1)\n  else\n    Nothing\n\ninstance Iterable<Countdown, Int> {\n  fn iterate values: Countdown -> Iterator<Int> =\n    match values {\n      Countdown limit -> unfold (advance limit) 1\n    }\n}\n"
+  ],
+  "names": [
+    "Countdown",
+    "Countdown",
+    "__ssrg$instance$Iterable$0",
+    "advance",
+    "Just",
+    "add",
+    "Nothing"
+  ],
+  "mappings": ";;;;AAAAA;;AACIC;AAQJC;AANAC"
+}

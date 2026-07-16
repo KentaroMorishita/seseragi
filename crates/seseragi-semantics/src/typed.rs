@@ -330,6 +330,76 @@ mod tests {
     }
 
     #[test]
+    fn infers_user_iterable_element_type_and_selects_local_evidence() {
+        let typed = type_module(
+            "artifact/user-iterable/main.ssrg",
+            "type Bucket = | Bucket Int\n\
+             fn advance limit: Int -> current: Int -> Maybe<(Int, Int)> =\n\
+               if current <= limit then Just (current, current + 1) else Nothing\n\
+             instance Iterable<Bucket, Int> {\n\
+               fn iterate values: Bucket -> Iterator<Int> =\n\
+                 match values { Bucket limit -> unfold (advance limit) 1 }\n\
+             }\n\
+             pub fn values bucket: Bucket -> Array<Int> = [value | value <- bucket]\n",
+        );
+
+        let body = typed.declarations.iter().find_map(|declaration| {
+            let TypedDecl::Fn { symbol, body, .. } = declaration else {
+                return None;
+            };
+            symbol.ends_with("::values").then_some(body)
+        });
+        let Some(TypedExpr::ArrayComprehension { clauses, .. }) = body else {
+            panic!("expected user Iterable comprehension: {body:#?}");
+        };
+        assert!(matches!(
+            &clauses[0],
+            crate::TypedComprehensionClause::Generator {
+                pattern: crate::TypedPattern::Binding { type_ref, .. },
+                evidence: crate::TypedCallEvidence {
+                    evidence: crate::TypedInstanceEvidence::Local { identity, .. },
+                    ..
+                },
+                ..
+            } if type_ref == &TypedType::Named {
+                name: "Int".to_owned(),
+                arguments: Vec::new(),
+            } && identity.contains("::Iterable<")
+        ));
+    }
+
+    #[test]
+    fn infers_comprehension_element_from_scoped_iterable_evidence() {
+        let typed = type_module(
+            "artifact/generic-iterable/main.ssrg",
+            "pub fn collect<C, A> values: C -> Array<A>\n\
+             where Iterable<C, A> =\n\
+               [value | value <- values]\n",
+        );
+
+        let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+            panic!("expected generic collect function");
+        };
+        let TypedExpr::ArrayComprehension { clauses, .. } = body else {
+            panic!("expected generic Iterable comprehension: {body:#?}");
+        };
+        assert!(matches!(
+            &clauses[0],
+            crate::TypedComprehensionClause::Generator {
+                pattern: crate::TypedPattern::Binding { type_ref, .. },
+                evidence: crate::TypedCallEvidence {
+                    evidence: crate::TypedInstanceEvidence::Parameter { index: 0 },
+                    ..
+                },
+                ..
+            } if type_ref == &TypedType::Named {
+                name: "A".to_owned(),
+                arguments: Vec::new(),
+            }
+        ));
+    }
+
+    #[test]
     fn types_effect_main() {
         let typed = type_module(
             "artifact/effect-main/main.ssrg",

@@ -1,0 +1,146 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/user-iterable-comprehension",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/user-iterable-comprehension::Countdown",
+      "namespace": "type",
+      "name": "Countdown",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 38
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Countdown",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-iterable-comprehension::Countdown",
+      "namespace": "value",
+      "name": "Countdown",
+      "constructorOf": "artifact/user-iterable-comprehension::Countdown",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 25,
+        "end": 34
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Countdown",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-iterable-comprehension::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 582,
+        "end": 680
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Iterable<artifact/user-iterable-comprehension::Countdown,std/prelude::Int>",
+      "providerModule": "artifact/user-iterable-comprehension",
+      "traitIdentity": "std/prelude::Iterable",
+      "argumentIdentities": [
+        "artifact/user-iterable-comprehension::Countdown",
+        "std/prelude::Int"
+      ],
+      "trait": "Iterable",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Iterable",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Countdown",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 180,
+        "end": 342
+      }
+    }
+  ]
+}

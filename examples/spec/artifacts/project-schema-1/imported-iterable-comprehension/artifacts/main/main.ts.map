@@ -1,0 +1,27 @@
+{
+  "version": 3,
+  "file": "dist/imported-iterable-comprehension/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-iterable-comprehension::main"
+  ],
+  "sourcesContent": [
+    "import { Countdown } from \"./domain\"\n\nfn oddSquares values: Countdown -> Array<Int> =\n  [value * value | value <- values, value % 2 != 0]\n\nfn renderTotal total: Int -> String =\n  match total {\n    35 -> \"imported Iterable total: 35\"\n    _ -> \"unexpected imported Iterable total\"\n  }\n\npub effect fn main =\n  Countdown 5\n  |> oddSquares\n  |> reduce 0 (+)\n  |> renderTotal\n  |> println\n"
+  ],
+  "names": [
+    "oddSquares",
+    "collectMap",
+    "__ssrg$instance$Iterable$0",
+    "remainder",
+    "multiply",
+    "renderTotal",
+    "main",
+    "println",
+    "renderTotal",
+    "_ssrg_array_reduce",
+    "add",
+    "oddSquares",
+    "Countdown"
+  ],
+  "mappings": ";;;;;;AAEAA;AAGAK;AAMAC"
+}

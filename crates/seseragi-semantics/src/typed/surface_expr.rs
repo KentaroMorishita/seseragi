@@ -131,6 +131,19 @@ impl<'a> PureExpressionContext<'a> {
         )
     }
 
+    pub(super) fn select_iterable_evidence(
+        &self,
+        collection: TypedType,
+    ) -> Result<(TypedType, crate::TypedCallEvidence), crate::TypedConstraint> {
+        let trait_identity = self.trait_identity("Iterable");
+        super::call_evidence::select_iterable_evidence(
+            collection,
+            trait_identity.as_deref(),
+            self.resolution,
+            &self.evidence_parameters,
+        )
+    }
+
     pub(super) fn trait_identity(&self, name: &str) -> Option<String> {
         let mut identities = self
             .resolution
@@ -139,7 +152,10 @@ impl<'a> PureExpressionContext<'a> {
             .iter()
             .filter(|symbol| symbol.namespace == SymbolNamespace::Trait && symbol.spelling == name)
             .filter_map(|symbol| symbol.canonical.clone());
-        let identity = identities.next()?;
+        let Some(identity) = identities.next() else {
+            return crate::prelude::is_standalone_symbol(SymbolNamespace::Trait, name)
+                .then(|| format!("std/prelude::{name}"));
+        };
         identities
             .all(|candidate| candidate == identity)
             .then_some(identity)

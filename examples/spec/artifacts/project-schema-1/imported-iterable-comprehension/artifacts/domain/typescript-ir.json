@@ -1,0 +1,246 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-iterable-comprehension::domain",
+  "runtimeRequirements": [
+    "core.iterator",
+    "core.adt",
+    "core.int64",
+    "core.iterator.unfold",
+    "core.maybe",
+    "core.bool",
+    "core.maybe.just",
+    "core.int64.add",
+    "core.maybe.nothing"
+  ],
+  "imports": [
+    {
+      "feature": "core.iterator.unfold",
+      "local": "_ssrg_iterator_unfold"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.maybe.nothing",
+      "local": "_ssrg_maybe_Nothing"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.iterator",
+      "local": "Iterator"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Countdown",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Countdown",
+          "tag": "Countdown",
+          "payload": {
+            "kind": "bigint"
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 25,
+            "end": 34
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 38
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Iterable<fixture/imported-iterable-comprehension::domain::Countdown,std/prelude::Int>",
+      "trait": "Iterable",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Countdown",
+          "arguments": []
+        },
+        {
+          "kind": "bigint"
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 180,
+        "end": 342
+      },
+      "dictionaryExport": "__ssrg$instance$Iterable$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "iterate",
+            "parameters": [
+              {
+                "name": "values",
+                "type": "Countdown",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "values"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Countdown",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Countdown"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "limit",
+                      "type": {
+                        "kind": "bigint"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_iterator_unfold",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "advance",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "limit"
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "reference",
+                "name": "Iterator",
+                "arguments": [
+                  {
+                    "kind": "bigint"
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 218,
+              "end": 340
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "advance",
+      "parameters": [
+        {
+          "name": "limit",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "current",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "conditional",
+        "condition": {
+          "kind": "binary",
+          "operator": "<=",
+          "left": {
+            "kind": "identifier",
+            "name": "current"
+          },
+          "right": {
+            "kind": "identifier",
+            "name": "limit"
+          }
+        },
+        "thenBranch": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_maybe_Just",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "identifier",
+                  "name": "current"
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_int64_add",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "current"
+                    },
+                    {
+                      "kind": "bigint",
+                      "value": "1"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "elseBranch": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_maybe_Nothing"
+        }
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 40,
+        "end": 178
+      }
+    }
+  ]
+}

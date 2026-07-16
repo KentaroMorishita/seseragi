@@ -1,10 +1,60 @@
 use super::linked_program;
 use crate::{
-    analyze_linked_module, resolve_linked_module, TypedInstanceEvidence,
-    TypedInstanceImplementation,
+    analyze_linked_module, resolve_linked_module, TypedComprehensionClause, TypedDecl, TypedExpr,
+    TypedInstanceEvidence, TypedInstanceImplementation, TypedPattern, TypedType,
 };
 
 mod transitive;
+
+#[test]
+fn infers_an_imported_iterable_element_and_selects_its_provider_dictionary() {
+    let domain_source = "pub type Countdown = | Countdown Int\n\
+         fn advance limit: Int -> current: Int -> Maybe<(Int, Int)> =\n\
+           if current <= limit then Just (current, current + 1) else Nothing\n\
+         instance Iterable<Countdown, Int> {\n\
+           fn iterate values: Countdown -> Iterator<Int> =\n\
+             match values { Countdown limit -> unfold (advance limit) 1 }\n\
+         }\n";
+    let main_source = "import { Countdown } from \"./domain\"\n\n\
+         pub fn values source: Countdown -> Array<Int> =\n\
+           [value | value <- source]\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let resolved = resolve_linked_module(linked.clone(), main_source);
+    assert_eq!(resolved.dependency_instances.len(), 1);
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+    let TypedDecl::Fn { body, .. } = &analyzed.typed_hir.declarations[0] else {
+        panic!("expected imported Iterable consumer");
+    };
+    let TypedExpr::ArrayComprehension { clauses, .. } = body else {
+        panic!("expected imported Iterable comprehension: {body:#?}");
+    };
+    assert!(matches!(
+        &clauses[0],
+        TypedComprehensionClause::Generator {
+            pattern: TypedPattern::Binding { type_ref, .. },
+            evidence: crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Imported {
+                    provider_module,
+                    ..
+                },
+                ..
+            },
+            ..
+        } if type_ref == &TypedType::Named {
+            name: "Int".to_owned(),
+            arguments: Vec::new(),
+        } && provider_module == "fixture/game::domain"
+    ));
+}
 
 #[test]
 fn selects_direct_dependency_show_evidence_for_a_derived_payload() {

@@ -1,0 +1,15 @@
+pub type Countdown =
+  | Countdown Int
+
+fn advance limit: Int -> current: Int -> Maybe<(Int, Int)> =
+  if current <= limit then
+    Just (current, current + 1)
+  else
+    Nothing
+
+instance Iterable<Countdown, Int> {
+  fn iterate values: Countdown -> Iterator<Int> =
+    match values {
+      Countdown limit -> unfold (advance limit) 1
+    }
+}

@@ -1,0 +1,17 @@
+import { Countdown } from "./domain"
+
+fn oddSquares values: Countdown -> Array<Int> =
+  [value * value | value <- values, value % 2 != 0]
+
+fn renderTotal total: Int -> String =
+  match total {
+    35 -> "imported Iterable total: 35"
+    _ -> "unexpected imported Iterable total"
+  }
+
+pub effect fn main =
+  Countdown 5
+  |> oddSquares
+  |> reduce 0 (+)
+  |> renderTotal
+  |> println

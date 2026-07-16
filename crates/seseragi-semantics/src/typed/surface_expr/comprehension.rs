@@ -1,4 +1,3 @@
-use crate::typed::call_evidence::select_iterable_evidence;
 use crate::typed::pure_issues::ArrayIssue;
 use crate::typed::semantic_types::{
     semantic_values_are_compatible, SemanticTypeKey, SemanticValueType,
@@ -47,38 +46,30 @@ pub(super) fn type_array_comprehension(
                 generator_count += 1;
                 let source_analysis = type_surface_expression(source, &current_context);
                 let source_type = inferred_type_from_expr(&source_analysis.value);
-                let Some(element_type) = iterable_element_type(&source_type) else {
-                    missing_instance =
-                        Some(crate::typed::pure_issues::PureCallIssue::MissingInstance {
-                            callee: source.span(),
-                            constraint: crate::TypedConstraint {
-                                name: "Iterable".to_owned(),
-                                arguments: vec![source_type.clone(), TypedType::Hole],
-                            },
-                        });
-                    children.push(source_analysis);
-                    continue;
-                };
+                let (element_type, evidence) =
+                    match current_context.select_iterable_evidence(source_type.clone()) {
+                        Ok(selected) => selected,
+                        Err(constraint) => {
+                            missing_instance =
+                                Some(crate::typed::pure_issues::PureCallIssue::MissingInstance {
+                                    callee: source.span(),
+                                    constraint,
+                                });
+                            children.push(source_analysis);
+                            continue;
+                        }
+                    };
                 let expected = current_context.semantic_value_from_typed_type(&element_type);
                 let pattern_analysis = type_pattern(pattern, &expected, &current_context);
                 match_issues.extend(pattern_analysis.issues);
                 locals.extend(pattern_analysis.locals);
                 current_context = context.with_locals(locals.clone()).without_expected();
-                match select_iterable_evidence(source_type.clone(), element_type) {
-                    Ok(evidence) => typed_clauses.push(TypedComprehensionClause::Generator {
-                        pattern: pattern_analysis.typed,
-                        source: source_analysis.value.clone(),
-                        evidence,
-                        origin: *span,
-                    }),
-                    Err(constraint) => {
-                        missing_instance =
-                            Some(crate::typed::pure_issues::PureCallIssue::MissingInstance {
-                                callee: source.span(),
-                                constraint,
-                            });
-                    }
-                }
+                typed_clauses.push(TypedComprehensionClause::Generator {
+                    pattern: pattern_analysis.typed,
+                    source: source_analysis.value.clone(),
+                    evidence,
+                    origin: *span,
+                });
                 children.push(source_analysis);
             }
             SurfaceComprehensionClause::Guard { condition, span } => {
@@ -160,17 +151,6 @@ pub(super) fn type_array_comprehension(
     }
     result.merge_issues_from(element_analysis);
     result
-}
-
-fn iterable_element_type(collection: &TypedType) -> Option<TypedType> {
-    let TypedType::Named { name, arguments } = collection else {
-        return None;
-    };
-    match (name.as_str(), arguments.as_slice()) {
-        ("Array", [element]) => Some(element.clone()),
-        ("Range", [element]) if named_type_is(element, "Int") => Some(element.clone()),
-        _ => None,
-    }
 }
 
 fn expected_array_element(context: &PureExpressionContext<'_>) -> Option<SemanticValueType> {

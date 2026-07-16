@@ -18,6 +18,90 @@ pub(super) fn select_local_instance(
     select_local_instance_with_stack(trait_identity, constraint, resolution, &mut Vec::new())
 }
 
+pub(super) fn infer_local_functional_instance(
+    trait_identity: &str,
+    trait_name: &str,
+    collection: &TypedType,
+    resolution: &TypedResolution<'_>,
+) -> Option<(TypedType, TypedInstanceEvidence)> {
+    let matches = resolution
+        .resolved()
+        .declarations
+        .iter()
+        .filter_map(|declaration| {
+            infer_functional_instance_candidate(
+                declaration,
+                trait_identity,
+                trait_name,
+                collection,
+                resolution,
+            )
+        })
+        .take(2)
+        .collect::<Vec<_>>();
+    let [selected] = matches.as_slice() else {
+        return None;
+    };
+    Some(selected.clone())
+}
+
+fn infer_functional_instance_candidate(
+    declaration: &SurfaceDecl,
+    trait_identity: &str,
+    trait_name: &str,
+    collection: &TypedType,
+    resolution: &TypedResolution<'_>,
+) -> Option<(TypedType, TypedInstanceEvidence)> {
+    let SurfaceDecl::Instance {
+        type_parameters,
+        trait_name_span,
+        arguments,
+        ..
+    } = declaration
+    else {
+        return None;
+    };
+    let [collection_template, element_template] = arguments.as_slice() else {
+        return None;
+    };
+    let target = resolution.target(*trait_name_span, SymbolNamespace::Trait)?;
+    if resolution.symbol(target)?.canonical.as_deref() != Some(trait_identity) {
+        return None;
+    }
+    let collection_template = normalize_partial_constructor_template(
+        &typed_type_from_type_ref(collection_template),
+        collection,
+    );
+    let mut substitutions = BTreeMap::<String, TypedType>::new();
+    infer_type_parameters(
+        &collection_template,
+        collection,
+        type_parameters,
+        &mut substitutions,
+    );
+    let expected_collection = substitute_type_parameters(&collection_template, &substitutions);
+    if !semantic_values_are_compatible(
+        &resolution.semantic_value_from_typed_type(&expected_collection),
+        &resolution.semantic_value_from_typed_type(collection),
+    ) {
+        return None;
+    }
+    let element =
+        substitute_type_parameters(&typed_type_from_type_ref(element_template), &substitutions);
+    let constraint = TypedConstraint {
+        name: trait_name.to_owned(),
+        arguments: vec![collection.clone(), element.clone()],
+    };
+    match_instance(
+        declaration,
+        trait_identity,
+        &constraint,
+        resolution,
+        &mut Vec::new(),
+    )
+    .map(|evidence| (element, evidence))
+}
+
 fn select_local_instance_with_stack(
     trait_identity: &str,
     constraint: &TypedConstraint,

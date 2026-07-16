@@ -391,15 +391,94 @@ fn show_instance_identity(constraint: &TypedConstraint) -> Option<&'static str> 
 
 pub(crate) fn select_iterable_evidence(
     collection: TypedType,
-    element: TypedType,
-) -> Result<TypedCallEvidence, TypedConstraint> {
+    trait_identity: Option<&str>,
+    resolution: &TypedResolution<'_>,
+    scoped: &[ScopedCallEvidence],
+) -> Result<(TypedType, TypedCallEvidence), TypedConstraint> {
+    let missing = || TypedConstraint {
+        name: "Iterable".to_owned(),
+        arguments: vec![collection.clone(), TypedType::Hole],
+    };
+    if let Some(trait_identity) = trait_identity {
+        let scoped_matches = scoped
+            .iter()
+            .filter(|available| {
+                available.trait_identity == trait_identity
+                    && matches!(available.constraint.arguments.as_slice(), [available, _]
+                    if super::semantic_types::semantic_values_are_compatible(
+                        &resolution.semantic_value_from_typed_type(available),
+                        &resolution.semantic_value_from_typed_type(&collection),
+                    ))
+            })
+            .take(2)
+            .collect::<Vec<_>>();
+        if let [available] = scoped_matches.as_slice() {
+            let element = available.constraint.arguments[1].clone();
+            return Ok((
+                element,
+                TypedCallEvidence {
+                    constraint: available.constraint.clone(),
+                    evidence: TypedInstanceEvidence::Parameter {
+                        index: available.index,
+                    },
+                },
+            ));
+        }
+        if let Some((element, evidence)) = local::infer_local_functional_instance(
+            trait_identity,
+            "Iterable",
+            &collection,
+            resolution,
+        ) {
+            return Ok((
+                element.clone(),
+                TypedCallEvidence {
+                    constraint: TypedConstraint {
+                        name: "Iterable".to_owned(),
+                        arguments: vec![collection, element],
+                    },
+                    evidence,
+                },
+            ));
+        }
+        if let Some((element, evidence)) = imported::infer_imported_functional_instance(
+            trait_identity,
+            "Iterable",
+            &collection,
+            resolution,
+            scoped,
+        ) {
+            return Ok((
+                element.clone(),
+                TypedCallEvidence {
+                    constraint: TypedConstraint {
+                        name: "Iterable".to_owned(),
+                        arguments: vec![collection, element],
+                    },
+                    evidence,
+                },
+            ));
+        }
+    }
+    let element = standard_iterable_element_type(&collection).ok_or_else(missing)?;
     let constraint = TypedConstraint {
         name: "Iterable".to_owned(),
-        arguments: vec![collection, element],
+        arguments: vec![collection, element.clone()],
     };
     select_call_evidence(std::slice::from_ref(&constraint))
-        .map(|mut evidence| evidence.remove(0))
+        .map(|mut evidence| (element, evidence.remove(0)))
         .map_err(|_| constraint)
+}
+
+fn standard_iterable_element_type(collection: &TypedType) -> Option<TypedType> {
+    let TypedType::Named { name, arguments } = collection else {
+        return None;
+    };
+    match (name.as_str(), arguments.as_slice()) {
+        ("Array", [element]) => Some(element.clone()),
+        ("Range", [element]) if named_type_is(element, "Int") => Some(element.clone()),
+        _ => None,
+    }
 }
 
 fn named_type_is(type_ref: &TypedType, expected: &str) -> bool {
@@ -569,8 +648,12 @@ mod tests {
                 "std/range::Iterable",
             ),
         ] {
-            let evidence = select_iterable_evidence(collection, int.clone())
-                .expect("standard Iterable evidence");
+            let evidence = select_call_evidence(&[TypedConstraint {
+                name: "Iterable".to_owned(),
+                arguments: vec![collection, int.clone()],
+            }])
+            .expect("standard Iterable evidence")
+            .remove(0);
             assert!(matches!(
                 evidence.evidence,
                 TypedInstanceEvidence::Standard { identity } if identity == expected

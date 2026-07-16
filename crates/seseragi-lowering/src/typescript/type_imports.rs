@@ -48,6 +48,45 @@ pub(super) fn collect_module_type_imports(
             imports,
         );
     }
+    for instance in &module.instances {
+        for argument in &instance.arguments {
+            collect_type_imports(
+                argument,
+                &module.external_type_bindings,
+                requirements,
+                imports,
+            );
+        }
+        for constraint in &instance.constraints {
+            for argument in &constraint.arguments {
+                collect_type_imports(
+                    argument,
+                    &module.external_type_bindings,
+                    requirements,
+                    imports,
+                );
+            }
+        }
+        if let crate::CoreInstanceImplementation::UserDefined { methods } = &instance.implementation
+        {
+            for method in methods {
+                for parameter in &method.parameters {
+                    collect_type_imports(
+                        &parameter.type_ref,
+                        &module.external_type_bindings,
+                        requirements,
+                        imports,
+                    );
+                }
+                expr::collect_expr_type_imports(
+                    &method.body,
+                    &module.external_type_bindings,
+                    requirements,
+                    imports,
+                );
+            }
+        }
+    }
 }
 
 fn collect_type_imports(

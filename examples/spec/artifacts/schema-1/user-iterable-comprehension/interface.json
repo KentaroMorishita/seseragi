@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "module": "artifact/user-iterable-comprehension",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/user-iterable-comprehension::Countdown",
+      "namespace": "type",
+      "name": "Countdown",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 38
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Countdown",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-iterable-comprehension::Countdown",
+      "namespace": "value",
+      "name": "Countdown",
+      "constructorOf": "artifact/user-iterable-comprehension::Countdown",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 25,
+        "end": 34
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Countdown",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "trait": "Iterable",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Iterable",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Countdown",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 180,
+        "end": 342
+      }
+    }
+  ]
+}

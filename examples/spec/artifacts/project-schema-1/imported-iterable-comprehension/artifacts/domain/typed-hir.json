@@ -1,0 +1,574 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/imported-iterable-comprehension::domain",
+  "externalTypeBindings": [
+    {
+      "spelling": "Iterator",
+      "canonical": "std/prelude::Iterator"
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Iterable<fixture/imported-iterable-comprehension::domain::Countdown,std/prelude::Int>",
+      "traitIdentity": "std/prelude::Iterable",
+      "trait": "Iterable",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Countdown",
+          "arguments": []
+        },
+        {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-iterable-comprehension::domain::Countdown",
+        "std/prelude::Int"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 180,
+        "end": 342
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "iterate",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Iterator",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "values",
+                "type": {
+                  "kind": "named",
+                  "name": "Countdown",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 229,
+                  "end": 235
+                }
+              }
+            ],
+            "body": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "values",
+                "type": {
+                  "kind": "named",
+                  "name": "Countdown",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 276,
+                  "end": 282
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "fixture/imported-iterable-comprehension::domain::Countdown",
+                    "argument": {
+                      "kind": "binding",
+                      "symbol": 15,
+                      "name": "limit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 301,
+                        "end": 306
+                      }
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "Countdown",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 291,
+                      "end": 306
+                    }
+                  },
+                  "body": {
+                    "kind": "call",
+                    "callee": "std/prelude::unfold",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "fixture/imported-iterable-comprehension::domain::advance",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "limit",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 326,
+                              "end": 331
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "origin": {
+                          "start": 318,
+                          "end": 331
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "1",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 333,
+                          "end": 334
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Iterator",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 310,
+                      "end": 334
+                    }
+                  },
+                  "origin": {
+                    "start": 291,
+                    "end": 334
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Iterator",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 270,
+                "end": 340
+              }
+            },
+            "origin": {
+              "start": 218,
+              "end": 340
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/imported-iterable-comprehension::domain::Countdown",
+      "name": "Countdown",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-iterable-comprehension::domain::Countdown",
+          "name": "Countdown",
+          "payload": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Countdown",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 25,
+            "end": 34
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 38
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-iterable-comprehension::domain::advance",
+      "visibility": "private",
+      "origin": {
+        "start": 40,
+        "end": 178
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "limit",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 51,
+            "end": 56
+          }
+        },
+        {
+          "kind": "named",
+          "name": "current",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 65,
+            "end": 72
+          }
+        }
+      ],
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "binary",
+          "operator": "<=",
+          "left": {
+            "kind": "variable",
+            "name": "current",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 106,
+              "end": 113
+            }
+          },
+          "right": {
+            "kind": "variable",
+            "name": "limit",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 117,
+              "end": 122
+            }
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 106,
+            "end": 122
+          }
+        },
+        "thenBranch": {
+          "kind": "call",
+          "callee": "std/prelude::Just",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "variable",
+                  "name": "current",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 138,
+                    "end": 145
+                  }
+                },
+                {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "variable",
+                    "name": "current",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 147,
+                      "end": 154
+                    }
+                  },
+                  "right": {
+                    "kind": "integer",
+                    "value": "1",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 157,
+                      "end": 158
+                    }
+                  },
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Add",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/int::Add"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 147,
+                    "end": 158
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 137,
+                "end": 159
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 132,
+            "end": 159
+          }
+        },
+        "elseBranch": {
+          "kind": "variable",
+          "name": "std/prelude::Nothing",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 171,
+            "end": 178
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 103,
+          "end": 178
+        }
+      }
+    }
+  ]
+}

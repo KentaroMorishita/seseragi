@@ -23,6 +23,22 @@ const ITERATOR_NEXT: RuntimeIteratorOperation = RuntimeIteratorOperation {
     source_map_name: "next",
 };
 
+const ITERATOR_COMPREHEND: RuntimeIteratorOperation = RuntimeIteratorOperation {
+    runtime_feature: "core.iterator.comprehend",
+    local_name: "_ssrg_iterator_comprehend",
+    module: "@seseragi/runtime/iterator",
+    export_name: "collectMap",
+    source_map_name: "collectMap",
+};
+
+const ITERATOR_COMPREHEND_FLAT: RuntimeIteratorOperation = RuntimeIteratorOperation {
+    runtime_feature: "core.iterator.comprehend.flat",
+    local_name: "_ssrg_iterator_comprehend_flat",
+    module: "@seseragi/runtime/iterator",
+    export_name: "collectFlatMap",
+    source_map_name: "collectFlatMap",
+};
+
 pub(crate) fn runtime_iterator_operation(
     callee: &str,
 ) -> Option<&'static RuntimeIteratorOperation> {
@@ -36,9 +52,24 @@ pub(crate) fn runtime_iterator_operation(
 pub(crate) fn runtime_iterator_operation_for_feature(
     feature: &str,
 ) -> Option<RuntimeIteratorOperation> {
-    [ITERATOR_UNFOLD, ITERATOR_NEXT]
-        .into_iter()
-        .find(|operation| operation.runtime_feature == feature)
+    [
+        ITERATOR_UNFOLD,
+        ITERATOR_NEXT,
+        ITERATOR_COMPREHEND,
+        ITERATOR_COMPREHEND_FLAT,
+    ]
+    .into_iter()
+    .find(|operation| operation.runtime_feature == feature)
+}
+
+pub(crate) fn runtime_iterator_comprehension_operation(
+    flatten: bool,
+) -> &'static RuntimeIteratorOperation {
+    if flatten {
+        &ITERATOR_COMPREHEND_FLAT
+    } else {
+        &ITERATOR_COMPREHEND
+    }
 }
 
 #[cfg(test)]

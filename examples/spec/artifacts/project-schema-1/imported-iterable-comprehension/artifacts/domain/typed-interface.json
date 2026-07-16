@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-iterable-comprehension::domain",
+  "source": "domain.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/imported-iterable-comprehension::domain::Countdown",
+      "namespace": "type",
+      "name": "Countdown",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 38
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Countdown",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-iterable-comprehension::domain::Countdown",
+      "namespace": "value",
+      "name": "Countdown",
+      "constructorOf": "fixture/imported-iterable-comprehension::domain::Countdown",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 25,
+        "end": 34
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Countdown",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Iterable<fixture/imported-iterable-comprehension::domain::Countdown,std/prelude::Int>",
+      "providerModule": "fixture/imported-iterable-comprehension::domain",
+      "traitIdentity": "std/prelude::Iterable",
+      "argumentIdentities": [
+        "fixture/imported-iterable-comprehension::domain::Countdown",
+        "std/prelude::Int"
+      ],
+      "trait": "Iterable",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Iterable",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Countdown",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 180,
+        "end": 342
+      }
+    }
+  ]
+}

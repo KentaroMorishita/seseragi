@@ -1,0 +1,34 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/user-iterable-comprehension"
+  ],
+  "sourcesContent": [
+    "pub type Countdown =\n  | Countdown Int\n\nfn advance limit: Int -> current: Int -> Maybe<(Int, Int)> =\n  if current <= limit then\n    Just (current, current + 1)\n  else\n    Nothing\n\ninstance Iterable<Countdown, Int> {\n  fn iterate values: Countdown -> Iterator<Int> =\n    match values {\n      Countdown limit -> unfold (advance limit) 1\n    }\n}\n\nfn oddSquares values: Countdown -> Array<Int> =\n  [value * value | value <- values, value % 2 != 0]\n\nfn renderTotal total: Int -> String =\n  match total {\n    35 -> \"user Iterable total: 35\"\n    _ -> \"unexpected user Iterable total\"\n  }\n\npub effect fn main =\n  Countdown 5\n  |> oddSquares\n  |> reduce 0 (+)\n  |> renderTotal\n  |> println\n"
+  ],
+  "names": [
+    "Countdown",
+    "Countdown",
+    "__ssrg$instance$Iterable$0",
+    "advance",
+    "Just",
+    "add",
+    "Nothing",
+    "oddSquares",
+    "collectMap",
+    "__ssrg$instance$Iterable$0",
+    "remainder",
+    "multiply",
+    "renderTotal",
+    "main",
+    "println",
+    "renderTotal",
+    "_ssrg_array_reduce",
+    "add",
+    "oddSquares",
+    "Countdown"
+  ],
+  "mappings": ";;;;;;AAAAA;;AACIC;AAQJC;AANAC;AAaAI;AAGAK;AAMAC"
+}

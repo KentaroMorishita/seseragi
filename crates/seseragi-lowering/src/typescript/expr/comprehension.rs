@@ -1,9 +1,11 @@
 use crate::collection_ops::runtime_iterable_operation;
+use crate::iterator_ops::runtime_iterator_comprehension_operation;
 use crate::{CoreComprehensionClause, CoreExpr, CorePattern};
 use std::collections::BTreeMap;
 
 use super::lower_core_expr_to_typescript;
 use crate::typescript::decision::lower_core_pattern_decision;
+use crate::typescript::dictionaries::local_dictionary_expression;
 use crate::typescript::names::safe_identifier;
 use crate::typescript::types::type_ref_from_core_expr;
 use crate::typescript::{TypeScriptDecisionBranch, TypeScriptExpr, TypeScriptType};
@@ -89,12 +91,26 @@ pub(super) fn lower_array_comprehension(
         }
         _ => unreachable!("comprehension pattern lowering mode is total"),
     };
-    let operation = runtime_iterable_operation(&evidence, flatten)
-        .expect("typed comprehension requires materialized Iterable evidence");
+    let source = lower_core_expr_to_typescript(source, imported_values, imported_types);
+    let (callee, source) = if let Some(operation) = runtime_iterable_operation(&evidence, flatten) {
+        (operation.local_name, source)
+    } else {
+        let dictionary =
+            local_dictionary_expression(&evidence.evidence, imported_values, imported_types)
+                .expect("user Iterable comprehension requires materialized dictionary evidence");
+        (
+            runtime_iterator_comprehension_operation(flatten).local_name,
+            TypeScriptExpr::DictionaryCall {
+                dictionary: Box::new(dictionary),
+                method: "iterate".to_owned(),
+                arguments: vec![source],
+            },
+        )
+    };
     TypeScriptExpr::RuntimeCall {
-        callee: operation.local_name.to_owned(),
+        callee: callee.to_owned(),
         arguments: vec![
-            lower_core_expr_to_typescript(source, imported_values, imported_types),
+            source,
             TypeScriptExpr::Lambda {
                 parameter: parameter.clone(),
                 body: Box::new(predicate),

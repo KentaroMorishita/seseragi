@@ -3,7 +3,7 @@ use crate::{
     TypedModuleDependency, TypedParameter, TypedType,
 };
 use seseragi_syntax::{ByteSpan, SurfaceDecl, TypeRef};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use super::functions::TopLevelPureFunction;
 use super::semantic_types::{SemanticTypeCatalog, SemanticTypeKey, SemanticValueType};
@@ -135,6 +135,24 @@ impl<'a> TypedResolution<'a> {
                 .semantic_types
                 .key_from_typed_type(self.resolved, type_ref),
         }
+    }
+
+    pub(crate) fn semantic_value_from_imported_type(
+        &self,
+        type_ref: seseragi_syntax::InterfaceType,
+        module: &str,
+        type_parameters: &[seseragi_syntax::TypeParameter],
+    ) -> Option<SemanticValueType> {
+        let type_parameters = type_parameters
+            .iter()
+            .map(|parameter| parameter.name.clone())
+            .collect::<BTreeSet<_>>();
+        imported_types::ImportedTypeContext::new(self.resolved).semantic_value(
+            type_ref,
+            module,
+            &type_parameters,
+            &self.external_type_bindings(),
+        )
     }
 
     pub(crate) fn parameter_types(

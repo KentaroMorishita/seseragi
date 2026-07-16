@@ -1,0 +1,521 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-iterable-comprehension::domain",
+  "externalTypeBindings": [
+    {
+      "spelling": "Iterator",
+      "canonical": "std/prelude::Iterator"
+    }
+  ],
+  "adts": [
+    {
+      "symbol": "fixture/imported-iterable-comprehension::domain::Countdown",
+      "name": "Countdown",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-iterable-comprehension::domain::Countdown",
+          "name": "Countdown",
+          "payload": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 25,
+            "end": 34
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 38
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Iterable<fixture/imported-iterable-comprehension::domain::Countdown,std/prelude::Int>",
+      "trait": "Iterable",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Countdown",
+          "arguments": []
+        },
+        {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 180,
+        "end": 342
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "iterate",
+            "parameters": [
+              {
+                "id": "values",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Countdown",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "values",
+                "type": {
+                  "kind": "named",
+                  "name": "Countdown",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "domain.ssrg",
+                  "start": 276,
+                  "end": 282
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Countdown",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "fixture/imported-iterable-comprehension::domain::Countdown",
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 291,
+                        "end": 306
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "limit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 301,
+                        "end": 306
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "std/prelude::unfold",
+                    "arguments": [
+                      {
+                        "kind": "call",
+                        "callee": "fixture/imported-iterable-comprehension::domain::advance",
+                        "arguments": [
+                          {
+                            "kind": "variable",
+                            "name": "limit",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "domain.ssrg",
+                              "start": 326,
+                              "end": 331
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "origin": {
+                          "source": "domain.ssrg",
+                          "start": 318,
+                          "end": 331
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "domain.ssrg",
+                          "start": 333,
+                          "end": 334
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Iterator",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 310,
+                      "end": 334
+                    }
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 291,
+                    "end": 334
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Iterator",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 270,
+                "end": 340
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 218,
+              "end": 340
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-iterable-comprehension::domain::advance",
+      "visibility": "private",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 40,
+        "end": 178
+      },
+      "parameters": [
+        {
+          "id": "limit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        {
+          "id": "current",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "binary",
+          "operator": "<=",
+          "left": {
+            "kind": "variable",
+            "name": "current",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 106,
+              "end": 113
+            }
+          },
+          "right": {
+            "kind": "variable",
+            "name": "limit",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 117,
+              "end": 122
+            }
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 106,
+            "end": 122
+          }
+        },
+        "thenBranch": {
+          "kind": "call",
+          "callee": "std/prelude::Just",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "variable",
+                  "name": "current",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 138,
+                    "end": 145
+                  }
+                },
+                {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "variable",
+                    "name": "current",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 147,
+                      "end": 154
+                    }
+                  },
+                  "right": {
+                    "kind": "int64",
+                    "value": "1",
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 157,
+                      "end": 158
+                    }
+                  },
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Add",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/int::Add"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 147,
+                    "end": 158
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 137,
+                "end": 159
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 132,
+            "end": 159
+          }
+        },
+        "elseBranch": {
+          "kind": "variable",
+          "name": "std/prelude::Nothing",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 171,
+            "end": 178
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "source": "domain.ssrg",
+          "start": 103,
+          "end": 178
+        }
+      }
+    }
+  ]
+}

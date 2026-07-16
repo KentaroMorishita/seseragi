@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-iterable-comprehension::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.int64.multiply",
+      "core.iterator.comprehend",
+      "core.bool",
+      "core.int64.remainder",
+      "core.string",
+      "core.unit",
+      "effect.console.println",
+      "core.array.reduce",
+      "core.int64.add"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-iterable-comprehension/main.ts",
+    "sourceMap": "dist/imported-iterable-comprehension/main.ts.map"
+  }
+}

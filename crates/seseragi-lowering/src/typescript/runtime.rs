@@ -1,4 +1,5 @@
 use crate::collection_ops::{runtime_collection_operation, runtime_iterable_operation};
+use crate::iterator_ops::runtime_iterator_comprehension_operation;
 use crate::iterator_ops::runtime_iterator_operation;
 use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
@@ -84,9 +85,12 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
                         let flatten = clauses[index + 1..].iter().any(|clause| {
                             matches!(clause, CoreComprehensionClause::Generator { .. })
                         });
-                        let operation = runtime_iterable_operation(evidence, flatten)
-                            .expect("typed comprehension requires registered Iterable evidence");
-                        push_unique(requirements, operation.runtime_feature);
+                        let feature = runtime_iterable_operation(evidence, flatten)
+                            .map(|operation| operation.runtime_feature)
+                            .unwrap_or_else(|| {
+                                runtime_iterator_comprehension_operation(flatten).runtime_feature
+                            });
+                        push_unique(requirements, feature);
                         collect_expr_runtime_requirements(source, requirements);
                     }
                     CoreComprehensionClause::Guard { condition, .. } => {
@@ -339,13 +343,17 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                         let flatten = clauses[index + 1..].iter().any(|clause| {
                             matches!(clause, CoreComprehensionClause::Generator { .. })
                         });
-                        let operation = runtime_iterable_operation(evidence, flatten)
-                            .expect("typed comprehension requires registered Iterable evidence");
+                        let (feature, local) = runtime_iterable_operation(evidence, flatten)
+                            .map(|operation| (operation.runtime_feature, operation.local_name))
+                            .unwrap_or_else(|| {
+                                let operation = runtime_iterator_comprehension_operation(flatten);
+                                (operation.runtime_feature, operation.local_name)
+                            });
                         push_import_unique(
                             imports,
                             TypeScriptImport {
-                                feature: operation.runtime_feature.to_owned(),
-                                local: operation.local_name.to_owned(),
+                                feature: feature.to_owned(),
+                                local: local.to_owned(),
                             },
                         );
                         collect_expr_runtime_imports(source, imports);

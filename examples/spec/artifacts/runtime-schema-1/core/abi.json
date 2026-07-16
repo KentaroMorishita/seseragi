@@ -197,6 +197,26 @@
       }
     },
     {
+      "id": "core.iterator.comprehend",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Iterator<A> -> (A -> Bool) -> (A -> B) -> Array<B>",
+      "import": {
+        "module": "@seseragi/runtime/iterator",
+        "export": "collectMap"
+      }
+    },
+    {
+      "id": "core.iterator.comprehend.flat",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Iterator<A> -> (A -> Bool) -> (A -> Array<B>) -> Array<B>",
+      "import": {
+        "module": "@seseragi/runtime/iterator",
+        "export": "collectFlatMap"
+      }
+    },
+    {
       "id": "core.unit",
       "kind": "value-representation",
       "typescript": "undefined",
