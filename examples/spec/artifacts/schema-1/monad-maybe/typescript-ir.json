@@ -769,6 +769,130 @@
     {
       "kind": "const-function",
       "exported": false,
+      "name": "addMaybe",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "monad-do",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "__ssrg$instance$Monad$2",
+          "typeArguments": [],
+          "arguments": [
+            {
+              "kind": "type-application-call",
+              "callee": "__ssrg$instance$Applicative$1",
+              "typeArguments": [],
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$instance$Functor$0"
+                }
+              ]
+            }
+          ]
+        },
+        "statements": [
+          {
+            "kind": "const",
+            "name": "first",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "left"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1410,
+              "end": 1423
+            }
+          },
+          {
+            "kind": "const",
+            "name": "second",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "right"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1428,
+              "end": 1443
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "total",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_add",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "first"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "second"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1448,
+              "end": 1474
+            }
+          }
+        ],
+        "result": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "type-application-call",
+            "callee": "__ssrg$instance$Applicative$1",
+            "typeArguments": [],
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "__ssrg$instance$Functor$0"
+              }
+            ]
+          },
+          "method": "pure",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "total"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1333,
+        "end": 1493
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
       "name": "render",
       "parameters": [
         {
@@ -861,8 +985,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1333,
-        "end": 1502
+        "start": 1495,
+        "end": 1664
       }
     },
     {
@@ -1044,6 +1168,94 @@
                 }
               ]
             }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "liftAndBind",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "stopAfter42"
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "43"
+                        },
+                        {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Monad$2",
+                          "typeArguments": [],
+                          "arguments": [
+                            {
+                              "kind": "type-application-call",
+                              "callee": "__ssrg$instance$Applicative$1",
+                              "typeArguments": [],
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$instance$Functor$0"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "addMaybe",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_maybe_Just",
+                          "arguments": [
+                            {
+                              "kind": "bigint",
+                              "value": "20"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_maybe_Just",
+                          "arguments": [
+                            {
+                              "kind": "bigint",
+                              "value": "22"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
           }
         ],
         "result": {
@@ -1056,33 +1268,21 @@
               "arguments": [
                 {
                   "kind": "call",
-                  "callee": "liftAndBind",
+                  "callee": "addMaybe",
                   "arguments": [
                     {
-                      "kind": "identifier",
-                      "name": "stopAfter42"
-                    },
-                    {
-                      "kind": "bigint",
-                      "value": "43"
-                    },
-                    {
-                      "kind": "type-application-call",
-                      "callee": "__ssrg$instance$Monad$2",
-                      "typeArguments": [],
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_maybe_Just",
                       "arguments": [
                         {
-                          "kind": "type-application-call",
-                          "callee": "__ssrg$instance$Applicative$1",
-                          "typeArguments": [],
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "__ssrg$instance$Functor$0"
-                            }
-                          ]
+                          "kind": "bigint",
+                          "value": "20"
                         }
                       ]
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_maybe_Nothing"
                     }
                   ]
                 }
@@ -1093,8 +1293,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1504,
-        "end": 1813
+        "start": 1666,
+        "end": 2099
       }
     }
   ]

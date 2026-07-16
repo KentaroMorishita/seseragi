@@ -147,6 +147,23 @@ fn collect_local_expr_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
             }
             collect_local_expr_names(result, names);
         }
+        CoreExpr::MonadDo {
+            statements, result, ..
+        } => {
+            for statement in statements {
+                match statement {
+                    crate::CoreMonadDoStatement::Expression { value } => {
+                        collect_local_expr_names(value, names)
+                    }
+                    crate::CoreMonadDoStatement::PureLet { name, value, .. }
+                    | crate::CoreMonadDoStatement::Bind { name, value, .. } => {
+                        names.insert(safe_identifier(name));
+                        collect_local_expr_names(value, names);
+                    }
+                }
+            }
+            collect_local_expr_names(result, names);
+        }
         CoreExpr::Unit { .. }
         | CoreExpr::Int64 { .. }
         | CoreExpr::String { .. }

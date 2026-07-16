@@ -224,7 +224,8 @@ fn typed_expr_type(expression: &TypedExpr) -> TypedType {
         | TypedExpr::ArrayComprehension { type_ref, .. }
         | TypedExpr::Binary { type_ref, .. }
         | TypedExpr::If { type_ref, .. }
-        | TypedExpr::Match { type_ref, .. } => type_ref.clone(),
+        | TypedExpr::Match { type_ref, .. }
+        | TypedExpr::MonadDo { type_ref, .. } => type_ref.clone(),
         TypedExpr::DoBlock { result, .. } => typed_expr_type(result),
         TypedExpr::EffectCall { effect, .. } | TypedExpr::EffectInvoke { effect, .. } => {
             effect.success.clone()

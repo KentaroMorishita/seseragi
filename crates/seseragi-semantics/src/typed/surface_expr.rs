@@ -13,6 +13,7 @@ mod binary;
 mod comprehension;
 mod conditional;
 mod match_expression;
+mod monad_do;
 mod tuple;
 
 pub(crate) struct PureExpressionContext<'a> {
@@ -126,6 +127,20 @@ impl<'a> PureExpressionContext<'a> {
             self.resolution,
             &self.evidence_parameters,
         )
+    }
+
+    pub(super) fn trait_identity(&self, name: &str) -> Option<String> {
+        let mut identities = self
+            .resolution
+            .resolved()
+            .symbols
+            .iter()
+            .filter(|symbol| symbol.namespace == SymbolNamespace::Trait && symbol.spelling == name)
+            .filter_map(|symbol| symbol.canonical.clone());
+        let identity = identities.next()?;
+        identities
+            .all(|candidate| candidate == identity)
+            .then_some(identity)
     }
 
     pub(super) fn with_locals(&self, locals: BTreeMap<SymbolId, SemanticValueType>) -> Self {
@@ -306,17 +321,20 @@ pub(super) fn type_surface_expression(
             arms,
             span,
         } => match_expression::type_match(scrutinee, arms, *span, context),
-        SurfaceExpr::Do { span, .. } | SurfaceExpr::Error { span } => {
-            SurfaceExpressionAnalysis::valid_with_semantic_type(
-                TypedExpr::Variable {
-                    name: String::new(),
-                    evidence: Vec::new(),
-                    type_ref: TypedType::Hole,
-                    origin: *span,
-                },
-                SemanticTypeKey::Invalid,
-            )
-        }
+        SurfaceExpr::Do {
+            items,
+            result,
+            span,
+        } => monad_do::type_monad_do(items, result.as_deref(), *span, context),
+        SurfaceExpr::Error { span } => SurfaceExpressionAnalysis::valid_with_semantic_type(
+            TypedExpr::Variable {
+                name: String::new(),
+                evidence: Vec::new(),
+                type_ref: TypedType::Hole,
+                origin: *span,
+            },
+            SemanticTypeKey::Invalid,
+        ),
     }
 }
 

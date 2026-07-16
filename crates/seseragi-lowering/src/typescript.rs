@@ -350,6 +350,11 @@ pub enum TypeScriptExpr {
         statements: Vec<TypeScriptStatement>,
         result: Box<TypeScriptExpr>,
     },
+    MonadDo {
+        dictionary: Box<TypeScriptExpr>,
+        statements: Vec<TypeScriptStatement>,
+        result: Box<TypeScriptExpr>,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

@@ -258,7 +258,8 @@ pub(super) fn expression_origin(expression: &TypedExpr) -> ByteSpan {
         | TypedExpr::Match { origin, .. }
         | TypedExpr::EffectCall { origin, .. }
         | TypedExpr::EffectInvoke { origin, .. }
-        | TypedExpr::DoBlock { origin, .. } => *origin,
+        | TypedExpr::DoBlock { origin, .. }
+        | TypedExpr::MonadDo { origin, .. } => *origin,
     }
 }
 

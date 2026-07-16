@@ -110,6 +110,7 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
             effect.success.clone()
         }
         TypedExpr::DoBlock { result, .. } => inferred_type_from_expr(result),
+        TypedExpr::MonadDo { type_ref, .. } => type_ref.clone(),
     }
 }
 

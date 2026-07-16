@@ -1863,17 +1863,17 @@
     {
       "kind": "fn",
       "visibility": "private",
-      "name": "render",
+      "name": "addMaybe",
       "nameSpan": {
         "start": 1336,
-        "end": 1342
+        "end": 1344
       },
       "parameters": [
         {
-          "name": "value",
+          "name": "left",
           "nameSpan": {
-            "start": 1343,
-            "end": 1348
+            "start": 1345,
+            "end": 1349
           },
           "type": {
             "kind": "named",
@@ -1883,14 +1883,230 @@
                 "kind": "named",
                 "name": "Int",
                 "span": {
-                  "start": 1356,
-                  "end": 1359
+                  "start": 1357,
+                  "end": 1360
                 }
               }
             ],
             "span": {
-              "start": 1350,
-              "end": 1360
+              "start": 1351,
+              "end": 1361
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 1365,
+            "end": 1370
+          },
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 1378,
+                  "end": 1381
+                }
+              }
+            ],
+            "span": {
+              "start": 1372,
+              "end": 1382
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Maybe",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 1392,
+              "end": 1395
+            }
+          }
+        ],
+        "span": {
+          "start": 1386,
+          "end": 1396
+        }
+      },
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "first",
+              "nameSpan": {
+                "start": 1410,
+                "end": 1415
+              },
+              "span": {
+                "start": 1410,
+                "end": 1415
+              }
+            },
+            "value": {
+              "kind": "name",
+              "name": "left",
+              "span": {
+                "start": 1419,
+                "end": 1423
+              }
+            },
+            "span": {
+              "start": 1410,
+              "end": 1423
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "second",
+              "nameSpan": {
+                "start": 1428,
+                "end": 1434
+              },
+              "span": {
+                "start": 1428,
+                "end": 1434
+              }
+            },
+            "value": {
+              "kind": "name",
+              "name": "right",
+              "span": {
+                "start": 1438,
+                "end": 1443
+              }
+            },
+            "span": {
+              "start": 1428,
+              "end": 1443
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "total",
+              "nameSpan": {
+                "start": 1452,
+                "end": 1457
+              },
+              "span": {
+                "start": 1452,
+                "end": 1457
+              }
+            },
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "operatorSpan": {
+                "start": 1466,
+                "end": 1467
+              },
+              "left": {
+                "kind": "name",
+                "name": "first",
+                "span": {
+                  "start": 1460,
+                  "end": 1465
+                }
+              },
+              "right": {
+                "kind": "name",
+                "name": "second",
+                "span": {
+                  "start": 1468,
+                  "end": 1474
+                }
+              },
+              "span": {
+                "start": 1460,
+                "end": 1474
+              }
+            },
+            "span": {
+              "start": 1448,
+              "end": 1474
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "pure",
+            "span": {
+              "start": 1479,
+              "end": 1483
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "total",
+            "span": {
+              "start": 1484,
+              "end": 1489
+            }
+          },
+          "span": {
+            "start": 1479,
+            "end": 1489
+          }
+        },
+        "span": {
+          "start": 1401,
+          "end": 1493
+        }
+      },
+      "span": {
+        "start": 1333,
+        "end": 1493
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "render",
+      "nameSpan": {
+        "start": 1498,
+        "end": 1504
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 1505,
+            "end": 1510
+          },
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 1518,
+                  "end": 1521
+                }
+              }
+            ],
+            "span": {
+              "start": 1512,
+              "end": 1522
             }
           }
         }
@@ -1899,8 +2115,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 1364,
-          "end": 1370
+          "start": 1526,
+          "end": 1532
         }
       },
       "body": {
@@ -1909,8 +2125,8 @@
           "kind": "name",
           "name": "value",
           "span": {
-            "start": 1381,
-            "end": 1386
+            "start": 1543,
+            "end": 1548
           }
         },
         "arms": [
@@ -1919,25 +2135,25 @@
               "kind": "constructor",
               "name": "Nothing",
               "nameSpan": {
-                "start": 1393,
-                "end": 1400
+                "start": 1555,
+                "end": 1562
               },
               "span": {
-                "start": 1393,
-                "end": 1400
+                "start": 1555,
+                "end": 1562
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"Nothing\"",
               "span": {
-                "start": 1404,
-                "end": 1413
+                "start": 1566,
+                "end": 1575
               }
             },
             "span": {
-              "start": 1393,
-              "end": 1413
+              "start": 1555,
+              "end": 1575
             }
           },
           {
@@ -1945,33 +2161,33 @@
               "kind": "constructor",
               "name": "Just",
               "nameSpan": {
-                "start": 1418,
-                "end": 1422
+                "start": 1580,
+                "end": 1584
               },
               "argument": {
                 "kind": "integer",
                 "raw": "42",
                 "span": {
-                  "start": 1423,
-                  "end": 1425
+                  "start": 1585,
+                  "end": 1587
                 }
               },
               "span": {
-                "start": 1418,
-                "end": 1425
+                "start": 1580,
+                "end": 1587
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"Just 42\"",
               "span": {
-                "start": 1429,
-                "end": 1438
+                "start": 1591,
+                "end": 1600
               }
             },
             "span": {
-              "start": 1418,
-              "end": 1438
+              "start": 1580,
+              "end": 1600
             }
           },
           {
@@ -1979,33 +2195,33 @@
               "kind": "constructor",
               "name": "Just",
               "nameSpan": {
-                "start": 1443,
-                "end": 1447
+                "start": 1605,
+                "end": 1609
               },
               "argument": {
                 "kind": "integer",
                 "raw": "44",
                 "span": {
-                  "start": 1448,
-                  "end": 1450
+                  "start": 1610,
+                  "end": 1612
                 }
               },
               "span": {
-                "start": 1443,
-                "end": 1450
+                "start": 1605,
+                "end": 1612
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"Just 44\"",
               "span": {
-                "start": 1454,
-                "end": 1463
+                "start": 1616,
+                "end": 1625
               }
             },
             "span": {
-              "start": 1443,
-              "end": 1463
+              "start": 1605,
+              "end": 1625
             }
           },
           {
@@ -2013,43 +2229,43 @@
               "kind": "constructor",
               "name": "Just",
               "nameSpan": {
-                "start": 1468,
-                "end": 1472
+                "start": 1630,
+                "end": 1634
               },
               "argument": {
                 "kind": "wildcard",
                 "span": {
-                  "start": 1473,
-                  "end": 1474
+                  "start": 1635,
+                  "end": 1636
                 }
               },
               "span": {
-                "start": 1468,
-                "end": 1474
+                "start": 1630,
+                "end": 1636
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"Just another value\"",
               "span": {
-                "start": 1478,
-                "end": 1498
+                "start": 1640,
+                "end": 1660
               }
             },
             "span": {
-              "start": 1468,
-              "end": 1498
+              "start": 1630,
+              "end": 1660
             }
           }
         ],
         "span": {
-          "start": 1375,
-          "end": 1502
+          "start": 1537,
+          "end": 1664
         }
       },
       "span": {
-        "start": 1333,
-        "end": 1502
+        "start": 1495,
+        "end": 1664
       }
     },
     {
@@ -2057,8 +2273,8 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 1518,
-        "end": 1522
+        "start": 1680,
+        "end": 1684
       },
       "inferredContract": true,
       "returnType": null,
@@ -2073,8 +2289,8 @@
                 "kind": "name",
                 "name": "println",
                 "span": {
-                  "start": 1579,
-                  "end": 1586
+                  "start": 1741,
+                  "end": 1748
                 }
               },
               "argument": {
@@ -2083,8 +2299,8 @@
                   "kind": "name",
                   "name": "render",
                   "span": {
-                    "start": 1565,
-                    "end": 1571
+                    "start": 1727,
+                    "end": 1733
                   }
                 },
                 "argument": {
@@ -2095,21 +2311,21 @@
                       "kind": "name",
                       "name": "map",
                       "span": {
-                        "start": 1546,
-                        "end": 1549
+                        "start": 1708,
+                        "end": 1711
                       }
                     },
                     "argument": {
                       "kind": "name",
                       "name": "increment",
                       "span": {
-                        "start": 1536,
-                        "end": 1545
+                        "start": 1698,
+                        "end": 1707
                       }
                     },
                     "span": {
-                      "start": 1536,
-                      "end": 1549
+                      "start": 1698,
+                      "end": 1711
                     }
                   },
                   "argument": {
@@ -2118,41 +2334,41 @@
                       "kind": "name",
                       "name": "Just",
                       "span": {
-                        "start": 1550,
-                        "end": 1554
+                        "start": 1712,
+                        "end": 1716
                       }
                     },
                     "argument": {
                       "kind": "integer",
                       "raw": "40",
                       "span": {
-                        "start": 1555,
-                        "end": 1557
+                        "start": 1717,
+                        "end": 1719
                       }
                     },
                     "span": {
-                      "start": 1550,
-                      "end": 1557
+                      "start": 1712,
+                      "end": 1719
                     }
                   },
                   "span": {
-                    "start": 1536,
-                    "end": 1557
+                    "start": 1698,
+                    "end": 1719
                   }
                 },
                 "span": {
-                  "start": 1536,
-                  "end": 1571
+                  "start": 1698,
+                  "end": 1733
                 }
               },
               "span": {
-                "start": 1536,
-                "end": 1586
+                "start": 1698,
+                "end": 1748
               }
             },
             "span": {
-              "start": 1536,
-              "end": 1586
+              "start": 1698,
+              "end": 1748
             }
           },
           {
@@ -2163,8 +2379,8 @@
                 "kind": "name",
                 "name": "println",
                 "span": {
-                  "start": 1640,
-                  "end": 1647
+                  "start": 1802,
+                  "end": 1809
                 }
               },
               "argument": {
@@ -2173,8 +2389,8 @@
                   "kind": "name",
                   "name": "render",
                   "span": {
-                    "start": 1626,
-                    "end": 1632
+                    "start": 1788,
+                    "end": 1794
                   }
                 },
                 "argument": {
@@ -2185,8 +2401,8 @@
                       "kind": "name",
                       "name": "apply",
                       "span": {
-                        "start": 1607,
-                        "end": 1610
+                        "start": 1769,
+                        "end": 1772
                       }
                     },
                     "argument": {
@@ -2195,26 +2411,26 @@
                         "kind": "name",
                         "name": "Just",
                         "span": {
-                          "start": 1592,
-                          "end": 1596
+                          "start": 1754,
+                          "end": 1758
                         }
                       },
                       "argument": {
                         "kind": "name",
                         "name": "increment",
                         "span": {
-                          "start": 1597,
-                          "end": 1606
+                          "start": 1759,
+                          "end": 1768
                         }
                       },
                       "span": {
-                        "start": 1592,
-                        "end": 1606
+                        "start": 1754,
+                        "end": 1768
                       }
                     },
                     "span": {
-                      "start": 1592,
-                      "end": 1610
+                      "start": 1754,
+                      "end": 1772
                     }
                   },
                   "argument": {
@@ -2223,41 +2439,41 @@
                       "kind": "name",
                       "name": "Just",
                       "span": {
-                        "start": 1611,
-                        "end": 1615
+                        "start": 1773,
+                        "end": 1777
                       }
                     },
                     "argument": {
                       "kind": "integer",
                       "raw": "40",
                       "span": {
-                        "start": 1616,
-                        "end": 1618
+                        "start": 1778,
+                        "end": 1780
                       }
                     },
                     "span": {
-                      "start": 1611,
-                      "end": 1618
+                      "start": 1773,
+                      "end": 1780
                     }
                   },
                   "span": {
-                    "start": 1592,
-                    "end": 1618
+                    "start": 1754,
+                    "end": 1780
                   }
                 },
                 "span": {
-                  "start": 1592,
-                  "end": 1632
+                  "start": 1754,
+                  "end": 1794
                 }
               },
               "span": {
-                "start": 1592,
-                "end": 1647
+                "start": 1754,
+                "end": 1809
               }
             },
             "span": {
-              "start": 1592,
-              "end": 1647
+              "start": 1754,
+              "end": 1809
             }
           },
           {
@@ -2268,8 +2484,8 @@
                 "kind": "name",
                 "name": "println",
                 "span": {
-                  "start": 1734,
-                  "end": 1741
+                  "start": 1896,
+                  "end": 1903
                 }
               },
               "argument": {
@@ -2278,8 +2494,8 @@
                   "kind": "name",
                   "name": "render",
                   "span": {
-                    "start": 1720,
-                    "end": 1726
+                    "start": 1882,
+                    "end": 1888
                   }
                 },
                 "argument": {
@@ -2290,21 +2506,21 @@
                       "kind": "name",
                       "name": "flatMap",
                       "span": {
-                        "start": 1694,
-                        "end": 1697
+                        "start": 1856,
+                        "end": 1859
                       }
                     },
                     "argument": {
                       "kind": "name",
                       "name": "incrementMaybe",
                       "span": {
-                        "start": 1698,
-                        "end": 1712
+                        "start": 1860,
+                        "end": 1874
                       }
                     },
                     "span": {
-                      "start": 1694,
-                      "end": 1712
+                      "start": 1856,
+                      "end": 1874
                     }
                   },
                   "argument": {
@@ -2315,54 +2531,248 @@
                         "kind": "name",
                         "name": "liftAndBind",
                         "span": {
-                          "start": 1663,
-                          "end": 1674
+                          "start": 1825,
+                          "end": 1836
                         }
                       },
                       "argument": {
                         "kind": "name",
                         "name": "incrementMaybe",
                         "span": {
-                          "start": 1675,
-                          "end": 1689
+                          "start": 1837,
+                          "end": 1851
                         }
                       },
                       "span": {
-                        "start": 1663,
-                        "end": 1689
+                        "start": 1825,
+                        "end": 1851
                       }
                     },
                     "argument": {
                       "kind": "integer",
                       "raw": "40",
                       "span": {
-                        "start": 1653,
-                        "end": 1655
+                        "start": 1815,
+                        "end": 1817
                       }
                     },
                     "span": {
-                      "start": 1653,
-                      "end": 1689
+                      "start": 1815,
+                      "end": 1851
                     }
                   },
                   "span": {
-                    "start": 1653,
-                    "end": 1712
+                    "start": 1815,
+                    "end": 1874
                   }
                 },
                 "span": {
-                  "start": 1653,
-                  "end": 1726
+                  "start": 1815,
+                  "end": 1888
                 }
               },
               "span": {
-                "start": 1653,
-                "end": 1741
+                "start": 1815,
+                "end": 1903
               }
             },
             "span": {
-              "start": 1653,
-              "end": 1741
+              "start": 1815,
+              "end": 1903
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1964,
+                  "end": 1971
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "render",
+                  "span": {
+                    "start": 1950,
+                    "end": 1956
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "liftAndBind",
+                      "span": {
+                        "start": 1919,
+                        "end": 1930
+                      }
+                    },
+                    "argument": {
+                      "kind": "name",
+                      "name": "stopAfter42",
+                      "span": {
+                        "start": 1931,
+                        "end": 1942
+                      }
+                    },
+                    "span": {
+                      "start": 1919,
+                      "end": 1942
+                    }
+                  },
+                  "argument": {
+                    "kind": "integer",
+                    "raw": "43",
+                    "span": {
+                      "start": 1909,
+                      "end": 1911
+                    }
+                  },
+                  "span": {
+                    "start": 1909,
+                    "end": 1942
+                  }
+                },
+                "span": {
+                  "start": 1909,
+                  "end": 1956
+                }
+              },
+              "span": {
+                "start": 1909,
+                "end": 1971
+              }
+            },
+            "span": {
+              "start": 1909,
+              "end": 1971
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 2027,
+                  "end": 2034
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "render",
+                  "span": {
+                    "start": 2013,
+                    "end": 2019
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "addMaybe",
+                      "span": {
+                        "start": 1977,
+                        "end": 1985
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "name",
+                          "name": "Just",
+                          "span": {
+                            "start": 1987,
+                            "end": 1991
+                          }
+                        },
+                        "argument": {
+                          "kind": "integer",
+                          "raw": "20",
+                          "span": {
+                            "start": 1992,
+                            "end": 1994
+                          }
+                        },
+                        "span": {
+                          "start": 1987,
+                          "end": 1994
+                        }
+                      },
+                      "span": {
+                        "start": 1986,
+                        "end": 1995
+                      }
+                    },
+                    "span": {
+                      "start": 1977,
+                      "end": 1995
+                    }
+                  },
+                  "argument": {
+                    "kind": "grouped",
+                    "value": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "Just",
+                        "span": {
+                          "start": 1997,
+                          "end": 2001
+                        }
+                      },
+                      "argument": {
+                        "kind": "integer",
+                        "raw": "22",
+                        "span": {
+                          "start": 2002,
+                          "end": 2004
+                        }
+                      },
+                      "span": {
+                        "start": 1997,
+                        "end": 2004
+                      }
+                    },
+                    "span": {
+                      "start": 1996,
+                      "end": 2005
+                    }
+                  },
+                  "span": {
+                    "start": 1977,
+                    "end": 2005
+                  }
+                },
+                "span": {
+                  "start": 1977,
+                  "end": 2019
+                }
+              },
+              "span": {
+                "start": 1977,
+                "end": 2034
+              }
+            },
+            "span": {
+              "start": 1977,
+              "end": 2034
             }
           }
         ],
@@ -2372,8 +2782,8 @@
             "kind": "name",
             "name": "println",
             "span": {
-              "start": 1802,
-              "end": 1809
+              "start": 2088,
+              "end": 2095
             }
           },
           "argument": {
@@ -2382,8 +2792,8 @@
               "kind": "name",
               "name": "render",
               "span": {
-                "start": 1788,
-                "end": 1794
+                "start": 2074,
+                "end": 2080
               }
             },
             "argument": {
@@ -2392,56 +2802,78 @@
                 "kind": "application",
                 "function": {
                   "kind": "name",
-                  "name": "liftAndBind",
+                  "name": "addMaybe",
                   "span": {
-                    "start": 1757,
-                    "end": 1768
+                    "start": 2040,
+                    "end": 2048
                   }
                 },
                 "argument": {
-                  "kind": "name",
-                  "name": "stopAfter42",
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "Just",
+                      "span": {
+                        "start": 2050,
+                        "end": 2054
+                      }
+                    },
+                    "argument": {
+                      "kind": "integer",
+                      "raw": "20",
+                      "span": {
+                        "start": 2055,
+                        "end": 2057
+                      }
+                    },
+                    "span": {
+                      "start": 2050,
+                      "end": 2057
+                    }
+                  },
                   "span": {
-                    "start": 1769,
-                    "end": 1780
+                    "start": 2049,
+                    "end": 2058
                   }
                 },
                 "span": {
-                  "start": 1757,
-                  "end": 1780
+                  "start": 2040,
+                  "end": 2058
                 }
               },
               "argument": {
-                "kind": "integer",
-                "raw": "43",
+                "kind": "name",
+                "name": "Nothing",
                 "span": {
-                  "start": 1747,
-                  "end": 1749
+                  "start": 2059,
+                  "end": 2066
                 }
               },
               "span": {
-                "start": 1747,
-                "end": 1780
+                "start": 2040,
+                "end": 2066
               }
             },
             "span": {
-              "start": 1747,
-              "end": 1794
+              "start": 2040,
+              "end": 2080
             }
           },
           "span": {
-            "start": 1747,
-            "end": 1809
+            "start": 2040,
+            "end": 2095
           }
         },
         "span": {
-          "start": 1527,
-          "end": 1813
+          "start": 1689,
+          "end": 2099
         }
       },
       "span": {
-        "start": 1504,
-        "end": 1813
+        "start": 1666,
+        "end": 2099
       }
     }
   ],
@@ -2451,7 +2883,7 @@
       "kind": "module",
       "origin": {
         "start": 0,
-        "end": 1813
+        "end": 2099
       }
     },
     {
@@ -2694,61 +3126,79 @@
       "kind": "function",
       "origin": {
         "start": 1333,
-        "end": 1502
+        "end": 1493
       }
     },
     {
       "id": 28,
       "parent": 27,
-      "kind": "match-arm",
+      "kind": "do-block",
       "origin": {
-        "start": 1393,
-        "end": 1413
+        "start": 1401,
+        "end": 1493
       }
     },
     {
       "id": 29,
-      "parent": 27,
-      "kind": "match-arm",
+      "parent": 0,
+      "kind": "function",
       "origin": {
-        "start": 1418,
-        "end": 1438
+        "start": 1495,
+        "end": 1664
       }
     },
     {
       "id": 30,
-      "parent": 27,
+      "parent": 29,
       "kind": "match-arm",
       "origin": {
-        "start": 1443,
-        "end": 1463
+        "start": 1555,
+        "end": 1575
       }
     },
     {
       "id": 31,
-      "parent": 27,
+      "parent": 29,
       "kind": "match-arm",
       "origin": {
-        "start": 1468,
-        "end": 1498
+        "start": 1580,
+        "end": 1600
       }
     },
     {
       "id": 32,
-      "parent": 0,
-      "kind": "function",
+      "parent": 29,
+      "kind": "match-arm",
       "origin": {
-        "start": 1504,
-        "end": 1813
+        "start": 1605,
+        "end": 1625
       }
     },
     {
       "id": 33,
-      "parent": 32,
+      "parent": 29,
+      "kind": "match-arm",
+      "origin": {
+        "start": 1630,
+        "end": 1660
+      }
+    },
+    {
+      "id": 34,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 1666,
+        "end": 2099
+      }
+    },
+    {
+      "id": 35,
+      "parent": 34,
       "kind": "do-block",
       "origin": {
-        "start": 1527,
-        "end": 1813
+        "start": 1689,
+        "end": 2099
       }
     }
   ],
@@ -2899,30 +3349,42 @@
     },
     {
       "id": 12,
+      "spelling": "addMaybe",
+      "canonical": "artifact/monad-maybe::addMaybe",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 1336,
+        "end": 1344
+      }
+    },
+    {
+      "id": 13,
       "spelling": "render",
       "canonical": "artifact/monad-maybe::render",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 1336,
-        "end": 1342
+        "start": 1498,
+        "end": 1504
       }
     },
     {
-      "id": 13,
+      "id": 14,
       "spelling": "main",
       "canonical": "artifact/monad-maybe::main",
       "namespace": "value",
       "kind": "effect-function",
       "scope": 0,
       "origin": {
-        "start": 1518,
-        "end": 1522
+        "start": 1680,
+        "end": 1684
       }
     },
     {
-      "id": 14,
+      "id": 15,
       "spelling": "F",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2933,7 +3395,7 @@
       }
     },
     {
-      "id": 15,
+      "id": 16,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2944,7 +3406,7 @@
       }
     },
     {
-      "id": 16,
+      "id": 17,
       "spelling": "B",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2955,7 +3417,7 @@
       }
     },
     {
-      "id": 17,
+      "id": 18,
       "spelling": "f",
       "namespace": "value",
       "kind": "parameter",
@@ -2966,7 +3428,7 @@
       }
     },
     {
-      "id": 18,
+      "id": 19,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -2977,7 +3439,7 @@
       }
     },
     {
-      "id": 19,
+      "id": 20,
       "spelling": "Maybe",
       "canonical": "std/prelude::Maybe",
       "namespace": "type",
@@ -2989,7 +3451,7 @@
       }
     },
     {
-      "id": 20,
+      "id": 21,
       "spelling": "A",
       "canonical": "std/prelude::Maybe::A",
       "namespace": "type",
@@ -3001,7 +3463,7 @@
       }
     },
     {
-      "id": 21,
+      "id": 22,
       "spelling": "Nothing",
       "canonical": "std/prelude::Nothing",
       "namespace": "value",
@@ -3013,7 +3475,7 @@
       }
     },
     {
-      "id": 22,
+      "id": 23,
       "spelling": "Just",
       "canonical": "std/prelude::Just",
       "namespace": "value",
@@ -3025,19 +3487,8 @@
       }
     },
     {
-      "id": 23,
-      "spelling": "A",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "scope": 5,
-      "origin": {
-        "start": 107,
-        "end": 246
-      }
-    },
-    {
       "id": 24,
-      "spelling": "B",
+      "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
       "scope": 5,
@@ -3048,6 +3499,17 @@
     },
     {
       "id": 25,
+      "spelling": "B",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 5,
+      "origin": {
+        "start": 107,
+        "end": 246
+      }
+    },
+    {
+      "id": 26,
       "spelling": "f",
       "namespace": "value",
       "kind": "parameter",
@@ -3058,7 +3520,7 @@
       }
     },
     {
-      "id": 26,
+      "id": 27,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -3069,7 +3531,7 @@
       }
     },
     {
-      "id": 27,
+      "id": 28,
       "spelling": "item",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -3080,7 +3542,7 @@
       }
     },
     {
-      "id": 28,
+      "id": 29,
       "spelling": "F",
       "namespace": "type",
       "kind": "type-parameter",
@@ -3091,7 +3553,7 @@
       }
     },
     {
-      "id": 29,
+      "id": 30,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -3102,7 +3564,7 @@
       }
     },
     {
-      "id": 30,
+      "id": 31,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -3113,19 +3575,8 @@
       }
     },
     {
-      "id": 31,
-      "spelling": "A",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "scope": 10,
-      "origin": {
-        "start": 329,
-        "end": 385
-      }
-    },
-    {
       "id": 32,
-      "spelling": "B",
+      "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
       "scope": 10,
@@ -3136,6 +3587,17 @@
     },
     {
       "id": 33,
+      "spelling": "B",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 10,
+      "origin": {
+        "start": 329,
+        "end": 385
+      }
+    },
+    {
+      "id": 34,
       "spelling": "wrapped",
       "namespace": "value",
       "kind": "parameter",
@@ -3146,7 +3608,7 @@
       }
     },
     {
-      "id": 34,
+      "id": 35,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -3157,7 +3619,7 @@
       }
     },
     {
-      "id": 35,
+      "id": 36,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -3168,7 +3630,7 @@
       }
     },
     {
-      "id": 36,
+      "id": 37,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -3179,19 +3641,8 @@
       }
     },
     {
-      "id": 37,
-      "spelling": "A",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "scope": 13,
-      "origin": {
-        "start": 469,
-        "end": 650
-      }
-    },
-    {
       "id": 38,
-      "spelling": "B",
+      "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
       "scope": 13,
@@ -3202,6 +3653,17 @@
     },
     {
       "id": 39,
+      "spelling": "B",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 13,
+      "origin": {
+        "start": 469,
+        "end": 650
+      }
+    },
+    {
+      "id": 40,
       "spelling": "wrapped",
       "namespace": "value",
       "kind": "parameter",
@@ -3212,7 +3674,7 @@
       }
     },
     {
-      "id": 40,
+      "id": 41,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -3223,7 +3685,7 @@
       }
     },
     {
-      "id": 41,
+      "id": 42,
       "spelling": "function",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -3234,7 +3696,7 @@
       }
     },
     {
-      "id": 42,
+      "id": 43,
       "spelling": "item",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -3245,7 +3707,7 @@
       }
     },
     {
-      "id": 43,
+      "id": 44,
       "spelling": "M",
       "namespace": "type",
       "kind": "type-parameter",
@@ -3256,19 +3718,8 @@
       }
     },
     {
-      "id": 44,
-      "spelling": "A",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "scope": 17,
-      "origin": {
-        "start": 701,
-        "end": 755
-      }
-    },
-    {
       "id": 45,
-      "spelling": "B",
+      "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
       "scope": 17,
@@ -3279,6 +3730,17 @@
     },
     {
       "id": 46,
+      "spelling": "B",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 17,
+      "origin": {
+        "start": 701,
+        "end": 755
+      }
+    },
+    {
+      "id": 47,
       "spelling": "f",
       "namespace": "value",
       "kind": "parameter",
@@ -3289,7 +3751,7 @@
       }
     },
     {
-      "id": 47,
+      "id": 48,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -3300,19 +3762,8 @@
       }
     },
     {
-      "id": 48,
-      "spelling": "A",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "scope": 19,
-      "origin": {
-        "start": 785,
-        "end": 928
-      }
-    },
-    {
       "id": 49,
-      "spelling": "B",
+      "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
       "scope": 19,
@@ -3323,6 +3774,17 @@
     },
     {
       "id": 50,
+      "spelling": "B",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 19,
+      "origin": {
+        "start": 785,
+        "end": 928
+      }
+    },
+    {
+      "id": 51,
       "spelling": "f",
       "namespace": "value",
       "kind": "parameter",
@@ -3333,7 +3795,7 @@
       }
     },
     {
-      "id": 51,
+      "id": 52,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -3344,7 +3806,7 @@
       }
     },
     {
-      "id": 52,
+      "id": 53,
       "spelling": "item",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -3355,19 +3817,8 @@
       }
     },
     {
-      "id": 53,
-      "spelling": "M",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "scope": 22,
-      "origin": {
-        "start": 932,
-        "end": 1026
-      }
-    },
-    {
       "id": 54,
-      "spelling": "A",
+      "spelling": "M",
       "namespace": "type",
       "kind": "type-parameter",
       "scope": 22,
@@ -3378,7 +3829,7 @@
     },
     {
       "id": 55,
-      "spelling": "B",
+      "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
       "scope": 22,
@@ -3389,6 +3840,17 @@
     },
     {
       "id": 56,
+      "spelling": "B",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 22,
+      "origin": {
+        "start": 932,
+        "end": 1026
+      }
+    },
+    {
+      "id": 57,
       "spelling": "f",
       "namespace": "value",
       "kind": "parameter",
@@ -3399,7 +3861,7 @@
       }
     },
     {
-      "id": 57,
+      "id": 58,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -3410,7 +3872,7 @@
       }
     },
     {
-      "id": 58,
+      "id": 59,
       "spelling": "M",
       "namespace": "type",
       "kind": "type-parameter",
@@ -3421,7 +3883,7 @@
       }
     },
     {
-      "id": 59,
+      "id": 60,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -3432,7 +3894,7 @@
       }
     },
     {
-      "id": 60,
+      "id": 61,
       "spelling": "B",
       "namespace": "type",
       "kind": "type-parameter",
@@ -3443,7 +3905,7 @@
       }
     },
     {
-      "id": 61,
+      "id": 62,
       "spelling": "f",
       "namespace": "value",
       "kind": "parameter",
@@ -3454,7 +3916,7 @@
       }
     },
     {
-      "id": 62,
+      "id": 63,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -3465,7 +3927,7 @@
       }
     },
     {
-      "id": 63,
+      "id": 64,
       "spelling": "Int",
       "canonical": "std/prelude::Int",
       "namespace": "type",
@@ -3477,7 +3939,7 @@
       }
     },
     {
-      "id": 64,
+      "id": 65,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -3488,7 +3950,7 @@
       }
     },
     {
-      "id": 65,
+      "id": 66,
       "spelling": "+",
       "canonical": "std/prelude::+",
       "namespace": "operator",
@@ -3500,7 +3962,7 @@
       }
     },
     {
-      "id": 66,
+      "id": 67,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -3511,7 +3973,7 @@
       }
     },
     {
-      "id": 67,
+      "id": 68,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -3522,7 +3984,7 @@
       }
     },
     {
-      "id": 68,
+      "id": 69,
       "spelling": "<=",
       "canonical": "std/prelude::<=",
       "namespace": "operator",
@@ -3534,18 +3996,73 @@
       }
     },
     {
-      "id": 69,
-      "spelling": "value",
+      "id": 70,
+      "spelling": "left",
       "namespace": "value",
       "kind": "parameter",
       "scope": 27,
       "origin": {
-        "start": 1343,
-        "end": 1348
+        "start": 1345,
+        "end": 1349
       }
     },
     {
-      "id": 70,
+      "id": 71,
+      "spelling": "right",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 27,
+      "origin": {
+        "start": 1365,
+        "end": 1370
+      }
+    },
+    {
+      "id": 72,
+      "spelling": "first",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 28,
+      "origin": {
+        "start": 1410,
+        "end": 1415
+      }
+    },
+    {
+      "id": 73,
+      "spelling": "second",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 28,
+      "origin": {
+        "start": 1428,
+        "end": 1434
+      }
+    },
+    {
+      "id": 74,
+      "spelling": "total",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 28,
+      "origin": {
+        "start": 1452,
+        "end": 1457
+      }
+    },
+    {
+      "id": 75,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 29,
+      "origin": {
+        "start": 1505,
+        "end": 1510
+      }
+    },
+    {
+      "id": 76,
       "spelling": "String",
       "canonical": "std/prelude::String",
       "namespace": "type",
@@ -3557,7 +4074,7 @@
       }
     },
     {
-      "id": 71,
+      "id": 77,
       "spelling": "println",
       "canonical": "std/prelude::println",
       "namespace": "value",
@@ -3573,7 +4090,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 15,
+      "target": 16,
       "origin": {
         "start": 45,
         "end": 46
@@ -3582,7 +4099,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 50,
         "end": 51
@@ -3591,7 +4108,7 @@
     {
       "spelling": "F",
       "namespace": "type",
-      "target": 14,
+      "target": 15,
       "origin": {
         "start": 63,
         "end": 67
@@ -3600,7 +4117,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 15,
+      "target": 16,
       "origin": {
         "start": 65,
         "end": 66
@@ -3609,7 +4126,7 @@
     {
       "spelling": "F",
       "namespace": "type",
-      "target": 14,
+      "target": 15,
       "origin": {
         "start": 71,
         "end": 75
@@ -3618,7 +4135,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 73,
         "end": 74
@@ -3636,7 +4153,7 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 96,
         "end": 101
@@ -3645,7 +4162,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 23,
+      "target": 24,
       "origin": {
         "start": 124,
         "end": 125
@@ -3654,7 +4171,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 24,
+      "target": 25,
       "origin": {
         "start": 129,
         "end": 130
@@ -3663,7 +4180,7 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 142,
         "end": 150
@@ -3672,7 +4189,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 23,
+      "target": 24,
       "origin": {
         "start": 148,
         "end": 149
@@ -3681,7 +4198,7 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 154,
         "end": 162
@@ -3690,7 +4207,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 24,
+      "target": 25,
       "origin": {
         "start": 160,
         "end": 161
@@ -3699,7 +4216,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 26,
+      "target": 27,
       "origin": {
         "start": 175,
         "end": 180
@@ -3708,7 +4225,7 @@
     {
       "spelling": "Nothing",
       "namespace": "value",
-      "target": 21,
+      "target": 22,
       "origin": {
         "start": 189,
         "end": 196
@@ -3717,7 +4234,7 @@
     {
       "spelling": "Nothing",
       "namespace": "value",
-      "target": 21,
+      "target": 22,
       "origin": {
         "start": 200,
         "end": 207
@@ -3726,7 +4243,7 @@
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
         "start": 214,
         "end": 218
@@ -3735,7 +4252,7 @@
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
         "start": 227,
         "end": 231
@@ -3744,7 +4261,7 @@
     {
       "spelling": "f",
       "namespace": "value",
-      "target": 25,
+      "target": 26,
       "origin": {
         "start": 234,
         "end": 235
@@ -3753,7 +4270,7 @@
     {
       "spelling": "item",
       "namespace": "value",
-      "target": 27,
+      "target": 28,
       "origin": {
         "start": 236,
         "end": 240
@@ -3771,7 +4288,7 @@
     {
       "spelling": "F",
       "namespace": "type",
-      "target": 28,
+      "target": 29,
       "origin": {
         "start": 292,
         "end": 293
@@ -3780,7 +4297,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 29,
+      "target": 30,
       "origin": {
         "start": 317,
         "end": 318
@@ -3789,7 +4306,7 @@
     {
       "spelling": "F",
       "namespace": "type",
-      "target": 28,
+      "target": 29,
       "origin": {
         "start": 322,
         "end": 326
@@ -3798,7 +4315,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 29,
+      "target": 30,
       "origin": {
         "start": 324,
         "end": 325
@@ -3807,7 +4324,7 @@
     {
       "spelling": "F",
       "namespace": "type",
-      "target": 28,
+      "target": 29,
       "origin": {
         "start": 353,
         "end": 362
@@ -3816,7 +4333,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 31,
+      "target": 32,
       "origin": {
         "start": 355,
         "end": 356
@@ -3825,7 +4342,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 32,
+      "target": 33,
       "origin": {
         "start": 360,
         "end": 361
@@ -3834,7 +4351,7 @@
     {
       "spelling": "F",
       "namespace": "type",
-      "target": 28,
+      "target": 29,
       "origin": {
         "start": 373,
         "end": 377
@@ -3843,7 +4360,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 31,
+      "target": 32,
       "origin": {
         "start": 375,
         "end": 376
@@ -3852,7 +4369,7 @@
     {
       "spelling": "F",
       "namespace": "type",
-      "target": 28,
+      "target": 29,
       "origin": {
         "start": 381,
         "end": 385
@@ -3861,7 +4378,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 32,
+      "target": 33,
       "origin": {
         "start": 383,
         "end": 384
@@ -3879,7 +4396,7 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 410,
         "end": 415
@@ -3888,7 +4405,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 35,
+      "target": 36,
       "origin": {
         "start": 439,
         "end": 440
@@ -3897,7 +4414,7 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 444,
         "end": 452
@@ -3906,7 +4423,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 35,
+      "target": 36,
       "origin": {
         "start": 450,
         "end": 451
@@ -3915,7 +4432,7 @@
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
         "start": 455,
         "end": 459
@@ -3924,7 +4441,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 36,
+      "target": 37,
       "origin": {
         "start": 460,
         "end": 465
@@ -3933,7 +4450,7 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 493,
         "end": 506
@@ -3942,7 +4459,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 37,
+      "target": 38,
       "origin": {
         "start": 499,
         "end": 500
@@ -3951,7 +4468,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 38,
+      "target": 39,
       "origin": {
         "start": 504,
         "end": 505
@@ -3960,7 +4477,7 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 517,
         "end": 525
@@ -3969,7 +4486,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 37,
+      "target": 38,
       "origin": {
         "start": 523,
         "end": 524
@@ -3978,7 +4495,7 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 529,
         "end": 537
@@ -3987,7 +4504,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 38,
+      "target": 39,
       "origin": {
         "start": 535,
         "end": 536
@@ -3996,7 +4513,7 @@
     {
       "spelling": "wrapped",
       "namespace": "value",
-      "target": 39,
+      "target": 40,
       "origin": {
         "start": 551,
         "end": 558
@@ -4005,7 +4522,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 40,
+      "target": 41,
       "origin": {
         "start": 560,
         "end": 565
@@ -4014,7 +4531,7 @@
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
         "start": 576,
         "end": 580
@@ -4023,7 +4540,7 @@
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
         "start": 591,
         "end": 595
@@ -4032,7 +4549,7 @@
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
         "start": 605,
         "end": 609
@@ -4041,7 +4558,7 @@
     {
       "spelling": "function",
       "namespace": "value",
-      "target": 41,
+      "target": 42,
       "origin": {
         "start": 612,
         "end": 620
@@ -4050,7 +4567,7 @@
     {
       "spelling": "item",
       "namespace": "value",
-      "target": 42,
+      "target": 43,
       "origin": {
         "start": 621,
         "end": 625
@@ -4059,7 +4576,7 @@
     {
       "spelling": "Nothing",
       "namespace": "value",
-      "target": 21,
+      "target": 22,
       "origin": {
         "start": 637,
         "end": 644
@@ -4077,7 +4594,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 43,
+      "target": 44,
       "origin": {
         "start": 694,
         "end": 695
@@ -4086,7 +4603,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 44,
+      "target": 45,
       "origin": {
         "start": 722,
         "end": 723
@@ -4095,7 +4612,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 43,
+      "target": 44,
       "origin": {
         "start": 727,
         "end": 731
@@ -4104,7 +4621,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 45,
+      "target": 46,
       "origin": {
         "start": 729,
         "end": 730
@@ -4113,7 +4630,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 43,
+      "target": 44,
       "origin": {
         "start": 743,
         "end": 747
@@ -4122,7 +4639,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 44,
+      "target": 45,
       "origin": {
         "start": 745,
         "end": 746
@@ -4131,7 +4648,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 43,
+      "target": 44,
       "origin": {
         "start": 751,
         "end": 755
@@ -4140,7 +4657,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 45,
+      "target": 46,
       "origin": {
         "start": 753,
         "end": 754
@@ -4158,7 +4675,7 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 774,
         "end": 779
@@ -4167,7 +4684,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 48,
+      "target": 49,
       "origin": {
         "start": 806,
         "end": 807
@@ -4176,7 +4693,7 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 811,
         "end": 819
@@ -4185,7 +4702,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 49,
+      "target": 50,
       "origin": {
         "start": 817,
         "end": 818
@@ -4194,7 +4711,7 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 831,
         "end": 839
@@ -4203,7 +4720,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 48,
+      "target": 49,
       "origin": {
         "start": 837,
         "end": 838
@@ -4212,7 +4729,7 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 843,
         "end": 851
@@ -4221,7 +4738,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 49,
+      "target": 50,
       "origin": {
         "start": 849,
         "end": 850
@@ -4230,7 +4747,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 51,
+      "target": 52,
       "origin": {
         "start": 864,
         "end": 869
@@ -4239,7 +4756,7 @@
     {
       "spelling": "Nothing",
       "namespace": "value",
-      "target": 21,
+      "target": 22,
       "origin": {
         "start": 878,
         "end": 885
@@ -4248,7 +4765,7 @@
     {
       "spelling": "Nothing",
       "namespace": "value",
-      "target": 21,
+      "target": 22,
       "origin": {
         "start": 889,
         "end": 896
@@ -4257,7 +4774,7 @@
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
         "start": 903,
         "end": 907
@@ -4266,7 +4783,7 @@
     {
       "spelling": "f",
       "namespace": "value",
-      "target": 50,
+      "target": 51,
       "origin": {
         "start": 916,
         "end": 917
@@ -4275,7 +4792,7 @@
     {
       "spelling": "item",
       "namespace": "value",
-      "target": 52,
+      "target": 53,
       "origin": {
         "start": 918,
         "end": 922
@@ -4284,7 +4801,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 54,
+      "target": 55,
       "origin": {
         "start": 958,
         "end": 959
@@ -4293,7 +4810,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 53,
+      "target": 54,
       "origin": {
         "start": 963,
         "end": 967
@@ -4302,7 +4819,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 55,
+      "target": 56,
       "origin": {
         "start": 965,
         "end": 966
@@ -4311,7 +4828,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 53,
+      "target": 54,
       "origin": {
         "start": 979,
         "end": 983
@@ -4320,7 +4837,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 54,
+      "target": 55,
       "origin": {
         "start": 981,
         "end": 982
@@ -4329,7 +4846,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 53,
+      "target": 54,
       "origin": {
         "start": 987,
         "end": 991
@@ -4338,7 +4855,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 55,
+      "target": 56,
       "origin": {
         "start": 989,
         "end": 990
@@ -4356,7 +4873,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 53,
+      "target": 54,
       "origin": {
         "start": 1004,
         "end": 1005
@@ -4377,7 +4894,7 @@
     {
       "spelling": "f",
       "namespace": "value",
-      "target": 56,
+      "target": 57,
       "origin": {
         "start": 1019,
         "end": 1020
@@ -4386,7 +4903,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 57,
+      "target": 58,
       "origin": {
         "start": 1021,
         "end": 1026
@@ -4395,7 +4912,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 59,
+      "target": 60,
       "origin": {
         "start": 1061,
         "end": 1062
@@ -4404,7 +4921,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 58,
+      "target": 59,
       "origin": {
         "start": 1066,
         "end": 1070
@@ -4413,7 +4930,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 60,
+      "target": 61,
       "origin": {
         "start": 1068,
         "end": 1069
@@ -4422,7 +4939,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 59,
+      "target": 60,
       "origin": {
         "start": 1082,
         "end": 1083
@@ -4431,7 +4948,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 58,
+      "target": 59,
       "origin": {
         "start": 1087,
         "end": 1091
@@ -4440,7 +4957,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 60,
+      "target": 61,
       "origin": {
         "start": 1089,
         "end": 1090
@@ -4458,7 +4975,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 58,
+      "target": 59,
       "origin": {
         "start": 1104,
         "end": 1105
@@ -4479,7 +4996,7 @@
     {
       "spelling": "f",
       "namespace": "value",
-      "target": 61,
+      "target": 62,
       "origin": {
         "start": 1135,
         "end": 1136
@@ -4500,7 +5017,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 62,
+      "target": 63,
       "origin": {
         "start": 1116,
         "end": 1121
@@ -4509,7 +5026,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 63,
+      "target": 64,
       "origin": {
         "start": 1163,
         "end": 1166
@@ -4518,7 +5035,7 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 1170,
         "end": 1180
@@ -4527,7 +5044,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 63,
+      "target": 64,
       "origin": {
         "start": 1176,
         "end": 1179
@@ -4536,7 +5053,7 @@
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
         "start": 1183,
         "end": 1187
@@ -4545,7 +5062,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 64,
+      "target": 65,
       "origin": {
         "start": 1190,
         "end": 1195
@@ -4554,7 +5071,7 @@
     {
       "spelling": "+",
       "namespace": "operator",
-      "target": 65,
+      "target": 66,
       "origin": {
         "start": 1196,
         "end": 1197
@@ -4563,7 +5080,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 63,
+      "target": 64,
       "origin": {
         "start": 1220,
         "end": 1223
@@ -4572,7 +5089,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 63,
+      "target": 64,
       "origin": {
         "start": 1227,
         "end": 1230
@@ -4581,7 +5098,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 66,
+      "target": 67,
       "origin": {
         "start": 1233,
         "end": 1238
@@ -4590,7 +5107,7 @@
     {
       "spelling": "+",
       "namespace": "operator",
-      "target": 65,
+      "target": 66,
       "origin": {
         "start": 1239,
         "end": 1240
@@ -4599,7 +5116,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 63,
+      "target": 64,
       "origin": {
         "start": 1266,
         "end": 1269
@@ -4608,7 +5125,7 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 1273,
         "end": 1283
@@ -4617,7 +5134,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 63,
+      "target": 64,
       "origin": {
         "start": 1279,
         "end": 1282
@@ -4626,7 +5143,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 67,
+      "target": 68,
       "origin": {
         "start": 1291,
         "end": 1296
@@ -4635,7 +5152,7 @@
     {
       "spelling": "<=",
       "namespace": "operator",
-      "target": 68,
+      "target": 69,
       "origin": {
         "start": 1297,
         "end": 1299
@@ -4644,7 +5161,7 @@
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
         "start": 1308,
         "end": 1312
@@ -4653,7 +5170,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 67,
+      "target": 68,
       "origin": {
         "start": 1313,
         "end": 1318
@@ -4662,7 +5179,7 @@
     {
       "spelling": "Nothing",
       "namespace": "value",
-      "target": 21,
+      "target": 22,
       "origin": {
         "start": 1324,
         "end": 1331
@@ -4671,91 +5188,211 @@
     {
       "spelling": "Maybe",
       "namespace": "type",
-      "target": 19,
+      "target": 20,
       "origin": {
-        "start": 1350,
-        "end": 1360
+        "start": 1351,
+        "end": 1361
       }
     },
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 63,
+      "target": 64,
       "origin": {
-        "start": 1356,
-        "end": 1359
+        "start": 1357,
+        "end": 1360
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 20,
+      "origin": {
+        "start": 1372,
+        "end": 1382
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 64,
+      "origin": {
+        "start": 1378,
+        "end": 1381
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 20,
+      "origin": {
+        "start": 1386,
+        "end": 1396
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 64,
+      "origin": {
+        "start": 1392,
+        "end": 1395
+      }
+    },
+    {
+      "spelling": "left",
+      "namespace": "value",
+      "target": 70,
+      "origin": {
+        "start": 1419,
+        "end": 1423
+      }
+    },
+    {
+      "spelling": "right",
+      "namespace": "value",
+      "target": 71,
+      "origin": {
+        "start": 1438,
+        "end": 1443
+      }
+    },
+    {
+      "spelling": "first",
+      "namespace": "value",
+      "target": 72,
+      "origin": {
+        "start": 1460,
+        "end": 1465
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 66,
+      "origin": {
+        "start": 1466,
+        "end": 1467
+      }
+    },
+    {
+      "spelling": "second",
+      "namespace": "value",
+      "target": 73,
+      "origin": {
+        "start": 1468,
+        "end": 1474
+      }
+    },
+    {
+      "spelling": "pure",
+      "namespace": "value",
+      "target": 3,
+      "candidates": [
+        3
+      ],
+      "origin": {
+        "start": 1479,
+        "end": 1483
+      }
+    },
+    {
+      "spelling": "total",
+      "namespace": "value",
+      "target": 74,
+      "origin": {
+        "start": 1484,
+        "end": 1489
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 20,
+      "origin": {
+        "start": 1512,
+        "end": 1522
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 64,
+      "origin": {
+        "start": 1518,
+        "end": 1521
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 70,
+      "target": 76,
       "origin": {
-        "start": 1364,
-        "end": 1370
+        "start": 1526,
+        "end": 1532
       }
     },
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 69,
+      "target": 75,
       "origin": {
-        "start": 1381,
-        "end": 1386
+        "start": 1543,
+        "end": 1548
       }
     },
     {
       "spelling": "Nothing",
       "namespace": "value",
-      "target": 21,
+      "target": 22,
       "origin": {
-        "start": 1393,
-        "end": 1400
+        "start": 1555,
+        "end": 1562
       }
     },
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
-        "start": 1418,
-        "end": 1422
+        "start": 1580,
+        "end": 1584
       }
     },
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
-        "start": 1443,
-        "end": 1447
+        "start": 1605,
+        "end": 1609
       }
     },
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
-        "start": 1468,
-        "end": 1472
+        "start": 1630,
+        "end": 1634
       }
     },
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 71,
+      "target": 77,
       "origin": {
-        "start": 1579,
-        "end": 1586
+        "start": 1741,
+        "end": 1748
       }
     },
     {
       "spelling": "render",
       "namespace": "value",
-      "target": 12,
+      "target": 13,
       "origin": {
-        "start": 1565,
-        "end": 1571
+        "start": 1727,
+        "end": 1733
       }
     },
     {
@@ -4766,8 +5403,8 @@
         1
       ],
       "origin": {
-        "start": 1546,
-        "end": 1549
+        "start": 1708,
+        "end": 1711
       }
     },
     {
@@ -4775,35 +5412,35 @@
       "namespace": "value",
       "target": 10,
       "origin": {
-        "start": 1536,
-        "end": 1545
+        "start": 1698,
+        "end": 1707
       }
     },
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
-        "start": 1550,
-        "end": 1554
+        "start": 1712,
+        "end": 1716
       }
     },
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 71,
+      "target": 77,
       "origin": {
-        "start": 1640,
-        "end": 1647
+        "start": 1802,
+        "end": 1809
       }
     },
     {
       "spelling": "render",
       "namespace": "value",
-      "target": 12,
+      "target": 13,
       "origin": {
-        "start": 1626,
-        "end": 1632
+        "start": 1788,
+        "end": 1794
       }
     },
     {
@@ -4814,17 +5451,17 @@
         4
       ],
       "origin": {
-        "start": 1607,
-        "end": 1610
+        "start": 1769,
+        "end": 1772
       }
     },
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
-        "start": 1592,
-        "end": 1596
+        "start": 1754,
+        "end": 1758
       }
     },
     {
@@ -4832,35 +5469,35 @@
       "namespace": "value",
       "target": 10,
       "origin": {
-        "start": 1597,
-        "end": 1606
+        "start": 1759,
+        "end": 1768
       }
     },
     {
       "spelling": "Just",
       "namespace": "value",
-      "target": 22,
+      "target": 23,
       "origin": {
-        "start": 1611,
-        "end": 1615
+        "start": 1773,
+        "end": 1777
       }
     },
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 71,
+      "target": 77,
       "origin": {
-        "start": 1734,
-        "end": 1741
+        "start": 1896,
+        "end": 1903
       }
     },
     {
       "spelling": "render",
       "namespace": "value",
-      "target": 12,
+      "target": 13,
       "origin": {
-        "start": 1720,
-        "end": 1726
+        "start": 1882,
+        "end": 1888
       }
     },
     {
@@ -4871,8 +5508,8 @@
         6
       ],
       "origin": {
-        "start": 1694,
-        "end": 1697
+        "start": 1856,
+        "end": 1859
       }
     },
     {
@@ -4880,8 +5517,8 @@
       "namespace": "value",
       "target": 9,
       "origin": {
-        "start": 1698,
-        "end": 1712
+        "start": 1860,
+        "end": 1874
       }
     },
     {
@@ -4889,8 +5526,8 @@
       "namespace": "value",
       "target": 8,
       "origin": {
-        "start": 1663,
-        "end": 1674
+        "start": 1825,
+        "end": 1836
       }
     },
     {
@@ -4898,26 +5535,26 @@
       "namespace": "value",
       "target": 9,
       "origin": {
-        "start": 1675,
-        "end": 1689
+        "start": 1837,
+        "end": 1851
       }
     },
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 71,
+      "target": 77,
       "origin": {
-        "start": 1802,
-        "end": 1809
+        "start": 1964,
+        "end": 1971
       }
     },
     {
       "spelling": "render",
       "namespace": "value",
-      "target": 12,
+      "target": 13,
       "origin": {
-        "start": 1788,
-        "end": 1794
+        "start": 1950,
+        "end": 1956
       }
     },
     {
@@ -4925,8 +5562,8 @@
       "namespace": "value",
       "target": 8,
       "origin": {
-        "start": 1757,
-        "end": 1768
+        "start": 1919,
+        "end": 1930
       }
     },
     {
@@ -4934,8 +5571,98 @@
       "namespace": "value",
       "target": 11,
       "origin": {
-        "start": 1769,
-        "end": 1780
+        "start": 1931,
+        "end": 1942
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 77,
+      "origin": {
+        "start": 2027,
+        "end": 2034
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 2013,
+        "end": 2019
+      }
+    },
+    {
+      "spelling": "addMaybe",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 1977,
+        "end": 1985
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 23,
+      "origin": {
+        "start": 1987,
+        "end": 1991
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 23,
+      "origin": {
+        "start": 1997,
+        "end": 2001
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 77,
+      "origin": {
+        "start": 2088,
+        "end": 2095
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 2074,
+        "end": 2080
+      }
+    },
+    {
+      "spelling": "addMaybe",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 2040,
+        "end": 2048
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 23,
+      "origin": {
+        "start": 2050,
+        "end": 2054
+      }
+    },
+    {
+      "spelling": "Nothing",
+      "namespace": "value",
+      "target": 22,
+      "origin": {
+        "start": 2059,
+        "end": 2066
       }
     }
   ],

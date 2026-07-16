@@ -72,6 +72,18 @@
         "operation": "println",
         "arguments": ["Nothing"],
         "stdout": "Nothing\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Just 42"],
+        "stdout": "Just 42\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Nothing"],
+        "stdout": "Nothing\n"
       }
     ]
   }

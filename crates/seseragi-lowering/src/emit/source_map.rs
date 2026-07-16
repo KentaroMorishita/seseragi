@@ -286,6 +286,17 @@ fn collect_expr_names(
             }
             collect_expr_names(result, helper_names, names);
         }
+        TypeScriptExpr::MonadDo {
+            dictionary,
+            statements,
+            result,
+        } => {
+            collect_expr_names(dictionary, helper_names, names);
+            for statement in statements {
+                collect_statement_names(statement, helper_names, names);
+            }
+            collect_expr_names(result, helper_names, names);
+        }
         TypeScriptExpr::Undefined
         | TypeScriptExpr::Bigint { .. }
         | TypeScriptExpr::Boolean { .. }

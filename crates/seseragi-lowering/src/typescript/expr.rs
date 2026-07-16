@@ -3,7 +3,7 @@ use crate::effect_ops::runtime_effect_operation;
 use crate::int_ops::runtime_int_operation_with_evidence;
 use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
-use crate::{CoreExpr, CoreStatement, CoreType};
+use crate::{CoreExpr, CoreMonadDoStatement, CoreStatement, CoreType};
 use std::collections::BTreeMap;
 
 use super::decision::lower_core_decision;
@@ -198,6 +198,28 @@ pub(super) fn lower_core_expr_to_typescript(
                 imported_types,
             )),
         },
+        CoreExpr::MonadDo {
+            statements,
+            result,
+            evidence,
+            ..
+        } => TypeScriptExpr::MonadDo {
+            dictionary: Box::new(
+                local_dictionary_expression(&evidence.evidence, imported_values, imported_types)
+                    .expect("monad do requires materialized Monad evidence"),
+            ),
+            statements: statements
+                .into_iter()
+                .map(|statement| {
+                    lower_monad_do_statement(statement, imported_values, imported_types)
+                })
+                .collect(),
+            result: Box::new(lower_core_expr_to_typescript(
+                *result,
+                imported_values,
+                imported_types,
+            )),
+        },
     }
 }
 
@@ -249,6 +271,15 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
         }
         TypeScriptExpr::Sequence { statements, result } => {
             statements.iter().any(statement_contains_await)
+                || typescript_expr_contains_await(result)
+        }
+        TypeScriptExpr::MonadDo {
+            dictionary,
+            statements,
+            result,
+        } => {
+            typescript_expr_contains_await(dictionary)
+                || statements.iter().any(statement_contains_await)
                 || typescript_expr_contains_await(result)
         }
         TypeScriptExpr::Undefined
@@ -346,6 +377,40 @@ fn lower_core_statement_to_typescript(
             origin,
         },
         CoreStatement::Bind {
+            name,
+            type_ref,
+            value,
+            origin,
+        } => TypeScriptStatement::Const {
+            name: safe_identifier(&name),
+            type_ref: type_ref_from_core_type(&type_ref, imported_types),
+            initializer: lower_core_expr_to_typescript(value, imported_values, imported_types),
+            origin,
+        },
+    }
+}
+
+fn lower_monad_do_statement(
+    statement: CoreMonadDoStatement,
+    imported_values: &BTreeMap<String, String>,
+    imported_types: &BTreeMap<String, String>,
+) -> TypeScriptStatement {
+    match statement {
+        CoreMonadDoStatement::Expression { value } => TypeScriptStatement::Effect {
+            value: lower_core_expr_to_typescript(value, imported_values, imported_types),
+        },
+        CoreMonadDoStatement::PureLet {
+            name,
+            type_ref,
+            value,
+            origin,
+        } => TypeScriptStatement::PureLet {
+            name: safe_identifier(&name),
+            type_ref: type_ref_from_core_type(&type_ref, imported_types),
+            initializer: lower_core_expr_to_typescript(value, imported_values, imported_types),
+            origin,
+        },
+        CoreMonadDoStatement::Bind {
             name,
             type_ref,
             value,

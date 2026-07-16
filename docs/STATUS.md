@@ -231,7 +231,11 @@ Monad factoryは具体化済みApplicative dictionaryを継承し、`where Monad
 同じfixtureで`f <$> value`、`wrapped <*> value`、`value >>= f`をそれぞれ`map f value`、
 `apply wrapped value`、`flatMap f value`へSurface ASTでdesugarし、通常の名前解決・型検査・dictionary dispatchを
 再利用します。3演算子は`|>`と同じ低優先順位・左結合で、先頭演算子による複数行継続もformatterまで固定済みです。
-Applicative / Monad lawと、型からMonadを選択するgeneric doは次の独立gateです。
+pure functionの`do`は宣言済みreturn typeから`M<_>`を求め、`Monad<M>` evidenceを一度選択して
+TypedHir / CoreIr / TypeScriptIrへ保持します。bindは選択済みdictionaryの`flatMap`、pure letはcontinuation内の
+通常のbindingへlowerするため、Effect専用`Sequence`やeffect runtime helperを再利用しません。
+`addMaybe (Just 20) (Just 22)`と`addMaybe (Just 20) Nothing`のactual executionが成功と短絡を固定します。
+Applicative / Monad law、refutable bind diagnostic、部分適用型構築子を使うdoは次の独立gateです。
 
 Playground-1は`apps/playground`へ旧UIと分離して実装しました。CodeMirror 6、専用Seseragi highlight、
 mobile panel、任意Stdin、driver diagnosticsのsource range表示を持ち、Vercel buildはreview済みWASM artifactを

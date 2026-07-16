@@ -128,6 +128,30 @@ pub(super) fn collect_expr_type_imports(
             }
             collect_expr_type_imports(result, bindings, requirements, imports);
         }
+        CoreExpr::MonadDo {
+            statements,
+            result,
+            type_ref,
+            ..
+        } => {
+            collect_type_imports(type_ref, bindings, requirements, imports);
+            for statement in statements {
+                let value = match statement {
+                    crate::CoreMonadDoStatement::Expression { value } => value,
+                    crate::CoreMonadDoStatement::PureLet {
+                        type_ref, value, ..
+                    }
+                    | crate::CoreMonadDoStatement::Bind {
+                        type_ref, value, ..
+                    } => {
+                        collect_type_imports(type_ref, bindings, requirements, imports);
+                        value
+                    }
+                };
+                collect_expr_type_imports(value, bindings, requirements, imports);
+            }
+            collect_expr_type_imports(result, bindings, requirements, imports);
+        }
     }
 }
 

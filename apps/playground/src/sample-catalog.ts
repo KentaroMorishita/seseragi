@@ -113,6 +113,6 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     category: "型と抽象化",
     sourcePath: "examples/spec/artifacts/schema-1/monad-maybe/main.ssrg",
     stdin: "",
-    expectedOutput: "Just 42\nJust 42\nJust 44\nNothing",
+    expectedOutput: "Just 42\nJust 42\nJust 44\nNothing\nJust 42\nNothing",
   },
 ]

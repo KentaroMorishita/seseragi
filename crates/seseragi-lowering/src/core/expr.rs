@@ -1,13 +1,14 @@
 use crate::source_span;
 use seseragi_semantics::{
-    TypedCallEvidence, TypedComprehensionClause, TypedDoStatement, TypedExpr, TypedParameter,
-    TypedPattern,
+    TypedCallEvidence, TypedComprehensionClause, TypedDoStatement, TypedExpr,
+    TypedMonadDoStatement, TypedParameter, TypedPattern,
 };
 
 use super::decision::lower_match;
 use super::types::lower_typed_type;
 use super::{
-    CoreCallEvidence, CoreComprehensionClause, CoreExpr, CoreParameter, CorePattern, CoreStatement,
+    CoreCallEvidence, CoreComprehensionClause, CoreExpr, CoreMonadDoStatement, CoreParameter,
+    CorePattern, CoreStatement,
 };
 
 pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
@@ -212,6 +213,22 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             result: Box::new(lower_expr(source, *result)),
             origin: source_span(source, origin),
         },
+        TypedExpr::MonadDo {
+            statements,
+            result,
+            evidence,
+            type_ref,
+            origin,
+        } => CoreExpr::MonadDo {
+            statements: statements
+                .into_iter()
+                .map(|statement| lower_monad_do_statement(source, statement))
+                .collect(),
+            result: Box::new(lower_expr(source, *result)),
+            evidence: lower_call_evidence(evidence),
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
     }
 }
 
@@ -391,6 +408,39 @@ fn lower_expr_statement(source: &str, statement: TypedDoStatement) -> CoreStatem
             value,
             origin,
         } => CoreStatement::Bind {
+            name,
+            type_ref: lower_typed_type(type_ref),
+            value: lower_expr(source, value),
+            origin: source_span(source, origin),
+        },
+    }
+}
+
+fn lower_monad_do_statement(
+    source: &str,
+    statement: TypedMonadDoStatement,
+) -> CoreMonadDoStatement {
+    match statement {
+        TypedMonadDoStatement::Expression { value } => CoreMonadDoStatement::Expression {
+            value: lower_expr(source, value),
+        },
+        TypedMonadDoStatement::PureLet {
+            name,
+            type_ref,
+            value,
+            origin,
+        } => CoreMonadDoStatement::PureLet {
+            name,
+            type_ref: lower_typed_type(type_ref),
+            value: lower_expr(source, value),
+            origin: source_span(source, origin),
+        },
+        TypedMonadDoStatement::Bind {
+            name,
+            type_ref,
+            value,
+            origin,
+        } => CoreMonadDoStatement::Bind {
             name,
             type_ref: lower_typed_type(type_ref),
             value: lower_expr(source, value),

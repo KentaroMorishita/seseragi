@@ -20,7 +20,8 @@ pub(super) fn type_ref_from_core_expr(
         | CoreExpr::ArrayComprehension { type_ref, .. }
         | CoreExpr::Binary { type_ref, .. }
         | CoreExpr::If { type_ref, .. }
-        | CoreExpr::Decision { type_ref, .. } => type_ref_from_core_type(type_ref, imported_types),
+        | CoreExpr::Decision { type_ref, .. }
+        | CoreExpr::MonadDo { type_ref, .. } => type_ref_from_core_type(type_ref, imported_types),
         CoreExpr::EffectOperation { success, .. } | CoreExpr::EffectInvoke { success, .. } => {
             type_ref_from_core_type(success, imported_types)
         }

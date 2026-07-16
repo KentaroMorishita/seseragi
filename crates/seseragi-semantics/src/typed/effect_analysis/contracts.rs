@@ -80,7 +80,8 @@ fn collect_failures(expression: &TypedExpr, failures: &mut Vec<EffectFailureOrig
         | TypedExpr::Array { .. }
         | TypedExpr::ArrayComprehension { .. }
         | TypedExpr::Binary { .. }
-        | TypedExpr::If { .. } => {}
+        | TypedExpr::If { .. }
+        | TypedExpr::MonadDo { .. } => {}
     }
 }
 

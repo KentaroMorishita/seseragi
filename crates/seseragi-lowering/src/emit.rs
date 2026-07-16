@@ -400,6 +400,49 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
         TypeScriptExpr::Sequence { statements, result } => {
             render_effect_sequence(statements, result)
         }
+        TypeScriptExpr::MonadDo {
+            dictionary,
+            statements,
+            result,
+        } => render_monad_sequence(dictionary, statements, result),
+    }
+}
+
+fn render_monad_sequence(
+    dictionary: &TypeScriptExpr,
+    statements: &[TypeScriptStatement],
+    result: &TypeScriptExpr,
+) -> String {
+    let Some((statement, rest)) = statements.split_first() else {
+        return render_typescript_expr(result);
+    };
+    let continuation = render_monad_sequence(dictionary, rest, result);
+    let flat_map = format!("{}[\"flatMap\"]", render_typescript_expr(dictionary));
+    match statement {
+        TypeScriptStatement::Effect { value } => format!(
+            "{flat_map}((_ignored: unknown) => {continuation})({})",
+            render_typescript_expr(value)
+        ),
+        TypeScriptStatement::PureLet {
+            name,
+            type_ref,
+            initializer,
+            ..
+        } => format!(
+            "(() => {{ const {name}: {} = {}; return {continuation}; }})()",
+            render_typescript_type(type_ref),
+            render_typescript_expr(initializer)
+        ),
+        TypeScriptStatement::Const {
+            name,
+            type_ref,
+            initializer,
+            ..
+        } => format!(
+            "{flat_map}(({name}: {}) => {continuation})({})",
+            render_typescript_type(type_ref),
+            render_typescript_expr(initializer)
+        ),
     }
 }
 

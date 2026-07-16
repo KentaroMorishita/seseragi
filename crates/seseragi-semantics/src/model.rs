@@ -443,6 +443,14 @@ pub enum TypedExpr {
         result: Box<TypedExpr>,
         origin: ByteSpan,
     },
+    MonadDo {
+        statements: Vec<TypedMonadDoStatement>,
+        result: Box<TypedExpr>,
+        evidence: TypedCallEvidence,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -538,6 +546,32 @@ pub enum TypedPattern {
 )]
 pub enum TypedDoStatement {
     Effect {
+        value: TypedExpr,
+    },
+    PureLet {
+        name: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        value: TypedExpr,
+        origin: ByteSpan,
+    },
+    Bind {
+        name: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        value: TypedExpr,
+        origin: ByteSpan,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypedMonadDoStatement {
+    Expression {
         value: TypedExpr,
     },
     PureLet {

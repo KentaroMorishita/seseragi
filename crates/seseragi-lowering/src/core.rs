@@ -291,6 +291,14 @@ pub enum CoreExpr {
         result: Box<CoreExpr>,
         origin: SourceSpan,
     },
+    MonadDo {
+        statements: Vec<CoreMonadDoStatement>,
+        result: Box<CoreExpr>,
+        evidence: CoreCallEvidence,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -301,6 +309,32 @@ pub enum CoreExpr {
 )]
 pub enum CoreStatement {
     Effect {
+        value: CoreExpr,
+    },
+    PureLet {
+        name: String,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        value: CoreExpr,
+        origin: SourceSpan,
+    },
+    Bind {
+        name: String,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        value: CoreExpr,
+        origin: SourceSpan,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum CoreMonadDoStatement {
+    Expression {
         value: CoreExpr,
     },
     PureLet {

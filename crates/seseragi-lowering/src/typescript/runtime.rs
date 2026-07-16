@@ -186,6 +186,31 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             }
             collect_expr_runtime_requirements(result, requirements);
         }
+        CoreExpr::MonadDo {
+            statements,
+            result,
+            type_ref,
+            ..
+        } => {
+            collect_type_runtime_requirement(type_ref, requirements);
+            for statement in statements {
+                match statement {
+                    crate::CoreMonadDoStatement::Expression { value } => {
+                        collect_expr_runtime_requirements(value, requirements)
+                    }
+                    crate::CoreMonadDoStatement::PureLet {
+                        type_ref, value, ..
+                    }
+                    | crate::CoreMonadDoStatement::Bind {
+                        type_ref, value, ..
+                    } => {
+                        collect_type_runtime_requirement(type_ref, requirements);
+                        collect_expr_runtime_requirements(value, requirements);
+                    }
+                }
+            }
+            collect_expr_runtime_requirements(result, requirements);
+        }
     }
 }
 
@@ -376,6 +401,19 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             }
             for statement in statements {
                 collect_statement_runtime_imports(statement, imports);
+            }
+            collect_expr_runtime_imports(result, imports);
+        }
+        CoreExpr::MonadDo {
+            statements, result, ..
+        } => {
+            for statement in statements {
+                let value = match statement {
+                    crate::CoreMonadDoStatement::Expression { value }
+                    | crate::CoreMonadDoStatement::PureLet { value, .. }
+                    | crate::CoreMonadDoStatement::Bind { value, .. } => value,
+                };
+                collect_expr_runtime_imports(value, imports);
             }
             collect_expr_runtime_imports(result, imports);
         }

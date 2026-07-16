@@ -15,8 +15,8 @@ pub use core::{
     CoreComprehensionClause, CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection,
     CoreDecisionTest, CoreExpr, CoreFunction, CoreInstance, CoreInstanceConstraint,
     CoreInstanceEvidence, CoreInstanceImplementation, CoreInstanceMethod, CoreModule,
-    CoreModuleDependency, CoreModuleImport, CoreParameter, CorePattern, CoreRecordField,
-    CoreShowPayloadEvidence, CoreStatement, CoreTraitDispatch, CoreType,
+    CoreModuleDependency, CoreModuleImport, CoreMonadDoStatement, CoreParameter, CorePattern,
+    CoreRecordField, CoreShowPayloadEvidence, CoreStatement, CoreTraitDispatch, CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,

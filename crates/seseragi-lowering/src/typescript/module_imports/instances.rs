@@ -174,6 +174,23 @@ fn collect_expr(expr: &CoreExpr, imported: &mut BTreeSet<(String, String)>) {
             }
             collect_expr(result, imported);
         }
+        CoreExpr::MonadDo {
+            statements,
+            result,
+            evidence,
+            ..
+        } => {
+            collect_call_evidence(std::slice::from_ref(evidence), imported);
+            for statement in statements {
+                let value = match statement {
+                    crate::CoreMonadDoStatement::Expression { value }
+                    | crate::CoreMonadDoStatement::PureLet { value, .. }
+                    | crate::CoreMonadDoStatement::Bind { value, .. } => value,
+                };
+                collect_expr(value, imported);
+            }
+            collect_expr(result, imported);
+        }
         CoreExpr::Unit { .. }
         | CoreExpr::Int64 { .. }
         | CoreExpr::String { .. }

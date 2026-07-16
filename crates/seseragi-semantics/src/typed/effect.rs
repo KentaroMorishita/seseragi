@@ -103,7 +103,8 @@ fn collect_effect_contract(
         | TypedExpr::Array { .. }
         | TypedExpr::ArrayComprehension { .. }
         | TypedExpr::Binary { .. }
-        | TypedExpr::If { .. } => {}
+        | TypedExpr::If { .. }
+        | TypedExpr::MonadDo { .. } => {}
     }
 }
 

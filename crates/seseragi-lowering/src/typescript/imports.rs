@@ -179,6 +179,23 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
             }
             rewrite_expr(result, renames);
         }
+        TypeScriptExpr::MonadDo {
+            dictionary,
+            statements,
+            result,
+        } => {
+            rewrite_expr(dictionary, renames);
+            for statement in statements {
+                match statement {
+                    TypeScriptStatement::Effect { value } => rewrite_expr(value, renames),
+                    TypeScriptStatement::PureLet { initializer, .. }
+                    | TypeScriptStatement::Const { initializer, .. } => {
+                        rewrite_expr(initializer, renames);
+                    }
+                }
+            }
+            rewrite_expr(result, renames);
+        }
         TypeScriptExpr::Undefined
         | TypeScriptExpr::Bigint { .. }
         | TypeScriptExpr::String { .. }

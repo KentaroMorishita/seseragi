@@ -56,6 +56,14 @@ fn increment value: Int -> Int = value + 2
 fn stopAfter42 value: Int -> Maybe<Int> =
   if value <= 42 then Just value else Nothing
 
+fn addMaybe left: Maybe<Int> -> right: Maybe<Int> -> Maybe<Int> =
+  do {
+    first <- left
+    second <- right
+    let total = first + second
+    pure total
+  }
+
 fn render value: Maybe<Int> -> String =
   match value {
     Nothing -> "Nothing"
@@ -82,6 +90,14 @@ pub effect fn main =
 
     43
     |> liftAndBind stopAfter42
+    |> render
+    |> println
+
+    addMaybe (Just 20) (Just 22)
+    |> render
+    |> println
+
+    addMaybe (Just 20) Nothing
     |> render
     |> println
   }

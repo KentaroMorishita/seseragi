@@ -104,6 +104,19 @@ fn collect_expr_value_symbols(expr: &CoreExpr, values: &mut BTreeSet<String>) {
             }
             collect_expr_value_symbols(result, values);
         }
+        CoreExpr::MonadDo {
+            statements, result, ..
+        } => {
+            for statement in statements {
+                let value = match statement {
+                    crate::CoreMonadDoStatement::Expression { value }
+                    | crate::CoreMonadDoStatement::PureLet { value, .. }
+                    | crate::CoreMonadDoStatement::Bind { value, .. } => value,
+                };
+                collect_expr_value_symbols(value, values);
+            }
+            collect_expr_value_symbols(result, values);
+        }
         CoreExpr::Unit { .. }
         | CoreExpr::Int64 { .. }
         | CoreExpr::String { .. }
@@ -277,6 +290,31 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
                         type_ref, value, ..
                     }
                     | CoreStatement::Bind {
+                        type_ref, value, ..
+                    } => {
+                        collect_type_names(type_ref, references);
+                        collect_expr_type_names(value, references);
+                    }
+                }
+            }
+            collect_expr_type_names(result, references);
+        }
+        CoreExpr::MonadDo {
+            statements,
+            result,
+            type_ref,
+            ..
+        } => {
+            collect_type_names(type_ref, references);
+            for statement in statements {
+                match statement {
+                    crate::CoreMonadDoStatement::Expression { value } => {
+                        collect_expr_type_names(value, references)
+                    }
+                    crate::CoreMonadDoStatement::PureLet {
+                        type_ref, value, ..
+                    }
+                    | crate::CoreMonadDoStatement::Bind {
                         type_ref, value, ..
                     } => {
                         collect_type_names(type_ref, references);
