@@ -1,0 +1,275 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/standard-show-evidence",
+  "runtimeRequirements": [
+    "core.maybe",
+    "core.string",
+    "core.adt",
+    "core.string.show",
+    "core.unit",
+    "effect.console.println",
+    "core.maybe.just"
+  ],
+  "imports": [
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/standard-show-evidence::trait(Render)<std/prelude::Maybe<$0>>",
+      "trait": "Render",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "maybe",
+          "element": {
+            "kind": "reference",
+            "name": "T",
+            "arguments": []
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 137,
+        "end": 311
+      },
+      "dictionaryExport": "__ssrg$instance$Render$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: T }",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "reference",
+                  "name": "T",
+                  "arguments": []
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Nothing"
+                    }
+                  ],
+                  "value": {
+                    "kind": "string",
+                    "value": "No value"
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Just"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "reference",
+                        "name": "T",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "acknowledge",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "item"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "__ssrg$evidence$0"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 184,
+              "end": 309
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "acknowledge",
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "T",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "string",
+        "value": "Standard Show evidence"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 56,
+        "end": 135
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "label",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: string }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "__ssrg$instance$Render$0",
+          "typeArguments": [
+            {
+              "kind": "string"
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_show_stringShow"
+            }
+          ]
+        },
+        "method": "render",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 313,
+        "end": 373
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "label",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_maybe_Just",
+                "arguments": [
+                  {
+                    "kind": "string",
+                    "value": "ready"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 375,
+        "end": 431
+      }
+    }
+  ]
+}

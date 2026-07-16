@@ -1,5 +1,6 @@
 use std::collections::BTreeMap;
 
+use crate::show_ops::runtime_show_dictionary_for_identity;
 use crate::CoreInstanceEvidence;
 
 use super::instances::local_instance_expression_key;
@@ -14,6 +15,13 @@ pub(super) fn local_dictionary_expression(
     if let CoreInstanceEvidence::Parameter { index } = evidence {
         return Some(TypeScriptExpr::Identifier {
             name: super::evidence_parameter_name(*index),
+        });
+    }
+    if let CoreInstanceEvidence::Standard { identity } = evidence {
+        return runtime_show_dictionary_for_identity(identity).map(|dictionary| {
+            TypeScriptExpr::RuntimeReference {
+                name: dictionary.local_name.to_owned(),
+            }
         });
     }
     let (identity, type_arguments, evidence_arguments) = match evidence {
@@ -52,4 +60,40 @@ pub(super) fn local_dictionary_expression(
             .collect(),
         arguments,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn materializes_a_registered_standard_show_dictionary() {
+        let expression = local_dictionary_expression(
+            &CoreInstanceEvidence::Standard {
+                identity: "Show<std/prelude::String>".to_owned(),
+            },
+            &BTreeMap::new(),
+            &BTreeMap::new(),
+        );
+
+        assert_eq!(
+            expression,
+            Some(TypeScriptExpr::RuntimeReference {
+                name: "_ssrg_show_stringShow".to_owned(),
+            })
+        );
+    }
+
+    #[test]
+    fn does_not_invent_a_dictionary_for_operation_only_standard_evidence() {
+        let expression = local_dictionary_expression(
+            &CoreInstanceEvidence::Standard {
+                identity: "std/int::Add".to_owned(),
+            },
+            &BTreeMap::new(),
+            &BTreeMap::new(),
+        );
+
+        assert_eq!(expression, None);
+    }
 }

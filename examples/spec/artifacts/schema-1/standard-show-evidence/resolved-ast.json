@@ -1,0 +1,1066 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/standard-show-evidence",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "trait",
+      "visibility": "public",
+      "name": "Render",
+      "nameSpan": {
+        "start": 10,
+        "end": 16
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "render",
+          "nameSpan": {
+            "start": 27,
+            "end": 33
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 34,
+                "end": 39
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 41,
+                  "end": 42
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 46,
+              "end": 52
+            }
+          },
+          "span": {
+            "start": 24,
+            "end": 52
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 54
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "acknowledge",
+      "nameSpan": {
+        "start": 59,
+        "end": 70
+      },
+      "typeParameters": [
+        "T"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 74,
+            "end": 79
+          },
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "span": {
+              "start": 81,
+              "end": 82
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 86,
+          "end": 92
+        }
+      },
+      "constraints": [
+        {
+          "name": "Show",
+          "nameSpan": {
+            "start": 99,
+            "end": 103
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "span": {
+                "start": 104,
+                "end": 105
+              }
+            }
+          ],
+          "span": {
+            "start": 99,
+            "end": 106
+          }
+        }
+      ],
+      "body": {
+        "kind": "string",
+        "raw": "\"Standard Show evidence\"",
+        "span": {
+          "start": 111,
+          "end": 135
+        }
+      },
+      "span": {
+        "start": 56,
+        "end": 135
+      }
+    },
+    {
+      "kind": "instance",
+      "typeParameters": [
+        "T"
+      ],
+      "traitName": "Render",
+      "traitNameSpan": {
+        "start": 149,
+        "end": 155
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "span": {
+                "start": 162,
+                "end": 163
+              }
+            }
+          ],
+          "span": {
+            "start": 156,
+            "end": 164
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "nameSpan": {
+            "start": 172,
+            "end": 176
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "span": {
+                "start": 177,
+                "end": 178
+              }
+            }
+          ],
+          "span": {
+            "start": 172,
+            "end": 179
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "render",
+          "nameSpan": {
+            "start": 187,
+            "end": 193
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 194,
+                "end": 199
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "T",
+                    "span": {
+                      "start": 207,
+                      "end": 208
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 201,
+                  "end": 209
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 213,
+              "end": 219
+            }
+          },
+          "body": {
+            "kind": "match",
+            "scrutinee": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 232,
+                "end": 237
+              }
+            },
+            "arms": [
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Nothing",
+                  "nameSpan": {
+                    "start": 246,
+                    "end": 253
+                  },
+                  "span": {
+                    "start": 246,
+                    "end": 253
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"No value\"",
+                  "span": {
+                    "start": 257,
+                    "end": 267
+                  }
+                },
+                "span": {
+                  "start": 246,
+                  "end": 267
+                }
+              },
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Just",
+                  "nameSpan": {
+                    "start": 274,
+                    "end": 278
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "item",
+                    "nameSpan": {
+                      "start": 279,
+                      "end": 283
+                    },
+                    "span": {
+                      "start": 279,
+                      "end": 283
+                    }
+                  },
+                  "span": {
+                    "start": 274,
+                    "end": 283
+                  }
+                },
+                "body": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "acknowledge",
+                    "span": {
+                      "start": 287,
+                      "end": 298
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "item",
+                    "span": {
+                      "start": 299,
+                      "end": 303
+                    }
+                  },
+                  "span": {
+                    "start": 287,
+                    "end": 303
+                  }
+                },
+                "span": {
+                  "start": 274,
+                  "end": 303
+                }
+              }
+            ],
+            "span": {
+              "start": 226,
+              "end": 309
+            }
+          },
+          "span": {
+            "start": 184,
+            "end": 309
+          }
+        }
+      ],
+      "span": {
+        "start": 137,
+        "end": 311
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "label",
+      "nameSpan": {
+        "start": 320,
+        "end": 325
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 326,
+            "end": 331
+          },
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 339,
+                  "end": 345
+                }
+              }
+            ],
+            "span": {
+              "start": 333,
+              "end": 346
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 350,
+          "end": 356
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "render",
+          "span": {
+            "start": 361,
+            "end": 367
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 368,
+            "end": 373
+          }
+        },
+        "span": {
+          "start": 361,
+          "end": 373
+        }
+      },
+      "span": {
+        "start": 313,
+        "end": 373
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 389,
+        "end": 393
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 424,
+            "end": 431
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "label",
+            "span": {
+              "start": 398,
+              "end": 403
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Just",
+                "span": {
+                  "start": 405,
+                  "end": 409
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"ready\"",
+                "span": {
+                  "start": 410,
+                  "end": 417
+                }
+              },
+              "span": {
+                "start": 405,
+                "end": 417
+              }
+            },
+            "span": {
+              "start": 404,
+              "end": 418
+            }
+          },
+          "span": {
+            "start": 398,
+            "end": 418
+          }
+        },
+        "span": {
+          "start": 398,
+          "end": 431
+        }
+      },
+      "span": {
+        "start": 375,
+        "end": 431
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 431
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 54
+      }
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "kind": "function",
+      "origin": {
+        "start": 24,
+        "end": 52
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 56,
+        "end": 135
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 137,
+        "end": 311
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "parent": 4,
+      "kind": "function",
+      "origin": {
+        "start": 184,
+        "end": 309
+      }
+    },
+    {
+      "id": 7,
+      "parent": 6,
+      "kind": "match-arm",
+      "origin": {
+        "start": 246,
+        "end": 267
+      }
+    },
+    {
+      "id": 8,
+      "parent": 6,
+      "kind": "match-arm",
+      "origin": {
+        "start": 274,
+        "end": 303
+      }
+    },
+    {
+      "id": 9,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 313,
+        "end": 373
+      }
+    },
+    {
+      "id": 10,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 375,
+        "end": 431
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Render",
+      "canonical": "artifact/standard-show-evidence::trait(Render)",
+      "namespace": "trait",
+      "kind": "trait",
+      "scope": 0,
+      "origin": {
+        "start": 10,
+        "end": 16
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "render",
+      "canonical": "artifact/standard-show-evidence::trait(Render)::render",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 27,
+        "end": 33
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "acknowledge",
+      "canonical": "artifact/standard-show-evidence::acknowledge",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 59,
+        "end": 70
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "label",
+      "canonical": "artifact/standard-show-evidence::label",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 320,
+        "end": 325
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "main",
+      "canonical": "artifact/standard-show-evidence::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 389,
+        "end": 393
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 1,
+      "origin": {
+        "start": 0,
+        "end": 54
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 34,
+        "end": 39
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "T",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 3,
+      "origin": {
+        "start": 56,
+        "end": 135
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 74,
+        "end": 79
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "Show",
+      "canonical": "std/prelude::Show",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "T",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 4,
+      "origin": {
+        "start": 137,
+        "end": 311
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "Maybe",
+      "canonical": "std/prelude::Maybe",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "A",
+      "canonical": "std/prelude::Maybe::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 5,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "Nothing",
+      "canonical": "std/prelude::Nothing",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "Just",
+      "canonical": "std/prelude::Just",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 6,
+      "origin": {
+        "start": 194,
+        "end": 199
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "item",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 8,
+      "origin": {
+        "start": 279,
+        "end": 283
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 9,
+      "origin": {
+        "start": 326,
+        "end": 331
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 41,
+        "end": 42
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 46,
+        "end": 52
+      }
+    },
+    {
+      "spelling": "T",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 81,
+        "end": 82
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 86,
+        "end": 92
+      }
+    },
+    {
+      "spelling": "Show",
+      "namespace": "trait",
+      "target": 10,
+      "origin": {
+        "start": 99,
+        "end": 103
+      }
+    },
+    {
+      "spelling": "T",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 104,
+        "end": 105
+      }
+    },
+    {
+      "spelling": "Render",
+      "namespace": "trait",
+      "target": 0,
+      "origin": {
+        "start": 149,
+        "end": 155
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 156,
+        "end": 164
+      }
+    },
+    {
+      "spelling": "T",
+      "namespace": "type",
+      "target": 11,
+      "origin": {
+        "start": 162,
+        "end": 163
+      }
+    },
+    {
+      "spelling": "Show",
+      "namespace": "trait",
+      "target": 10,
+      "origin": {
+        "start": 172,
+        "end": 176
+      }
+    },
+    {
+      "spelling": "T",
+      "namespace": "type",
+      "target": 11,
+      "origin": {
+        "start": 177,
+        "end": 178
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 201,
+        "end": 209
+      }
+    },
+    {
+      "spelling": "T",
+      "namespace": "type",
+      "target": 11,
+      "origin": {
+        "start": 207,
+        "end": 208
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 213,
+        "end": 219
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 16,
+      "origin": {
+        "start": 232,
+        "end": 237
+      }
+    },
+    {
+      "spelling": "Nothing",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 246,
+        "end": 253
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 274,
+        "end": 278
+      }
+    },
+    {
+      "spelling": "acknowledge",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 287,
+        "end": 298
+      }
+    },
+    {
+      "spelling": "item",
+      "namespace": "value",
+      "target": 17,
+      "origin": {
+        "start": 299,
+        "end": 303
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 333,
+        "end": 346
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 339,
+        "end": 345
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 350,
+        "end": 356
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 1,
+      "candidates": [
+        1
+      ],
+      "origin": {
+        "start": 361,
+        "end": 367
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 18,
+      "origin": {
+        "start": 368,
+        "end": 373
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 19,
+      "origin": {
+        "start": 424,
+        "end": 431
+      }
+    },
+    {
+      "spelling": "label",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 398,
+        "end": 403
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 405,
+        "end": 409
+      }
+    }
+  ],
+  "issues": []
+}

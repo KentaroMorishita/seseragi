@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "case": "standard-show-evidence",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/standard-show-evidence",
+    "export": "main",
+    "compiledModule": "../../schema-1/standard-show-evidence/generated-module.json",
+    "typedInterface": "../../schema-1/standard-show-evidence/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.maybe",
+      "core.string",
+      "core.adt",
+      "core.string.show",
+      "core.unit",
+      "effect.console.println",
+      "core.maybe.just"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Standard Show evidence"
+        ],
+        "stdout": "Standard Show evidence\n"
+      }
+    ]
+  }
+}

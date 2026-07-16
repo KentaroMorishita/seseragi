@@ -120,7 +120,10 @@ fn match_instance(
             &required.constraint,
             resolution,
             stack,
-        )?;
+        )
+        .or_else(|| {
+            super::select_standard_instance(Some(&required.trait_identity), &required.constraint)
+        })?;
         evidence_arguments.push(TypedCallEvidence {
             constraint: required.constraint,
             evidence,
@@ -139,7 +142,8 @@ fn match_instance(
                 .collect(),
         };
         let evidence =
-            select_local_instance_with_stack(&required_trait, &constraint, resolution, stack)?;
+            select_local_instance_with_stack(&required_trait, &constraint, resolution, stack)
+                .or_else(|| super::select_standard_instance(Some(&required_trait), &constraint))?;
         evidence_arguments.push(TypedCallEvidence {
             constraint,
             evidence,

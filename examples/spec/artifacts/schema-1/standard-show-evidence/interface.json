@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "module": "artifact/standard-show-evidence",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/standard-show-evidence::trait(Render)",
+      "namespace": "trait",
+      "name": "Render",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 0,
+        "end": 54
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Render",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "render",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 24,
+            "end": 52
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "artifact/standard-show-evidence::label",
+      "namespace": "value",
+      "name": "label",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 313,
+        "end": 373
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "trait": "Render",
+      "typeParameters": [
+        "T"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Render",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 137,
+        "end": 311
+      }
+    }
+  ]
+}

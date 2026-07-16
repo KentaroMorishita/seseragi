@@ -3,7 +3,8 @@ use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::{
     effect_ops::runtime_effect_operation, int_ops::runtime_int_operation_with_evidence,
-    CoreComprehensionClause, CoreExpr, CoreStatement, CoreType,
+    show_ops::runtime_show_dictionary_for_identity, CoreCallEvidence, CoreComprehensionClause,
+    CoreExpr, CoreInstanceEvidence, CoreStatement, CoreType,
 };
 
 use super::{push_import_unique, push_unique, TypeScriptImport};
@@ -20,6 +21,7 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             type_ref,
             ..
         } => {
+            collect_evidence_runtime_requirements(evidence, requirements);
             if matches!(type_ref, CoreType::Function { .. }) {
                 if let Some(operation) = runtime_int_operation_with_evidence(name, evidence) {
                     push_unique(requirements, operation.runtime_feature);
@@ -37,6 +39,7 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             type_ref,
             ..
         } => {
+            collect_evidence_runtime_requirements(evidence, requirements);
             if let Some(operation) = runtime_collection_operation(callee, evidence) {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(constructor) = runtime_sum_constructor(callee) {
@@ -71,6 +74,10 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
                     CoreComprehensionClause::Generator {
                         source, evidence, ..
                     } => {
+                        collect_evidence_runtime_requirements(
+                            std::slice::from_ref(evidence),
+                            requirements,
+                        );
                         let flatten = clauses[index + 1..].iter().any(|clause| {
                             matches!(clause, CoreComprehensionClause::Generator { .. })
                         });
@@ -93,6 +100,7 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             type_ref,
             ..
         } => {
+            collect_evidence_runtime_requirements(evidence, requirements);
             collect_type_runtime_requirement(type_ref, requirements);
             if let Some(operation) = runtime_range_operation(operator) {
                 push_unique(requirements, operation.runtime_feature);
@@ -189,9 +197,11 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         CoreExpr::MonadDo {
             statements,
             result,
+            evidence,
             type_ref,
             ..
         } => {
+            collect_evidence_runtime_requirements(std::slice::from_ref(evidence), requirements);
             collect_type_runtime_requirement(type_ref, requirements);
             for statement in statements {
                 match statement {
@@ -262,6 +272,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             type_ref,
             ..
         } => {
+            collect_evidence_runtime_imports(evidence, imports);
             if matches!(type_ref, CoreType::Function { .. }) {
                 if let Some(operation) = runtime_int_operation_with_evidence(name, evidence) {
                     push_import_unique(
@@ -283,6 +294,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             evidence,
             ..
         } => {
+            collect_evidence_runtime_imports(evidence, imports);
             if let Some(operation) = runtime_collection_operation(callee, evidence) {
                 push_import_unique(
                     imports,
@@ -312,6 +324,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                     CoreComprehensionClause::Generator {
                         source, evidence, ..
                     } => {
+                        collect_evidence_runtime_imports(std::slice::from_ref(evidence), imports);
                         let flatten = clauses[index + 1..].iter().any(|clause| {
                             matches!(clause, CoreComprehensionClause::Generator { .. })
                         });
@@ -340,6 +353,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             type_ref,
             ..
         } => {
+            collect_evidence_runtime_imports(evidence, imports);
             if let Some(operation) = runtime_range_operation(operator) {
                 push_import_unique(
                     imports,
@@ -405,8 +419,12 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             collect_expr_runtime_imports(result, imports);
         }
         CoreExpr::MonadDo {
-            statements, result, ..
+            statements,
+            result,
+            evidence,
+            ..
         } => {
+            collect_evidence_runtime_imports(std::slice::from_ref(evidence), imports);
             for statement in statements {
                 let value = match statement {
                     crate::CoreMonadDoStatement::Expression { value }
@@ -416,6 +434,56 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                 collect_expr_runtime_imports(value, imports);
             }
             collect_expr_runtime_imports(result, imports);
+        }
+    }
+}
+
+fn collect_evidence_runtime_requirements(
+    evidence: &[CoreCallEvidence],
+    requirements: &mut Vec<String>,
+) {
+    for selected in evidence {
+        match &selected.evidence {
+            CoreInstanceEvidence::Local {
+                evidence_arguments, ..
+            }
+            | CoreInstanceEvidence::Imported {
+                evidence_arguments, ..
+            } => collect_evidence_runtime_requirements(evidence_arguments, requirements),
+            CoreInstanceEvidence::Standard { identity } => {
+                if let Some(dictionary) = runtime_show_dictionary_for_identity(identity) {
+                    push_unique(requirements, dictionary.runtime_feature);
+                }
+            }
+            CoreInstanceEvidence::Parameter { .. } => {}
+        }
+    }
+}
+
+fn collect_evidence_runtime_imports(
+    evidence: &[CoreCallEvidence],
+    imports: &mut Vec<TypeScriptImport>,
+) {
+    for selected in evidence {
+        match &selected.evidence {
+            CoreInstanceEvidence::Local {
+                evidence_arguments, ..
+            }
+            | CoreInstanceEvidence::Imported {
+                evidence_arguments, ..
+            } => collect_evidence_runtime_imports(evidence_arguments, imports),
+            CoreInstanceEvidence::Standard { identity } => {
+                if let Some(dictionary) = runtime_show_dictionary_for_identity(identity) {
+                    push_import_unique(
+                        imports,
+                        TypeScriptImport {
+                            feature: dictionary.runtime_feature.to_owned(),
+                            local: dictionary.local_name.to_owned(),
+                        },
+                    );
+                }
+            }
+            CoreInstanceEvidence::Parameter { .. } => {}
         }
     }
 }

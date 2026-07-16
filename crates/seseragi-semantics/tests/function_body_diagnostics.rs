@@ -80,3 +80,16 @@ fn does_not_accept_an_unmaterialized_standard_function_dictionary() {
     assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
     assert_eq!(diagnostics.diagnostics[0].message_key, "instance.missing");
 }
+
+#[test]
+fn accepts_a_materializable_standard_show_dictionary() {
+    let diagnostics = semantic_diagnostics(
+        "main.ssrg",
+        "pub fn acknowledge<T> value: T -> String\n\
+         where Show<T> =\n\
+           \"shown\"\n\
+         pub fn acknowledgeString value: String -> String = acknowledge value\n",
+    );
+
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+}

@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "module": "artifact/standard-show-evidence",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.maybe",
+      "core.string",
+      "core.adt",
+      "core.string.show",
+      "core.unit",
+      "effect.console.println",
+      "core.maybe.just"
+    ]
+  },
+  "exports": [
+    "label",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "artifact/standard-show-evidence::trait(Render)<std/prelude::Maybe<$0>>",
+      "trait": "Render",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "maybe",
+          "element": {
+            "kind": "reference",
+            "name": "T",
+            "arguments": []
+          }
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Render$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

@@ -266,6 +266,10 @@ pub(crate) fn select_function_call_evidence(
                 Some(trait_identity) => {
                     select_resolved_evidence(&constraint, trait_identity, resolution, scoped)
                 }
+                // Standard operations such as `reduce` carry their selected
+                // operation evidence without a resolved source trait symbol.
+                // They do not need a first-class dictionary value. Resolved
+                // constraints use the materializable-only fallback below.
                 None => standard_instance_identity(&constraint)
                     .map(|identity| TypedInstanceEvidence::Standard { identity }),
             }
@@ -303,12 +307,36 @@ fn select_resolved_evidence(
             index: parameter.index,
         });
     }
-    local::select_local_instance(trait_identity, constraint, resolution).or_else(|| {
-        imported::select_imported_instance(trait_identity, constraint, resolution, scoped)
-    })
+    local::select_local_instance(trait_identity, constraint, resolution)
+        .or_else(|| {
+            imported::select_imported_instance(trait_identity, constraint, resolution, scoped)
+        })
+        .or_else(|| select_standard_instance(Some(trait_identity), constraint))
+}
+
+pub(super) fn select_standard_instance(
+    trait_identity: Option<&str>,
+    constraint: &TypedConstraint,
+) -> Option<TypedInstanceEvidence> {
+    if trait_identity
+        .is_some_and(|identity| identity != format!("std/prelude::{}", constraint.name))
+    {
+        return None;
+    }
+    let identity = standard_instance_identity(constraint)?;
+    // Arithmetic, equality, and collection instances currently lower through
+    // dedicated operation ABIs rather than first-class dictionary values.
+    // Only select a standard instance for dictionary passing when the runtime
+    // actually exports the corresponding dictionary object.
+    identity
+        .starts_with("Show<")
+        .then_some(TypedInstanceEvidence::Standard { identity })
 }
 
 fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
+    if let Some(identity) = show_instance_identity(constraint) {
+        return Some(identity.to_owned());
+    }
     if let Some(identity) = arithmetic_instance_identity(constraint) {
         return Some(identity.to_owned());
     }
@@ -336,6 +364,27 @@ fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
         ("Reducible", "Range") if named_type_is(element, "Int") => {
             Some("std/range::Reducible".to_owned())
         }
+        _ => None,
+    }
+}
+
+fn show_instance_identity(constraint: &TypedConstraint) -> Option<&'static str> {
+    let [value] = constraint.arguments.as_slice() else {
+        return None;
+    };
+    if constraint.name != "Show" {
+        return None;
+    }
+    let TypedType::Named { name, arguments } = value else {
+        return None;
+    };
+    if !arguments.is_empty() {
+        return None;
+    }
+    match name.as_str() {
+        "String" => Some("Show<std/prelude::String>"),
+        "ConsoleError" => Some("Show<std/prelude::ConsoleError>"),
+        "StdinError" => Some("Show<std/prelude::StdinError>"),
         _ => None,
     }
 }

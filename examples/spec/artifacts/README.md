@@ -200,7 +200,15 @@ actual operation traceとstdoutを固定します。
 Console hostで実行します。`Render` methodの`Just item -> ready item`はinstance constraintを
 `parameter` evidenceとしてTypedHir / CoreIrへ保持し、生成TSではfactory closureのcompiler-private evidence名からdispatchします。
 このcaseはcall siteでのlocal evidence materializationとmethod bodyでの消費を両方固定するgateです。
-first-class constrained functionのvalue schemeと、standard / imported evidenceのfactory引数化は独立した後続gateです。
+imported evidenceのfactory引数化はdirect / transitive project fixtureで、materializableなstandard `Show<String>`は
+`schema-1/standard-show-evidence`で接続します。first-class constrained functionのvalue schemeと、
+operation-only standard traitのdictionary ABIは独立した後続gateです。
+
+`schema-1/standard-show-evidence`はruntimeが公開する`Show<String>` dictionaryを選び、
+`instance<T> Render<Maybe<T>> where Show<T>`のlocal generic factoryへ渡します。factory内のscoped evidenceはさらに
+`acknowledge<T> where Show<T>`を飽和させ、生成TSは`@seseragi/runtime/show`の`stringShow`を実際に消費します。
+`execution-schema-1/standard-show-evidence`がstdoutまで固定するため、standard identityをIRへ保存しただけではgreenになりません。
+`Add` / `Eq` / `Iterable` / `Reducible`は専用operation ABIのままであり、このfixtureは存在しないdictionaryを捏造しません。
 
 `schema-1/method-constraint-dispatch`はtrait method自身の`where Labeled<A>`をinstance-level constraintと分離し、
 method bodyではordered `parameter` evidence、call siteではprimary `Render<Badge>` dictionaryに続く

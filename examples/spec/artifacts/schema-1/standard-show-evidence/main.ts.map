@@ -1,0 +1,23 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/standard-show-evidence"
+  ],
+  "sourcesContent": [
+    "pub trait Render<A> {\n  fn render value: A -> String\n}\n\nfn acknowledge<T> value: T -> String\nwhere Show<T> =\n  \"Standard Show evidence\"\n\ninstance<T> Render<Maybe<T>>\nwhere Show<T> {\n  fn render value: Maybe<T> -> String =\n    match value {\n      Nothing -> \"No value\"\n      Just item -> acknowledge item\n    }\n}\n\npub fn label value: Maybe<String> -> String =\n  render value\n\npub effect fn main =\n  label (Just \"ready\")\n  |> println\n"
+  ],
+  "names": [
+    "__ssrg$instance$Render$0",
+    "acknowledge",
+    "label",
+    "__ssrg$instance$Render$0",
+    "stringShow",
+    "main",
+    "println",
+    "label",
+    "Just"
+  ],
+  "mappings": ";;;;AAQAA;AAJAC;AAaAC;AAGAG"
+}

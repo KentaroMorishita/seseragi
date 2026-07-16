@@ -209,8 +209,7 @@ fn select_required_evidence(
             return Some(imported);
         }
     }
-    super::standard_instance_identity(constraint)
-        .map(|identity| TypedInstanceEvidence::Standard { identity })
+    super::select_standard_instance(trait_identity, constraint)
 }
 
 fn canonical_typed_type(type_ref: &TypedType, resolution: &TypedResolution<'_>) -> Option<String> {

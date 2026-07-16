@@ -1,0 +1,23 @@
+pub trait Render<A> {
+  fn render value: A -> String
+}
+
+fn acknowledge<T> value: T -> String
+where Show<T> =
+  "Standard Show evidence"
+
+instance<T> Render<Maybe<T>>
+where Show<T> {
+  fn render value: Maybe<T> -> String =
+    match value {
+      Nothing -> "No value"
+      Just item -> acknowledge item
+    }
+}
+
+pub fn label value: Maybe<String> -> String =
+  render value
+
+pub effect fn main =
+  label (Just "ready")
+  |> println

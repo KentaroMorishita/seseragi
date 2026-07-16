@@ -1,0 +1,499 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/standard-show-evidence",
+  "instances": [
+    {
+      "identity": "artifact/standard-show-evidence::trait(Render)<std/prelude::Maybe<$0>>",
+      "trait": "Render",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 137,
+        "end": 311
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "T",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "T",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 232,
+                  "end": 237
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "T",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "std/prelude::Nothing",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 246,
+                        "end": 253
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "string",
+                    "value": "No value",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 257,
+                      "end": 267
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 246,
+                    "end": 267
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "std/prelude::Just",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 274,
+                        "end": 283
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "item",
+                      "type": {
+                        "kind": "named",
+                        "name": "T",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 279,
+                        "end": 283
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/standard-show-evidence::acknowledge",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "item",
+                        "type": {
+                          "kind": "named",
+                          "name": "T",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 299,
+                          "end": 303
+                        }
+                      }
+                    ],
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "T",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "parameter",
+                          "index": 0
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 287,
+                      "end": 303
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 274,
+                    "end": 303
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 226,
+                "end": 309
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 184,
+              "end": 309
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/standard-show-evidence::acknowledge",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 56,
+        "end": 135
+      },
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "string",
+        "value": "Standard Show evidence",
+        "origin": {
+          "source": "main.ssrg",
+          "start": 111,
+          "end": 135
+        }
+      }
+    },
+    {
+      "symbol": "artifact/standard-show-evidence::label",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 313,
+        "end": 373
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/standard-show-evidence::trait(Render)::render",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 368,
+              "end": 373
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Render",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "local",
+              "identity": "artifact/standard-show-evidence::trait(Render)<std/prelude::Maybe<$0>>",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::String>"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "artifact/standard-show-evidence::trait(Render)",
+          "method": "render"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 361,
+          "end": 373
+        }
+      }
+    },
+    {
+      "symbol": "artifact/standard-show-evidence::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 375,
+        "end": 431
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/standard-show-evidence::label",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/prelude::Just",
+                "arguments": [
+                  {
+                    "kind": "string",
+                    "value": "ready",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 410,
+                      "end": 417
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 405,
+                  "end": 417
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 398,
+              "end": 418
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 398,
+          "end": 431
+        }
+      }
+    }
+  ]
+}

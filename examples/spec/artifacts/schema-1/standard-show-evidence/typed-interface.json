@@ -1,0 +1,193 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/standard-show-evidence",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/standard-show-evidence::trait(Render)",
+      "namespace": "trait",
+      "name": "Render",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 0,
+        "end": 54
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Render",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "render",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 24,
+            "end": 52
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "artifact/standard-show-evidence::label",
+      "namespace": "value",
+      "name": "label",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 313,
+        "end": 373
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/standard-show-evidence::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 375,
+        "end": 431
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "artifact/standard-show-evidence::trait(Render)<std/prelude::Maybe<$0>>",
+      "providerModule": "artifact/standard-show-evidence",
+      "traitIdentity": "artifact/standard-show-evidence::trait(Render)",
+      "argumentIdentities": [
+        "std/prelude::Maybe<$0>"
+      ],
+      "trait": "Render",
+      "typeParameters": [
+        "T"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Render",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 137,
+        "end": 311
+      }
+    }
+  ]
+}
