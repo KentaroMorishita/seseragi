@@ -1,0 +1,32 @@
+pub trait Functor<F<_>> {
+  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>
+}
+
+instance Functor<Maybe> {
+  fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =
+    match value {
+      Nothing -> Nothing
+      Just item -> Just $ f item
+    }
+}
+
+fn increment value: Int -> Int = value + 1
+
+fn applyMapper
+  mapper: (Maybe<Int> -> Maybe<Int>)
+  -> value: Maybe<Int>
+  -> Maybe<Int> =
+  mapper value
+
+fn render value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "Nothing"
+    Just 42 -> "Just 42"
+    Just _ -> "Just another value"
+  }
+
+pub effect fn main =
+  Just 41
+  |> applyMapper (map increment)
+  |> render
+  |> println

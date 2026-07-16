@@ -210,6 +210,11 @@ operation-only standard traitのdictionary ABIは独立した後続gateです。
 `execution-schema-1/standard-show-evidence`がstdoutまで固定するため、standard identityをIRへ保存しただけではgreenになりません。
 `Add` / `Eq` / `Iterable` / `Reducible`は専用operation ABIのままであり、このfixtureは存在しないdictionaryを捏造しません。
 
+`schema-1/partial-functor-value`は`map increment`を期待関数型`Maybe<Int> -> Maybe<Int>`から具体化し、
+選択済み`Functor<Maybe>` dictionary methodの部分適用をhigher-order引数へ渡します。TypedHir / CoreIrのevidence、
+TypeScriptIrのdictionary call、生成TS、`execution-schema-1/partial-functor-value`の`Just 42`を一つのgateで固定します。
+通常のconstrained top-level functionを未飽和で保持するABIはこのcaseの完了条件に含みません。
+
 `schema-1/method-constraint-dispatch`はtrait method自身の`where Labeled<A>`をinstance-level constraintと分離し、
 method bodyではordered `parameter` evidence、call siteではprimary `Render<Badge>` dictionaryに続く
 `Labeled<Badge>` dictionaryとして運びます。生成TSは通常のmethod引数の後ろへcompiler-private evidence parameterを追加し、

@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/partial-functor-value"
+  ],
+  "sourcesContent": [
+    "pub trait Functor<F<_>> {\n  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>\n}\n\ninstance Functor<Maybe> {\n  fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =\n    match value {\n      Nothing -> Nothing\n      Just item -> Just $ f item\n    }\n}\n\nfn increment value: Int -> Int = value + 1\n\nfn applyMapper\n  mapper: (Maybe<Int> -> Maybe<Int>)\n  -> value: Maybe<Int>\n  -> Maybe<Int> =\n  mapper value\n\nfn render value: Maybe<Int> -> String =\n  match value {\n    Nothing -> \"Nothing\"\n    Just 42 -> \"Just 42\"\n    Just _ -> \"Just another value\"\n  }\n\npub effect fn main =\n  Just 41\n  |> applyMapper (map increment)\n  |> render\n  |> println\n"
+  ],
+  "names": [
+    "__ssrg$instance$Functor$0",
+    "increment",
+    "add",
+    "applyMapper",
+    "mapper",
+    "render",
+    "main",
+    "println",
+    "render",
+    "applyMapper",
+    "__ssrg$instance$Functor$0",
+    "Just"
+  ],
+  "mappings": ";;;;AAIAA;AAQAC;AAEAE;AAMAE;AAOAC"
+}

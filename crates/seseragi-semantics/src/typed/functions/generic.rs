@@ -17,14 +17,20 @@ pub(crate) struct InstantiatedApplication {
 
 pub(crate) fn instantiated_application(
     signature: &TopLevelPureFunction,
-    expected_result: Option<&SemanticValueType>,
+    expected_application: Option<&SemanticValueType>,
+    application_argument_count: usize,
     arguments: &[SemanticValueType],
 ) -> InstantiatedApplication {
     let mut substitutions = BTreeMap::new();
-    if let Some(expected_result) = expected_result {
+    if let Some(expected_application) = expected_application {
+        let remaining = application_result_type_from(
+            &signature.parameters,
+            signature.result.clone(),
+            application_argument_count.min(signature.parameters.len()),
+        );
         infer_type_parameters(
-            &signature.result,
-            &expected_result.type_ref,
+            &remaining,
+            &expected_application.type_ref,
             &signature.type_parameters,
             &mut substitutions,
         );
@@ -44,9 +50,18 @@ pub(crate) fn instantiated_application(
         .zip(signature.semantic_parameters.iter().cloned())
         .map(|(type_ref, key)| SemanticValueType { type_ref, key })
         .collect::<Vec<_>>();
+    let expected_result = expected_application.and_then(|expected| {
+        expected_final_result(
+            expected,
+            signature
+                .parameters
+                .len()
+                .saturating_sub(application_argument_count),
+        )
+    });
     let semantic = instantiate_callable(
         &semantic_parameters,
-        expected_result,
+        expected_result.as_ref(),
         arguments,
         &SemanticValueType {
             type_ref: signature.result.clone(),
@@ -88,6 +103,27 @@ pub(crate) fn instantiated_application(
         constraint_identities: signature.constraint_identities.clone(),
         resolved_type_parameters: substitutions.keys().cloned().collect(),
     }
+}
+
+fn expected_final_result(
+    expected_application: &SemanticValueType,
+    remaining_parameters: usize,
+) -> Option<SemanticValueType> {
+    let mut type_ref = &expected_application.type_ref;
+    for _ in 0..remaining_parameters {
+        let TypedType::Function { result, .. } = type_ref else {
+            return None;
+        };
+        type_ref = result;
+    }
+    Some(SemanticValueType {
+        type_ref: type_ref.clone(),
+        key: if remaining_parameters == 0 {
+            expected_application.key.clone()
+        } else {
+            crate::typed::semantic_types::SemanticTypeKey::Other
+        },
+    })
 }
 
 pub(crate) fn instantiated_application_result_type(
@@ -446,6 +482,72 @@ mod tests {
                 "Either",
                 vec![named("String", Vec::new()), named("A", Vec::new())],
             )
+        );
+    }
+
+    #[test]
+    fn infers_a_constructor_from_the_expected_partial_function_type() {
+        let signature = TopLevelPureFunction {
+            symbol: "map".to_owned(),
+            trait_identity: Some("fixture::Functor".to_owned()),
+            trait_method: Some("map".to_owned()),
+            type_parameters: vec![
+                TypeParameter {
+                    name: "F".to_owned(),
+                    arity: 1,
+                },
+                TypeParameter {
+                    name: "A".to_owned(),
+                    arity: 0,
+                },
+                TypeParameter {
+                    name: "B".to_owned(),
+                    arity: 0,
+                },
+            ],
+            constraints: vec![TypedConstraint {
+                name: "Functor".to_owned(),
+                arguments: vec![named("F", Vec::new())],
+            }],
+            constraint_identities: vec![Some("fixture::Functor".to_owned())],
+            parameters: vec![
+                TypedType::Function {
+                    parameter: Box::new(named("A", Vec::new())),
+                    result: Box::new(named("B", Vec::new())),
+                },
+                named("F", vec![named("A", Vec::new())]),
+            ],
+            semantic_parameters: vec![
+                crate::typed::semantic_types::SemanticTypeKey::Other,
+                crate::typed::semantic_types::SemanticTypeKey::Other,
+            ],
+            result: named("F", vec![named("B", Vec::new())]),
+            semantic_result: crate::typed::semantic_types::SemanticTypeKey::Other,
+        };
+        let int = named("Int", Vec::new());
+        let maybe_int = named("Maybe", vec![int.clone()]);
+        let expected = SemanticValueType {
+            type_ref: TypedType::Function {
+                parameter: Box::new(maybe_int.clone()),
+                result: Box::new(maybe_int.clone()),
+            },
+            key: crate::typed::semantic_types::SemanticTypeKey::Other,
+        };
+        let increment = SemanticValueType {
+            type_ref: TypedType::Function {
+                parameter: Box::new(int.clone()),
+                result: Box::new(int),
+            },
+            key: crate::typed::semantic_types::SemanticTypeKey::Other,
+        };
+
+        let application = instantiated_application(&signature, Some(&expected), 1, &[increment]);
+
+        assert_eq!(application.parameters[1].type_ref, maybe_int.clone());
+        assert_eq!(application.result.type_ref, maybe_int);
+        assert_eq!(
+            application.constraints[0].arguments,
+            vec![named("Maybe", Vec::new())]
         );
     }
 }

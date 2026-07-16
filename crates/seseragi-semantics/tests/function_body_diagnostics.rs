@@ -93,3 +93,27 @@ fn accepts_a_materializable_standard_show_dictionary() {
 
     assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
 }
+
+#[test]
+fn accepts_a_partially_applied_trait_method_from_its_expected_function_type() {
+    let diagnostics = semantic_diagnostics(
+        "main.ssrg",
+        "pub trait Functor<F<_>> {\n\
+           fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>\n\
+         }\n\
+         instance Functor<Maybe> {\n\
+           fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =\n\
+             match value {\n\
+               Nothing -> Nothing\n\
+               Just item -> Just $ f item\n\
+             }\n\
+         }\n\
+         fn increment value: Int -> Int = value + 1\n\
+         fn applyMapper mapper: (Maybe<Int> -> Maybe<Int>) -> value: Maybe<Int> -> Maybe<Int> =\n\
+           mapper value\n\
+         pub fn answer value: Maybe<Int> -> Maybe<Int> =\n\
+           applyMapper (map increment) value\n",
+    );
+
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+}

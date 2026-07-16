@@ -219,15 +219,20 @@ dispatchまで固定します。
 local generic pure functionの`where`はbody scopeと飽和callへ接続済みです。
 `schema-1/constrained-function-dispatch`はbodyの`parameter` evidence、call siteのlocal dictionary選択、
 生成TSの末尾implicit dictionary parameterを固定し、execution fixtureが実際のdispatch結果を観測します。
-first-class partial constrained functionは未接続です。conditional imported dictionary selectionはdirect / transitive providerまで
-接続済みで、materializableなstandard `Show` dictionaryもlocal generic factoryへ渡せます。残るgateは
-first-class partial constrained valueと、operation-only standard traitをdictionaryとして公開する場合のABI設計です。
+期待関数型からHKTを具体化するfirst-class partial trait methodは`schema-1/partial-functor-value`で接続済みです。
+`map increment`を`Maybe<Int> -> Maybe<Int>`としてhigher-order関数へ渡し、選択済み`Functor<Maybe>` dictionaryを
+closureへ保持したactual executionまで固定します。通常のconstrained top-level functionを未飽和のまま保持する経路は未接続です。
+conditional imported dictionary selectionはdirect / transitive providerまで接続済みで、materializableなstandard `Show`
+dictionaryもlocal generic factoryへ渡せます。残るgateはtop-level partial constrained valueと、operation-only standard traitを
+dictionaryとして公開する場合のABI設計です。
 
 `F<_>`は通常type parameterとは別にarityを持つtype-constructor parameterとしてSurfaceAstとModuleInterfaceへ
 保持します。`schema-1/functor-maybe`は`F<A> ~ Maybe<Int>`から`F = Maybe`と要素型を推論し、generic
 `transform<F<_>, A, B> where Functor<F>`のbodyではparameter evidence、call siteではlocal
 `Functor<Maybe>` dictionaryを選択します。選択結果はTypedHir / CoreIr / TypeScriptIrへ残り、
 `execution-schema-1/functor-maybe`が`Just 41 |> transform increment`の`Just 42`をactual executionで固定します。
+`schema-1/partial-functor-value`は期待関数型`Maybe<Int> -> Maybe<Int>`を残りのmethod型`F<A> -> F<B>`へ照合し、
+`map increment`だけで`F = Maybe`を決めます。生成TSは選択済みdictionary methodの部分適用をhigher-order引数として渡します。
 `type-constructor-kind-mismatch`は`Type -> Type`を要求するtrait parameterへ`Int : Type`を渡すinstanceを
 `trait.instance-kind-mismatch`で拒否します。TypeScriptはHKTを直接表せないため、型検査済みの`F<A>` parameter
 annotationだけをbackend境界で`unknown`へ消去しますが、Seseragiのkind、constraint、dictionary選択は消去しません。
@@ -313,7 +318,8 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
 4. direct dependencyとfacade越しのconcrete user-defined evidence、およびdirect / facade越しproviderのgeneric / constraint付きfactoryは
    canonical trait / argument / constraint identitiesでResolvedAstからTypedHir / CoreIr / TypeScript source import /
    driver output plan、actual executionまで保持済み。materializableなstandard `Show<String>`もlocal factory引数からactual executionまで
-   保持済み。次はfirst-class partial constrained valueを独立gateで確認する。
+   保持済み。partial trait method valueも期待関数型からevidenceを選択してactual executionまで接続済み。
+   次はtop-level partial constrained valueを独立gateで確認する。
 5. imported public callableのschemeに現れるnominal typeは、direct / transitive provider、namespace選択、異なるownerの同名typeを
    canonical identityで区別し、必要なtype-only outputをprovider closureから計画済み。provider欠落をlocal typeへfallbackしない。
 6. imported trait method contract、local concrete dictionary dispatch、同名trait methodのlocal candidate選択、

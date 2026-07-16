@@ -395,6 +395,7 @@ fn type_name(
             Some(super::functions::instantiated_application(
                 function,
                 context.expected(),
+                0,
                 &[],
             ))
         } else {

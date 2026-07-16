@@ -51,17 +51,17 @@ pub(super) fn type_application(
         }
     };
 
-    let expected_result = if argument_nodes.len() >= signature.parameters.len() {
-        context.expected()
-    } else {
-        None
-    };
+    let expected_application = context.expected();
     let mut arguments = Vec::with_capacity(argument_nodes.len());
     let mut semantic_arguments = Vec::with_capacity(argument_nodes.len());
     let mut child_analyses = Vec::with_capacity(argument_nodes.len());
     for (index, argument) in argument_nodes.iter().enumerate() {
-        let partial_application =
-            instantiated_application(&signature, expected_result, &semantic_arguments);
+        let partial_application = instantiated_application(
+            &signature,
+            expected_application,
+            argument_nodes.len(),
+            &semantic_arguments,
+        );
         let expected = partial_application
             .parameters
             .get(index)
@@ -82,7 +82,12 @@ pub(super) fn type_application(
         arguments.push(analysis.value.clone());
         child_analyses.push(analysis);
     }
-    let application = instantiated_application(&signature, expected_result, &semantic_arguments);
+    let application = instantiated_application(
+        &signature,
+        expected_application,
+        argument_nodes.len(),
+        &semantic_arguments,
+    );
     let mut issue = call_issue(
         *callee_span,
         signature.parameters.len(),

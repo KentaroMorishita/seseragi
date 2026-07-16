@@ -100,6 +100,15 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "Generic Maybe: empty\nGeneric Maybe: present",
   },
   {
+    id: "partial-functor-value",
+    label: "Functorを渡す",
+    category: "型と抽象化",
+    sourcePath:
+      "examples/spec/artifacts/schema-1/partial-functor-value/main.ssrg",
+    stdin: "",
+    expectedOutput: "Just 42",
+  },
+  {
     id: "applicative-maybe",
     label: "Applicativeの流れ",
     category: "型と抽象化",
