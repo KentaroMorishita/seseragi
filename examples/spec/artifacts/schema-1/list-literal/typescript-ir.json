@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/list-literal",
+  "runtimeRequirements": [
+    "core.list",
+    "core.int64",
+    "core.list.from-array",
+    "core.int64.subtract",
+    "core.int64.add"
+  ],
+  "imports": [
+    {
+      "feature": "core.list.from-array",
+      "local": "_ssrg_list_from_array"
+    },
+    {
+      "feature": "core.int64.subtract",
+      "local": "_ssrg_int64_subtract"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.list",
+      "local": "List"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "nearby",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_list_from_array",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int64_subtract",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "kind": "identifier",
+                "name": "value"
+              },
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int64_add",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "1"
+                  }
+                ]
+              }
+            ],
+            "elementType": {
+              "kind": "bigint"
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 72
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "keep",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "List<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "values"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 74,
+        "end": 125
+      }
+    }
+  ]
+}

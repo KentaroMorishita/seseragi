@@ -6,6 +6,7 @@ mod comprehension;
 mod effect;
 mod imports;
 mod iterator;
+mod list;
 mod range;
 mod service;
 mod services;
@@ -75,6 +76,9 @@ pub(crate) fn check_typescript_runtime_package(
         || runtime_helper_is_declared(abi, "core.iterator.next")
     {
         iterator::check_typescript_runtime_iterator(root)?;
+    }
+    if runtime_helper_is_declared(abi, "core.list.from-array") {
+        list::check_typescript_runtime_list(root)?;
     }
     if runtime_helper_is_declared(abi, "core.range.comprehend") {
         comprehension::check_typescript_runtime_comprehension(root)?;

@@ -542,6 +542,16 @@ fn parses_empty_nested_and_trailing_comma_array_literals() {
 }
 
 #[test]
+fn parses_persistent_list_literals_without_confusing_templates() {
+    let body = first_body("fn values -> List<Int> = `[1, 2, 3]\n");
+
+    assert!(matches!(
+        body,
+        SurfaceExpr::List { elements, .. } if elements.len() == 3
+    ));
+}
+
+#[test]
 fn parses_array_comprehension_generators_and_guards() {
     let body =
         first_body("fn squares limit: Int -> Array<Int> = [n * n | n <- 1..=limit, n % 2 == 0]\n");

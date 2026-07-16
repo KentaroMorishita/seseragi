@@ -217,6 +217,28 @@
       }
     },
     {
+      "id": "core.list",
+      "kind": "value-representation",
+      "typescript": "type List<A>",
+      "boundary": "immutable persistent linked list with Empty and Cons nodes",
+      "typeIdentity": "std/prelude::List",
+      "typeImport": {
+        "module": "@seseragi/runtime/list",
+        "export": "List"
+      },
+      "import": null
+    },
+    {
+      "id": "core.list.from-array",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ReadonlyArray<A> -> List<A> preserving element order",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "fromArray"
+      }
+    },
+    {
       "id": "core.unit",
       "kind": "value-representation",
       "typescript": "undefined",

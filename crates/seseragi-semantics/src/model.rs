@@ -400,6 +400,12 @@ pub enum TypedExpr {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    List {
+        elements: Vec<TypedExpr>,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     ArrayComprehension {
         element: Box<TypedExpr>,
         clauses: Vec<TypedComprehensionClause>,

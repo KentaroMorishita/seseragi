@@ -2,9 +2,9 @@ use crate::{
     collection_ops::runtime_collection_operation_for_feature,
     effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
     iterator_ops::runtime_iterator_operation_for_feature,
-    range_ops::runtime_range_operation_for_feature, runtime_types::runtime_type_import_for_feature,
-    show_ops::runtime_show_dictionary_for_feature, sum_ops::runtime_sum_constructor_for_feature,
-    TypeScriptModule,
+    list_ops::runtime_list_operation_for_feature, range_ops::runtime_range_operation_for_feature,
+    runtime_types::runtime_type_import_for_feature, show_ops::runtime_show_dictionary_for_feature,
+    sum_ops::runtime_sum_constructor_for_feature, TypeScriptModule,
 };
 
 pub(super) fn render_import_lines(module: &TypeScriptModule) -> Vec<String> {
@@ -57,6 +57,10 @@ fn render_runtime_imports(module: &TypeScriptModule) -> Vec<String> {
             })
             .or_else(|| {
                 runtime_iterator_operation_for_feature(&import.feature)
+                    .map(|operation| (operation.module, operation.export_name))
+            })
+            .or_else(|| {
+                runtime_list_operation_for_feature(&import.feature)
                     .map(|operation| (operation.module, operation.export_name))
             })
             .or_else(|| {

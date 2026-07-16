@@ -16,18 +16,22 @@ pub(super) fn collect_array_diagnostic(
 
 pub(super) fn array_diagnostic(issue: &ArrayIssue, declaration: ByteSpan) -> Diagnostic {
     let (message_key, primary, message) = match issue {
-        ArrayIssue::EmptyWithoutExpectedType { array } => (
-            "array.empty-element-type-unknown",
-            *array,
-            "add an Array element type annotation".to_owned(),
+        ArrayIssue::EmptyWithoutExpectedType {
+            collection,
+            literal,
+        } => (
+            format!("{}.empty-element-type-unknown", collection.to_lowercase()),
+            *literal,
+            format!("add a {collection} element type annotation"),
         ),
         ArrayIssue::ElementTypeMismatch {
+            collection,
             element,
             index,
             expected,
             actual,
         } => (
-            "array.element-type-mismatch",
+            format!("{}.element-type-mismatch", collection.to_lowercase()),
             *element,
             format!(
                 "element {} expected {}, received {}",
@@ -41,7 +45,7 @@ pub(super) fn array_diagnostic(issue: &ArrayIssue, declaration: ByteSpan) -> Dia
         id: String::new(),
         code: "SES-T0101".to_owned(),
         severity: DiagnosticSeverity::Error,
-        message_key: message_key.to_owned(),
+        message_key,
         primary: byte_range(primary),
         related: vec![RelatedDiagnostic {
             message,
@@ -66,6 +70,16 @@ mod tests {
     fn accepts_empty_array_with_a_contextual_element_type() {
         let artifact =
             semantic_diagnostics("array-empty.ssrg", "pub fn empty -> Array<Int> = []\n");
+
+        assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
+    }
+
+    #[test]
+    fn accepts_a_persistent_list_literal_with_a_contextual_element_type() {
+        let artifact = semantic_diagnostics(
+            "list-literal.ssrg",
+            "pub fn values -> List<Int> = `[1, 2, 3]\npub fn empty -> List<Int> = `[]\n",
+        );
 
         assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
     }

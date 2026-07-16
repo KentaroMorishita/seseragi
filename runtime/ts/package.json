@@ -37,6 +37,10 @@
       "types": "./src/iterator.ts",
       "default": "./src/iterator.ts"
     },
+    "./list": {
+      "types": "./src/list.ts",
+      "default": "./src/list.ts"
+    },
     "./sum": {
       "types": "./src/sum.ts",
       "default": "./src/sum.ts"

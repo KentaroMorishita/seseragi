@@ -365,6 +365,10 @@ pub enum SurfaceExpr {
         elements: Vec<SurfaceExpr>,
         span: ByteSpan,
     },
+    List {
+        elements: Vec<SurfaceExpr>,
+        span: ByteSpan,
+    },
     ArrayComprehension {
         element: Box<SurfaceExpr>,
         clauses: Vec<SurfaceComprehensionClause>,
@@ -414,6 +418,7 @@ impl SurfaceExpr {
             | Self::Application { span, .. }
             | Self::Tuple { span, .. }
             | Self::Array { span, .. }
+            | Self::List { span, .. }
             | Self::ArrayComprehension { span, .. }
             | Self::Binary { span, .. }
             | Self::If { span, .. }

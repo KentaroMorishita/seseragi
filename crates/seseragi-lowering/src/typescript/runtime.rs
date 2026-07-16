@@ -1,6 +1,7 @@
 use crate::collection_ops::{runtime_collection_operation, runtime_iterable_operation};
 use crate::iterator_ops::runtime_iterator_comprehension_operation;
 use crate::iterator_ops::runtime_iterator_operation;
+use crate::list_ops::runtime_list_literal_operation;
 use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::{
@@ -59,8 +60,17 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         }
         | CoreExpr::Array {
             elements, type_ref, ..
+        }
+        | CoreExpr::List {
+            elements, type_ref, ..
         } => {
             collect_type_runtime_requirement(type_ref, requirements);
+            if matches!(expr, CoreExpr::List { .. }) {
+                push_unique(
+                    requirements,
+                    runtime_list_literal_operation().runtime_feature,
+                );
+            }
             for element in elements {
                 collect_expr_runtime_requirements(element, requirements);
             }
@@ -330,6 +340,19 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                 collect_expr_runtime_imports(element, imports);
             }
         }
+        CoreExpr::List { elements, .. } => {
+            let operation = runtime_list_literal_operation();
+            push_import_unique(
+                imports,
+                TypeScriptImport {
+                    feature: operation.runtime_feature.to_owned(),
+                    local: operation.local_name.to_owned(),
+                },
+            );
+            for element in elements {
+                collect_expr_runtime_imports(element, imports);
+            }
+        }
         CoreExpr::ArrayComprehension {
             element, clauses, ..
         } => {
@@ -559,6 +582,7 @@ pub(super) fn collect_type_runtime_requirement(
                 "Either" => push_unique(requirements, "core.either"),
                 "Range" => push_unique(requirements, "core.range"),
                 "Iterator" => push_unique(requirements, "core.iterator"),
+                "List" => push_unique(requirements, "core.list"),
                 _ => {}
             }
             for argument in arguments {

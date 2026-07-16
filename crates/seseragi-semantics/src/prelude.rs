@@ -156,6 +156,7 @@ pub(crate) fn is_external_nominal_type(canonical: &str) -> bool {
             | "std/prelude::Stdin"
             | "std/prelude::StdinError"
             | "std/prelude::Iterator"
+            | "std/prelude::List"
     )
 }
 

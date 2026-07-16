@@ -2,6 +2,7 @@ use crate::collection_ops::runtime_collection_operation;
 use crate::effect_ops::runtime_effect_operation;
 use crate::int_ops::runtime_int_operation_with_evidence;
 use crate::iterator_ops::runtime_iterator_operation;
+use crate::list_ops::runtime_list_literal_operation;
 use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::{CoreExpr, CoreMonadDoStatement, CoreStatement, CoreType};
@@ -132,6 +133,22 @@ pub(super) fn lower_core_expr_to_typescript(
                 _ => super::TypeScriptType::Unknown,
             },
         },
+        CoreExpr::List {
+            elements, type_ref, ..
+        } => {
+            let element_type = match type_ref_from_core_type(&type_ref, imported_types) {
+                super::TypeScriptType::List { element } => *element,
+                _ => super::TypeScriptType::Unknown,
+            };
+            let operation = runtime_list_literal_operation();
+            TypeScriptExpr::RuntimeCall {
+                callee: operation.local_name.to_owned(),
+                arguments: vec![TypeScriptExpr::Array {
+                    elements: lower_core_expressions(elements, imported_values, imported_types),
+                    element_type,
+                }],
+            }
+        }
         CoreExpr::ArrayComprehension {
             element, clauses, ..
         } => lower_array_comprehension(*element, clauses, imported_values, imported_types, 0),

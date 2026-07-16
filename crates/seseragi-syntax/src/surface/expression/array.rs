@@ -5,16 +5,16 @@ use crate::surface_model::{ByteSpan, SurfaceComprehensionClause, SurfaceExpr};
 use crate::token::{Token, TokenKind};
 
 pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<SurfaceExpr> {
+    let is_list = open.kind == TokenKind::PunctuationListLeft;
     parser.skip_trivia();
     if parser.kind_at_cursor() == Some(TokenKind::PunctuationSquareRight) {
         let close = parser.consume(TokenKind::PunctuationSquareRight)?;
-        return Some(SurfaceExpr::Array {
-            elements: Vec::new(),
-            span: ByteSpan {
-                start: open.start,
-                end: close.end,
-            },
-        });
+        return Some(collection_literal(
+            is_list,
+            Vec::new(),
+            open.start,
+            close.end,
+        ));
     }
 
     let first = parser.parse_expr_bp(
@@ -54,13 +54,21 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<S
         )?);
     }
     let close = parser.consume(TokenKind::PunctuationSquareRight)?;
-    Some(SurfaceExpr::Array {
-        elements,
-        span: ByteSpan {
-            start: open.start,
-            end: close.end,
-        },
-    })
+    Some(collection_literal(is_list, elements, open.start, close.end))
+}
+
+fn collection_literal(
+    is_list: bool,
+    elements: Vec<SurfaceExpr>,
+    start: usize,
+    end: usize,
+) -> SurfaceExpr {
+    let span = ByteSpan { start, end };
+    if is_list {
+        SurfaceExpr::List { elements, span }
+    } else {
+        SurfaceExpr::Array { elements, span }
+    }
 }
 
 fn parse_comprehension(
@@ -130,7 +138,7 @@ fn clause_end(tokens: &[Token], start: usize, end: usize) -> Option<usize> {
             TokenKind::PunctuationBraceRight => braces = braces.saturating_sub(1),
             TokenKind::PunctuationParenLeft => parens += 1,
             TokenKind::PunctuationParenRight => parens = parens.saturating_sub(1),
-            TokenKind::PunctuationSquareLeft => squares += 1,
+            TokenKind::PunctuationListLeft | TokenKind::PunctuationSquareLeft => squares += 1,
             TokenKind::PunctuationSquareRight => squares = squares.saturating_sub(1),
             _ => {}
         }
@@ -151,7 +159,7 @@ fn top_level_bind(tokens: &[Token], start: usize, end: usize) -> Option<usize> {
             TokenKind::PunctuationBraceRight => braces = braces.saturating_sub(1),
             TokenKind::PunctuationParenLeft => parens += 1,
             TokenKind::PunctuationParenRight => parens = parens.saturating_sub(1),
-            TokenKind::PunctuationSquareLeft => squares += 1,
+            TokenKind::PunctuationListLeft | TokenKind::PunctuationSquareLeft => squares += 1,
             TokenKind::PunctuationSquareRight => squares = squares.saturating_sub(1),
             _ => {}
         }

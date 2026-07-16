@@ -17,6 +17,7 @@ pub(super) fn type_ref_from_core_expr(
         | CoreExpr::Call { type_ref, .. }
         | CoreExpr::Tuple { type_ref, .. }
         | CoreExpr::Array { type_ref, .. }
+        | CoreExpr::List { type_ref, .. }
         | CoreExpr::ArrayComprehension { type_ref, .. }
         | CoreExpr::Binary { type_ref, .. }
         | CoreExpr::If { type_ref, .. }
@@ -107,6 +108,15 @@ fn type_ref_from_core_type_with_erasure(
         }
         CoreType::Named { name, arguments } if name == "Array" && arguments.len() == 1 => {
             TypeScriptType::Array {
+                element: Box::new(type_ref_from_core_type_with_erasure(
+                    &arguments[0],
+                    imported_types,
+                    type_constructor_parameters,
+                )),
+            }
+        }
+        CoreType::Named { name, arguments } if name == "List" && arguments.len() == 1 => {
+            TypeScriptType::List {
                 element: Box::new(type_ref_from_core_type_with_erasure(
                     &arguments[0],
                     imported_types,
@@ -227,6 +237,9 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
         ),
         TypeScriptType::Array { element } => {
             format!("ReadonlyArray<{}>", render_typescript_type(element))
+        }
+        TypeScriptType::List { element } => {
+            format!("List<{}>", render_typescript_type(element))
         }
         TypeScriptType::Range => {
             "Readonly<{ start: bigint; end: bigint; inclusive: boolean }>".to_owned()

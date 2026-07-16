@@ -4,6 +4,7 @@ mod effect_ops;
 mod emit;
 mod int_ops;
 mod iterator_ops;
+mod list_ops;
 mod range_ops;
 mod runtime_types;
 mod show_ops;
@@ -912,6 +913,27 @@ fails ConsoleError =
         assert_eq!(bundle.source_map.file, "main.ts");
         assert_eq!(bundle.source_map.names, vec!["answer"]);
         assert_eq!(bundle.source_map.mappings, "AAAAA");
+    }
+
+    #[test]
+    fn emits_persistent_list_literals_through_the_runtime_abi() {
+        let source = "pub fn values -> List<Int> = `[1, 2, 3]\n";
+        let typed = type_module("artifact/list-literal/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert!(bundle.typescript.contains(
+            "import { fromArray as _ssrg_list_from_array } from \"@seseragi/runtime/list\""
+        ));
+        assert!(bundle
+            .typescript
+            .contains("export const values = _ssrg_list_from_array([1n, 2n, 3n])"));
+        assert!(bundle
+            .metadata
+            .runtime
+            .requirements
+            .contains(&"core.list.from-array".to_owned()));
     }
 
     #[test]

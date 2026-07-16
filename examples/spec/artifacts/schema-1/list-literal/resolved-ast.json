@@ -1,0 +1,440 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/list-literal",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "nearby",
+      "nameSpan": {
+        "start": 7,
+        "end": 13
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 14,
+            "end": 19
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 21,
+              "end": 24
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "List",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 33,
+              "end": 36
+            }
+          }
+        ],
+        "span": {
+          "start": 28,
+          "end": 37
+        }
+      },
+      "body": {
+        "kind": "list",
+        "elements": [
+          {
+            "kind": "binary",
+            "operator": "-",
+            "operatorSpan": {
+              "start": 50,
+              "end": 51
+            },
+            "left": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 44,
+                "end": 49
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "1",
+              "span": {
+                "start": 52,
+                "end": 53
+              }
+            },
+            "span": {
+              "start": 44,
+              "end": 53
+            }
+          },
+          {
+            "kind": "name",
+            "name": "value",
+            "span": {
+              "start": 55,
+              "end": 60
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "+",
+            "operatorSpan": {
+              "start": 68,
+              "end": 69
+            },
+            "left": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 62,
+                "end": 67
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "1",
+              "span": {
+                "start": 70,
+                "end": 71
+              }
+            },
+            "span": {
+              "start": 62,
+              "end": 71
+            }
+          }
+        ],
+        "span": {
+          "start": 42,
+          "end": 72
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 72
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "keep",
+      "nameSpan": {
+        "start": 81,
+        "end": 85
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 86,
+            "end": 92
+          },
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 99,
+                  "end": 102
+                }
+              }
+            ],
+            "span": {
+              "start": 94,
+              "end": 103
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "List",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 112,
+              "end": 115
+            }
+          }
+        ],
+        "span": {
+          "start": 107,
+          "end": 116
+        }
+      },
+      "body": {
+        "kind": "name",
+        "name": "values",
+        "span": {
+          "start": 119,
+          "end": 125
+        }
+      },
+      "span": {
+        "start": 74,
+        "end": 125
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 125
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 72
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 74,
+        "end": 125
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "nearby",
+      "canonical": "artifact/list-literal::nearby",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 7,
+        "end": 13
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "keep",
+      "canonical": "artifact/list-literal::keep",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 81,
+        "end": 85
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 14,
+        "end": 19
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "List",
+      "canonical": "std/prelude::List",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "-",
+      "canonical": "std/prelude::-",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "+",
+      "canonical": "std/prelude::+",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "values",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 86,
+        "end": 92
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 21,
+        "end": 24
+      }
+    },
+    {
+      "spelling": "List",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 28,
+        "end": 37
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 33,
+        "end": 36
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 44,
+        "end": 49
+      }
+    },
+    {
+      "spelling": "-",
+      "namespace": "operator",
+      "target": 5,
+      "origin": {
+        "start": 50,
+        "end": 51
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 55,
+        "end": 60
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 62,
+        "end": 67
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 6,
+      "origin": {
+        "start": 68,
+        "end": 69
+      }
+    },
+    {
+      "spelling": "List",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 94,
+        "end": 103
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 99,
+        "end": 102
+      }
+    },
+    {
+      "spelling": "List",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 107,
+        "end": 116
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 112,
+        "end": 115
+      }
+    },
+    {
+      "spelling": "values",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 119,
+        "end": 125
+      }
+    }
+  ],
+  "issues": []
+}

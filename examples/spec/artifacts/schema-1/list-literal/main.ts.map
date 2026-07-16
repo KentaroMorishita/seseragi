@@ -1,0 +1,19 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/list-literal"
+  ],
+  "sourcesContent": [
+    "pub fn nearby value: Int -> List<Int> =\n  `[value - 1, value, value + 1]\n\npub fn keep values: List<Int> -> List<Int> = values\n"
+  ],
+  "names": [
+    "nearby",
+    "fromArray",
+    "subtract",
+    "add",
+    "keep"
+  ],
+  "mappings": ";;;AAAAA;AAGAI"
+}

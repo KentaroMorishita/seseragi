@@ -1024,6 +1024,13 @@ dictionaryの`iterate`を呼び、`Iterator<A>`用`collectMap` / `collectFlatMap
 runtime requirement closureとNode executionを固定します。これにより標準collection名のhardcodeだけでgreenになる経路を
 排除しました。
 
+同じcollection roadmapの次のsliceとして、仕様3.8のpersistent `List<A>` literalを
+`schema-1/list-literal`でTokenStreamからgenerated TypeScriptまで接続します。`` `[a, b] ``はlexerでtemplate literalと
+区別し、Arrayと共有するhomogeneous collection typingを通しますが、backendでは`ReadonlyArray<A>`へ同一化しません。
+`core.list.from-array` runtime ABIがimmutableな`Empty / Cons` chainを構築し、Listを明示するparameter annotationでは
+`@seseragi/runtime/list`のnominal type importを使用します。続くgateで`Iterable<List<A>, A>`、
+`Reducible<List<A>, A>`、List result comprehensionを同じevidence/dictionary境界へ合流させます。
+
 現時点のderived `Show`は、local非generic ADTと限られたpayload evidenceを扱う閉じたsliceです。shallow
 `ModuleInterface`の`InterfaceInstance`はidentityなしを許し、final `TypedInterface`だけがcanonical trait identityとordered head
 argument identitiesからsemantic identityを確定します。reachable dependencyのinstanceはResolvedAstに保持され、derived `Show`の

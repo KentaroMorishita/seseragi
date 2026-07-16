@@ -198,6 +198,10 @@ fn runtime_source_name_for_feature(feature: &str) -> Option<&'static str> {
                 .map(|operation| operation.source_map_name)
         })
         .or_else(|| {
+            crate::list_ops::runtime_list_operation_for_feature(feature)
+                .map(|operation| operation.source_map_name)
+        })
+        .or_else(|| {
             crate::range_ops::runtime_range_operation_for_feature(feature)
                 .map(|operation| operation.source_map_name)
         })

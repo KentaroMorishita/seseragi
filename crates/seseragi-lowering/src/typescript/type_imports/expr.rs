@@ -35,6 +35,12 @@ pub(super) fn collect_expr_type_imports(
             collect_type_imports(type_ref, bindings, requirements, imports);
             collect_exprs(elements, bindings, requirements, imports);
         }
+        CoreExpr::List { elements, .. } => {
+            // List literals are constructed through `fromArray`, whose result
+            // type is inferred. A runtime `List` type import is only needed
+            // when a source signature or another emitted annotation names it.
+            collect_exprs(elements, bindings, requirements, imports);
+        }
         CoreExpr::ArrayComprehension {
             element,
             clauses,

@@ -149,7 +149,9 @@ impl ExpressionParser<'_> {
             TokenKind::KeywordMatch => match_expression::parse(self, token),
             TokenKind::KeywordDo => self.parse_do(token),
             TokenKind::PunctuationParenLeft => parenthesized::parse(self, token),
-            TokenKind::PunctuationSquareLeft => array::parse(self, token),
+            TokenKind::PunctuationListLeft | TokenKind::PunctuationSquareLeft => {
+                array::parse(self, token)
+            }
             TokenKind::Unknown => Some(SurfaceExpr::Error {
                 span: token_span(token),
             }),
@@ -243,6 +245,7 @@ impl ExpressionParser<'_> {
                     | TokenKind::KeywordMatch
                     | TokenKind::KeywordDo
                     | TokenKind::PunctuationParenLeft
+                    | TokenKind::PunctuationListLeft
                     | TokenKind::PunctuationSquareLeft
             )
         )

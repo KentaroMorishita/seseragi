@@ -295,6 +295,7 @@ fn has_unary_minus(tokens: &[Token], index: usize) -> bool {
                     | TokenKind::PunctuationBraceLeft
                     | TokenKind::PunctuationComma
                     | TokenKind::PunctuationParenLeft
+                    | TokenKind::PunctuationListLeft
                     | TokenKind::PunctuationSquareLeft
                     | TokenKind::KeywordThen
                     | TokenKind::KeywordElse

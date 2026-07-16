@@ -32,6 +32,8 @@ export {
 } from "./range"
 export type { Iterator } from "./iterator"
 export { next as nextIterator, unfold as unfoldIterator } from "./iterator"
+export type { List } from "./list"
+export { Cons, Empty, fromArray as listFromArray } from "./list"
 export type {
   Awaitable,
   ServiceFailure,

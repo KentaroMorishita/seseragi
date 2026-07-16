@@ -43,6 +43,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         module: "@seseragi/runtime/iterator",
         export_name: "Iterator",
     },
+    RuntimeTypeImport {
+        canonical: "std/prelude::List",
+        runtime_feature: "core.list",
+        module: "@seseragi/runtime/list",
+        export_name: "List",
+    },
 ];
 
 pub(crate) fn runtime_type_import(canonical: &str) -> Option<RuntimeTypeImport> {

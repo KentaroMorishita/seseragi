@@ -111,6 +111,7 @@ pub(super) fn type_array_comprehension(
     let array_issue =
         (!semantic_values_are_compatible(&expected_element, &actual_element)).then(|| {
             ArrayIssue::ElementTypeMismatch {
+                collection: "Array",
                 element: element.span(),
                 index: 0,
                 expected: expected_element.type_ref.clone(),

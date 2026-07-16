@@ -107,7 +107,7 @@ fn split_segments(tokens: &[Token], start: usize, end: usize) -> Vec<(usize, usi
             TokenKind::PunctuationBraceRight => brace_depth = brace_depth.saturating_sub(1),
             TokenKind::PunctuationParenLeft => paren_depth += 1,
             TokenKind::PunctuationParenRight => paren_depth = paren_depth.saturating_sub(1),
-            TokenKind::PunctuationSquareLeft => square_depth += 1,
+            TokenKind::PunctuationListLeft | TokenKind::PunctuationSquareLeft => square_depth += 1,
             TokenKind::PunctuationSquareRight => square_depth = square_depth.saturating_sub(1),
             TokenKind::PunctuationSemicolon
                 if brace_depth == 0 && paren_depth == 0 && square_depth == 0 =>

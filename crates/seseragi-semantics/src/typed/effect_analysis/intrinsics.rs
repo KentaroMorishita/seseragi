@@ -66,6 +66,7 @@ fn collect_intrinsic_issues(
         }
         TypedExpr::Tuple { elements, .. }
         | TypedExpr::Array { elements, .. }
+        | TypedExpr::List { elements, .. }
         | TypedExpr::Call {
             arguments: elements,
             ..

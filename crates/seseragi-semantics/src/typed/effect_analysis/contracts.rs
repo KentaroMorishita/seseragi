@@ -78,6 +78,7 @@ fn collect_failures(expression: &TypedExpr, failures: &mut Vec<EffectFailureOrig
         | TypedExpr::Call { .. }
         | TypedExpr::Tuple { .. }
         | TypedExpr::Array { .. }
+        | TypedExpr::List { .. }
         | TypedExpr::ArrayComprehension { .. }
         | TypedExpr::Binary { .. }
         | TypedExpr::If { .. }

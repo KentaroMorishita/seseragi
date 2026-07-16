@@ -51,9 +51,11 @@ pub(crate) enum MonadDoIssue {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum ArrayIssue {
     EmptyWithoutExpectedType {
-        array: ByteSpan,
+        collection: &'static str,
+        literal: ByteSpan,
     },
     ElementTypeMismatch {
+        collection: &'static str,
         element: ByteSpan,
         index: usize,
         expected: TypedType,

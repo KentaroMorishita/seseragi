@@ -44,7 +44,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
 | module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | strict core manifest + canonical local discovery + linked compile / executionまで部分実装 |
 | TypeScript interop、`.d.ts`変換            | 初稿あり      | load・ABI・変換snapshot fixtureあり        | 未着手             |
-| collection、text、number、JSON             | 初稿あり      | Range / Array executionあり、他は境界fixture不足 | Array / `Range<Int>` reduceまで部分実装 |
+| collection、text、number、JSON             | 初稿あり      | Range / Array executionとpersistent List literalあり、他は境界fixture不足 | Array / `Range<Int>` reduce、List literalまで部分実装 |
 | Bytes、Decimal、Regex、timezone            | 初稿あり      | lessonあり、fixture不足                    | 未着手             |
 | filesystem、process、HTTP                  | 初稿あり      | cleanup・shutdown・body stream fixtureあり | 未着手             |
 | pure HTML、SSR、DOM、hydration             | 初稿あり      | SSR lesson、DOM / hydration fixtureあり    | 未着手             |
@@ -166,6 +166,10 @@ stepを呼ぶことも検証します。user-defined `Iterable<C, A>`もこのIt
 shapeで保持し、`project-schema-1/imported-iterable-comprehension`はprovider moduleのdictionary exportをconsumerへimportして
 actual executionします。Array / Rangeだけをruntime shapeで判定する経路はuser collectionには使いません。
 Playgroundの`自作Iterableの流れ`でも同じschema sourceとbrowser runtimeを実行できます。
+仕様3.8のbacktick List literalも`schema-1/list-literal`で通常pipelineへ接続済みです。
+`` `[1, 2, 3] ``はArrayの別表記にはせず、TypeScript runtimeのimmutable `Empty / Cons` nodeへ
+`core.list.from-array` ABIを介して構築します。空Listのelement型はArrayと同じく期待型から決め、異種elementは
+collection名を保ったdiagnosticにします。Listの`Iterable` / `Reducible`とList result comprehensionは次のgateです。
 Int算術binaryとoperator sectionは`Add<Int, Int, Int>`などの選択済みevidenceをTypedHir / CoreIrへ保持し、
 backendはそのevidenceを確認してchecked runtime helperを選択します。
 `String + String`も`Add<String, String, String>`のstandard instanceとして全IRとactual executionへ接続済みで、

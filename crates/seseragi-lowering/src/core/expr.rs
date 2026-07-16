@@ -131,6 +131,15 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
+        TypedExpr::List {
+            elements,
+            type_ref,
+            origin,
+        } => CoreExpr::List {
+            elements: lower_exprs(source, elements),
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
         TypedExpr::ArrayComprehension {
             element,
             clauses,
