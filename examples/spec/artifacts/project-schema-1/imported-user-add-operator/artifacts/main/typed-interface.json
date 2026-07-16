@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-user-add-operator::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-user-add-operator::domain",
+      "origin": {
+        "start": 0,
+        "end": 40
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "Points",
+          "symbol": "fixture/imported-user-add-operator::domain::Points"
+        },
+        {
+          "namespace": "type",
+          "name": "Score",
+          "symbol": "fixture/imported-user-add-operator::domain::Score"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-user-add-operator::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 238,
+        "end": 320
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score>",
+      "providerModule": "fixture/imported-user-add-operator::domain",
+      "traitIdentity": "std/prelude::Add",
+      "argumentIdentities": [
+        "fixture/imported-user-add-operator::domain::Score",
+        "fixture/imported-user-add-operator::domain::Score",
+        "fixture/imported-user-add-operator::domain::Score"
+      ],
+      "trait": "Add",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Add",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 33,
+        "end": 229
+      }
+    }
+  ]
+}

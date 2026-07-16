@@ -472,6 +472,108 @@ pub(crate) fn select_iterable_evidence(
         .map_err(|_| constraint)
 }
 
+pub(crate) fn select_binary_operator_evidence(
+    trait_name: &str,
+    left: TypedType,
+    right: TypedType,
+    trait_identity: Option<&str>,
+    resolution: &TypedResolution<'_>,
+    scoped: &[ScopedCallEvidence],
+) -> Result<(TypedType, TypedCallEvidence), TypedConstraint> {
+    let missing = || TypedConstraint {
+        name: trait_name.to_owned(),
+        arguments: vec![left.clone(), right.clone(), TypedType::Hole],
+    };
+    if let Some(trait_identity) = trait_identity {
+        let scoped_matches = scoped
+            .iter()
+            .filter(|available| {
+                available.trait_identity == trait_identity
+                    && matches!(available.constraint.arguments.as_slice(), [available_left, available_right, _]
+                        if super::semantic_types::semantic_values_are_compatible(
+                            &resolution.semantic_value_from_typed_type(available_left),
+                            &resolution.semantic_value_from_typed_type(&left),
+                        ) && super::semantic_types::semantic_values_are_compatible(
+                            &resolution.semantic_value_from_typed_type(available_right),
+                            &resolution.semantic_value_from_typed_type(&right),
+                        ))
+            })
+            .take(2)
+            .collect::<Vec<_>>();
+        if let [available] = scoped_matches.as_slice() {
+            let output = available.constraint.arguments[2].clone();
+            return Ok((
+                output,
+                TypedCallEvidence {
+                    constraint: available.constraint.clone(),
+                    evidence: TypedInstanceEvidence::Parameter {
+                        index: available.index,
+                    },
+                },
+            ));
+        }
+        if let Some((output, evidence)) = local::infer_local_binary_instance(
+            trait_identity,
+            trait_name,
+            &left,
+            &right,
+            resolution,
+        ) {
+            return Ok((
+                output.clone(),
+                TypedCallEvidence {
+                    constraint: TypedConstraint {
+                        name: trait_name.to_owned(),
+                        arguments: vec![left, right, output],
+                    },
+                    evidence,
+                },
+            ));
+        }
+        if let Some((output, evidence)) = imported::infer_imported_binary_instance(
+            trait_identity,
+            trait_name,
+            &left,
+            &right,
+            resolution,
+            scoped,
+        ) {
+            return Ok((
+                output.clone(),
+                TypedCallEvidence {
+                    constraint: TypedConstraint {
+                        name: trait_name.to_owned(),
+                        arguments: vec![left, right, output],
+                    },
+                    evidence,
+                },
+            ));
+        }
+    }
+    let output = standard_binary_output(trait_name, &left, &right).ok_or_else(missing)?;
+    let constraint = TypedConstraint {
+        name: trait_name.to_owned(),
+        arguments: vec![left, right, output.clone()],
+    };
+    select_call_evidence(std::slice::from_ref(&constraint))
+        .map(|mut evidence| (output, evidence.remove(0)))
+        .map_err(|_| constraint)
+}
+
+fn standard_binary_output(
+    trait_name: &str,
+    left: &TypedType,
+    right: &TypedType,
+) -> Option<TypedType> {
+    if trait_name == "Add" && named_type_is(left, "String") && named_type_is(right, "String") {
+        return Some(left.clone());
+    }
+    matches!(trait_name, "Add" | "Sub" | "Mul" | "Div" | "Rem" | "Pow")
+        .then(|| named_type_is(left, "Int") && named_type_is(right, "Int"))
+        .filter(|matches| *matches)
+        .map(|_| left.clone())
+}
+
 fn standard_iterable_element_type(collection: &TypedType) -> Option<TypedType> {
     let TypedType::Named { name, arguments } = collection else {
         return None;

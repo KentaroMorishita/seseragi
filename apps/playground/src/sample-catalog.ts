@@ -118,6 +118,15 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "Generic Maybe: empty\nGeneric Maybe: present",
   },
   {
+    id: "user-add-operator",
+    label: "自作の足し算",
+    category: "型と抽象化",
+    sourcePath:
+      "examples/spec/artifacts/schema-1/user-add-operator/main.ssrg",
+    stdin: "",
+    expectedOutput: "User Add: 42",
+  },
+  {
     id: "user-iterable-comprehension",
     label: "自作Iterableの流れ",
     category: "型と抽象化",

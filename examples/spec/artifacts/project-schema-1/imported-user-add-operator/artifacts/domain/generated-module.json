@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-user-add-operator::domain",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.int64",
+      "core.int64.add"
+    ]
+  },
+  "exports": [
+    "Points"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score>",
+      "trait": "Add",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        },
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        },
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Add$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/imported-user-add-operator/domain.ts",
+    "sourceMap": "dist/imported-user-add-operator/domain.ts.map"
+  }
+}

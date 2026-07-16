@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/user-add-operator"
+  ],
+  "sourcesContent": [
+    "// `+` is selected through the ordinary user-defined Add dictionary.\npub type Score =\n  | Score Int\n\ninstance Add<Score, Score, Score> {\n  fn add left: Score -> right: Score -> Score =\n    match (left, right) {\n      (Score leftValue, Score rightValue) -> Score (leftValue + rightValue)\n    }\n}\n\nfn combine<T> left: T -> right: T -> T\nwhere Add<T, T, T> =\n  left + right\n\nfn render score: Score -> String =\n  match score {\n    Score 42 -> \"User Add: 42\"\n    _ -> \"unexpected score\"\n  }\n\npub effect fn main =\n  Score 20\n  |> combine (Score 22)\n  |> render\n  |> println\n"
+  ],
+  "names": [
+    "Score",
+    "Score",
+    "__ssrg$instance$Add$0",
+    "combine",
+    "__ssrg$evidence$0",
+    "render",
+    "main",
+    "println",
+    "render",
+    "combine",
+    "Score",
+    "Score"
+  ],
+  "mappings": ";;;AACAA;;AACIC;AAEJC;AAOAC;AAIAE;AAMAC"
+}

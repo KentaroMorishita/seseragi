@@ -1,0 +1,23 @@
+{
+  "version": 3,
+  "file": "dist/imported-user-add-operator/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-user-add-operator::main"
+  ],
+  "sourcesContent": [
+    "import { Points, Score } from \"./domain\"\n\nfn combine<T> left: T -> right: T -> T\nwhere Add<T, T, T> =\n  left + right\n\nfn render score: Score -> String =\n  match score {\n    Points 42 -> \"Imported Add: 42\"\n    _ -> \"unexpected score\"\n  }\n\npub effect fn main =\n  Points 20\n  |> combine (Points 22)\n  |> render\n  |> println\n"
+  ],
+  "names": [
+    "combine",
+    "__ssrg$evidence$0",
+    "render",
+    "main",
+    "println",
+    "render",
+    "combine",
+    "Points",
+    "Points"
+  ],
+  "mappings": ";;;AAEAA;AAIAE;AAMAC"
+}

@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "module": "artifact/user-add-operator",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.int64",
+      "core.int64.add",
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "Score",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Add<artifact/user-add-operator::Score,artifact/user-add-operator::Score,artifact/user-add-operator::Score>",
+      "trait": "Add",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        },
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        },
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Add$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

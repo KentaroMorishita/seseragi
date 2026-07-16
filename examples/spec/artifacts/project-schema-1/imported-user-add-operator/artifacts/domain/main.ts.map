@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "file": "dist/imported-user-add-operator/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-user-add-operator::domain"
+  ],
+  "sourcesContent": [
+    "pub type Score =\n  | Points Int\n\ninstance Add<Score, Score, Score> {\n  fn add left: Score -> right: Score -> Score =\n    match (left, right) {\n      (Points leftValue, Points rightValue) -> Points (leftValue + rightValue)\n    }\n}\n"
+  ],
+  "names": [
+    "Score",
+    "Points",
+    "__ssrg$instance$Add$0"
+  ],
+  "mappings": ";;AAAAA;;AACIC;AAEJC"
+}

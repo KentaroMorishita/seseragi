@@ -5,12 +5,13 @@ use super::{
     named_type, named_type_is, type_surface_expression, PureExpressionContext,
     SurfaceExpressionAnalysis,
 };
-use crate::typed::call_evidence::{select_arithmetic_evidence, select_equality_evidence};
-use crate::typed::pure_issues::RangeIssue;
+use crate::typed::call_evidence::select_equality_evidence;
+use crate::typed::pure_issues::{PureCallIssue, RangeIssue};
 use crate::typed::type_ref::inferred_type_from_expr;
 
 pub(super) fn type_binary(
     operator: &str,
+    operator_span: ByteSpan,
     left: &SurfaceExpr,
     right: &SurfaceExpr,
     span: ByteSpan,
@@ -21,15 +22,36 @@ pub(super) fn type_binary(
     let right_span = right.span();
     let left = type_surface_expression(left, &operand_context);
     let right = type_surface_expression(right, &operand_context);
-    let result_type = binary_result_type(operator, &left.value, &right.value);
     let left_type = inferred_type_from_expr(&left.value);
     let right_type = inferred_type_from_expr(&right.value);
-    let range_issue = range_issue(operator, left_span, &left_type, right_span, &right_type);
-    let evidence = if matches!(operator, "==" | "!=") {
-        select_equality_evidence(operator, left_type, right_type)
+    let mut missing_instance = None;
+    let (result_type, evidence) = if let Some(trait_name) = arithmetic_trait_name(operator) {
+        match context.select_binary_operator_evidence(
+            trait_name,
+            left_type.clone(),
+            right_type.clone(),
+        ) {
+            Ok((output, evidence)) => (output, vec![evidence]),
+            Err(constraint) => {
+                if left_type != TypedType::Hole && right_type != TypedType::Hole {
+                    missing_instance = Some(PureCallIssue::MissingInstance {
+                        callee: operator_span,
+                        constraint,
+                    });
+                }
+                (TypedType::Hole, Vec::new())
+            }
+        }
     } else {
-        select_arithmetic_evidence(operator, left_type, right_type, result_type.clone())
+        let result_type = binary_result_type(operator, &left.value, &right.value);
+        let evidence = if matches!(operator, "==" | "!=") {
+            select_equality_evidence(operator, left_type.clone(), right_type.clone())
+        } else {
+            Vec::new()
+        };
+        (result_type, evidence)
     };
+    let range_issue = range_issue(operator, left_span, &left_type, right_span, &right_type);
     let mut result = SurfaceExpressionAnalysis::valid(TypedExpr::Binary {
         operator: operator.to_owned(),
         left: Box::new(left.value.clone()),
@@ -41,7 +63,20 @@ pub(super) fn type_binary(
     result.merge_issues_from(left);
     result.merge_issues_from(right);
     result.range_issue = result.range_issue.or(range_issue);
+    result.pure_call_issue = result.pure_call_issue.or(missing_instance);
     result
+}
+
+fn arithmetic_trait_name(operator: &str) -> Option<&'static str> {
+    match operator {
+        "+" => Some("Add"),
+        "-" => Some("Sub"),
+        "*" => Some("Mul"),
+        "/" => Some("Div"),
+        "%" => Some("Rem"),
+        "**" => Some("Pow"),
+        _ => None,
+    }
 }
 
 fn binary_result_type(operator: &str, left: &TypedExpr, right: &TypedExpr) -> TypedType {

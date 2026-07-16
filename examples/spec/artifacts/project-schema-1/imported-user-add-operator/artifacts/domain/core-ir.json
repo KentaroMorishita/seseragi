@@ -1,0 +1,351 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-user-add-operator::domain",
+  "adts": [
+    {
+      "symbol": "fixture/imported-user-add-operator::domain::Score",
+      "name": "Score",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-user-add-operator::domain::Points",
+          "name": "Points",
+          "payload": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 21,
+            "end": 27
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 31
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score>",
+      "trait": "Add",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        },
+        {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        },
+        {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 33,
+        "end": 229
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "add",
+            "parameters": [
+              {
+                "id": "left",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "right",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "variable",
+                    "name": "left",
+                    "type": {
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 128,
+                      "end": 132
+                    }
+                  },
+                  {
+                    "kind": "variable",
+                    "name": "right",
+                    "type": {
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 134,
+                      "end": 139
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "domain.ssrg",
+                  "start": 127,
+                  "end": 140
+                }
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "constructor": "fixture/imported-user-add-operator::domain::Points",
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 150,
+                        "end": 166
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "constructor": "fixture/imported-user-add-operator::domain::Points",
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 168,
+                        "end": 185
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "leftValue",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 157,
+                        "end": 166
+                      }
+                    },
+                    {
+                      "name": "rightValue",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        },
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 175,
+                        "end": 185
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "fixture/imported-user-add-operator::domain::Points",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "+",
+                        "left": {
+                          "kind": "variable",
+                          "name": "leftValue",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "domain.ssrg",
+                            "start": 198,
+                            "end": 207
+                          }
+                        },
+                        "right": {
+                          "kind": "variable",
+                          "name": "rightValue",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "domain.ssrg",
+                            "start": 210,
+                            "end": 220
+                          }
+                        },
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Add",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/int::Add"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "domain.ssrg",
+                          "start": 198,
+                          "end": 220
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Score",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 190,
+                      "end": 221
+                    }
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 149,
+                    "end": 221
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Score",
+                "arguments": []
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 121,
+                "end": 227
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 71,
+              "end": 227
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

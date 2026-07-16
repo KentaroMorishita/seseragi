@@ -13,6 +13,7 @@ import seseragiQuiz from "../../../examples/spec/playground/03-seseragi-quiz.ssr
 import arrayScoreboard from "../../../examples/spec/playground/04-array-scoreboard.ssrg?raw"
 import traitBadges from "../../../examples/spec/playground/05-trait-badges.ssrg?raw"
 import genericInstance from "../../../examples/spec/playground/06-generic-instance.ssrg?raw"
+import userAddOperator from "../../../examples/spec/artifacts/schema-1/user-add-operator/main.ssrg?raw"
 import partialFunctorValue from "../../../examples/spec/artifacts/schema-1/polymorphic-partial-functor/main.ssrg?raw"
 import partialConstrainedFunction from "../../../examples/spec/artifacts/schema-1/partial-constrained-function/main.ssrg?raw"
 import applicativeMaybe from "../../../examples/spec/artifacts/schema-1/applicative-maybe/main.ssrg?raw"
@@ -48,6 +49,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "array-scoreboard": arrayScoreboard,
   "trait-badges": traitBadges,
   "generic-instance": genericInstance,
+  "user-add-operator": userAddOperator,
   "partial-functor-value": partialFunctorValue,
   "partial-constrained-function": partialConstrainedFunction,
   "applicative-maybe": applicativeMaybe,

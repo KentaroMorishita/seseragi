@@ -45,6 +45,89 @@ pub(super) fn infer_local_functional_instance(
     Some(selected.clone())
 }
 
+pub(super) fn infer_local_binary_instance(
+    trait_identity: &str,
+    trait_name: &str,
+    left: &TypedType,
+    right: &TypedType,
+    resolution: &TypedResolution<'_>,
+) -> Option<(TypedType, TypedInstanceEvidence)> {
+    let matches = resolution
+        .resolved()
+        .declarations
+        .iter()
+        .filter_map(|declaration| {
+            infer_binary_instance_candidate(
+                declaration,
+                trait_identity,
+                trait_name,
+                left,
+                right,
+                resolution,
+            )
+        })
+        .take(2)
+        .collect::<Vec<_>>();
+    let [selected] = matches.as_slice() else {
+        return None;
+    };
+    Some(selected.clone())
+}
+
+fn infer_binary_instance_candidate(
+    declaration: &SurfaceDecl,
+    trait_identity: &str,
+    trait_name: &str,
+    left: &TypedType,
+    right: &TypedType,
+    resolution: &TypedResolution<'_>,
+) -> Option<(TypedType, TypedInstanceEvidence)> {
+    let SurfaceDecl::Instance {
+        type_parameters,
+        trait_name_span,
+        arguments,
+        ..
+    } = declaration
+    else {
+        return None;
+    };
+    let [left_template, right_template, output_template] = arguments.as_slice() else {
+        return None;
+    };
+    let target = resolution.target(*trait_name_span, SymbolNamespace::Trait)?;
+    if resolution.symbol(target)?.canonical.as_deref() != Some(trait_identity) {
+        return None;
+    }
+    let left_template = typed_type_from_type_ref(left_template);
+    let right_template = typed_type_from_type_ref(right_template);
+    let mut substitutions = BTreeMap::<String, TypedType>::new();
+    infer_type_parameters(&left_template, left, type_parameters, &mut substitutions);
+    infer_type_parameters(&right_template, right, type_parameters, &mut substitutions);
+    for (template, actual) in [(&left_template, left), (&right_template, right)] {
+        let expected = substitute_type_parameters(template, &substitutions);
+        if !semantic_values_are_compatible(
+            &resolution.semantic_value_from_typed_type(&expected),
+            &resolution.semantic_value_from_typed_type(actual),
+        ) {
+            return None;
+        }
+    }
+    let output =
+        substitute_type_parameters(&typed_type_from_type_ref(output_template), &substitutions);
+    let constraint = TypedConstraint {
+        name: trait_name.to_owned(),
+        arguments: vec![left.clone(), right.clone(), output.clone()],
+    };
+    match_instance(
+        declaration,
+        trait_identity,
+        &constraint,
+        resolution,
+        &mut Vec::new(),
+    )
+    .map(|evidence| (output, evidence))
+}
+
 fn infer_functional_instance_candidate(
     declaration: &SurfaceDecl,
     trait_identity: &str,

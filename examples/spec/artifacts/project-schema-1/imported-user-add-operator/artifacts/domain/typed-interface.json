@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-user-add-operator::domain",
+  "source": "domain.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/imported-user-add-operator::domain::Score",
+      "namespace": "type",
+      "name": "Score",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 31
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Score",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-user-add-operator::domain::Points",
+      "namespace": "value",
+      "name": "Points",
+      "constructorOf": "fixture/imported-user-add-operator::domain::Score",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 21,
+        "end": 27
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score>",
+      "providerModule": "fixture/imported-user-add-operator::domain",
+      "traitIdentity": "std/prelude::Add",
+      "argumentIdentities": [
+        "fixture/imported-user-add-operator::domain::Score",
+        "fixture/imported-user-add-operator::domain::Score",
+        "fixture/imported-user-add-operator::domain::Score"
+      ],
+      "trait": "Add",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Add",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 33,
+        "end": 229
+      }
+    }
+  ]
+}

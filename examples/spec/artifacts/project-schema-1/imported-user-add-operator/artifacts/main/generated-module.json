@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-user-add-operator::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.string",
+      "core.adt",
+      "core.unit",
+      "effect.console.println",
+      "core.int64"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-user-add-operator/main.ts",
+    "sourceMap": "dist/imported-user-add-operator/main.ts.map"
+  }
+}

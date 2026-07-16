@@ -1,0 +1,17 @@
+import { Points, Score } from "./domain"
+
+fn combine<T> left: T -> right: T -> T
+where Add<T, T, T> =
+  left + right
+
+fn render score: Score -> String =
+  match score {
+    Points 42 -> "Imported Add: 42"
+    _ -> "unexpected score"
+  }
+
+pub effect fn main =
+  Points 20
+  |> combine (Points 22)
+  |> render
+  |> println

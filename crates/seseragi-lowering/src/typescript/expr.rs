@@ -465,10 +465,33 @@ fn lower_binary(
             };
         }
     }
+    if let Some(method) = operator_trait_method(&operator) {
+        if let Some(selected) = evidence.first().and_then(|selected| {
+            local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+        }) {
+            return TypeScriptExpr::DictionaryCall {
+                dictionary: Box::new(selected),
+                method: method.to_owned(),
+                arguments: vec![left, right],
+            };
+        }
+    }
     TypeScriptExpr::Binary {
         operator: typescript_binary_operator(&operator).to_owned(),
         left: Box::new(left),
         right: Box::new(right),
+    }
+}
+
+fn operator_trait_method(operator: &str) -> Option<&'static str> {
+    match operator {
+        "+" => Some("add"),
+        "-" => Some("sub"),
+        "*" => Some("mul"),
+        "/" => Some("div"),
+        "%" => Some("rem"),
+        "**" => Some("pow"),
+        _ => None,
     }
 }
 

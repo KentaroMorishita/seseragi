@@ -1,0 +1,2 @@
+pub fn invalid left: Bool -> right: Bool -> Bool =
+  left + right

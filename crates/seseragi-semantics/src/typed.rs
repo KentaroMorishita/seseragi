@@ -1271,6 +1271,34 @@ mod tests {
     }
 
     #[test]
+    fn selects_a_local_user_add_dictionary_for_binary_expression() {
+        let typed = type_module(
+            "artifact/user-add-evidence/main.ssrg",
+            "pub type Score = | Score Int\n\
+             instance Add<Score, Score, Score> {\n\
+               fn add left: Score -> right: Score -> Score = left\n\
+             }\n\
+             pub fn combine left: Score -> right: Score -> Score = left + right\n",
+        );
+
+        let TypedDecl::Fn { body, .. } = &typed.declarations[1] else {
+            panic!("expected function declaration");
+        };
+        assert!(matches!(
+            body,
+            TypedExpr::Binary { operator, evidence, type_ref, .. }
+                if operator == "+"
+                    && matches!(type_ref, TypedType::Named { name, arguments } if name == "Score" && arguments.is_empty())
+                    && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                        constraint: TypedConstraint { name, arguments },
+                        evidence: crate::TypedInstanceEvidence::Local { identity, .. },
+                    }] if name == "Add"
+                        && arguments.len() == 3
+                        && identity.starts_with("std/prelude::Add<"))
+        ));
+    }
+
+    #[test]
     fn records_selected_string_eq_evidence_on_binary_expression() {
         let typed = type_module(
             "artifact/string-eq-evidence/main.ssrg",

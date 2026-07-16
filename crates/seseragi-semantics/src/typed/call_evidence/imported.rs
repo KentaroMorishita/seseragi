@@ -53,6 +53,105 @@ pub(super) fn infer_imported_functional_instance(
     Some(selected.clone())
 }
 
+pub(super) fn infer_imported_binary_instance(
+    trait_identity: &str,
+    trait_name: &str,
+    left: &TypedType,
+    right: &TypedType,
+    resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
+) -> Option<(TypedType, TypedInstanceEvidence)> {
+    let matches = resolution
+        .resolved()
+        .dependency_instances
+        .iter()
+        .filter_map(|instance| {
+            infer_binary_instance_candidate(
+                instance,
+                trait_identity,
+                trait_name,
+                left,
+                right,
+                resolution,
+                scoped,
+            )
+        })
+        .take(2)
+        .collect::<Vec<_>>();
+    let [selected] = matches.as_slice() else {
+        return None;
+    };
+    Some(selected.clone())
+}
+
+fn infer_binary_instance_candidate(
+    instance: &crate::ResolvedDependencyInstance,
+    trait_identity: &str,
+    trait_name: &str,
+    left: &TypedType,
+    right: &TypedType,
+    resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
+) -> Option<(TypedType, TypedInstanceEvidence)> {
+    if instance.trait_identity != trait_identity {
+        return None;
+    }
+    let InterfaceType::Apply { arguments, .. } = &instance.head else {
+        return None;
+    };
+    let [left_template, right_template, output_template] = arguments.as_slice() else {
+        return None;
+    };
+    let templates = [left_template, right_template, output_template]
+        .into_iter()
+        .map(|template| {
+            resolution
+                .semantic_value_from_imported_type(
+                    template.clone(),
+                    &instance.provider_module,
+                    &instance.type_parameters,
+                )
+                .map(|value| value.type_ref)
+        })
+        .collect::<Option<Vec<_>>>()?;
+    let mut substitutions = BTreeMap::<String, TypedType>::new();
+    infer_type_parameters(
+        &templates[0],
+        left,
+        &instance.type_parameters,
+        &mut substitutions,
+    );
+    infer_type_parameters(
+        &templates[1],
+        right,
+        &instance.type_parameters,
+        &mut substitutions,
+    );
+    for (template, actual) in [(&templates[0], left), (&templates[1], right)] {
+        let expected = substitute_type_parameters(template, &substitutions);
+        if !semantic_values_are_compatible(
+            &resolution.semantic_value_from_typed_type(&expected),
+            &resolution.semantic_value_from_typed_type(actual),
+        ) {
+            return None;
+        }
+    }
+    let output = substitute_type_parameters(&templates[2], &substitutions);
+    let constraint = TypedConstraint {
+        name: trait_name.to_owned(),
+        arguments: vec![left.clone(), right.clone(), output.clone()],
+    };
+    match_imported_instance(
+        instance,
+        trait_identity,
+        &constraint,
+        resolution,
+        scoped,
+        &mut Vec::new(),
+    )
+    .map(|evidence| (output, evidence))
+}
+
 fn infer_functional_instance_candidate(
     instance: &crate::ResolvedDependencyInstance,
     trait_identity: &str,

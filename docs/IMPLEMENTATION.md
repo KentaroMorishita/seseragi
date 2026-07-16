@@ -572,7 +572,16 @@ Int算術はさらに、binary expressionとoperator sectionの双方で`Add<Int
 `std/string::Add` evidenceをTypedHirとCoreIrへ保持します。backendは数値変換やchecked Int helperを挟まず、
 TypeScriptのString連結へ表現します。`execution-schema-1/string-add`は複数の左結合`+`とcurried function、
 `$`、Consoleを組み合わせ、実際の出力まで固定します。これは`+`をoperand型から選ぶ最初の非Int standard
-instanceであり、user-defined `Add<L, R, O>` dictionary dispatchは引き続き一般instance gateで回収します。
+instanceです。
+
+`schema-1/user-add-operator`はこの境界をuser-defined instanceへ開きます。型checkerは`+`の左右operandから
+標準traitのfunctional dependency `(L, R) -> O`を解き、local / imported / scoped evidenceを通常のinstance
+selection順で選択します。TypedHir / CoreIrはordered `Add<L, R, O>` constraintと選択済みevidenceを保持し、
+TypeScriptIrはlocal dictionaryの`add` method callを生成します。
+`project-schema-1/imported-user-add-operator`ではconsumerがproviderのdictionary exportをimportして同じcallを実行し、
+型名やJavaScript tagをbackendで再判定しません。`semantic-diagnostics-schema-1/user-add-missing`は対応instanceがない
+concrete operandを`SES-T0201 instance.missing`で拒否します。operator sectionとstruct / newtype `operator`糖衣は
+このbinary dispatchを再利用する独立sliceとして残します。
 
 `schema-1/pure-comparison`はInt、Bool、Stringの`==` / `!=`で、それぞれのstandard `Eq<A>` evidenceを
 TypedHirとCoreIrへ保持します。backendのstrict equality表現は変えませんが、型検査後にoperand spellingから

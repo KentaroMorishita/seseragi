@@ -1,0 +1,9 @@
+pub type Score =
+  | Points Int
+
+instance Add<Score, Score, Score> {
+  fn add left: Score -> right: Score -> Score =
+    match (left, right) {
+      (Points leftValue, Points rightValue) -> Points (leftValue + rightValue)
+    }
+}

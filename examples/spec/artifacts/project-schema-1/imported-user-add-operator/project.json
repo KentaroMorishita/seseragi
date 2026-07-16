@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/imported-user-add-operator::domain",
+    "fixture/imported-user-add-operator::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/imported-user-add-operator::domain",
+      "source": "src/domain.ssrg",
+      "output": "dist/imported-user-add-operator/domain.js",
+      "artifacts": "artifacts/domain",
+      "imports": []
+    },
+    {
+      "id": "fixture/imported-user-add-operator::main",
+      "source": "src/main.ssrg",
+      "output": "dist/imported-user-add-operator/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./domain",
+          "module": "fixture/imported-user-add-operator::domain"
+        }
+      ]
+    }
+  ]
+}

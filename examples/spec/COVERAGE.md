@@ -13,7 +13,7 @@
 | optional record field / presence              | Lesson 27         | `compile/optional-record-field.ssrg`           | partial |
 | match、tuple、effectful for                   | Lessons 03 and 05 | RPS artifacts + exhaustiveness diagnostics      | partial |
 | `Range<Int>` literal / standard `Reducible`  | Lessons 05 and 12 | `schema-1/{range-reduce,range-invalid-endpoint}` + `execution-schema-1/range-reduce` | covered |
-| newtype、deriving、operator overload          | Lesson 07         | `schema-1/{pure-comparison,string-add}` + `execution-schema-1/{pure-comparison-string,string-add}` + coherence diagnostics | partial |
+| newtype、deriving、operator overload          | Lesson 07         | `schema-1/{pure-comparison,string-add,user-add-operator}` + `execution-schema-1/{pure-comparison-string,string-add,user-add-operator}` + `semantic-diagnostics-schema-1/user-add-missing` + `project-schema-1/imported-user-add-operator`; standard / local / imported `Add` evidenceとbinary dictionary dispatch。operator sectionのpolymorphic evidence、struct / newtype糖衣、user Eqは未接続 | partial |
 | Array/List、Iterator、lambda、Either          | Lessons 04 and 08 | `schema-1/{array-literal,list-literal,list-comprehension,iterator-unfold,user-iterable-comprehension}` + `execution-schema-1/{list-comprehension,iterator-unfold,user-iterable-comprehension}`; persistent `Empty / Cons` List literal、List `Iterable` / `Reducible`、lazy `unfold` / `next` runtime ABI + user `Iterable` collection boundary fixtures | partial |
 | pure / Effectful traversal short-circuit      | Lesson 04         | `compile/short-circuit-traversal.ssrg`         | covered |
 | Map / Set ordering and serialization          | Lesson 06         | seed / duplicate / canonical fixtures          | partial |

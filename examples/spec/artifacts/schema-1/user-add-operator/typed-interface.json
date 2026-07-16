@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/user-add-operator",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/user-add-operator::Score",
+      "namespace": "type",
+      "name": "Score",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 69,
+        "end": 99
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Score",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-add-operator::Score",
+      "namespace": "value",
+      "name": "Score",
+      "constructorOf": "artifact/user-add-operator::Score",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 90,
+        "end": 95
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-add-operator::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 487,
+        "end": 567
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Add<artifact/user-add-operator::Score,artifact/user-add-operator::Score,artifact/user-add-operator::Score>",
+      "providerModule": "artifact/user-add-operator",
+      "traitIdentity": "std/prelude::Add",
+      "argumentIdentities": [
+        "artifact/user-add-operator::Score",
+        "artifact/user-add-operator::Score",
+        "artifact/user-add-operator::Score"
+      ],
+      "trait": "Add",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Add",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 101,
+        "end": 294
+      }
+    }
+  ]
+}

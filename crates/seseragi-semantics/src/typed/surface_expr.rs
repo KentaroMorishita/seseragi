@@ -171,6 +171,23 @@ impl<'a> PureExpressionContext<'a> {
         Ok((trait_identity, selected))
     }
 
+    pub(super) fn select_binary_operator_evidence(
+        &self,
+        trait_name: &str,
+        left: TypedType,
+        right: TypedType,
+    ) -> Result<(TypedType, crate::TypedCallEvidence), TypedConstraint> {
+        let trait_identity = self.trait_identity(trait_name);
+        super::call_evidence::select_binary_operator_evidence(
+            trait_name,
+            left,
+            right,
+            trait_identity.as_deref(),
+            self.resolution,
+            &self.evidence_parameters,
+        )
+    }
+
     pub(super) fn trait_identity(&self, name: &str) -> Option<String> {
         let mut identities = self
             .resolution
@@ -377,11 +394,11 @@ pub(super) fn type_surface_expression(
         } => comprehension::type_list_comprehension(element, clauses, *span, context),
         SurfaceExpr::Binary {
             operator,
+            operator_span,
             left,
             right,
             span,
-            ..
-        } => binary::type_binary(operator, left, right, *span, context),
+        } => binary::type_binary(operator, *operator_span, left, right, *span, context),
         SurfaceExpr::If {
             condition,
             then_branch,

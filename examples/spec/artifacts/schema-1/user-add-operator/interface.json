@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "module": "artifact/user-add-operator",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/user-add-operator::Score",
+      "namespace": "type",
+      "name": "Score",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 69,
+        "end": 99
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Score",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/user-add-operator::Score",
+      "namespace": "value",
+      "name": "Score",
+      "constructorOf": "artifact/user-add-operator::Score",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 90,
+        "end": 95
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "trait": "Add",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Add",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 101,
+        "end": 294
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+// `+` is selected through the ordinary user-defined Add dictionary.
+pub type Score =
+  | Score Int
+
+instance Add<Score, Score, Score> {
+  fn add left: Score -> right: Score -> Score =
+    match (left, right) {
+      (Score leftValue, Score rightValue) -> Score (leftValue + rightValue)
+    }
+}
+
+fn combine<T> left: T -> right: T -> T
+where Add<T, T, T> =
+  left + right
+
+fn render score: Score -> String =
+  match score {
+    Score 42 -> "User Add: 42"
+    _ -> "unexpected score"
+  }
+
+pub effect fn main =
+  Score 20
+  |> combine (Score 22)
+  |> render
+  |> println

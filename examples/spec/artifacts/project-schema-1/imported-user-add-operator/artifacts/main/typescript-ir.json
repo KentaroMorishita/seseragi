@@ -1,0 +1,256 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-user-add-operator::main",
+  "runtimeRequirements": [
+    "core.string",
+    "core.adt",
+    "core.unit",
+    "effect.console.println",
+    "core.int64"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-user-add-operator::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "Points",
+          "local": "Points",
+          "sourceLocal": "Points",
+          "canonical": "fixture/imported-user-add-operator::domain::Points",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        },
+        {
+          "imported": "Score",
+          "local": "Score",
+          "sourceLocal": "Score",
+          "canonical": "fixture/imported-user-add-operator::domain::Score",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 17,
+            "end": 22
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Add$0",
+          "local": "__ssrg$instance$Add$0",
+          "sourceLocal": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score>",
+          "canonical": "std/prelude::Add<fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score,fixture/imported-user-add-operator::domain::Score>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 40
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 40
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "combine",
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Add",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            },
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            },
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "type": "T",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "T",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "add",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 42,
+        "end": 116
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "score",
+          "type": "Score",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "score"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Points"
+              },
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "value": "42"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Imported Add: 42"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "unexpected score"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 118,
+        "end": 236
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "combine",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "Points",
+                    "arguments": [
+                      {
+                        "kind": "bigint",
+                        "value": "22"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "Points",
+                    "arguments": [
+                      {
+                        "kind": "bigint",
+                        "value": "20"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Add$0"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 238,
+        "end": 320
+      }
+    }
+  ]
+}
