@@ -48,6 +48,9 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
         }
         SurfaceExpr::ArrayComprehension {
             element, clauses, ..
+        }
+        | SurfaceExpr::ListComprehension {
+            element, clauses, ..
         } => {
             collect_expression_errors(element, errors);
             for clause in clauses {

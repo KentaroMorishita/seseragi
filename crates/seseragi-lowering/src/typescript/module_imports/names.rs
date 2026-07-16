@@ -87,6 +87,9 @@ fn collect_local_expr_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
         }
         CoreExpr::ArrayComprehension {
             element, clauses, ..
+        }
+        | CoreExpr::ListComprehension {
+            element, clauses, ..
         } => {
             collect_local_expr_names(element, names);
             for clause in clauses {

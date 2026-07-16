@@ -5,13 +5,15 @@ pub(super) fn check_typescript_runtime_list(root: &Path) -> Result<(), String> {
     let output = Command::new("bun")
         .arg("--eval")
         .arg(
-            "import { fromArray } from \"./src/list.ts\";\n\
+            "import { collectMap, fromArray, reduce } from \"./src/list.ts\";\n\
              const values = fromArray([1n, 2n, 3n]);\n\
              const empty = fromArray([]);\n\
              const collected = [];\n\
              let cursor = values;\n\
              while (cursor.tag === \"Cons\") { collected.push(String(cursor.head)); cursor = cursor.tail; }\n\
-             process.stdout.write(JSON.stringify({ collected, empty: empty.tag, frozen: Object.isFrozen(values) && values.tag === \"Cons\" && Object.isFrozen(values.tail) }));\n",
+             const total = reduce(0n, (sum) => (value) => sum + value, values);\n\
+             const odds = collectMap(values, (value) => value % 2n === 1n, (value) => String(value * value));\n\
+             process.stdout.write(JSON.stringify({ collected, empty: empty.tag, frozen: Object.isFrozen(values) && values.tag === \"Cons\" && Object.isFrozen(values.tail), total: String(total), odds }));\n",
         )
         .current_dir(root.join("runtime/ts"))
         .output()
@@ -23,7 +25,7 @@ pub(super) fn check_typescript_runtime_list(root: &Path) -> Result<(), String> {
             String::from_utf8_lossy(&output.stderr)
         ));
     }
-    let expected = b"{\"collected\":[\"1\",\"2\",\"3\"],\"empty\":\"Empty\",\"frozen\":true}";
+    let expected = b"{\"collected\":[\"1\",\"2\",\"3\"],\"empty\":\"Empty\",\"frozen\":true,\"total\":\"6\",\"odds\":[\"1\",\"9\"]}";
     if output.stdout != expected {
         return Err(format!(
             "TypeScript List runtime probe returned unexpected values: {}",

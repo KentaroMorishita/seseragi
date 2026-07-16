@@ -22,6 +22,13 @@ const RANGE_REDUCE: RuntimeCollectionOperation = RuntimeCollectionOperation {
     export_name: "reduce",
 };
 
+const LIST_REDUCE: RuntimeCollectionOperation = RuntimeCollectionOperation {
+    runtime_feature: "core.list.reduce",
+    local_name: "_ssrg_list_reduce",
+    module: "@seseragi/runtime/list",
+    export_name: "reduce",
+};
+
 const ARRAY_COMPREHEND: RuntimeCollectionOperation = RuntimeCollectionOperation {
     runtime_feature: "core.array.comprehend",
     local_name: "_ssrg_array_comprehend",
@@ -50,6 +57,20 @@ const RANGE_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOpera
     export_name: "collectFlatMap",
 };
 
+const LIST_COMPREHEND: RuntimeCollectionOperation = RuntimeCollectionOperation {
+    runtime_feature: "core.list.comprehend",
+    local_name: "_ssrg_list_comprehend",
+    module: "@seseragi/runtime/list",
+    export_name: "collectMap",
+};
+
+const LIST_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOperation {
+    runtime_feature: "core.list.comprehend.flat",
+    local_name: "_ssrg_list_comprehend_flat",
+    module: "@seseragi/runtime/list",
+    export_name: "collectFlatMap",
+};
+
 pub(crate) fn runtime_collection_operation(
     callee: &str,
     evidence: &[CoreCallEvidence],
@@ -66,6 +87,7 @@ pub(crate) fn runtime_collection_operation(
     match identity.as_str() {
         "std/array::Reducible" => Some(&ARRAY_REDUCE),
         "std/range::Reducible" => Some(&RANGE_REDUCE),
+        "std/list::Reducible" => Some(&LIST_REDUCE),
         _ => None,
     }
 }
@@ -76,10 +98,13 @@ pub(crate) fn runtime_collection_operation_for_feature(
     [
         ARRAY_REDUCE,
         RANGE_REDUCE,
+        LIST_REDUCE,
         ARRAY_COMPREHEND,
         ARRAY_COMPREHEND_FLAT,
         RANGE_COMPREHEND,
         RANGE_COMPREHEND_FLAT,
+        LIST_COMPREHEND,
+        LIST_COMPREHEND_FLAT,
     ]
     .into_iter()
     .find(|operation| operation.runtime_feature == feature)
@@ -100,6 +125,8 @@ pub(crate) fn runtime_iterable_operation(
         ("std/array::Iterable", true) => Some(&ARRAY_COMPREHEND_FLAT),
         ("std/range::Iterable", false) => Some(&RANGE_COMPREHEND),
         ("std/range::Iterable", true) => Some(&RANGE_COMPREHEND_FLAT),
+        ("std/list::Iterable", false) => Some(&LIST_COMPREHEND),
+        ("std/list::Iterable", true) => Some(&LIST_COMPREHEND_FLAT),
         _ => None,
     }
 }
@@ -157,6 +184,37 @@ mod tests {
             runtime_collection_operation("std/prelude::reduce", &evidence)
                 .map(|operation| operation.runtime_feature),
             Some("core.range.reduce")
+        );
+    }
+
+    #[test]
+    fn resolves_list_reduce_with_selected_standard_evidence() {
+        let evidence = [CoreCallEvidence {
+            constraint: CoreInstanceConstraint {
+                name: "Reducible".to_owned(),
+                arguments: vec![
+                    CoreType::Named {
+                        name: "List".to_owned(),
+                        arguments: vec![CoreType::Named {
+                            name: "Int".to_owned(),
+                            arguments: Vec::new(),
+                        }],
+                    },
+                    CoreType::Named {
+                        name: "Int".to_owned(),
+                        arguments: Vec::new(),
+                    },
+                ],
+            },
+            evidence: CoreInstanceEvidence::Standard {
+                identity: "std/list::Reducible".to_owned(),
+            },
+        }];
+
+        assert_eq!(
+            runtime_collection_operation("std/prelude::reduce", &evidence)
+                .map(|operation| operation.runtime_feature),
+            Some("core.list.reduce")
         );
     }
 

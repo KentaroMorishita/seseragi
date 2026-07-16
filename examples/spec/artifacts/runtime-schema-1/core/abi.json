@@ -239,6 +239,39 @@
       }
     },
     {
+      "id": "core.list.reduce",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "B -> (B -> A -> B) -> List<A> -> B",
+      "instanceIdentity": "std/list::Reducible",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "reduce"
+      }
+    },
+    {
+      "id": "core.list.comprehend",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Iterable<List<A>, A> -> (A -> Bool) -> (A -> B) -> Array<B>",
+      "instanceIdentity": "std/list::Iterable",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "collectMap"
+      }
+    },
+    {
+      "id": "core.list.comprehend.flat",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Iterable<List<A>, A> -> (A -> Bool) -> (A -> Array<B>) -> Array<B>",
+      "instanceIdentity": "std/list::Iterable",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "collectFlatMap"
+      }
+    },
+    {
       "id": "core.unit",
       "kind": "value-representation",
       "typescript": "undefined",

@@ -37,7 +37,7 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
         "unit" | "integer" | "string" | "boolean" | "name" => Ok(()),
         "tuple" => validate_expression_array(expression, "elements", path, 2),
         "array" | "list" => validate_expression_array(expression, "elements", path, 0),
-        "arrayComprehension" => validate_comprehension(expression, path),
+        "arrayComprehension" | "listComprehension" => validate_comprehension(expression, path),
         "grouped" => validate_child(expression, "value", path),
         "application" => {
             validate_child(expression, "function", path)?;

@@ -113,6 +113,9 @@ fn collect_expr(expr: &CoreExpr, imported: &mut BTreeSet<(String, String)>) {
         }
         CoreExpr::ArrayComprehension {
             element, clauses, ..
+        }
+        | CoreExpr::ListComprehension {
+            element, clauses, ..
         } => {
             collect_expr(element, imported);
             for clause in clauses {

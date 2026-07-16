@@ -374,6 +374,11 @@ pub enum SurfaceExpr {
         clauses: Vec<SurfaceComprehensionClause>,
         span: ByteSpan,
     },
+    ListComprehension {
+        element: Box<SurfaceExpr>,
+        clauses: Vec<SurfaceComprehensionClause>,
+        span: ByteSpan,
+    },
     Binary {
         operator: String,
         operator_span: ByteSpan,
@@ -420,6 +425,7 @@ impl SurfaceExpr {
             | Self::Array { span, .. }
             | Self::List { span, .. }
             | Self::ArrayComprehension { span, .. }
+            | Self::ListComprehension { span, .. }
             | Self::Binary { span, .. }
             | Self::If { span, .. }
             | Self::Match { span, .. }

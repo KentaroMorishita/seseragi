@@ -12,11 +12,68 @@ use super::{
     named_type_is, type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis,
 };
 
+#[derive(Clone, Copy)]
+enum ResultCollection {
+    Array,
+    List,
+}
+
+impl ResultCollection {
+    fn name(self) -> &'static str {
+        match self {
+            Self::Array => "Array",
+            Self::List => "List",
+        }
+    }
+
+    fn expression(
+        self,
+        element: TypedExpr,
+        clauses: Vec<TypedComprehensionClause>,
+        type_ref: TypedType,
+        origin: ByteSpan,
+    ) -> TypedExpr {
+        match self {
+            Self::Array => TypedExpr::ArrayComprehension {
+                element: Box::new(element),
+                clauses,
+                type_ref,
+                origin,
+            },
+            Self::List => TypedExpr::ListComprehension {
+                element: Box::new(element),
+                clauses,
+                type_ref,
+                origin,
+            },
+        }
+    }
+}
+
 pub(super) fn type_array_comprehension(
     element: &SurfaceExpr,
     clauses: &[SurfaceComprehensionClause],
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    type_comprehension(element, clauses, span, context, ResultCollection::Array)
+}
+
+pub(super) fn type_list_comprehension(
+    element: &SurfaceExpr,
+    clauses: &[SurfaceComprehensionClause],
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    type_comprehension(element, clauses, span, context, ResultCollection::List)
+}
+
+fn type_comprehension(
+    element: &SurfaceExpr,
+    clauses: &[SurfaceComprehensionClause],
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+    result_collection: ResultCollection,
 ) -> SurfaceExpressionAnalysis {
     let mut current_context = context.without_expected();
     let mut typed_clauses = Vec::with_capacity(clauses.len());
@@ -97,7 +154,7 @@ pub(super) fn type_array_comprehension(
         });
     }
 
-    let expected_element = expected_array_element(context);
+    let expected_element = expected_collection_element(context, result_collection);
     let element_analysis = type_surface_expression(
         element,
         &current_context.with_expected(expected_element.clone()),
@@ -111,7 +168,7 @@ pub(super) fn type_array_comprehension(
     let array_issue =
         (!semantic_values_are_compatible(&expected_element, &actual_element)).then(|| {
             ArrayIssue::ElementTypeMismatch {
-                collection: "Array",
+                collection: result_collection.name(),
                 element: element.span(),
                 index: 0,
                 expected: expected_element.type_ref.clone(),
@@ -124,7 +181,7 @@ pub(super) fn type_array_comprehension(
         || !match_issues.is_empty()
         || array_issue.is_some();
     let type_ref = TypedType::Named {
-        name: "Array".to_owned(),
+        name: result_collection.name().to_owned(),
         arguments: vec![if invalid {
             TypedType::Hole
         } else {
@@ -132,12 +189,12 @@ pub(super) fn type_array_comprehension(
         }],
     };
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
-        TypedExpr::ArrayComprehension {
-            element: Box::new(element_analysis.value.clone()),
-            clauses: typed_clauses,
+        result_collection.expression(
+            element_analysis.value.clone(),
+            typed_clauses,
             type_ref,
-            origin: span,
-        },
+            span,
+        ),
         if invalid {
             SemanticTypeKey::Invalid
         } else {
@@ -154,10 +211,13 @@ pub(super) fn type_array_comprehension(
     result
 }
 
-fn expected_array_element(context: &PureExpressionContext<'_>) -> Option<SemanticValueType> {
+fn expected_collection_element(
+    context: &PureExpressionContext<'_>,
+    result_collection: ResultCollection,
+) -> Option<SemanticValueType> {
     let TypedType::Named { name, arguments } = &context.expected()?.type_ref else {
         return None;
     };
-    (name == "Array" && arguments.len() == 1)
+    (name == result_collection.name() && arguments.len() == 1)
         .then(|| context.semantic_value_from_typed_type(&arguments[0]))
 }

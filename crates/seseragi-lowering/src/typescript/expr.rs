@@ -152,6 +152,21 @@ pub(super) fn lower_core_expr_to_typescript(
         CoreExpr::ArrayComprehension {
             element, clauses, ..
         } => lower_array_comprehension(*element, clauses, imported_values, imported_types, 0),
+        CoreExpr::ListComprehension {
+            element, clauses, ..
+        } => {
+            let operation = runtime_list_literal_operation();
+            TypeScriptExpr::RuntimeCall {
+                callee: operation.local_name.to_owned(),
+                arguments: vec![lower_array_comprehension(
+                    *element,
+                    clauses,
+                    imported_values,
+                    imported_types,
+                    0,
+                )],
+            }
+        }
         CoreExpr::Binary {
             operator,
             left,

@@ -35,6 +35,11 @@ pub(super) fn resolve_expression(
             element,
             clauses,
             span,
+        }
+        | SurfaceExpr::ListComprehension {
+            element,
+            clauses,
+            span,
         } => {
             let mut clause_scope = scope;
             for clause in clauses {

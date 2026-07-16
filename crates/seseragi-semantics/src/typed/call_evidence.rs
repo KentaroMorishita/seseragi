@@ -357,10 +357,12 @@ fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
     }
     match (constraint.name.as_str(), name.as_str()) {
         ("Iterable", "Array") => Some("std/array::Iterable".to_owned()),
+        ("Iterable", "List") => Some("std/list::Iterable".to_owned()),
         ("Iterable", "Range") if named_type_is(element, "Int") => {
             Some("std/range::Iterable".to_owned())
         }
         ("Reducible", "Array") => Some("std/array::Reducible".to_owned()),
+        ("Reducible", "List") => Some("std/list::Reducible".to_owned()),
         ("Reducible", "Range") if named_type_is(element, "Int") => {
             Some("std/range::Reducible".to_owned())
         }
@@ -476,6 +478,7 @@ fn standard_iterable_element_type(collection: &TypedType) -> Option<TypedType> {
     };
     match (name.as_str(), arguments.as_slice()) {
         ("Array", [element]) => Some(element.clone()),
+        ("List", [element]) => Some(element.clone()),
         ("Range", [element]) if named_type_is(element, "Int") => Some(element.clone()),
         _ => None,
     }
@@ -646,6 +649,13 @@ mod tests {
                     arguments: vec![int.clone()],
                 },
                 "std/range::Iterable",
+            ),
+            (
+                TypedType::Named {
+                    name: "List".to_owned(),
+                    arguments: vec![int.clone()],
+                },
+                "std/list::Iterable",
             ),
         ] {
             let evidence = select_call_evidence(&[TypedConstraint {

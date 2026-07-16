@@ -104,6 +104,7 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
         | TypedExpr::Array { type_ref, .. }
         | TypedExpr::List { type_ref, .. }
         | TypedExpr::ArrayComprehension { type_ref, .. }
+        | TypedExpr::ListComprehension { type_ref, .. }
         | TypedExpr::Binary { type_ref, .. }
         | TypedExpr::If { type_ref, .. }
         | TypedExpr::Match { type_ref, .. } => type_ref.clone(),

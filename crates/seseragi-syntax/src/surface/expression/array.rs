@@ -31,7 +31,7 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<S
         .is_some_and(|token| token.kind == TokenKind::OperatorCustom && token.raw == "|")
     {
         parser.cursor += 1;
-        return parse_comprehension(parser, open, first);
+        return parse_comprehension(parser, open, first, is_list);
     }
 
     let mut elements = vec![first];
@@ -75,6 +75,7 @@ fn parse_comprehension(
     parser: &mut ExpressionParser<'_>,
     open: &Token,
     element: SurfaceExpr,
+    is_list: bool,
 ) -> Option<SurfaceExpr> {
     let mut clauses = Vec::new();
     loop {
@@ -111,13 +112,22 @@ fn parse_comprehension(
         parser.cursor += 1;
     }
     let close = parser.consume(TokenKind::PunctuationSquareRight)?;
-    Some(SurfaceExpr::ArrayComprehension {
-        element: Box::new(element),
-        clauses,
-        span: ByteSpan {
-            start: open.start,
-            end: close.end,
-        },
+    let span = ByteSpan {
+        start: open.start,
+        end: close.end,
+    };
+    Some(if is_list {
+        SurfaceExpr::ListComprehension {
+            element: Box::new(element),
+            clauses,
+            span,
+        }
+    } else {
+        SurfaceExpr::ArrayComprehension {
+            element: Box::new(element),
+            clauses,
+            span,
+        }
     })
 }
 

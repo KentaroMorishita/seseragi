@@ -278,6 +278,10 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
             name: "Array".to_owned(),
             arguments: vec![surface_expression_type_hint(element)?],
         }),
+        SurfaceExpr::ListComprehension { element, .. } => Some(TypedType::Named {
+            name: "List".to_owned(),
+            arguments: vec![surface_expression_type_hint(element)?],
+        }),
         SurfaceExpr::Grouped { value, .. } => surface_expression_type_hint(value),
         SurfaceExpr::If {
             then_branch,
@@ -337,6 +341,11 @@ pub(super) fn type_surface_expression(
             clauses,
             span,
         } => comprehension::type_array_comprehension(element, clauses, *span, context),
+        SurfaceExpr::ListComprehension {
+            element,
+            clauses,
+            span,
+        } => comprehension::type_list_comprehension(element, clauses, *span, context),
         SurfaceExpr::Binary {
             operator,
             left,

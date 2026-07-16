@@ -1,0 +1,29 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/list-comprehension"
+  ],
+  "sourcesContent": [
+    "fn oddSquares values: List<Int> -> List<Int> =\n  `[value * value | value <- values, value % 2 == 1]\n\nfn total values: List<Int> -> Int =\n  values\n    |> reduce 0 (+)\n\nfn renderTotal total: Int -> String =\n  match total {\n    35 -> \"persistent List total: 35\"\n    _ -> \"unexpected List total\"\n  }\n\npub effect fn main =\n  `[1, 2, 3, 4, 5]\n    |> oddSquares\n    |> total\n    |> renderTotal\n    |> println\n"
+  ],
+  "names": [
+    "oddSquares",
+    "fromArray",
+    "_ssrg_list_comprehend",
+    "remainder",
+    "multiply",
+    "total",
+    "_ssrg_list_reduce",
+    "add",
+    "renderTotal",
+    "main",
+    "println",
+    "renderTotal",
+    "total",
+    "oddSquares",
+    "fromArray"
+  ],
+  "mappings": ";;;;AAAAA;AAGAK;AAIAG;AAMAC"
+}

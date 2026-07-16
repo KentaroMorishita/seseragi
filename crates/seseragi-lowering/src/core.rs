@@ -251,6 +251,13 @@ pub enum CoreExpr {
         type_ref: CoreType,
         origin: SourceSpan,
     },
+    ListComprehension {
+        element: Box<CoreExpr>,
+        clauses: Vec<CoreComprehensionClause>,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
     Binary {
         operator: String,
         left: Box<CoreExpr>,

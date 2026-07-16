@@ -330,6 +330,44 @@ mod tests {
     }
 
     #[test]
+    fn types_list_comprehension_with_standard_iterable_evidence() {
+        let typed = type_module(
+            "artifact/list-comprehension/main.ssrg",
+            "pub fn squares values: List<Int> -> List<Int> = `[value * value | value <- values, value % 2 == 1]\n",
+        );
+
+        let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+            panic!("expected function declaration");
+        };
+        let TypedExpr::ListComprehension {
+            clauses, type_ref, ..
+        } = body
+        else {
+            panic!("expected typed list comprehension: {body:#?}");
+        };
+        assert_eq!(
+            type_ref,
+            &TypedType::Named {
+                name: "List".to_owned(),
+                arguments: vec![TypedType::Named {
+                    name: "Int".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            }
+        );
+        assert!(matches!(
+            &clauses[0],
+            crate::TypedComprehensionClause::Generator {
+                evidence: crate::TypedCallEvidence {
+                    evidence: crate::TypedInstanceEvidence::Standard { identity },
+                    ..
+                },
+                ..
+            } if identity == "std/list::Iterable"
+        ));
+    }
+
+    #[test]
     fn infers_user_iterable_element_type_and_selects_local_evidence() {
         let typed = type_module(
             "artifact/user-iterable/main.ssrg",

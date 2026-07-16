@@ -77,7 +77,10 @@ pub(crate) fn check_typescript_runtime_package(
     {
         iterator::check_typescript_runtime_iterator(root)?;
     }
-    if runtime_helper_is_declared(abi, "core.list.from-array") {
+    if runtime_helper_is_declared(abi, "core.list.from-array")
+        || runtime_helper_is_declared(abi, "core.list.reduce")
+        || runtime_helper_is_declared(abi, "core.list.comprehend")
+    {
         list::check_typescript_runtime_list(root)?;
     }
     if runtime_helper_is_declared(abi, "core.range.comprehend") {

@@ -63,6 +63,24 @@ pub(super) fn collect_expr_type_imports(
                 }
             }
         }
+        CoreExpr::ListComprehension {
+            element, clauses, ..
+        } => {
+            collect_expr_type_imports(element, bindings, requirements, imports);
+            for clause in clauses {
+                match clause {
+                    CoreComprehensionClause::Generator {
+                        pattern, source, ..
+                    } => {
+                        collect_pattern_type_imports(pattern, bindings, requirements, imports);
+                        collect_expr_type_imports(source, bindings, requirements, imports);
+                    }
+                    CoreComprehensionClause::Guard { condition, .. } => {
+                        collect_expr_type_imports(condition, bindings, requirements, imports);
+                    }
+                }
+            }
+        }
         CoreExpr::Binary {
             left,
             right,

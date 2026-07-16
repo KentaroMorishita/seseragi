@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "module": "artifact/list-comprehension",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.list",
+      "core.int64",
+      "core.list.from-array",
+      "core.int64.multiply",
+      "core.list.comprehend",
+      "core.bool",
+      "core.int64.remainder",
+      "core.list.reduce",
+      "core.int64.add",
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

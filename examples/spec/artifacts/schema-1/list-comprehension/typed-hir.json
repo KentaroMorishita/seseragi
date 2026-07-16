@@ -1,0 +1,845 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/list-comprehension",
+  "externalTypeBindings": [
+    {
+      "spelling": "List",
+      "canonical": "std/prelude::List"
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/list-comprehension::oddSquares",
+      "visibility": "private",
+      "origin": {
+        "start": 0,
+        "end": 99
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 14,
+            "end": 20
+          }
+        }
+      ],
+      "body": {
+        "kind": "list-comprehension",
+        "element": {
+          "kind": "binary",
+          "operator": "*",
+          "left": {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 51,
+              "end": 56
+            }
+          },
+          "right": {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 59,
+              "end": 64
+            }
+          },
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Mul",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/int::Mul"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 51,
+            "end": 64
+          }
+        },
+        "clauses": [
+          {
+            "kind": "generator",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 7,
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 67,
+                "end": 72
+              }
+            },
+            "source": {
+              "kind": "variable",
+              "name": "values",
+              "type": {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 76,
+                "end": 82
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Iterable",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "List",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/list::Iterable"
+              }
+            },
+            "origin": {
+              "start": 67,
+              "end": 82
+            }
+          },
+          {
+            "kind": "guard",
+            "condition": {
+              "kind": "binary",
+              "operator": "==",
+              "left": {
+                "kind": "binary",
+                "operator": "%",
+                "left": {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 84,
+                    "end": 89
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "value": "2",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 92,
+                    "end": 93
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Rem",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/int::Rem"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 84,
+                  "end": 93
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "value": "1",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 97,
+                  "end": 98
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Eq"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "start": 84,
+                "end": 98
+              }
+            },
+            "origin": {
+              "start": 84,
+              "end": 98
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 49,
+          "end": 99
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/list-comprehension::total",
+      "visibility": "private",
+      "origin": {
+        "start": 101,
+        "end": 165
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 110,
+            "end": 116
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::reduce",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "0",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 160,
+              "end": 161
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "+",
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Add",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/int::Add"
+                }
+              }
+            ],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            },
+            "origin": {
+              "start": 163,
+              "end": 164
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 139,
+              "end": 145
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/list::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 139,
+          "end": 165
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/list-comprehension::renderTotal",
+      "visibility": "private",
+      "origin": {
+        "start": 167,
+        "end": 295
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "total",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 182,
+            "end": 187
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "total",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 213,
+            "end": 218
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "integer",
+              "value": "35",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 225,
+                "end": 227
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "persistent List total: 35",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 231,
+                "end": 258
+              }
+            },
+            "origin": {
+              "start": 225,
+              "end": 258
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 263,
+                "end": 264
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "unexpected List total",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 268,
+                "end": 291
+              }
+            },
+            "origin": {
+              "start": 263,
+              "end": 291
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 207,
+          "end": 295
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/list-comprehension::main",
+      "visibility": "public",
+      "origin": {
+        "start": 297,
+        "end": 401
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/list-comprehension::renderTotal",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/list-comprehension::total",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "artifact/list-comprehension::oddSquares",
+                    "arguments": [
+                      {
+                        "kind": "list",
+                        "elements": [
+                          {
+                            "kind": "integer",
+                            "value": "1",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 322,
+                              "end": 323
+                            }
+                          },
+                          {
+                            "kind": "integer",
+                            "value": "2",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 325,
+                              "end": 326
+                            }
+                          },
+                          {
+                            "kind": "integer",
+                            "value": "3",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 328,
+                              "end": 329
+                            }
+                          },
+                          {
+                            "kind": "integer",
+                            "value": "4",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 331,
+                              "end": 332
+                            }
+                          },
+                          {
+                            "kind": "integer",
+                            "value": "5",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 334,
+                              "end": 335
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "List",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 320,
+                          "end": 336
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 320,
+                      "end": 354
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 320,
+                  "end": 367
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 320,
+              "end": 386
+            }
+          }
+        ],
+        "origin": {
+          "start": 320,
+          "end": 401
+        }
+      }
+    }
+  ]
+}

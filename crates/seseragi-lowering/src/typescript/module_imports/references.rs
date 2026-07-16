@@ -45,6 +45,9 @@ fn collect_expr_value_symbols(expr: &CoreExpr, values: &mut BTreeSet<String>) {
         }
         CoreExpr::ArrayComprehension {
             element, clauses, ..
+        }
+        | CoreExpr::ListComprehension {
+            element, clauses, ..
         } => {
             collect_expr_value_symbols(element, values);
             for clause in clauses {
@@ -201,6 +204,12 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
             }
         }
         CoreExpr::ArrayComprehension {
+            element,
+            clauses,
+            type_ref,
+            ..
+        }
+        | CoreExpr::ListComprehension {
             element,
             clauses,
             type_ref,

@@ -154,6 +154,20 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
+        TypedExpr::ListComprehension {
+            element,
+            clauses,
+            type_ref,
+            origin,
+        } => CoreExpr::ListComprehension {
+            element: Box::new(lower_expr(source, *element)),
+            clauses: clauses
+                .into_iter()
+                .map(|clause| lower_comprehension_clause(source, clause))
+                .collect(),
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
         TypedExpr::Binary {
             operator,
             left,

@@ -25,3 +25,52 @@ export function fromArray<A>(values: ReadonlyArray<A>): List<A> {
   }
   return result
 }
+
+/** Runtime implementation of the standard `Reducible<List<A>, A>` instance. */
+export function reduce<A, B>(
+  initial: B,
+  step: (accumulator: B) => (value: A) => B,
+  values: List<A>,
+): B {
+  let accumulator = initial
+  let cursor = values
+  while (cursor.tag === "Cons") {
+    accumulator = step(accumulator)(cursor.head)
+    cursor = cursor.tail
+  }
+  return accumulator
+}
+
+/** Pure comprehension lowering for the standard List Iterable instance. */
+export function collectMap<A, B>(
+  values: List<A>,
+  predicate: (value: A) => boolean,
+  transform: (value: A) => B,
+): ReadonlyArray<B> {
+  const result: B[] = []
+  let cursor = values
+  while (cursor.tag === "Cons") {
+    if (predicate(cursor.head)) {
+      result.push(transform(cursor.head))
+    }
+    cursor = cursor.tail
+  }
+  return result
+}
+
+/** Nested comprehension lowering for the standard List Iterable instance. */
+export function collectFlatMap<A, B>(
+  values: List<A>,
+  predicate: (value: A) => boolean,
+  transform: (value: A) => ReadonlyArray<B>,
+): ReadonlyArray<B> {
+  const result: B[] = []
+  let cursor = values
+  while (cursor.tag === "Cons") {
+    if (predicate(cursor.head)) {
+      result.push(...transform(cursor.head))
+    }
+    cursor = cursor.tail
+  }
+  return result
+}

@@ -1025,11 +1025,16 @@ runtime requirement closureとNode executionを固定します。これにより
 排除しました。
 
 同じcollection roadmapの次のsliceとして、仕様3.8のpersistent `List<A>` literalを
-`schema-1/list-literal`でTokenStreamからgenerated TypeScriptまで接続します。`` `[a, b] ``はlexerでtemplate literalと
+`schema-1/list-literal`でTokenStreamからgenerated TypeScriptまで接続しました。`` `[a, b] ``はlexerでtemplate literalと
 区別し、Arrayと共有するhomogeneous collection typingを通しますが、backendでは`ReadonlyArray<A>`へ同一化しません。
 `core.list.from-array` runtime ABIがimmutableな`Empty / Cons` chainを構築し、Listを明示するparameter annotationでは
-`@seseragi/runtime/list`のnominal type importを使用します。続くgateで`Iterable<List<A>, A>`、
-`Reducible<List<A>, A>`、List result comprehensionを同じevidence/dictionary境界へ合流させます。
+`@seseragi/runtime/list`のnominal type importを使用します。
+
+`schema-1/list-comprehension`では、standard `Iterable<List<A>, A>` / `Reducible<List<A>, A>`を既存のordered
+trait argumentとselected evidenceへ合流させました。backtick内包表記はArray / Rangeと同じclause typing、pattern filter、
+nested collector loweringを再利用し、最終collectorだけを`fromArray`でpersistent Listへ変換します。List sourceの走査は
+immutable nodeを消費せず、generic `reduce`も選択済み`std/list::Reducible`からList runtimeへ接続します。同名execution
+fixtureとPlayground sampleは`` `[1, 2, 3, 4, 5] ``からodd squareのListを作り、合計`35`をactual executionで固定します。
 
 現時点のderived `Show`は、local非generic ADTと限られたpayload evidenceを扱う閉じたsliceです。shallow
 `ModuleInterface`の`InterfaceInstance`はidentityなしを許し、final `TypedInterface`だけがcanonical trait identityとordered head

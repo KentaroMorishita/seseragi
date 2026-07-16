@@ -19,6 +19,7 @@ pub(super) fn type_ref_from_core_expr(
         | CoreExpr::Array { type_ref, .. }
         | CoreExpr::List { type_ref, .. }
         | CoreExpr::ArrayComprehension { type_ref, .. }
+        | CoreExpr::ListComprehension { type_ref, .. }
         | CoreExpr::Binary { type_ref, .. }
         | CoreExpr::If { type_ref, .. }
         | CoreExpr::Decision { type_ref, .. }

@@ -80,8 +80,20 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             clauses,
             type_ref,
             ..
+        }
+        | CoreExpr::ListComprehension {
+            element,
+            clauses,
+            type_ref,
+            ..
         } => {
             collect_type_runtime_requirement(type_ref, requirements);
+            if matches!(expr, CoreExpr::ListComprehension { .. }) {
+                push_unique(
+                    requirements,
+                    runtime_list_literal_operation().runtime_feature,
+                );
+            }
             collect_expr_runtime_requirements(element, requirements);
             for (index, clause) in clauses.iter().enumerate() {
                 match clause {
@@ -355,7 +367,20 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
         }
         CoreExpr::ArrayComprehension {
             element, clauses, ..
+        }
+        | CoreExpr::ListComprehension {
+            element, clauses, ..
         } => {
+            if matches!(expr, CoreExpr::ListComprehension { .. }) {
+                let operation = runtime_list_literal_operation();
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            }
             collect_expr_runtime_imports(element, imports);
             for (index, clause) in clauses.iter().enumerate() {
                 match clause {

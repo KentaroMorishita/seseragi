@@ -1,0 +1,19 @@
+fn oddSquares values: List<Int> -> List<Int> =
+  `[value * value | value <- values, value % 2 == 1]
+
+fn total values: List<Int> -> Int =
+  values
+    |> reduce 0 (+)
+
+fn renderTotal total: Int -> String =
+  match total {
+    35 -> "persistent List total: 35"
+    _ -> "unexpected List total"
+  }
+
+pub effect fn main =
+  `[1, 2, 3, 4, 5]
+    |> oddSquares
+    |> total
+    |> renderTotal
+    |> println

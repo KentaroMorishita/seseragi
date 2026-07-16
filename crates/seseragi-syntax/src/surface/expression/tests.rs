@@ -580,6 +580,25 @@ fn parses_array_comprehension_generators_and_guards() {
 }
 
 #[test]
+fn parses_list_comprehensions_with_the_same_clause_grammar() {
+    let body = first_body(
+        "fn squares values: List<Int> -> List<Int> = `[value * value | value <- values, value % 2 == 1]\n",
+    );
+
+    let SurfaceExpr::ListComprehension {
+        element, clauses, ..
+    } = body
+    else {
+        panic!("expected list comprehension");
+    };
+    assert!(matches!(
+        element.as_ref(),
+        SurfaceExpr::Binary { operator, .. } if operator == "*"
+    ));
+    assert_eq!(clauses.len(), 2);
+}
+
+#[test]
 fn parses_multiline_comprehension_with_multiple_generators() {
     let body = first_body(
         "fn pairs limit: Int -> Array<(Int, Int)> = [\n  (left, right)\n  | left <- 1..=limit,\n    right <- [left, limit],\n    left < right\n]\n",

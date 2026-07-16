@@ -95,6 +95,7 @@ fn collect_intrinsic_issues(
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. }
         | TypedExpr::ArrayComprehension { .. }
+        | TypedExpr::ListComprehension { .. }
         | TypedExpr::MonadDo { .. } => {}
     }
 }
