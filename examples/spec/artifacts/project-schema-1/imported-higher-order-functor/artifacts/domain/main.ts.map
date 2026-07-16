@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "file": "dist/imported-higher-order-functor/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-higher-order-functor::domain"
+  ],
+  "sourcesContent": [
+    "pub trait Functor<F<_>> {\n  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>\n}\n\ninstance Functor<Maybe> {\n  fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =\n    match value {\n      Nothing -> Nothing\n      Just item -> Just $ f item\n    }\n}\n\npub fn transform<F<_>, A, B>\n  f: (A -> B)\n  -> value: F<A>\n  -> F<B>\nwhere Functor<F> =\n  map f value\n"
+  ],
+  "names": [
+    "__ssrg$instance$Functor$0",
+    "transform",
+    "__ssrg$evidence$0"
+  ],
+  "mappings": ";;AAIAA;AAQAC"
+}

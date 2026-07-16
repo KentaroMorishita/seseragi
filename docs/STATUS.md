@@ -261,6 +261,9 @@ Maybe名からdictionaryを選び直したりしません。同名execution fixt
 `project-schema-1/imported-functor-dispatch`はpublic function schemeの`F<_>` arityをfinal TypedInterfaceへ保持し、consumerで
 `F = Maybe`を推論してproviderの`Functor<Maybe>` dictionaryをimportします。二moduleのclosed TypeScript checkとEffect
 executionが`Imported Functor: Just 42`を固定するため、single-fileだけのHKT実装では完了になりません。
+`project-schema-1/imported-higher-order-functor`はさらにpublic `transform`の`(A -> B)` parameterをmodule interfaceから
+consumerのcallable catalogへ復元します。consumer-local `increment`をfunction valueとして渡し、`Maybe<Int>`と
+provider dictionaryを同時に具体化したactual executionが`Imported mapper: Just 42`を固定します。
 `type-constructor-kind-mismatch`は`Type -> Type`を要求するtrait parameterへ`Int : Type`を渡すinstanceを
 `trait.instance-kind-mismatch`で拒否します。TypeScriptはHKTを直接表せないため、型検査済みの`F<A>` parameter
 annotationだけをbackend境界で`unknown`へ消去しますが、Seseragiのkind、constraint、dictionary選択は消去しません。

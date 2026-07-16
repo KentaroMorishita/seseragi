@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/imported-higher-order-functor::domain",
+    "fixture/imported-higher-order-functor::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/imported-higher-order-functor::domain",
+      "source": "src/domain.ssrg",
+      "output": "dist/imported-higher-order-functor/domain.js",
+      "artifacts": "artifacts/domain",
+      "imports": []
+    },
+    {
+      "id": "fixture/imported-higher-order-functor::main",
+      "source": "src/main.ssrg",
+      "output": "dist/imported-higher-order-functor/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./domain",
+          "module": "fixture/imported-higher-order-functor::domain"
+        }
+      ]
+    }
+  ]
+}

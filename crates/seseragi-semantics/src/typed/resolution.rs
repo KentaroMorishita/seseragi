@@ -670,20 +670,6 @@ fn collect_semantic_value_types(
     values
 }
 
-pub(super) fn contains_function_type(type_ref: &TypedType) -> bool {
-    match type_ref {
-        TypedType::Function { .. } => true,
-        TypedType::Named { arguments, .. } | TypedType::ExternalNamed { arguments, .. } => {
-            arguments.iter().any(contains_function_type)
-        }
-        TypedType::Record { fields, .. } => fields
-            .iter()
-            .any(|field| contains_function_type(&field.type_ref)),
-        TypedType::Tuple { elements } => elements.iter().any(contains_function_type),
-        TypedType::Hole => false,
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-higher-order-functor::domain",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.maybe",
+      "core.adt",
+      "core.maybe.nothing",
+      "core.maybe.just"
+    ]
+  },
+  "exports": [
+    "transform"
+  ],
+  "instances": [
+    {
+      "identity": "fixture/imported-higher-order-functor::domain::trait(Functor)<std/prelude::Maybe>",
+      "trait": "Functor",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Maybe",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Functor$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/imported-higher-order-functor/domain.ts",
+    "sourceMap": "dist/imported-higher-order-functor/domain.ts.map"
+  }
+}

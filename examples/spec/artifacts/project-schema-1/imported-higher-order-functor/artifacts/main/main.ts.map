@@ -1,0 +1,22 @@
+{
+  "version": 3,
+  "file": "dist/imported-higher-order-functor/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-higher-order-functor::main"
+  ],
+  "sourcesContent": [
+    "import { transform } from \"./domain\"\n\nfn increment value: Int -> Int = value + 1\n\nfn render value: Maybe<Int> -> String =\n  match value {\n    Nothing -> \"Nothing\"\n    Just 42 -> \"Imported mapper: Just 42\"\n    Just _ -> \"Imported mapper: another value\"\n  }\n\npub effect fn main =\n  Just 41\n  |> transform increment\n  |> render\n  |> println\n"
+  ],
+  "names": [
+    "increment",
+    "add",
+    "render",
+    "main",
+    "println",
+    "render",
+    "transform",
+    "Just"
+  ],
+  "mappings": ";;;;;AAEAA;AAEAE;AAOAC"
+}

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-higher-order-functor::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.int64.add",
+      "core.maybe",
+      "core.string",
+      "core.adt",
+      "core.unit",
+      "effect.console.println",
+      "core.maybe.just"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-higher-order-functor/main.ts",
+    "sourceMap": "dist/imported-higher-order-functor/main.ts.map"
+  }
+}

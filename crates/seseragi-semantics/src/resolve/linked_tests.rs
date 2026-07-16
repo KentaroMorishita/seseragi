@@ -255,6 +255,60 @@ fn instantiates_an_imported_generic_function_independently_per_call() {
 }
 
 #[test]
+fn types_an_imported_higher_order_generic_function() {
+    let domain_source = "pub fn apply<A, B> f: (A -> B) -> value: A -> B = f value\n";
+    let main_source = "import { apply } from \"./domain\"\n\nfn increment value: Int -> Int = value + 1\n\npub fn run value: Int -> Int = apply increment value\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+
+    let TypedDecl::Fn { body, .. } = &analyzed.typed_hir.declarations[1] else {
+        panic!("expected imported higher-order caller");
+    };
+    assert!(matches!(
+        body,
+        TypedExpr::Call {
+            callee,
+            arguments,
+            type_ref: TypedType::Named { name, arguments: type_arguments },
+            ..
+        } if callee == "fixture/game::domain::apply"
+            && arguments.len() == 2
+            && name == "Int"
+            && type_arguments.is_empty()
+    ));
+}
+
+#[test]
+fn rejects_an_incompatible_function_argument_for_an_imported_higher_order_function() {
+    let domain_source = "pub fn apply<A, B> f: (A -> B) -> value: A -> B = f value\n";
+    let main_source = "import { apply } from \"./domain\"\n\nfn length value: String -> Int = 1\n\npub fn invalid value: Int -> Int = apply length value\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let diagnostics = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap_err();
+
+    assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0101" && diagnostic.message_key == "call.argument-type-mismatch"
+    }));
+}
+
+#[test]
 fn instantiates_an_imported_generic_function_with_a_user_defined_adt() {
     let domain_source = "pub type Hand =\n  | Rock\n\npub fn identity<A> value: A -> A = value\n";
     let main_source = "import { Hand, Rock, identity } from \"./domain\"\n\npub fn keep unit: Unit -> Hand = identity Rock\n";

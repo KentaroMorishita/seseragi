@@ -3,7 +3,6 @@ use crate::{ResolvedModule, SymbolId, SymbolNamespace, TypedConstraint};
 use std::collections::{BTreeMap, BTreeSet};
 
 use super::super::functions::TopLevelPureFunction;
-use super::contains_function_type;
 use super::imported_types::{flatten_function, ImportedTypeContext};
 
 pub(super) fn collect_imported_callables(
@@ -98,10 +97,7 @@ pub(super) fn collect_imported_callables(
                 .map(|parameter| parameter.type_ref.clone())
                 .collect::<Vec<_>>();
             let result_type = result.type_ref.clone();
-            if parameter_types.is_empty()
-                || parameter_types.iter().any(contains_function_type)
-                || contains_function_type(&result_type)
-            {
+            if parameter_types.is_empty() {
                 return None;
             }
             let semantic_parameters = parameters
