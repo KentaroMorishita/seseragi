@@ -195,19 +195,22 @@ instance method bodyのtrait callもresolved constraint scopeから`parameter` e
 実際に消費します。循環evidenceは`instance.missing`で停止します。trait method固有の`where`も
 `schema-1/method-constraint-dispatch`でprimary dictionaryの後ろへordered evidenceとして選択し、method closureの
 compiler-private parameterから消費してactual executionまで接続済みです。instance-levelとmethod-levelのparameter indexは
-offsetで分離します。未接続なのはstandard evidenceのfactory引数化とgeneric / constraint付きimported factoryです。
+offsetで分離します。未接続なのはstandard evidenceのfactory引数化とconstraint付きimported factoryです。
 public constrained pure functionはmodule interfaceのconstraintをprovider-local canonical trait identityとともに運び、
 consumer側のlocal instanceをimported callへ渡せます。`project-schema-1/imported-constrained-function`はproviderの
 `describe<T> where Ready<T>`とconsumerの`Ready<Badge>`を通常project pipelineへ通し、生成ESMのclosed TypeScript check、
 Console trace、stdoutまで固定します。`project-schema-1/imported-instance-dispatch`はproviderがexportしたconcrete
 `Ready<Badge>` dictionaryを同じcallへ選択し、TypeScript source importとactual dispatchまで固定します。
 `project-schema-1/transitive-instance-dispatch`はsource上はfacadeだけをimportするmainへoriginal provider dictionaryを計画し、
-三moduleのclosed TypeScript checkとactual dispatchまで固定します。generic imported instanceとconstraint evidenceを持つ
-imported factoryは未接続です。
+三moduleのclosed TypeScript checkとactual dispatchまで固定します。
+`project-schema-1/imported-generic-instance-dispatch`はproviderの`instance<T> Inspect<Maybe<T>>`をconsumerの
+`Inspect<Maybe<Int>>`へsubstituteし、template identityのdictionary exportをimportして`<bigint>()`でfactoryを
+具体化します。TypedHir / CoreIrはordered type argumentsを保持し、closed TypeScript checkとactual dispatchまで
+接続済みです。constraint evidenceを持つimported factoryは未接続です。
 local generic pure functionの`where`はbody scopeと飽和callへ接続済みです。
 `schema-1/constrained-function-dispatch`はbodyの`parameter` evidence、call siteのlocal dictionary選択、
 生成TSの末尾implicit dictionary parameterを固定し、execution fixtureが実際のdispatch結果を観測します。
-first-class partial constrained functionとgeneric / conditional imported dictionary selectionは未接続です。
+first-class partial constrained functionとconditional imported dictionary selectionは未接続です。
 
 `F<_>`は通常type parameterとは別にarityを持つtype-constructor parameterとしてSurfaceAstとModuleInterfaceへ
 保持します。`schema-1/functor-maybe`は`F<A> ~ Maybe<Int>`から`F = Maybe`と要素型を推論し、generic

@@ -26,6 +26,16 @@ where Ready<T> =
   ready value
 ";
 
+const DOMAIN_WITH_GENERIC_INSTANCE: &str = "\
+pub trait Inspect<A> { fn inspect value: A -> String }
+instance<T> Inspect<Maybe<T>> {
+  fn inspect value: Maybe<T> -> String = \"generic\"
+}
+pub fn report<T> value: T -> String
+where Inspect<T> =
+  inspect value
+";
+
 #[test]
 fn resolves_callable_scheme_constraints_to_provider_trait_identities() {
     let linked = linked_program(MAIN, [("./domain", "fixture/game::domain", DOMAIN)]);
@@ -116,9 +126,84 @@ pub fn status value: Unit -> String = describe Active
                 if matches!(&call.evidence, TypedInstanceEvidence::Imported {
                     identity,
                     provider_module,
+                    ..
                 } if identity == "fixture/game::domain::trait(Ready)<fixture/game::domain::Badge>"
                     && provider_module == "fixture/game::domain"))
     ));
+}
+
+#[test]
+fn specializes_an_imported_generic_instance_factory() {
+    let source = "\
+import { report } from \"./domain\"
+pub fn status value: Unit -> String = report (Just 42)
+";
+    let linked = linked_program(
+        source,
+        [(
+            "./domain",
+            "fixture/game::domain",
+            DOMAIN_WITH_GENERIC_INSTANCE,
+        )],
+    );
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", source),
+        linked,
+        source,
+    )
+    .unwrap();
+    let status = analyzed
+        .typed_hir
+        .declarations
+        .iter()
+        .find_map(|declaration| {
+            let TypedDecl::Fn { symbol, body, .. } = declaration else {
+                return None;
+            };
+            symbol.ends_with("::status").then_some(body)
+        });
+
+    assert!(matches!(
+        status,
+        Some(TypedExpr::Call { evidence, .. })
+            if matches!(evidence.as_slice(), [call]
+                if matches!(&call.evidence, TypedInstanceEvidence::Imported {
+                    identity,
+                    provider_module,
+                    type_arguments,
+                    evidence_arguments,
+                } if identity == "fixture/game::domain::trait(Inspect)<std/prelude::Maybe<$0>>"
+                    && provider_module == "fixture/game::domain"
+                    && matches!(type_arguments.as_slice(), [crate::TypedType::Named { name, arguments }]
+                        if name == "Int" && arguments.is_empty())
+                    && evidence_arguments.is_empty()))
+    ));
+}
+
+#[test]
+fn does_not_specialize_an_imported_generic_instance_for_a_different_head() {
+    let source = "\
+import { report } from \"./domain\"
+pub fn status value: Unit -> String = report 42
+";
+    let linked = linked_program(
+        source,
+        [(
+            "./domain",
+            "fixture/game::domain",
+            DOMAIN_WITH_GENERIC_INSTANCE,
+        )],
+    );
+    let diagnostics = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", source),
+        linked,
+        source,
+    )
+    .unwrap_err();
+
+    assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0201" && diagnostic.message_key == "instance.missing"
+    }));
 }
 
 #[test]

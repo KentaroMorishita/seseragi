@@ -25,6 +25,7 @@ pub(super) fn resolve_show_dictionary(
         CoreInstanceEvidence::Imported {
             identity,
             provider_module,
+            ..
         } => {
             let local = imported_instance_names
                 .get(&(provider_module.clone(), identity.clone()))

@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "file": "dist/imported-generic-instance-dispatch/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-generic-instance-dispatch::domain"
+  ],
+  "sourcesContent": [
+    "pub trait Inspect<A> {\n  fn inspect value: A -> String\n}\n\ninstance<T> Inspect<Maybe<T>> {\n  fn inspect value: Maybe<T> -> String = \"imported generic dictionary\"\n}\n\npub fn report<T> value: T -> String\nwhere Inspect<T> =\n  inspect value\n"
+  ],
+  "names": [
+    "__ssrg$instance$Inspect$0",
+    "report",
+    "__ssrg$evidence$0"
+  ],
+  "mappings": "AAIAA;AAIAC"
+}

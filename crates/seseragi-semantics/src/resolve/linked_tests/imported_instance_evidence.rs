@@ -50,6 +50,7 @@ fn selects_direct_dependency_show_evidence_for_a_derived_payload() {
                             TypedInstanceEvidence::Imported {
                                 identity,
                                 provider_module,
+                                ..
                             } if identity == "Show<fixture/game::domain::ImportedError>"
                                 && provider_module == "fixture/game::domain"
                         )
@@ -91,6 +92,7 @@ fn selects_by_canonical_payload_identity_when_modules_share_a_type_spelling() {
         TypedInstanceEvidence::Imported {
             identity,
             provider_module,
+            ..
         } if identity == "Show<fixture/game::right::ImportedError>"
             && provider_module == "fixture/game::right"
     ));

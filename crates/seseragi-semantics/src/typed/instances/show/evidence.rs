@@ -52,6 +52,8 @@ pub(super) fn payload_evidence(
         TypedInstanceEvidence::Imported {
             identity: instance.identity.clone(),
             provider_module: instance.provider_module.clone(),
+            type_arguments: Vec::new(),
+            evidence_arguments: Vec::new(),
         }
     } else {
         return PayloadSupport::Unsupported;

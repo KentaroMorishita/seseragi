@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-generic-instance-dispatch::domain",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.maybe",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "report"
+  ],
+  "instances": [
+    {
+      "identity": "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)<std/prelude::Maybe<$0>>",
+      "trait": "Inspect",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "maybe",
+          "element": {
+            "kind": "reference",
+            "name": "T",
+            "arguments": []
+          }
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Inspect$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/imported-generic-instance-dispatch/domain.ts",
+    "sourceMap": "dist/imported-generic-instance-dispatch/domain.ts.map"
+  }
+}

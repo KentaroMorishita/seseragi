@@ -216,8 +216,11 @@ fn collect_evidence(evidence: &CoreInstanceEvidence, imported: &mut BTreeSet<(St
         CoreInstanceEvidence::Imported {
             identity,
             provider_module,
+            evidence_arguments,
+            ..
         } => {
             imported.insert((provider_module.clone(), identity.clone()));
+            collect_call_evidence(evidence_arguments, imported);
         }
         CoreInstanceEvidence::Local {
             evidence_arguments, ..

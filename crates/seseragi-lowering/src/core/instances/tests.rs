@@ -124,6 +124,8 @@ fn carries_imported_show_payload_evidence_into_core_ir() {
                 evidence: CoreInstanceEvidence::Imported {
                     identity: "Show<fixture/game::domain::ImportedError>".to_owned(),
                     provider_module: "fixture/game::domain".to_owned(),
+                    type_arguments: Vec::new(),
+                    evidence_arguments: Vec::new(),
                 },
             }],
         }

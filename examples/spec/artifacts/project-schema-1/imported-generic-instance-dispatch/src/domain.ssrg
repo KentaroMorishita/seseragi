@@ -1,0 +1,11 @@
+pub trait Inspect<A> {
+  fn inspect value: A -> String
+}
+
+instance<T> Inspect<Maybe<T>> {
+  fn inspect value: Maybe<T> -> String = "imported generic dictionary"
+}
+
+pub fn report<T> value: T -> String
+where Inspect<T> =
+  inspect value

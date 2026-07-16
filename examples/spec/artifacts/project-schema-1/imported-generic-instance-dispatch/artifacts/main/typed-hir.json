@@ -1,0 +1,193 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/imported-generic-instance-dispatch::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-generic-instance-dispatch::domain",
+      "origin": {
+        "start": 0,
+        "end": 33
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "report",
+          "local": "report",
+          "canonical": "fixture/imported-generic-instance-dispatch::domain::report",
+          "origin": {
+            "start": 9,
+            "end": 15
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/imported-generic-instance-dispatch::main::main",
+      "visibility": "public",
+      "origin": {
+        "start": 35,
+        "end": 87
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/imported-generic-instance-dispatch::domain::report",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/prelude::Just",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "42",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 71,
+                      "end": 73
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 66,
+                  "end": 73
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Inspect",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "imported",
+                  "identity": "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)<std/prelude::Maybe<$0>>",
+                  "providerModule": "fixture/imported-generic-instance-dispatch::domain",
+                  "typeArguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 58,
+              "end": 74
+            }
+          }
+        ],
+        "origin": {
+          "start": 58,
+          "end": 87
+        }
+      }
+    }
+  ]
+}

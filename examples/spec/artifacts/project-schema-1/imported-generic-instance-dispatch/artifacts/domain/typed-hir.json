@@ -1,0 +1,190 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/imported-generic-instance-dispatch::domain",
+  "instances": [
+    {
+      "identity": "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)<std/prelude::Maybe<$0>>",
+      "traitIdentity": "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)",
+      "trait": "Inspect",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "argumentIdentities": [
+        "std/prelude::Maybe<$0>"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 58,
+        "end": 162
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "inspect",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "T",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 103,
+                  "end": 108
+                }
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "imported generic dictionary",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 131,
+                "end": 160
+              }
+            },
+            "origin": {
+              "start": 92,
+              "end": 160
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-generic-instance-dispatch::domain::report",
+      "visibility": "public",
+      "origin": {
+        "start": 164,
+        "end": 234
+      },
+      "scheme": {
+        "typeParameters": [
+          "T"
+        ],
+        "constraints": [
+          {
+            "name": "Inspect",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "origin": {
+            "start": 181,
+            "end": 186
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)::inspect",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            },
+            "origin": {
+              "start": 229,
+              "end": 234
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Inspect",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)",
+          "method": "inspect"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 221,
+          "end": 234
+        }
+      }
+    }
+  ]
+}

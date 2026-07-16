@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-generic-instance-dispatch::domain",
+  "source": "domain.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)",
+      "namespace": "trait",
+      "name": "Inspect",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 0,
+        "end": 56
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Inspect",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "inspect",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 25,
+            "end": 54
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "fixture/imported-generic-instance-dispatch::domain::report",
+      "namespace": "value",
+      "name": "report",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 164,
+        "end": 234
+      },
+      "scheme": {
+        "typeParameters": [
+          "T"
+        ],
+        "constraints": [
+          {
+            "name": "Inspect",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)<std/prelude::Maybe<$0>>",
+      "providerModule": "fixture/imported-generic-instance-dispatch::domain",
+      "traitIdentity": "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)",
+      "argumentIdentities": [
+        "std/prelude::Maybe<$0>"
+      ],
+      "trait": "Inspect",
+      "typeParameters": [
+        "T"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Inspect",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 58,
+        "end": 162
+      }
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-generic-instance-dispatch::domain",
+  "runtimeRequirements": [
+    "core.maybe",
+    "core.string"
+  ],
+  "instances": [
+    {
+      "identity": "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)<std/prelude::Maybe<$0>>",
+      "trait": "Inspect",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "maybe",
+          "element": {
+            "kind": "reference",
+            "name": "T",
+            "arguments": []
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 58,
+        "end": 162
+      },
+      "dictionaryExport": "__ssrg$instance$Inspect$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "inspect",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: T }",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "imported generic dictionary"
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 92,
+              "end": 160
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "report",
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Inspect",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "T",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "inspect",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 164,
+        "end": 234
+      }
+    }
+  ]
+}

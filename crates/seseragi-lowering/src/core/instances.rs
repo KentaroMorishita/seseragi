@@ -89,6 +89,10 @@ pub enum CoreInstanceEvidence {
     Imported {
         identity: String,
         provider_module: String,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_arguments: Vec<CoreType>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        evidence_arguments: Vec<CoreCallEvidence>,
     },
     Standard {
         identity: String,
@@ -194,9 +198,19 @@ pub(super) fn lower_instance_evidence(evidence: TypedInstanceEvidence) -> CoreIn
         TypedInstanceEvidence::Imported {
             identity,
             provider_module,
+            type_arguments,
+            evidence_arguments,
         } => CoreInstanceEvidence::Imported {
             identity,
             provider_module,
+            type_arguments: type_arguments.into_iter().map(lower_typed_type).collect(),
+            evidence_arguments: evidence_arguments
+                .into_iter()
+                .map(|evidence| CoreCallEvidence {
+                    constraint: lower_constraint(evidence.constraint),
+                    evidence: lower_instance_evidence(evidence.evidence),
+                })
+                .collect(),
         },
         TypedInstanceEvidence::Standard { identity } => CoreInstanceEvidence::Standard { identity },
         TypedInstanceEvidence::Parameter { index } => CoreInstanceEvidence::Parameter { index },

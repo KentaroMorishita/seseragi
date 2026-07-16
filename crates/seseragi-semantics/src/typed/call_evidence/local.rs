@@ -152,7 +152,10 @@ fn match_instance(
     })
 }
 
-fn normalize_partial_constructor_template(template: &TypedType, actual: &TypedType) -> TypedType {
+pub(super) fn normalize_partial_constructor_template(
+    template: &TypedType,
+    actual: &TypedType,
+) -> TypedType {
     let (template_name, template_arguments, actual_name, actual_arguments) =
         match (template, actual) {
             (
