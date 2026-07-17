@@ -192,6 +192,17 @@ fn interpolation_end(source: &str, start: usize) -> Option<(usize, usize)> {
             continue;
         }
         let character = source[cursor..].chars().next()?;
+        if character == '_' || unicode_ident::is_xid_start(character) {
+            advance_char(source, &mut cursor);
+            while cursor < source.len()
+                && source[cursor..].chars().next().is_some_and(|character| {
+                    character == '\'' || unicode_ident::is_xid_continue(character)
+                })
+            {
+                advance_char(source, &mut cursor);
+            }
+            continue;
+        }
         match character {
             '"' | '\'' => skip_quoted(source, &mut cursor, character),
             '`' => cursor = template_end(source, cursor),
@@ -252,6 +263,19 @@ mod tests {
             &raw[expression.clone()],
             "match value { Ready -> `nested ${name}` }"
         );
+        assert_eq!(template_end(raw, 0), raw.len());
+    }
+
+    #[test]
+    fn keeps_identifier_apostrophes_inside_interpolations() {
+        let raw = "`before ${次の値'} after`";
+        let scan = scan_template(raw);
+
+        assert!(scan.closed);
+        let TemplateChunk::Interpolation { expression, .. } = &scan.chunks[1] else {
+            panic!("expected interpolation");
+        };
+        assert_eq!(&raw[expression.clone()], "次の値'");
         assert_eq!(template_end(raw, 0), raw.len());
     }
 

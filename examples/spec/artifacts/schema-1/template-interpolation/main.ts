@@ -5,5 +5,5 @@ export type Badge =
   | { readonly tag: "Active" };
 export const Active: Badge = { tag: "Active" } as const;
 export const __ssrg$instance$Show$0: _ssrg_show_Show<Badge> = { show: (value: Badge): string => { switch (value.tag) { case "Active": return "Active"; } } };
-export const render = (name: string) => (badge: Badge) => "Hello, " + _ssrg_show_stringShow["show"](name) + ": " + __ssrg$instance$Show$0["show"](badge)
+export const render = (名前$prime: string) => (badge: Badge) => "Hello, " + _ssrg_show_stringShow["show"](名前$prime) + ": " + __ssrg$instance$Show$0["show"](badge)
 export const main = (_unit: undefined) => _ssrg_console_println(render("Seseragi")(Active))

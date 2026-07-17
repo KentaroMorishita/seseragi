@@ -58,11 +58,11 @@
       "origin": {
         "source": "main.ssrg",
         "start": 43,
-        "end": 126
+        "end": 132
       },
       "parameters": [
         {
-          "id": "name",
+          "id": "名前'",
           "kind": "named",
           "type": {
             "kind": "named",
@@ -88,15 +88,15 @@
             "value": "Hello, ",
             "origin": {
               "source": "main.ssrg",
-              "start": 101,
-              "end": 108
+              "start": 104,
+              "end": 111
             }
           },
           {
             "kind": "interpolation",
             "value": {
               "kind": "variable",
-              "name": "name",
+              "name": "名前'",
               "type": {
                 "kind": "named",
                 "name": "String",
@@ -104,8 +104,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 110,
-                "end": 114
+                "start": 113,
+                "end": 120
               }
             },
             "evidence": {
@@ -127,8 +127,8 @@
             "traitIdentity": "std/prelude::Show",
             "origin": {
               "source": "main.ssrg",
-              "start": 108,
-              "end": 115
+              "start": 111,
+              "end": 121
             }
           },
           {
@@ -136,8 +136,8 @@
             "value": ": ",
             "origin": {
               "source": "main.ssrg",
-              "start": 115,
-              "end": 117
+              "start": 121,
+              "end": 123
             }
           },
           {
@@ -152,8 +152,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 119,
-                "end": 124
+                "start": 125,
+                "end": 130
               }
             },
             "evidence": {
@@ -175,15 +175,15 @@
             "traitIdentity": "std/prelude::Show",
             "origin": {
               "source": "main.ssrg",
-              "start": 117,
-              "end": 125
+              "start": 123,
+              "end": 131
             }
           }
         ],
         "origin": {
           "source": "main.ssrg",
-          "start": 100,
-          "end": 126
+          "start": 103,
+          "end": 132
         }
       }
     },
@@ -192,8 +192,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 128,
-        "end": 188
+        "start": 134,
+        "end": 194
       },
       "parameters": [
         {
@@ -243,8 +243,8 @@
                 "value": "Seseragi",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 158,
-                  "end": 168
+                  "start": 164,
+                  "end": 174
                 }
               },
               {
@@ -257,8 +257,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 169,
-                  "end": 175
+                  "start": 175,
+                  "end": 181
                 }
               }
             ],
@@ -269,15 +269,15 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 151,
-              "end": 175
+              "start": 157,
+              "end": 181
             }
           }
         ],
         "origin": {
           "source": "main.ssrg",
-          "start": 151,
-          "end": 188
+          "start": 157,
+          "end": 194
         }
       }
     }

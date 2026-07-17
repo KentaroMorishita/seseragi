@@ -9,6 +9,7 @@ repository.workspace = true
 serde.workspace = true
 seseragi-semantics = { path = "../seseragi-semantics" }
 seseragi-syntax = { path = "../seseragi-syntax" }
+unicode-ident.workspace = true
 
 [dev-dependencies]
 serde_json.workspace = true

@@ -43,11 +43,21 @@ pub(super) fn safe_identifier(name: &str) -> String {
     let mut output = String::with_capacity(name.len());
     for (index, char) in name.chars().enumerate() {
         let valid = if index == 0 {
-            char == '_' || char == '$' || char.is_ascii_alphabetic()
+            char == '_' || char == '$' || unicode_ident::is_xid_start(char)
         } else {
-            char == '_' || char == '$' || char.is_ascii_alphanumeric()
+            char == '_' || char == '$' || unicode_ident::is_xid_continue(char)
         };
-        output.push(if valid { char } else { '_' });
+        if valid {
+            output.push(char);
+        } else if char == '\'' {
+            // Apostrophes are valid Seseragi identifier continuations but not
+            // JavaScript identifier characters. `$` cannot occur in a source
+            // identifier, so this spelling stays distinct from every source
+            // name instead of colliding with an underscore replacement.
+            output.push_str("$prime");
+        } else {
+            output.push('_');
+        }
     }
 
     if output.is_empty()
@@ -87,6 +97,12 @@ mod tests {
     #[test]
     fn replaces_invalid_identifier_characters() {
         assert_eq!(safe_identifier("operator(<+>)"), "operator_____");
+    }
+
+    #[test]
+    fn preserves_unicode_and_encodes_identifier_apostrophes() {
+        assert_eq!(safe_identifier("次の値'"), "次の値$prime");
+        assert_ne!(safe_identifier("value'"), safe_identifier("value_"));
     }
 
     #[test]

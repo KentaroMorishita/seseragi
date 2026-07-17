@@ -1132,6 +1132,12 @@ runtime `Show<String>`とlocal derived `Show<Badge>`の混在をactual outputま
 missing evidenceは`instance.missing`でbackend前に停止し、不正escapeはbackslashからescape末尾までを示す`SES-P0201`として
 黙って空文字へ変換しません。
 
+同fixtureのinterpolation parameterは仕様1.1のUnicode XIDとidentifier末尾`'`を組み合わせ、template scannerが`'`を
+Char開始へ再解釈しないことも固定します。lexerはXID_Start / XID_Continueを直接検査し、TypeScript境界ではUnicodeを
+そのまま保持します。JavaScript identifierに置けない`'`だけは、Seseragi sourceでは書けない`$`を使った`$prime`へ
+符号化するため、`value'`と`value_`を同じbackend名へ潰しません。Playgroundのstream highlighterもtemplateをtext chunkと
+interpolation expressionへ分け、`${...}`内を通常のSeseragi token規則で着色します。
+
 現時点のderived `Show`は、local非generic ADTと限られたpayload evidenceを扱う閉じたsliceです。shallow
 `ModuleInterface`の`InterfaceInstance`はidentityなしを許し、final `TypedInterface`だけがcanonical trait identityとordered head
 argument identitiesからsemantic identityを確定します。reachable dependencyのinstanceはResolvedAstに保持され、derived `Show`の

@@ -1,4 +1,5 @@
 use crate::token::{Token, TokenKind, TokenStream};
+use unicode_ident::{is_xid_continue, is_xid_start};
 
 pub fn lex(source_name: impl Into<String>, source: &str) -> TokenStream {
     let mut lexer = Lexer {
@@ -67,7 +68,7 @@ impl Lexer<'_> {
                 '`' => self.scan_template(),
                 '\\' => self.bump_fixed(TokenKind::OperatorLambda, start, char),
                 '0'..='9' => self.scan_run(TokenKind::LiteralInteger, |char| char.is_ascii_digit()),
-                '_' | 'a'..='z' | 'A'..='Z' => self.scan_identifier(),
+                char if char == '_' || is_xid_start(char) => self.scan_identifier(),
                 '/' if self.starts_with("//") => self.scan_line_comment(),
                 char if is_operator_char(char) => self.scan_operator_run(),
                 _ => self.bump_fixed(TokenKind::Unknown, start, char),
@@ -92,10 +93,10 @@ impl Lexer<'_> {
     fn scan_identifier(&mut self) {
         let start = self.cursor;
         self.take_char();
-        while matches!(
-            self.peek_char(),
-            Some('_' | 'a'..='z' | 'A'..='Z' | '0'..='9')
-        ) {
+        while self
+            .peek_char()
+            .is_some_and(|char| char == '\'' || is_xid_continue(char))
+        {
             self.take_char();
         }
         let raw = &self.source[start..self.cursor];
@@ -114,11 +115,7 @@ impl Lexer<'_> {
             "with" => TokenKind::KeywordWith,
             "True" | "False" => TokenKind::LiteralBoolean,
             "_" => TokenKind::Wildcard,
-            _ if raw
-                .chars()
-                .next()
-                .is_some_and(|char| char.is_ascii_uppercase()) =>
-            {
+            _ if raw.chars().next().is_some_and(|char| char.is_uppercase()) => {
                 TokenKind::IdentifierUpper
             }
             _ => TokenKind::IdentifierLower,
@@ -479,6 +476,20 @@ mod tests {
             .tokens
             .iter()
             .any(|token| token.kind == TokenKind::OperatorRangeExclusive));
+    }
+
+    #[test]
+    fn lexes_unicode_and_apostrophe_identifier_spelling() {
+        let stream = lex("main.ssrg", "let 次の値' = account''\n");
+        let identifiers = stream
+            .tokens
+            .iter()
+            .filter(|token| token.kind == TokenKind::IdentifierLower)
+            .map(|token| token.raw.as_str())
+            .collect::<Vec<_>>();
+
+        assert_eq!(identifiers, vec!["次の値'", "account''"]);
+        assert_eq!(stream.reconstructed_text(), "let 次の値' = account''\n");
     }
 
     #[test]

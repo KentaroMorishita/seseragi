@@ -44,32 +44,32 @@
       },
       "parameters": [
         {
-          "name": "name",
+          "name": "名前'",
           "nameSpan": {
             "start": 57,
-            "end": 61
+            "end": 64
           },
           "type": {
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 63,
-              "end": 69
+              "start": 66,
+              "end": 72
             }
           }
         },
         {
           "name": "badge",
           "nameSpan": {
-            "start": 73,
-            "end": 78
+            "start": 76,
+            "end": 81
           },
           "type": {
             "kind": "named",
             "name": "Badge",
             "span": {
-              "start": 80,
-              "end": 85
+              "start": 83,
+              "end": 88
             }
           }
         }
@@ -78,8 +78,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 89,
-          "end": 95
+          "start": 92,
+          "end": 98
         }
       },
       "body": {
@@ -89,31 +89,31 @@
             "kind": "text",
             "value": "Hello, ",
             "span": {
-              "start": 101,
-              "end": 108
+              "start": 104,
+              "end": 111
             }
           },
           {
             "kind": "interpolation",
             "value": {
               "kind": "name",
-              "name": "name",
+              "name": "名前'",
               "span": {
-                "start": 110,
-                "end": 114
+                "start": 113,
+                "end": 120
               }
             },
             "span": {
-              "start": 108,
-              "end": 115
+              "start": 111,
+              "end": 121
             }
           },
           {
             "kind": "text",
             "value": ": ",
             "span": {
-              "start": 115,
-              "end": 117
+              "start": 121,
+              "end": 123
             }
           },
           {
@@ -122,24 +122,24 @@
               "kind": "name",
               "name": "badge",
               "span": {
-                "start": 119,
-                "end": 124
+                "start": 125,
+                "end": 130
               }
             },
             "span": {
-              "start": 117,
-              "end": 125
+              "start": 123,
+              "end": 131
             }
           }
         ],
         "span": {
-          "start": 100,
-          "end": 126
+          "start": 103,
+          "end": 132
         }
       },
       "span": {
         "start": 43,
-        "end": 126
+        "end": 132
       }
     },
     {
@@ -147,8 +147,8 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 142,
-        "end": 146
+        "start": 148,
+        "end": 152
       },
       "inferredContract": true,
       "returnType": null,
@@ -158,8 +158,8 @@
           "kind": "name",
           "name": "println",
           "span": {
-            "start": 181,
-            "end": 188
+            "start": 187,
+            "end": 194
           }
         },
         "argument": {
@@ -170,44 +170,44 @@
               "kind": "name",
               "name": "render",
               "span": {
-                "start": 151,
-                "end": 157
+                "start": 157,
+                "end": 163
               }
             },
             "argument": {
               "kind": "string",
               "raw": "\"Seseragi\"",
               "span": {
-                "start": 158,
-                "end": 168
+                "start": 164,
+                "end": 174
               }
             },
             "span": {
-              "start": 151,
-              "end": 168
+              "start": 157,
+              "end": 174
             }
           },
           "argument": {
             "kind": "name",
             "name": "Active",
             "span": {
-              "start": 169,
-              "end": 175
+              "start": 175,
+              "end": 181
             }
           },
           "span": {
-            "start": 151,
-            "end": 175
+            "start": 157,
+            "end": 181
           }
         },
         "span": {
-          "start": 151,
-          "end": 188
+          "start": 157,
+          "end": 194
         }
       },
       "span": {
-        "start": 128,
-        "end": 188
+        "start": 134,
+        "end": 194
       }
     }
   ],
@@ -217,7 +217,7 @@
       "kind": "module",
       "origin": {
         "start": 0,
-        "end": 188
+        "end": 194
       }
     },
     {
@@ -235,7 +235,7 @@
       "kind": "function",
       "origin": {
         "start": 43,
-        "end": 126
+        "end": 132
       }
     },
     {
@@ -243,8 +243,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 128,
-        "end": 188
+        "start": 134,
+        "end": 194
       }
     }
   ],
@@ -293,8 +293,8 @@
       "kind": "effect-function",
       "scope": 0,
       "origin": {
-        "start": 142,
-        "end": 146
+        "start": 148,
+        "end": 152
       }
     },
     {
@@ -311,13 +311,13 @@
     },
     {
       "id": 5,
-      "spelling": "name",
+      "spelling": "名前'",
       "namespace": "value",
       "kind": "parameter",
       "scope": 2,
       "origin": {
         "start": 57,
-        "end": 61
+        "end": 64
       }
     },
     {
@@ -327,8 +327,8 @@
       "kind": "parameter",
       "scope": 2,
       "origin": {
-        "start": 73,
-        "end": 78
+        "start": 76,
+        "end": 81
       }
     },
     {
@@ -350,8 +350,8 @@
       "namespace": "type",
       "target": 4,
       "origin": {
-        "start": 63,
-        "end": 69
+        "start": 66,
+        "end": 72
       }
     },
     {
@@ -359,8 +359,8 @@
       "namespace": "type",
       "target": 0,
       "origin": {
-        "start": 80,
-        "end": 85
+        "start": 83,
+        "end": 88
       }
     },
     {
@@ -368,17 +368,17 @@
       "namespace": "type",
       "target": 4,
       "origin": {
-        "start": 89,
-        "end": 95
+        "start": 92,
+        "end": 98
       }
     },
     {
-      "spelling": "name",
+      "spelling": "名前'",
       "namespace": "value",
       "target": 5,
       "origin": {
-        "start": 110,
-        "end": 114
+        "start": 113,
+        "end": 120
       }
     },
     {
@@ -386,8 +386,8 @@
       "namespace": "value",
       "target": 6,
       "origin": {
-        "start": 119,
-        "end": 124
+        "start": 125,
+        "end": 130
       }
     },
     {
@@ -395,8 +395,8 @@
       "namespace": "value",
       "target": 7,
       "origin": {
-        "start": 181,
-        "end": 188
+        "start": 187,
+        "end": 194
       }
     },
     {
@@ -404,8 +404,8 @@
       "namespace": "value",
       "target": 2,
       "origin": {
-        "start": 151,
-        "end": 157
+        "start": 157,
+        "end": 163
       }
     },
     {
@@ -413,8 +413,8 @@
       "namespace": "value",
       "target": 1,
       "origin": {
-        "start": 169,
-        "end": 175
+        "start": 175,
+        "end": 181
       }
     }
   ],

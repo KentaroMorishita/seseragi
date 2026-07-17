@@ -6,7 +6,7 @@
     "seseragi://artifact/template-interpolation"
   ],
   "sourcesContent": [
-    "pub type Badge deriving Show =\n  | Active\n\npub fn render name: String -> badge: Badge -> String =\n  `Hello, ${name}: ${badge}`\n\npub effect fn main =\n  render \"Seseragi\" Active\n  |> println\n"
+    "pub type Badge deriving Show =\n  | Active\n\npub fn render 名前': String -> badge: Badge -> String =\n  `Hello, ${名前'}: ${badge}`\n\npub effect fn main =\n  render \"Seseragi\" Active\n  |> println\n"
   ],
   "names": [
     "Badge",

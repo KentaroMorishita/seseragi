@@ -1,4 +1,8 @@
-import { StreamLanguage, type StreamParser } from "@codemirror/language"
+import {
+  StreamLanguage,
+  type StreamParser,
+  type StringStream,
+} from "@codemirror/language"
 import { tags } from "@lezer/highlight"
 
 const KEYWORDS = new Set([
@@ -56,7 +60,37 @@ export function classifyIdentifier(identifier: string): string | null {
   return "variable"
 }
 
-type State = { inBlockComment: boolean }
+type State = {
+  inBlockComment: boolean
+  // Each active template stores 0 while scanning text and the nested brace
+  // depth while scanning one of its interpolation expressions. A stack keeps
+  // nested templates inside `${...}` structurally highlighted as well.
+  templateInterpolationDepths: number[]
+}
+
+function scanTemplateText(stream: StringStream, state: State) {
+  let escaped = false
+
+  while (!stream.eol()) {
+    if (!escaped && stream.match("${", false)) break
+
+    const character = stream.next()
+    if (escaped) {
+      escaped = false
+      continue
+    }
+    if (character === "\\") {
+      escaped = true
+      continue
+    }
+    if (character === "`") {
+      state.templateInterpolationDepths.pop()
+      break
+    }
+  }
+
+  return "string"
+}
 
 const parser: StreamParser<State> = {
   tokenTable: {
@@ -71,7 +105,14 @@ const parser: StreamParser<State> = {
     operator: tags.operatorKeyword,
     punctuation: tags.punctuation,
   },
-  startState: () => ({ inBlockComment: false }),
+  startState: () => ({
+    inBlockComment: false,
+    templateInterpolationDepths: [],
+  }),
+  copyState: (state) => ({
+    inBlockComment: state.inBlockComment,
+    templateInterpolationDepths: [...state.templateInterpolationDepths],
+  }),
   token(stream, state) {
     if (state.inBlockComment) {
       if (stream.skipTo("*/")) {
@@ -81,6 +122,17 @@ const parser: StreamParser<State> = {
         stream.skipToEnd()
       }
       return "comment"
+    }
+
+    const templateDepth = state.templateInterpolationDepths.at(-1)
+    if (templateDepth === 0) {
+      if (stream.match("${")) {
+        state.templateInterpolationDepths[
+          state.templateInterpolationDepths.length - 1
+        ] = 1
+        return "punctuation"
+      }
+      return scanTemplateText(stream, state)
     }
 
     if (stream.eatSpace()) return null
@@ -96,9 +148,26 @@ const parser: StreamParser<State> = {
     // literal/comprehension syntax. Consume only the sigil here so the
     // collection contents keep their normal number, name, and operator tags.
     if (stream.match(/^`(?=\[)/u)) return "punctuation"
-    if (stream.match(/^`(?:[^`\\]|\\.)*`?/u)) return "string"
+    if (stream.match("`")) {
+      state.templateInterpolationDepths.push(0)
+      return scanTemplateText(stream, state)
+    }
     if (stream.match(/^"(?:[^"\\]|\\.)*"?/u)) return "string"
     if (stream.match(/^'(?:[^'\\]|\\.)*'?/u)) return "string"
+    const interpolationDepth = state.templateInterpolationDepths.at(-1)
+    if (interpolationDepth !== undefined && interpolationDepth > 0) {
+      const activeTemplate = state.templateInterpolationDepths.length - 1
+      if (stream.match("{")) {
+        state.templateInterpolationDepths[activeTemplate] =
+          interpolationDepth + 1
+        return "punctuation"
+      }
+      if (stream.match("}")) {
+        state.templateInterpolationDepths[activeTemplate] =
+          interpolationDepth - 1
+        return "punctuation"
+      }
+    }
     if (
       stream.match(/^\d(?:[\d_]*\d)?(?:\.\d(?:[\d_]*\d)?)?(?:[eE][+-]?\d+)?/u)
     ) {

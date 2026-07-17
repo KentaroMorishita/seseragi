@@ -58,9 +58,30 @@ describe("Seseragi syntax classification", () => {
     })
   })
 
-  test("keeps actual template literals highlighted as strings", () => {
-    expect(highlightedTokens("`hello ${name}`")).toEqual([
-      { text: "`hello ${name}`", classes: "tok-string" },
+  test("highlights template interpolation as Seseragi expressions", () => {
+    expect(highlightedTokens("`hello ${name'}: ${Badge}`")).toEqual([
+      { text: "`hello ", classes: "tok-string" },
+      { text: "${", classes: "tok-punctuation" },
+      { text: "name'", classes: "tok-variableName" },
+      { text: "}", classes: "tok-punctuation" },
+      { text: ": ", classes: "tok-string" },
+      { text: "${", classes: "tok-punctuation" },
+      { text: "Badge", classes: "tok-typeName" },
+      { text: "}", classes: "tok-punctuation" },
+      { text: "`", classes: "tok-string" },
     ])
+  })
+
+  test("keeps escaped markers as text and tracks nested interpolation", () => {
+    expect(highlightedTokens("`literal \\${name}`")).toEqual([
+      { text: "`literal \\${name}`", classes: "tok-string" },
+    ])
+
+    const nested = highlightedTokens("`outer ${render `inner ${name}`}`")
+    expect(nested.filter(({ text }) => text === "render" || text === "name"))
+      .toEqual([
+        { text: "render", classes: "tok-variableName" },
+        { text: "name", classes: "tok-variableName" },
+      ])
   })
 })

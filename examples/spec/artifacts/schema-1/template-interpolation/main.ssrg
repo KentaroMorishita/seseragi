@@ -1,8 +1,8 @@
 pub type Badge deriving Show =
   | Active
 
-pub fn render name: String -> badge: Badge -> String =
-  `Hello, ${name}: ${badge}`
+pub fn render 名前': String -> badge: Badge -> String =
+  `Hello, ${名前'}: ${badge}`
 
 pub effect fn main =
   render "Seseragi" Active
