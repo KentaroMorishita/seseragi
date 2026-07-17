@@ -98,6 +98,17 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             collect_type_runtime_requirement(type_ref, requirements);
             collect_expr_runtime_requirements(receiver, requirements);
         }
+        CoreExpr::OptionalFieldAccess {
+            receiver, type_ref, ..
+        } => {
+            collect_type_runtime_requirement(type_ref, requirements);
+            for name in ["std/prelude::Nothing", "std/prelude::Just"] {
+                let constructor = runtime_sum_constructor(name)
+                    .expect("standard Maybe constructor must have a runtime feature");
+                push_unique(requirements, constructor.runtime_feature);
+            }
+            collect_expr_runtime_requirements(receiver, requirements);
+        }
         CoreExpr::Record {
             fields, type_ref, ..
         } => {
@@ -397,6 +408,14 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             }
         }
         CoreExpr::FieldAccess { receiver, .. } => {
+            collect_expr_runtime_imports(receiver, imports);
+        }
+        CoreExpr::OptionalFieldAccess { receiver, .. } => {
+            for name in ["std/prelude::Nothing", "std/prelude::Just"] {
+                let constructor = runtime_sum_constructor(name)
+                    .expect("standard Maybe constructor must have a runtime import");
+                push_sum_constructor_import(imports, constructor);
+            }
             collect_expr_runtime_imports(receiver, imports);
         }
         CoreExpr::Record { fields, .. } => {

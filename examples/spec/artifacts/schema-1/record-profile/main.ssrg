@@ -4,10 +4,19 @@ fn profile name: String -> score: Int -> { name: String, score: Int } =
 fn displayName user: { name: String } -> String =
   user.name
 
-fn renderProfile user: { name: String } -> String =
-  "Record profile: " + displayName user
+fn renderProfile user: { label?: String, name: String } -> String =
+  match user.label {
+    Nothing -> "Record profile: " + displayName user
+    Just label -> label + ": " + displayName user
+  }
 
 pub effect fn main =
-  profile "Mio" 42
-  |> renderProfile
-  |> println
+  do {
+    profile "Mio" 42
+    |> renderProfile
+    |> println
+
+    { label: "Player", name: "Mio" }
+    |> renderProfile
+    |> println
+  }

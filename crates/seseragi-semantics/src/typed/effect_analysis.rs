@@ -265,6 +265,7 @@ pub(super) fn expression_origin(expression: &TypedExpr) -> ByteSpan {
         | TypedExpr::ArrayComprehension { origin, .. }
         | TypedExpr::ListComprehension { origin, .. }
         | TypedExpr::FieldAccess { origin, .. }
+        | TypedExpr::OptionalFieldAccess { origin, .. }
         | TypedExpr::Record { origin, .. }
         | TypedExpr::Binary { origin, .. }
         | TypedExpr::If { origin, .. }

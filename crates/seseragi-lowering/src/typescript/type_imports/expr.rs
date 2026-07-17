@@ -44,6 +44,9 @@ pub(super) fn collect_expr_type_imports(
         }
         CoreExpr::FieldAccess {
             receiver, type_ref, ..
+        }
+        | CoreExpr::OptionalFieldAccess {
+            receiver, type_ref, ..
         } => {
             collect_type_imports(type_ref, bindings, requirements, imports);
             collect_expr_type_imports(receiver, bindings, requirements, imports);

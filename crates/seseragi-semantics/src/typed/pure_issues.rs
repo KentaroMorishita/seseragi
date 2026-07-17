@@ -77,10 +77,6 @@ pub(crate) enum RecordIssue {
         receiver: ByteSpan,
         actual: TypedType,
     },
-    OptionalAccessUnsupported {
-        field: ByteSpan,
-        name: String,
-    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

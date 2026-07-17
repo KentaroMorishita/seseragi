@@ -93,7 +93,8 @@ fn collect_effect_contract(
                 collect_effect_contract(&arm.body, requirements, failure);
             }
         }
-        TypedExpr::FieldAccess { receiver, .. } => {
+        TypedExpr::FieldAccess { receiver, .. }
+        | TypedExpr::OptionalFieldAccess { receiver, .. } => {
             collect_effect_contract(receiver, requirements, failure);
         }
         TypedExpr::Record { fields, .. } => {

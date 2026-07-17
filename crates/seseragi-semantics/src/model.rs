@@ -396,6 +396,13 @@ pub enum TypedExpr {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    OptionalFieldAccess {
+        receiver: Box<TypedExpr>,
+        field: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     Call {
         callee: String,
         arguments: Vec<TypedExpr>,

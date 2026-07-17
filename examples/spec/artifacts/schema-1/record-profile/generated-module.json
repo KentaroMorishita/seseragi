@@ -8,7 +8,12 @@
     "requirements": [
       "core.string",
       "core.int64",
+      "core.maybe",
+      "core.maybe.nothing",
+      "core.maybe.just",
+      "core.adt",
       "core.unit",
+      "effect.core.flatMap",
       "effect.console.println"
     ]
   },

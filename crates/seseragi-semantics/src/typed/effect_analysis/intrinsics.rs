@@ -89,7 +89,8 @@ fn collect_intrinsic_issues(
             collect_intrinsic_issues(then_branch, resolution, issues);
             collect_intrinsic_issues(else_branch, resolution, issues);
         }
-        TypedExpr::FieldAccess { receiver, .. } => {
+        TypedExpr::FieldAccess { receiver, .. }
+        | TypedExpr::OptionalFieldAccess { receiver, .. } => {
             collect_intrinsic_issues(receiver, resolution, issues);
         }
         TypedExpr::Record { fields, .. } => {

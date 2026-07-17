@@ -308,6 +308,18 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
             render_typescript_expr(receiver),
             format!("{field:?}")
         ),
+        TypeScriptExpr::OptionalFieldAccess {
+            receiver,
+            field,
+            just_constructor,
+            nothing_constructor,
+        } => {
+            let field = format!("{field:?}");
+            format!(
+                "(($ssrg_record) => Object.prototype.hasOwnProperty.call($ssrg_record, {field}) ? {just_constructor}($ssrg_record[{field}]) : {nothing_constructor})({})",
+                render_typescript_expr(receiver)
+            )
+        }
         TypeScriptExpr::Record { fields } => format!(
             "({{ {} }} as const)",
             fields

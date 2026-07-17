@@ -43,7 +43,9 @@ fn collect_expr_value_symbols(expr: &CoreExpr, values: &mut BTreeSet<String>) {
                 collect_expr_value_symbols(element, values);
             }
         }
-        CoreExpr::FieldAccess { receiver, .. } => collect_expr_value_symbols(receiver, values),
+        CoreExpr::FieldAccess { receiver, .. } | CoreExpr::OptionalFieldAccess { receiver, .. } => {
+            collect_expr_value_symbols(receiver, values)
+        }
         CoreExpr::Record { fields, .. } => {
             for field in fields {
                 collect_expr_value_symbols(&field.value, values);
@@ -224,6 +226,9 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
             }
         }
         CoreExpr::FieldAccess {
+            receiver, type_ref, ..
+        }
+        | CoreExpr::OptionalFieldAccess {
             receiver, type_ref, ..
         } => {
             collect_type_names(type_ref, references);

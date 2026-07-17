@@ -100,6 +100,7 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
         },
         TypedExpr::Variable { type_ref, .. }
         | TypedExpr::FieldAccess { type_ref, .. }
+        | TypedExpr::OptionalFieldAccess { type_ref, .. }
         | TypedExpr::Template { type_ref, .. }
         | TypedExpr::Call { type_ref, .. }
         | TypedExpr::Tuple { type_ref, .. }

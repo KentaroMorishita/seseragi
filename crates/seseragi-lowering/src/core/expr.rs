@@ -142,6 +142,17 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
+        TypedExpr::OptionalFieldAccess {
+            receiver,
+            field,
+            type_ref,
+            origin,
+        } => CoreExpr::OptionalFieldAccess {
+            receiver: Box::new(lower_expr(source, *receiver)),
+            field,
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
         TypedExpr::Record {
             fields,
             type_ref,

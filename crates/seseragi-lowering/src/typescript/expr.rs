@@ -173,6 +173,24 @@ pub(super) fn lower_core_expr_to_typescript(
             )),
             field,
         },
+        CoreExpr::OptionalFieldAccess {
+            receiver, field, ..
+        } => TypeScriptExpr::OptionalFieldAccess {
+            receiver: Box::new(lower_core_expr_to_typescript(
+                *receiver,
+                imported_values,
+                imported_types,
+            )),
+            field,
+            just_constructor: runtime_sum_constructor("std/prelude::Just")
+                .expect("standard Just constructor must exist")
+                .local_name
+                .to_owned(),
+            nothing_constructor: runtime_sum_constructor("std/prelude::Nothing")
+                .expect("standard Nothing constructor must exist")
+                .local_name
+                .to_owned(),
+        },
         CoreExpr::Record { fields, .. } => TypeScriptExpr::Record {
             fields: fields
                 .into_iter()
@@ -421,7 +439,10 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
         TypeScriptExpr::Tuple { elements } | TypeScriptExpr::Array { elements, .. } => {
             elements.iter().any(typescript_expr_contains_await)
         }
-        TypeScriptExpr::FieldAccess { receiver, .. } => typescript_expr_contains_await(receiver),
+        TypeScriptExpr::FieldAccess { receiver, .. }
+        | TypeScriptExpr::OptionalFieldAccess { receiver, .. } => {
+            typescript_expr_contains_await(receiver)
+        }
         TypeScriptExpr::Record { fields } => fields
             .iter()
             .any(|field| typescript_expr_contains_await(&field.value)),

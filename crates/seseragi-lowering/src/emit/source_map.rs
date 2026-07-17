@@ -265,7 +265,8 @@ fn collect_expr_names(
                 collect_expr_names(element, helper_names, names);
             }
         }
-        TypeScriptExpr::FieldAccess { receiver, .. } => {
+        TypeScriptExpr::FieldAccess { receiver, .. }
+        | TypeScriptExpr::OptionalFieldAccess { receiver, .. } => {
             collect_expr_names(receiver, helper_names, names);
         }
         TypeScriptExpr::Record { fields } => {

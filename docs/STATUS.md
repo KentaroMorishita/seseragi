@@ -200,12 +200,13 @@ constructor適用、irrefutableなpayload pattern、TypedHir / CoreIr / TypeScri
 暗黙unwrapを拒否します。generic newtypeのpayload inferenceもlowering testで固定しています。
 `project-schema-1/imported-newtype`は公開newtypeのtype / constructorを一つのnamed importから導入し、consumerでconstruct / unwrapして
 actual executionします。Playgroundの`newtypeでUserId`でも同じsourceを実行できます。newtype derivingは後続です。
-`schema-1/record-profile`はstructural Recordのexplicit / shorthand literal、required field access、width subtypingを
+`schema-1/record-profile`はstructural Recordのexplicit / shorthand literal、required / optional field access、width subtypingを
 SurfaceAst / resolver / TypedHir / CoreIr / TypeScriptIr / readonly TypeScript objectへ接続します。resolverは同じ`.`構文を、
 左辺がmodule bindingならnamespace-qualified value、通常値ならrecord memberとして分離し、型付け層へ新しい名前解決を
 持ち込みません。同名execution fixtureとPlaygroundの`Recordでプロフィール`が、余分な`score` fieldを持つ値を
-`{ name: String }`へ渡し、`user.name`を実行して表示する経路を固定します。duplicate / missing / non-record accessは
-`SES-T0101`で停止します。optional fieldを`Maybe`へ接続するaccess、spread、record patternは後続gateです。
+`{ name: String }`へ渡す経路と、`{ label?: String }`のabsent / presentを`Nothing` / `Just`として分岐する経路を固定します。
+optional accessはown-property presenceを一度だけ評価し、explicit `undefined`とmissingを統合しません。duplicate / missing /
+non-record accessは`SES-T0101`で停止します。spreadとrecord patternは後続gateです。
 `schema-1/user-add-operator`はoperand型からlocal `Add<Score, Int, Score>`を選択し、binary `+`と
 curried operator section `(+)`を同じ生成dictionaryの`add` method callへlowerします。`Array<Int>`の`reduce`は
 standard `Reducible` runtimeへこのuser-defined callbackを渡し、actual executionで42を固定します。

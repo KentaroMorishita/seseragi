@@ -222,6 +222,7 @@ fn typed_expr_type(expression: &TypedExpr) -> TypedType {
         | TypedExpr::Call { type_ref, .. }
         | TypedExpr::Tuple { type_ref, .. }
         | TypedExpr::FieldAccess { type_ref, .. }
+        | TypedExpr::OptionalFieldAccess { type_ref, .. }
         | TypedExpr::Record { type_ref, .. }
         | TypedExpr::Array { type_ref, .. }
         | TypedExpr::List { type_ref, .. }

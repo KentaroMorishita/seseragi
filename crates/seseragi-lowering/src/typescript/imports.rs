@@ -140,6 +140,20 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
             }
         }
         TypeScriptExpr::FieldAccess { receiver, .. } => rewrite_expr(receiver, renames),
+        TypeScriptExpr::OptionalFieldAccess {
+            receiver,
+            just_constructor,
+            nothing_constructor,
+            ..
+        } => {
+            rewrite_expr(receiver, renames);
+            if let Some(fresh) = renames.get(just_constructor) {
+                *just_constructor = fresh.clone();
+            }
+            if let Some(fresh) = renames.get(nothing_constructor) {
+                *nothing_constructor = fresh.clone();
+            }
+        }
         TypeScriptExpr::Record { fields } => {
             for field in fields {
                 rewrite_expr(&mut field.value, renames);

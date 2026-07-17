@@ -180,7 +180,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 154,
-        "end": 245
+        "end": 349
       },
       "parameters": [
         {
@@ -190,6 +190,15 @@
             "kind": "record",
             "closed": true,
             "fields": [
+              {
+                "name": "label",
+                "optional": true,
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
               {
                 "name": "name",
                 "type": {
@@ -203,84 +212,385 @@
         }
       ],
       "body": {
-        "kind": "binary",
-        "operator": "+",
-        "left": {
-          "kind": "string",
-          "value": "Record profile: ",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 208,
-            "end": 226
-          }
-        },
-        "right": {
-          "kind": "call",
-          "callee": "artifact/record-profile::displayName",
-          "arguments": [
-            {
-              "kind": "variable",
-              "name": "user",
-              "type": {
-                "kind": "record",
-                "closed": true,
-                "fields": [
-                  {
-                    "name": "name",
-                    "type": {
-                      "kind": "named",
-                      "name": "String",
-                      "arguments": []
-                    }
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "optional-field-access",
+          "receiver": {
+            "kind": "variable",
+            "name": "user",
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "label",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
                   }
-                ]
-              },
-              "origin": {
-                "source": "main.ssrg",
-                "start": 241,
-                "end": 245
-              }
-            }
-          ],
-          "type": {
-            "kind": "named",
-            "name": "String",
-            "arguments": []
-          },
-          "origin": {
-            "source": "main.ssrg",
-            "start": 229,
-            "end": 245
-          }
-        },
-        "evidence": [
-          {
-            "constraint": {
-              "name": "Add",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
                 },
                 {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                },
-                {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
+                  "name": "name",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
                 }
               ]
             },
-            "evidence": {
-              "kind": "standard",
-              "identity": "std/string::Add"
+            "origin": {
+              "source": "main.ssrg",
+              "start": 230,
+              "end": 234
+            }
+          },
+          "field": "label",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 230,
+            "end": 240
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Nothing",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 247,
+                  "end": 254
+                }
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "Record profile: ",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 258,
+                  "end": 276
+                }
+              },
+              "right": {
+                "kind": "call",
+                "callee": "artifact/record-profile::displayName",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "user",
+                    "type": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "label",
+                          "optional": true,
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        },
+                        {
+                          "name": "name",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 291,
+                      "end": 295
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 279,
+                  "end": 295
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 258,
+                "end": 295
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 247,
+              "end": 295
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Just",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 300,
+                  "end": 310
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "label",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 305,
+                  "end": 310
+                }
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "variable",
+                  "name": "label",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 314,
+                    "end": 319
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ": ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 322,
+                    "end": 326
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Add",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/string::Add"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 314,
+                  "end": 326
+                }
+              },
+              "right": {
+                "kind": "call",
+                "callee": "artifact/record-profile::displayName",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "user",
+                    "type": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "label",
+                          "optional": true,
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        },
+                        {
+                          "name": "name",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 341,
+                      "end": 345
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 329,
+                  "end": 345
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 314,
+                "end": 345
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 300,
+              "end": 345
             }
           }
         ],
+        "exhaustive": true,
         "type": {
           "kind": "named",
           "name": "String",
@@ -288,8 +598,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 208,
-          "end": 245
+          "start": 224,
+          "end": 349
         }
       }
     },
@@ -298,8 +608,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 247,
-        "end": 318
+        "start": 351,
+        "end": 513
       },
       "parameters": [
         {
@@ -313,105 +623,235 @@
         }
       ],
       "body": {
-        "kind": "effect-operation",
-        "operation": "console.println",
-        "requirements": {
-          "kind": "record",
-          "closed": true,
-          "fields": [
-            {
-              "name": "console",
-              "type": {
-                "kind": "named",
-                "name": "Console",
-                "arguments": []
-              }
-            }
-          ]
-        },
-        "failure": {
-          "kind": "named",
-          "name": "ConsoleError",
-          "arguments": []
-        },
-        "success": {
-          "kind": "named",
-          "name": "Unit",
-          "arguments": []
-        },
-        "arguments": [
+        "kind": "sequence",
+        "statements": [
           {
-            "kind": "call",
-            "callee": "artifact/record-profile::renderProfile",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "artifact/record-profile::profile",
-                "arguments": [
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
                   {
-                    "kind": "string",
-                    "value": "Mio",
-                    "origin": {
-                      "source": "main.ssrg",
-                      "start": 278,
-                      "end": 283
-                    }
-                  },
-                  {
-                    "kind": "int64",
-                    "value": "42",
-                    "origin": {
-                      "source": "main.ssrg",
-                      "start": 284,
-                      "end": 286
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
                     }
                   }
-                ],
-                "type": {
-                  "kind": "record",
-                  "closed": true,
-                  "fields": [
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/record-profile::renderProfile",
+                  "arguments": [
                     {
-                      "name": "name",
+                      "kind": "call",
+                      "callee": "artifact/record-profile::profile",
+                      "arguments": [
+                        {
+                          "kind": "string",
+                          "value": "Mio",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 391,
+                            "end": 396
+                          }
+                        },
+                        {
+                          "kind": "int64",
+                          "value": "42",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 397,
+                            "end": 399
+                          }
+                        }
+                      ],
                       "type": {
-                        "kind": "named",
-                        "name": "String",
-                        "arguments": []
-                      }
-                    },
-                    {
-                      "name": "score",
-                      "type": {
-                        "kind": "named",
-                        "name": "Int",
-                        "arguments": []
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "name",
+                            "type": {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          },
+                          {
+                            "name": "score",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 383,
+                        "end": 399
                       }
                     }
-                  ]
-                },
-                "origin": {
-                  "source": "main.ssrg",
-                  "start": 270,
-                  "end": 286
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 383,
+                    "end": 420
+                  }
                 }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 383,
+                "end": 435
               }
-            ],
-            "type": {
-              "kind": "named",
-              "name": "String",
-              "arguments": []
-            },
-            "origin": {
-              "source": "main.ssrg",
-              "start": 270,
-              "end": 305
             }
           }
         ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "console.println",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "artifact/record-profile::renderProfile",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "fields": [
+                    {
+                      "name": "label",
+                      "value": {
+                        "kind": "string",
+                        "value": "Player",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 450,
+                          "end": 458
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 443,
+                        "end": 458
+                      }
+                    },
+                    {
+                      "name": "name",
+                      "value": {
+                        "kind": "string",
+                        "value": "Mio",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 466,
+                          "end": 471
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 460,
+                        "end": 471
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "label",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      },
+                      {
+                        "name": "name",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 441,
+                    "end": 473
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 441,
+                "end": 494
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 441,
+            "end": 509
+          }
+        },
         "origin": {
           "source": "main.ssrg",
-          "start": 270,
-          "end": 318
+          "start": 374,
+          "end": 513
         }
       }
     }

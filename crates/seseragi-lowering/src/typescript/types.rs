@@ -18,6 +18,7 @@ pub(super) fn type_ref_from_core_expr(
         | CoreExpr::Call { type_ref, .. }
         | CoreExpr::Tuple { type_ref, .. }
         | CoreExpr::FieldAccess { type_ref, .. }
+        | CoreExpr::OptionalFieldAccess { type_ref, .. }
         | CoreExpr::Record { type_ref, .. }
         | CoreExpr::Array { type_ref, .. }
         | CoreExpr::List { type_ref, .. }

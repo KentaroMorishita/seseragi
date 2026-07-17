@@ -91,27 +91,30 @@ pub(super) fn type_member(
 
     let receiver_analysis = type_surface_expression(receiver, &context.without_expected());
     let receiver_type = inferred_type_from_expr(&receiver_analysis.value);
-    let (type_ref, issue) = match &receiver_type {
+    let (type_ref, optional, issue) = match &receiver_type {
         TypedType::Record { fields, .. } => match fields.iter().find(|item| item.name == field) {
             Some(found) if found.optional => (
-                TypedType::Hole,
-                Some(RecordIssue::OptionalAccessUnsupported {
-                    field: field_span,
-                    name: field.to_owned(),
-                }),
+                TypedType::Named {
+                    name: "Maybe".to_owned(),
+                    arguments: vec![found.type_ref.clone()],
+                },
+                true,
+                None,
             ),
-            Some(found) => (found.type_ref.clone(), None),
+            Some(found) => (found.type_ref.clone(), false, None),
             None => (
                 TypedType::Hole,
+                false,
                 Some(RecordIssue::MissingField {
                     field: field_span,
                     name: field.to_owned(),
                 }),
             ),
         },
-        TypedType::Hole => (TypedType::Hole, None),
+        TypedType::Hole => (TypedType::Hole, false, None),
         actual => (
             TypedType::Hole,
+            false,
             Some(RecordIssue::AccessOnNonRecord {
                 receiver: receiver.span(),
                 actual: actual.clone(),
@@ -119,11 +122,20 @@ pub(super) fn type_member(
         ),
     };
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
-        TypedExpr::FieldAccess {
-            receiver: Box::new(receiver_analysis.value.clone()),
-            field: field.to_owned(),
-            type_ref: type_ref.clone(),
-            origin: span,
+        if optional {
+            TypedExpr::OptionalFieldAccess {
+                receiver: Box::new(receiver_analysis.value.clone()),
+                field: field.to_owned(),
+                type_ref: type_ref.clone(),
+                origin: span,
+            }
+        } else {
+            TypedExpr::FieldAccess {
+                receiver: Box::new(receiver_analysis.value.clone()),
+                field: field.to_owned(),
+                type_ref: type_ref.clone(),
+                origin: span,
+            }
         },
         if issue.is_some() {
             SemanticTypeKey::Invalid

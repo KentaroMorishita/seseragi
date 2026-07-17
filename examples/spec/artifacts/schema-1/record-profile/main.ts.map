@@ -6,17 +6,21 @@
     "seseragi://artifact/record-profile"
   ],
   "sourcesContent": [
-    "fn profile name: String -> score: Int -> { name: String, score: Int } =\n  { name, score }\n\nfn displayName user: { name: String } -> String =\n  user.name\n\nfn renderProfile user: { name: String } -> String =\n  \"Record profile: \" + displayName user\n\npub effect fn main =\n  profile \"Mio\" 42\n  |> renderProfile\n  |> println\n"
+    "fn profile name: String -> score: Int -> { name: String, score: Int } =\n  { name, score }\n\nfn displayName user: { name: String } -> String =\n  user.name\n\nfn renderProfile user: { label?: String, name: String } -> String =\n  match user.label {\n    Nothing -> \"Record profile: \" + displayName user\n    Just label -> label + \": \" + displayName user\n  }\n\npub effect fn main =\n  do {\n    profile \"Mio\" 42\n    |> renderProfile\n    |> println\n\n    { label: \"Player\", name: \"Mio\" }\n    |> renderProfile\n    |> println\n  }\n"
   ],
   "names": [
     "profile",
     "displayName",
     "renderProfile",
     "displayName",
+    "label",
+    "displayName",
     "main",
     "println",
     "renderProfile",
-    "profile"
+    "profile",
+    "println",
+    "renderProfile"
   ],
-  "mappings": ";;AAAAA;AAGAC;AAGAC;AAGAE"
+  "mappings": ";;;;AAAAA;AAGAC;AAGAC;AAMAI"
 }

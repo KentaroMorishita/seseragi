@@ -133,7 +133,7 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     sourcePath:
       "examples/spec/artifacts/schema-1/record-profile/main.ssrg",
     stdin: "",
-    expectedOutput: "Record profile: Mio",
+    expectedOutput: "Record profile: Mio\nPlayer: Mio",
   },
   {
     id: "user-add-operator",

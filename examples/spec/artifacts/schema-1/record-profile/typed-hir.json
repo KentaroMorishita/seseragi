@@ -221,7 +221,7 @@
       "visibility": "private",
       "origin": {
         "start": 154,
-        "end": 245
+        "end": 349
       },
       "scheme": {
         "typeParameters": [],
@@ -241,6 +241,15 @@
             "closed": true,
             "fields": [
               {
+                "name": "label",
+                "optional": true,
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              {
                 "name": "name",
                 "type": {
                   "kind": "named",
@@ -257,94 +266,386 @@
         }
       ],
       "body": {
-        "kind": "binary",
-        "operator": "+",
-        "left": {
-          "kind": "string",
-          "value": "Record profile: ",
+        "kind": "match",
+        "scrutinee": {
+          "kind": "optional-field-access",
+          "receiver": {
+            "kind": "variable",
+            "name": "user",
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "label",
+                  "optional": true,
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "name",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "start": 230,
+              "end": 234
+            }
+          },
+          "field": "label",
           "type": {
             "kind": "named",
-            "name": "String",
-            "arguments": []
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
           },
           "origin": {
-            "start": 208,
-            "end": 226
+            "start": 230,
+            "end": 240
           }
         },
-        "right": {
-          "kind": "call",
-          "callee": "artifact/record-profile::displayName",
-          "arguments": [
-            {
-              "kind": "variable",
-              "name": "user",
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Nothing",
               "type": {
-                "kind": "record",
-                "closed": true,
-                "fields": [
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
                   {
-                    "name": "name",
-                    "type": {
-                      "kind": "named",
-                      "name": "String",
-                      "arguments": []
-                    }
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
                   }
                 ]
               },
               "origin": {
-                "start": 241,
-                "end": 245
+                "start": 247,
+                "end": 254
               }
-            }
-          ],
-          "type": {
-            "kind": "named",
-            "name": "String",
-            "arguments": []
-          },
-          "origin": {
-            "start": 229,
-            "end": 245
-          }
-        },
-        "evidence": [
-          {
-            "constraint": {
-              "name": "Add",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                },
-                {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                },
-                {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                }
-              ]
             },
-            "evidence": {
-              "kind": "standard",
-              "identity": "std/string::Add"
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "Record profile: ",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 258,
+                  "end": 276
+                }
+              },
+              "right": {
+                "kind": "call",
+                "callee": "artifact/record-profile::displayName",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "user",
+                    "type": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "label",
+                          "optional": true,
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        },
+                        {
+                          "name": "name",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 291,
+                      "end": 295
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 279,
+                  "end": 295
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 258,
+                "end": 295
+              }
+            },
+            "origin": {
+              "start": 247,
+              "end": 295
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Just",
+              "argument": {
+                "kind": "binding",
+                "symbol": 15,
+                "name": "label",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 305,
+                  "end": 310
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 300,
+                "end": 310
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "variable",
+                  "name": "label",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 314,
+                    "end": 319
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ": ",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 322,
+                    "end": 326
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Add",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/string::Add"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 314,
+                  "end": 326
+                }
+              },
+              "right": {
+                "kind": "call",
+                "callee": "artifact/record-profile::displayName",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "user",
+                    "type": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "label",
+                          "optional": true,
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        },
+                        {
+                          "name": "name",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 341,
+                      "end": 345
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 329,
+                  "end": 345
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 314,
+                "end": 345
+              }
+            },
+            "origin": {
+              "start": 300,
+              "end": 345
             }
           }
         ],
+        "exhaustive": true,
         "type": {
           "kind": "named",
           "name": "String",
           "arguments": []
         },
         "origin": {
-          "start": 208,
-          "end": 245
+          "start": 224,
+          "end": 349
         }
       }
     },
@@ -353,8 +654,8 @@
       "symbol": "artifact/record-profile::main",
       "visibility": "public",
       "origin": {
-        "start": 247,
-        "end": 318
+        "start": 351,
+        "end": 513
       },
       "inferredContract": true,
       "parameters": [
@@ -394,112 +695,246 @@
         }
       },
       "body": {
-        "kind": "effect-call",
-        "operation": "std/prelude::println",
-        "effect": {
-          "environment": {
-            "kind": "record",
-            "closed": true,
-            "fields": [
-              {
-                "name": "console",
-                "type": {
-                  "kind": "named",
-                  "name": "Console",
-                  "arguments": []
-                }
-              }
-            ]
-          },
-          "failure": {
-            "kind": "named",
-            "name": "ConsoleError",
-            "arguments": []
-          },
-          "success": {
-            "kind": "named",
-            "name": "Unit",
-            "arguments": []
-          }
-        },
-        "arguments": [
+        "kind": "do-block",
+        "statements": [
           {
-            "kind": "call",
-            "callee": "artifact/record-profile::renderProfile",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "artifact/record-profile::profile",
-                "arguments": [
-                  {
-                    "kind": "string",
-                    "value": "Mio",
-                    "type": {
-                      "kind": "named",
-                      "name": "String",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 278,
-                      "end": 283
-                    }
-                  },
-                  {
-                    "kind": "integer",
-                    "value": "42",
-                    "type": {
-                      "kind": "named",
-                      "name": "Int",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 284,
-                      "end": 286
-                    }
-                  }
-                ],
-                "type": {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
                   "kind": "record",
                   "closed": true,
                   "fields": [
                     {
-                      "name": "name",
+                      "name": "console",
                       "type": {
                         "kind": "named",
-                        "name": "String",
-                        "arguments": []
-                      }
-                    },
-                    {
-                      "name": "score",
-                      "type": {
-                        "kind": "named",
-                        "name": "Int",
+                        "name": "Console",
                         "arguments": []
                       }
                     }
                   ]
                 },
-                "origin": {
-                  "start": 270,
-                  "end": 286
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
                 }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/record-profile::renderProfile",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/record-profile::profile",
+                      "arguments": [
+                        {
+                          "kind": "string",
+                          "value": "Mio",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 391,
+                            "end": 396
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "value": "42",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 397,
+                            "end": 399
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "name",
+                            "type": {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          },
+                          {
+                            "name": "score",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 383,
+                        "end": 399
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 383,
+                    "end": 420
+                  }
+                }
+              ],
+              "origin": {
+                "start": 383,
+                "end": 435
               }
-            ],
-            "type": {
-              "kind": "named",
-              "name": "String",
-              "arguments": []
-            },
-            "origin": {
-              "start": 270,
-              "end": 305
             }
           }
         ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "artifact/record-profile::renderProfile",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "fields": [
+                    {
+                      "name": "label",
+                      "value": {
+                        "kind": "string",
+                        "value": "Player",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 450,
+                          "end": 458
+                        }
+                      },
+                      "origin": {
+                        "start": 443,
+                        "end": 458
+                      }
+                    },
+                    {
+                      "name": "name",
+                      "value": {
+                        "kind": "string",
+                        "value": "Mio",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 466,
+                          "end": 471
+                        }
+                      },
+                      "origin": {
+                        "start": 460,
+                        "end": 471
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "label",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      },
+                      {
+                        "name": "name",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 441,
+                    "end": 473
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 441,
+                "end": 494
+              }
+            }
+          ],
+          "origin": {
+            "start": 441,
+            "end": 509
+          }
+        },
         "origin": {
-          "start": 270,
-          "end": 318
+          "start": 374,
+          "end": 513
         }
       }
     }

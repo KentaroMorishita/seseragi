@@ -5,10 +5,27 @@
   "runtimeRequirements": [
     "core.string",
     "core.int64",
+    "core.maybe",
+    "core.maybe.nothing",
+    "core.maybe.just",
+    "core.adt",
     "core.unit",
+    "effect.core.flatMap",
     "effect.console.println"
   ],
   "imports": [
+    {
+      "feature": "core.maybe.nothing",
+      "local": "_ssrg_maybe_Nothing"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
     {
       "feature": "effect.console.println",
       "local": "_ssrg_console_println"
@@ -88,32 +105,113 @@
       "parameters": [
         {
           "name": "user",
-          "type": "{ readonly \"name\": string }",
+          "type": "{ readonly \"label\"?: string; readonly \"name\": string }",
           "implicit": false
         }
       ],
       "body": {
-        "kind": "binary",
-        "operator": "+",
-        "left": {
-          "kind": "string",
-          "value": "Record profile: "
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "optional-field-access",
+          "receiver": {
+            "kind": "identifier",
+            "name": "user"
+          },
+          "field": "label",
+          "justConstructor": "_ssrg_maybe_Just",
+          "nothingConstructor": "_ssrg_maybe_Nothing"
         },
-        "right": {
-          "kind": "call",
-          "callee": "displayName",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "user"
+        "scrutineeType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "string"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Nothing"
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "Record profile: "
+              },
+              "right": {
+                "kind": "call",
+                "callee": "displayName",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "user"
+                  }
+                ]
+              }
             }
-          ]
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "label",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "identifier",
+                  "name": "label"
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ": "
+                }
+              },
+              "right": {
+                "kind": "call",
+                "callee": "displayName",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "user"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
         }
       },
       "origin": {
         "source": "main.ssrg",
         "start": 154,
-        "end": 245
+        "end": 349
       }
     },
     {
@@ -128,35 +226,74 @@
         }
       ],
       "body": {
-        "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
-        "arguments": [
+        "kind": "sequence",
+        "statements": [
           {
-            "kind": "call",
-            "callee": "renderProfile",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "profile",
-                "arguments": [
-                  {
-                    "kind": "string",
-                    "value": "Mio"
-                  },
-                  {
-                    "kind": "bigint",
-                    "value": "42"
-                  }
-                ]
-              }
-            ]
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "renderProfile",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "profile",
+                      "arguments": [
+                        {
+                          "kind": "string",
+                          "value": "Mio"
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "42"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
           }
-        ]
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "renderProfile",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "fields": [
+                    {
+                      "name": "label",
+                      "value": {
+                        "kind": "string",
+                        "value": "Player"
+                      }
+                    },
+                    {
+                      "name": "name",
+                      "value": {
+                        "kind": "string",
+                        "value": "Mio"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 247,
-        "end": 318
+        "start": 351,
+        "end": 513
       }
     }
   ]

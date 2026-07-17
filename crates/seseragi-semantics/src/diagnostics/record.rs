@@ -34,11 +34,6 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
                 type_label(actual)
             ),
         ),
-        RecordIssue::OptionalAccessUnsupported { field, name } => (
-            "record.optional-access-not-connected",
-            *field,
-            format!("optional field `{name}` access is not connected to Maybe yet"),
-        ),
     };
     Diagnostic {
         id: String::new(),
@@ -79,6 +74,16 @@ mod tests {
     }
 
     #[test]
+    fn types_optional_field_access_as_maybe() {
+        let artifact = semantic_diagnostics(
+            "record-optional.ssrg",
+            "pub fn optionalId user: { id?: String } -> Maybe<String> = user.id\n",
+        );
+
+        assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
+    }
+
+    #[test]
     fn reports_invalid_record_construction_and_access() {
         for (source, expected) in [
             (
@@ -92,10 +97,6 @@ mod tests {
             (
                 "pub fn bad -> String = 42.name\n",
                 "record.access-on-non-record",
-            ),
-            (
-                "pub fn bad user: { name?: String } -> String = user.name\n",
-                "record.optional-access-not-connected",
             ),
         ] {
             let artifact = semantic_diagnostics("record-invalid.ssrg", source);

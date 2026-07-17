@@ -35,7 +35,12 @@
     "runtimeRequirements": [
       "core.string",
       "core.int64",
+      "core.maybe",
+      "core.maybe.nothing",
+      "core.maybe.just",
+      "core.adt",
       "core.unit",
+      "effect.core.flatMap",
       "effect.console.println"
     ],
     "process": { "exitCode": 0 },
@@ -47,6 +52,12 @@
         "operation": "println",
         "arguments": ["Record profile: Mio"],
         "stdout": "Record profile: Mio\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Player: Mio"],
+        "stdout": "Player: Mio\n"
       }
     ]
   }

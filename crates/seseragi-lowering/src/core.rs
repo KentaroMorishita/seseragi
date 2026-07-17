@@ -273,6 +273,13 @@ pub enum CoreExpr {
         type_ref: CoreType,
         origin: SourceSpan,
     },
+    OptionalFieldAccess {
+        receiver: Box<CoreExpr>,
+        field: String,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
     Record {
         fields: Vec<CoreRecordValueField>,
         #[serde(rename = "type")]

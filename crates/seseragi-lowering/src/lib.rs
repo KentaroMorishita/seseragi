@@ -85,6 +85,45 @@ mod tests {
     }
 
     #[test]
+    fn lowers_optional_record_field_access_to_maybe_presence() {
+        let source = "pub fn optionalId user: { id?: String } -> Maybe<String> = user.id\n";
+        let typed = type_module("artifact/record-optional/main.ssrg", source);
+        let core = lower_typed_module(typed);
+
+        assert!(matches!(
+            core.functions[0].body,
+            CoreExpr::OptionalFieldAccess { ref field, .. } if field == "id"
+        ));
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+        assert!(
+            bundle
+                .typescript
+                .contains("Object.prototype.hasOwnProperty.call($ssrg_record, \"id\")"),
+            "{}",
+            bundle.typescript
+        );
+        assert!(
+            bundle
+                .typescript
+                .contains("? _ssrg_maybe_Just($ssrg_record[\"id\"]) : _ssrg_maybe_Nothing"),
+            "{}",
+            bundle.typescript
+        );
+        assert!(bundle
+            .metadata
+            .runtime
+            .requirements
+            .contains(&"core.maybe.just".to_owned()));
+        assert!(bundle
+            .metadata
+            .runtime
+            .requirements
+            .contains(&"core.maybe.nothing".to_owned()));
+    }
+
+    #[test]
     fn preserves_linked_dependency_edges_and_canonical_imports_in_core_ir() {
         let source = "import { increment as next } from \"./domain\"\n";
         let typed = TypedModule {

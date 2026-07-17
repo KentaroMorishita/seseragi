@@ -232,24 +232,40 @@
             "closed": true,
             "fields": [
               {
-                "name": "name",
+                "name": "label",
                 "nameSpan": {
                   "start": 179,
-                  "end": 183
+                  "end": 184
+                },
+                "optional": true,
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "span": {
+                    "start": 187,
+                    "end": 193
+                  }
+                }
+              },
+              {
+                "name": "name",
+                "nameSpan": {
+                  "start": 195,
+                  "end": 199
                 },
                 "type": {
                   "kind": "named",
                   "name": "String",
                   "span": {
-                    "start": 185,
-                    "end": 191
+                    "start": 201,
+                    "end": 207
                   }
                 }
               }
             ],
             "span": {
               "start": 177,
-              "end": 193
+              "end": 209
             }
           }
         }
@@ -258,56 +274,196 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 197,
-          "end": 203
+          "start": 213,
+          "end": 219
         }
       },
       "body": {
-        "kind": "binary",
-        "operator": "+",
-        "operatorSpan": {
-          "start": 227,
-          "end": 228
-        },
-        "left": {
-          "kind": "string",
-          "raw": "\"Record profile: \"",
-          "span": {
-            "start": 208,
-            "end": 226
-          }
-        },
-        "right": {
-          "kind": "application",
-          "function": {
-            "kind": "name",
-            "name": "displayName",
-            "span": {
-              "start": 229,
-              "end": 240
-            }
-          },
-          "argument": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "member",
+          "receiver": {
             "kind": "name",
             "name": "user",
             "span": {
-              "start": 241,
-              "end": 245
+              "start": 230,
+              "end": 234
             }
           },
+          "field": "label",
+          "fieldSpan": {
+            "start": 235,
+            "end": 240
+          },
           "span": {
-            "start": 229,
-            "end": 245
+            "start": 230,
+            "end": 240
           }
         },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Nothing",
+              "nameSpan": {
+                "start": 247,
+                "end": 254
+              },
+              "span": {
+                "start": 247,
+                "end": 254
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "operatorSpan": {
+                "start": 277,
+                "end": 278
+              },
+              "left": {
+                "kind": "string",
+                "raw": "\"Record profile: \"",
+                "span": {
+                  "start": 258,
+                  "end": 276
+                }
+              },
+              "right": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "displayName",
+                  "span": {
+                    "start": 279,
+                    "end": 290
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "user",
+                  "span": {
+                    "start": 291,
+                    "end": 295
+                  }
+                },
+                "span": {
+                  "start": 279,
+                  "end": 295
+                }
+              },
+              "span": {
+                "start": 258,
+                "end": 295
+              }
+            },
+            "span": {
+              "start": 247,
+              "end": 295
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Just",
+              "nameSpan": {
+                "start": 300,
+                "end": 304
+              },
+              "argument": {
+                "kind": "name",
+                "name": "label",
+                "nameSpan": {
+                  "start": 305,
+                  "end": 310
+                },
+                "span": {
+                  "start": 305,
+                  "end": 310
+                }
+              },
+              "span": {
+                "start": 300,
+                "end": 310
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "operatorSpan": {
+                "start": 327,
+                "end": 328
+              },
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "operatorSpan": {
+                  "start": 320,
+                  "end": 321
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "label",
+                  "span": {
+                    "start": 314,
+                    "end": 319
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "raw": "\": \"",
+                  "span": {
+                    "start": 322,
+                    "end": 326
+                  }
+                },
+                "span": {
+                  "start": 314,
+                  "end": 326
+                }
+              },
+              "right": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "displayName",
+                  "span": {
+                    "start": 329,
+                    "end": 340
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "user",
+                  "span": {
+                    "start": 341,
+                    "end": 345
+                  }
+                },
+                "span": {
+                  "start": 329,
+                  "end": 345
+                }
+              },
+              "span": {
+                "start": 314,
+                "end": 345
+              }
+            },
+            "span": {
+              "start": 300,
+              "end": 345
+            }
+          }
+        ],
         "span": {
-          "start": 208,
-          "end": 245
+          "start": 224,
+          "end": 349
         }
       },
       "span": {
         "start": 154,
-        "end": 245
+        "end": 349
       }
     },
     {
@@ -315,82 +471,175 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 261,
-        "end": 265
+        "start": 365,
+        "end": 369
       },
       "inferredContract": true,
       "returnType": null,
       "body": {
-        "kind": "application",
-        "function": {
-          "kind": "name",
-          "name": "println",
-          "span": {
-            "start": 311,
-            "end": 318
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 428,
+                  "end": 435
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "renderProfile",
+                  "span": {
+                    "start": 407,
+                    "end": 420
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "profile",
+                      "span": {
+                        "start": 383,
+                        "end": 390
+                      }
+                    },
+                    "argument": {
+                      "kind": "string",
+                      "raw": "\"Mio\"",
+                      "span": {
+                        "start": 391,
+                        "end": 396
+                      }
+                    },
+                    "span": {
+                      "start": 383,
+                      "end": 396
+                    }
+                  },
+                  "argument": {
+                    "kind": "integer",
+                    "raw": "42",
+                    "span": {
+                      "start": 397,
+                      "end": 399
+                    }
+                  },
+                  "span": {
+                    "start": 383,
+                    "end": 399
+                  }
+                },
+                "span": {
+                  "start": 383,
+                  "end": 420
+                }
+              },
+              "span": {
+                "start": 383,
+                "end": 435
+              }
+            },
+            "span": {
+              "start": 383,
+              "end": 435
+            }
           }
-        },
-        "argument": {
+        ],
+        "result": {
           "kind": "application",
           "function": {
             "kind": "name",
-            "name": "renderProfile",
+            "name": "println",
             "span": {
-              "start": 292,
-              "end": 305
+              "start": 502,
+              "end": 509
             }
           },
           "argument": {
             "kind": "application",
             "function": {
-              "kind": "application",
-              "function": {
-                "kind": "name",
-                "name": "profile",
-                "span": {
-                  "start": 270,
-                  "end": 277
-                }
-              },
-              "argument": {
-                "kind": "string",
-                "raw": "\"Mio\"",
-                "span": {
-                  "start": 278,
-                  "end": 283
-                }
-              },
+              "kind": "name",
+              "name": "renderProfile",
               "span": {
-                "start": 270,
-                "end": 283
+                "start": 481,
+                "end": 494
               }
             },
             "argument": {
-              "kind": "integer",
-              "raw": "42",
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "label",
+                  "nameSpan": {
+                    "start": 443,
+                    "end": 448
+                  },
+                  "value": {
+                    "kind": "string",
+                    "raw": "\"Player\"",
+                    "span": {
+                      "start": 450,
+                      "end": 458
+                    }
+                  },
+                  "span": {
+                    "start": 443,
+                    "end": 458
+                  }
+                },
+                {
+                  "name": "name",
+                  "nameSpan": {
+                    "start": 460,
+                    "end": 464
+                  },
+                  "value": {
+                    "kind": "string",
+                    "raw": "\"Mio\"",
+                    "span": {
+                      "start": 466,
+                      "end": 471
+                    }
+                  },
+                  "span": {
+                    "start": 460,
+                    "end": 471
+                  }
+                }
+              ],
               "span": {
-                "start": 284,
-                "end": 286
+                "start": 441,
+                "end": 473
               }
             },
             "span": {
-              "start": 270,
-              "end": 286
+              "start": 441,
+              "end": 494
             }
           },
           "span": {
-            "start": 270,
-            "end": 305
+            "start": 441,
+            "end": 509
           }
         },
         "span": {
-          "start": 270,
-          "end": 318
+          "start": 374,
+          "end": 513
         }
       },
       "span": {
-        "start": 247,
-        "end": 318
+        "start": 351,
+        "end": 513
       }
     }
   ],
@@ -400,7 +649,7 @@
       "kind": "module",
       "origin": {
         "start": 0,
-        "end": 318
+        "end": 513
       }
     },
     {
@@ -427,16 +676,52 @@
       "kind": "function",
       "origin": {
         "start": 154,
-        "end": 245
+        "end": 349
       }
     },
     {
       "id": 4,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 247,
+        "end": 295
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 300,
+        "end": 345
+      }
+    },
+    {
+      "id": 7,
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 247,
-        "end": 318
+        "start": 351,
+        "end": 513
+      }
+    },
+    {
+      "id": 8,
+      "parent": 7,
+      "kind": "do-block",
+      "origin": {
+        "start": 374,
+        "end": 513
       }
     }
   ],
@@ -485,8 +770,8 @@
       "kind": "effect-function",
       "scope": 0,
       "origin": {
-        "start": 261,
-        "end": 265
+        "start": 365,
+        "end": 369
       }
     },
     {
@@ -559,6 +844,54 @@
     },
     {
       "id": 10,
+      "spelling": "Maybe",
+      "canonical": "std/prelude::Maybe",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "A",
+      "canonical": "std/prelude::Maybe::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 5,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "Nothing",
+      "canonical": "std/prelude::Nothing",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "Just",
+      "canonical": "std/prelude::Just",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 14,
       "spelling": "+",
       "canonical": "std/prelude::+",
       "namespace": "operator",
@@ -570,7 +903,18 @@
       }
     },
     {
-      "id": 11,
+      "id": 15,
+      "spelling": "label",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 6,
+      "origin": {
+        "start": 305,
+        "end": 310
+      }
+    },
+    {
+      "id": 16,
       "spelling": "println",
       "canonical": "std/prelude::println",
       "namespace": "value",
@@ -669,8 +1013,8 @@
       "namespace": "type",
       "target": 4,
       "origin": {
-        "start": 185,
-        "end": 191
+        "start": 187,
+        "end": 193
       }
     },
     {
@@ -678,26 +1022,17 @@
       "namespace": "type",
       "target": 4,
       "origin": {
-        "start": 197,
-        "end": 203
+        "start": 201,
+        "end": 207
       }
     },
     {
-      "spelling": "+",
-      "namespace": "operator",
-      "target": 10,
+      "spelling": "String",
+      "namespace": "type",
+      "target": 4,
       "origin": {
-        "start": 227,
-        "end": 228
-      }
-    },
-    {
-      "spelling": "displayName",
-      "namespace": "value",
-      "target": 1,
-      "origin": {
-        "start": 229,
-        "end": 240
+        "start": 213,
+        "end": 219
       }
     },
     {
@@ -705,17 +1040,107 @@
       "namespace": "value",
       "target": 9,
       "origin": {
-        "start": 241,
-        "end": 245
+        "start": 230,
+        "end": 234
+      }
+    },
+    {
+      "spelling": "Nothing",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 247,
+        "end": 254
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 14,
+      "origin": {
+        "start": 277,
+        "end": 278
+      }
+    },
+    {
+      "spelling": "displayName",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 279,
+        "end": 290
+      }
+    },
+    {
+      "spelling": "user",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 291,
+        "end": 295
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 300,
+        "end": 304
+      }
+    },
+    {
+      "spelling": "label",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 314,
+        "end": 319
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 14,
+      "origin": {
+        "start": 320,
+        "end": 321
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 14,
+      "origin": {
+        "start": 327,
+        "end": 328
+      }
+    },
+    {
+      "spelling": "displayName",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 329,
+        "end": 340
+      }
+    },
+    {
+      "spelling": "user",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 341,
+        "end": 345
       }
     },
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 11,
+      "target": 16,
       "origin": {
-        "start": 311,
-        "end": 318
+        "start": 428,
+        "end": 435
       }
     },
     {
@@ -723,8 +1148,8 @@
       "namespace": "value",
       "target": 2,
       "origin": {
-        "start": 292,
-        "end": 305
+        "start": 407,
+        "end": 420
       }
     },
     {
@@ -732,8 +1157,26 @@
       "namespace": "value",
       "target": 0,
       "origin": {
-        "start": 270,
-        "end": 277
+        "start": 383,
+        "end": 390
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 16,
+      "origin": {
+        "start": 502,
+        "end": 509
+      }
+    },
+    {
+      "spelling": "renderProfile",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 481,
+        "end": 494
       }
     }
   ],

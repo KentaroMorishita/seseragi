@@ -51,8 +51,8 @@ language semanticsをtarget adapterへ委譲しません。
   `reduce`でactual executionします。generic `Reducible<C,A>` parameter evidenceもlocal / imported user dictionaryの
   `reduce` methodへdispatchし、標準Array / Range / Listは専用operation ABIを維持します。newtype valueはlocal / generic /
   imported constructor、pattern unwrap、nominal non-coercion、actual executionまで接続済みです。structural Recordは
-  explicit / shorthand literal、required field access、width subtypingをresolver境界からactual executionまで接続済みです。
-  次はoptional field accessの`Maybe` semantics、spread、record patternを同じvalue modelへ追加し、その上へnominal structの
+  explicit / shorthand literal、required field access、optional field accessの`Maybe` presence、width subtypingをresolver境界から
+  actual executionまで接続済みです。次はspread、record patternを同じvalue modelへ追加し、その上へnominal structの
   constructor / field / visibilityを接続します。struct / newtypeの`operator`糖衣はこのvalue基盤の後に扱います。
   user-defined `Eq<A>`は`==` / `!=`からlocal / scoped / imported dictionaryへdispatch済みで、標準型名だけで通る
   偽の完了条件を排除しています。
