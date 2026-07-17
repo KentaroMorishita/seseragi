@@ -33,8 +33,9 @@
       ],
       "body": {
         "kind": "record",
-        "fields": [
+        "items": [
           {
+            "kind": "field",
             "name": "name",
             "value": {
               "kind": "variable",
@@ -57,6 +58,7 @@
             }
           },
           {
+            "kind": "field",
             "name": "score",
             "value": {
               "kind": "variable",
@@ -609,7 +611,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 351,
-        "end": 513
+        "end": 530
       },
       "parameters": [
         {
@@ -625,6 +627,88 @@
       "body": {
         "kind": "sequence",
         "statements": [
+          {
+            "kind": "pure-let",
+            "name": "base",
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "name",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "score",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/record-profile::profile",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Mio",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 402,
+                    "end": 407
+                  }
+                },
+                {
+                  "kind": "int64",
+                  "value": "42",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 408,
+                    "end": 410
+                  }
+                }
+              ],
+              "type": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "name": "score",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 394,
+                "end": 410
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 383,
+              "end": 410
+            }
+          },
           {
             "kind": "effect",
             "value": {
@@ -660,28 +744,8 @@
                   "callee": "artifact/record-profile::renderProfile",
                   "arguments": [
                     {
-                      "kind": "call",
-                      "callee": "artifact/record-profile::profile",
-                      "arguments": [
-                        {
-                          "kind": "string",
-                          "value": "Mio",
-                          "origin": {
-                            "source": "main.ssrg",
-                            "start": 391,
-                            "end": 396
-                          }
-                        },
-                        {
-                          "kind": "int64",
-                          "value": "42",
-                          "origin": {
-                            "source": "main.ssrg",
-                            "start": 397,
-                            "end": 399
-                          }
-                        }
-                      ],
+                      "kind": "variable",
+                      "name": "base",
                       "type": {
                         "kind": "record",
                         "closed": true,
@@ -706,8 +770,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 383,
-                        "end": 399
+                        "start": 416,
+                        "end": 420
                       }
                     }
                   ],
@@ -718,15 +782,15 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 383,
-                    "end": 420
+                    "start": 416,
+                    "end": 441
                   }
                 }
               ],
               "origin": {
                 "source": "main.ssrg",
-                "start": 383,
-                "end": 435
+                "start": 416,
+                "end": 456
               }
             }
           }
@@ -765,39 +829,62 @@
               "arguments": [
                 {
                   "kind": "record",
-                  "fields": [
+                  "items": [
                     {
+                      "kind": "spread",
+                      "value": {
+                        "kind": "variable",
+                        "name": "base",
+                        "type": {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "name",
+                              "type": {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              }
+                            },
+                            {
+                              "name": "score",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 467,
+                          "end": 471
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 464,
+                        "end": 471
+                      }
+                    },
+                    {
+                      "kind": "field",
                       "name": "label",
                       "value": {
                         "kind": "string",
                         "value": "Player",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 450,
-                          "end": 458
+                          "start": 480,
+                          "end": 488
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 443,
-                        "end": 458
-                      }
-                    },
-                    {
-                      "name": "name",
-                      "value": {
-                        "kind": "string",
-                        "value": "Mio",
-                        "origin": {
-                          "source": "main.ssrg",
-                          "start": 466,
-                          "end": 471
-                        }
-                      },
-                      "origin": {
-                        "source": "main.ssrg",
-                        "start": 460,
-                        "end": 471
+                        "start": 473,
+                        "end": 488
                       }
                     }
                   ],
@@ -820,13 +907,21 @@
                           "name": "String",
                           "arguments": []
                         }
+                      },
+                      {
+                        "name": "score",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
                       }
                     ]
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 441,
-                    "end": 473
+                    "start": 462,
+                    "end": 490
                   }
                 }
               ],
@@ -837,21 +932,21 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 441,
-                "end": 494
+                "start": 462,
+                "end": 511
               }
             }
           ],
           "origin": {
             "source": "main.ssrg",
-            "start": 441,
-            "end": 509
+            "start": 462,
+            "end": 526
           }
         },
         "origin": {
           "source": "main.ssrg",
           "start": 374,
-          "end": 513
+          "end": 530
         }
       }
     }

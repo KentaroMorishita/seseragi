@@ -18,8 +18,8 @@ pub use core::{
     CoreDecisionTest, CoreExpr, CoreFunction, CoreInstance, CoreInstanceConstraint,
     CoreInstanceEvidence, CoreInstanceImplementation, CoreInstanceMethod, CoreModule,
     CoreModuleDependency, CoreModuleImport, CoreMonadDoStatement, CoreParameter, CorePattern,
-    CoreRecordField, CoreRecordValueField, CoreShowPayloadEvidence, CoreStatement,
-    CoreTemplatePart, CoreTraitDispatch, CoreType,
+    CoreRecordField, CoreRecordValueItem, CoreShowPayloadEvidence, CoreStatement, CoreTemplatePart,
+    CoreTraitDispatch, CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,
@@ -36,7 +36,7 @@ pub use typescript::{
     TypeScriptImport, TypeScriptInstance, TypeScriptInstanceConstraint,
     TypeScriptInstanceImplementation, TypeScriptInstanceMethod, TypeScriptLoweringError,
     TypeScriptModule, TypeScriptOutputPlan, TypeScriptParameter, TypeScriptRecordTypeField,
-    TypeScriptRecordValueField, TypeScriptShowDictionaryReference, TypeScriptSourceImport,
+    TypeScriptRecordValueItem, TypeScriptShowDictionaryReference, TypeScriptSourceImport,
     TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptType, TypeScriptTypeImport,
 };
 
@@ -121,6 +121,35 @@ mod tests {
             .runtime
             .requirements
             .contains(&"core.maybe.nothing".to_owned()));
+    }
+
+    #[test]
+    fn lowers_record_spread_and_late_field_override_in_source_order() {
+        let source = concat!(
+            "pub fn relabel base: { label: Int, name: String } -> label: String -> { label: String, name: String } =\n",
+            "  { ...base, label }\n",
+        );
+        let typed = type_module("artifact/record-spread/main.ssrg", source);
+        let core = lower_typed_module(typed);
+
+        let CoreExpr::Record { items, .. } = &core.functions[0].body else {
+            panic!("expected record value");
+        };
+        assert!(matches!(items[0], CoreRecordValueItem::Spread { .. }));
+        assert!(matches!(
+            items[1],
+            CoreRecordValueItem::Field { ref name, .. } if name == "label"
+        ));
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+        assert!(
+            bundle
+                .typescript
+                .contains("({ ...base, \"label\": label } as const)"),
+            "{}",
+            bundle.typescript
+        );
     }
 
     #[test]

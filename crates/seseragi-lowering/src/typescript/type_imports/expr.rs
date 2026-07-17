@@ -52,11 +52,11 @@ pub(super) fn collect_expr_type_imports(
             collect_expr_type_imports(receiver, bindings, requirements, imports);
         }
         CoreExpr::Record {
-            fields, type_ref, ..
+            items, type_ref, ..
         } => {
             collect_type_imports(type_ref, bindings, requirements, imports);
-            for field in fields {
-                collect_expr_type_imports(&field.value, bindings, requirements, imports);
+            for item in items {
+                collect_expr_type_imports(item.value(), bindings, requirements, imports);
             }
         }
         CoreExpr::List { elements, .. } => {

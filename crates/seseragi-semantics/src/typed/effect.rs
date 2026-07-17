@@ -97,9 +97,9 @@ fn collect_effect_contract(
         | TypedExpr::OptionalFieldAccess { receiver, .. } => {
             collect_effect_contract(receiver, requirements, failure);
         }
-        TypedExpr::Record { fields, .. } => {
-            for field in fields {
-                collect_effect_contract(&field.value, requirements, failure);
+        TypedExpr::Record { items, .. } => {
+            for item in items {
+                collect_effect_contract(item.value(), requirements, failure);
             }
         }
         TypedExpr::Unit { .. }

@@ -64,17 +64,28 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
 }
 
 fn validate_record(expression: &Value, path: &str) -> Result<(), String> {
-    let fields = expression
-        .get("fields")
+    let items = expression
+        .get("items")
         .and_then(Value::as_array)
-        .ok_or_else(|| format!("SurfaceAst {path}.fields must be an array"))?;
-    for (index, field) in fields.iter().enumerate() {
-        let field_path = format!("{path}.fields[{index}]");
-        require_span(field, &field_path)?;
-        if field.get("name").and_then(Value::as_str).is_none() {
-            return Err(format!("SurfaceAst {field_path}.name must be a string"));
+        .ok_or_else(|| format!("SurfaceAst {path}.items must be an array"))?;
+    for (index, item) in items.iter().enumerate() {
+        let item_path = format!("{path}.items[{index}]");
+        require_span(item, &item_path)?;
+        match item.get("kind").and_then(Value::as_str) {
+            Some("field") => {
+                if item.get("name").and_then(Value::as_str).is_none() {
+                    return Err(format!("SurfaceAst {item_path}.name must be a string"));
+                }
+            }
+            Some("spread") => {}
+            Some(other) => {
+                return Err(format!(
+                    "SurfaceAst {item_path} has unknown record item kind {other}"
+                ));
+            }
+            None => return Err(format!("SurfaceAst {item_path}.kind must be a string")),
         }
-        validate_child(field, "value", &field_path)?;
+        validate_child(item, "value", &item_path)?;
     }
     Ok(())
 }
@@ -357,11 +368,13 @@ mod tests {
                     "kind": "member",
                     "receiver": {
                         "kind": "record",
-                        "fields": [{
+                        "items": [{
+                            "kind": "field",
                             "name": "profile",
                             "value": {
                                 "kind": "record",
-                                "fields": [{
+                                "items": [{
+                                    "kind": "field",
                                     "name": "name",
                                     "value": { "kind": "string", "span": { "start": 4, "end": 9 } },
                                     "span": { "start": 0, "end": 9 }

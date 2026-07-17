@@ -2,7 +2,7 @@ use crate::{
     SymbolId, SymbolKind, SymbolNamespace, TypedConstraint, TypedExpr, TypedParameter,
     TypedTemplatePart, TypedType,
 };
-use seseragi_syntax::{ByteSpan, SurfaceExpr, SurfaceTemplatePart};
+use seseragi_syntax::{ByteSpan, SurfaceExpr, SurfaceRecordItem, SurfaceTemplatePart};
 use std::collections::BTreeMap;
 
 use super::functions::{application_result_type, TopLevelPureFunction};
@@ -336,19 +336,39 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
                 .map(surface_expression_type_hint)
                 .collect::<Option<Vec<_>>>()?,
         }),
-        SurfaceExpr::Record { fields, .. } => Some(TypedType::Record {
-            closed: true,
-            fields: fields
-                .iter()
-                .map(|field| {
-                    Some(crate::TypedRecordField {
-                        name: field.name.clone(),
-                        optional: false,
-                        type_ref: surface_expression_type_hint(&field.value)?,
-                    })
-                })
-                .collect::<Option<Vec<_>>>()?,
-        }),
+        SurfaceExpr::Record { items, .. } => {
+            let mut fields = BTreeMap::new();
+            for item in items {
+                match item {
+                    SurfaceRecordItem::Field { name, value, .. } => {
+                        fields.insert(
+                            name.clone(),
+                            crate::TypedRecordField {
+                                name: name.clone(),
+                                optional: false,
+                                type_ref: surface_expression_type_hint(value)?,
+                            },
+                        );
+                    }
+                    SurfaceRecordItem::Spread { value, .. } => {
+                        let TypedType::Record {
+                            fields: spread_fields,
+                            ..
+                        } = surface_expression_type_hint(value)?
+                        else {
+                            return None;
+                        };
+                        for field in spread_fields {
+                            fields.insert(field.name.clone(), field);
+                        }
+                    }
+                }
+            }
+            Some(TypedType::Record {
+                closed: true,
+                fields: fields.into_values().collect(),
+            })
+        }
         SurfaceExpr::Array { elements, .. } => {
             let element = elements.first().and_then(surface_expression_type_hint)?;
             elements
@@ -441,7 +461,7 @@ pub(super) fn type_surface_expression(
         SurfaceExpr::Tuple { elements, span } => tuple::type_tuple(elements, *span, context),
         SurfaceExpr::Array { elements, span } => array::type_array(elements, *span, context),
         SurfaceExpr::List { elements, span } => array::type_list(elements, *span, context),
-        SurfaceExpr::Record { fields, span } => record::type_record(fields, *span, context),
+        SurfaceExpr::Record { items, span } => record::type_record(items, *span, context),
         SurfaceExpr::ArrayComprehension {
             element,
             clauses,

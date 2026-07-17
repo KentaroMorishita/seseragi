@@ -3,3 +3,6 @@ fn duplicate -> { name: String } =
 
 fn missing user: { name: String } -> String =
   user.age
+
+fn badSpread -> { name: String } =
+  { ...42, name: "A" }

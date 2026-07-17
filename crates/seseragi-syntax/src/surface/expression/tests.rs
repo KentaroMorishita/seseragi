@@ -1,6 +1,6 @@
 use super::*;
 use crate::surface::parse_surface_ast;
-use crate::surface_model::{SurfaceDecl, SurfaceDoItem, SurfacePattern};
+use crate::surface_model::{SurfaceDecl, SurfaceDoItem, SurfacePattern, SurfaceRecordItem};
 
 fn first_body(source: &str) -> SurfaceExpr {
     let module = parse_surface_ast("main.ssrg", source);
@@ -85,19 +85,39 @@ fn parses_record_literals_with_explicit_and_shorthand_fields() {
         "pub fn profile name: String -> score: Int -> { name: String, score: Int } = { name, score: score }\n",
     );
 
-    let SurfaceExpr::Record { fields, .. } = body else {
+    let SurfaceExpr::Record { items, .. } = body else {
         panic!("expected record expression");
     };
-    assert_eq!(fields.len(), 2);
-    assert_eq!(fields[0].name, "name");
+    assert_eq!(items.len(), 2);
     assert!(matches!(
-        &fields[0].value,
-        SurfaceExpr::Name { name, .. } if name == "name"
+        &items[0],
+        SurfaceRecordItem::Field { name, value: SurfaceExpr::Name { name: value, .. }, .. }
+            if name == "name" && value == "name"
     ));
-    assert_eq!(fields[1].name, "score");
     assert!(matches!(
-        &fields[1].value,
-        SurfaceExpr::Name { name, .. } if name == "score"
+        &items[1],
+        SurfaceRecordItem::Field { name, value: SurfaceExpr::Name { name: value, .. }, .. }
+            if name == "score" && value == "score"
+    ));
+}
+
+#[test]
+fn parses_record_spread_in_source_order() {
+    let body = first_body(
+        "pub fn relabel base: { label: String } -> { label: String } = { ...base, label: \"next\" }\n",
+    );
+
+    let SurfaceExpr::Record { items, .. } = body else {
+        panic!("expected record expression");
+    };
+    assert!(matches!(
+        &items[0],
+        SurfaceRecordItem::Spread { value, .. }
+            if matches!(value, SurfaceExpr::Name { name, .. } if name == "base")
+    ));
+    assert!(matches!(
+        &items[1],
+        SurfaceRecordItem::Field { name, .. } if name == "label"
     ));
 }
 

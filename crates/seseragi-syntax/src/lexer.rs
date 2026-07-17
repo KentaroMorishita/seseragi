@@ -37,6 +37,9 @@ impl Lexer<'_> {
                 ']' => self.bump_fixed(TokenKind::PunctuationSquareRight, start, char),
                 ',' => self.bump_fixed(TokenKind::PunctuationComma, start, char),
                 ';' => self.bump_fixed(TokenKind::PunctuationSemicolon, start, char),
+                '.' if self.starts_with("...") => {
+                    self.bump_fixed_raw(TokenKind::PunctuationEllipsis, start, "...")
+                }
                 '.' if self.starts_with("..=") => {
                     self.bump_fixed_raw(TokenKind::OperatorRangeInclusive, start, "..=")
                 }
@@ -179,6 +182,7 @@ impl Lexer<'_> {
             "$" => TokenKind::OperatorApply,
             ".." => TokenKind::OperatorRangeExclusive,
             "..=" => TokenKind::OperatorRangeInclusive,
+            "..." => TokenKind::PunctuationEllipsis,
             "<=" | ">=" | "==" | "!=" => TokenKind::OperatorComparison,
             "+" | "-" | "*" | "/" | "%" | "**" => TokenKind::OperatorArithmetic,
             _ => TokenKind::OperatorCustom,
@@ -461,6 +465,20 @@ mod tests {
             stream.reconstructed_text(),
             "pub fn add x: Int -> Int = x + 1\nlet result = values |> map (\\value -> value + 1)\n// ok\n"
         );
+    }
+
+    #[test]
+    fn lexes_record_spread_as_ellipsis() {
+        let stream = lex("main.ssrg", "{ ...base, value: 1 }");
+
+        assert!(stream
+            .tokens
+            .iter()
+            .any(|token| { token.kind == TokenKind::PunctuationEllipsis && token.raw == "..." }));
+        assert!(!stream
+            .tokens
+            .iter()
+            .any(|token| token.kind == TokenKind::OperatorRangeExclusive));
     }
 
     #[test]

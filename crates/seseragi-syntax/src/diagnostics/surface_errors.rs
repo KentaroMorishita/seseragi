@@ -49,9 +49,9 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
                 collect_expression_errors(element, errors);
             }
         }
-        SurfaceExpr::Record { fields, .. } => {
-            for field in fields {
-                collect_expression_errors(&field.value, errors);
+        SurfaceExpr::Record { items, .. } => {
+            for item in items {
+                collect_expression_errors(item.value(), errors);
             }
         }
         SurfaceExpr::Template { parts, .. } => {

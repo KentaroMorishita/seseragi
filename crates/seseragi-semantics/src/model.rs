@@ -311,11 +311,29 @@ pub struct TypedRecordField {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TypedRecordValueField {
-    pub name: String,
-    pub value: TypedExpr,
-    pub origin: ByteSpan,
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypedRecordValueItem {
+    Field {
+        name: String,
+        value: TypedExpr,
+        origin: ByteSpan,
+    },
+    Spread {
+        value: TypedExpr,
+        origin: ByteSpan,
+    },
+}
+
+impl TypedRecordValueItem {
+    pub fn value(&self) -> &TypedExpr {
+        match self {
+            Self::Field { value, .. } | Self::Spread { value, .. } => value,
+        }
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -437,7 +455,7 @@ pub enum TypedExpr {
         origin: ByteSpan,
     },
     Record {
-        fields: Vec<TypedRecordValueField>,
+        items: Vec<TypedRecordValueItem>,
         #[serde(rename = "type")]
         type_ref: TypedType,
         origin: ByteSpan,

@@ -50,9 +50,9 @@ pub(super) fn resolve_expression(
                 resolve_expression(resolver, scope, element);
             }
         }
-        SurfaceExpr::Record { fields, .. } => {
-            for field in fields {
-                resolve_expression(resolver, scope, &field.value);
+        SurfaceExpr::Record { items, .. } => {
+            for item in items {
+                resolve_expression(resolver, scope, item.value());
             }
         }
         SurfaceExpr::Template { parts, .. } => {

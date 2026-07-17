@@ -34,6 +34,14 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
                 type_label(actual)
             ),
         ),
+        RecordIssue::SpreadOnNonRecord { spread, actual } => (
+            "record.spread-on-non-record",
+            *spread,
+            format!(
+                "record spread requires a record, received {}",
+                type_label(actual)
+            ),
+        ),
     };
     Diagnostic {
         id: String::new(),
@@ -97,6 +105,10 @@ mod tests {
             (
                 "pub fn bad -> String = 42.name\n",
                 "record.access-on-non-record",
+            ),
+            (
+                "pub fn bad -> { name: String } = { ...42, name: \"A\" }\n",
+                "record.spread-on-non-record",
             ),
         ] {
             let artifact = semantic_diagnostics("record-invalid.ssrg", source);

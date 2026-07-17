@@ -6,7 +6,7 @@
     "seseragi://artifact/record-profile"
   ],
   "sourcesContent": [
-    "fn profile name: String -> score: Int -> { name: String, score: Int } =\n  { name, score }\n\nfn displayName user: { name: String } -> String =\n  user.name\n\nfn renderProfile user: { label?: String, name: String } -> String =\n  match user.label {\n    Nothing -> \"Record profile: \" + displayName user\n    Just label -> label + \": \" + displayName user\n  }\n\npub effect fn main =\n  do {\n    profile \"Mio\" 42\n    |> renderProfile\n    |> println\n\n    { label: \"Player\", name: \"Mio\" }\n    |> renderProfile\n    |> println\n  }\n"
+    "fn profile name: String -> score: Int -> { name: String, score: Int } =\n  { name, score }\n\nfn displayName user: { name: String } -> String =\n  user.name\n\nfn renderProfile user: { label?: String, name: String } -> String =\n  match user.label {\n    Nothing -> \"Record profile: \" + displayName user\n    Just label -> label + \": \" + displayName user\n  }\n\npub effect fn main =\n  do {\n    let base = profile \"Mio\" 42\n\n    base\n    |> renderProfile\n    |> println\n\n    { ...base, label: \"Player\" }\n    |> renderProfile\n    |> println\n  }\n"
   ],
   "names": [
     "profile",
@@ -16,9 +16,10 @@
     "label",
     "displayName",
     "main",
+    "base",
+    "profile",
     "println",
     "renderProfile",
-    "profile",
     "println",
     "renderProfile"
   ],

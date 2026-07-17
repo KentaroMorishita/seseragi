@@ -115,9 +115,9 @@ fn collect_expr(expr: &CoreExpr, imported: &mut BTreeSet<(String, String)>) {
         CoreExpr::FieldAccess { receiver, .. } | CoreExpr::OptionalFieldAccess { receiver, .. } => {
             collect_expr(receiver, imported)
         }
-        CoreExpr::Record { fields, .. } => {
-            for field in fields {
-                collect_expr(&field.value, imported);
+        CoreExpr::Record { items, .. } => {
+            for item in items {
+                collect_expr(item.value(), imported);
             }
         }
         CoreExpr::Template { parts, .. } => {

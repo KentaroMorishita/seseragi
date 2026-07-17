@@ -77,6 +77,10 @@ pub(crate) enum RecordIssue {
         receiver: ByteSpan,
         actual: TypedType,
     },
+    SpreadOnNonRecord {
+        spread: ByteSpan,
+        actual: TypedType,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

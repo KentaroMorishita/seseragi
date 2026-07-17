@@ -5,7 +5,9 @@ use crate::iterator_ops::runtime_iterator_operation;
 use crate::list_ops::runtime_list_literal_operation;
 use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
-use crate::{CoreExpr, CoreMonadDoStatement, CoreStatement, CoreTemplatePart, CoreType};
+use crate::{
+    CoreExpr, CoreMonadDoStatement, CoreRecordValueItem, CoreStatement, CoreTemplatePart, CoreType,
+};
 use std::collections::BTreeMap;
 
 use super::decision::lower_core_decision;
@@ -14,7 +16,7 @@ use super::names::{local_name, safe_identifier};
 use super::types::{
     render_typescript_type, type_ref_from_core_type, type_ref_from_core_type_with_erasure,
 };
-use super::{TypeScriptExpr, TypeScriptRecordValueField, TypeScriptStatement};
+use super::{TypeScriptExpr, TypeScriptRecordValueItem, TypeScriptStatement};
 
 mod comprehension;
 
@@ -191,16 +193,29 @@ pub(super) fn lower_core_expr_to_typescript(
                 .local_name
                 .to_owned(),
         },
-        CoreExpr::Record { fields, .. } => TypeScriptExpr::Record {
-            fields: fields
+        CoreExpr::Record { items, .. } => TypeScriptExpr::Record {
+            items: items
                 .into_iter()
-                .map(|field| TypeScriptRecordValueField {
-                    name: field.name,
-                    value: lower_core_expr_to_typescript(
-                        field.value,
-                        imported_values,
-                        imported_types,
-                    ),
+                .map(|item| match item {
+                    CoreRecordValueItem::Field { name, value, .. } => {
+                        TypeScriptRecordValueItem::Field {
+                            name,
+                            value: lower_core_expr_to_typescript(
+                                value,
+                                imported_values,
+                                imported_types,
+                            ),
+                        }
+                    }
+                    CoreRecordValueItem::Spread { value, .. } => {
+                        TypeScriptRecordValueItem::Spread {
+                            value: lower_core_expr_to_typescript(
+                                value,
+                                imported_values,
+                                imported_types,
+                            ),
+                        }
+                    }
                 })
                 .collect(),
         },
@@ -443,9 +458,9 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
         | TypeScriptExpr::OptionalFieldAccess { receiver, .. } => {
             typescript_expr_contains_await(receiver)
         }
-        TypeScriptExpr::Record { fields } => fields
+        TypeScriptExpr::Record { items } => items
             .iter()
-            .any(|field| typescript_expr_contains_await(&field.value)),
+            .any(|item| typescript_expr_contains_await(item.value())),
         TypeScriptExpr::Lambda { body, .. } => typescript_expr_contains_await(body),
         TypeScriptExpr::Binary { left, right, .. } => {
             typescript_expr_contains_await(left) || typescript_expr_contains_await(right)

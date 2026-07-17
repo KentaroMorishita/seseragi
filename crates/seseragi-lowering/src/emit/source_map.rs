@@ -269,9 +269,9 @@ fn collect_expr_names(
         | TypeScriptExpr::OptionalFieldAccess { receiver, .. } => {
             collect_expr_names(receiver, helper_names, names);
         }
-        TypeScriptExpr::Record { fields } => {
-            for field in fields {
-                collect_expr_names(&field.value, helper_names, names);
+        TypeScriptExpr::Record { items } => {
+            for item in items {
+                collect_expr_names(item.value(), helper_names, names);
             }
         }
         TypeScriptExpr::Binary { left, right, .. } => {

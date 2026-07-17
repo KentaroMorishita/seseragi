@@ -1,7 +1,7 @@
 use crate::typescript::types::render_typescript_type;
 use crate::{
     TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding, TypeScriptExpr, TypeScriptFunction,
-    TypeScriptModule, TypeScriptStatement,
+    TypeScriptModule, TypeScriptRecordValueItem, TypeScriptStatement,
 };
 use serde::{Deserialize, Serialize};
 
@@ -320,15 +320,17 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                 render_typescript_expr(receiver)
             )
         }
-        TypeScriptExpr::Record { fields } => format!(
+        TypeScriptExpr::Record { items } => format!(
             "({{ {} }} as const)",
-            fields
+            items
                 .iter()
-                .map(|field| format!(
-                    "{}: {}",
-                    format!("{:?}", field.name),
-                    render_typescript_expr(&field.value)
-                ))
+                .map(|item| match item {
+                    TypeScriptRecordValueItem::Field { name, value } =>
+                        format!("{}: {}", format!("{name:?}"), render_typescript_expr(value)),
+                    TypeScriptRecordValueItem::Spread { value } => {
+                        format!("...{}", render_typescript_expr(value))
+                    }
+                })
                 .collect::<Vec<_>>()
                 .join(", ")
         ),

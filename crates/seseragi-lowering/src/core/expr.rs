@@ -1,14 +1,14 @@
 use crate::source_span;
 use seseragi_semantics::{
     TypedCallEvidence, TypedComprehensionClause, TypedDoStatement, TypedExpr,
-    TypedMonadDoStatement, TypedParameter, TypedPattern, TypedTemplatePart,
+    TypedMonadDoStatement, TypedParameter, TypedPattern, TypedRecordValueItem, TypedTemplatePart,
 };
 
 use super::decision::lower_match;
 use super::types::lower_typed_type;
 use super::{
     CoreCallEvidence, CoreComprehensionClause, CoreExpr, CoreMonadDoStatement, CoreParameter,
-    CorePattern, CoreRecordValueField, CoreStatement, CoreTemplatePart,
+    CorePattern, CoreRecordValueItem, CoreStatement, CoreTemplatePart,
 };
 
 pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
@@ -154,16 +154,26 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             origin: source_span(source, origin),
         },
         TypedExpr::Record {
-            fields,
+            items,
             type_ref,
             origin,
         } => CoreExpr::Record {
-            fields: fields
+            items: items
                 .into_iter()
-                .map(|field| CoreRecordValueField {
-                    name: field.name,
-                    value: lower_expr(source, field.value),
-                    origin: source_span(source, field.origin),
+                .map(|item| match item {
+                    TypedRecordValueItem::Field {
+                        name,
+                        value,
+                        origin,
+                    } => CoreRecordValueItem::Field {
+                        name,
+                        value: lower_expr(source, value),
+                        origin: source_span(source, origin),
+                    },
+                    TypedRecordValueItem::Spread { value, origin } => CoreRecordValueItem::Spread {
+                        value: lower_expr(source, value),
+                        origin: source_span(source, origin),
+                    },
                 })
                 .collect(),
             type_ref: lower_typed_type(type_ref),

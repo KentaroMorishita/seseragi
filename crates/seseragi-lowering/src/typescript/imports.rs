@@ -154,9 +154,14 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
                 *nothing_constructor = fresh.clone();
             }
         }
-        TypeScriptExpr::Record { fields } => {
-            for field in fields {
-                rewrite_expr(&mut field.value, renames);
+        TypeScriptExpr::Record { items } => {
+            for item in items {
+                match item {
+                    super::TypeScriptRecordValueItem::Field { value, .. }
+                    | super::TypeScriptRecordValueItem::Spread { value } => {
+                        rewrite_expr(value, renames)
+                    }
+                }
             }
         }
         TypeScriptExpr::Binary { left, right, .. } => {

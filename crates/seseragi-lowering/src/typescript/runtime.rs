@@ -110,11 +110,11 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             collect_expr_runtime_requirements(receiver, requirements);
         }
         CoreExpr::Record {
-            fields, type_ref, ..
+            items, type_ref, ..
         } => {
             collect_type_runtime_requirement(type_ref, requirements);
-            for field in fields {
-                collect_expr_runtime_requirements(&field.value, requirements);
+            for item in items {
+                collect_expr_runtime_requirements(item.value(), requirements);
             }
         }
         CoreExpr::ArrayComprehension {
@@ -418,9 +418,9 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             }
             collect_expr_runtime_imports(receiver, imports);
         }
-        CoreExpr::Record { fields, .. } => {
-            for field in fields {
-                collect_expr_runtime_imports(&field.value, imports);
+        CoreExpr::Record { items, .. } => {
+            for item in items {
+                collect_expr_runtime_imports(item.value(), imports);
             }
         }
         CoreExpr::List { elements, .. } => {

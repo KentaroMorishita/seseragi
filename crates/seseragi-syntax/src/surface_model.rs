@@ -380,7 +380,7 @@ pub enum SurfaceExpr {
         span: ByteSpan,
     },
     Record {
-        fields: Vec<SurfaceRecordField>,
+        items: Vec<SurfaceRecordItem>,
         span: ByteSpan,
     },
     ArrayComprehension {
@@ -454,12 +454,36 @@ impl SurfaceExpr {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct SurfaceRecordField {
-    pub name: String,
-    pub name_span: ByteSpan,
-    pub value: SurfaceExpr,
-    pub span: ByteSpan,
+#[serde(
+    tag = "kind",
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase"
+)]
+pub enum SurfaceRecordItem {
+    Field {
+        name: String,
+        name_span: ByteSpan,
+        value: SurfaceExpr,
+        span: ByteSpan,
+    },
+    Spread {
+        value: SurfaceExpr,
+        span: ByteSpan,
+    },
+}
+
+impl SurfaceRecordItem {
+    pub fn value(&self) -> &SurfaceExpr {
+        match self {
+            Self::Field { value, .. } | Self::Spread { value, .. } => value,
+        }
+    }
+
+    pub fn span(&self) -> ByteSpan {
+        match self {
+            Self::Field { span, .. } | Self::Spread { span, .. } => *span,
+        }
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

@@ -93,9 +93,9 @@ fn collect_intrinsic_issues(
         | TypedExpr::OptionalFieldAccess { receiver, .. } => {
             collect_intrinsic_issues(receiver, resolution, issues);
         }
-        TypedExpr::Record { fields, .. } => {
-            for field in fields {
-                collect_intrinsic_issues(&field.value, resolution, issues);
+        TypedExpr::Record { items, .. } => {
+            for item in items {
+                collect_intrinsic_issues(item.value(), resolution, issues);
             }
         }
         TypedExpr::Unit { .. }

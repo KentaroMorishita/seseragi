@@ -42,6 +42,26 @@
         }
       ],
       "fixes": []
+    },
+    {
+      "id": "d3",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "record.spread-on-non-record",
+      "primary": {
+        "start": 160,
+        "end": 165
+      },
+      "related": [
+        {
+          "message": "record spread requires a record, received Int",
+          "primary": {
+            "start": 121,
+            "end": 178
+          }
+        }
+      ],
+      "fixes": []
     }
   ]
 }

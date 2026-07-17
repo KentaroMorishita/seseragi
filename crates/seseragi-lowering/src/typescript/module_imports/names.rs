@@ -90,9 +90,9 @@ fn collect_local_expr_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
         CoreExpr::FieldAccess { receiver, .. } | CoreExpr::OptionalFieldAccess { receiver, .. } => {
             collect_local_expr_names(receiver, names)
         }
-        CoreExpr::Record { fields, .. } => {
-            for field in fields {
-                collect_local_expr_names(&field.value, names);
+        CoreExpr::Record { items, .. } => {
+            for item in items {
+                collect_local_expr_names(item.value(), names);
             }
         }
         CoreExpr::Template { parts, .. } => {

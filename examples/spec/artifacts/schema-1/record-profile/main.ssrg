@@ -12,11 +12,13 @@ fn renderProfile user: { label?: String, name: String } -> String =
 
 pub effect fn main =
   do {
-    profile "Mio" 42
+    let base = profile "Mio" 42
+
+    base
     |> renderProfile
     |> println
 
-    { label: "Player", name: "Mio" }
+    { ...base, label: "Player" }
     |> renderProfile
     |> println
   }

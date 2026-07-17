@@ -50,8 +50,9 @@
       ],
       "body": {
         "kind": "record",
-        "fields": [
+        "items": [
           {
+            "kind": "field",
             "name": "name",
             "value": {
               "kind": "identifier",
@@ -59,6 +60,7 @@
             }
           },
           {
+            "kind": "field",
             "name": "score",
             "value": {
               "kind": "identifier",
@@ -229,6 +231,48 @@
         "kind": "sequence",
         "statements": [
           {
+            "kind": "pure-let",
+            "name": "base",
+            "type": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "name",
+                  "optional": false,
+                  "type": {
+                    "kind": "string"
+                  }
+                },
+                {
+                  "name": "score",
+                  "optional": false,
+                  "type": {
+                    "kind": "bigint"
+                  }
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "profile",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Mio"
+                },
+                {
+                  "kind": "bigint",
+                  "value": "42"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 383,
+              "end": 410
+            }
+          },
+          {
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
@@ -239,18 +283,8 @@
                   "callee": "renderProfile",
                   "arguments": [
                     {
-                      "kind": "call",
-                      "callee": "profile",
-                      "arguments": [
-                        {
-                          "kind": "string",
-                          "value": "Mio"
-                        },
-                        {
-                          "kind": "bigint",
-                          "value": "42"
-                        }
-                      ]
+                      "kind": "identifier",
+                      "name": "base"
                     }
                   ]
                 }
@@ -268,19 +302,20 @@
               "arguments": [
                 {
                   "kind": "record",
-                  "fields": [
+                  "items": [
                     {
+                      "kind": "spread",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "base"
+                      }
+                    },
+                    {
+                      "kind": "field",
                       "name": "label",
                       "value": {
                         "kind": "string",
                         "value": "Player"
-                      }
-                    },
-                    {
-                      "name": "name",
-                      "value": {
-                        "kind": "string",
-                        "value": "Mio"
                       }
                     }
                   ]
@@ -293,7 +328,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 351,
-        "end": 513
+        "end": 530
       }
     }
   ]

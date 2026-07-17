@@ -938,8 +938,10 @@ record literalとrequired / optional field accessを独立nodeとして保持し
 これによりnamespaceとmemberの判断をTypeScript shapeへ委譲せず、後続structでも同じfield backendを再利用できます。
 optional field accessはreceiverを一度だけ評価し、`Object.prototype.hasOwnProperty`でpresenceを判定してからstandard
 `Just` / `Nothing` runtime constructorへ接続します。したがってmissingとpresentな値を同じ`undefined`へ潰さず、result型も
-`Maybe<A>`としてTypedHirから生成interfaceまで保持します。spreadとrecord patternは未実装であり、literal/accessだけを
-record全体の完了条件にはしません。
+`Maybe<A>`としてTypedHirから生成interfaceまで保持します。record itemはfield / spreadのsource-order列として全IRへ残し、
+spread operandのfield型とpresenceを引き継いだ後、後続itemで同名fieldを上書きします。backendも同じ順序でreadonly object
+spreadを生成するため、各operandを一度だけ評価します。record patternは未実装であり、literal/access/spreadだけをrecord全体の
+完了条件にはしません。
 
 公開interfaceだけでは、同一packageの「private宣言は存在する」と単なるtypoを区別できません。そのためfrontendは
 同じSurfaceAst passから、bodyと型schemeを含めずdeclaration name / namespace / visibility / canonical symbolだけを持つ

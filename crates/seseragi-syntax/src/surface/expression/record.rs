@@ -1,5 +1,5 @@
 use super::ExpressionParser;
-use crate::surface_model::{ByteSpan, SurfaceExpr, SurfaceRecordField};
+use crate::surface_model::{ByteSpan, SurfaceExpr, SurfaceRecordItem};
 use crate::token::{Token, TokenKind};
 
 pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<SurfaceExpr> {
@@ -7,7 +7,7 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<S
     if parser.kind_at_cursor() == Some(TokenKind::PunctuationBraceRight) {
         let close = parser.consume(TokenKind::PunctuationBraceRight)?;
         return Some(SurfaceExpr::Record {
-            fields: Vec::new(),
+            items: Vec::new(),
             span: ByteSpan {
                 start: open.start,
                 end: close.end,
@@ -15,17 +15,12 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<S
         });
     }
 
-    let mut fields = Vec::new();
+    let mut items = Vec::new();
     loop {
         parser.skip_trivia();
-        let name_token = parser.tokens.get(parser.cursor)?.clone();
-        if name_token.kind != TokenKind::IdentifierLower {
-            return None;
-        }
-        parser.cursor += 1;
-        parser.skip_trivia();
-
-        let (value, explicit) = if parser.kind_at_cursor() == Some(TokenKind::PunctuationColon) {
+        let mut ambiguous_shorthand = false;
+        if parser.kind_at_cursor() == Some(TokenKind::PunctuationEllipsis) {
+            let spread = parser.tokens.get(parser.cursor)?.clone();
             parser.cursor += 1;
             let value = parser.parse_expr_bp(
                 0,
@@ -34,31 +29,58 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<S
                     TokenKind::PunctuationBraceRight,
                 ],
             )?;
-            (value, true)
-        } else {
-            (
-                SurfaceExpr::Name {
-                    name: name_token.raw.clone(),
-                    span: token_span(&name_token),
+            items.push(SurfaceRecordItem::Spread {
+                span: ByteSpan {
+                    start: spread.start,
+                    end: value.span().end,
                 },
-                false,
-            )
-        };
-        let field_end = value.span().end;
-        let name_span = token_span(&name_token);
-        fields.push(SurfaceRecordField {
-            name: name_token.raw,
-            name_span,
-            value,
-            span: ByteSpan {
-                start: name_token.start,
-                end: field_end,
-            },
-        });
+                value,
+            });
+        } else {
+            let name_token = parser.tokens.get(parser.cursor)?.clone();
+            if name_token.kind != TokenKind::IdentifierLower {
+                return None;
+            }
+            parser.cursor += 1;
+            parser.skip_trivia();
+
+            let (value, explicit) = if parser.kind_at_cursor() == Some(TokenKind::PunctuationColon)
+            {
+                parser.cursor += 1;
+                let value = parser.parse_expr_bp(
+                    0,
+                    &[
+                        TokenKind::PunctuationComma,
+                        TokenKind::PunctuationBraceRight,
+                    ],
+                )?;
+                (value, true)
+            } else {
+                (
+                    SurfaceExpr::Name {
+                        name: name_token.raw.clone(),
+                        span: token_span(&name_token),
+                    },
+                    false,
+                )
+            };
+            ambiguous_shorthand = !explicit;
+            let field_end = value.span().end;
+            let name_span = token_span(&name_token);
+            items.push(SurfaceRecordItem::Field {
+                name: name_token.raw,
+                name_span,
+                value,
+                span: ByteSpan {
+                    start: name_token.start,
+                    end: field_end,
+                },
+            });
+        }
 
         parser.skip_trivia();
         if parser.kind_at_cursor() == Some(TokenKind::PunctuationBraceRight) {
-            if !explicit && fields.len() == 1 {
+            if ambiguous_shorthand && items.len() == 1 {
                 return None;
             }
             break;
@@ -72,7 +94,7 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<S
 
     let close = parser.consume(TokenKind::PunctuationBraceRight)?;
     Some(SurfaceExpr::Record {
-        fields,
+        items,
         span: ByteSpan {
             start: open.start,
             end: close.end,

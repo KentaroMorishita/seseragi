@@ -244,10 +244,22 @@ pub struct TypeScriptRecordTypeField {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TypeScriptRecordValueField {
-    pub name: String,
-    pub value: TypeScriptExpr,
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypeScriptRecordValueItem {
+    Field { name: String, value: TypeScriptExpr },
+    Spread { value: TypeScriptExpr },
+}
+
+impl TypeScriptRecordValueItem {
+    pub fn value(&self) -> &TypeScriptExpr {
+        match self {
+            Self::Field { value, .. } | Self::Spread { value } => value,
+        }
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -333,7 +345,7 @@ pub enum TypeScriptExpr {
         nothing_constructor: String,
     },
     Record {
-        fields: Vec<TypeScriptRecordValueField>,
+        items: Vec<TypeScriptRecordValueItem>,
     },
     Array {
         elements: Vec<TypeScriptExpr>,

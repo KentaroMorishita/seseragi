@@ -51,6 +51,13 @@ describe("Seseragi syntax classification", () => {
     ])
   })
 
+  test("highlights record spread as one operator token", () => {
+    expect(highlightedTokens("{ ...base, name: value }")).toContainEqual({
+      text: "...",
+      classes: "tok-keyword",
+    })
+  })
+
   test("keeps actual template literals highlighted as strings", () => {
     expect(highlightedTokens("`hello ${name}`")).toEqual([
       { text: "`hello ${name}`", classes: "tok-string" },

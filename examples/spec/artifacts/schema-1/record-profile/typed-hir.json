@@ -68,8 +68,9 @@
       ],
       "body": {
         "kind": "record",
-        "fields": [
+        "items": [
           {
+            "kind": "field",
             "name": "name",
             "value": {
               "kind": "variable",
@@ -90,6 +91,7 @@
             }
           },
           {
+            "kind": "field",
             "name": "score",
             "value": {
               "kind": "variable",
@@ -655,7 +657,7 @@
       "visibility": "public",
       "origin": {
         "start": 351,
-        "end": 513
+        "end": 530
       },
       "inferredContract": true,
       "parameters": [
@@ -698,6 +700,94 @@
         "kind": "do-block",
         "statements": [
           {
+            "kind": "pure-let",
+            "name": "base",
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "name",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "score",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/record-profile::profile",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Mio",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 402,
+                    "end": 407
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "value": "42",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 408,
+                    "end": 410
+                  }
+                }
+              ],
+              "type": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "name": "score",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "origin": {
+                "start": 394,
+                "end": 410
+              }
+            },
+            "origin": {
+              "start": 383,
+              "end": 410
+            }
+          },
+          {
             "kind": "effect",
             "value": {
               "kind": "effect-call",
@@ -734,36 +824,8 @@
                   "callee": "artifact/record-profile::renderProfile",
                   "arguments": [
                     {
-                      "kind": "call",
-                      "callee": "artifact/record-profile::profile",
-                      "arguments": [
-                        {
-                          "kind": "string",
-                          "value": "Mio",
-                          "type": {
-                            "kind": "named",
-                            "name": "String",
-                            "arguments": []
-                          },
-                          "origin": {
-                            "start": 391,
-                            "end": 396
-                          }
-                        },
-                        {
-                          "kind": "integer",
-                          "value": "42",
-                          "type": {
-                            "kind": "named",
-                            "name": "Int",
-                            "arguments": []
-                          },
-                          "origin": {
-                            "start": 397,
-                            "end": 399
-                          }
-                        }
-                      ],
+                      "kind": "variable",
+                      "name": "base",
                       "type": {
                         "kind": "record",
                         "closed": true,
@@ -787,8 +849,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 383,
-                        "end": 399
+                        "start": 416,
+                        "end": 420
                       }
                     }
                   ],
@@ -798,14 +860,14 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 383,
-                    "end": 420
+                    "start": 416,
+                    "end": 441
                   }
                 }
               ],
               "origin": {
-                "start": 383,
-                "end": 435
+                "start": 416,
+                "end": 456
               }
             }
           }
@@ -846,8 +908,46 @@
               "arguments": [
                 {
                   "kind": "record",
-                  "fields": [
+                  "items": [
                     {
+                      "kind": "spread",
+                      "value": {
+                        "kind": "variable",
+                        "name": "base",
+                        "type": {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "name",
+                              "type": {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              }
+                            },
+                            {
+                              "name": "score",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 467,
+                          "end": 471
+                        }
+                      },
+                      "origin": {
+                        "start": 464,
+                        "end": 471
+                      }
+                    },
+                    {
+                      "kind": "field",
                       "name": "label",
                       "value": {
                         "kind": "string",
@@ -858,33 +958,13 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 450,
-                          "end": 458
+                          "start": 480,
+                          "end": 488
                         }
                       },
                       "origin": {
-                        "start": 443,
-                        "end": 458
-                      }
-                    },
-                    {
-                      "name": "name",
-                      "value": {
-                        "kind": "string",
-                        "value": "Mio",
-                        "type": {
-                          "kind": "named",
-                          "name": "String",
-                          "arguments": []
-                        },
-                        "origin": {
-                          "start": 466,
-                          "end": 471
-                        }
-                      },
-                      "origin": {
-                        "start": 460,
-                        "end": 471
+                        "start": 473,
+                        "end": 488
                       }
                     }
                   ],
@@ -907,12 +987,20 @@
                           "name": "String",
                           "arguments": []
                         }
+                      },
+                      {
+                        "name": "score",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
                       }
                     ]
                   },
                   "origin": {
-                    "start": 441,
-                    "end": 473
+                    "start": 462,
+                    "end": 490
                   }
                 }
               ],
@@ -922,19 +1010,19 @@
                 "arguments": []
               },
               "origin": {
-                "start": 441,
-                "end": 494
+                "start": 462,
+                "end": 511
               }
             }
           ],
           "origin": {
-            "start": 441,
-            "end": 509
+            "start": 462,
+            "end": 526
           }
         },
         "origin": {
           "start": 374,
-          "end": 513
+          "end": 530
         }
       }
     }
