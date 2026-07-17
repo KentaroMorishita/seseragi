@@ -383,6 +383,12 @@ pub enum SurfaceExpr {
         items: Vec<SurfaceRecordItem>,
         span: ByteSpan,
     },
+    Struct {
+        name: String,
+        name_span: ByteSpan,
+        items: Vec<SurfaceRecordItem>,
+        span: ByteSpan,
+    },
     ArrayComprehension {
         element: Box<SurfaceExpr>,
         clauses: Vec<SurfaceComprehensionClause>,
@@ -441,6 +447,7 @@ impl SurfaceExpr {
             | Self::Array { span, .. }
             | Self::List { span, .. }
             | Self::Record { span, .. }
+            | Self::Struct { span, .. }
             | Self::ArrayComprehension { span, .. }
             | Self::ListComprehension { span, .. }
             | Self::Binary { span, .. }
@@ -584,6 +591,12 @@ pub enum SurfacePattern {
         fields: Vec<SurfaceRecordPatternField>,
         span: ByteSpan,
     },
+    Struct {
+        name: String,
+        name_span: ByteSpan,
+        fields: Vec<SurfaceRecordPatternField>,
+        span: ByteSpan,
+    },
     Error {
         span: ByteSpan,
     },
@@ -600,6 +613,7 @@ impl SurfacePattern {
             | Self::Constructor { span, .. }
             | Self::Tuple { span, .. }
             | Self::Record { span, .. }
+            | Self::Struct { span, .. }
             | Self::Error { span } => *span,
         }
     }

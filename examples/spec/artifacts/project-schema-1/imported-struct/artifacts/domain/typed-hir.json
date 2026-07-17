@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/imported-struct::domain",
+  "declarations": [
+    {
+      "kind": "struct",
+      "symbol": "fixture/imported-struct::domain::Player",
+      "name": "Player",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "name",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 22,
+            "end": 26
+          }
+        },
+        {
+          "name": "score",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 38,
+            "end": 43
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 51
+      }
+    }
+  ]
+}

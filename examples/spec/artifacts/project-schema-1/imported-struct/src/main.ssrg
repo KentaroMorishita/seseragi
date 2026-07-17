@@ -1,0 +1,15 @@
+import { Player } from "./domain"
+
+fn improve player: Player -> Player =
+  Player { ...player, score: 42 }
+
+fn render player: Player -> String =
+  match player {
+    Player { name } -> name + ": imported struct"
+  }
+
+pub effect fn main =
+  Player { name: "Mio", score: 12 }
+  |> improve
+  |> render
+  |> println

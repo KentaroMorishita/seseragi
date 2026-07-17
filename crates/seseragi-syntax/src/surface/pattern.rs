@@ -25,6 +25,29 @@ pub(super) fn parse_pattern_range(tokens: &[Token], start: usize, end: usize) ->
     {
         return parse_record_pattern(tokens, first, last, span);
     }
+    if tokens[first].kind == TokenKind::IdentifierUpper {
+        let significant = significant_indices(tokens, first + 1, end);
+        if significant.first().is_some_and(|index| {
+            tokens[*index].kind == TokenKind::PunctuationBraceLeft
+                && tokens[last].kind == TokenKind::PunctuationBraceRight
+        }) {
+            let open = significant[0];
+            if let SurfacePattern::Record { fields, .. } =
+                parse_record_pattern(tokens, open, last, span)
+            {
+                return SurfacePattern::Struct {
+                    name: tokens[first].raw.clone(),
+                    name_span: ByteSpan {
+                        start: tokens[first].start,
+                        end: tokens[first].end,
+                    },
+                    fields,
+                    span,
+                };
+            }
+            return SurfacePattern::Error { span };
+        }
+    }
     let constructor = if tokens[first].kind == TokenKind::IdentifierUpper {
         Some((
             tokens[first].raw.clone(),

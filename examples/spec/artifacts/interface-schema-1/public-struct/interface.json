@@ -10,7 +10,10 @@
       "name": "User",
       "visibility": "public",
       "declarationKind": "struct",
-      "declaration": { "start": 0, "end": 35 },
+      "declaration": {
+        "start": 0,
+        "end": 35
+      },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
@@ -19,6 +22,20 @@
           "name": "User",
           "arity": 0
         }
+      },
+      "representation": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          }
+        ]
       }
     }
   ],

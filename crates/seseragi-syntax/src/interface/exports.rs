@@ -4,7 +4,9 @@ use super::methods::{
     function_interface_type, interface_constraint_from_surface, interface_method_from_surface,
 };
 use super::types::interface_type_from_type_ref;
-use super::{InterfaceExport, InterfaceOperator, InterfaceScheme, InterfaceType};
+use super::{
+    InterfaceExport, InterfaceOperator, InterfaceRecordField, InterfaceScheme, InterfaceType,
+};
 
 mod adt;
 mod newtype;
@@ -120,16 +122,33 @@ fn export_from_surface_decl(
             opaque,
             name,
             type_parameters,
+            fields,
             span,
             ..
-        } if *visibility == Visibility::Public => Some(nominal_type_export(
-            module_name,
-            name,
-            *visibility,
-            if *opaque { "opaque-struct" } else { "struct" },
-            type_parameters,
-            *span,
-        )),
+        } if *visibility == Visibility::Public => {
+            let mut export = nominal_type_export(
+                module_name,
+                name,
+                *visibility,
+                if *opaque { "opaque-struct" } else { "struct" },
+                type_parameters,
+                *span,
+            );
+            if !opaque {
+                export.representation = Some(InterfaceType::Record {
+                    closed: true,
+                    fields: fields
+                        .iter()
+                        .map(|field| InterfaceRecordField {
+                            name: field.name.clone(),
+                            optional: false,
+                            type_ref: interface_type_from_type_ref(&field.type_ref),
+                        })
+                        .collect(),
+                });
+            }
+            Some(export)
+        }
         SurfaceDecl::Trait {
             visibility,
             name,

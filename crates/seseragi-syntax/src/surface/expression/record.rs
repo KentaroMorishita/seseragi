@@ -3,16 +3,41 @@ use crate::surface_model::{ByteSpan, SurfaceExpr, SurfaceRecordItem};
 use crate::token::{Token, TokenKind};
 
 pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<SurfaceExpr> {
+    let (items, end) = parse_items(parser, false)?;
+    Some(SurfaceExpr::Record {
+        items,
+        span: ByteSpan {
+            start: open.start,
+            end,
+        },
+    })
+}
+
+pub(super) fn parse_struct(
+    parser: &mut ExpressionParser<'_>,
+    name: &Token,
+    _open: &Token,
+) -> Option<SurfaceExpr> {
+    let (items, end) = parse_items(parser, true)?;
+    Some(SurfaceExpr::Struct {
+        name: name.raw.clone(),
+        name_span: token_span(name),
+        items,
+        span: ByteSpan {
+            start: name.start,
+            end,
+        },
+    })
+}
+
+fn parse_items(
+    parser: &mut ExpressionParser<'_>,
+    allow_single_shorthand: bool,
+) -> Option<(Vec<SurfaceRecordItem>, usize)> {
     parser.skip_trivia();
     if parser.kind_at_cursor() == Some(TokenKind::PunctuationBraceRight) {
         let close = parser.consume(TokenKind::PunctuationBraceRight)?;
-        return Some(SurfaceExpr::Record {
-            items: Vec::new(),
-            span: ByteSpan {
-                start: open.start,
-                end: close.end,
-            },
-        });
+        return Some((Vec::new(), close.end));
     }
 
     let mut items = Vec::new();
@@ -80,7 +105,7 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<S
 
         parser.skip_trivia();
         if parser.kind_at_cursor() == Some(TokenKind::PunctuationBraceRight) {
-            if ambiguous_shorthand && items.len() == 1 {
+            if ambiguous_shorthand && items.len() == 1 && !allow_single_shorthand {
                 return None;
             }
             break;
@@ -93,13 +118,7 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<S
     }
 
     let close = parser.consume(TokenKind::PunctuationBraceRight)?;
-    Some(SurfaceExpr::Record {
-        items,
-        span: ByteSpan {
-            start: open.start,
-            end: close.end,
-        },
-    })
+    Some((items, close.end))
 }
 
 fn token_span(token: &Token) -> ByteSpan {

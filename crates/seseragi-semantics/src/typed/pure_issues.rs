@@ -81,6 +81,32 @@ pub(crate) enum RecordIssue {
         spread: ByteSpan,
         actual: TypedType,
     },
+    UnknownStructField {
+        field: ByteSpan,
+        name: String,
+        structure: String,
+    },
+    MissingStructField {
+        structure: ByteSpan,
+        name: String,
+    },
+    StructFieldType {
+        field: ByteSpan,
+        name: String,
+        expected: TypedType,
+        actual: TypedType,
+    },
+    StructSpreadType {
+        spread: ByteSpan,
+        expected: TypedType,
+        actual: TypedType,
+    },
+    StructSpreadPosition {
+        spread: ByteSpan,
+    },
+    MultipleStructSpreads {
+        spread: ByteSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

@@ -180,7 +180,20 @@ impl ExpressionParser<'_> {
                 value: token.raw == "True",
                 span: token_span(token),
             }),
-            TokenKind::IdentifierLower | TokenKind::IdentifierUpper => Some(SurfaceExpr::Name {
+            TokenKind::IdentifierUpper => {
+                self.skip_trivia();
+                if self.kind_at_cursor() == Some(TokenKind::PunctuationBraceLeft) {
+                    let open = self.tokens.get(self.cursor)?.clone();
+                    self.cursor += 1;
+                    record::parse_struct(self, token, &open)
+                } else {
+                    Some(SurfaceExpr::Name {
+                        name: token.raw.clone(),
+                        span: token_span(token),
+                    })
+                }
+            }
+            TokenKind::IdentifierLower => Some(SurfaceExpr::Name {
                 name: token.raw.clone(),
                 span: token_span(token),
             }),

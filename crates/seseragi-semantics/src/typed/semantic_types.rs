@@ -17,6 +17,10 @@ pub(crate) enum SemanticTypeKey {
         owner: SymbolId,
         arguments: Vec<SemanticValueType>,
     },
+    Struct {
+        owner: SymbolId,
+        arguments: Vec<SemanticValueType>,
+    },
     TypeParameter(SymbolId),
     SchemeParameter(String),
     ExternalNominal {
@@ -71,6 +75,24 @@ pub(crate) fn semantic_values_are_compatible(
                     .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
         }
         (SemanticTypeKey::Adt { .. }, _) | (_, SemanticTypeKey::Adt { .. }) => false,
+        (
+            SemanticTypeKey::Struct {
+                owner: expected_owner,
+                arguments: expected_arguments,
+            },
+            SemanticTypeKey::Struct {
+                owner: actual_owner,
+                arguments: actual_arguments,
+            },
+        ) => {
+            expected_owner == actual_owner
+                && expected_arguments.len() == actual_arguments.len()
+                && expected_arguments
+                    .iter()
+                    .zip(actual_arguments)
+                    .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
+        }
+        (SemanticTypeKey::Struct { .. }, _) | (_, SemanticTypeKey::Struct { .. }) => false,
         (
             SemanticTypeKey::ExternalNominal {
                 canonical: expected_canonical,
@@ -159,6 +181,20 @@ pub(crate) struct SemanticVariant {
 }
 
 #[derive(Clone, Debug)]
+pub(crate) struct SemanticStruct {
+    pub(crate) name: String,
+    pub(crate) type_parameters: Vec<SymbolId>,
+    pub(crate) type_parameter_names: Vec<String>,
+    pub(crate) fields: Vec<SemanticStructField>,
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct SemanticStructField {
+    pub(crate) name: String,
+    pub(crate) type_ref: SemanticValueType,
+}
+
+#[derive(Clone, Debug)]
 pub(crate) struct SemanticConstructorSignature {
     pub(crate) symbol: String,
     pub(crate) type_parameters: Vec<String>,
@@ -169,6 +205,7 @@ pub(crate) struct SemanticConstructorSignature {
 #[derive(Clone, Debug, Default)]
 pub(crate) struct SemanticTypeCatalog {
     adts: BTreeMap<SymbolId, SemanticAdt>,
+    structs: BTreeMap<SymbolId, SemanticStruct>,
     constructors: BTreeMap<SymbolId, SymbolId>,
 }
 
@@ -229,6 +266,54 @@ impl SemanticTypeCatalog {
             .values()
             .map(|(owner, ..)| *owner)
             .collect::<BTreeSet<_>>();
+        let struct_declarations = resolved
+            .declarations
+            .iter()
+            .filter_map(|declaration| {
+                let SurfaceDecl::Struct {
+                    name_span,
+                    type_parameters,
+                    fields,
+                    span,
+                    ..
+                } = declaration
+                else {
+                    return None;
+                };
+                let symbol = resolved.symbols.iter().find(|symbol| {
+                    symbol.kind == SymbolKind::Type && symbol.origin == *name_span
+                })?;
+                let scope = resolved
+                    .scopes
+                    .iter()
+                    .find(|scope| scope.kind == ScopeKind::Declaration && scope.origin == *span);
+                let parameters = scope
+                    .map(|scope| {
+                        resolved
+                            .symbols
+                            .iter()
+                            .filter(|candidate| {
+                                candidate.kind == SymbolKind::TypeParameter
+                                    && candidate.scope == scope.id
+                            })
+                            .map(|candidate| candidate.id)
+                            .take(type_parameters.len())
+                            .collect::<Vec<_>>()
+                    })
+                    .unwrap_or_default();
+                Some((
+                    symbol.id,
+                    symbol.spelling.clone(),
+                    parameters,
+                    type_parameters.clone(),
+                    fields,
+                ))
+            })
+            .collect::<Vec<_>>();
+        let struct_owners = struct_declarations
+            .iter()
+            .map(|(owner, ..)| *owner)
+            .collect::<BTreeSet<_>>();
 
         let mut catalog = Self::default();
         for (owner, name, parameters, parameter_names) in declarations.values() {
@@ -242,6 +327,35 @@ impl SemanticTypeCatalog {
                         .map(|parameter| parameter.name.clone())
                         .collect(),
                     variants: Vec::new(),
+                },
+            );
+        }
+        for (owner, name, parameters, parameter_names, fields) in struct_declarations {
+            let fields = fields
+                .iter()
+                .map(|field| SemanticStructField {
+                    name: field.name.clone(),
+                    type_ref: SemanticValueType {
+                        type_ref: typed_type_from_type_ref(&field.type_ref),
+                        key: semantic_key_from_type_ref(
+                            resolved,
+                            &owners,
+                            &struct_owners,
+                            &field.type_ref,
+                        ),
+                    },
+                })
+                .collect();
+            catalog.structs.insert(
+                owner,
+                SemanticStruct {
+                    name,
+                    type_parameters: parameters,
+                    type_parameter_names: parameter_names
+                        .iter()
+                        .map(|parameter| parameter.name.clone())
+                        .collect(),
+                    fields,
                 },
             );
         }
@@ -281,7 +395,7 @@ impl SemanticTypeCatalog {
                 };
                 let payload = payload.map(|payload| SemanticValueType {
                     type_ref: typed_type_from_type_ref(payload),
-                    key: semantic_key_from_type_ref(resolved, &owners, payload),
+                    key: semantic_key_from_type_ref(resolved, &owners, &struct_owners, payload),
                 });
                 catalog.constructors.insert(symbol.id, owner);
                 semantic_variants.push(SemanticVariant {
@@ -297,6 +411,7 @@ impl SemanticTypeCatalog {
         }
         catalog.collect_prelude_sum_types(resolved);
         catalog.collect_imported_adts(resolved);
+        catalog.collect_imported_structs(resolved);
         catalog
     }
 
@@ -306,7 +421,8 @@ impl SemanticTypeCatalog {
         type_ref: &TypeRef,
     ) -> SemanticTypeKey {
         let owners = self.adts.keys().copied().collect::<BTreeSet<_>>();
-        semantic_key_from_type_ref(resolved, &owners, type_ref)
+        let struct_owners = self.structs.keys().copied().collect::<BTreeSet<_>>();
+        semantic_key_from_type_ref(resolved, &owners, &struct_owners, type_ref)
     }
 
     pub(crate) fn key_from_typed_type(
@@ -326,16 +442,32 @@ impl SemanticTypeCatalog {
                     })
                     .map(|symbol| symbol.id);
                 let owner = owners.next().filter(|_| owners.next().is_none());
-                owner.map_or(SemanticTypeKey::Other, |owner| SemanticTypeKey::Adt {
-                    owner,
-                    arguments: arguments
-                        .iter()
-                        .map(|argument| SemanticValueType {
-                            type_ref: argument.clone(),
-                            key: self.key_from_typed_type(resolved, argument),
+                let arguments = arguments
+                    .iter()
+                    .map(|argument| SemanticValueType {
+                        type_ref: argument.clone(),
+                        key: self.key_from_typed_type(resolved, argument),
+                    })
+                    .collect::<Vec<_>>();
+                match owner {
+                    Some(owner) => SemanticTypeKey::Adt { owner, arguments },
+                    None => {
+                        let mut owners = resolved
+                            .symbols
+                            .iter()
+                            .filter(|symbol| {
+                                symbol.kind == SymbolKind::Type
+                                    && symbol.spelling == *name
+                                    && self.structs.contains_key(&symbol.id)
+                            })
+                            .map(|symbol| symbol.id);
+                        let owner = owners.next().filter(|_| owners.next().is_none());
+                        owner.map_or(SemanticTypeKey::Other, |owner| SemanticTypeKey::Struct {
+                            owner,
+                            arguments,
                         })
-                        .collect(),
-                })
+                    }
+                }
             }
             TypedType::ExternalNamed {
                 canonical,
@@ -361,10 +493,25 @@ impl SemanticTypeCatalog {
                 let owner = owners.next().filter(|_| owners.next().is_none());
                 match owner {
                     Some(owner) => SemanticTypeKey::Adt { owner, arguments },
-                    None => SemanticTypeKey::ExternalNominal {
-                        canonical: canonical.clone(),
-                        arguments,
-                    },
+                    None => {
+                        let mut owners = resolved
+                            .symbols
+                            .iter()
+                            .filter(|symbol| {
+                                symbol.kind == SymbolKind::Type
+                                    && symbol.canonical.as_deref() == Some(canonical.as_str())
+                                    && self.structs.contains_key(&symbol.id)
+                            })
+                            .map(|symbol| symbol.id);
+                        let owner = owners.next().filter(|_| owners.next().is_none());
+                        match owner {
+                            Some(owner) => SemanticTypeKey::Struct { owner, arguments },
+                            None => SemanticTypeKey::ExternalNominal {
+                                canonical: canonical.clone(),
+                                arguments,
+                            },
+                        }
+                    }
                 }
             }
             TypedType::Tuple { elements } => SemanticTypeKey::Tuple(
@@ -381,11 +528,16 @@ impl SemanticTypeCatalog {
     pub(crate) fn adt(&self, owner: SymbolId) -> Option<&SemanticAdt> {
         self.adts.get(&owner)
     }
+
+    pub(crate) fn struct_type(&self, owner: SymbolId) -> Option<&SemanticStruct> {
+        self.structs.get(&owner)
+    }
 }
 
 fn semantic_key_from_type_ref(
     resolved: &ResolvedModule,
     owners: &BTreeSet<SymbolId>,
+    struct_owners: &BTreeSet<SymbolId>,
     type_ref: &TypeRef,
 ) -> SemanticTypeKey {
     match type_ref {
@@ -413,7 +565,29 @@ fn semantic_key_from_type_ref(
                             .iter()
                             .map(|argument| SemanticValueType {
                                 type_ref: typed_type_from_type_ref(argument),
-                                key: semantic_key_from_type_ref(resolved, owners, argument),
+                                key: semantic_key_from_type_ref(
+                                    resolved,
+                                    owners,
+                                    struct_owners,
+                                    argument,
+                                ),
+                            })
+                            .collect(),
+                    }
+                }
+                Some((owner, SymbolKind::Type, _)) if struct_owners.contains(&owner) => {
+                    SemanticTypeKey::Struct {
+                        owner,
+                        arguments: arguments
+                            .iter()
+                            .map(|argument| SemanticValueType {
+                                type_ref: typed_type_from_type_ref(argument),
+                                key: semantic_key_from_type_ref(
+                                    resolved,
+                                    owners,
+                                    struct_owners,
+                                    argument,
+                                ),
                             })
                             .collect(),
                     }
@@ -427,7 +601,12 @@ fn semantic_key_from_type_ref(
                             .iter()
                             .map(|argument| SemanticValueType {
                                 type_ref: typed_type_from_type_ref(argument),
-                                key: semantic_key_from_type_ref(resolved, owners, argument),
+                                key: semantic_key_from_type_ref(
+                                    resolved,
+                                    owners,
+                                    struct_owners,
+                                    argument,
+                                ),
                             })
                             .collect(),
                     }
@@ -441,7 +620,7 @@ fn semantic_key_from_type_ref(
         TypeRef::Tuple { elements, .. } => SemanticTypeKey::Tuple(
             elements
                 .iter()
-                .map(|element| semantic_key_from_type_ref(resolved, owners, element))
+                .map(|element| semantic_key_from_type_ref(resolved, owners, struct_owners, element))
                 .collect(),
         ),
         TypeRef::Hole { .. } => SemanticTypeKey::Invalid,

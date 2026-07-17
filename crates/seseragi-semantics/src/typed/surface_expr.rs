@@ -20,6 +20,7 @@ mod conditional;
 mod match_expression;
 mod monad_do;
 mod record;
+mod struct_value;
 mod tuple;
 
 pub(crate) struct PureExpressionContext<'a> {
@@ -58,6 +59,10 @@ impl<'a> PureExpressionContext<'a> {
 
     pub(super) fn target(&self, origin: ByteSpan) -> Option<SymbolId> {
         self.resolution.target(origin, SymbolNamespace::Value)
+    }
+
+    pub(super) fn type_target(&self, origin: ByteSpan) -> Option<SymbolId> {
+        self.resolution.target(origin, SymbolNamespace::Type)
     }
 
     pub(super) fn callable_candidates(&self, origin: ByteSpan) -> Vec<TopLevelPureFunction> {
@@ -369,6 +374,7 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
                 fields: fields.into_values().collect(),
             })
         }
+        SurfaceExpr::Struct { .. } => None,
         SurfaceExpr::Array { elements, .. } => {
             let element = elements.first().and_then(surface_expression_type_hint)?;
             elements
@@ -462,6 +468,12 @@ pub(super) fn type_surface_expression(
         SurfaceExpr::Array { elements, span } => array::type_array(elements, *span, context),
         SurfaceExpr::List { elements, span } => array::type_list(elements, *span, context),
         SurfaceExpr::Record { items, span } => record::type_record(items, *span, context),
+        SurfaceExpr::Struct {
+            name,
+            name_span,
+            items,
+            span,
+        } => struct_value::type_struct(name, *name_span, items, *span, context),
         SurfaceExpr::ArrayComprehension {
             element,
             clauses,

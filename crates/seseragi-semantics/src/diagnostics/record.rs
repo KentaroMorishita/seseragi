@@ -42,6 +42,57 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
                 type_label(actual)
             ),
         ),
+        RecordIssue::UnknownStructField {
+            field,
+            name,
+            structure,
+        } => (
+            "struct.field-unresolved",
+            *field,
+            format!("struct `{structure}` has no field `{name}`"),
+        ),
+        RecordIssue::MissingStructField { structure, name } => (
+            "struct.field-missing",
+            *structure,
+            format!("struct construction is missing required field `{name}`"),
+        ),
+        RecordIssue::StructFieldType {
+            field,
+            name,
+            expected,
+            actual,
+        } => (
+            "struct.field-type-mismatch",
+            *field,
+            format!(
+                "struct field `{name}` requires {}, received {}",
+                type_label(expected),
+                type_label(actual)
+            ),
+        ),
+        RecordIssue::StructSpreadType {
+            spread,
+            expected,
+            actual,
+        } => (
+            "struct.spread-type-mismatch",
+            *spread,
+            format!(
+                "struct update requires {}, received {}",
+                type_label(expected),
+                type_label(actual)
+            ),
+        ),
+        RecordIssue::StructSpreadPosition { spread } => (
+            "struct.spread-not-first",
+            *spread,
+            "struct spread must be the first item".to_owned(),
+        ),
+        RecordIssue::MultipleStructSpreads { spread } => (
+            "struct.multiple-spreads",
+            *spread,
+            "struct construction accepts at most one spread".to_owned(),
+        ),
     };
     Diagnostic {
         id: String::new(),
@@ -112,6 +163,48 @@ mod tests {
             ),
         ] {
             let artifact = semantic_diagnostics("record-invalid.ssrg", source);
+            assert_eq!(artifact.diagnostics.len(), 1, "{artifact:#?}");
+            assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+            assert_eq!(artifact.diagnostics[0].message_key, expected);
+        }
+    }
+
+    #[test]
+    fn accepts_nominal_struct_construction_update_access_and_pattern() {
+        let artifact = semantic_diagnostics(
+            "struct-user.ssrg",
+            concat!(
+                "pub struct User { name: String, score: Int }\n",
+                "fn rename user: User -> User = User { ...user, name: \"Mio\" }\n",
+                "fn display user: User -> String = match user { User { name } -> name }\n",
+                "pub fn answer -> String = User { name: \"Aki\", score: 42 } |> rename |> display\n",
+            ),
+        );
+
+        assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
+    }
+
+    #[test]
+    fn reports_nominal_struct_construction_errors() {
+        for (source, expected) in [
+            (
+                "pub struct User { name: String, score: Int }\npub fn bad -> User = User { name: \"A\" }\n",
+                "struct.field-missing",
+            ),
+            (
+                "pub struct User { name: String }\npub fn bad -> User = User { name: 42 }\n",
+                "struct.field-type-mismatch",
+            ),
+            (
+                "pub struct User { name: String }\npub fn bad -> User = User { age: \"A\", name: \"B\" }\n",
+                "struct.field-unresolved",
+            ),
+            (
+                "pub struct User { name: String }\npub struct Team { name: String }\npub fn bad team: Team -> User = User { ...team }\n",
+                "struct.spread-type-mismatch",
+            ),
+        ] {
+            let artifact = semantic_diagnostics("struct-invalid.ssrg", source);
             assert_eq!(artifact.diagnostics.len(), 1, "{artifact:#?}");
             assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
             assert_eq!(artifact.diagnostics[0].message_key, expected);

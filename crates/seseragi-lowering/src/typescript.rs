@@ -52,11 +52,25 @@ pub struct TypeScriptModule {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub adts: Vec<TypeScriptAdt>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub structs: Vec<TypeScriptStruct>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub instances: Vec<TypeScriptInstance>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub bindings: Vec<TypeScriptBinding>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub functions: Vec<TypeScriptFunction>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeScriptStruct {
+    pub exported: bool,
+    pub name: String,
+    pub brand: String,
+    pub opaque: bool,
+    pub type_parameters: Vec<String>,
+    pub fields: Vec<TypeScriptRecordTypeField>,
+    pub origin: SourceSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -346,6 +360,8 @@ pub enum TypeScriptExpr {
     },
     Record {
         items: Vec<TypeScriptRecordValueItem>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        asserted_type: Option<TypeScriptType>,
     },
     Array {
         elements: Vec<TypeScriptExpr>,
@@ -510,6 +526,30 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
             lower_core_adt_to_typescript(adt, &module_imports.type_names, &mut runtime_requirements)
         })
         .collect();
+    let structs = module
+        .structs
+        .iter()
+        .map(|structure| TypeScriptStruct {
+            exported: structure.visibility == Visibility::Public,
+            name: local_name(&structure.symbol),
+            brand: format!("__ssrg$brand${}", local_name(&structure.symbol)),
+            opaque: structure.opaque,
+            type_parameters: structure.type_parameters.clone(),
+            fields: structure
+                .fields
+                .iter()
+                .map(|field| TypeScriptRecordTypeField {
+                    name: field.name.clone(),
+                    optional: false,
+                    type_ref: types::type_ref_from_core_type(
+                        &field.type_ref,
+                        &module_imports.type_names,
+                    ),
+                })
+                .collect(),
+            origin: structure.origin.clone(),
+        })
+        .collect();
     let mut expression_value_names = module_imports.value_names.clone();
     for ((_, identity), local) in &module_imports.instance_names {
         expression_value_names.insert(local_instance_expression_key(identity), local.clone());
@@ -608,6 +648,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
         type_imports,
         source_imports: module_imports.imports,
         adts,
+        structs,
         instances,
         bindings,
         functions,

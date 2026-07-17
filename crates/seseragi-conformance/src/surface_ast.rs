@@ -39,6 +39,13 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
         "array" | "list" => validate_expression_array(expression, "elements", path, 0),
         "member" => validate_child(expression, "receiver", path),
         "record" => validate_record(expression, path),
+        "struct" => {
+            expression
+                .get("name")
+                .and_then(Value::as_str)
+                .ok_or_else(|| format!("SurfaceAst {path}.name must be a string"))?;
+            validate_record(expression, path)
+        }
         "template" => validate_template(expression, path),
         "arrayComprehension" | "listComprehension" => validate_comprehension(expression, path),
         "grouped" => validate_child(expression, "value", path),
@@ -266,7 +273,13 @@ fn validate_pattern(pattern: &Value, path: &str) -> Result<(), String> {
             }
             Ok(())
         }
-        "record" => {
+        "record" | "struct" => {
+            if kind == "struct" {
+                pattern
+                    .get("name")
+                    .and_then(Value::as_str)
+                    .ok_or_else(|| format!("SurfaceAst {path}.name must be a string"))?;
+            }
             let fields = pattern
                 .get("fields")
                 .and_then(Value::as_array)

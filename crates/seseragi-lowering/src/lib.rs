@@ -19,7 +19,7 @@ pub use core::{
     CoreInstanceEvidence, CoreInstanceImplementation, CoreInstanceMethod, CoreModule,
     CoreModuleDependency, CoreModuleImport, CoreMonadDoStatement, CoreParameter, CorePattern,
     CoreRecordField, CoreRecordPatternField, CoreRecordValueItem, CoreShowPayloadEvidence,
-    CoreStatement, CoreTemplatePart, CoreTraitDispatch, CoreType,
+    CoreStatement, CoreStruct, CoreStructField, CoreTemplatePart, CoreTraitDispatch, CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,
@@ -37,7 +37,8 @@ pub use typescript::{
     TypeScriptInstanceImplementation, TypeScriptInstanceMethod, TypeScriptLoweringError,
     TypeScriptModule, TypeScriptOutputPlan, TypeScriptParameter, TypeScriptRecordTypeField,
     TypeScriptRecordValueItem, TypeScriptShowDictionaryReference, TypeScriptSourceImport,
-    TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptType, TypeScriptTypeImport,
+    TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptStruct, TypeScriptType,
+    TypeScriptTypeImport,
 };
 
 #[cfg(test)]
@@ -56,6 +57,29 @@ mod tests {
         assert_eq!(core.bindings.len(), 1);
         assert!(matches!(core.bindings[0].value, CoreExpr::Int64 { .. }));
         assert!(core.functions.is_empty());
+    }
+
+    #[test]
+    fn lowers_nominal_structs_to_branded_types_and_object_values() {
+        let source = concat!(
+            "pub struct User { name: String, score: Int }\n",
+            "fn rename user: User -> User = User { ...user, name: \"Mio\" }\n",
+            "pub fn answer -> String = (User { name: \"Aki\", score: 42 } |> rename).name\n",
+        );
+        let typed = type_module("artifact/struct-user/main.ssrg", source);
+        let core = lower_typed_module(typed);
+
+        assert_eq!(core.structs.len(), 1);
+        assert_eq!(core.structs[0].name, "User");
+        let typescript = lower_core_module_to_typescript_ir(core);
+        assert_eq!(typescript.structs.len(), 1);
+        assert_eq!(typescript.structs[0].name, "User");
+        let generated = emit_typescript_module(typescript, source);
+        assert!(generated
+            .typescript
+            .contains("declare const __ssrg$brand$User: unique symbol;"));
+        assert!(generated.typescript.contains("export type User = {"));
+        assert!(generated.typescript.contains("as unknown as User"));
     }
 
     #[test]
@@ -524,6 +548,7 @@ type Internal =
             external_type_bindings: Vec::new(),
             module_dependencies: Vec::new(),
             adts: Vec::new(),
+            structs: Vec::new(),
             instances: Vec::new(),
             bindings: Vec::new(),
             functions: vec![CoreFunction {

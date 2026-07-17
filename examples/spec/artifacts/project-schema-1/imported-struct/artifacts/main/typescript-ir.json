@@ -1,0 +1,210 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-struct::main",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.string",
+    "core.unit",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-struct::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "Player",
+          "local": "Player",
+          "sourceLocal": "Player",
+          "canonical": "fixture/imported-struct::domain::Player",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 33
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "improve",
+      "parameters": [
+        {
+          "name": "player",
+          "type": "Player",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "spread",
+            "value": {
+              "kind": "identifier",
+              "name": "player"
+            }
+          },
+          {
+            "kind": "field",
+            "name": "score",
+            "value": {
+              "kind": "bigint",
+              "value": "42"
+            }
+          }
+        ],
+        "assertedType": {
+          "kind": "reference",
+          "name": "Player",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 35,
+        "end": 106
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "player",
+          "type": "Player",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "player"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Player",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "name",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "name"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "identifier",
+                "name": "name"
+              },
+              "right": {
+                "kind": "string",
+                "value": ": imported struct"
+              }
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 108,
+        "end": 215
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "improve",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "items": [
+                      {
+                        "kind": "field",
+                        "name": "name",
+                        "value": {
+                          "kind": "string",
+                          "value": "Mio"
+                        }
+                      },
+                      {
+                        "kind": "field",
+                        "name": "score",
+                        "value": {
+                          "kind": "bigint",
+                          "value": "12"
+                        }
+                      }
+                    ],
+                    "assertedType": {
+                      "kind": "reference",
+                      "name": "Player",
+                      "arguments": []
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 217,
+        "end": 311
+      }
+    }
+  ]
+}

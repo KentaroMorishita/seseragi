@@ -1,0 +1,847 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/struct-profile",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "struct",
+      "visibility": "public",
+      "name": "Player",
+      "nameSpan": {
+        "start": 11,
+        "end": 17
+      },
+      "fields": [
+        {
+          "name": "name",
+          "nameSpan": {
+            "start": 22,
+            "end": 26
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 28,
+              "end": 34
+            }
+          }
+        },
+        {
+          "name": "score",
+          "nameSpan": {
+            "start": 38,
+            "end": 43
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 45,
+              "end": 48
+            }
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 51
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "improve",
+      "nameSpan": {
+        "start": 56,
+        "end": 63
+      },
+      "parameters": [
+        {
+          "name": "player",
+          "nameSpan": {
+            "start": 64,
+            "end": 70
+          },
+          "type": {
+            "kind": "named",
+            "name": "Player",
+            "span": {
+              "start": 72,
+              "end": 78
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Player",
+        "span": {
+          "start": 82,
+          "end": 88
+        }
+      },
+      "body": {
+        "kind": "struct",
+        "name": "Player",
+        "nameSpan": {
+          "start": 93,
+          "end": 99
+        },
+        "items": [
+          {
+            "kind": "spread",
+            "value": {
+              "kind": "name",
+              "name": "player",
+              "span": {
+                "start": 109,
+                "end": 115
+              }
+            },
+            "span": {
+              "start": 106,
+              "end": 115
+            }
+          },
+          {
+            "kind": "field",
+            "name": "score",
+            "nameSpan": {
+              "start": 121,
+              "end": 126
+            },
+            "value": {
+              "kind": "integer",
+              "raw": "42",
+              "span": {
+                "start": 128,
+                "end": 130
+              }
+            },
+            "span": {
+              "start": 121,
+              "end": 130
+            }
+          }
+        ],
+        "span": {
+          "start": 93,
+          "end": 135
+        }
+      },
+      "span": {
+        "start": 53,
+        "end": 135
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "render",
+      "nameSpan": {
+        "start": 140,
+        "end": 146
+      },
+      "parameters": [
+        {
+          "name": "player",
+          "nameSpan": {
+            "start": 147,
+            "end": 153
+          },
+          "type": {
+            "kind": "named",
+            "name": "Player",
+            "span": {
+              "start": 155,
+              "end": 161
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 165,
+          "end": 171
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "player",
+          "span": {
+            "start": 182,
+            "end": 188
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "struct",
+              "name": "Player",
+              "nameSpan": {
+                "start": 195,
+                "end": 201
+              },
+              "fields": [
+                {
+                  "name": "name",
+                  "nameSpan": {
+                    "start": 204,
+                    "end": 208
+                  },
+                  "pattern": {
+                    "kind": "name",
+                    "name": "name",
+                    "nameSpan": {
+                      "start": 204,
+                      "end": 208
+                    },
+                    "span": {
+                      "start": 204,
+                      "end": 208
+                    }
+                  },
+                  "span": {
+                    "start": 204,
+                    "end": 208
+                  }
+                },
+                {
+                  "name": "score",
+                  "nameSpan": {
+                    "start": 210,
+                    "end": 215
+                  },
+                  "pattern": {
+                    "kind": "integer",
+                    "raw": "42",
+                    "span": {
+                      "start": 217,
+                      "end": 219
+                    }
+                  },
+                  "span": {
+                    "start": 210,
+                    "end": 219
+                  }
+                }
+              ],
+              "span": {
+                "start": 195,
+                "end": 221
+              }
+            },
+            "body": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "name",
+                    "span": {
+                      "start": 228,
+                      "end": 232
+                    }
+                  },
+                  "span": {
+                    "start": 226,
+                    "end": 233
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": ": perfect 42",
+                  "span": {
+                    "start": 233,
+                    "end": 245
+                  }
+                }
+              ],
+              "span": {
+                "start": 225,
+                "end": 246
+              }
+            },
+            "span": {
+              "start": 195,
+              "end": 246
+            }
+          },
+          {
+            "pattern": {
+              "kind": "struct",
+              "name": "Player",
+              "nameSpan": {
+                "start": 251,
+                "end": 257
+              },
+              "fields": [
+                {
+                  "name": "name",
+                  "nameSpan": {
+                    "start": 260,
+                    "end": 264
+                  },
+                  "pattern": {
+                    "kind": "name",
+                    "name": "name",
+                    "nameSpan": {
+                      "start": 260,
+                      "end": 264
+                    },
+                    "span": {
+                      "start": 260,
+                      "end": 264
+                    }
+                  },
+                  "span": {
+                    "start": 260,
+                    "end": 264
+                  }
+                },
+                {
+                  "name": "score",
+                  "nameSpan": {
+                    "start": 266,
+                    "end": 271
+                  },
+                  "pattern": {
+                    "kind": "wildcard",
+                    "span": {
+                      "start": 273,
+                      "end": 274
+                    }
+                  },
+                  "span": {
+                    "start": 266,
+                    "end": 274
+                  }
+                }
+              ],
+              "span": {
+                "start": 251,
+                "end": 276
+              }
+            },
+            "body": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "name",
+                    "span": {
+                      "start": 283,
+                      "end": 287
+                    }
+                  },
+                  "span": {
+                    "start": 281,
+                    "end": 288
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": ": keep training",
+                  "span": {
+                    "start": 288,
+                    "end": 303
+                  }
+                }
+              ],
+              "span": {
+                "start": 280,
+                "end": 304
+              }
+            },
+            "span": {
+              "start": 251,
+              "end": 304
+            }
+          }
+        ],
+        "span": {
+          "start": 176,
+          "end": 308
+        }
+      },
+      "span": {
+        "start": 137,
+        "end": 308
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 324,
+        "end": 328
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 397,
+            "end": 404
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "render",
+            "span": {
+              "start": 385,
+              "end": 391
+            }
+          },
+          "argument": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "improve",
+              "span": {
+                "start": 372,
+                "end": 379
+              }
+            },
+            "argument": {
+              "kind": "struct",
+              "name": "Player",
+              "nameSpan": {
+                "start": 333,
+                "end": 339
+              },
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "name",
+                  "nameSpan": {
+                    "start": 342,
+                    "end": 346
+                  },
+                  "value": {
+                    "kind": "string",
+                    "raw": "\"Mio\"",
+                    "span": {
+                      "start": 348,
+                      "end": 353
+                    }
+                  },
+                  "span": {
+                    "start": 342,
+                    "end": 353
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "score",
+                  "nameSpan": {
+                    "start": 355,
+                    "end": 360
+                  },
+                  "value": {
+                    "kind": "integer",
+                    "raw": "12",
+                    "span": {
+                      "start": 362,
+                      "end": 364
+                    }
+                  },
+                  "span": {
+                    "start": 355,
+                    "end": 364
+                  }
+                }
+              ],
+              "span": {
+                "start": 333,
+                "end": 366
+              }
+            },
+            "span": {
+              "start": 333,
+              "end": 379
+            }
+          },
+          "span": {
+            "start": 333,
+            "end": 391
+          }
+        },
+        "span": {
+          "start": 333,
+          "end": 404
+        }
+      },
+      "span": {
+        "start": 310,
+        "end": 404
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 404
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 51
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 53,
+        "end": 135
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 137,
+        "end": 308
+      }
+    },
+    {
+      "id": 4,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 195,
+        "end": 246
+      }
+    },
+    {
+      "id": 5,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 251,
+        "end": 304
+      }
+    },
+    {
+      "id": 6,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 310,
+        "end": 404
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Player",
+      "canonical": "artifact/struct-profile::Player",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 11,
+        "end": 17
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "improve",
+      "canonical": "artifact/struct-profile::improve",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 56,
+        "end": 63
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "render",
+      "canonical": "artifact/struct-profile::render",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 140,
+        "end": 146
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "main",
+      "canonical": "artifact/struct-profile::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 324,
+        "end": 328
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "player",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 64,
+        "end": 70
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "player",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 147,
+        "end": 153
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "name",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 4,
+      "origin": {
+        "start": 204,
+        "end": 208
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "name",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 5,
+      "origin": {
+        "start": 260,
+        "end": 264
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 28,
+        "end": 34
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 45,
+        "end": 48
+      }
+    },
+    {
+      "spelling": "Player",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 72,
+        "end": 78
+      }
+    },
+    {
+      "spelling": "Player",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 82,
+        "end": 88
+      }
+    },
+    {
+      "spelling": "Player",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 93,
+        "end": 99
+      }
+    },
+    {
+      "spelling": "player",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 109,
+        "end": 115
+      }
+    },
+    {
+      "spelling": "Player",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 155,
+        "end": 161
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 165,
+        "end": 171
+      }
+    },
+    {
+      "spelling": "player",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 182,
+        "end": 188
+      }
+    },
+    {
+      "spelling": "Player",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 195,
+        "end": 201
+      }
+    },
+    {
+      "spelling": "name",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 228,
+        "end": 232
+      }
+    },
+    {
+      "spelling": "Player",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 251,
+        "end": 257
+      }
+    },
+    {
+      "spelling": "name",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 283,
+        "end": 287
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 397,
+        "end": 404
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 385,
+        "end": 391
+      }
+    },
+    {
+      "spelling": "improve",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 372,
+        "end": 379
+      }
+    },
+    {
+      "spelling": "Player",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 333,
+        "end": 339
+      }
+    }
+  ],
+  "issues": []
+}

@@ -55,6 +55,17 @@ pub(super) fn resolve_expression(
                 resolve_expression(resolver, scope, item.value());
             }
         }
+        SurfaceExpr::Struct {
+            name,
+            name_span,
+            items,
+            ..
+        } => {
+            resolver.reference(scope, SymbolNamespace::Type, name, *name_span, true);
+            for item in items {
+                resolve_expression(resolver, scope, item.value());
+            }
+        }
         SurfaceExpr::Template { parts, .. } => {
             for part in parts {
                 if let SurfaceTemplatePart::Interpolation { value, .. } = part {

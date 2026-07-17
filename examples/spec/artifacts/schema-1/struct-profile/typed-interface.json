@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/struct-profile",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/struct-profile::Player",
+      "namespace": "type",
+      "name": "Player",
+      "visibility": "public",
+      "declarationKind": "struct",
+      "declaration": {
+        "start": 0,
+        "end": 51
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Player",
+          "arity": 0
+        }
+      },
+      "representation": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          },
+          {
+            "name": "score",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "artifact/struct-profile::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 310,
+        "end": 404
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

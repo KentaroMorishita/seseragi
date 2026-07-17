@@ -32,6 +32,7 @@ fn lowers_from_either_to_a_cold_runtime_helper_call() {
         external_type_bindings: Vec::new(),
         module_dependencies: Vec::new(),
         adts: Vec::new(),
+        structs: Vec::new(),
         instances: Vec::new(),
         bindings: Vec::new(),
         functions: vec![CoreFunction {

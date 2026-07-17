@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "case": "struct-profile",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/struct-profile",
+    "export": "main",
+    "compiledModule": "../../schema-1/struct-profile/generated-module.json",
+    "typedInterface": "../../schema-1/struct-profile/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.int64",
+      "core.string",
+      "core.string.show",
+      "core.unit",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Mio: perfect 42"],
+        "stdout": "Mio: perfect 42\n"
+      }
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "version": 3,
+  "file": "dist/imported-struct/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-struct::domain"
+  ],
+  "sourcesContent": [
+    "pub struct Player {\n  name: String,\n  score: Int,\n}\n"
+  ],
+  "names": [
+    "Player"
+  ],
+  "mappings": ";AAAAA"
+}

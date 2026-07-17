@@ -1,7 +1,7 @@
 use crate::typescript::types::render_typescript_type;
 use crate::{
     TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding, TypeScriptExpr, TypeScriptFunction,
-    TypeScriptModule, TypeScriptRecordValueItem, TypeScriptStatement,
+    TypeScriptModule, TypeScriptRecordValueItem, TypeScriptStatement, TypeScriptStruct,
 };
 use serde::{Deserialize, Serialize};
 
@@ -91,6 +91,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
     }
     if !import_lines.is_empty()
         && (!module.adts.is_empty()
+            || !module.structs.is_empty()
             || !module.instances.is_empty()
             || !module.bindings.is_empty()
             || !module.functions.is_empty())
@@ -99,6 +100,9 @@ fn render_typescript(module: &TypeScriptModule) -> String {
     }
     for adt in &module.adts {
         render_adt(&mut output, adt);
+    }
+    for structure in &module.structs {
+        render_struct(&mut output, structure);
     }
     render_typescript_instances(&mut output, &module.instances, &module.type_imports);
     for binding in &module.bindings {
@@ -215,6 +219,27 @@ fn render_adt(output: &mut String, adt: &TypeScriptAdt) {
     }
 }
 
+fn render_struct(output: &mut String, structure: &TypeScriptStruct) {
+    output.push_str(&format!(
+        "declare const {}: unique symbol;\n",
+        structure.brand
+    ));
+    if structure.exported {
+        output.push_str("export ");
+    }
+    let type_parameters = render_type_parameters(&structure.type_parameters);
+    output.push_str(&format!("type {}{type_parameters} = {{\n", structure.name));
+    for field in &structure.fields {
+        output.push_str(&format!(
+            "  readonly {}: {};\n",
+            format!("{:?}", field.name),
+            render_typescript_type(&field.type_ref)
+        ));
+    }
+    output.push_str(&format!("  readonly [{}]: true;\n", structure.brand));
+    output.push_str("};\n");
+}
+
 fn render_adt_variant_type(variant: &TypeScriptAdtVariant) -> String {
     let tag = format!("{:?}", variant.tag);
     match &variant.payload {
@@ -320,20 +345,31 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                 render_typescript_expr(receiver)
             )
         }
-        TypeScriptExpr::Record { items } => format!(
-            "({{ {} }} as const)",
-            items
-                .iter()
-                .map(|item| match item {
-                    TypeScriptRecordValueItem::Field { name, value } =>
-                        format!("{}: {}", format!("{name:?}"), render_typescript_expr(value)),
-                    TypeScriptRecordValueItem::Spread { value } => {
-                        format!("...{}", render_typescript_expr(value))
-                    }
-                })
-                .collect::<Vec<_>>()
-                .join(", ")
-        ),
+        TypeScriptExpr::Record {
+            items,
+            asserted_type,
+        } => {
+            let value = format!(
+                "({{ {} }} as const)",
+                items
+                    .iter()
+                    .map(|item| match item {
+                        TypeScriptRecordValueItem::Field { name, value } =>
+                            format!("{}: {}", format!("{name:?}"), render_typescript_expr(value)),
+                        TypeScriptRecordValueItem::Spread { value } => {
+                            format!("...{}", render_typescript_expr(value))
+                        }
+                    })
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            );
+            asserted_type.as_ref().map_or(value.clone(), |type_ref| {
+                format!(
+                    "({value} as unknown as {})",
+                    render_typescript_type(type_ref)
+                )
+            })
+        }
         TypeScriptExpr::Array {
             elements,
             element_type,

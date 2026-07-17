@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-struct::domain",
+  "structs": [
+    {
+      "symbol": "fixture/imported-struct::domain::Player",
+      "name": "Player",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "name",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 22,
+            "end": 26
+          }
+        },
+        {
+          "name": "score",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 38,
+            "end": 43
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 51
+      }
+    }
+  ]
+}

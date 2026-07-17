@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-struct::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-struct/main.ts",
+    "sourceMap": "dist/imported-struct/main.ts.map"
+  }
+}

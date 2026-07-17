@@ -125,6 +125,19 @@ fn witnesses(
             pattern: CoveragePattern::Any,
             label: "_".to_owned(),
         }]),
+        SemanticTypeKey::Struct { .. } => Some(
+            if hints
+                .iter()
+                .any(|hint| matches!(hint, CoveragePattern::Record(_)))
+            {
+                record_witnesses(hints)?
+            } else {
+                vec![Witness {
+                    pattern: CoveragePattern::Any,
+                    label: "_".to_owned(),
+                }]
+            },
+        ),
         SemanticTypeKey::Adt { owner, arguments } => {
             let adt = catalog.adt(*owner)?;
             if !visiting.insert(*owner) {

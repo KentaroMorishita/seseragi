@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-struct::domain",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": []
+  },
+  "exports": [],
+  "outputs": {
+    "typescript": "dist/imported-struct/domain.ts",
+    "sourceMap": "dist/imported-struct/domain.ts.map"
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "struct.field-missing",
+      "primary": {
+        "start": 129,
+        "end": 133
+      },
+      "related": [
+        {
+          "message": "struct construction is missing required field `score`",
+          "primary": {
+            "start": 102,
+            "end": 149
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "struct.field-unresolved",
+      "primary": {
+        "start": 209,
+        "end": 212
+      },
+      "related": [
+        {
+          "message": "struct `User` has no field `age`",
+          "primary": {
+            "start": 151,
+            "end": 218
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d3",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "struct.field-type-mismatch",
+      "primary": {
+        "start": 262,
+        "end": 264
+      },
+      "related": [
+        {
+          "message": "struct field `name` requires String, received Int",
+          "primary": {
+            "start": 220,
+            "end": 277
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d4",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "struct.spread-type-mismatch",
+      "primary": {
+        "start": 328,
+        "end": 335
+      },
+      "related": [
+        {
+          "message": "struct update requires User, received Team",
+          "primary": {
+            "start": 279,
+            "end": 337
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

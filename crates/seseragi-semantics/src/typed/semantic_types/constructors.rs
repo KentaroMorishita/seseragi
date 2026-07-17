@@ -3,8 +3,8 @@ use std::collections::BTreeMap;
 
 use super::substitution::substitute_type_parameters;
 use super::{
-    SemanticConstructorSignature, SemanticTypeCatalog, SemanticTypeKey, SemanticValueType,
-    SemanticVariant,
+    SemanticConstructorSignature, SemanticStructField, SemanticTypeCatalog, SemanticTypeKey,
+    SemanticValueType, SemanticVariant,
 };
 
 impl SemanticTypeCatalog {
@@ -46,6 +46,30 @@ impl SemanticTypeCatalog {
             .zip(arguments.iter().cloned())
             .collect::<BTreeMap<_, _>>();
         substitute_type_parameters(payload, &substitutions)
+    }
+
+    pub(crate) fn instantiate_struct_fields(
+        &self,
+        owner: SymbolId,
+        arguments: &[SemanticValueType],
+    ) -> Option<Vec<SemanticStructField>> {
+        let struct_type = self.structs.get(&owner)?;
+        let substitutions = struct_type
+            .type_parameters
+            .iter()
+            .copied()
+            .zip(arguments.iter().cloned())
+            .collect::<BTreeMap<_, _>>();
+        Some(
+            struct_type
+                .fields
+                .iter()
+                .map(|field| SemanticStructField {
+                    name: field.name.clone(),
+                    type_ref: substitute_type_parameters(&field.type_ref, &substitutions),
+                })
+                .collect(),
+        )
     }
 
     fn constructor_signature(&self, constructor: SymbolId) -> Option<SemanticConstructorSignature> {

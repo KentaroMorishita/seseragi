@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-struct::domain",
+  "runtimeRequirements": [],
+  "structs": [
+    {
+      "exported": true,
+      "name": "Player",
+      "brand": "__ssrg$brand$Player",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "name",
+          "optional": false,
+          "type": {
+            "kind": "string"
+          }
+        },
+        {
+          "name": "score",
+          "optional": false,
+          "type": {
+            "kind": "bigint"
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 51
+      }
+    }
+  ]
+}

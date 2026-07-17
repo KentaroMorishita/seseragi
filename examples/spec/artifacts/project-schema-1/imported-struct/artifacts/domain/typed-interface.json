@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-struct::domain",
+  "source": "domain.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/imported-struct::domain::Player",
+      "namespace": "type",
+      "name": "Player",
+      "visibility": "public",
+      "declarationKind": "struct",
+      "declaration": {
+        "start": 0,
+        "end": 51
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Player",
+          "arity": 0
+        }
+      },
+      "representation": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          },
+          {
+            "name": "score",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

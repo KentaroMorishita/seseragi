@@ -124,6 +124,34 @@ fn parses_record_spread_in_source_order() {
 }
 
 #[test]
+fn parses_nominal_struct_values_and_patterns() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "fn rename user: User -> User = User { ...user, name: \"Mio\" }\n\
+         fn display user: User -> String = match user { User { name } -> name }\n",
+    );
+    let SurfaceDecl::Fn { body, .. } = &module.declarations[0] else {
+        panic!("expected rename function");
+    };
+    assert!(matches!(
+        body,
+        Some(SurfaceExpr::Struct { name, items, .. })
+            if name == "User" && items.len() == 2
+    ));
+    let SurfaceDecl::Fn { body, .. } = &module.declarations[1] else {
+        panic!("expected display function");
+    };
+    let Some(SurfaceExpr::Match { arms, .. }) = body else {
+        panic!("expected match");
+    };
+    assert!(matches!(
+        &arms[0].pattern,
+        SurfacePattern::Struct { name, fields, .. }
+            if name == "User" && fields.len() == 1
+    ));
+}
+
+#[test]
 fn parses_required_record_field_access_without_baking_in_namespace_resolution() {
     let body = first_body("pub fn name user: { name: String } -> String = user.name\n");
 

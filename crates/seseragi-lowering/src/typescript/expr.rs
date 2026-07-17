@@ -193,7 +193,9 @@ pub(super) fn lower_core_expr_to_typescript(
                 .local_name
                 .to_owned(),
         },
-        CoreExpr::Record { items, .. } => TypeScriptExpr::Record {
+        CoreExpr::Record {
+            items, type_ref, ..
+        } => TypeScriptExpr::Record {
             items: items
                 .into_iter()
                 .map(|item| match item {
@@ -218,6 +220,8 @@ pub(super) fn lower_core_expr_to_typescript(
                     }
                 })
                 .collect(),
+            asserted_type: (!matches!(type_ref, crate::CoreType::Record { .. }))
+                .then(|| super::types::type_ref_from_core_type(&type_ref, imported_types)),
         },
         CoreExpr::Array {
             elements, type_ref, ..
@@ -458,7 +462,7 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
         | TypeScriptExpr::OptionalFieldAccess { receiver, .. } => {
             typescript_expr_contains_await(receiver)
         }
-        TypeScriptExpr::Record { items } => items
+        TypeScriptExpr::Record { items, .. } => items
             .iter()
             .any(|item| typescript_expr_contains_await(item.value())),
         TypeScriptExpr::Lambda { body, .. } => typescript_expr_contains_await(body),

@@ -1,0 +1,4 @@
+pub struct Player {
+  name: String,
+  score: Int,
+}

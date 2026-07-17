@@ -24,6 +24,16 @@ pub(super) fn collect_module_type_imports(
             }
         }
     }
+    for structure in &module.structs {
+        for field in &structure.fields {
+            collect_type_imports(
+                &field.type_ref,
+                &module.external_type_bindings,
+                requirements,
+                imports,
+            );
+        }
+    }
     for binding in &module.bindings {
         expr::collect_expr_type_imports(
             &binding.value,

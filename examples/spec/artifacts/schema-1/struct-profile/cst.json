@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 168,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 0,
+        "endToken": 25,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 0,
+            "endToken": 1,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 25,
+        "endToken": 61,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 25,
+            "endToken": 61,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 61,
+        "endToken": 125,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 61,
+            "endToken": 125,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 125,
+        "endToken": 168,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 125,
+            "endToken": 126,
+            "children": []
+          },
+          {
+            "kind": "effect-fn-decl",
+            "startToken": 127,
+            "endToken": 168,
+            "children": [
+              {
+                "kind": "effect-signature",
+                "startToken": 127,
+                "endToken": 168,
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}

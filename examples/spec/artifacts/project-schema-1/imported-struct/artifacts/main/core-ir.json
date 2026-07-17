@@ -1,0 +1,393 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-struct::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-struct::domain",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 33
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Player",
+          "local": "Player",
+          "canonical": "fixture/imported-struct::domain::Player",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 15
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-struct::main::improve",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 35,
+        "end": 106
+      },
+      "parameters": [
+        {
+          "id": "player",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Player",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "spread",
+            "value": {
+              "kind": "variable",
+              "name": "player",
+              "type": {
+                "kind": "named",
+                "name": "Player",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 87,
+                "end": 93
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 84,
+              "end": 93
+            }
+          },
+          {
+            "kind": "field",
+            "name": "score",
+            "value": {
+              "kind": "int64",
+              "value": "42",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 102,
+                "end": 104
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 95,
+              "end": 104
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Player",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 75,
+          "end": 106
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-struct::main::render",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 108,
+        "end": 215
+      },
+      "parameters": [
+        {
+          "id": "player",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Player",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "player",
+          "type": {
+            "kind": "named",
+            "name": "Player",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 153,
+            "end": 159
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Player",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "name"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 175,
+                  "end": 179
+                }
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "variable",
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 185,
+                  "end": 189
+                }
+              },
+              "right": {
+                "kind": "string",
+                "value": ": imported struct",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 192,
+                  "end": 211
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 185,
+                "end": 211
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 166,
+              "end": 211
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 147,
+          "end": 215
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-struct::main::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 217,
+        "end": 311
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/imported-struct::main::render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "fixture/imported-struct::main::improve",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "items": [
+                      {
+                        "kind": "field",
+                        "name": "name",
+                        "value": {
+                          "kind": "string",
+                          "value": "Mio",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 255,
+                            "end": 260
+                          }
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 249,
+                          "end": 260
+                        }
+                      },
+                      {
+                        "kind": "field",
+                        "name": "score",
+                        "value": {
+                          "kind": "int64",
+                          "value": "12",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 269,
+                            "end": 271
+                          }
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 262,
+                          "end": 271
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Player",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 240,
+                      "end": 273
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Player",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 240,
+                  "end": 286
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 240,
+              "end": 298
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 240,
+          "end": 311
+        }
+      }
+    }
+  ]
+}

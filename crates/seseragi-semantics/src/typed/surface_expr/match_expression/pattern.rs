@@ -8,10 +8,12 @@ use super::super::PureExpressionContext;
 
 mod literal;
 mod record;
+mod struct_pattern;
 
 pub(super) use literal::LiteralPattern;
 use literal::{type_boolean_pattern, type_integer_pattern, type_string_pattern};
 use record::type_record_pattern;
+use struct_pattern::type_struct_pattern;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(super) enum CoveragePattern {
@@ -91,6 +93,12 @@ pub(in crate::typed::surface_expr) fn type_pattern(
         SurfacePattern::Record { fields, span } => {
             type_record_pattern(fields, *span, expected, context)
         }
+        SurfacePattern::Struct {
+            name,
+            name_span,
+            fields,
+            span,
+        } => type_struct_pattern(name, *name_span, fields, *span, expected, context),
         SurfacePattern::Error { span } => PatternAnalysis {
             typed: TypedPattern::Invalid { origin: *span },
             coverage: CoveragePattern::Invalid,
@@ -281,6 +289,7 @@ fn pattern_span(pattern: &SurfacePattern) -> seseragi_syntax::ByteSpan {
         | SurfacePattern::Constructor { span, .. }
         | SurfacePattern::Tuple { span, .. }
         | SurfacePattern::Record { span, .. }
+        | SurfacePattern::Struct { span, .. }
         | SurfacePattern::Error { span } => *span,
     }
 }

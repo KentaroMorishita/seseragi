@@ -35,11 +35,34 @@ pub struct CoreModule {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub adts: Vec<CoreAdt>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub structs: Vec<CoreStruct>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub instances: Vec<CoreInstance>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub bindings: Vec<CoreBinding>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub functions: Vec<CoreFunction>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CoreStruct {
+    pub symbol: String,
+    pub name: String,
+    pub visibility: Visibility,
+    pub opaque: bool,
+    pub type_parameters: Vec<String>,
+    pub fields: Vec<CoreStructField>,
+    pub origin: SourceSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CoreStructField {
+    pub name: String,
+    #[serde(rename = "type")]
+    pub type_ref: CoreType,
+    pub origin: SourceSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -477,6 +500,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
         .collect();
     let instances = lower_instances(&module.source, module.instances);
     let mut adts = Vec::new();
+    let mut structs = Vec::new();
     let mut bindings = Vec::new();
     let mut functions = Vec::new();
 
@@ -502,6 +526,30 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                     origin,
                 },
             )),
+            TypedDecl::Struct {
+                symbol,
+                name,
+                visibility,
+                opaque,
+                type_parameters,
+                fields,
+                origin,
+            } => structs.push(CoreStruct {
+                symbol,
+                name,
+                visibility,
+                opaque,
+                type_parameters,
+                fields: fields
+                    .into_iter()
+                    .map(|field| CoreStructField {
+                        name: field.name,
+                        type_ref: types::lower_typed_type(field.type_ref),
+                        origin: source_span(&module.source, field.origin),
+                    })
+                    .collect(),
+                origin: source_span(&module.source, origin),
+            }),
             TypedDecl::Let {
                 symbol,
                 visibility,
@@ -573,6 +621,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
         external_type_bindings: module.external_type_bindings,
         module_dependencies,
         adts,
+        structs,
         instances,
         bindings,
         functions,

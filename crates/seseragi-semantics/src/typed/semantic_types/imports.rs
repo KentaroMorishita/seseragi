@@ -3,7 +3,8 @@ use seseragi_syntax::InterfaceType;
 use std::collections::BTreeMap;
 
 use super::{
-    SemanticAdt, SemanticTypeCatalog, SemanticTypeKey, SemanticValueType, SemanticVariant,
+    SemanticAdt, SemanticStruct, SemanticStructField, SemanticTypeCatalog, SemanticTypeKey,
+    SemanticValueType, SemanticVariant,
 };
 use crate::typed::type_ref::typed_type_from_interface_type;
 
@@ -73,6 +74,66 @@ impl SemanticTypeCatalog {
         }
     }
 
+    pub(super) fn collect_imported_structs(&mut self, resolved: &ResolvedModule) {
+        for owner_import in resolved.imports.iter().filter(|import| {
+            import.export.namespace == "type"
+                && import.export.declaration_kind.as_deref() == Some("struct")
+        }) {
+            let Some(InterfaceType::Record { fields, .. }) =
+                owner_import.export.representation.as_ref()
+            else {
+                continue;
+            };
+            let owner = owner_import.symbol;
+            let owner_canonical = &owner_import.export.symbol;
+            let type_parameters = owner_import
+                .export
+                .scheme
+                .type_parameters
+                .iter()
+                .filter_map(|parameter| {
+                    let canonical = format!("{owner_canonical}::{}", parameter.name);
+                    resolved.symbols.iter().find(|symbol| {
+                        symbol.kind == SymbolKind::TypeParameter
+                            && symbol.canonical.as_deref() == Some(canonical.as_str())
+                    })
+                })
+                .collect::<Vec<_>>();
+            if type_parameters.len() != owner_import.export.scheme.type_parameters.len() {
+                continue;
+            }
+            let parameter_ids = type_parameters
+                .iter()
+                .map(|parameter| (parameter.spelling.clone(), parameter.id))
+                .collect::<BTreeMap<_, _>>();
+            let fields = fields
+                .iter()
+                .filter_map(|field| {
+                    let type_ref = typed_type_from_interface_type(field.type_ref.clone())?;
+                    Some(SemanticStructField {
+                        name: field.name.clone(),
+                        type_ref: self.imported_payload(resolved, type_ref, &parameter_ids),
+                    })
+                })
+                .collect::<Vec<_>>();
+            self.structs.insert(
+                owner,
+                SemanticStruct {
+                    name: owner_import.local_name.clone(),
+                    type_parameters: type_parameters
+                        .iter()
+                        .map(|parameter| parameter.id)
+                        .collect(),
+                    type_parameter_names: type_parameters
+                        .iter()
+                        .map(|parameter| parameter.spelling.clone())
+                        .collect(),
+                    fields,
+                },
+            );
+        }
+    }
+
     fn imported_payload(
         &self,
         resolved: &ResolvedModule,
@@ -93,6 +154,9 @@ impl SemanticTypeCatalog {
                     .collect::<Vec<_>>();
                 match self.key_from_typed_type(resolved, &type_ref) {
                     SemanticTypeKey::Adt { owner, .. } => SemanticTypeKey::Adt { owner, arguments },
+                    SemanticTypeKey::Struct { owner, .. } => {
+                        SemanticTypeKey::Struct { owner, arguments }
+                    }
                     SemanticTypeKey::ExternalNominal { canonical, .. } => {
                         SemanticTypeKey::ExternalNominal {
                             canonical,

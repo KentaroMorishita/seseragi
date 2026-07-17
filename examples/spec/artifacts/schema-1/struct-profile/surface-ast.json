@@ -1,0 +1,494 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "struct",
+      "visibility": "public",
+      "name": "Player",
+      "nameSpan": {
+        "start": 11,
+        "end": 17
+      },
+      "fields": [
+        {
+          "name": "name",
+          "nameSpan": {
+            "start": 22,
+            "end": 26
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 28,
+              "end": 34
+            }
+          }
+        },
+        {
+          "name": "score",
+          "nameSpan": {
+            "start": 38,
+            "end": 43
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 45,
+              "end": 48
+            }
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 51
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "improve",
+      "nameSpan": {
+        "start": 56,
+        "end": 63
+      },
+      "parameters": [
+        {
+          "name": "player",
+          "nameSpan": {
+            "start": 64,
+            "end": 70
+          },
+          "type": {
+            "kind": "named",
+            "name": "Player",
+            "span": {
+              "start": 72,
+              "end": 78
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Player",
+        "span": {
+          "start": 82,
+          "end": 88
+        }
+      },
+      "body": {
+        "kind": "struct",
+        "name": "Player",
+        "nameSpan": {
+          "start": 93,
+          "end": 99
+        },
+        "items": [
+          {
+            "kind": "spread",
+            "value": {
+              "kind": "name",
+              "name": "player",
+              "span": {
+                "start": 109,
+                "end": 115
+              }
+            },
+            "span": {
+              "start": 106,
+              "end": 115
+            }
+          },
+          {
+            "kind": "field",
+            "name": "score",
+            "nameSpan": {
+              "start": 121,
+              "end": 126
+            },
+            "value": {
+              "kind": "integer",
+              "raw": "42",
+              "span": {
+                "start": 128,
+                "end": 130
+              }
+            },
+            "span": {
+              "start": 121,
+              "end": 130
+            }
+          }
+        ],
+        "span": {
+          "start": 93,
+          "end": 135
+        }
+      },
+      "span": {
+        "start": 53,
+        "end": 135
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "render",
+      "nameSpan": {
+        "start": 140,
+        "end": 146
+      },
+      "parameters": [
+        {
+          "name": "player",
+          "nameSpan": {
+            "start": 147,
+            "end": 153
+          },
+          "type": {
+            "kind": "named",
+            "name": "Player",
+            "span": {
+              "start": 155,
+              "end": 161
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 165,
+          "end": 171
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "player",
+          "span": {
+            "start": 182,
+            "end": 188
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "struct",
+              "name": "Player",
+              "nameSpan": {
+                "start": 195,
+                "end": 201
+              },
+              "fields": [
+                {
+                  "name": "name",
+                  "nameSpan": {
+                    "start": 204,
+                    "end": 208
+                  },
+                  "pattern": {
+                    "kind": "name",
+                    "name": "name",
+                    "nameSpan": {
+                      "start": 204,
+                      "end": 208
+                    },
+                    "span": {
+                      "start": 204,
+                      "end": 208
+                    }
+                  },
+                  "span": {
+                    "start": 204,
+                    "end": 208
+                  }
+                },
+                {
+                  "name": "score",
+                  "nameSpan": {
+                    "start": 210,
+                    "end": 215
+                  },
+                  "pattern": {
+                    "kind": "integer",
+                    "raw": "42",
+                    "span": {
+                      "start": 217,
+                      "end": 219
+                    }
+                  },
+                  "span": {
+                    "start": 210,
+                    "end": 219
+                  }
+                }
+              ],
+              "span": {
+                "start": 195,
+                "end": 221
+              }
+            },
+            "body": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "name",
+                    "span": {
+                      "start": 228,
+                      "end": 232
+                    }
+                  },
+                  "span": {
+                    "start": 226,
+                    "end": 233
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": ": perfect 42",
+                  "span": {
+                    "start": 233,
+                    "end": 245
+                  }
+                }
+              ],
+              "span": {
+                "start": 225,
+                "end": 246
+              }
+            },
+            "span": {
+              "start": 195,
+              "end": 246
+            }
+          },
+          {
+            "pattern": {
+              "kind": "struct",
+              "name": "Player",
+              "nameSpan": {
+                "start": 251,
+                "end": 257
+              },
+              "fields": [
+                {
+                  "name": "name",
+                  "nameSpan": {
+                    "start": 260,
+                    "end": 264
+                  },
+                  "pattern": {
+                    "kind": "name",
+                    "name": "name",
+                    "nameSpan": {
+                      "start": 260,
+                      "end": 264
+                    },
+                    "span": {
+                      "start": 260,
+                      "end": 264
+                    }
+                  },
+                  "span": {
+                    "start": 260,
+                    "end": 264
+                  }
+                },
+                {
+                  "name": "score",
+                  "nameSpan": {
+                    "start": 266,
+                    "end": 271
+                  },
+                  "pattern": {
+                    "kind": "wildcard",
+                    "span": {
+                      "start": 273,
+                      "end": 274
+                    }
+                  },
+                  "span": {
+                    "start": 266,
+                    "end": 274
+                  }
+                }
+              ],
+              "span": {
+                "start": 251,
+                "end": 276
+              }
+            },
+            "body": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "name",
+                    "name": "name",
+                    "span": {
+                      "start": 283,
+                      "end": 287
+                    }
+                  },
+                  "span": {
+                    "start": 281,
+                    "end": 288
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": ": keep training",
+                  "span": {
+                    "start": 288,
+                    "end": 303
+                  }
+                }
+              ],
+              "span": {
+                "start": 280,
+                "end": 304
+              }
+            },
+            "span": {
+              "start": 251,
+              "end": 304
+            }
+          }
+        ],
+        "span": {
+          "start": 176,
+          "end": 308
+        }
+      },
+      "span": {
+        "start": 137,
+        "end": 308
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 324,
+        "end": 328
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 397,
+            "end": 404
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "render",
+            "span": {
+              "start": 385,
+              "end": 391
+            }
+          },
+          "argument": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "improve",
+              "span": {
+                "start": 372,
+                "end": 379
+              }
+            },
+            "argument": {
+              "kind": "struct",
+              "name": "Player",
+              "nameSpan": {
+                "start": 333,
+                "end": 339
+              },
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "name",
+                  "nameSpan": {
+                    "start": 342,
+                    "end": 346
+                  },
+                  "value": {
+                    "kind": "string",
+                    "raw": "\"Mio\"",
+                    "span": {
+                      "start": 348,
+                      "end": 353
+                    }
+                  },
+                  "span": {
+                    "start": 342,
+                    "end": 353
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "score",
+                  "nameSpan": {
+                    "start": 355,
+                    "end": 360
+                  },
+                  "value": {
+                    "kind": "integer",
+                    "raw": "12",
+                    "span": {
+                      "start": 362,
+                      "end": 364
+                    }
+                  },
+                  "span": {
+                    "start": 355,
+                    "end": 364
+                  }
+                }
+              ],
+              "span": {
+                "start": 333,
+                "end": 366
+              }
+            },
+            "span": {
+              "start": 333,
+              "end": 379
+            }
+          },
+          "span": {
+            "start": 333,
+            "end": 391
+          }
+        },
+        "span": {
+          "start": 333,
+          "end": 404
+        }
+      },
+      "span": {
+        "start": 310,
+        "end": 404
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/imported-struct::domain",
+    "fixture/imported-struct::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/imported-struct::domain",
+      "source": "src/domain.ssrg",
+      "output": "dist/imported-struct/domain.js",
+      "artifacts": "artifacts/domain",
+      "imports": []
+    },
+    {
+      "id": "fixture/imported-struct::main",
+      "source": "src/main.ssrg",
+      "output": "dist/imported-struct/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./domain",
+          "module": "fixture/imported-struct::domain"
+        }
+      ]
+    }
+  ]
+}

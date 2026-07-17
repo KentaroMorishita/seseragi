@@ -82,6 +82,17 @@ fn module_names_and_mappings(
         }
         generated_line += type_lines + adt.variants.len();
     }
+    for structure in &module.structs {
+        push_declaration_mapping(
+            &mut names,
+            &mut mappings,
+            generated_line + 1,
+            &structure.name,
+            &structure.origin,
+            source_text,
+        );
+        generated_line += structure.fields.len() + 4;
+    }
 
     for instance in &module.instances {
         push_declaration_mapping(
@@ -162,6 +173,7 @@ fn generated_declaration_start_line(module: &TypeScriptModule) -> usize {
         + usize::from(
             import_lines > 0
                 && (!module.adts.is_empty()
+                    || !module.structs.is_empty()
                     || !module.instances.is_empty()
                     || !module.bindings.is_empty()
                     || !module.functions.is_empty()),
@@ -269,7 +281,7 @@ fn collect_expr_names(
         | TypeScriptExpr::OptionalFieldAccess { receiver, .. } => {
             collect_expr_names(receiver, helper_names, names);
         }
-        TypeScriptExpr::Record { items } => {
+        TypeScriptExpr::Record { items, .. } => {
             for item in items {
                 collect_expr_names(item.value(), helper_names, names);
             }
@@ -491,6 +503,7 @@ mod tests {
                 origin,
             }],
             adts: Vec::new(),
+            structs: Vec::new(),
             instances: Vec::new(),
             bindings: Vec::new(),
             functions: vec![TypeScriptFunction::ConstFunction {

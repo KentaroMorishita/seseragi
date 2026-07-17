@@ -947,6 +947,21 @@ TypedHirはfield名とnested patternを保持し、CoreIr / TypeScriptIrのdecis
 named field accessを生成します。存在しないfieldは`SES-T0101`で停止します。optional query pattern (`{ id? }` / `{ id?: Just value }`)
 は、missingを`Nothing`へ変換するpattern projection ABIが必要な独立gateとして残し、required patternへ暗黙統合しません。
 
+nominal StructはRecord backendを再利用しますが、意味境界は共有しません。SurfaceAstは`Player { name, score }`と
+`Player { ...player, score: 42 }`をStruct nodeとして保持し、resolverは`Player`をtype namespaceへ解決します。
+type checkerは宣言ownerを持つ`SemanticTypeKey::Struct`を構築し、fieldの不足・余分・重複・型不一致、spread sourceの
+owner一致を検査してからRecord型のfield objectへlowerします。Struct patternもownerとfield contractを先に検査し、
+受理後だけ既存のnamed decision projectionを再利用します。この順序により、同じfield集合のRecordや別Structを
+TypeScriptのstructural compatibilityへ委譲しません。
+
+TypeScript backendは各Structへprivate unique-symbol brandを含むreadonly object typeを生成し、型検査済みのliteral /
+updateだけをそのnominal型へassertします。非opaqueなpublic Structのinterface representationにはclosed field recordを残し、
+consumerのsemantic catalogがconstruct / update / access / patternを同じ規則で検査できるようにします。opaque Structは
+representationを引き続き隠します。`schema-1/struct-profile`、`semantic-diagnostics-schema-1/struct-field-errors`、
+`project-schema-1/imported-struct`がlocal positive / negative / cross-module executionを分離して固定します。generic Structの
+argument inference、opaque smart constructorとfield visibility、struct deriving / implはこのowner付き型とinterface表現を
+維持した後続sliceです。
+
 公開interfaceだけでは、同一packageの「private宣言は存在する」と単なるtypoを区別できません。そのためfrontendは
 同じSurfaceAst passから、bodyと型schemeを含めずdeclaration name / namespace / visibility / canonical symbolだけを持つ
 `ModuleHeader`も生成します。private宣言と、公開opaque ADT / newtypeのhidden constructorもheaderへ残し、current moduleの

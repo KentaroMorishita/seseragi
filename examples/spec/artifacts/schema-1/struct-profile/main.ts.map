@@ -1,0 +1,25 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/struct-profile"
+  ],
+  "sourcesContent": [
+    "pub struct Player {\n  name: String,\n  score: Int,\n}\n\nfn improve player: Player -> Player =\n  Player {\n    ...player,\n    score: 42,\n  }\n\nfn render player: Player -> String =\n  match player {\n    Player { name, score: 42 } -> `${name}: perfect 42`\n    Player { name, score: _ } -> `${name}: keep training`\n  }\n\npub effect fn main =\n  Player { name: \"Mio\", score: 12 }\n  |> improve\n  |> render\n  |> println\n"
+  ],
+  "names": [
+    "Player",
+    "improve",
+    "render",
+    "name",
+    "stringShow",
+    "name",
+    "stringShow",
+    "main",
+    "println",
+    "render",
+    "improve"
+  ],
+  "mappings": ";;;;AAAAA;;;;;AAKAC;AAMAC;AAMAK"
+}

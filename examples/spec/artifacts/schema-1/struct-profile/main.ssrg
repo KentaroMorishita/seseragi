@@ -1,0 +1,22 @@
+pub struct Player {
+  name: String,
+  score: Int,
+}
+
+fn improve player: Player -> Player =
+  Player {
+    ...player,
+    score: 42,
+  }
+
+fn render player: Player -> String =
+  match player {
+    Player { name, score: 42 } -> `${name}: perfect 42`
+    Player { name, score: _ } -> `${name}: keep training`
+  }
+
+pub effect fn main =
+  Player { name: "Mio", score: 12 }
+  |> improve
+  |> render
+  |> println

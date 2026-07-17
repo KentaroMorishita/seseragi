@@ -125,35 +125,57 @@ pub(super) fn type_member(
 
     let receiver_analysis = type_surface_expression(receiver, &context.without_expected());
     let receiver_type = inferred_type_from_expr(&receiver_analysis.value);
-    let (type_ref, optional, issue) = match &receiver_type {
-        TypedType::Record { fields, .. } => match fields.iter().find(|item| item.name == field) {
-            Some(found) if found.optional => (
-                TypedType::Named {
-                    name: "Maybe".to_owned(),
-                    arguments: vec![found.type_ref.clone()],
-                },
-                true,
-                None,
-            ),
-            Some(found) => (found.type_ref.clone(), false, None),
-            None => (
+    let (type_ref, optional, issue) = match &receiver_analysis.semantic_type {
+        SemanticTypeKey::Struct { owner, arguments } => {
+            let found = context
+                .semantic_types()
+                .instantiate_struct_fields(*owner, arguments)
+                .unwrap_or_default()
+                .into_iter()
+                .find(|item| item.name == field);
+            match found {
+                Some(found) => (found.type_ref.type_ref, false, None),
+                None => (
+                    TypedType::Hole,
+                    false,
+                    Some(RecordIssue::MissingField {
+                        field: field_span,
+                        name: field.to_owned(),
+                    }),
+                ),
+            }
+        }
+        _ => match &receiver_type {
+            TypedType::Record { fields, .. } => match fields.iter().find(|item| item.name == field)
+            {
+                Some(found) if found.optional => (
+                    TypedType::Named {
+                        name: "Maybe".to_owned(),
+                        arguments: vec![found.type_ref.clone()],
+                    },
+                    true,
+                    None,
+                ),
+                Some(found) => (found.type_ref.clone(), false, None),
+                None => (
+                    TypedType::Hole,
+                    false,
+                    Some(RecordIssue::MissingField {
+                        field: field_span,
+                        name: field.to_owned(),
+                    }),
+                ),
+            },
+            TypedType::Hole => (TypedType::Hole, false, None),
+            actual => (
                 TypedType::Hole,
                 false,
-                Some(RecordIssue::MissingField {
-                    field: field_span,
-                    name: field.to_owned(),
+                Some(RecordIssue::AccessOnNonRecord {
+                    receiver: receiver.span(),
+                    actual: actual.clone(),
                 }),
             ),
         },
-        TypedType::Hole => (TypedType::Hole, false, None),
-        actual => (
-            TypedType::Hole,
-            false,
-            Some(RecordIssue::AccessOnNonRecord {
-                receiver: receiver.span(),
-                actual: actual.clone(),
-            }),
-        ),
     };
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         if optional {

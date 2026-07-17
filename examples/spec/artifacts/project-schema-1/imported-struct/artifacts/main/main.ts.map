@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "file": "dist/imported-struct/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-struct::main"
+  ],
+  "sourcesContent": [
+    "import { Player } from \"./domain\"\n\nfn improve player: Player -> Player =\n  Player { ...player, score: 42 }\n\nfn render player: Player -> String =\n  match player {\n    Player { name } -> name + \": imported struct\"\n  }\n\npub effect fn main =\n  Player { name: \"Mio\", score: 12 }\n  |> improve\n  |> render\n  |> println\n"
+  ],
+  "names": [
+    "improve",
+    "render",
+    "name",
+    "main",
+    "println",
+    "render",
+    "improve"
+  ],
+  "mappings": ";;;;AAEAA;AAGAC;AAKAE"
+}

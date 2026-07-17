@@ -136,6 +136,15 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "Record profile: Mio\nPlayer: Mio",
   },
   {
+    id: "struct-profile",
+    label: "Structでプロフィール更新",
+    category: "型と抽象化",
+    sourcePath:
+      "examples/spec/artifacts/schema-1/struct-profile/main.ssrg",
+    stdin: "",
+    expectedOutput: "Mio: perfect 42",
+  },
+  {
     id: "user-add-operator",
     label: "自作の足し算",
     category: "型と抽象化",

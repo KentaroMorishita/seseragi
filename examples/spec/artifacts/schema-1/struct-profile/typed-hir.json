@@ -1,0 +1,602 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/struct-profile",
+  "declarations": [
+    {
+      "kind": "struct",
+      "symbol": "artifact/struct-profile::Player",
+      "name": "Player",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "name",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 22,
+            "end": 26
+          }
+        },
+        {
+          "name": "score",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 38,
+            "end": 43
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 51
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/struct-profile::improve",
+      "visibility": "private",
+      "origin": {
+        "start": 53,
+        "end": 135
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Player",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "player",
+          "type": {
+            "kind": "named",
+            "name": "Player",
+            "arguments": []
+          },
+          "origin": {
+            "start": 64,
+            "end": 70
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "spread",
+            "value": {
+              "kind": "variable",
+              "name": "player",
+              "type": {
+                "kind": "named",
+                "name": "Player",
+                "arguments": []
+              },
+              "origin": {
+                "start": 109,
+                "end": 115
+              }
+            },
+            "origin": {
+              "start": 106,
+              "end": 115
+            }
+          },
+          {
+            "kind": "field",
+            "name": "score",
+            "value": {
+              "kind": "integer",
+              "value": "42",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 128,
+                "end": 130
+              }
+            },
+            "origin": {
+              "start": 121,
+              "end": 130
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Player",
+          "arguments": []
+        },
+        "origin": {
+          "start": 93,
+          "end": 135
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/struct-profile::render",
+      "visibility": "private",
+      "origin": {
+        "start": 137,
+        "end": 308
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "player",
+          "type": {
+            "kind": "named",
+            "name": "Player",
+            "arguments": []
+          },
+          "origin": {
+            "start": 147,
+            "end": 153
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "player",
+          "type": {
+            "kind": "named",
+            "name": "Player",
+            "arguments": []
+          },
+          "origin": {
+            "start": 182,
+            "end": 188
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "name",
+                  "pattern": {
+                    "kind": "binding",
+                    "symbol": 8,
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 204,
+                      "end": 208
+                    }
+                  },
+                  "origin": {
+                    "start": 204,
+                    "end": 208
+                  }
+                },
+                {
+                  "name": "score",
+                  "pattern": {
+                    "kind": "integer",
+                    "value": "42",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 217,
+                      "end": 219
+                    }
+                  },
+                  "origin": {
+                    "start": 210,
+                    "end": 219
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Player",
+                "arguments": []
+              },
+              "origin": {
+                "start": 195,
+                "end": 221
+              }
+            },
+            "body": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 228,
+                      "end": 232
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "start": 226,
+                    "end": 233
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": ": perfect 42",
+                  "origin": {
+                    "start": 233,
+                    "end": 245
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 225,
+                "end": 246
+              }
+            },
+            "origin": {
+              "start": 195,
+              "end": 246
+            }
+          },
+          {
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "name",
+                  "pattern": {
+                    "kind": "binding",
+                    "symbol": 9,
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 260,
+                      "end": 264
+                    }
+                  },
+                  "origin": {
+                    "start": 260,
+                    "end": 264
+                  }
+                },
+                {
+                  "name": "score",
+                  "pattern": {
+                    "kind": "wildcard",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 273,
+                      "end": 274
+                    }
+                  },
+                  "origin": {
+                    "start": 266,
+                    "end": 274
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Player",
+                "arguments": []
+              },
+              "origin": {
+                "start": 251,
+                "end": 276
+              }
+            },
+            "body": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 283,
+                      "end": 287
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "start": 281,
+                    "end": 288
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": ": keep training",
+                  "origin": {
+                    "start": 288,
+                    "end": 303
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 280,
+                "end": 304
+              }
+            },
+            "origin": {
+              "start": 251,
+              "end": 304
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 176,
+          "end": 308
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/struct-profile::main",
+      "visibility": "public",
+      "origin": {
+        "start": 310,
+        "end": 404
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/struct-profile::render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/struct-profile::improve",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "items": [
+                      {
+                        "kind": "field",
+                        "name": "name",
+                        "value": {
+                          "kind": "string",
+                          "value": "Mio",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 348,
+                            "end": 353
+                          }
+                        },
+                        "origin": {
+                          "start": 342,
+                          "end": 353
+                        }
+                      },
+                      {
+                        "kind": "field",
+                        "name": "score",
+                        "value": {
+                          "kind": "integer",
+                          "value": "12",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 362,
+                            "end": 364
+                          }
+                        },
+                        "origin": {
+                          "start": 355,
+                          "end": 364
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Player",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 333,
+                      "end": 366
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Player",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 333,
+                  "end": 379
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 333,
+              "end": 391
+            }
+          }
+        ],
+        "origin": {
+          "start": 333,
+          "end": 404
+        }
+      }
+    }
+  ]
+}

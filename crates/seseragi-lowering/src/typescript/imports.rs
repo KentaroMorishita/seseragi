@@ -43,6 +43,12 @@ fn declaration_names(module: &TypeScriptModule) -> BTreeSet<String> {
             std::iter::once(adt.name.clone())
                 .chain(adt.variants.iter().map(|variant| variant.name.clone()))
         })
+        .chain(
+            module
+                .structs
+                .iter()
+                .flat_map(|structure| [structure.name.clone(), structure.brand.clone()]),
+        )
         .chain(module.bindings.iter().map(|binding| match binding {
             TypeScriptBinding::Const { name, .. } => name.clone(),
         }))
@@ -154,7 +160,7 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
                 *nothing_constructor = fresh.clone();
             }
         }
-        TypeScriptExpr::Record { items } => {
+        TypeScriptExpr::Record { items, .. } => {
             for item in items {
                 match item {
                     super::TypeScriptRecordValueItem::Field { value, .. }

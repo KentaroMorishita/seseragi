@@ -49,7 +49,7 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
                 collect_expression_errors(element, errors);
             }
         }
-        SurfaceExpr::Record { items, .. } => {
+        SurfaceExpr::Record { items, .. } | SurfaceExpr::Struct { items, .. } => {
             for item in items {
                 collect_expression_errors(item.value(), errors);
             }

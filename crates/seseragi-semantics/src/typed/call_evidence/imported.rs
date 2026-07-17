@@ -517,7 +517,8 @@ fn canonical_semantic_value(
     resolution: &TypedResolution<'_>,
 ) -> Option<String> {
     match &value.key {
-        SemanticTypeKey::Adt { owner, arguments } => {
+        SemanticTypeKey::Adt { owner, arguments }
+        | SemanticTypeKey::Struct { owner, arguments } => {
             let symbol = resolution.symbol(*owner)?;
             let constructor = symbol
                 .canonical

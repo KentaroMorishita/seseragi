@@ -57,7 +57,8 @@ fn substitute_semantic_type_parameters(
     }
 
     match (&value.type_ref, &value.key) {
-        (TypedType::Named { name, .. }, SemanticTypeKey::Adt { owner, arguments }) => {
+        (TypedType::Named { name, .. }, SemanticTypeKey::Adt { owner, arguments })
+        | (TypedType::Named { name, .. }, SemanticTypeKey::Struct { owner, arguments }) => {
             let arguments = arguments
                 .iter()
                 .map(|argument| substitute_semantic_type_parameters(argument, substitutions))
@@ -70,9 +71,15 @@ fn substitute_semantic_type_parameters(
                         .map(|argument| argument.type_ref.clone())
                         .collect(),
                 },
-                key: SemanticTypeKey::Adt {
-                    owner: *owner,
-                    arguments,
+                key: match &value.key {
+                    SemanticTypeKey::Struct { .. } => SemanticTypeKey::Struct {
+                        owner: *owner,
+                        arguments,
+                    },
+                    _ => SemanticTypeKey::Adt {
+                        owner: *owner,
+                        arguments,
+                    },
                 },
             }
         }
@@ -81,6 +88,12 @@ fn substitute_semantic_type_parameters(
                 name, canonical, ..
             },
             SemanticTypeKey::Adt { owner, arguments },
+        )
+        | (
+            TypedType::ExternalNamed {
+                name, canonical, ..
+            },
+            SemanticTypeKey::Struct { owner, arguments },
         ) => {
             let arguments = arguments
                 .iter()
@@ -95,9 +108,15 @@ fn substitute_semantic_type_parameters(
                         .map(|argument| argument.type_ref.clone())
                         .collect(),
                 },
-                key: SemanticTypeKey::Adt {
-                    owner: *owner,
-                    arguments,
+                key: match &value.key {
+                    SemanticTypeKey::Struct { .. } => SemanticTypeKey::Struct {
+                        owner: *owner,
+                        arguments,
+                    },
+                    _ => SemanticTypeKey::Adt {
+                        owner: *owner,
+                        arguments,
+                    },
                 },
             }
         }
@@ -234,6 +253,20 @@ fn collect_substitutions(
                 arguments: templates,
             },
             SemanticTypeKey::Adt {
+                owner: actual_owner,
+                arguments,
+            },
+        ) if template_owner == actual_owner && templates.len() == arguments.len() => {
+            for (template, argument) in templates.iter().zip(arguments) {
+                collect_substitutions(&template.key, argument, substitutions);
+            }
+        }
+        (
+            SemanticTypeKey::Struct {
+                owner: template_owner,
+                arguments: templates,
+            },
+            SemanticTypeKey::Struct {
                 owner: actual_owner,
                 arguments,
             },

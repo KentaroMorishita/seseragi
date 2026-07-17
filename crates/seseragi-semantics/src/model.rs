@@ -104,6 +104,15 @@ pub enum TypedDecl {
         variants: Vec<TypedAdtVariant>,
         origin: ByteSpan,
     },
+    Struct {
+        symbol: String,
+        name: String,
+        visibility: Visibility,
+        opaque: bool,
+        type_parameters: Vec<String>,
+        fields: Vec<TypedStructField>,
+        origin: ByteSpan,
+    },
     Let {
         symbol: String,
         visibility: Visibility,
@@ -131,6 +140,15 @@ pub enum TypedDecl {
         effect: TypedEffect,
         body: TypedExpr,
     },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedStructField {
+    pub name: String,
+    #[serde(rename = "type")]
+    pub type_ref: TypedType,
+    pub origin: ByteSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

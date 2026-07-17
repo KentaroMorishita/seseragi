@@ -467,6 +467,20 @@ fn exports_public_struct_names_in_interface() {
             arity: 0,
         }
     );
+    assert_eq!(
+        struct_export.representation,
+        Some(InterfaceType::Record {
+            closed: true,
+            fields: vec![crate::InterfaceRecordField {
+                name: "name".to_owned(),
+                optional: false,
+                type_ref: InterfaceType::Named {
+                    name: "String".to_owned(),
+                    arguments: Vec::new(),
+                },
+            }],
+        })
+    );
 }
 
 #[test]

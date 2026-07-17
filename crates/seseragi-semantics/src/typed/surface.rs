@@ -1,4 +1,7 @@
-use crate::{unit_type, SymbolKind, TypedDecl, TypedExpr, TypedParameter, TypedScheme, TypedType};
+use crate::{
+    unit_type, SymbolKind, TypedDecl, TypedExpr, TypedParameter, TypedScheme, TypedStructField,
+    TypedType,
+};
 use seseragi_syntax::{SurfaceDecl, SurfaceVariant};
 
 use super::adt::{typed_adt_decl, AdtDeclInput};
@@ -200,8 +203,35 @@ pub(crate) fn typed_decl_from_surface(
                 origin: span,
             },
         ),
+        SurfaceDecl::Struct {
+            visibility,
+            opaque,
+            name,
+            name_span,
+            type_parameters,
+            fields,
+            span,
+            ..
+        } => Some(TypedDecl::Struct {
+            symbol: declaration_symbol(resolution, name_span, SymbolKind::Type, &name),
+            name,
+            visibility,
+            opaque,
+            type_parameters: type_parameters
+                .into_iter()
+                .map(|parameter| parameter.name)
+                .collect(),
+            fields: fields
+                .into_iter()
+                .map(|field| TypedStructField {
+                    name: field.name,
+                    type_ref: typed_type_from_type_ref(&field.type_ref),
+                    origin: field.name_span,
+                })
+                .collect(),
+            origin: span,
+        }),
         SurfaceDecl::Alias { .. }
-        | SurfaceDecl::Struct { .. }
         | SurfaceDecl::Trait { .. }
         | SurfaceDecl::Operator { .. }
         | SurfaceDecl::Instance { .. } => None,

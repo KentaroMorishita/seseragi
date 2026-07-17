@@ -1,0 +1,21 @@
+pub struct User {
+  name: String,
+  score: Int,
+}
+
+pub struct Team {
+  name: String,
+  score: Int,
+}
+
+pub fn missing -> User =
+  User { name: "Aki" }
+
+pub fn unknown -> User =
+  User { name: "Aki", score: 42, age: 20 }
+
+pub fn wrongType -> User =
+  User { name: 42, score: 10 }
+
+pub fn wrongSpread team: Team -> User =
+  User { ...team }

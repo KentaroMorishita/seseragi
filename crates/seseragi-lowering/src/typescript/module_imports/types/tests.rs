@@ -44,6 +44,7 @@ fn module(bindings: Vec<ExternalTypeBinding>, parameters: Vec<CoreType>) -> Core
         external_type_bindings: bindings,
         module_dependencies: Vec::new(),
         adts: Vec::new(),
+        structs: Vec::new(),
         instances: Vec::new(),
         bindings: Vec::new(),
         functions: vec![CoreFunction {

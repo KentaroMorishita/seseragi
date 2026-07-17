@@ -1,0 +1,455 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/imported-struct::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-struct::domain",
+      "origin": {
+        "start": 0,
+        "end": 33
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Player",
+          "local": "Player",
+          "canonical": "fixture/imported-struct::domain::Player",
+          "origin": {
+            "start": 9,
+            "end": 15
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-struct::main::improve",
+      "visibility": "private",
+      "origin": {
+        "start": 35,
+        "end": 106
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Player",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "player",
+          "type": {
+            "kind": "named",
+            "name": "Player",
+            "arguments": []
+          },
+          "origin": {
+            "start": 46,
+            "end": 52
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "spread",
+            "value": {
+              "kind": "variable",
+              "name": "player",
+              "type": {
+                "kind": "named",
+                "name": "Player",
+                "arguments": []
+              },
+              "origin": {
+                "start": 87,
+                "end": 93
+              }
+            },
+            "origin": {
+              "start": 84,
+              "end": 93
+            }
+          },
+          {
+            "kind": "field",
+            "name": "score",
+            "value": {
+              "kind": "integer",
+              "value": "42",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 102,
+                "end": 104
+              }
+            },
+            "origin": {
+              "start": 95,
+              "end": 104
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Player",
+          "arguments": []
+        },
+        "origin": {
+          "start": 75,
+          "end": 106
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-struct::main::render",
+      "visibility": "private",
+      "origin": {
+        "start": 108,
+        "end": 215
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "player",
+          "type": {
+            "kind": "named",
+            "name": "Player",
+            "arguments": []
+          },
+          "origin": {
+            "start": 118,
+            "end": 124
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "player",
+          "type": {
+            "kind": "named",
+            "name": "Player",
+            "arguments": []
+          },
+          "origin": {
+            "start": 153,
+            "end": 159
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "name",
+                  "pattern": {
+                    "kind": "binding",
+                    "symbol": 7,
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 175,
+                      "end": 179
+                    }
+                  },
+                  "origin": {
+                    "start": 175,
+                    "end": 179
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Player",
+                "arguments": []
+              },
+              "origin": {
+                "start": 166,
+                "end": 181
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "variable",
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 185,
+                  "end": 189
+                }
+              },
+              "right": {
+                "kind": "string",
+                "value": ": imported struct",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 192,
+                  "end": 211
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 185,
+                "end": 211
+              }
+            },
+            "origin": {
+              "start": 166,
+              "end": 211
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 147,
+          "end": 215
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/imported-struct::main::main",
+      "visibility": "public",
+      "origin": {
+        "start": 217,
+        "end": 311
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/imported-struct::main::render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "fixture/imported-struct::main::improve",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "items": [
+                      {
+                        "kind": "field",
+                        "name": "name",
+                        "value": {
+                          "kind": "string",
+                          "value": "Mio",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 255,
+                            "end": 260
+                          }
+                        },
+                        "origin": {
+                          "start": 249,
+                          "end": 260
+                        }
+                      },
+                      {
+                        "kind": "field",
+                        "name": "score",
+                        "value": {
+                          "kind": "integer",
+                          "value": "12",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 269,
+                            "end": 271
+                          }
+                        },
+                        "origin": {
+                          "start": 262,
+                          "end": 271
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Player",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 240,
+                      "end": 273
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Player",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 240,
+                  "end": 286
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 240,
+              "end": 298
+            }
+          }
+        ],
+        "origin": {
+          "start": 240,
+          "end": 311
+        }
+      }
+    }
+  ]
+}
