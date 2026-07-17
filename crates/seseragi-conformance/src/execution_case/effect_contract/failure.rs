@@ -120,6 +120,7 @@ fn standard_show_dictionary(failure: &InterfaceType) -> Option<DictionaryImport>
         return None;
     }
     let export = match name.as_str() {
+        "Int" => "intShow",
         "String" => "stringShow",
         "ConsoleError" => "consoleErrorShow",
         "StdinError" => "stdinErrorShow",

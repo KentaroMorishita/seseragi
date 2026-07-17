@@ -175,6 +175,7 @@ fn resolves_standard_show_dictionaries_without_local_instance_metadata() {
     let generated = generated_instances(json!([]));
 
     for (failure, export) in [
+        ("Int", "intShow"),
         ("String", "stringShow"),
         ("ConsoleError", "consoleErrorShow"),
         ("StdinError", "stdinErrorShow"),

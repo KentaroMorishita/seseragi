@@ -136,7 +136,7 @@
       "visibility": "private",
       "origin": {
         "start": 137,
-        "end": 308
+        "end": 330
       },
       "scheme": {
         "typeParameters": [],
@@ -276,10 +276,60 @@
                 },
                 {
                   "kind": "text",
-                  "value": ": perfect 42",
+                  "value": ": perfect ",
                   "origin": {
                     "start": 233,
-                    "end": 245
+                    "end": 243
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "variable",
+                      "name": "player",
+                      "type": {
+                        "kind": "named",
+                        "name": "Player",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 245,
+                        "end": 251
+                      }
+                    },
+                    "field": "score",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 245,
+                      "end": 257
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "start": 243,
+                    "end": 258
                   }
                 }
               ],
@@ -290,12 +340,12 @@
               },
               "origin": {
                 "start": 225,
-                "end": 246
+                "end": 259
               }
             },
             "origin": {
               "start": 195,
-              "end": 246
+              "end": 259
             }
           },
           {
@@ -314,32 +364,34 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 260,
-                      "end": 264
+                      "start": 273,
+                      "end": 277
                     }
                   },
                   "origin": {
-                    "start": 260,
-                    "end": 264
+                    "start": 273,
+                    "end": 277
                   }
                 },
                 {
                   "name": "score",
                   "pattern": {
-                    "kind": "wildcard",
+                    "kind": "binding",
+                    "symbol": 10,
+                    "name": "score",
                     "type": {
                       "kind": "named",
                       "name": "Int",
                       "arguments": []
                     },
                     "origin": {
-                      "start": 273,
-                      "end": 274
+                      "start": 279,
+                      "end": 284
                     }
                   },
                   "origin": {
-                    "start": 266,
-                    "end": 274
+                    "start": 279,
+                    "end": 284
                   }
                 }
               ],
@@ -349,8 +401,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 251,
-                "end": 276
+                "start": 264,
+                "end": 286
               }
             },
             "body": {
@@ -367,8 +419,8 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 283,
-                      "end": 287
+                      "start": 293,
+                      "end": 297
                     }
                   },
                   "evidence": {
@@ -389,16 +441,53 @@
                   },
                   "traitIdentity": "std/prelude::Show",
                   "origin": {
-                    "start": 281,
-                    "end": 288
+                    "start": 291,
+                    "end": 298
                   }
                 },
                 {
                   "kind": "text",
-                  "value": ": keep training",
+                  "value": ": keep training at ",
                   "origin": {
-                    "start": 288,
-                    "end": 303
+                    "start": 298,
+                    "end": 317
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "score",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 319,
+                      "end": 324
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "start": 317,
+                    "end": 325
                   }
                 }
               ],
@@ -408,13 +497,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 280,
-                "end": 304
+                "start": 290,
+                "end": 326
               }
             },
             "origin": {
-              "start": 251,
-              "end": 304
+              "start": 264,
+              "end": 326
             }
           }
         ],
@@ -426,7 +515,7 @@
         },
         "origin": {
           "start": 176,
-          "end": 308
+          "end": 330
         }
       }
     },
@@ -435,8 +524,8 @@
       "symbol": "artifact/struct-profile::main",
       "visibility": "public",
       "origin": {
-        "start": 310,
-        "end": 404
+        "start": 332,
+        "end": 426
       },
       "inferredContract": true,
       "parameters": [
@@ -528,13 +617,13 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 348,
-                            "end": 353
+                            "start": 370,
+                            "end": 375
                           }
                         },
                         "origin": {
-                          "start": 342,
-                          "end": 353
+                          "start": 364,
+                          "end": 375
                         }
                       },
                       {
@@ -549,13 +638,13 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 362,
-                            "end": 364
+                            "start": 384,
+                            "end": 386
                           }
                         },
                         "origin": {
-                          "start": 355,
-                          "end": 364
+                          "start": 377,
+                          "end": 386
                         }
                       }
                     ],
@@ -565,8 +654,8 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 333,
-                      "end": 366
+                      "start": 355,
+                      "end": 388
                     }
                   }
                 ],
@@ -576,8 +665,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 333,
-                  "end": 379
+                  "start": 355,
+                  "end": 401
                 }
               }
             ],
@@ -587,14 +676,14 @@
               "arguments": []
             },
             "origin": {
-              "start": 333,
-              "end": 391
+              "start": 355,
+              "end": 413
             }
           }
         ],
         "origin": {
-          "start": 333,
-          "end": 404
+          "start": 355,
+          "end": 426
         }
       }
     }

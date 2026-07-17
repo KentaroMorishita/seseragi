@@ -18,6 +18,13 @@ export const stringShow: Show<string> = Object.freeze({
   },
 })
 
+/** Int Show uses the canonical signed base-10 spelling without separators. */
+export const intShow: Show<bigint> = Object.freeze({
+  show(value: bigint): string {
+    return value.toString(10)
+  },
+})
+
 /** Stable, user-facing rendering for the opaque Console failure boundary. */
 export const consoleErrorShow: Show<ConsoleError> = Object.freeze({
   show(error: ConsoleError): string {

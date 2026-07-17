@@ -1,6 +1,7 @@
 import type { ConsoleError } from "../src/console"
 import {
   consoleErrorShow,
+  intShow,
   type Show,
   stdinErrorShow,
   stringShow,
@@ -17,6 +18,7 @@ function assertEqual(actual: string, expected: string): void {
 
 const dictionaries: readonly Show<unknown>[] = [
   stringShow as Show<unknown>,
+  intShow as Show<unknown>,
   consoleErrorShow as Show<unknown>,
   stdinErrorShow as Show<unknown>,
 ]
@@ -25,6 +27,9 @@ if (dictionaries.some((dictionary) => typeof dictionary.show !== "function")) {
 }
 
 assertEqual(stringShow.show("hello\nworld"), "hello\nworld")
+assertEqual(intShow.show(0n), "0")
+assertEqual(intShow.show(42n), "42")
+assertEqual(intShow.show(-9_223_372_036_854_775_808n), "-9223372036854775808")
 
 const consoleError: ConsoleError = {
   kind: "console-error",

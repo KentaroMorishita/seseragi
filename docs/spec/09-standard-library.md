@@ -442,7 +442,8 @@ trait Show<A> {
 `show` は純粋で、I/O、throw、global locale参照を行いません。localeやformat optionが必要な
 表示は引数を取る名前付きformatterとして定義します。
 
-Charのstandard Showはそのscalar一個を含むString、Stringのstandard Showは同じStringを返します。
+Intのstandard Showは`std/int.format`と同じcanonicalな符号付き10進表記を返します。桁区切りや
+先頭の`+`は加えません。Charのstandard Showはそのscalar一個を含むString、Stringのstandard Showは同じStringを返します。
 quoteやescapeを含むsource表現はDebugの責務であり、Showは自動でquoteを加えません。
 
 Stringは`Add<String, String, String>`のstandard instanceを持ち、`left + right`は二つのStringを

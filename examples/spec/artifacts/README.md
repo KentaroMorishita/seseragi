@@ -223,7 +223,7 @@ actual operation traceとstdoutを固定します。
 Console hostで実行します。`Render` methodの`Just item -> ready item`はinstance constraintを
 `parameter` evidenceとしてTypedHir / CoreIrへ保持し、生成TSではfactory closureのcompiler-private evidence名からdispatchします。
 このcaseはcall siteでのlocal evidence materializationとmethod bodyでの消費を両方固定するgateです。
-imported evidenceのfactory引数化はdirect / transitive project fixtureで、materializableなstandard `Show<String>`は
+imported evidenceのfactory引数化はdirect / transitive project fixtureで、materializableなstandard `Show<Int>` / `Show<String>`は
 `schema-1/standard-show-evidence`で接続します。first-class constrained functionのvalue schemeと、
 operation-only standard traitのdictionary ABIは独立した後続gateです。
 
@@ -231,6 +231,7 @@ operation-only standard traitのdictionary ABIは独立した後続gateです。
 `instance<T> Render<Maybe<T>> where Show<T>`のlocal generic factoryへ渡します。factory内のscoped evidenceはさらに
 `acknowledge<T> where Show<T>`を飽和させ、生成TSは`@seseragi/runtime/show`の`stringShow`を実際に消費します。
 `execution-schema-1/standard-show-evidence`がstdoutまで固定するため、standard identityをIRへ保存しただけではgreenになりません。
+`schema-1/struct-profile`は`Show<Int>` dictionaryをtemplate interpolationから選び、実際のdecimal出力を固定します。
 `Add` / `Eq` / `Iterable` / `Reducible`は専用operation ABIのままであり、このfixtureは存在しないdictionaryを捏造しません。
 
 `schema-1/partial-functor-value`は`map increment`を期待関数型`Maybe<Int> -> Maybe<Int>`から具体化し、

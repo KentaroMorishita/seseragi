@@ -12,6 +12,16 @@
       "import": null
     },
     {
+      "id": "core.int64.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<bigint>",
+      "boundary": "Show<Int> canonical signed base-10 rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "intShow"
+      }
+    },
+    {
       "id": "core.int64.add",
       "kind": "runtime-helper",
       "typescript": "function",

@@ -6,6 +6,7 @@
     "core.int64",
     "core.string",
     "core.string.show",
+    "core.int64.show",
     "core.unit",
     "effect.console.println"
   ],
@@ -13,6 +14,10 @@
     {
       "feature": "core.string.show",
       "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
     },
     {
       "feature": "effect.console.println",
@@ -146,22 +151,44 @@
               "kind": "binary",
               "operator": "+",
               "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_stringShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "name"
+                    }
+                  ]
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ": perfect "
+                }
+              },
+              "right": {
                 "kind": "dictionary-call",
                 "dictionary": {
                   "kind": "runtime-reference",
-                  "name": "_ssrg_show_stringShow"
+                  "name": "_ssrg_show_intShow"
                 },
                 "method": "show",
                 "arguments": [
                   {
-                    "kind": "identifier",
-                    "name": "name"
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "identifier",
+                      "name": "player"
+                    },
+                    "field": "score"
                   }
                 ]
-              },
-              "right": {
-                "kind": "string",
-                "value": ": perfect 42"
               }
             }
           },
@@ -179,28 +206,58 @@
                     "name": "name"
                   }
                 ]
+              },
+              {
+                "name": "score",
+                "type": {
+                  "kind": "bigint"
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "score"
+                  }
+                ]
               }
             ],
             "value": {
               "kind": "binary",
               "operator": "+",
               "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_stringShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "name"
+                    }
+                  ]
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ": keep training at "
+                }
+              },
+              "right": {
                 "kind": "dictionary-call",
                 "dictionary": {
                   "kind": "runtime-reference",
-                  "name": "_ssrg_show_stringShow"
+                  "name": "_ssrg_show_intShow"
                 },
                 "method": "show",
                 "arguments": [
                   {
                     "kind": "identifier",
-                    "name": "name"
+                    "name": "score"
                   }
                 ]
-              },
-              "right": {
-                "kind": "string",
-                "value": ": keep training"
               }
             }
           }
@@ -212,7 +269,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 137,
-        "end": 308
+        "end": 330
       }
     },
     {
@@ -272,8 +329,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 310,
-        "end": 404
+        "start": 332,
+        "end": 426
       }
     }
   ]

@@ -50,7 +50,7 @@ export type {
 } from "./service"
 export { serviceEffect, serviceFailure, serviceSuccess } from "./service"
 export type { Show } from "./show"
-export { consoleErrorShow, stdinErrorShow, stringShow } from "./show"
+export { consoleErrorShow, intShow, stdinErrorShow, stringShow } from "./show"
 export type {
   ProcessStdin,
   Stdin,

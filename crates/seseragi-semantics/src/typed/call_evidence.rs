@@ -391,6 +391,7 @@ fn show_instance_identity(constraint: &TypedConstraint) -> Option<&'static str> 
         return None;
     }
     match name.as_str() {
+        "Int" => Some("Show<std/prelude::Int>"),
         "String" => Some("Show<std/prelude::String>"),
         "ConsoleError" => Some("Show<std/prelude::ConsoleError>"),
         "StdinError" => Some("Show<std/prelude::StdinError>"),
@@ -997,6 +998,27 @@ mod tests {
                 evidence: TypedInstanceEvidence::Standard { identity },
             }] if name == "Add" && arguments.len() == 3 && identity == "std/string::Add"
         ));
+    }
+
+    #[test]
+    fn selects_materializable_standard_show_evidence() {
+        for (name, identity) in [
+            ("Int", "Show<std/prelude::Int>"),
+            ("String", "Show<std/prelude::String>"),
+        ] {
+            let evidence = select_call_evidence(&[TypedConstraint {
+                name: "Show".to_owned(),
+                arguments: vec![named(name)],
+            }])
+            .expect("standard Show evidence");
+            assert!(matches!(
+                evidence.as_slice(),
+                [TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity: selected },
+                    ..
+                }] if selected == identity
+            ));
+        }
     }
 
     #[test]

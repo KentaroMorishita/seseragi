@@ -18,9 +18,9 @@ Current scope:
   owns one lazy root-run-local cursor, rejects concurrent reads through the
   typed channel, and returns singleton `Nothing` at sticky EOF.
 - `./show`: the runtime dictionary shape for the pure `Show<A>` trait and
-  canonical dictionaries for String, ConsoleError, and StdinError. String is
-  rendered without quotes; opaque host errors never expose a host object or
-  stack trace.
+  canonical dictionaries for String, Int, ConsoleError, and StdinError. String
+  is rendered without quotes, Int uses canonical signed decimal, and opaque
+  host errors never expose a host object or stack trace.
 
 Typed failureはruntime内部のprivate carrierでdefectと区別します。`fail`だけがcarrierを発生させ、`run`は
 carrierだけを`EffectResult.failure`へ変換します。任意のJavaScript throw / rejected Promiseはdefectとして

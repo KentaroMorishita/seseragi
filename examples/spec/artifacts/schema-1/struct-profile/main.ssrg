@@ -11,8 +11,8 @@ fn improve player: Player -> Player =
 
 fn render player: Player -> String =
   match player {
-    Player { name, score: 42 } -> `${name}: perfect 42`
-    Player { name, score: _ } -> `${name}: keep training`
+    Player { name, score: 42 } -> `${name}: perfect ${player.score}`
+    Player { name, score } -> `${name}: keep training at ${score}`
   }
 
 pub effect fn main =

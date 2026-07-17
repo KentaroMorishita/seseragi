@@ -9,6 +9,7 @@
       "core.int64",
       "core.string",
       "core.string.show",
+      "core.int64.show",
       "core.unit",
       "effect.console.println"
     ]

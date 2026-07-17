@@ -114,6 +114,7 @@ fn failure_renderer(
     if let TypedType::Named { name, arguments } = failure {
         if arguments.is_empty() {
             let standard = match name.as_str() {
+                "Int" => Some("intShow"),
                 "String" => Some("stringShow"),
                 "ConsoleError" => Some("consoleErrorShow"),
                 "StdinError" => Some("stdinErrorShow"),
@@ -174,6 +175,19 @@ mod tests {
             contract.failure_renderer,
             FailureRenderer::Show { ref module, ref export }
                 if module == "./main.ts" && export == "__ssrg$instance$Show$0"
+        ));
+    }
+
+    #[test]
+    fn selects_the_standard_int_show_dictionary_for_a_failure() {
+        let source = "pub effect fn main =\n  do {\n    fail 42\n    succeed ()\n  }\n";
+        let compiled = compile_module(CompileInput::new("main.ssrg", "test/main", source)).unwrap();
+        let contract = main_contract(&compiled).unwrap();
+
+        assert!(matches!(
+            contract.failure_renderer,
+            FailureRenderer::Show { ref module, ref export }
+                if module == "@seseragi/runtime/show" && export == "intShow"
         ));
     }
 }

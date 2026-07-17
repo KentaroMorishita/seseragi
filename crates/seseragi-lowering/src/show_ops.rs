@@ -10,6 +10,14 @@ pub(crate) struct RuntimeShowDictionary {
 
 const RUNTIME_SHOW_DICTIONARIES: &[RuntimeShowDictionary] = &[
     RuntimeShowDictionary {
+        semantic_identity: "Show<std/prelude::Int>",
+        runtime_feature: "core.int64.show",
+        local_name: "_ssrg_show_intShow",
+        module: "@seseragi/runtime/show",
+        export_name: "intShow",
+        source_map_name: "intShow",
+    },
+    RuntimeShowDictionary {
         semantic_identity: "Show<std/prelude::String>",
         runtime_feature: "core.string.show",
         local_name: "_ssrg_show_stringShow",
@@ -59,6 +67,12 @@ mod tests {
     fn maps_the_complete_standard_show_dictionary_family() {
         for (identity, feature, local_name, export_name) in [
             (
+                "Show<std/prelude::Int>",
+                "core.int64.show",
+                "_ssrg_show_intShow",
+                "intShow",
+            ),
+            (
                 "Show<std/prelude::String>",
                 "core.string.show",
                 "_ssrg_show_stringShow",
@@ -91,7 +105,7 @@ mod tests {
 
     #[test]
     fn rejects_unknown_show_dictionary_features() {
-        assert!(runtime_show_dictionary_for_feature("core.int64.show").is_none());
+        assert!(runtime_show_dictionary_for_feature("core.float64.show").is_none());
         assert!(runtime_show_dictionary_for_identity("Show<fixture/local::Detail>").is_none());
     }
 }
