@@ -231,6 +231,14 @@ fn collect_pattern_type_imports(
                 collect_pattern_type_imports(element, bindings, requirements, imports);
             }
         }
+        CorePattern::Record {
+            fields, type_ref, ..
+        } => {
+            collect_type_imports(type_ref, bindings, requirements, imports);
+            for field in fields {
+                collect_pattern_type_imports(&field.pattern, bindings, requirements, imports);
+            }
+        }
     }
 }
 

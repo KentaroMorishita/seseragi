@@ -109,6 +109,9 @@ fn render_projection_path(root: &str, path: &[TypeScriptDecisionProjection]) -> 
             TypeScriptDecisionProjection::TupleElement { index } => {
                 format!("{value}[{index}]")
             }
+            TypeScriptDecisionProjection::RecordField { name } => {
+                format!("{value}[{name:?}]")
+            }
             TypeScriptDecisionProjection::AdtPayload => format!("{value}.value"),
         })
 }

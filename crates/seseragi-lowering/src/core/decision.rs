@@ -70,6 +70,7 @@ pub enum CoreDecisionTest {
 )]
 pub enum CoreDecisionProjection {
     TupleElement { index: usize },
+    RecordField { name: String },
     AdtPayload,
 }
 
@@ -202,6 +203,13 @@ fn lower_pattern(
             for (index, element) in elements.into_iter().enumerate() {
                 path.push(CoreDecisionProjection::TupleElement { index });
                 lower_pattern(source, element, path, tests, bindings);
+                path.pop();
+            }
+        }
+        TypedPattern::Record { fields, .. } => {
+            for field in fields {
+                path.push(CoreDecisionProjection::RecordField { name: field.name });
+                lower_pattern(source, field.pattern, path, tests, bindings);
                 path.pop();
             }
         }

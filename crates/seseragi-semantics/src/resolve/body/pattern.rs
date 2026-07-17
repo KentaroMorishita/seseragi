@@ -32,6 +32,11 @@ pub(super) fn resolve_pattern(resolver: &mut Resolver, scope: ScopeId, pattern: 
                 resolve_pattern(resolver, scope, element);
             }
         }
+        SurfacePattern::Record { fields, .. } => {
+            for field in fields {
+                resolve_pattern(resolver, scope, &field.pattern);
+            }
+        }
         SurfacePattern::Integer { .. }
         | SurfacePattern::String { .. }
         | SurfacePattern::Boolean { .. }

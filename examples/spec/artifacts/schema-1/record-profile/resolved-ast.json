@@ -190,44 +190,87 @@
         }
       },
       "body": {
-        "kind": "member",
-        "receiver": {
+        "kind": "match",
+        "scrutinee": {
           "kind": "name",
           "name": "user",
           "span": {
-            "start": 143,
-            "end": 147
+            "start": 149,
+            "end": 153
           }
         },
-        "field": "name",
-        "fieldSpan": {
-          "start": 148,
-          "end": 152
-        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "name",
+                  "nameSpan": {
+                    "start": 162,
+                    "end": 166
+                  },
+                  "pattern": {
+                    "kind": "name",
+                    "name": "name",
+                    "nameSpan": {
+                      "start": 162,
+                      "end": 166
+                    },
+                    "span": {
+                      "start": 162,
+                      "end": 166
+                    }
+                  },
+                  "span": {
+                    "start": 162,
+                    "end": 166
+                  }
+                }
+              ],
+              "span": {
+                "start": 160,
+                "end": 168
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "name",
+              "span": {
+                "start": 172,
+                "end": 176
+              }
+            },
+            "span": {
+              "start": 160,
+              "end": 176
+            }
+          }
+        ],
         "span": {
           "start": 143,
-          "end": 152
+          "end": 180
         }
       },
       "span": {
         "start": 91,
-        "end": 152
+        "end": 180
       }
     },
     {
       "kind": "fn",
       "visibility": "private",
-      "name": "renderProfile",
+      "name": "renderLabeled",
       "nameSpan": {
-        "start": 157,
-        "end": 170
+        "start": 185,
+        "end": 198
       },
       "parameters": [
         {
           "name": "user",
           "nameSpan": {
-            "start": 171,
-            "end": 175
+            "start": 199,
+            "end": 203
           },
           "type": {
             "kind": "record",
@@ -236,38 +279,37 @@
               {
                 "name": "label",
                 "nameSpan": {
-                  "start": 179,
-                  "end": 184
+                  "start": 207,
+                  "end": 212
                 },
-                "optional": true,
                 "type": {
                   "kind": "named",
                   "name": "String",
                   "span": {
-                    "start": 187,
-                    "end": 193
+                    "start": 214,
+                    "end": 220
                   }
                 }
               },
               {
                 "name": "name",
                 "nameSpan": {
-                  "start": 195,
-                  "end": 199
+                  "start": 222,
+                  "end": 226
                 },
                 "type": {
                   "kind": "named",
                   "name": "String",
                   "span": {
-                    "start": 201,
-                    "end": 207
+                    "start": 228,
+                    "end": 234
                   }
                 }
               }
             ],
             "span": {
-              "start": 177,
-              "end": 209
+              "start": 205,
+              "end": 236
             }
           }
         }
@@ -276,8 +318,290 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 213,
-          "end": 219
+          "start": 240,
+          "end": 246
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "user",
+          "span": {
+            "start": 257,
+            "end": 261
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "label",
+                  "nameSpan": {
+                    "start": 270,
+                    "end": 275
+                  },
+                  "pattern": {
+                    "kind": "string",
+                    "raw": "\"Player\"",
+                    "span": {
+                      "start": 277,
+                      "end": 285
+                    }
+                  },
+                  "span": {
+                    "start": 270,
+                    "end": 285
+                  }
+                },
+                {
+                  "name": "name",
+                  "nameSpan": {
+                    "start": 287,
+                    "end": 291
+                  },
+                  "pattern": {
+                    "kind": "name",
+                    "name": "name",
+                    "nameSpan": {
+                      "start": 287,
+                      "end": 291
+                    },
+                    "span": {
+                      "start": 287,
+                      "end": 291
+                    }
+                  },
+                  "span": {
+                    "start": 287,
+                    "end": 291
+                  }
+                }
+              ],
+              "span": {
+                "start": 268,
+                "end": 293
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "operatorSpan": {
+                "start": 308,
+                "end": 309
+              },
+              "left": {
+                "kind": "string",
+                "raw": "\"Player: \"",
+                "span": {
+                  "start": 297,
+                  "end": 307
+                }
+              },
+              "right": {
+                "kind": "name",
+                "name": "name",
+                "span": {
+                  "start": 310,
+                  "end": 314
+                }
+              },
+              "span": {
+                "start": 297,
+                "end": 314
+              }
+            },
+            "span": {
+              "start": 268,
+              "end": 314
+            }
+          },
+          {
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "label",
+                  "nameSpan": {
+                    "start": 321,
+                    "end": 326
+                  },
+                  "pattern": {
+                    "kind": "name",
+                    "name": "label",
+                    "nameSpan": {
+                      "start": 321,
+                      "end": 326
+                    },
+                    "span": {
+                      "start": 321,
+                      "end": 326
+                    }
+                  },
+                  "span": {
+                    "start": 321,
+                    "end": 326
+                  }
+                },
+                {
+                  "name": "name",
+                  "nameSpan": {
+                    "start": 328,
+                    "end": 332
+                  },
+                  "pattern": {
+                    "kind": "name",
+                    "name": "name",
+                    "nameSpan": {
+                      "start": 328,
+                      "end": 332
+                    },
+                    "span": {
+                      "start": 328,
+                      "end": 332
+                    }
+                  },
+                  "span": {
+                    "start": 328,
+                    "end": 332
+                  }
+                }
+              ],
+              "span": {
+                "start": 319,
+                "end": 334
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "operatorSpan": {
+                "start": 351,
+                "end": 352
+              },
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "operatorSpan": {
+                  "start": 344,
+                  "end": 345
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "label",
+                  "span": {
+                    "start": 338,
+                    "end": 343
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "raw": "\": \"",
+                  "span": {
+                    "start": 346,
+                    "end": 350
+                  }
+                },
+                "span": {
+                  "start": 338,
+                  "end": 350
+                }
+              },
+              "right": {
+                "kind": "name",
+                "name": "name",
+                "span": {
+                  "start": 353,
+                  "end": 357
+                }
+              },
+              "span": {
+                "start": 338,
+                "end": 357
+              }
+            },
+            "span": {
+              "start": 319,
+              "end": 357
+            }
+          }
+        ],
+        "span": {
+          "start": 251,
+          "end": 361
+        }
+      },
+      "span": {
+        "start": 182,
+        "end": 361
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "renderProfile",
+      "nameSpan": {
+        "start": 366,
+        "end": 379
+      },
+      "parameters": [
+        {
+          "name": "user",
+          "nameSpan": {
+            "start": 380,
+            "end": 384
+          },
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "label",
+                "nameSpan": {
+                  "start": 388,
+                  "end": 393
+                },
+                "optional": true,
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "span": {
+                    "start": 396,
+                    "end": 402
+                  }
+                }
+              },
+              {
+                "name": "name",
+                "nameSpan": {
+                  "start": 404,
+                  "end": 408
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "span": {
+                    "start": 410,
+                    "end": 416
+                  }
+                }
+              }
+            ],
+            "span": {
+              "start": 386,
+              "end": 418
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 422,
+          "end": 428
         }
       },
       "body": {
@@ -288,18 +612,18 @@
             "kind": "name",
             "name": "user",
             "span": {
-              "start": 230,
-              "end": 234
+              "start": 439,
+              "end": 443
             }
           },
           "field": "label",
           "fieldSpan": {
-            "start": 235,
-            "end": 240
+            "start": 444,
+            "end": 449
           },
           "span": {
-            "start": 230,
-            "end": 240
+            "start": 439,
+            "end": 449
           }
         },
         "arms": [
@@ -308,27 +632,27 @@
               "kind": "constructor",
               "name": "Nothing",
               "nameSpan": {
-                "start": 247,
-                "end": 254
+                "start": 456,
+                "end": 463
               },
               "span": {
-                "start": 247,
-                "end": 254
+                "start": 456,
+                "end": 463
               }
             },
             "body": {
               "kind": "binary",
               "operator": "+",
               "operatorSpan": {
-                "start": 277,
-                "end": 278
+                "start": 486,
+                "end": 487
               },
               "left": {
                 "kind": "string",
                 "raw": "\"Record profile: \"",
                 "span": {
-                  "start": 258,
-                  "end": 276
+                  "start": 467,
+                  "end": 485
                 }
               },
               "right": {
@@ -337,31 +661,31 @@
                   "kind": "name",
                   "name": "displayName",
                   "span": {
-                    "start": 279,
-                    "end": 290
+                    "start": 488,
+                    "end": 499
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "user",
                   "span": {
-                    "start": 291,
-                    "end": 295
+                    "start": 500,
+                    "end": 504
                   }
                 },
                 "span": {
-                  "start": 279,
-                  "end": 295
+                  "start": 488,
+                  "end": 504
                 }
               },
               "span": {
-                "start": 258,
-                "end": 295
+                "start": 467,
+                "end": 504
               }
             },
             "span": {
-              "start": 247,
-              "end": 295
+              "start": 456,
+              "end": 504
             }
           },
           {
@@ -369,59 +693,59 @@
               "kind": "constructor",
               "name": "Just",
               "nameSpan": {
-                "start": 300,
-                "end": 304
+                "start": 509,
+                "end": 513
               },
               "argument": {
                 "kind": "name",
                 "name": "label",
                 "nameSpan": {
-                  "start": 305,
-                  "end": 310
+                  "start": 514,
+                  "end": 519
                 },
                 "span": {
-                  "start": 305,
-                  "end": 310
+                  "start": 514,
+                  "end": 519
                 }
               },
               "span": {
-                "start": 300,
-                "end": 310
+                "start": 509,
+                "end": 519
               }
             },
             "body": {
               "kind": "binary",
               "operator": "+",
               "operatorSpan": {
-                "start": 327,
-                "end": 328
+                "start": 536,
+                "end": 537
               },
               "left": {
                 "kind": "binary",
                 "operator": "+",
                 "operatorSpan": {
-                  "start": 320,
-                  "end": 321
+                  "start": 529,
+                  "end": 530
                 },
                 "left": {
                   "kind": "name",
                   "name": "label",
                   "span": {
-                    "start": 314,
-                    "end": 319
+                    "start": 523,
+                    "end": 528
                   }
                 },
                 "right": {
                   "kind": "string",
                   "raw": "\": \"",
                   "span": {
-                    "start": 322,
-                    "end": 326
+                    "start": 531,
+                    "end": 535
                   }
                 },
                 "span": {
-                  "start": 314,
-                  "end": 326
+                  "start": 523,
+                  "end": 535
                 }
               },
               "right": {
@@ -430,42 +754,42 @@
                   "kind": "name",
                   "name": "displayName",
                   "span": {
-                    "start": 329,
-                    "end": 340
+                    "start": 538,
+                    "end": 549
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "user",
                   "span": {
-                    "start": 341,
-                    "end": 345
+                    "start": 550,
+                    "end": 554
                   }
                 },
                 "span": {
-                  "start": 329,
-                  "end": 345
+                  "start": 538,
+                  "end": 554
                 }
               },
               "span": {
-                "start": 314,
-                "end": 345
+                "start": 523,
+                "end": 554
               }
             },
             "span": {
-              "start": 300,
-              "end": 345
+              "start": 509,
+              "end": 554
             }
           }
         ],
         "span": {
-          "start": 224,
-          "end": 349
+          "start": 433,
+          "end": 558
         }
       },
       "span": {
-        "start": 154,
-        "end": 349
+        "start": 363,
+        "end": 558
       }
     },
     {
@@ -473,8 +797,8 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 365,
-        "end": 369
+        "start": 574,
+        "end": 578
       },
       "inferredContract": true,
       "returnType": null,
@@ -487,12 +811,12 @@
               "kind": "name",
               "name": "base",
               "nameSpan": {
-                "start": 387,
-                "end": 391
+                "start": 596,
+                "end": 600
               },
               "span": {
-                "start": 387,
-                "end": 391
+                "start": 596,
+                "end": 600
               }
             },
             "value": {
@@ -503,39 +827,39 @@
                   "kind": "name",
                   "name": "profile",
                   "span": {
-                    "start": 394,
-                    "end": 401
+                    "start": 603,
+                    "end": 610
                   }
                 },
                 "argument": {
                   "kind": "string",
                   "raw": "\"Mio\"",
                   "span": {
-                    "start": 402,
-                    "end": 407
+                    "start": 611,
+                    "end": 616
                   }
                 },
                 "span": {
-                  "start": 394,
-                  "end": 407
+                  "start": 603,
+                  "end": 616
                 }
               },
               "argument": {
                 "kind": "integer",
                 "raw": "42",
                 "span": {
-                  "start": 408,
-                  "end": 410
+                  "start": 617,
+                  "end": 619
                 }
               },
               "span": {
-                "start": 394,
-                "end": 410
+                "start": 603,
+                "end": 619
               }
             },
             "span": {
-              "start": 383,
-              "end": 410
+              "start": 592,
+              "end": 619
             }
           },
           {
@@ -546,8 +870,8 @@
                 "kind": "name",
                 "name": "println",
                 "span": {
-                  "start": 449,
-                  "end": 456
+                  "start": 658,
+                  "end": 665
                 }
               },
               "argument": {
@@ -556,31 +880,31 @@
                   "kind": "name",
                   "name": "renderProfile",
                   "span": {
-                    "start": 428,
-                    "end": 441
+                    "start": 637,
+                    "end": 650
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "base",
                   "span": {
-                    "start": 416,
-                    "end": 420
+                    "start": 625,
+                    "end": 629
                   }
                 },
                 "span": {
-                  "start": 416,
-                  "end": 441
+                  "start": 625,
+                  "end": 650
                 }
               },
               "span": {
-                "start": 416,
-                "end": 456
+                "start": 625,
+                "end": 665
               }
             },
             "span": {
-              "start": 416,
-              "end": 456
+              "start": 625,
+              "end": 665
             }
           }
         ],
@@ -590,18 +914,18 @@
             "kind": "name",
             "name": "println",
             "span": {
-              "start": 519,
-              "end": 526
+              "start": 728,
+              "end": 735
             }
           },
           "argument": {
             "kind": "application",
             "function": {
               "kind": "name",
-              "name": "renderProfile",
+              "name": "renderLabeled",
               "span": {
-                "start": 498,
-                "end": 511
+                "start": 707,
+                "end": 720
               }
             },
             "argument": {
@@ -613,59 +937,59 @@
                     "kind": "name",
                     "name": "base",
                     "span": {
-                      "start": 467,
-                      "end": 471
+                      "start": 676,
+                      "end": 680
                     }
                   },
                   "span": {
-                    "start": 464,
-                    "end": 471
+                    "start": 673,
+                    "end": 680
                   }
                 },
                 {
                   "kind": "field",
                   "name": "label",
                   "nameSpan": {
-                    "start": 473,
-                    "end": 478
+                    "start": 682,
+                    "end": 687
                   },
                   "value": {
                     "kind": "string",
                     "raw": "\"Player\"",
                     "span": {
-                      "start": 480,
-                      "end": 488
+                      "start": 689,
+                      "end": 697
                     }
                   },
                   "span": {
-                    "start": 473,
-                    "end": 488
+                    "start": 682,
+                    "end": 697
                   }
                 }
               ],
               "span": {
-                "start": 462,
-                "end": 490
+                "start": 671,
+                "end": 699
               }
             },
             "span": {
-              "start": 462,
-              "end": 511
+              "start": 671,
+              "end": 720
             }
           },
           "span": {
-            "start": 462,
-            "end": 526
+            "start": 671,
+            "end": 735
           }
         },
         "span": {
-          "start": 374,
-          "end": 530
+          "start": 583,
+          "end": 739
         }
       },
       "span": {
-        "start": 351,
-        "end": 530
+        "start": 560,
+        "end": 739
       }
     }
   ],
@@ -675,7 +999,7 @@
       "kind": "module",
       "origin": {
         "start": 0,
-        "end": 530
+        "end": 739
       }
     },
     {
@@ -693,29 +1017,65 @@
       "kind": "function",
       "origin": {
         "start": 91,
-        "end": 152
+        "end": 180
       }
     },
     {
       "id": 3,
-      "parent": 0,
-      "kind": "function",
+      "parent": 2,
+      "kind": "match-arm",
       "origin": {
-        "start": 154,
-        "end": 349
+        "start": 160,
+        "end": 176
       }
     },
     {
       "id": 4,
-      "parent": 3,
-      "kind": "match-arm",
+      "parent": 0,
+      "kind": "function",
       "origin": {
-        "start": 247,
-        "end": 295
+        "start": 182,
+        "end": 361
       }
     },
     {
       "id": 5,
+      "parent": 4,
+      "kind": "match-arm",
+      "origin": {
+        "start": 268,
+        "end": 314
+      }
+    },
+    {
+      "id": 6,
+      "parent": 4,
+      "kind": "match-arm",
+      "origin": {
+        "start": 319,
+        "end": 357
+      }
+    },
+    {
+      "id": 7,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 363,
+        "end": 558
+      }
+    },
+    {
+      "id": 8,
+      "parent": 7,
+      "kind": "match-arm",
+      "origin": {
+        "start": 456,
+        "end": 504
+      }
+    },
+    {
+      "id": 9,
       "parent": 0,
       "kind": "declaration",
       "origin": {
@@ -724,30 +1084,30 @@
       }
     },
     {
-      "id": 6,
-      "parent": 3,
+      "id": 10,
+      "parent": 7,
       "kind": "match-arm",
       "origin": {
-        "start": 300,
-        "end": 345
+        "start": 509,
+        "end": 554
       }
     },
     {
-      "id": 7,
+      "id": 11,
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 351,
-        "end": 530
+        "start": 560,
+        "end": 739
       }
     },
     {
-      "id": 8,
-      "parent": 7,
+      "id": 12,
+      "parent": 11,
       "kind": "do-block",
       "origin": {
-        "start": 374,
-        "end": 530
+        "start": 583,
+        "end": 739
       }
     }
   ],
@@ -778,30 +1138,42 @@
     },
     {
       "id": 2,
+      "spelling": "renderLabeled",
+      "canonical": "artifact/record-profile::renderLabeled",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 185,
+        "end": 198
+      }
+    },
+    {
+      "id": 3,
       "spelling": "renderProfile",
       "canonical": "artifact/record-profile::renderProfile",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 157,
-        "end": 170
+        "start": 366,
+        "end": 379
       }
     },
     {
-      "id": 3,
+      "id": 4,
       "spelling": "main",
       "canonical": "artifact/record-profile::main",
       "namespace": "value",
       "kind": "effect-function",
       "scope": 0,
       "origin": {
-        "start": 365,
-        "end": 369
+        "start": 574,
+        "end": 578
       }
     },
     {
-      "id": 4,
+      "id": 5,
       "spelling": "String",
       "canonical": "std/prelude::String",
       "namespace": "type",
@@ -813,7 +1185,7 @@
       }
     },
     {
-      "id": 5,
+      "id": 6,
       "spelling": "name",
       "namespace": "value",
       "kind": "parameter",
@@ -824,7 +1196,7 @@
       }
     },
     {
-      "id": 6,
+      "id": 7,
       "spelling": "Int",
       "canonical": "std/prelude::Int",
       "namespace": "type",
@@ -836,7 +1208,7 @@
       }
     },
     {
-      "id": 7,
+      "id": 8,
       "spelling": "score",
       "namespace": "value",
       "kind": "parameter",
@@ -847,7 +1219,7 @@
       }
     },
     {
-      "id": 8,
+      "id": 9,
       "spelling": "user",
       "namespace": "value",
       "kind": "parameter",
@@ -858,66 +1230,40 @@
       }
     },
     {
-      "id": 9,
-      "spelling": "user",
+      "id": 10,
+      "spelling": "name",
       "namespace": "value",
-      "kind": "parameter",
+      "kind": "pattern-binding",
       "scope": 3,
       "origin": {
-        "start": 171,
-        "end": 175
-      }
-    },
-    {
-      "id": 10,
-      "spelling": "Maybe",
-      "canonical": "std/prelude::Maybe",
-      "namespace": "type",
-      "kind": "type",
-      "scope": 0,
-      "origin": {
-        "start": 0,
-        "end": 0
+        "start": 162,
+        "end": 166
       }
     },
     {
       "id": 11,
-      "spelling": "A",
-      "canonical": "std/prelude::Maybe::A",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "scope": 5,
+      "spelling": "user",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
       "origin": {
-        "start": 0,
-        "end": 0
+        "start": 199,
+        "end": 203
       }
     },
     {
       "id": 12,
-      "spelling": "Nothing",
-      "canonical": "std/prelude::Nothing",
+      "spelling": "name",
       "namespace": "value",
-      "kind": "constructor",
-      "scope": 0,
+      "kind": "pattern-binding",
+      "scope": 5,
       "origin": {
-        "start": 0,
-        "end": 0
+        "start": 287,
+        "end": 291
       }
     },
     {
       "id": 13,
-      "spelling": "Just",
-      "canonical": "std/prelude::Just",
-      "namespace": "value",
-      "kind": "constructor",
-      "scope": 0,
-      "origin": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 14,
       "spelling": "+",
       "canonical": "std/prelude::+",
       "namespace": "operator",
@@ -929,29 +1275,110 @@
       }
     },
     {
-      "id": 15,
+      "id": 14,
       "spelling": "label",
       "namespace": "value",
       "kind": "pattern-binding",
       "scope": 6,
       "origin": {
-        "start": 305,
-        "end": 310
+        "start": 321,
+        "end": 326
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "name",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 6,
+      "origin": {
+        "start": 328,
+        "end": 332
       }
     },
     {
       "id": 16,
-      "spelling": "base",
+      "spelling": "user",
       "namespace": "value",
-      "kind": "pattern-binding",
-      "scope": 8,
+      "kind": "parameter",
+      "scope": 7,
       "origin": {
-        "start": 387,
-        "end": 391
+        "start": 380,
+        "end": 384
       }
     },
     {
       "id": 17,
+      "spelling": "Maybe",
+      "canonical": "std/prelude::Maybe",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "A",
+      "canonical": "std/prelude::Maybe::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 9,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "Nothing",
+      "canonical": "std/prelude::Nothing",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "Just",
+      "canonical": "std/prelude::Just",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 21,
+      "spelling": "label",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 10,
+      "origin": {
+        "start": 514,
+        "end": 519
+      }
+    },
+    {
+      "id": 22,
+      "spelling": "base",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 12,
+      "origin": {
+        "start": 596,
+        "end": 600
+      }
+    },
+    {
+      "id": 23,
       "spelling": "println",
       "canonical": "std/prelude::println",
       "namespace": "value",
@@ -967,7 +1394,7 @@
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 4,
+      "target": 5,
       "origin": {
         "start": 17,
         "end": 23
@@ -976,7 +1403,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 6,
+      "target": 7,
       "origin": {
         "start": 34,
         "end": 37
@@ -985,7 +1412,7 @@
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 4,
+      "target": 5,
       "origin": {
         "start": 49,
         "end": 55
@@ -994,7 +1421,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 6,
+      "target": 7,
       "origin": {
         "start": 64,
         "end": 67
@@ -1003,7 +1430,7 @@
     {
       "spelling": "name",
       "namespace": "value",
-      "target": 5,
+      "target": 6,
       "origin": {
         "start": 76,
         "end": 80
@@ -1012,7 +1439,7 @@
     {
       "spelling": "score",
       "namespace": "value",
-      "target": 7,
+      "target": 8,
       "origin": {
         "start": 82,
         "end": 87
@@ -1021,7 +1448,7 @@
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 4,
+      "target": 5,
       "origin": {
         "start": 120,
         "end": 126
@@ -1030,7 +1457,7 @@
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 4,
+      "target": 5,
       "origin": {
         "start": 132,
         "end": 138
@@ -1039,118 +1466,163 @@
     {
       "spelling": "user",
       "namespace": "value",
-      "target": 8,
+      "target": 9,
       "origin": {
-        "start": 143,
-        "end": 147
+        "start": 149,
+        "end": 153
+      }
+    },
+    {
+      "spelling": "name",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 172,
+        "end": 176
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 4,
+      "target": 5,
       "origin": {
-        "start": 187,
-        "end": 193
+        "start": 214,
+        "end": 220
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 4,
+      "target": 5,
       "origin": {
-        "start": 201,
-        "end": 207
+        "start": 228,
+        "end": 234
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 4,
+      "target": 5,
       "origin": {
-        "start": 213,
-        "end": 219
+        "start": 240,
+        "end": 246
       }
     },
     {
       "spelling": "user",
       "namespace": "value",
-      "target": 9,
+      "target": 11,
       "origin": {
-        "start": 230,
-        "end": 234
-      }
-    },
-    {
-      "spelling": "Nothing",
-      "namespace": "value",
-      "target": 12,
-      "origin": {
-        "start": 247,
-        "end": 254
+        "start": 257,
+        "end": 261
       }
     },
     {
       "spelling": "+",
       "namespace": "operator",
-      "target": 14,
-      "origin": {
-        "start": 277,
-        "end": 278
-      }
-    },
-    {
-      "spelling": "displayName",
-      "namespace": "value",
-      "target": 1,
-      "origin": {
-        "start": 279,
-        "end": 290
-      }
-    },
-    {
-      "spelling": "user",
-      "namespace": "value",
-      "target": 9,
-      "origin": {
-        "start": 291,
-        "end": 295
-      }
-    },
-    {
-      "spelling": "Just",
-      "namespace": "value",
       "target": 13,
       "origin": {
-        "start": 300,
-        "end": 304
+        "start": 308,
+        "end": 309
+      }
+    },
+    {
+      "spelling": "name",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 310,
+        "end": 314
       }
     },
     {
       "spelling": "label",
       "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 338,
+        "end": 343
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 13,
+      "origin": {
+        "start": 344,
+        "end": 345
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 13,
+      "origin": {
+        "start": 351,
+        "end": 352
+      }
+    },
+    {
+      "spelling": "name",
+      "namespace": "value",
       "target": 15,
       "origin": {
-        "start": 314,
-        "end": 319
+        "start": 353,
+        "end": 357
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 396,
+        "end": 402
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 410,
+        "end": 416
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 422,
+        "end": 428
+      }
+    },
+    {
+      "spelling": "user",
+      "namespace": "value",
+      "target": 16,
+      "origin": {
+        "start": 439,
+        "end": 443
+      }
+    },
+    {
+      "spelling": "Nothing",
+      "namespace": "value",
+      "target": 19,
+      "origin": {
+        "start": 456,
+        "end": 463
       }
     },
     {
       "spelling": "+",
       "namespace": "operator",
-      "target": 14,
+      "target": 13,
       "origin": {
-        "start": 320,
-        "end": 321
-      }
-    },
-    {
-      "spelling": "+",
-      "namespace": "operator",
-      "target": 14,
-      "origin": {
-        "start": 327,
-        "end": 328
+        "start": 486,
+        "end": 487
       }
     },
     {
@@ -1158,17 +1630,71 @@
       "namespace": "value",
       "target": 1,
       "origin": {
-        "start": 329,
-        "end": 340
+        "start": 488,
+        "end": 499
       }
     },
     {
       "spelling": "user",
       "namespace": "value",
-      "target": 9,
+      "target": 16,
       "origin": {
-        "start": 341,
-        "end": 345
+        "start": 500,
+        "end": 504
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 20,
+      "origin": {
+        "start": 509,
+        "end": 513
+      }
+    },
+    {
+      "spelling": "label",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 523,
+        "end": 528
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 13,
+      "origin": {
+        "start": 529,
+        "end": 530
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 13,
+      "origin": {
+        "start": 536,
+        "end": 537
+      }
+    },
+    {
+      "spelling": "displayName",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 538,
+        "end": 549
+      }
+    },
+    {
+      "spelling": "user",
+      "namespace": "value",
+      "target": 16,
+      "origin": {
+        "start": 550,
+        "end": 554
       }
     },
     {
@@ -1176,62 +1702,62 @@
       "namespace": "value",
       "target": 0,
       "origin": {
-        "start": 394,
-        "end": 401
+        "start": 603,
+        "end": 610
       }
     },
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 17,
+      "target": 23,
       "origin": {
-        "start": 449,
-        "end": 456
+        "start": 658,
+        "end": 665
       }
     },
     {
       "spelling": "renderProfile",
       "namespace": "value",
-      "target": 2,
+      "target": 3,
       "origin": {
-        "start": 428,
-        "end": 441
+        "start": 637,
+        "end": 650
       }
     },
     {
       "spelling": "base",
       "namespace": "value",
-      "target": 16,
+      "target": 22,
       "origin": {
-        "start": 416,
-        "end": 420
+        "start": 625,
+        "end": 629
       }
     },
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 17,
+      "target": 23,
       "origin": {
-        "start": 519,
-        "end": 526
+        "start": 728,
+        "end": 735
       }
     },
     {
-      "spelling": "renderProfile",
+      "spelling": "renderLabeled",
       "namespace": "value",
       "target": 2,
       "origin": {
-        "start": 498,
-        "end": 511
+        "start": 707,
+        "end": 720
       }
     },
     {
       "spelling": "base",
       "namespace": "value",
-      "target": 16,
+      "target": 22,
       "origin": {
-        "start": 467,
-        "end": 471
+        "start": 676,
+        "end": 680
       }
     }
   ],

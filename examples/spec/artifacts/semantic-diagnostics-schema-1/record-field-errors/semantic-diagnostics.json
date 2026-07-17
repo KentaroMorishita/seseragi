@@ -62,6 +62,26 @@
         }
       ],
       "fixes": []
+    },
+    {
+      "id": "d4",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "match.pattern-type-mismatch",
+      "primary": {
+        "start": 250,
+        "end": 257
+      },
+      "related": [
+        {
+          "message": "record pattern field missing does not exist",
+          "primary": {
+            "start": 250,
+            "end": 257
+          }
+        }
+      ],
+      "fixes": []
     }
   ]
 }

@@ -122,6 +122,9 @@ fn lower_projection(projection: CoreDecisionProjection) -> TypeScriptDecisionPro
         CoreDecisionProjection::TupleElement { index } => {
             TypeScriptDecisionProjection::TupleElement { index }
         }
+        CoreDecisionProjection::RecordField { name } => {
+            TypeScriptDecisionProjection::RecordField { name }
+        }
         CoreDecisionProjection::AdtPayload => TypeScriptDecisionProjection::AdtPayload,
     }
 }
@@ -134,7 +137,8 @@ fn core_pattern_type(pattern: &CorePattern) -> CoreType {
         | CorePattern::Binding { type_ref, .. }
         | CorePattern::Wildcard { type_ref, .. }
         | CorePattern::Constructor { type_ref, .. }
-        | CorePattern::Tuple { type_ref, .. } => type_ref.clone(),
+        | CorePattern::Tuple { type_ref, .. }
+        | CorePattern::Record { type_ref, .. } => type_ref.clone(),
         CorePattern::Invalid { .. } => CoreType::Hole,
     }
 }
@@ -184,6 +188,13 @@ fn lower_pattern(
             for (index, element) in elements.into_iter().enumerate() {
                 path.push(TypeScriptDecisionProjection::TupleElement { index });
                 lower_pattern(element, path, tests, bindings, imported_types);
+                path.pop();
+            }
+        }
+        CorePattern::Record { fields, .. } => {
+            for field in fields {
+                path.push(TypeScriptDecisionProjection::RecordField { name: field.name });
+                lower_pattern(field.pattern, path, tests, bindings, imported_types);
                 path.pop();
             }
         }

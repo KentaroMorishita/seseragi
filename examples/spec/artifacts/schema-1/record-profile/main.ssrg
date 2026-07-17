@@ -2,7 +2,15 @@ fn profile name: String -> score: Int -> { name: String, score: Int } =
   { name, score }
 
 fn displayName user: { name: String } -> String =
-  user.name
+  match user {
+    { name } -> name
+  }
+
+fn renderLabeled user: { label: String, name: String } -> String =
+  match user {
+    { label: "Player", name } -> "Player: " + name
+    { label, name } -> label + ": " + name
+  }
 
 fn renderProfile user: { label?: String, name: String } -> String =
   match user.label {
@@ -19,6 +27,6 @@ pub effect fn main =
     |> println
 
     { ...base, label: "Player" }
-    |> renderProfile
+    |> renderLabeled
     |> println
   }

@@ -87,17 +87,191 @@
         }
       ],
       "body": {
-        "kind": "field-access",
-        "receiver": {
+        "kind": "decision",
+        "scrutinee": {
           "kind": "identifier",
           "name": "user"
         },
-        "field": "name"
+        "scrutineeType": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "name",
+              "optional": false,
+              "type": {
+                "kind": "string"
+              }
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "name",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "name"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "name"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
       },
       "origin": {
         "source": "main.ssrg",
         "start": 91,
-        "end": 152
+        "end": 180
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderLabeled",
+      "parameters": [
+        {
+          "name": "user",
+          "type": "{ readonly \"label\": string; readonly \"name\": string }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "user"
+        },
+        "scrutineeType": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "label",
+              "optional": false,
+              "type": {
+                "kind": "string"
+              }
+            },
+            {
+              "name": "name",
+              "optional": false,
+              "type": {
+                "kind": "string"
+              }
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "string-equals",
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "label"
+                  }
+                ],
+                "value": "Player"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "name",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "name"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "Player: "
+              },
+              "right": {
+                "kind": "identifier",
+                "name": "name"
+              }
+            }
+          },
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "label",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "label"
+                  }
+                ]
+              },
+              {
+                "name": "name",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "name"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "identifier",
+                  "name": "label"
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ": "
+                }
+              },
+              "right": {
+                "kind": "identifier",
+                "name": "name"
+              }
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 182,
+        "end": 361
       }
     },
     {
@@ -212,8 +386,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 154,
-        "end": 349
+        "start": 363,
+        "end": 558
       }
     },
     {
@@ -268,8 +442,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 383,
-              "end": 410
+              "start": 592,
+              "end": 619
             }
           },
           {
@@ -298,7 +472,7 @@
           "arguments": [
             {
               "kind": "call",
-              "callee": "renderProfile",
+              "callee": "renderLabeled",
               "arguments": [
                 {
                   "kind": "record",
@@ -327,8 +501,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 351,
-        "end": 530
+        "start": 560,
+        "end": 739
       }
     }
   ]

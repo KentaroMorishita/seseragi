@@ -7,9 +7,11 @@ use std::collections::BTreeMap;
 use super::super::PureExpressionContext;
 
 mod literal;
+mod record;
 
 pub(super) use literal::LiteralPattern;
 use literal::{type_boolean_pattern, type_integer_pattern, type_string_pattern};
+use record::type_record_pattern;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(super) enum CoveragePattern {
@@ -20,6 +22,7 @@ pub(super) enum CoveragePattern {
         argument: Option<Box<CoveragePattern>>,
     },
     Tuple(Vec<CoveragePattern>),
+    Record(Vec<(String, CoveragePattern)>),
     Invalid,
 }
 
@@ -84,6 +87,9 @@ pub(in crate::typed::surface_expr) fn type_pattern(
         } => type_constructor_pattern(*name_span, argument.as_deref(), *span, expected, context),
         SurfacePattern::Tuple { elements, span } => {
             type_tuple_pattern(elements, *span, expected, context)
+        }
+        SurfacePattern::Record { fields, span } => {
+            type_record_pattern(fields, *span, expected, context)
         }
         SurfacePattern::Error { span } => PatternAnalysis {
             typed: TypedPattern::Invalid { origin: *span },
@@ -274,6 +280,7 @@ fn pattern_span(pattern: &SurfacePattern) -> seseragi_syntax::ByteSpan {
         | SurfacePattern::Name { span, .. }
         | SurfacePattern::Constructor { span, .. }
         | SurfacePattern::Tuple { span, .. }
+        | SurfacePattern::Record { span, .. }
         | SurfacePattern::Error { span } => *span,
     }
 }

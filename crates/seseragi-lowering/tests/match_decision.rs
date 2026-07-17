@@ -183,3 +183,22 @@ fn lowers_literal_patterns_to_strict_equality_tests() {
         "$ssrg_match[0] === 42n && $ssrg_match[1] === \"ready\" && $ssrg_match[2] === true"
     ));
 }
+
+#[test]
+fn emits_structural_record_pattern_projections() {
+    let source = r#"pub fn render value: { label: String, name: String } -> String =
+  match value {
+    { label: "Player", name } -> name
+    { name } -> name
+  }
+"#;
+    let typescript = lower("artifact/record-match/main.ssrg", source);
+    let bundle = emit_typescript_module(typescript, source);
+
+    assert!(bundle
+        .typescript
+        .contains("$ssrg_match[\"label\"] === \"Player\""));
+    assert!(bundle
+        .typescript
+        .contains("((name: string): string => name)($ssrg_match[\"name\"])"));
+}

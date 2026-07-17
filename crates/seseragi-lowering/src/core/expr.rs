@@ -426,6 +426,22 @@ fn lower_pattern(source: &str, pattern: TypedPattern) -> CorePattern {
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
+        TypedPattern::Record {
+            fields,
+            type_ref,
+            origin,
+        } => CorePattern::Record {
+            fields: fields
+                .into_iter()
+                .map(|field| super::CoreRecordPatternField {
+                    name: field.name,
+                    pattern: lower_pattern(source, field.pattern),
+                    origin: source_span(source, field.origin),
+                })
+                .collect(),
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
         TypedPattern::Invalid { origin } => CorePattern::Invalid {
             origin: source_span(source, origin),
         },

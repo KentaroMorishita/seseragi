@@ -407,6 +407,14 @@ fn collect_pattern_type_names(pattern: &CorePattern, references: &mut Referenced
                 collect_pattern_type_names(element, references);
             }
         }
+        CorePattern::Record {
+            fields, type_ref, ..
+        } => {
+            collect_type_names(type_ref, references);
+            for field in fields {
+                collect_pattern_type_names(&field.pattern, references);
+            }
+        }
         CorePattern::Invalid { .. } => {}
     }
 }

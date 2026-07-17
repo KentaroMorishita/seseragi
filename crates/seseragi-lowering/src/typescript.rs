@@ -458,6 +458,7 @@ pub enum TypeScriptDecisionTest {
 )]
 pub enum TypeScriptDecisionProjection {
     TupleElement { index: usize },
+    RecordField { name: String },
     AdtPayload,
 }
 

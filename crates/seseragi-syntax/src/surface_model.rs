@@ -532,6 +532,17 @@ pub struct SurfaceMatchArm {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SurfaceRecordPatternField {
+    pub name: String,
+    pub name_span: ByteSpan,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub optional: bool,
+    pub pattern: SurfacePattern,
+    pub span: ByteSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(
     tag = "kind",
     rename_all = "camelCase",
@@ -569,6 +580,10 @@ pub enum SurfacePattern {
         elements: Vec<SurfacePattern>,
         span: ByteSpan,
     },
+    Record {
+        fields: Vec<SurfaceRecordPatternField>,
+        span: ByteSpan,
+    },
     Error {
         span: ByteSpan,
     },
@@ -584,6 +599,7 @@ impl SurfacePattern {
             | Self::Wildcard { span }
             | Self::Constructor { span, .. }
             | Self::Tuple { span, .. }
+            | Self::Record { span, .. }
             | Self::Error { span } => *span,
         }
     }

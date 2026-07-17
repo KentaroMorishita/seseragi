@@ -628,9 +628,25 @@ pub enum TypedPattern {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    Record {
+        fields: Vec<TypedRecordPatternField>,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     Invalid {
         origin: ByteSpan,
     },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypedRecordPatternField {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub optional: bool,
+    pub pattern: TypedPattern,
+    pub origin: ByteSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

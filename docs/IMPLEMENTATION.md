@@ -940,8 +940,12 @@ optional field accessはreceiverを一度だけ評価し、`Object.prototype.has
 `Just` / `Nothing` runtime constructorへ接続します。したがってmissingとpresentな値を同じ`undefined`へ潰さず、result型も
 `Maybe<A>`としてTypedHirから生成interfaceまで保持します。record itemはfield / spreadのsource-order列として全IRへ残し、
 spread operandのfield型とpresenceを引き継いだ後、後続itemで同名fieldを上書きします。backendも同じ順序でreadonly object
-spreadを生成するため、各operandを一度だけ評価します。record patternは未実装であり、literal/access/spreadだけをrecord全体の
-完了条件にはしません。
+spreadを生成するため、各operandを一度だけ評価します。required fieldのrecord patternも同じfixtureへ接続し、`{ name }`の
+irrefutable bindingと`{ label: "Player", name }`のrefutable literal testをstructural subset matchとして扱います。未指定fieldは
+無視し、resolverはnested patternだけを既存scopeへ解決し、type checkerはscrutineeのrecord field型を各child patternへ渡します。
+TypedHirはfield名とnested patternを保持し、CoreIr / TypeScriptIrのdecision projectionはscrutineeを一度だけ評価した後の
+named field accessを生成します。存在しないfieldは`SES-T0101`で停止します。optional query pattern (`{ id? }` / `{ id?: Just value }`)
+は、missingを`Nothing`へ変換するpattern projection ABIが必要な独立gateとして残し、required patternへ暗黙統合しません。
 
 公開interfaceだけでは、同一packageの「private宣言は存在する」と単なるtypoを区別できません。そのためfrontendは
 同じSurfaceAst passから、bodyと型schemeを含めずdeclaration name / namespace / visibility / canonical symbolだけを持つ

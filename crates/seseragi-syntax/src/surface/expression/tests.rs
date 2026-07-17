@@ -1,6 +1,8 @@
 use super::*;
 use crate::surface::parse_surface_ast;
-use crate::surface_model::{SurfaceDecl, SurfaceDoItem, SurfacePattern, SurfaceRecordItem};
+use crate::surface_model::{
+    SurfaceDecl, SurfaceDoItem, SurfacePattern, SurfaceRecordItem, SurfaceRecordPatternField,
+};
 
 fn first_body(source: &str) -> SurfaceExpr {
     let module = parse_surface_ast("main.ssrg", source);
@@ -454,6 +456,48 @@ fn parses_rps_match_with_tuple_constructor_patterns_and_wildcard() {
     ));
     assert!(matches!(arms[3].pattern, SurfacePattern::Wildcard { .. }));
     assert!(matches!(arms[3].body, SurfaceExpr::Name { ref name, .. } if name == "Player2Wins"));
+}
+
+#[test]
+fn parses_record_patterns_with_shorthand_explicit_and_optional_fields() {
+    let body = first_body(
+        "fn describe value: { status: String, name: String, score?: Int } -> String =\n  match value {\n    { status: \"ok\", name, score? } -> name\n    _ -> \"missing\"\n  }\n",
+    );
+
+    let SurfaceExpr::Match { arms, .. } = body else {
+        panic!("expected match expression");
+    };
+    let SurfacePattern::Record { fields, .. } = &arms[0].pattern else {
+        panic!("expected record pattern");
+    };
+    assert_eq!(fields.len(), 3);
+    assert!(matches!(
+        &fields[0],
+        SurfaceRecordPatternField {
+            name,
+            optional: false,
+            pattern: SurfacePattern::String { raw, .. },
+            ..
+        } if name == "status" && raw == "\"ok\""
+    ));
+    assert!(matches!(
+        &fields[1],
+        SurfaceRecordPatternField {
+            name,
+            optional: false,
+            pattern: SurfacePattern::Name { name: binding, .. },
+            ..
+        } if name == "name" && binding == "name"
+    ));
+    assert!(matches!(
+        &fields[2],
+        SurfaceRecordPatternField {
+            name,
+            optional: true,
+            pattern: SurfacePattern::Name { name: binding, .. },
+            ..
+        } if name == "score" && binding == "score"
+    ));
 }
 
 #[test]

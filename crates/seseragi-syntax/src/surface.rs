@@ -3,8 +3,8 @@ use crate::lexer::lex;
 pub use crate::surface_model::{
     ByteSpan, SurfaceComprehensionClause, SurfaceConstraint, SurfaceDecl, SurfaceDoItem,
     SurfaceExpr, SurfaceImport, SurfaceImportItem, SurfaceMatchArm, SurfaceMethod, SurfaceModule,
-    SurfaceParameter, SurfacePattern, SurfaceRecordItem, SurfaceRequirement, SurfaceTemplatePart,
-    SurfaceVariant, TypeParameter, TypeRef, Visibility,
+    SurfaceParameter, SurfacePattern, SurfaceRecordItem, SurfaceRecordPatternField,
+    SurfaceRequirement, SurfaceTemplatePart, SurfaceVariant, TypeParameter, TypeRef, Visibility,
 };
 use crate::token::{Token, TokenKind};
 

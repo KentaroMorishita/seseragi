@@ -209,7 +209,9 @@ SurfaceAst / resolver / TypedHir / CoreIr / TypeScriptIr / readonly TypeScript o
 `{ name: String }`へ渡す経路と、`{ label?: String }`のabsent / presentを`Nothing` / `Just`として分岐する経路を固定します。
 optional accessはown-property presenceを一度だけ評価し、explicit `undefined`とmissingを統合しません。duplicate / missing /
 non-record accessとnon-record spreadは`SES-T0101`で停止します。spreadはsource順に一度ずつ評価し、後続fieldでimmutableに
-上書きします。record patternは後続gateです。
+上書きします。required fieldのrecord patternは`{ name }` shorthand、`{ label: "Player", name }`のnested literal、
+structural subset matching、binding / testのnamed decision projectionまで同じfixtureへ接続済みです。存在しないpattern fieldも
+`SES-T0101`で停止します。optional query pattern (`{ id? }`) は、missingを`Maybe`へ投影する後続gateです。
 `schema-1/user-add-operator`はoperand型からlocal `Add<Score, Int, Score>`を選択し、binary `+`と
 curried operator section `(+)`を同じ生成dictionaryの`add` method callへlowerします。`Array<Int>`の`reduce`は
 standard `Reducible` runtimeへこのuser-defined callbackを渡し、actual executionで42を固定します。

@@ -146,7 +146,7 @@
       "visibility": "private",
       "origin": {
         "start": 91,
-        "end": 152
+        "end": 180
       },
       "scheme": {
         "typeParameters": [],
@@ -182,8 +182,8 @@
         }
       ],
       "body": {
-        "kind": "field-access",
-        "receiver": {
+        "kind": "match",
+        "scrutinee": {
           "kind": "variable",
           "name": "user",
           "type": {
@@ -201,11 +201,76 @@
             ]
           },
           "origin": {
-            "start": 143,
-            "end": 147
+            "start": 149,
+            "end": 153
           }
         },
-        "field": "name",
+        "arms": [
+          {
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "name",
+                  "pattern": {
+                    "kind": "binding",
+                    "symbol": 10,
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 162,
+                      "end": 166
+                    }
+                  },
+                  "origin": {
+                    "start": 162,
+                    "end": 166
+                  }
+                }
+              ],
+              "type": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "origin": {
+                "start": 160,
+                "end": 168
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "name",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 172,
+                "end": 176
+              }
+            },
+            "origin": {
+              "start": 160,
+              "end": 176
+            }
+          }
+        ],
+        "exhaustive": true,
         "type": {
           "kind": "named",
           "name": "String",
@@ -213,7 +278,447 @@
         },
         "origin": {
           "start": 143,
-          "end": 152
+          "end": 180
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/record-profile::renderLabeled",
+      "visibility": "private",
+      "origin": {
+        "start": 182,
+        "end": 361
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "user",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "label",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "start": 199,
+            "end": 203
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "user",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "label",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "start": 257,
+            "end": 261
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "label",
+                  "pattern": {
+                    "kind": "string",
+                    "value": "Player",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 277,
+                      "end": 285
+                    }
+                  },
+                  "origin": {
+                    "start": 270,
+                    "end": 285
+                  }
+                },
+                {
+                  "name": "name",
+                  "pattern": {
+                    "kind": "binding",
+                    "symbol": 12,
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 287,
+                      "end": 291
+                    }
+                  },
+                  "origin": {
+                    "start": 287,
+                    "end": 291
+                  }
+                }
+              ],
+              "type": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "label",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "origin": {
+                "start": 268,
+                "end": 293
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "Player: ",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 297,
+                  "end": 307
+                }
+              },
+              "right": {
+                "kind": "variable",
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 310,
+                  "end": 314
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 297,
+                "end": 314
+              }
+            },
+            "origin": {
+              "start": 268,
+              "end": 314
+            }
+          },
+          {
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "label",
+                  "pattern": {
+                    "kind": "binding",
+                    "symbol": 14,
+                    "name": "label",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 321,
+                      "end": 326
+                    }
+                  },
+                  "origin": {
+                    "start": 321,
+                    "end": 326
+                  }
+                },
+                {
+                  "name": "name",
+                  "pattern": {
+                    "kind": "binding",
+                    "symbol": 15,
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 328,
+                      "end": 332
+                    }
+                  },
+                  "origin": {
+                    "start": 328,
+                    "end": 332
+                  }
+                }
+              ],
+              "type": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "label",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "origin": {
+                "start": 319,
+                "end": 334
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "variable",
+                  "name": "label",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 338,
+                    "end": 343
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ": ",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 346,
+                    "end": 350
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Add",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/string::Add"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 338,
+                  "end": 350
+                }
+              },
+              "right": {
+                "kind": "variable",
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 353,
+                  "end": 357
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 338,
+                "end": 357
+              }
+            },
+            "origin": {
+              "start": 319,
+              "end": 357
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 251,
+          "end": 361
         }
       }
     },
@@ -222,8 +727,8 @@
       "symbol": "artifact/record-profile::renderProfile",
       "visibility": "private",
       "origin": {
-        "start": 154,
-        "end": 349
+        "start": 363,
+        "end": 558
       },
       "scheme": {
         "typeParameters": [],
@@ -262,8 +767,8 @@
             ]
           },
           "origin": {
-            "start": 171,
-            "end": 175
+            "start": 380,
+            "end": 384
           }
         }
       ],
@@ -298,8 +803,8 @@
               ]
             },
             "origin": {
-              "start": 230,
-              "end": 234
+              "start": 439,
+              "end": 443
             }
           },
           "field": "label",
@@ -315,8 +820,8 @@
             ]
           },
           "origin": {
-            "start": 230,
-            "end": 240
+            "start": 439,
+            "end": 449
           }
         },
         "arms": [
@@ -336,8 +841,8 @@
                 ]
               },
               "origin": {
-                "start": 247,
-                "end": 254
+                "start": 456,
+                "end": 463
               }
             },
             "body": {
@@ -352,8 +857,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 258,
-                  "end": 276
+                  "start": 467,
+                  "end": 485
                 }
               },
               "right": {
@@ -387,8 +892,8 @@
                       ]
                     },
                     "origin": {
-                      "start": 291,
-                      "end": 295
+                      "start": 500,
+                      "end": 504
                     }
                   }
                 ],
@@ -398,8 +903,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 279,
-                  "end": 295
+                  "start": 488,
+                  "end": 504
                 }
               },
               "evidence": [
@@ -436,13 +941,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 258,
-                "end": 295
+                "start": 467,
+                "end": 504
               }
             },
             "origin": {
-              "start": 247,
-              "end": 295
+              "start": 456,
+              "end": 504
             }
           },
           {
@@ -451,7 +956,7 @@
               "symbol": "std/prelude::Just",
               "argument": {
                 "kind": "binding",
-                "symbol": 15,
+                "symbol": 21,
                 "name": "label",
                 "type": {
                   "kind": "named",
@@ -459,8 +964,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 305,
-                  "end": 310
+                  "start": 514,
+                  "end": 519
                 }
               },
               "type": {
@@ -475,8 +980,8 @@
                 ]
               },
               "origin": {
-                "start": 300,
-                "end": 310
+                "start": 509,
+                "end": 519
               }
             },
             "body": {
@@ -494,8 +999,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 314,
-                    "end": 319
+                    "start": 523,
+                    "end": 528
                   }
                 },
                 "right": {
@@ -507,8 +1012,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 322,
-                    "end": 326
+                    "start": 531,
+                    "end": 535
                   }
                 },
                 "evidence": [
@@ -545,8 +1050,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 314,
-                  "end": 326
+                  "start": 523,
+                  "end": 535
                 }
               },
               "right": {
@@ -580,8 +1085,8 @@
                       ]
                     },
                     "origin": {
-                      "start": 341,
-                      "end": 345
+                      "start": 550,
+                      "end": 554
                     }
                   }
                 ],
@@ -591,8 +1096,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 329,
-                  "end": 345
+                  "start": 538,
+                  "end": 554
                 }
               },
               "evidence": [
@@ -629,13 +1134,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 314,
-                "end": 345
+                "start": 523,
+                "end": 554
               }
             },
             "origin": {
-              "start": 300,
-              "end": 345
+              "start": 509,
+              "end": 554
             }
           }
         ],
@@ -646,8 +1151,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 224,
-          "end": 349
+          "start": 433,
+          "end": 558
         }
       }
     },
@@ -656,8 +1161,8 @@
       "symbol": "artifact/record-profile::main",
       "visibility": "public",
       "origin": {
-        "start": 351,
-        "end": 530
+        "start": 560,
+        "end": 739
       },
       "inferredContract": true,
       "parameters": [
@@ -737,8 +1242,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 402,
-                    "end": 407
+                    "start": 611,
+                    "end": 616
                   }
                 },
                 {
@@ -750,8 +1255,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 408,
-                    "end": 410
+                    "start": 617,
+                    "end": 619
                   }
                 }
               ],
@@ -778,13 +1283,13 @@
                 ]
               },
               "origin": {
-                "start": 394,
-                "end": 410
+                "start": 603,
+                "end": 619
               }
             },
             "origin": {
-              "start": 383,
-              "end": 410
+              "start": 592,
+              "end": 619
             }
           },
           {
@@ -849,8 +1354,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 416,
-                        "end": 420
+                        "start": 625,
+                        "end": 629
                       }
                     }
                   ],
@@ -860,14 +1365,14 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 416,
-                    "end": 441
+                    "start": 625,
+                    "end": 650
                   }
                 }
               ],
               "origin": {
-                "start": 416,
-                "end": 456
+                "start": 625,
+                "end": 665
               }
             }
           }
@@ -904,7 +1409,7 @@
           "arguments": [
             {
               "kind": "call",
-              "callee": "artifact/record-profile::renderProfile",
+              "callee": "artifact/record-profile::renderLabeled",
               "arguments": [
                 {
                   "kind": "record",
@@ -937,13 +1442,13 @@
                           ]
                         },
                         "origin": {
-                          "start": 467,
-                          "end": 471
+                          "start": 676,
+                          "end": 680
                         }
                       },
                       "origin": {
-                        "start": 464,
-                        "end": 471
+                        "start": 673,
+                        "end": 680
                       }
                     },
                     {
@@ -958,13 +1463,13 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 480,
-                          "end": 488
+                          "start": 689,
+                          "end": 697
                         }
                       },
                       "origin": {
-                        "start": 473,
-                        "end": 488
+                        "start": 682,
+                        "end": 697
                       }
                     }
                   ],
@@ -999,8 +1504,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 462,
-                    "end": 490
+                    "start": 671,
+                    "end": 699
                   }
                 }
               ],
@@ -1010,19 +1515,19 @@
                 "arguments": []
               },
               "origin": {
-                "start": 462,
-                "end": 511
+                "start": 671,
+                "end": 720
               }
             }
           ],
           "origin": {
-            "start": 462,
-            "end": 526
+            "start": 671,
+            "end": 735
           }
         },
         "origin": {
-          "start": 374,
-          "end": 530
+          "start": 583,
+          "end": 739
         }
       }
     }

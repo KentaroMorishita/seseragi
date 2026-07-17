@@ -116,7 +116,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 91,
-        "end": 152
+        "end": 180
       },
       "parameters": [
         {
@@ -139,8 +139,8 @@
         }
       ],
       "body": {
-        "kind": "field-access",
-        "receiver": {
+        "kind": "decision",
+        "scrutinee": {
           "kind": "variable",
           "name": "user",
           "type": {
@@ -159,11 +159,70 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 143,
-            "end": 147
+            "start": 149,
+            "end": 153
           }
         },
-        "field": "name",
+        "scrutineeType": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "name",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "name"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 162,
+                  "end": 166
+                }
+              }
+            ],
+            "value": {
+              "kind": "variable",
+              "name": "name",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 172,
+                "end": 176
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 160,
+              "end": 176
+            }
+          }
+        ],
+        "exhaustive": true,
         "type": {
           "kind": "named",
           "name": "String",
@@ -172,7 +231,392 @@
         "origin": {
           "source": "main.ssrg",
           "start": 143,
-          "end": 152
+          "end": 180
+        }
+      }
+    },
+    {
+      "symbol": "artifact/record-profile::renderLabeled",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 182,
+        "end": 361
+      },
+      "parameters": [
+        {
+          "id": "user",
+          "kind": "named",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "label",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "user",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "label",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 257,
+            "end": 261
+          }
+        },
+        "scrutineeType": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "label",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            {
+              "name": "name",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "string",
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "label"
+                  }
+                ],
+                "value": "Player",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 277,
+                  "end": 285
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "name"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 287,
+                  "end": 291
+                }
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "Player: ",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 297,
+                  "end": 307
+                }
+              },
+              "right": {
+                "kind": "variable",
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 310,
+                  "end": 314
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 297,
+                "end": 314
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 268,
+              "end": 314
+            }
+          },
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "label",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "label"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 321,
+                  "end": 326
+                }
+              },
+              {
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "name"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 328,
+                  "end": 332
+                }
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "variable",
+                  "name": "label",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 338,
+                    "end": 343
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ": ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 346,
+                    "end": 350
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Add",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/string::Add"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 338,
+                  "end": 350
+                }
+              },
+              "right": {
+                "kind": "variable",
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 353,
+                  "end": 357
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 338,
+                "end": 357
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 319,
+              "end": 357
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 251,
+          "end": 361
         }
       }
     },
@@ -181,8 +625,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 154,
-        "end": 349
+        "start": 363,
+        "end": 558
       },
       "parameters": [
         {
@@ -245,8 +689,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 230,
-              "end": 234
+              "start": 439,
+              "end": 443
             }
           },
           "field": "label",
@@ -263,8 +707,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 230,
-            "end": 240
+            "start": 439,
+            "end": 449
           }
         },
         "scrutineeType": {
@@ -287,8 +731,8 @@
                 "constructor": "std/prelude::Nothing",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 247,
-                  "end": 254
+                  "start": 456,
+                  "end": 463
                 }
               }
             ],
@@ -300,8 +744,8 @@
                 "value": "Record profile: ",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 258,
-                  "end": 276
+                  "start": 467,
+                  "end": 485
                 }
               },
               "right": {
@@ -336,8 +780,8 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 291,
-                      "end": 295
+                      "start": 500,
+                      "end": 504
                     }
                   }
                 ],
@@ -348,8 +792,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 279,
-                  "end": 295
+                  "start": 488,
+                  "end": 504
                 }
               },
               "evidence": [
@@ -387,14 +831,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 258,
-                "end": 295
+                "start": 467,
+                "end": 504
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 247,
-              "end": 295
+              "start": 456,
+              "end": 504
             }
           },
           {
@@ -405,8 +849,8 @@
                 "constructor": "std/prelude::Just",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 300,
-                  "end": 310
+                  "start": 509,
+                  "end": 519
                 }
               }
             ],
@@ -425,8 +869,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 305,
-                  "end": 310
+                  "start": 514,
+                  "end": 519
                 }
               }
             ],
@@ -446,8 +890,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 314,
-                    "end": 319
+                    "start": 523,
+                    "end": 528
                   }
                 },
                 "right": {
@@ -455,8 +899,8 @@
                   "value": ": ",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 322,
-                    "end": 326
+                    "start": 531,
+                    "end": 535
                   }
                 },
                 "evidence": [
@@ -494,8 +938,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 314,
-                  "end": 326
+                  "start": 523,
+                  "end": 535
                 }
               },
               "right": {
@@ -530,8 +974,8 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 341,
-                      "end": 345
+                      "start": 550,
+                      "end": 554
                     }
                   }
                 ],
@@ -542,8 +986,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 329,
-                  "end": 345
+                  "start": 538,
+                  "end": 554
                 }
               },
               "evidence": [
@@ -581,14 +1025,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 314,
-                "end": 345
+                "start": 523,
+                "end": 554
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 300,
-              "end": 345
+              "start": 509,
+              "end": 554
             }
           }
         ],
@@ -600,8 +1044,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 224,
-          "end": 349
+          "start": 433,
+          "end": 558
         }
       }
     },
@@ -610,8 +1054,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 351,
-        "end": 530
+        "start": 560,
+        "end": 739
       },
       "parameters": [
         {
@@ -661,8 +1105,8 @@
                   "value": "Mio",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 402,
-                    "end": 407
+                    "start": 611,
+                    "end": 616
                   }
                 },
                 {
@@ -670,8 +1114,8 @@
                   "value": "42",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 408,
-                    "end": 410
+                    "start": 617,
+                    "end": 619
                   }
                 }
               ],
@@ -699,14 +1143,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 394,
-                "end": 410
+                "start": 603,
+                "end": 619
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 383,
-              "end": 410
+              "start": 592,
+              "end": 619
             }
           },
           {
@@ -770,8 +1214,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 416,
-                        "end": 420
+                        "start": 625,
+                        "end": 629
                       }
                     }
                   ],
@@ -782,15 +1226,15 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 416,
-                    "end": 441
+                    "start": 625,
+                    "end": 650
                   }
                 }
               ],
               "origin": {
                 "source": "main.ssrg",
-                "start": 416,
-                "end": 456
+                "start": 625,
+                "end": 665
               }
             }
           }
@@ -825,7 +1269,7 @@
           "arguments": [
             {
               "kind": "call",
-              "callee": "artifact/record-profile::renderProfile",
+              "callee": "artifact/record-profile::renderLabeled",
               "arguments": [
                 {
                   "kind": "record",
@@ -859,14 +1303,14 @@
                         },
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 467,
-                          "end": 471
+                          "start": 676,
+                          "end": 680
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 464,
-                        "end": 471
+                        "start": 673,
+                        "end": 680
                       }
                     },
                     {
@@ -877,14 +1321,14 @@
                         "value": "Player",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 480,
-                          "end": 488
+                          "start": 689,
+                          "end": 697
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 473,
-                        "end": 488
+                        "start": 682,
+                        "end": 697
                       }
                     }
                   ],
@@ -920,8 +1364,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 462,
-                    "end": 490
+                    "start": 671,
+                    "end": 699
                   }
                 }
               ],
@@ -932,21 +1376,21 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 462,
-                "end": 511
+                "start": 671,
+                "end": 720
               }
             }
           ],
           "origin": {
             "source": "main.ssrg",
-            "start": 462,
-            "end": 526
+            "start": 671,
+            "end": 735
           }
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 374,
-          "end": 530
+          "start": 583,
+          "end": 739
         }
       }
     }

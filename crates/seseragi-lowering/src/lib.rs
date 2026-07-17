@@ -18,8 +18,8 @@ pub use core::{
     CoreDecisionTest, CoreExpr, CoreFunction, CoreInstance, CoreInstanceConstraint,
     CoreInstanceEvidence, CoreInstanceImplementation, CoreInstanceMethod, CoreModule,
     CoreModuleDependency, CoreModuleImport, CoreMonadDoStatement, CoreParameter, CorePattern,
-    CoreRecordField, CoreRecordValueItem, CoreShowPayloadEvidence, CoreStatement, CoreTemplatePart,
-    CoreTraitDispatch, CoreType,
+    CoreRecordField, CoreRecordPatternField, CoreRecordValueItem, CoreShowPayloadEvidence,
+    CoreStatement, CoreTemplatePart, CoreTraitDispatch, CoreType,
 };
 pub use emit::{
     emit_typescript_module, emit_typescript_module_with_output_paths, GeneratedBundle,

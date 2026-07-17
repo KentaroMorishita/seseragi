@@ -266,6 +266,25 @@ fn validate_pattern(pattern: &Value, path: &str) -> Result<(), String> {
             }
             Ok(())
         }
+        "record" => {
+            let fields = pattern
+                .get("fields")
+                .and_then(Value::as_array)
+                .ok_or_else(|| format!("SurfaceAst {path}.fields must be an array"))?;
+            for (index, field) in fields.iter().enumerate() {
+                let field_path = format!("{path}.fields[{index}]");
+                field
+                    .get("name")
+                    .and_then(Value::as_str)
+                    .ok_or_else(|| format!("SurfaceAst {field_path}.name must be a string"))?;
+                require_span(field, &field_path)?;
+                let child = field
+                    .get("pattern")
+                    .ok_or_else(|| format!("SurfaceAst {field_path}.pattern is required"))?;
+                validate_pattern(child, &format!("{field_path}.pattern"))?;
+            }
+            Ok(())
+        }
         other => Err(format!(
             "SurfaceAst {path} has unknown pattern kind {other}"
         )),

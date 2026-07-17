@@ -209,11 +209,11 @@ fn binding_pattern_issue(pattern: &SurfacePattern) -> MonadDoIssue {
         | SurfacePattern::Constructor { .. } => MonadDoIssue::RefutableBindPattern {
             pattern: pattern.span(),
         },
-        SurfacePattern::Tuple { .. } | SurfacePattern::Error { .. } => {
-            MonadDoIssue::UnsupportedBindPattern {
-                pattern: pattern.span(),
-            }
-        }
+        SurfacePattern::Tuple { .. }
+        | SurfacePattern::Record { .. }
+        | SurfacePattern::Error { .. } => MonadDoIssue::UnsupportedBindPattern {
+            pattern: pattern.span(),
+        },
         SurfacePattern::Name { .. } | SurfacePattern::Wildcard { .. } => {
             unreachable!("supported do binding patterns are handled before diagnostics")
         }

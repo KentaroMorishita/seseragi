@@ -224,9 +224,23 @@ pub enum CorePattern {
         type_ref: CoreType,
         origin: SourceSpan,
     },
+    Record {
+        fields: Vec<CoreRecordPatternField>,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
     Invalid {
         origin: SourceSpan,
     },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CoreRecordPatternField {
+    pub name: String,
+    pub pattern: CorePattern,
+    pub origin: SourceSpan,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

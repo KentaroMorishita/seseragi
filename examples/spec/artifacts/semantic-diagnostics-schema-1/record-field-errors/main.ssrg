@@ -6,3 +6,8 @@ fn missing user: { name: String } -> String =
 
 fn badSpread -> { name: String } =
   { ...42, name: "A" }
+
+fn badPattern user: { name: String } -> String =
+  match user {
+    { missing } -> missing
+  }

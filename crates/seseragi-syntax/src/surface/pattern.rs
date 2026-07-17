@@ -1,4 +1,4 @@
-use crate::surface_model::{ByteSpan, SurfacePattern};
+use crate::surface_model::{ByteSpan, SurfacePattern, SurfaceRecordPatternField};
 use crate::token::{Token, TokenKind};
 
 pub(super) fn parse_pattern_range(tokens: &[Token], start: usize, end: usize) -> SurfacePattern {
@@ -19,6 +19,11 @@ pub(super) fn parse_pattern_range(tokens: &[Token], start: usize, end: usize) ->
         && tokens[last].kind == TokenKind::PunctuationParenRight
     {
         return parse_parenthesized_pattern(tokens, first, last, span);
+    }
+    if tokens[first].kind == TokenKind::PunctuationBraceLeft
+        && tokens[last].kind == TokenKind::PunctuationBraceRight
+    {
+        return parse_record_pattern(tokens, first, last, span);
     }
     let constructor = if tokens[first].kind == TokenKind::IdentifierUpper {
         Some((
@@ -117,6 +122,90 @@ fn parse_parenthesized_pattern(
     SurfacePattern::Tuple { elements, span }
 }
 
+fn parse_record_pattern(
+    tokens: &[Token],
+    open: usize,
+    close: usize,
+    span: ByteSpan,
+) -> SurfacePattern {
+    if significant_indices(tokens, open + 1, close).is_empty() {
+        return SurfacePattern::Record {
+            fields: Vec::new(),
+            span,
+        };
+    }
+    let mut ranges = split_top_level_commas(tokens, open + 1, close);
+    if ranges
+        .last()
+        .is_some_and(|(start, end)| significant_indices(tokens, *start, *end).is_empty())
+    {
+        ranges.pop();
+    }
+    let fields = ranges
+        .into_iter()
+        .map(|(start, end)| parse_record_pattern_field(tokens, start, end))
+        .collect::<Option<Vec<_>>>();
+    fields.map_or(SurfacePattern::Error { span }, |fields| {
+        SurfacePattern::Record { fields, span }
+    })
+}
+
+fn parse_record_pattern_field(
+    tokens: &[Token],
+    start: usize,
+    end: usize,
+) -> Option<SurfaceRecordPatternField> {
+    let significant = significant_indices(tokens, start, end);
+    let name_index = *significant.first()?;
+    let name_token = tokens.get(name_index)?;
+    if name_token.kind != TokenKind::IdentifierLower {
+        return None;
+    }
+    let name_span = ByteSpan {
+        start: name_token.start,
+        end: name_token.end,
+    };
+    let mut cursor = 1usize;
+    let optional = significant
+        .get(cursor)
+        .and_then(|index| tokens.get(*index))
+        .is_some_and(|token| token.raw == "?");
+    if optional {
+        cursor += 1;
+    }
+    let pattern = if significant
+        .get(cursor)
+        .and_then(|index| tokens.get(*index))
+        .is_some_and(|token| token.kind == TokenKind::PunctuationColon)
+    {
+        let pattern_start = significant.get(cursor + 1).copied()?;
+        parse_pattern_range(tokens, pattern_start, end)
+    } else {
+        if cursor != significant.len() {
+            return None;
+        }
+        SurfacePattern::Name {
+            name: name_token.raw.clone(),
+            name_span,
+            span: name_span,
+        }
+    };
+    if matches!(pattern, SurfacePattern::Error { .. }) {
+        return None;
+    }
+    let last = *significant.last()?;
+    Some(SurfaceRecordPatternField {
+        name: name_token.raw.clone(),
+        name_span,
+        optional,
+        pattern,
+        span: ByteSpan {
+            start: name_token.start,
+            end: tokens.get(last)?.end,
+        },
+    })
+}
+
 fn split_top_level_commas(tokens: &[Token], start: usize, end: usize) -> Vec<(usize, usize)> {
     let mut ranges = Vec::new();
     let mut range_start = start;
@@ -139,9 +228,6 @@ fn split_top_level_commas(tokens: &[Token], start: usize, end: usize) -> Vec<(us
             }
             _ => {}
         }
-    }
-    if ranges.is_empty() {
-        return ranges;
     }
     ranges.push((range_start, end));
     ranges

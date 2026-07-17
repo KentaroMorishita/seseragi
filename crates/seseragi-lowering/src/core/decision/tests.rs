@@ -191,3 +191,31 @@ pub fn unwrap label: Label -> String =
         .path
         .contains(&CoreDecisionProjection::AdtPayload));
 }
+
+#[test]
+fn lowers_record_patterns_to_named_field_projections() {
+    let source = r#"pub fn render value: { label: String, name: String } -> String =
+  match value {
+    { label: "Player", name } -> name
+    { name } -> name
+  }
+"#;
+    let module = lower_typed_module(type_module("artifact/record-match/main.ssrg", source));
+    let CoreExpr::Decision { branches, .. } = &module.functions[0].body else {
+        panic!("expected a core decision");
+    };
+
+    assert!(matches!(
+        &branches[0].tests[0],
+        CoreDecisionTest::String { path, value, .. }
+            if path == &[CoreDecisionProjection::RecordField { name: "label".to_owned() }]
+                && value == "Player"
+    ));
+    assert_eq!(
+        branches[0].bindings[0].path,
+        vec![CoreDecisionProjection::RecordField {
+            name: "name".to_owned(),
+        }]
+    );
+    assert!(branches[1].tests.is_empty());
+}

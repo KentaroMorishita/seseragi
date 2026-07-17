@@ -203,6 +203,44 @@ fn types_boolean_literal_patterns_as_a_finite_total_match() {
     ));
 }
 
+#[test]
+fn types_structural_record_patterns_and_their_bindings() {
+    let typed = type_module(
+        "artifact/record-pattern/main.ssrg",
+        "fn render value: { label: String, name: String } -> String =\n\
+           match value {\n\
+             { label: \"Player\", name } -> name\n\
+             { name } -> name\n\
+           }\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+        panic!("expected render function");
+    };
+    let TypedExpr::Match {
+        arms, exhaustive, ..
+    } = body
+    else {
+        panic!("expected typed match");
+    };
+    assert!(*exhaustive);
+    assert!(matches!(
+        &arms[0].pattern,
+        TypedPattern::Record { fields, .. }
+            if matches!(&fields[0].pattern, TypedPattern::String { value, .. }
+                if value == "Player")
+                && matches!(&fields[1].pattern, TypedPattern::Binding { name, type_ref, .. }
+                    if name == "name" && type_ref == &named("String"))
+    ));
+    assert!(matches!(
+        &arms[1].pattern,
+        TypedPattern::Record { fields, .. }
+            if fields.len() == 1
+                && matches!(&fields[0].pattern, TypedPattern::Binding { name, .. }
+                    if name == "name")
+    ));
+}
+
 fn named(name: &str) -> TypedType {
     TypedType::Named {
         name: name.to_owned(),

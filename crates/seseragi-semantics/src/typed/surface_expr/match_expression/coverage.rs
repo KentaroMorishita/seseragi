@@ -109,7 +109,16 @@ fn witnesses(
 ) -> Option<Vec<Witness>> {
     match key {
         SemanticTypeKey::Invalid => None,
-        SemanticTypeKey::Other => Some(scalar_witnesses(hints)),
+        SemanticTypeKey::Other => Some(
+            if hints
+                .iter()
+                .any(|hint| matches!(hint, CoveragePattern::Record(_)))
+            {
+                record_witnesses(hints)?
+            } else {
+                scalar_witnesses(hints)
+            },
+        ),
         SemanticTypeKey::TypeParameter(_)
         | SemanticTypeKey::SchemeParameter(_)
         | SemanticTypeKey::ExternalNominal { .. } => Some(vec![Witness {
@@ -230,7 +239,77 @@ fn pattern_matches(pattern: &CoveragePattern, witness: &CoveragePattern) -> bool
                 .zip(witnesses)
                 .all(|(pattern, witness)| pattern_matches(pattern, witness))
         }
+        (CoveragePattern::Record(patterns), CoveragePattern::Record(witnesses)) => {
+            patterns.iter().all(|(name, pattern)| {
+                witnesses
+                    .iter()
+                    .find(|(witness_name, _)| witness_name == name)
+                    .is_some_and(|(_, witness)| pattern_matches(pattern, witness))
+            })
+        }
         _ => false,
+    }
+}
+
+fn record_witnesses(hints: &[&CoveragePattern]) -> Option<Vec<Witness>> {
+    let field_names = hints
+        .iter()
+        .filter_map(|hint| match hint {
+            CoveragePattern::Record(fields) => Some(fields),
+            _ => None,
+        })
+        .flat_map(|fields| fields.iter().map(|(name, _)| name.clone()))
+        .collect::<BTreeSet<_>>();
+    let mut products = vec![(
+        Vec::<(String, CoveragePattern)>::new(),
+        Vec::<String>::new(),
+    )];
+    for name in field_names {
+        let field_hints = hints
+            .iter()
+            .filter_map(|hint| match hint {
+                CoveragePattern::Record(fields) => fields
+                    .iter()
+                    .find(|(field_name, _)| field_name == &name)
+                    .map(|(_, pattern)| pattern),
+                _ => None,
+            })
+            .collect::<Vec<_>>();
+        let children = hinted_witnesses(&field_hints)?;
+        let mut next = Vec::new();
+        for (patterns, labels) in &products {
+            for child in &children {
+                let mut product_patterns = patterns.clone();
+                product_patterns.push((name.clone(), child.pattern.clone()));
+                let mut product_labels = labels.clone();
+                product_labels.push(format!("{name}: {}", child.label));
+                next.push((product_patterns, product_labels));
+                if next.len() > MAX_WITNESSES {
+                    return None;
+                }
+            }
+        }
+        products = next;
+    }
+    Some(
+        products
+            .into_iter()
+            .map(|(fields, labels)| Witness {
+                pattern: CoveragePattern::Record(fields),
+                label: format!("{{ {} }}", labels.join(", ")),
+            })
+            .collect(),
+    )
+}
+
+fn hinted_witnesses(hints: &[&CoveragePattern]) -> Option<Vec<Witness>> {
+    if hints
+        .iter()
+        .any(|hint| matches!(hint, CoveragePattern::Record(_)))
+    {
+        record_witnesses(hints)
+    } else {
+        Some(scalar_witnesses(hints))
     }
 }
 
