@@ -278,6 +278,46 @@ fn preserves_nominal_identity_from_a_namespace_selected_scheme() {
     ));
 }
 
+#[test]
+fn rejects_imported_opaque_struct_literals_before_lowering() {
+    let domain_source = "pub opaque struct Secret { value: Int }\n\npub fn secret value: Int -> Secret = Secret { value }\n";
+    let target = final_target(
+        "domain.ssrg",
+        "fixture/opaque-struct::domain",
+        domain_source,
+    );
+
+    for literal in ["Secret {}", "Secret { value: 42 }"] {
+        let main_source = format!(
+            "import {{ Secret }} from \"./domain\"\n\npub fn forge unit: Unit -> Secret = {literal}\n"
+        );
+        let main = parse_unlinked_module_interface(
+            "main.ssrg",
+            "fixture/opaque-struct::main",
+            &main_source,
+        );
+        let linked = link_module(
+            main,
+            &BTreeMap::from([("./domain".to_owned(), target.clone())]),
+        )
+        .unwrap();
+        let diagnostics = analyze_linked_module(
+            seseragi_syntax::parse_diagnostics("main.ssrg", &main_source),
+            linked,
+            &main_source,
+        )
+        .unwrap_err();
+
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{literal}");
+        let diagnostic = &diagnostics.diagnostics[0];
+        assert_eq!(diagnostic.code, "SES-T0101", "{literal}");
+        assert_eq!(
+            diagnostic.message_key, "struct.representation-private",
+            "{literal}"
+        );
+    }
+}
+
 fn analyze_one_dependency(
     main_source: &str,
     specifier: &str,

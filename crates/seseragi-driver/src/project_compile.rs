@@ -293,6 +293,55 @@ mod tests {
     }
 
     #[test]
+    fn rejects_imported_opaque_struct_construction_before_codegen() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module(
+                "fixture/opaque-struct::main".to_owned(),
+                [(
+                    "./domain".to_owned(),
+                    "fixture/opaque-struct::domain".to_owned(),
+                )],
+            )
+            .unwrap();
+        graph
+            .add_module("fixture/opaque-struct::domain".to_owned(), [])
+            .unwrap();
+
+        let error = compile_project(
+            graph,
+            [
+                ProjectModuleInput::new(
+                    "domain.ssrg",
+                    "fixture/opaque-struct::domain",
+                    "pub opaque struct Secret { value: Int }\n\npub fn secret value: Int -> Secret = Secret { value }\n",
+                    "dist/opaque-struct/domain.js",
+                ),
+                ProjectModuleInput::new(
+                    "main.ssrg",
+                    "fixture/opaque-struct::main",
+                    "import { Secret } from \"./domain\"\n\npub fn forge unit: Unit -> Secret = Secret {}\n",
+                    "dist/opaque-struct/main.js",
+                ),
+            ],
+        )
+        .unwrap_err();
+
+        let ProjectCompileError::Compile {
+            module,
+            error: LinkedCompileError::Diagnostics(diagnostics),
+        } = error
+        else {
+            panic!("expected linked compile diagnostics, received {error:#?}");
+        };
+        assert_eq!(module, "fixture/opaque-struct::main");
+        assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+            diagnostic.code == "SES-T0101"
+                && diagnostic.message_key == "struct.representation-private"
+        }));
+    }
+
+    #[test]
     fn requires_an_esm_javascript_output_path_for_each_project_module() {
         let mut graph = ModuleGraph::new();
         graph

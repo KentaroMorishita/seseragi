@@ -23,6 +23,18 @@ pub(super) fn type_struct(
     let Some(struct_type) = context.semantic_types().struct_type(owner) else {
         return invalid_struct(name, items, span, context);
     };
+    if !struct_type.construction_allowed {
+        return invalid_struct_with_issue(
+            name,
+            items,
+            span,
+            context,
+            RecordIssue::StructRepresentationPrivate {
+                structure: name_span,
+                name: struct_type.name.clone(),
+            },
+        );
+    }
 
     let contextual_arguments = match context.expected().map(|expected| &expected.key) {
         Some(SemanticTypeKey::Struct {
@@ -274,6 +286,26 @@ fn invalid_struct(
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
+    invalid_struct_inner(name, items, span, context, None)
+}
+
+fn invalid_struct_with_issue(
+    name: &str,
+    items: &[SurfaceRecordItem],
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+    issue: RecordIssue,
+) -> SurfaceExpressionAnalysis {
+    invalid_struct_inner(name, items, span, context, Some(issue))
+}
+
+fn invalid_struct_inner(
+    name: &str,
+    items: &[SurfaceRecordItem],
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+    issue: Option<RecordIssue>,
+) -> SurfaceExpressionAnalysis {
     let mut typed_items = Vec::with_capacity(items.len());
     let mut children = Vec::with_capacity(items.len());
     for item in items {
@@ -302,6 +334,7 @@ fn invalid_struct(
         },
         SemanticTypeKey::Invalid,
     );
+    result.record_issue = issue;
     for child in children {
         result.merge_issues_from(child);
     }

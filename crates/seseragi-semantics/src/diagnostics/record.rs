@@ -56,6 +56,11 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
             *structure,
             format!("struct construction is missing required field `{name}`"),
         ),
+        RecordIssue::StructRepresentationPrivate { structure, name } => (
+            "struct.representation-private",
+            *structure,
+            format!("struct `{name}` representation is private to its defining module"),
+        ),
         RecordIssue::StructTypeArgumentsUnresolved { structure, name } => (
             "struct.type-arguments-unresolved",
             *structure,

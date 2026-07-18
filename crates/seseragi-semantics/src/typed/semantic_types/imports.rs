@@ -136,6 +136,8 @@ impl SemanticTypeCatalog {
                         .map(|parameter| parameter.spelling.clone())
                         .collect(),
                     fields,
+                    construction_allowed: owner_import.export.declaration_kind.as_deref()
+                        == Some("struct"),
                 },
             );
         }

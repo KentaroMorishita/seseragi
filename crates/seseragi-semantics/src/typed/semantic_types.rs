@@ -188,6 +188,7 @@ pub(crate) struct SemanticStruct {
     pub(crate) type_parameters: Vec<SymbolId>,
     pub(crate) type_parameter_names: Vec<String>,
     pub(crate) fields: Vec<SemanticStructField>,
+    pub(crate) construction_allowed: bool,
 }
 
 #[derive(Clone, Debug)]
@@ -358,6 +359,7 @@ impl SemanticTypeCatalog {
                         .map(|parameter| parameter.name.clone())
                         .collect(),
                     fields,
+                    construction_allowed: true,
                 },
             );
         }
