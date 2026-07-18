@@ -11,6 +11,7 @@ use crate::report::{
     print_list_json, print_list_text, print_run_json, print_success_text, Failure,
 };
 use crate::runtime_abi::check_runtime_abi_case;
+use crate::stdlib_surface::check_standard_library_case;
 use crate::suite::Suite;
 use crate::typescript_ir::check_typescript_ir_json;
 use std::path::{Path, PathBuf};
@@ -157,6 +158,15 @@ pub(crate) fn run(root: PathBuf, list: bool, json: bool) {
             "runtimeAbi",
             case,
             check_runtime_abi_case(&root, case),
+            json,
+            &mut failures,
+        );
+    }
+    for case in &suite.standard_library_cases {
+        record_failure(
+            "standardLibrary",
+            case,
+            check_standard_library_case(case),
             json,
             &mut failures,
         );

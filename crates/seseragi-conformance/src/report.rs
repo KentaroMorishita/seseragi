@@ -164,6 +164,11 @@ fn categories(suite: &Suite) -> Vec<Category<'_>> {
             text_label: "Runtime ABI",
             cases: &suite.runtime_abi_cases,
         },
+        Category {
+            json_key: "standardLibrary",
+            text_label: "Standard Library",
+            cases: &suite.standard_library_cases,
+        },
     ]
 }
 

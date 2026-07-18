@@ -21,6 +21,7 @@ pub(crate) struct Suite {
     pub(crate) project_execution_cases: Vec<PathBuf>,
     pub(crate) execution_cases: Vec<PathBuf>,
     pub(crate) runtime_abi_cases: Vec<PathBuf>,
+    pub(crate) standard_library_cases: Vec<PathBuf>,
 }
 
 impl Suite {
@@ -98,6 +99,10 @@ impl Suite {
             runtime_abi_cases: discover_artifact_cases(
                 &artifacts.join("runtime-schema-1"),
                 "abi.json",
+            ),
+            standard_library_cases: discover_artifact_cases(
+                &artifacts.join("stdlib-schema-1"),
+                "module.json",
             ),
         }
     }

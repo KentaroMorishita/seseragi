@@ -44,6 +44,11 @@ pub(crate) enum DerivedInstanceIssue {
         provider_module: String,
         primary: ByteSpan,
     },
+    OverlappingStandardInstance {
+        trait_name: String,
+        standard_identity: String,
+        primary: ByteSpan,
+    },
 }
 
 pub(crate) fn analyze_instances(
@@ -55,8 +60,27 @@ pub(crate) fn analyze_instances(
     let mut instances = show.instances;
     instances.extend(user::analyze_user_defined_instances(resolved, resolution));
     issues.extend(show.issues);
+    issues.extend(standard_instance_conflicts(&instances));
     issues.extend(local_dependency_conflicts(resolved, &instances));
     InstanceAnalysis { instances, issues }
+}
+
+fn standard_instance_conflicts(local_instances: &[TypedInstance]) -> Vec<DerivedInstanceIssue> {
+    local_instances
+        .iter()
+        .filter_map(|local| {
+            let [argument] = local.arguments.as_slice() else {
+                return None;
+            };
+            crate::prelude::overlapping_standard_instance(&local.trait_identity, argument).map(
+                |standard| DerivedInstanceIssue::OverlappingStandardInstance {
+                    trait_name: local.trait_name.clone(),
+                    standard_identity: standard.identity.to_owned(),
+                    primary: local.origin,
+                },
+            )
+        })
+        .collect()
 }
 
 fn local_dependency_conflicts(

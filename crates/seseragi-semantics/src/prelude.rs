@@ -1,5 +1,10 @@
 use crate::{SymbolNamespace, TypedType};
+use serde::Serialize;
 use seseragi_syntax::TypeParameter;
+
+mod surface;
+
+pub use surface::{standard_prelude_surface, StandardModuleSurface};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) struct PreludeTrait {
@@ -17,7 +22,8 @@ pub(crate) struct PreludeTraitMethod {
     kind: PreludeTraitMethodKind,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub(crate) struct PreludeTraitMethodSignature {
     pub(crate) type_parameters: Vec<TypeParameter>,
     pub(crate) parameters: Vec<TypedType>,
@@ -420,6 +426,27 @@ pub(crate) fn standard_instance_by_identity(
         .find(|instance| instance.identity == identity)
 }
 
+pub(crate) fn overlapping_standard_instance(
+    trait_identity: &str,
+    type_ref: &TypedType,
+) -> Option<&'static PreludeStandardInstance> {
+    let TypedType::Named { name, arguments } = type_ref else {
+        return None;
+    };
+    let constructor_arity = type_constructor_arity(name)? as usize;
+    let leaves_one_open_argument = arguments.len().checked_add(1) == Some(constructor_arity)
+        || (arguments.len() == constructor_arity
+            && matches!(arguments.last(), Some(TypedType::Hole)));
+    if !leaves_one_open_argument {
+        return None;
+    }
+    STANDARD_INSTANCES.iter().find(|instance| {
+        instance.type_name == name
+            && trait_by_name(instance.trait_name)
+                .is_some_and(|trait_spec| trait_spec.canonical == trait_identity)
+    })
+}
+
 fn named(name: &str) -> TypedType {
     TypedType::Named {
         name: name.to_owned(),
@@ -524,5 +551,34 @@ mod tests {
             Some("std/effect::Applicative")
         );
         assert!(standard_instance("Monad", &saturated_either).is_none());
+    }
+
+    #[test]
+    fn detects_user_heads_that_overlap_registered_standard_instances() {
+        let maybe = named("Maybe");
+        let either_string = TypedType::Named {
+            name: "Either".to_owned(),
+            arguments: vec![named("String"), TypedType::Hole],
+        };
+
+        assert_eq!(
+            overlapping_standard_instance("std/prelude::Functor", &maybe)
+                .map(|instance| instance.identity),
+            Some("std/maybe::Functor")
+        );
+        assert_eq!(
+            overlapping_standard_instance("std/prelude::Monad", &either_string)
+                .map(|instance| instance.identity),
+            Some("std/either::Monad")
+        );
+        assert!(overlapping_standard_instance("fixture::Functor", &maybe).is_none());
+        assert!(overlapping_standard_instance(
+            "std/prelude::Functor",
+            &TypedType::Named {
+                name: "Either".to_owned(),
+                arguments: vec![named("String"), named("Int")],
+            }
+        )
+        .is_none());
     }
 }

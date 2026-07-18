@@ -835,8 +835,12 @@ dictionaryの順序規約を合わせて検査します。
 runtime dictionaryはcold性を保ち、mapはfailureを変更せず、applyはfunction effectからvalue effectの順に実行し、
 flatMapは既存のenvironment intersection / failure union primitiveを使います。`Effect` runtime type importと`Never`の
 TypeScript bottom typeもABIへ固定し、fixture、runtime probe、Playgroundが辞書経路を実行します。
-後続sliceでは標準moduleのexportとcoherence範囲を
-artifactで固定します。
+`stdlib-schema-1/prelude/module.json`はsemantic registryから標準module surfaceを生成し、trait identity、HKT method
+scheme、supertrait、15 standard instance、言語versionをconformanceで比較します。同じregistryはlocal user instanceの
+headも検査し、登録済みtrait / 型構築子の末尾一引数をopenにしたheadと重なる場合は
+`trait.instance-duplicate`でcompileを止めます。Maybe / Array / Listのarity 1、Eitherのarity 2、Effectのarity 3を
+個別のcoherence分岐へ複製せず、既存type constructor arityを使います。これは標準headをsealedにするgateであり、
+user-defined trait / typeを含む一般orphan ruleや標準moduleをpackage graphからimportする機構の完了ではありません。
 
 `schema-1/monad-laws`はFunctor identity / composition、Applicative identity / homomorphism、Monad left identity /
 right identity / associativityを一つの小さいuser-defined Maybe instance群で表現します。

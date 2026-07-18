@@ -100,6 +100,24 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             }],
             fixes: Vec::new(),
         },
+        DerivedInstanceIssue::OverlappingStandardInstance {
+            trait_name,
+            standard_identity,
+            primary,
+        } => Diagnostic {
+            id: String::new(),
+            code: "SES-T0202".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "trait.instance-duplicate".to_owned(),
+            primary: byte_range(*primary),
+            related: vec![RelatedDiagnostic {
+                message: format!(
+                    "{trait_name} instance overlaps sealed standard instance {standard_identity}"
+                ),
+                primary: byte_range(*primary),
+            }],
+            fixes: Vec::new(),
+        },
     }
 }
 

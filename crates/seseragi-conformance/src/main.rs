@@ -11,6 +11,7 @@ mod runner;
 mod runtime_abi;
 mod runtime_package;
 mod runtime_stage;
+mod stdlib_surface;
 mod suite;
 mod surface_ast;
 mod typescript_ir;

@@ -307,6 +307,29 @@ fn reports_a_local_and_imported_instance_conflict_as_ambiguous() {
         .contains("fixture/coherence::evidence"));
 }
 
+#[test]
+fn rejects_a_user_instance_that_overlaps_a_standard_prelude_head() {
+    let source = "instance Functor<Maybe> {\n\
+                  fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> =\n\
+                    match value {\n\
+                      Nothing -> Nothing\n\
+                      Just item -> Just $ f item\n\
+                    }\n\
+                  }\n";
+
+    let diagnostics = crate::semantic_diagnostics("main.ssrg", source);
+
+    assert_eq!(diagnostics.diagnostics.len(), 1);
+    assert_eq!(diagnostics.diagnostics[0].code, "SES-T0202");
+    assert_eq!(
+        diagnostics.diagnostics[0].message_key,
+        "trait.instance-duplicate"
+    );
+    assert!(diagnostics.diagnostics[0].related[0]
+        .message
+        .contains("std/maybe::Functor"));
+}
+
 fn linked_with_instance_targets<const N: usize>(
     source: &str,
     targets: [(&str, ModuleLinkTarget); N],

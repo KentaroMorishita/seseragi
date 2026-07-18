@@ -1,0 +1,369 @@
+{
+  "schema": 1,
+  "kind": "standard-module-surface",
+  "languageVersion": "0.1.0",
+  "module": "std/prelude",
+  "traits": [
+    {
+      "name": "Functor",
+      "canonical": "std/prelude::Functor",
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "methods": [
+        {
+          "name": "map",
+          "canonical": "std/prelude::Functor::map",
+          "signature": {
+            "typeParameters": [
+              {
+                "name": "F",
+                "arity": 1
+              },
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              },
+              {
+                "kind": "named",
+                "name": "F",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Applicative",
+      "canonical": "std/prelude::Applicative",
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        }
+      ],
+      "supertrait": "Functor",
+      "methods": [
+        {
+          "name": "pure",
+          "canonical": "std/prelude::Applicative::pure",
+          "signature": {
+            "typeParameters": [
+              {
+                "name": "F",
+                "arity": 1
+              },
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "apply",
+          "canonical": "std/prelude::Applicative::apply",
+          "signature": {
+            "typeParameters": [
+              {
+                "name": "F",
+                "arity": 1
+              },
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "F",
+                "arguments": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "F",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "F",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Monad",
+      "canonical": "std/prelude::Monad",
+      "typeParameters": [
+        {
+          "name": "M",
+          "arity": 1
+        }
+      ],
+      "supertrait": "Applicative",
+      "methods": [
+        {
+          "name": "flatMap",
+          "canonical": "std/prelude::Monad::flatMap",
+          "signature": {
+            "typeParameters": [
+              {
+                "name": "M",
+                "arity": 1
+              },
+              "A",
+              "B"
+            ],
+            "parameters": [
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "M",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "B",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "named",
+                "name": "M",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "M",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "B",
+                  "arguments": []
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "instances": [
+    {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "Maybe",
+      "typeConstructorCanonical": "std/prelude::Maybe",
+      "typeConstructorArity": 1,
+      "identity": "std/maybe::Functor"
+    },
+    {
+      "trait": "Applicative",
+      "traitCanonical": "std/prelude::Applicative",
+      "typeConstructor": "Maybe",
+      "typeConstructorCanonical": "std/prelude::Maybe",
+      "typeConstructorArity": 1,
+      "identity": "std/maybe::Applicative"
+    },
+    {
+      "trait": "Monad",
+      "traitCanonical": "std/prelude::Monad",
+      "typeConstructor": "Maybe",
+      "typeConstructorCanonical": "std/prelude::Maybe",
+      "typeConstructorArity": 1,
+      "identity": "std/maybe::Monad"
+    },
+    {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "Either",
+      "typeConstructorCanonical": "std/prelude::Either",
+      "typeConstructorArity": 2,
+      "identity": "std/either::Functor"
+    },
+    {
+      "trait": "Applicative",
+      "traitCanonical": "std/prelude::Applicative",
+      "typeConstructor": "Either",
+      "typeConstructorCanonical": "std/prelude::Either",
+      "typeConstructorArity": 2,
+      "identity": "std/either::Applicative"
+    },
+    {
+      "trait": "Monad",
+      "traitCanonical": "std/prelude::Monad",
+      "typeConstructor": "Either",
+      "typeConstructorCanonical": "std/prelude::Either",
+      "typeConstructorArity": 2,
+      "identity": "std/either::Monad"
+    },
+    {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "Array",
+      "typeConstructorCanonical": "std/prelude::Array",
+      "typeConstructorArity": 1,
+      "identity": "std/array::Functor"
+    },
+    {
+      "trait": "Applicative",
+      "traitCanonical": "std/prelude::Applicative",
+      "typeConstructor": "Array",
+      "typeConstructorCanonical": "std/prelude::Array",
+      "typeConstructorArity": 1,
+      "identity": "std/array::Applicative"
+    },
+    {
+      "trait": "Monad",
+      "traitCanonical": "std/prelude::Monad",
+      "typeConstructor": "Array",
+      "typeConstructorCanonical": "std/prelude::Array",
+      "typeConstructorArity": 1,
+      "identity": "std/array::Monad"
+    },
+    {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "List",
+      "typeConstructorCanonical": "std/prelude::List",
+      "typeConstructorArity": 1,
+      "identity": "std/list::Functor"
+    },
+    {
+      "trait": "Applicative",
+      "traitCanonical": "std/prelude::Applicative",
+      "typeConstructor": "List",
+      "typeConstructorCanonical": "std/prelude::List",
+      "typeConstructorArity": 1,
+      "identity": "std/list::Applicative"
+    },
+    {
+      "trait": "Monad",
+      "traitCanonical": "std/prelude::Monad",
+      "typeConstructor": "List",
+      "typeConstructorCanonical": "std/prelude::List",
+      "typeConstructorArity": 1,
+      "identity": "std/list::Monad"
+    },
+    {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "Effect",
+      "typeConstructorCanonical": "std/prelude::Effect",
+      "typeConstructorArity": 3,
+      "identity": "std/effect::Functor"
+    },
+    {
+      "trait": "Applicative",
+      "traitCanonical": "std/prelude::Applicative",
+      "typeConstructor": "Effect",
+      "typeConstructorCanonical": "std/prelude::Effect",
+      "typeConstructorArity": 3,
+      "identity": "std/effect::Applicative"
+    },
+    {
+      "trait": "Monad",
+      "traitCanonical": "std/prelude::Monad",
+      "typeConstructor": "Effect",
+      "typeConstructorCanonical": "std/prelude::Effect",
+      "typeConstructorArity": 3,
+      "identity": "std/effect::Monad"
+    }
+  ],
+  "coherence": {
+    "standardHeads": "sealed",
+    "userOverlap": "compile-error",
+    "diagnostic": "trait.instance-duplicate"
+  }
+}
