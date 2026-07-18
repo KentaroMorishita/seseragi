@@ -152,6 +152,45 @@ fn parses_nominal_struct_values_and_patterns() {
 }
 
 #[test]
+fn parses_explicit_struct_type_arguments() {
+    let body = first_body("pub let boxed = Box<String> { value: \"hello\" }\n");
+
+    let SurfaceExpr::Struct {
+        name,
+        type_arguments: Some(type_arguments),
+        items,
+        ..
+    } = body
+    else {
+        panic!("expected explicitly typed struct expression");
+    };
+    assert_eq!(name, "Box");
+    assert_eq!(items.len(), 1);
+    assert!(matches!(
+        type_arguments.as_slice(),
+        [crate::TypeRef::Named { name, arguments, .. }]
+            if name == "String" && arguments.is_empty()
+    ));
+}
+
+#[test]
+fn keeps_uppercase_comparisons_when_type_arguments_are_not_followed_by_a_struct_body() {
+    let body = first_body("pub let compared = Left < Right > Value\n");
+
+    assert!(matches!(
+        body,
+        SurfaceExpr::Binary {
+            operator,
+            left,
+            right,
+            ..
+        } if operator == ">"
+            && matches!(left.as_ref(), SurfaceExpr::Binary { operator, .. } if operator == "<")
+            && matches!(right.as_ref(), SurfaceExpr::Name { name, .. } if name == "Value")
+    ));
+}
+
+#[test]
 fn parses_required_record_field_access_without_baking_in_namespace_resolution() {
     let body = first_body("pub fn name user: { name: String } -> String = user.name\n");
 

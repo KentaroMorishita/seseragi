@@ -225,7 +225,9 @@ patternとtype-only import、actual executionを固定します。`schema-1/gene
 同じparameterへ矛盾するfield型が集まる場合と、field / expected typeのどちらからもargumentを決められない場合は
 `SES-T0101`で停止します。opaque Structはrepresentationを公開せず、別moduleからの空literalとfield付きliteralを
 `struct.representation-private`で型検査中に停止します。定義module内のconstructionと公開factoryはそのまま利用できます。
-明示`Box<String> { ... }` constructionは後続gateです。
+明示`Box<String> { ... }` constructionもparserからresolver / type checker / loweringへ接続済みです。明示引数を
+expected typeとfield inferenceより優先し、arity不一致とhole残存をcompile diagnosticで停止します。
+`schema-1/explicit-generic-struct`はnested `Marker<Array<String>>`から空Array fieldを型付けし、actual executionを固定します。
 `schema-1/inherent-method`は`impl<A> Box<A>`のgeneric `map`とparameterなしの`get`をreceiverの
 nominal ownerから選択し、通常の静的function callとしてTypedHir / CoreIr / TypeScriptIrへlowerします。
 contextual lambdaを含む`box.map (\value -> value + value)`から`.get`までactual executionで42を固定します。

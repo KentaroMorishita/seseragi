@@ -1,0 +1,582 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/explicit-generic-struct",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "struct",
+      "visibility": "public",
+      "name": "Marker",
+      "nameSpan": {
+        "start": 11,
+        "end": 17
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "label",
+          "nameSpan": {
+            "start": 25,
+            "end": 30
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 32,
+              "end": 38
+            }
+          }
+        },
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 42,
+            "end": 47
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 49,
+              "end": 50
+            }
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 53
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "marker",
+      "nameSpan": {
+        "start": 63,
+        "end": 69
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "struct",
+        "name": "Marker",
+        "nameSpan": {
+          "start": 72,
+          "end": 78
+        },
+        "typeArguments": [
+          {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 85,
+                  "end": 91
+                }
+              }
+            ],
+            "span": {
+              "start": 79,
+              "end": 92
+            }
+          }
+        ],
+        "items": [
+          {
+            "kind": "field",
+            "name": "label",
+            "nameSpan": {
+              "start": 98,
+              "end": 103
+            },
+            "value": {
+              "kind": "string",
+              "raw": "\"ready\"",
+              "span": {
+                "start": 105,
+                "end": 112
+              }
+            },
+            "span": {
+              "start": 98,
+              "end": 112
+            }
+          },
+          {
+            "kind": "field",
+            "name": "value",
+            "nameSpan": {
+              "start": 116,
+              "end": 121
+            },
+            "value": {
+              "kind": "array",
+              "elements": [],
+              "span": {
+                "start": 123,
+                "end": 125
+              }
+            },
+            "span": {
+              "start": 116,
+              "end": 125
+            }
+          }
+        ],
+        "span": {
+          "start": 72,
+          "end": 128
+        }
+      },
+      "span": {
+        "start": 55,
+        "end": 128
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "render",
+      "nameSpan": {
+        "start": 133,
+        "end": 139
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 140,
+            "end": 145
+          },
+          "type": {
+            "kind": "named",
+            "name": "Marker",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "span": {
+                      "start": 160,
+                      "end": 166
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 154,
+                  "end": 167
+                }
+              }
+            ],
+            "span": {
+              "start": 147,
+              "end": 168
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 172,
+          "end": 178
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "operatorSpan": {
+          "start": 211,
+          "end": 212
+        },
+        "left": {
+          "kind": "string",
+          "raw": "\"Explicit generic Struct: \"",
+          "span": {
+            "start": 183,
+            "end": 210
+          }
+        },
+        "right": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "value",
+            "span": {
+              "start": 213,
+              "end": 218
+            }
+          },
+          "field": "label",
+          "fieldSpan": {
+            "start": 219,
+            "end": 224
+          },
+          "span": {
+            "start": 213,
+            "end": 224
+          }
+        },
+        "span": {
+          "start": 183,
+          "end": 224
+        }
+      },
+      "span": {
+        "start": 130,
+        "end": 224
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 240,
+        "end": 244
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 273,
+            "end": 280
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "render",
+            "span": {
+              "start": 261,
+              "end": 267
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "marker",
+            "span": {
+              "start": 249,
+              "end": 255
+            }
+          },
+          "span": {
+            "start": 249,
+            "end": 267
+          }
+        },
+        "span": {
+          "start": 249,
+          "end": 280
+        }
+      },
+      "span": {
+        "start": 226,
+        "end": 280
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 280
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 53
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 130,
+        "end": 224
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 226,
+        "end": 280
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Marker",
+      "canonical": "artifact/explicit-generic-struct::Marker",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 11,
+        "end": 17
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "marker",
+      "canonical": "artifact/explicit-generic-struct::marker",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 63,
+        "end": 69
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "render",
+      "canonical": "artifact/explicit-generic-struct::render",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 133,
+        "end": 139
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "main",
+      "canonical": "artifact/explicit-generic-struct::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 240,
+        "end": 244
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 1,
+      "origin": {
+        "start": 0,
+        "end": 53
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "Array",
+      "canonical": "std/prelude::Array",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 140,
+        "end": 145
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "+",
+      "canonical": "std/prelude::+",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 32,
+        "end": 38
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 49,
+        "end": 50
+      }
+    },
+    {
+      "spelling": "Marker",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 72,
+        "end": 78
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 79,
+        "end": 92
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 85,
+        "end": 91
+      }
+    },
+    {
+      "spelling": "Marker",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 147,
+        "end": 168
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 154,
+        "end": 167
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 160,
+        "end": 166
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 172,
+        "end": 178
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 8,
+      "origin": {
+        "start": 211,
+        "end": 212
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 213,
+        "end": 218
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 273,
+        "end": 280
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 261,
+        "end": 267
+      }
+    },
+    {
+      "spelling": "marker",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 249,
+        "end": 255
+      }
+    }
+  ],
+  "issues": []
+}

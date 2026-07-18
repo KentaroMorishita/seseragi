@@ -408,6 +408,17 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
                 fields: fields.into_values().collect(),
             })
         }
+        SurfaceExpr::Struct {
+            name,
+            type_arguments: Some(type_arguments),
+            ..
+        } => Some(TypedType::Named {
+            name: name.clone(),
+            arguments: type_arguments
+                .iter()
+                .map(super::type_ref::typed_type_from_type_ref)
+                .collect(),
+        }),
         SurfaceExpr::Struct { .. } => None,
         SurfaceExpr::Array { elements, .. } => {
             let element = elements.first().and_then(surface_expression_type_hint)?;
@@ -518,9 +529,17 @@ pub(super) fn type_surface_expression(
         SurfaceExpr::Struct {
             name,
             name_span,
+            type_arguments,
             items,
             span,
-        } => struct_value::type_struct(name, *name_span, items, *span, context),
+        } => struct_value::type_struct(
+            name,
+            *name_span,
+            type_arguments.as_deref(),
+            items,
+            *span,
+            context,
+        ),
         SurfaceExpr::ArrayComprehension {
             element,
             clauses,

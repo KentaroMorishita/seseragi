@@ -371,6 +371,10 @@ let explicit = Box<String> { value: "hello" }
 異なる型制約が集まった場合はエラーです。field accessではreceiverの型引数を宣言fieldへ
 代入するため、`Box<Int>.value` は `Int` です。
 
+constructionの明示型引数はfieldと期待型による推論より優先し、宣言parameterと個数が
+一致しなければなりません。nested型引数も通常の型構文として解決します。明示引数に
+未解決の型holeが残る場合はbackendへ渡さず型診断で停止します。
+
 struct updateとspreadでは元のstructと完全に同じ型引数を要求します。更新によって
 `Box<Int>` を `Box<String>` に変えることはできません。
 

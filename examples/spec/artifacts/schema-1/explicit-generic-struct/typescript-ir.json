@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/explicit-generic-struct",
+  "runtimeRequirements": [
+    "core.string",
+    "core.unit",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "structs": [
+    {
+      "exported": true,
+      "name": "Marker",
+      "brand": "__ssrg$brand$Marker",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "label",
+          "optional": false,
+          "type": {
+            "kind": "string"
+          }
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 53
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "marker",
+      "type": {
+        "kind": "reference",
+        "name": "Marker",
+        "arguments": [
+          {
+            "kind": "array",
+            "element": {
+              "kind": "string"
+            }
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "label",
+            "value": {
+              "kind": "string",
+              "value": "ready"
+            }
+          },
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "array",
+              "elements": [],
+              "elementType": {
+                "kind": "string"
+              }
+            }
+          }
+        ],
+        "assertedType": {
+          "kind": "reference",
+          "name": "Marker",
+          "arguments": [
+            {
+              "kind": "array",
+              "element": {
+                "kind": "string"
+              }
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 55,
+        "end": 128
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Marker<ReadonlyArray<string>>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "string",
+          "value": "Explicit generic Struct: "
+        },
+        "right": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "identifier",
+            "name": "value"
+          },
+          "field": "label"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 130,
+        "end": 224
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "marker"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 226,
+        "end": 280
+      }
+    }
+  ]
+}

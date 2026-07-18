@@ -78,10 +78,14 @@ pub(super) fn resolve_expression(
         SurfaceExpr::Struct {
             name,
             name_span,
+            type_arguments,
             items,
             ..
         } => {
             resolver.reference(scope, SymbolNamespace::Type, name, *name_span, true);
+            for argument in type_arguments.iter().flatten() {
+                resolve_type_ref(resolver, scope, argument);
+            }
             for item in items {
                 resolve_expression(resolver, scope, item.value());
             }

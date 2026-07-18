@@ -445,6 +445,8 @@ pub enum SurfaceExpr {
     Struct {
         name: String,
         name_span: ByteSpan,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        type_arguments: Option<Vec<TypeRef>>,
         items: Vec<SurfaceRecordItem>,
         span: ByteSpan,
     },

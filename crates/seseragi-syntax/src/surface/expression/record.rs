@@ -1,5 +1,5 @@
 use super::ExpressionParser;
-use crate::surface_model::{ByteSpan, SurfaceExpr, SurfaceRecordItem};
+use crate::surface_model::{ByteSpan, SurfaceExpr, SurfaceRecordItem, TypeRef};
 use crate::token::{Token, TokenKind};
 
 pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<SurfaceExpr> {
@@ -17,11 +17,13 @@ pub(super) fn parse_struct(
     parser: &mut ExpressionParser<'_>,
     name: &Token,
     _open: &Token,
+    type_arguments: Option<Vec<TypeRef>>,
 ) -> Option<SurfaceExpr> {
     let (items, end) = parse_items(parser, true)?;
     Some(SurfaceExpr::Struct {
         name: name.raw.clone(),
         name_span: token_span(name),
+        type_arguments,
         items,
         span: ByteSpan {
             start: name.start,

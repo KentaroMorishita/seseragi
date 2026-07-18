@@ -1,4 +1,5 @@
 use super::*;
+use seseragi_syntax::{SurfaceDecl, SurfaceExpr, TypeRef};
 
 #[test]
 fn keeps_private_declarations_and_resolves_parameter_and_module_references() {
@@ -23,6 +24,57 @@ fn keeps_private_declarations_and_resolves_parameter_and_module_references() {
             && reference.target == Some(value)
     }));
     assert!(resolved.issues.is_empty());
+}
+
+#[test]
+fn resolves_explicit_struct_type_arguments_in_the_expression_scope() {
+    let resolved = resolve_module(
+        "artifact/explicit-struct-type/main.ssrg",
+        "struct Box<A> { value: A }\nfn wrap<A> value: A -> Box<A> = Box<A> { value }\n",
+    );
+
+    let SurfaceDecl::Fn {
+        body:
+            Some(SurfaceExpr::Struct {
+                type_arguments: Some(type_arguments),
+                ..
+            }),
+        span,
+        ..
+    } = &resolved.declarations[1]
+    else {
+        panic!("expected explicit struct construction");
+    };
+    let [TypeRef::Named {
+        name,
+        span: argument_span,
+        ..
+    }] = type_arguments.as_slice()
+    else {
+        panic!("expected one named type argument");
+    };
+    assert_eq!(name, "A");
+
+    let function_scope = resolved
+        .scopes
+        .iter()
+        .find(|scope| scope.kind == ScopeKind::Function && scope.origin == *span)
+        .expect("function scope");
+    let parameter = resolved
+        .symbols
+        .iter()
+        .find(|symbol| {
+            symbol.kind == SymbolKind::TypeParameter
+                && symbol.scope == function_scope.id
+                && symbol.spelling == "A"
+        })
+        .expect("function type parameter");
+    assert!(resolved.references.iter().any(|reference| {
+        reference.namespace == SymbolNamespace::Type
+            && reference.origin == *argument_span
+            && reference.target == Some(parameter.id)
+    }));
+    assert!(resolved.issues.is_empty(), "{:#?}", resolved.issues);
 }
 
 #[test]

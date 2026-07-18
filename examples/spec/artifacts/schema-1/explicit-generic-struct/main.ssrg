@@ -1,0 +1,17 @@
+pub struct Marker<A> {
+  label: String,
+  value: A,
+}
+
+pub let marker = Marker<Array<String>> {
+  label: "ready",
+  value: [],
+}
+
+fn render value: Marker<Array<String>> -> String =
+  "Explicit generic Struct: " + value.label
+
+pub effect fn main =
+  marker
+  |> render
+  |> println

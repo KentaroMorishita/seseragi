@@ -181,11 +181,8 @@ impl ExpressionParser<'_> {
                 span: token_span(token),
             }),
             TokenKind::IdentifierUpper => {
-                self.skip_trivia();
-                if self.kind_at_cursor() == Some(TokenKind::PunctuationBraceLeft) {
-                    let open = self.tokens.get(self.cursor)?.clone();
-                    self.cursor += 1;
-                    record::parse_struct(self, token, &open)
+                if let Some((type_arguments, open)) = self.consume_struct_head() {
+                    record::parse_struct(self, token, &open, type_arguments)
                 } else {
                     Some(SurfaceExpr::Name {
                         name: token.raw.clone(),
@@ -211,6 +208,38 @@ impl ExpressionParser<'_> {
             }),
             _ => None,
         }
+    }
+
+    fn consume_struct_head(&mut self) -> Option<(Option<Vec<crate::TypeRef>>, Token)> {
+        self.skip_trivia();
+        if self.kind_at_cursor() == Some(TokenKind::PunctuationBraceLeft) {
+            let open = self.tokens.get(self.cursor)?.clone();
+            self.cursor += 1;
+            return Some((None, open));
+        }
+
+        let open_angle = self.cursor;
+        if self
+            .tokens
+            .get(open_angle)
+            .is_none_or(|token| token.kind != TokenKind::OperatorComparison || token.raw != "<")
+        {
+            return None;
+        }
+        let parser = SurfaceParser {
+            tokens: self.tokens,
+            non_eof_token_count: self.end,
+        };
+        let (type_arguments, closing_angle) =
+            parser.parse_type_arguments(open_angle + 1, self.end)?;
+        let open_brace = parser.next_significant_token(closing_angle + 1, self.end)?;
+        if parser.kind_at(open_brace) != Some(TokenKind::PunctuationBraceLeft) {
+            return None;
+        }
+
+        let open = self.tokens.get(open_brace)?.clone();
+        self.cursor = open_brace + 1;
+        Some((Some(type_arguments), open))
     }
 
     fn parse_if(&mut self, if_token: &Token, inherited_stops: &[TokenKind]) -> Option<SurfaceExpr> {

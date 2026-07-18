@@ -107,6 +107,12 @@ pub(crate) enum RecordIssue {
         structure: ByteSpan,
         name: String,
     },
+    StructTypeArgumentArity {
+        structure: ByteSpan,
+        name: String,
+        expected: usize,
+        actual: usize,
+    },
     StructTypeArgumentsUnresolved {
         structure: ByteSpan,
         name: String,

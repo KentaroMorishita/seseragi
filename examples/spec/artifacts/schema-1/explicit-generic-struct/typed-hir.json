@@ -1,0 +1,411 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/explicit-generic-struct",
+  "declarations": [
+    {
+      "kind": "struct",
+      "symbol": "artifact/explicit-generic-struct::Marker",
+      "name": "Marker",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "label",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 25,
+            "end": 30
+          }
+        },
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 42,
+            "end": 47
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 53
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/explicit-generic-struct::marker",
+      "visibility": "public",
+      "origin": {
+        "start": 55,
+        "end": 128
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Marker",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "label",
+            "value": {
+              "kind": "string",
+              "value": "ready",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 105,
+                "end": 112
+              }
+            },
+            "origin": {
+              "start": 98,
+              "end": 112
+            }
+          },
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "array",
+              "elements": [],
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 123,
+                "end": 125
+              }
+            },
+            "origin": {
+              "start": 116,
+              "end": 125
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Marker",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 72,
+          "end": 128
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/explicit-generic-struct::render",
+      "visibility": "private",
+      "origin": {
+        "start": 130,
+        "end": 224
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Marker",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 140,
+            "end": 145
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "string",
+          "value": "Explicit generic Struct: ",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 183,
+            "end": 210
+          }
+        },
+        "right": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Marker",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "start": 213,
+              "end": 218
+            }
+          },
+          "field": "label",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 213,
+            "end": 224
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/string::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 183,
+          "end": 224
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/explicit-generic-struct::main",
+      "visibility": "public",
+      "origin": {
+        "start": 226,
+        "end": 280
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/explicit-generic-struct::render",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "marker",
+                "type": {
+                  "kind": "named",
+                  "name": "Marker",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 249,
+                  "end": 255
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 249,
+              "end": 267
+            }
+          }
+        ],
+        "origin": {
+          "start": 249,
+          "end": 280
+        }
+      }
+    }
+  ]
+}

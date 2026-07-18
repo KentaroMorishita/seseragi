@@ -995,8 +995,13 @@ generic Structは宣言fieldのsemantic templateとactual field / contextual res
 渡し、宣言parameterごとのargumentを集めます。これにより`Box { value: 41 }`は`Box<Int>`になり、nested nominal argumentも
 同じ再帰置換を使います。複数fieldの矛盾はinstantiated field contractとの通常比較、未決定parameterは
 `struct.type-arguments-unresolved`で停止し、TypeScript inferenceへ意味判断を委譲しません。`schema-1/generic-struct`と同名executionが
-field inference、generic member / pattern、same-argument spread update、generated `Box<bigint>`を固定します。明示type argument付き
-construction、opaque smart constructorとfield visibility、struct deriving / implはこのowner付き型とinterface表現を維持した後続sliceです。
+field inference、generic member / pattern、same-argument spread update、generated `Box<bigint>`を固定します。
+明示type argument付きconstructionはSurfaceAstにimplicit constructionと区別できるoptional引数列を保持し、resolverが各引数を
+type namespaceへ接続します。type checkerは明示引数を期待型とfield inferenceより優先し、個数不一致を
+`struct.type-argument-arity-mismatch`、hole残存を`struct.type-arguments-unresolved`で停止します。
+`schema-1/explicit-generic-struct`はnested `Marker<Array<String>>`が空Array fieldへcontextを渡し、TypedHirから生成TypeScriptの
+`Marker<ReadonlyArray<string>>`、actual executionまで固定します。opaque smart constructorのmodule境界は別gateで固定済みで、
+struct derivingは後続sliceです。
 
 公開interfaceだけでは、同一packageの「private宣言は存在する」と単なるtypoを区別できません。そのためfrontendは
 同じSurfaceAst passから、bodyと型schemeを含めずdeclaration name / namespace / visibility / canonical symbolだけを持つ

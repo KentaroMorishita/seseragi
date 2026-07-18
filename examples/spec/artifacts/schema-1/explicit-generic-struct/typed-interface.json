@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/explicit-generic-struct",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/explicit-generic-struct::Marker",
+      "namespace": "type",
+      "name": "Marker",
+      "visibility": "public",
+      "declarationKind": "struct",
+      "declaration": {
+        "start": 0,
+        "end": 53
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Marker",
+          "arity": 1
+        }
+      },
+      "representation": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "label",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "artifact/explicit-generic-struct::marker",
+      "namespace": "value",
+      "name": "marker",
+      "visibility": "public",
+      "declaration": {
+        "start": 55,
+        "end": 128
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Marker",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "symbol": "artifact/explicit-generic-struct::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 226,
+        "end": 280
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

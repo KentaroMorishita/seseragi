@@ -61,6 +61,16 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
             *structure,
             format!("struct `{name}` representation is private to its defining module"),
         ),
+        RecordIssue::StructTypeArgumentArity {
+            structure,
+            name,
+            expected,
+            actual,
+        } => (
+            "struct.type-argument-arity-mismatch",
+            *structure,
+            format!("struct `{name}` requires {expected} type arguments, received {actual}"),
+        ),
         RecordIssue::StructTypeArgumentsUnresolved { structure, name } => (
             "struct.type-arguments-unresolved",
             *structure,
@@ -210,6 +220,60 @@ mod tests {
         );
 
         assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
+    }
+
+    #[test]
+    fn accepts_explicit_struct_arguments_when_fields_cannot_infer_them() {
+        let artifact = semantic_diagnostics(
+            "struct-marker.ssrg",
+            concat!(
+                "pub struct Marker<A> { label: String }\n",
+                "pub let marker = Marker<Int> { label: \"ready\" }\n",
+                "fn keep value: Marker<Int> -> Marker<Int> = value\n",
+                "pub let kept = keep marker\n",
+            ),
+        );
+
+        assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
+    }
+
+    #[test]
+    fn validates_explicit_struct_argument_arity_and_field_types() {
+        for (source, expected) in [
+            (
+                concat!(
+                    "pub struct Box<A> { value: A }\n",
+                    "pub let bad = Box<String> { value: 42 }\n",
+                ),
+                "struct.field-type-mismatch",
+            ),
+            (
+                concat!(
+                    "pub struct Box<A> { value: A }\n",
+                    "pub let bad = Box<> { value: 42 }\n",
+                ),
+                "struct.type-argument-arity-mismatch",
+            ),
+            (
+                concat!(
+                    "pub struct Box<A> { value: A }\n",
+                    "pub let bad = Box<Int, String> { value: 42 }\n",
+                ),
+                "struct.type-argument-arity-mismatch",
+            ),
+            (
+                concat!(
+                    "pub struct Box<A> { value: A }\n",
+                    "pub let bad = Box<_> { value: 42 }\n",
+                ),
+                "struct.type-arguments-unresolved",
+            ),
+        ] {
+            let artifact = semantic_diagnostics("struct-explicit-invalid.ssrg", source);
+            assert_eq!(artifact.diagnostics.len(), 1, "{source}\n{artifact:#?}");
+            assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+            assert_eq!(artifact.diagnostics[0].message_key, expected);
+        }
     }
 
     #[test]
