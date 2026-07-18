@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "case": "generic-struct",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/generic-struct",
+    "export": "main",
+    "compiledModule": "../../schema-1/generic-struct/generated-module.json",
+    "typedInterface": "../../schema-1/generic-struct/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.int64",
+      "core.string",
+      "core.int64.show",
+      "core.unit",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Generic Struct: 42"],
+        "stdout": "Generic Struct: 42\n"
+      }
+    ]
+  }
+}

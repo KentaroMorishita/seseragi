@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "module": "artifact/generic-struct",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.string",
+      "core.int64.show",
+      "core.unit",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "inferred",
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

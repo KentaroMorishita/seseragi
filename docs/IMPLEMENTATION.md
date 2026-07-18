@@ -958,9 +958,13 @@ TypeScript backendは各Structへprivate unique-symbol brandを含むreadonly ob
 updateだけをそのnominal型へassertします。非opaqueなpublic Structのinterface representationにはclosed field recordを残し、
 consumerのsemantic catalogがconstruct / update / access / patternを同じ規則で検査できるようにします。opaque Structは
 representationを引き続き隠します。`schema-1/struct-profile`、`semantic-diagnostics-schema-1/struct-field-errors`、
-`project-schema-1/imported-struct`がlocal positive / negative / cross-module executionを分離して固定します。generic Structの
-argument inference、opaque smart constructorとfield visibility、struct deriving / implはこのowner付き型とinterface表現を
-維持した後続sliceです。
+`project-schema-1/imported-struct`がlocal positive / negative / cross-module executionを分離して固定します。
+generic Structは宣言fieldのsemantic templateとactual field / contextual result / spread ownerを既存generic callable substitutionへ
+渡し、宣言parameterごとのargumentを集めます。これにより`Box { value: 41 }`は`Box<Int>`になり、nested nominal argumentも
+同じ再帰置換を使います。複数fieldの矛盾はinstantiated field contractとの通常比較、未決定parameterは
+`struct.type-arguments-unresolved`で停止し、TypeScript inferenceへ意味判断を委譲しません。`schema-1/generic-struct`と同名executionが
+field inference、generic member / pattern、same-argument spread update、generated `Box<bigint>`を固定します。明示type argument付き
+construction、opaque smart constructorとfield visibility、struct deriving / implはこのowner付き型とinterface表現を維持した後続sliceです。
 
 公開interfaceだけでは、同一packageの「private宣言は存在する」と単なるtypoを区別できません。そのためfrontendは
 同じSurfaceAst passから、bodyと型schemeを含めずdeclaration name / namespace / visibility / canonical symbolだけを持つ

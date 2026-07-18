@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "module": "artifact/generic-struct",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/generic-struct::Box",
+      "namespace": "type",
+      "name": "Box",
+      "visibility": "public",
+      "declarationKind": "struct",
+      "declaration": {
+        "start": 0,
+        "end": 33
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Box",
+          "arity": 1
+        }
+      },
+      "representation": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

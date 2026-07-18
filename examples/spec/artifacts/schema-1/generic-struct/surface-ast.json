@@ -1,0 +1,499 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "struct",
+      "visibility": "public",
+      "name": "Box",
+      "nameSpan": {
+        "start": 11,
+        "end": 14
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 22,
+            "end": 27
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 29,
+              "end": 30
+            }
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 33
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "inferred",
+      "nameSpan": {
+        "start": 43,
+        "end": 51
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "struct",
+        "name": "Box",
+        "nameSpan": {
+          "start": 54,
+          "end": 57
+        },
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "nameSpan": {
+              "start": 60,
+              "end": 65
+            },
+            "value": {
+              "kind": "integer",
+              "raw": "42",
+              "span": {
+                "start": 67,
+                "end": 69
+              }
+            },
+            "span": {
+              "start": 60,
+              "end": 69
+            }
+          }
+        ],
+        "span": {
+          "start": 54,
+          "end": 71
+        }
+      },
+      "span": {
+        "start": 35,
+        "end": 71
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "replace",
+      "nameSpan": {
+        "start": 76,
+        "end": 83
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 87,
+            "end": 92
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 94,
+              "end": 95
+            }
+          }
+        },
+        {
+          "name": "box",
+          "nameSpan": {
+            "start": 99,
+            "end": 102
+          },
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 108,
+                  "end": 109
+                }
+              }
+            ],
+            "span": {
+              "start": 104,
+              "end": 110
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 118,
+              "end": 119
+            }
+          }
+        ],
+        "span": {
+          "start": 114,
+          "end": 120
+        }
+      },
+      "body": {
+        "kind": "struct",
+        "name": "Box",
+        "nameSpan": {
+          "start": 125,
+          "end": 128
+        },
+        "items": [
+          {
+            "kind": "spread",
+            "value": {
+              "kind": "name",
+              "name": "box",
+              "span": {
+                "start": 134,
+                "end": 137
+              }
+            },
+            "span": {
+              "start": 131,
+              "end": 137
+            }
+          },
+          {
+            "kind": "field",
+            "name": "value",
+            "nameSpan": {
+              "start": 139,
+              "end": 144
+            },
+            "value": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 139,
+                "end": 144
+              }
+            },
+            "span": {
+              "start": 139,
+              "end": 144
+            }
+          }
+        ],
+        "span": {
+          "start": 125,
+          "end": 146
+        }
+      },
+      "span": {
+        "start": 73,
+        "end": 146
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "unwrap",
+      "nameSpan": {
+        "start": 151,
+        "end": 157
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "box",
+          "nameSpan": {
+            "start": 161,
+            "end": 164
+          },
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 170,
+                  "end": 171
+                }
+              }
+            ],
+            "span": {
+              "start": 166,
+              "end": 172
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "A",
+        "span": {
+          "start": 176,
+          "end": 177
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "box",
+          "span": {
+            "start": 188,
+            "end": 191
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "struct",
+              "name": "Box",
+              "nameSpan": {
+                "start": 198,
+                "end": 201
+              },
+              "fields": [
+                {
+                  "name": "value",
+                  "nameSpan": {
+                    "start": 204,
+                    "end": 209
+                  },
+                  "pattern": {
+                    "kind": "name",
+                    "name": "value",
+                    "nameSpan": {
+                      "start": 204,
+                      "end": 209
+                    },
+                    "span": {
+                      "start": 204,
+                      "end": 209
+                    }
+                  },
+                  "span": {
+                    "start": 204,
+                    "end": 209
+                  }
+                }
+              ],
+              "span": {
+                "start": 198,
+                "end": 211
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 215,
+                "end": 220
+              }
+            },
+            "span": {
+              "start": 198,
+              "end": 220
+            }
+          }
+        ],
+        "span": {
+          "start": 182,
+          "end": 224
+        }
+      },
+      "span": {
+        "start": 148,
+        "end": 224
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "render",
+      "nameSpan": {
+        "start": 229,
+        "end": 235
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 236,
+            "end": 241
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 243,
+              "end": 246
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 250,
+          "end": 256
+        }
+      },
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "text",
+            "value": "Generic Struct: ",
+            "span": {
+              "start": 262,
+              "end": 278
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 280,
+                "end": 285
+              }
+            },
+            "span": {
+              "start": 278,
+              "end": 286
+            }
+          }
+        ],
+        "span": {
+          "start": 261,
+          "end": 287
+        }
+      },
+      "span": {
+        "start": 226,
+        "end": 287
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 303,
+        "end": 307
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 366,
+            "end": 373
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "render",
+            "span": {
+              "start": 354,
+              "end": 360
+            }
+          },
+          "argument": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "unwrap",
+              "span": {
+                "start": 342,
+                "end": 348
+              }
+            },
+            "argument": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "replace",
+                  "span": {
+                    "start": 326,
+                    "end": 333
+                  }
+                },
+                "argument": {
+                  "kind": "integer",
+                  "raw": "42",
+                  "span": {
+                    "start": 334,
+                    "end": 336
+                  }
+                },
+                "span": {
+                  "start": 326,
+                  "end": 336
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "inferred",
+                "span": {
+                  "start": 312,
+                  "end": 320
+                }
+              },
+              "span": {
+                "start": 312,
+                "end": 336
+              }
+            },
+            "span": {
+              "start": 312,
+              "end": 348
+            }
+          },
+          "span": {
+            "start": 312,
+            "end": 360
+          }
+        },
+        "span": {
+          "start": 312,
+          "end": 373
+        }
+      },
+      "span": {
+        "start": 289,
+        "end": 373
+      }
+    }
+  ]
+}

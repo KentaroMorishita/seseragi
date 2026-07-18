@@ -1,0 +1,983 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/generic-struct",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "struct",
+      "visibility": "public",
+      "name": "Box",
+      "nameSpan": {
+        "start": 11,
+        "end": 14
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 22,
+            "end": 27
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 29,
+              "end": 30
+            }
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 33
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "inferred",
+      "nameSpan": {
+        "start": 43,
+        "end": 51
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "struct",
+        "name": "Box",
+        "nameSpan": {
+          "start": 54,
+          "end": 57
+        },
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "nameSpan": {
+              "start": 60,
+              "end": 65
+            },
+            "value": {
+              "kind": "integer",
+              "raw": "42",
+              "span": {
+                "start": 67,
+                "end": 69
+              }
+            },
+            "span": {
+              "start": 60,
+              "end": 69
+            }
+          }
+        ],
+        "span": {
+          "start": 54,
+          "end": 71
+        }
+      },
+      "span": {
+        "start": 35,
+        "end": 71
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "replace",
+      "nameSpan": {
+        "start": 76,
+        "end": 83
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 87,
+            "end": 92
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 94,
+              "end": 95
+            }
+          }
+        },
+        {
+          "name": "box",
+          "nameSpan": {
+            "start": 99,
+            "end": 102
+          },
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 108,
+                  "end": 109
+                }
+              }
+            ],
+            "span": {
+              "start": 104,
+              "end": 110
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 118,
+              "end": 119
+            }
+          }
+        ],
+        "span": {
+          "start": 114,
+          "end": 120
+        }
+      },
+      "body": {
+        "kind": "struct",
+        "name": "Box",
+        "nameSpan": {
+          "start": 125,
+          "end": 128
+        },
+        "items": [
+          {
+            "kind": "spread",
+            "value": {
+              "kind": "name",
+              "name": "box",
+              "span": {
+                "start": 134,
+                "end": 137
+              }
+            },
+            "span": {
+              "start": 131,
+              "end": 137
+            }
+          },
+          {
+            "kind": "field",
+            "name": "value",
+            "nameSpan": {
+              "start": 139,
+              "end": 144
+            },
+            "value": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 139,
+                "end": 144
+              }
+            },
+            "span": {
+              "start": 139,
+              "end": 144
+            }
+          }
+        ],
+        "span": {
+          "start": 125,
+          "end": 146
+        }
+      },
+      "span": {
+        "start": 73,
+        "end": 146
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "unwrap",
+      "nameSpan": {
+        "start": 151,
+        "end": 157
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "box",
+          "nameSpan": {
+            "start": 161,
+            "end": 164
+          },
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 170,
+                  "end": 171
+                }
+              }
+            ],
+            "span": {
+              "start": 166,
+              "end": 172
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "A",
+        "span": {
+          "start": 176,
+          "end": 177
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "box",
+          "span": {
+            "start": 188,
+            "end": 191
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "struct",
+              "name": "Box",
+              "nameSpan": {
+                "start": 198,
+                "end": 201
+              },
+              "fields": [
+                {
+                  "name": "value",
+                  "nameSpan": {
+                    "start": 204,
+                    "end": 209
+                  },
+                  "pattern": {
+                    "kind": "name",
+                    "name": "value",
+                    "nameSpan": {
+                      "start": 204,
+                      "end": 209
+                    },
+                    "span": {
+                      "start": 204,
+                      "end": 209
+                    }
+                  },
+                  "span": {
+                    "start": 204,
+                    "end": 209
+                  }
+                }
+              ],
+              "span": {
+                "start": 198,
+                "end": 211
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 215,
+                "end": 220
+              }
+            },
+            "span": {
+              "start": 198,
+              "end": 220
+            }
+          }
+        ],
+        "span": {
+          "start": 182,
+          "end": 224
+        }
+      },
+      "span": {
+        "start": 148,
+        "end": 224
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "render",
+      "nameSpan": {
+        "start": 229,
+        "end": 235
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 236,
+            "end": 241
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 243,
+              "end": 246
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 250,
+          "end": 256
+        }
+      },
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "text",
+            "value": "Generic Struct: ",
+            "span": {
+              "start": 262,
+              "end": 278
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 280,
+                "end": 285
+              }
+            },
+            "span": {
+              "start": 278,
+              "end": 286
+            }
+          }
+        ],
+        "span": {
+          "start": 261,
+          "end": 287
+        }
+      },
+      "span": {
+        "start": 226,
+        "end": 287
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 303,
+        "end": 307
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 366,
+            "end": 373
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "render",
+            "span": {
+              "start": 354,
+              "end": 360
+            }
+          },
+          "argument": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "unwrap",
+              "span": {
+                "start": 342,
+                "end": 348
+              }
+            },
+            "argument": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "replace",
+                  "span": {
+                    "start": 326,
+                    "end": 333
+                  }
+                },
+                "argument": {
+                  "kind": "integer",
+                  "raw": "42",
+                  "span": {
+                    "start": 334,
+                    "end": 336
+                  }
+                },
+                "span": {
+                  "start": 326,
+                  "end": 336
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "inferred",
+                "span": {
+                  "start": 312,
+                  "end": 320
+                }
+              },
+              "span": {
+                "start": 312,
+                "end": 336
+              }
+            },
+            "span": {
+              "start": 312,
+              "end": 348
+            }
+          },
+          "span": {
+            "start": 312,
+            "end": 360
+          }
+        },
+        "span": {
+          "start": 312,
+          "end": 373
+        }
+      },
+      "span": {
+        "start": 289,
+        "end": 373
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 373
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 33
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 73,
+        "end": 146
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 148,
+        "end": 224
+      }
+    },
+    {
+      "id": 4,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 198,
+        "end": 220
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 226,
+        "end": 287
+      }
+    },
+    {
+      "id": 6,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 289,
+        "end": 373
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Box",
+      "canonical": "artifact/generic-struct::Box",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 11,
+        "end": 14
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "inferred",
+      "canonical": "artifact/generic-struct::inferred",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 43,
+        "end": 51
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "replace",
+      "canonical": "artifact/generic-struct::replace",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 76,
+        "end": 83
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "unwrap",
+      "canonical": "artifact/generic-struct::unwrap",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 151,
+        "end": 157
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "render",
+      "canonical": "artifact/generic-struct::render",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 229,
+        "end": 235
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "main",
+      "canonical": "artifact/generic-struct::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 303,
+        "end": 307
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 1,
+      "origin": {
+        "start": 0,
+        "end": 33
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 2,
+      "origin": {
+        "start": 73,
+        "end": 146
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 87,
+        "end": 92
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "box",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 99,
+        "end": 102
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 3,
+      "origin": {
+        "start": 148,
+        "end": 224
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "box",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 161,
+        "end": 164
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 4,
+      "origin": {
+        "start": 204,
+        "end": 209
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 5,
+      "origin": {
+        "start": 236,
+        "end": 241
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 29,
+        "end": 30
+      }
+    },
+    {
+      "spelling": "Box",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 54,
+        "end": 57
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 94,
+        "end": 95
+      }
+    },
+    {
+      "spelling": "Box",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 104,
+        "end": 110
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 108,
+        "end": 109
+      }
+    },
+    {
+      "spelling": "Box",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 114,
+        "end": 120
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 118,
+        "end": 119
+      }
+    },
+    {
+      "spelling": "Box",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 125,
+        "end": 128
+      }
+    },
+    {
+      "spelling": "box",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 134,
+        "end": 137
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 139,
+        "end": 144
+      }
+    },
+    {
+      "spelling": "Box",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 166,
+        "end": 172
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 170,
+        "end": 171
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 176,
+        "end": 177
+      }
+    },
+    {
+      "spelling": "box",
+      "namespace": "value",
+      "target": 11,
+      "origin": {
+        "start": 188,
+        "end": 191
+      }
+    },
+    {
+      "spelling": "Box",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 198,
+        "end": 201
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 215,
+        "end": 220
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 13,
+      "origin": {
+        "start": 243,
+        "end": 246
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 250,
+        "end": 256
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 280,
+        "end": 285
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 16,
+      "origin": {
+        "start": 366,
+        "end": 373
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 354,
+        "end": 360
+      }
+    },
+    {
+      "spelling": "unwrap",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 342,
+        "end": 348
+      }
+    },
+    {
+      "spelling": "replace",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 326,
+        "end": 333
+      }
+    },
+    {
+      "spelling": "inferred",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 312,
+        "end": 320
+      }
+    }
+  ],
+  "issues": []
+}

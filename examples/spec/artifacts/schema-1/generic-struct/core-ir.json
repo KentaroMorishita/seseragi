@@ -1,0 +1,525 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/generic-struct",
+  "structs": [
+    {
+      "symbol": "artifact/generic-struct::Box",
+      "name": "Box",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 22,
+            "end": 27
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 33
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "symbol": "artifact/generic-struct::inferred",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 35,
+        "end": 71
+      },
+      "value": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "int64",
+              "value": "42",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 67,
+                "end": 69
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 60,
+              "end": 69
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 54,
+          "end": 71
+        }
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/generic-struct::replace",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 73,
+        "end": 146
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        },
+        {
+          "id": "box",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "spread",
+            "value": {
+              "kind": "variable",
+              "name": "box",
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 134,
+                "end": 137
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 131,
+              "end": 137
+            }
+          },
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 139,
+                "end": 144
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 139,
+              "end": 144
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 125,
+          "end": 146
+        }
+      }
+    },
+    {
+      "symbol": "artifact/generic-struct::unwrap",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 148,
+        "end": 224
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "id": "box",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "box",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 188,
+            "end": 191
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "value"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 204,
+                  "end": 209
+                }
+              }
+            ],
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 215,
+                "end": 220
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 198,
+              "end": 220
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 182,
+          "end": 224
+        }
+      }
+    },
+    {
+      "symbol": "artifact/generic-struct::render",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 226,
+        "end": 287
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "text",
+            "value": "Generic Struct: ",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 262,
+              "end": 278
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 280,
+                "end": 285
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::Int>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 278,
+              "end": 286
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 261,
+          "end": 287
+        }
+      }
+    },
+    {
+      "symbol": "artifact/generic-struct::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 289,
+        "end": 373
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/generic-struct::render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/generic-struct::unwrap",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "artifact/generic-struct::replace",
+                    "arguments": [
+                      {
+                        "kind": "int64",
+                        "value": "42",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 334,
+                          "end": 336
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "inferred",
+                        "type": {
+                          "kind": "hole"
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 312,
+                          "end": 320
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 312,
+                      "end": 336
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 312,
+                  "end": 348
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 312,
+              "end": 360
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 312,
+          "end": 373
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/generic-struct"
+  ],
+  "sourcesContent": [
+    "pub struct Box<A> {\n  value: A,\n}\n\npub let inferred = Box { value: 42 }\n\nfn replace<A> value: A -> box: Box<A> -> Box<A> =\n  Box { ...box, value }\n\nfn unwrap<A> box: Box<A> -> A =\n  match box {\n    Box { value } -> value\n  }\n\nfn render value: Int -> String =\n  `Generic Struct: ${value}`\n\npub effect fn main =\n  inferred\n  |> replace 42\n  |> unwrap\n  |> render\n  |> println\n"
+  ],
+  "names": [
+    "Box",
+    "inferred",
+    "replace",
+    "unwrap",
+    "value",
+    "render",
+    "intShow",
+    "main",
+    "println",
+    "render",
+    "unwrap",
+    "replace"
+  ],
+  "mappings": ";;;;AAAAA;;;;AAIAC;AAEAC;AAGAC;AAKAE;AAGAE"
+}

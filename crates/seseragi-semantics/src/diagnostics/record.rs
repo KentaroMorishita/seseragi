@@ -56,6 +56,13 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
             *structure,
             format!("struct construction is missing required field `{name}`"),
         ),
+        RecordIssue::StructTypeArgumentsUnresolved { structure, name } => (
+            "struct.type-arguments-unresolved",
+            *structure,
+            format!(
+                "struct `{name}` type arguments cannot be inferred from its fields or expected type"
+            ),
+        ),
         RecordIssue::StructFieldType {
             field,
             name,
@@ -163,7 +170,7 @@ mod tests {
             ),
         ] {
             let artifact = semantic_diagnostics("record-invalid.ssrg", source);
-            assert_eq!(artifact.diagnostics.len(), 1, "{artifact:#?}");
+            assert_eq!(artifact.diagnostics.len(), 1, "{source}\n{artifact:#?}");
             assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
             assert_eq!(artifact.diagnostics[0].message_key, expected);
         }
@@ -182,6 +189,47 @@ mod tests {
         );
 
         assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
+    }
+
+    #[test]
+    fn infers_generic_struct_arguments_from_fields_and_spread_updates() {
+        let artifact = semantic_diagnostics(
+            "struct-box.ssrg",
+            concat!(
+                "pub struct Box<A> { value: A }\n",
+                "pub let inferred = Box { value: 42 }\n",
+                "fn replace<A> value: A -> box: Box<A> -> Box<A> = Box { ...box, value }\n",
+                "fn unwrap<A> box: Box<A> -> A = box.value\n",
+                "pub fn answer -> Int = inferred |> replace 42 |> unwrap\n",
+            ),
+        );
+
+        assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
+    }
+
+    #[test]
+    fn reports_conflicting_or_unresolved_generic_struct_arguments() {
+        for (source, expected) in [
+            (
+                concat!(
+                    "pub struct Pair<A> { left: A, right: A }\n",
+                    "pub let bad = Pair { left: 1, right: \"two\" }\n",
+                ),
+                "struct.field-type-mismatch",
+            ),
+            (
+                concat!(
+                    "pub struct Marker<A> { label: String }\n",
+                    "pub let bad = Marker { label: \"unknown\" }\n",
+                ),
+                "struct.type-arguments-unresolved",
+            ),
+        ] {
+            let artifact = semantic_diagnostics("struct-generic-invalid.ssrg", source);
+            assert_eq!(artifact.diagnostics.len(), 1, "{source}\n{artifact:#?}");
+            assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+            assert_eq!(artifact.diagnostics[0].message_key, expected);
+        }
     }
 
     #[test]

@@ -1,0 +1,23 @@
+pub struct Box<A> {
+  value: A,
+}
+
+pub let inferred = Box { value: 42 }
+
+fn replace<A> value: A -> box: Box<A> -> Box<A> =
+  Box { ...box, value }
+
+fn unwrap<A> box: Box<A> -> A =
+  match box {
+    Box { value } -> value
+  }
+
+fn render value: Int -> String =
+  `Generic Struct: ${value}`
+
+pub effect fn main =
+  inferred
+  |> replace 42
+  |> unwrap
+  |> render
+  |> println

@@ -25,6 +25,7 @@ pub(super) fn collect_let_binding_diagnostics(
     if analysis.array_issue.is_some()
         || analysis.range_issue.is_some()
         || analysis.conditional_issue.is_some()
+        || analysis.record_issue.is_some()
         || analysis.pure_call_issue.is_some()
     {
         super::array::collect_array_diagnostic(
@@ -34,6 +35,11 @@ pub(super) fn collect_let_binding_diagnostics(
         );
         super::range::collect_range_diagnostic(
             analysis.range_issue.as_ref(),
+            declaration,
+            diagnostics,
+        );
+        super::record::collect_record_diagnostic(
+            analysis.record_issue.as_ref(),
             declaration,
             diagnostics,
         );

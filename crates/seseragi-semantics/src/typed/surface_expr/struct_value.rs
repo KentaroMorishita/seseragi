@@ -6,7 +6,7 @@ use seseragi_syntax::{ByteSpan, SurfaceRecordItem};
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
 use crate::typed::pure_issues::RecordIssue;
 use crate::typed::semantic_types::{
-    semantic_values_are_compatible, SemanticTypeKey, SemanticValueType,
+    instantiate_callable, semantic_values_are_compatible, SemanticTypeKey, SemanticValueType,
 };
 use crate::typed::type_ref::inferred_type_from_expr;
 
@@ -24,24 +24,112 @@ pub(super) fn type_struct(
         return invalid_struct(name, items, span, context);
     };
 
-    let arguments = match context.expected().map(|expected| &expected.key) {
+    let contextual_arguments = match context.expected().map(|expected| &expected.key) {
         Some(SemanticTypeKey::Struct {
             owner: expected_owner,
             arguments,
-        }) if *expected_owner == owner => arguments.clone(),
-        _ if struct_type.type_parameters.is_empty() => Vec::new(),
-        _ => struct_type
-            .type_parameter_names
+        }) if *expected_owner == owner => Some(arguments.clone()),
+        _ if struct_type.type_parameters.is_empty() => Some(Vec::new()),
+        _ => None,
+    };
+    let contextual_fields = contextual_arguments
+        .as_ref()
+        .and_then(|arguments| {
+            context
+                .semantic_types()
+                .instantiate_struct_fields(owner, arguments)
+        })
+        .unwrap_or_default()
+        .into_iter()
+        .map(|field| (field.name, field.type_ref))
+        .collect::<BTreeMap<_, _>>();
+
+    let mut analyzed_items = Vec::with_capacity(items.len());
+    for item in items {
+        let expected = match item {
+            SurfaceRecordItem::Field { name, .. } => contextual_fields.get(name).cloned(),
+            SurfaceRecordItem::Spread { .. } => None,
+        };
+        let analysis = type_surface_expression(
+            item.value(),
+            &expected.map_or_else(
+                || context.without_expected(),
+                |expected| context.with_expected(Some(expected)),
+            ),
+        );
+        analyzed_items.push((item, analysis));
+    }
+
+    let arguments = contextual_arguments.unwrap_or_else(|| {
+        let parameter_arguments = struct_type
+            .type_parameters
             .iter()
-            .map(|parameter| SemanticValueType {
+            .zip(&struct_type.type_parameter_names)
+            .map(|(parameter, name)| SemanticValueType {
                 type_ref: TypedType::Named {
-                    name: parameter.clone(),
+                    name: name.clone(),
                     arguments: Vec::new(),
                 },
-                key: SemanticTypeKey::Invalid,
+                key: SemanticTypeKey::TypeParameter(*parameter),
             })
-            .collect(),
-    };
+            .collect::<Vec<_>>();
+        let result_template = SemanticValueType {
+            type_ref: TypedType::Named {
+                name: struct_type.name.clone(),
+                arguments: parameter_arguments
+                    .iter()
+                    .map(|argument| argument.type_ref.clone())
+                    .collect(),
+            },
+            key: SemanticTypeKey::Struct {
+                owner,
+                arguments: parameter_arguments,
+            },
+        };
+        let mut templates = Vec::new();
+        let mut actuals = Vec::new();
+        let mut spread_type = None;
+        for (item, analysis) in &analyzed_items {
+            let actual = SemanticValueType {
+                type_ref: inferred_type_from_expr(&analysis.value),
+                key: analysis.semantic_type.clone(),
+            };
+            match item {
+                SurfaceRecordItem::Field { name, .. } => {
+                    if let Some(field) = struct_type.fields.iter().find(|field| field.name == *name)
+                    {
+                        templates.push(field.type_ref.clone());
+                        actuals.push(actual);
+                    }
+                }
+                SurfaceRecordItem::Spread { .. }
+                    if matches!(
+                        &actual.key,
+                        SemanticTypeKey::Struct {
+                            owner: actual_owner,
+                            ..
+                        } if *actual_owner == owner
+                    ) =>
+                {
+                    spread_type.get_or_insert(actual);
+                }
+                SurfaceRecordItem::Spread { .. } => {}
+            }
+        }
+        let inferred =
+            instantiate_callable(&templates, spread_type.as_ref(), &actuals, &result_template);
+        match inferred.result.key {
+            SemanticTypeKey::Struct { arguments, .. } => arguments,
+            _ => Vec::new(),
+        }
+    });
+    let has_unresolved_arguments = arguments.iter().any(|argument| {
+        matches!(
+            &argument.key,
+            SemanticTypeKey::TypeParameter(parameter)
+                if struct_type.type_parameters.contains(parameter)
+        )
+    });
     let expected_type = TypedType::Named {
         name: struct_type.name.clone(),
         arguments: arguments
@@ -64,7 +152,7 @@ pub(super) fn type_struct(
     let mut issue = None;
     let mut spread_count = 0;
 
-    for (index, item) in items.iter().enumerate() {
+    for (index, (item, analysis)) in analyzed_items.into_iter().enumerate() {
         match item {
             SurfaceRecordItem::Field {
                 name,
@@ -86,8 +174,6 @@ pub(super) fn type_struct(
                         structure: struct_type.name.clone(),
                     });
                 }
-                let analysis =
-                    type_surface_expression(value, &context.with_expected(expected.clone()));
                 if let Some(expected) = expected {
                     let actual = SemanticValueType {
                         type_ref: inferred_type_from_expr(&analysis.value),
@@ -109,7 +195,7 @@ pub(super) fn type_struct(
                 });
                 children.push(analysis);
             }
-            SurfaceRecordItem::Spread { value, span } => {
+            SurfaceRecordItem::Spread { value: _, span } => {
                 spread_count += 1;
                 if index != 0 {
                     issue.get_or_insert(RecordIssue::StructSpreadPosition { spread: *span });
@@ -117,7 +203,6 @@ pub(super) fn type_struct(
                 if spread_count > 1 {
                     issue.get_or_insert(RecordIssue::MultipleStructSpreads { spread: *span });
                 }
-                let analysis = type_surface_expression(value, &context.without_expected());
                 let actual = SemanticValueType {
                     type_ref: inferred_type_from_expr(&analysis.value),
                     key: analysis.semantic_type.clone(),
@@ -155,6 +240,12 @@ pub(super) fn type_struct(
                 break;
             }
         }
+    }
+    if issue.is_none() && has_unresolved_arguments {
+        issue = Some(RecordIssue::StructTypeArgumentsUnresolved {
+            structure: name_span,
+            name: struct_type.name.clone(),
+        });
     }
 
     let semantic_type = if issue.is_some() {

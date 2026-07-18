@@ -1,0 +1,306 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/generic-struct",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.string",
+    "core.int64.show",
+    "core.unit",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "structs": [
+    {
+      "exported": true,
+      "name": "Box",
+      "brand": "__ssrg$brand$Box",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 33
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "inferred",
+      "type": {
+        "kind": "reference",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "bigint"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "bigint",
+              "value": "42"
+            }
+          }
+        ],
+        "assertedType": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "bigint"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 35,
+        "end": 71
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "replace",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        },
+        {
+          "name": "box",
+          "type": "Box<A>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "spread",
+            "value": {
+              "kind": "identifier",
+              "name": "box"
+            }
+          },
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          }
+        ],
+        "assertedType": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 73,
+        "end": 146
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "unwrap",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "box",
+          "type": "Box<A>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "box"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "value"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 148,
+        "end": 224
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "string",
+          "value": "Generic Struct: "
+        },
+        "right": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_intShow"
+          },
+          "method": "show",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 226,
+        "end": 287
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "unwrap",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "replace",
+                    "arguments": [
+                      {
+                        "kind": "bigint",
+                        "value": "42"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "inferred"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 289,
+        "end": 373
+      }
+    }
+  ]
+}

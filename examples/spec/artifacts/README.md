@@ -234,6 +234,11 @@ operation-only standard traitのdictionary ABIは独立した後続gateです。
 `schema-1/struct-profile`は`Show<Int>` dictionaryをtemplate interpolationから選び、実際のdecimal出力を固定します。
 `Add` / `Eq` / `Iterable` / `Reducible`は専用operation ABIのままであり、このfixtureは存在しないdictionaryを捏造しません。
 
+`schema-1/generic-struct`は`pub struct Box<A> { value: A }`のconstructionから`A = Int`を推論し、
+`pub let inferred`のcontractを`Box<Int>`としてTypedInterfaceへ固定します。generic `replace`は元のBoxから同じargumentを保つ
+spread update、generic `unwrap`はStruct patternとmember substitutionを通り、生成TypeScriptはnominal brandを保った
+`Box<bigint>`を出力します。`execution-schema-1/generic-struct`とPlaygroundの`Generic Structの推論`が42のactual outputを固定します。
+
 `schema-1/partial-functor-value`は`map increment`を期待関数型`Maybe<Int> -> Maybe<Int>`から具体化し、
 選択済み`Functor<Maybe>` dictionary methodの部分適用をhigher-order引数へ渡します。TypedHir / CoreIrのevidence、
 TypeScriptIrのdictionary call、生成TS、`execution-schema-1/partial-functor-value`の`Just 42`を一つのgateで固定します。

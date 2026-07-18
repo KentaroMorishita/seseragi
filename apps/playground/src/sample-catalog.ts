@@ -145,6 +145,15 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "Mio: perfect 42",
   },
   {
+    id: "generic-struct",
+    label: "Generic Structの推論",
+    category: "型と抽象化",
+    sourcePath:
+      "examples/spec/artifacts/schema-1/generic-struct/main.ssrg",
+    stdin: "",
+    expectedOutput: "Generic Struct: 42",
+  },
+  {
     id: "user-add-operator",
     label: "自作の足し算",
     category: "型と抽象化",

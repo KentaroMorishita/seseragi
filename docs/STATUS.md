@@ -220,7 +220,10 @@ nested literal testをactual executionまで固定します。Structは`Semantic
 TypeScript typeへunique-symbol brandを加え、型検査済みのconstructionだけをnominal型へassertします。
 `semantic-diagnostics-schema-1/struct-field-errors`はmissing / unknown / mismatched fieldと別nominal型からのspreadを拒否します。
 非opaqueな公開Structはfield contractをinterfaceへ残し、`project-schema-1/imported-struct`がconsumerでのconstruct / update /
-patternとtype-only import、actual executionを固定します。opaque Structはrepresentationを公開しません。generic argument inference、
+patternとtype-only import、actual executionを固定します。`schema-1/generic-struct`はfield制約から
+`Box { value: 41 }`を`Box<Int>`へ推論し、generic member / pattern / same-argument spread updateをactual executionまで通します。
+同じparameterへ矛盾するfield型が集まる場合と、field / expected typeのどちらからもargumentを決められない場合は
+`SES-T0101`で停止します。opaque Structはrepresentationを公開しません。明示`Box<String> { ... }` construction、
 opaque smart constructor / field visibility、struct deriving / implは後続gateです。
 `schema-1/user-add-operator`はoperand型からlocal `Add<Score, Int, Score>`を選択し、binary `+`と
 curried operator section `(+)`を同じ生成dictionaryの`add` method callへlowerします。`Array<Int>`の`reduce`は

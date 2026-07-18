@@ -90,6 +90,10 @@ pub(crate) enum RecordIssue {
         structure: ByteSpan,
         name: String,
     },
+    StructTypeArgumentsUnresolved {
+        structure: ByteSpan,
+        name: String,
+    },
     StructFieldType {
         field: ByteSpan,
         name: String,
