@@ -2,7 +2,10 @@ use crate::{
     SymbolId, SymbolKind, SymbolNamespace, TypedConstraint, TypedExpr, TypedParameter,
     TypedTemplatePart, TypedType,
 };
-use seseragi_syntax::{ByteSpan, SurfaceExpr, SurfaceRecordItem, SurfaceTemplatePart};
+use seseragi_syntax::{
+    standard_operator, ByteSpan, StandardOperator, StandardOperatorKind, SurfaceExpr,
+    SurfaceRecordItem, SurfaceTemplatePart,
+};
 use std::collections::BTreeMap;
 
 use super::functions::TopLevelPureFunction;
@@ -235,6 +238,21 @@ impl<'a> PureExpressionContext<'a> {
     ) -> Result<crate::TypedCallEvidence, TypedConstraint> {
         let trait_identity = self.trait_identity("Eq");
         super::call_evidence::select_binary_equality_evidence(
+            left,
+            right,
+            trait_identity.as_deref(),
+            self.resolution,
+            &self.evidence_parameters,
+        )
+    }
+
+    pub(super) fn select_equality_operator_reference_evidence(
+        &self,
+        left: TypedType,
+        right: TypedType,
+    ) -> Result<(TypedType, crate::TypedCallEvidence), TypedConstraint> {
+        let trait_identity = self.trait_identity("Eq");
+        super::call_evidence::select_equality_operator_reference_evidence(
             left,
             right,
             trait_identity.as_deref(),
@@ -664,8 +682,8 @@ fn type_name(
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
-    if is_arithmetic_operator_reference(name) {
-        return type_arithmetic_operator_reference(name, span, context);
+    if let Some(operator) = standard_operator(name) {
+        return type_standard_operator_reference(operator, span, context);
     }
     let Some(target) = context
         .target(span)
@@ -723,8 +741,8 @@ fn type_name(
     )
 }
 
-fn type_arithmetic_operator_reference(
-    name: &str,
+fn type_standard_operator_reference(
+    operator: &StandardOperator,
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
@@ -732,25 +750,57 @@ fn type_arithmetic_operator_reference(
     let (left, right, output) = context
         .expected()
         .and_then(|expected| curried_binary_parts(&expected.type_ref))
-        .unwrap_or_else(|| (named_type("Int"), named_type("Int"), named_type("Int")));
+        .unwrap_or_else(|| match operator.kind {
+            StandardOperatorKind::Arithmetic => {
+                (named_type("Int"), named_type("Int"), named_type("Int"))
+            }
+            StandardOperatorKind::Equality => {
+                (named_type("Int"), named_type("Int"), named_type("Bool"))
+            }
+        });
     let mut missing_instance = None;
     let (type_ref, evidence) = if valid {
-        match context.select_binary_operator_reference_evidence(
-            arithmetic_trait_name(name),
-            left,
-            right,
-            output,
-        ) {
-            Ok(([left, right, output], evidence)) => (
-                curried_binary_type_with_parameters(left, right, output),
-                vec![evidence],
-            ),
-            Err(constraint) => {
-                missing_instance = Some(super::pure_issues::PureCallIssue::MissingInstance {
-                    callee: span,
-                    constraint,
-                });
-                (TypedType::Hole, Vec::new())
+        match operator.kind {
+            StandardOperatorKind::Arithmetic => {
+                match context.select_binary_operator_reference_evidence(
+                    operator.trait_name,
+                    left,
+                    right,
+                    output,
+                ) {
+                    Ok(([left, right, output], evidence)) => (
+                        curried_binary_type_with_parameters(left, right, output),
+                        vec![evidence],
+                    ),
+                    Err(constraint) => {
+                        missing_instance =
+                            Some(super::pure_issues::PureCallIssue::MissingInstance {
+                                callee: span,
+                                constraint,
+                            });
+                        (TypedType::Hole, Vec::new())
+                    }
+                }
+            }
+            StandardOperatorKind::Equality => {
+                match context.select_equality_operator_reference_evidence(left, right) {
+                    Ok((value, evidence)) => (
+                        curried_binary_type_with_parameters(
+                            value.clone(),
+                            value,
+                            named_type("Bool"),
+                        ),
+                        vec![evidence],
+                    ),
+                    Err(constraint) => {
+                        missing_instance =
+                            Some(super::pure_issues::PureCallIssue::MissingInstance {
+                                callee: span,
+                                constraint,
+                            });
+                        (TypedType::Hole, Vec::new())
+                    }
+                }
             }
         }
     } else {
@@ -758,7 +808,7 @@ fn type_arithmetic_operator_reference(
     };
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         TypedExpr::Variable {
-            name: name.to_owned(),
+            name: operator.spelling.to_owned(),
             evidence,
             type_ref,
             origin: span,
@@ -807,22 +857,6 @@ fn curried_binary_parts(type_ref: &TypedType) -> Option<(TypedType, TypedType, T
         right.as_ref().clone(),
         output.as_ref().clone(),
     ))
-}
-
-fn arithmetic_trait_name(operator: &str) -> &'static str {
-    match operator {
-        "+" => "Add",
-        "-" => "Sub",
-        "*" => "Mul",
-        "/" => "Div",
-        "%" => "Rem",
-        "**" => "Pow",
-        _ => unreachable!("arithmetic operator reference must have a standard trait"),
-    }
-}
-
-fn is_arithmetic_operator_reference(name: &str) -> bool {
-    matches!(name, "+" | "-" | "*" | "/" | "%" | "**")
 }
 
 pub(super) fn named_type(name: &str) -> TypedType {

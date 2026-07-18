@@ -1,0 +1,55 @@
+// equality operator sectionは選択したEq dictionaryをcurried callbackへ捕捉します。
+type Status =
+  | Ready
+  | Waiting
+
+instance Eq<Status> {
+  fn eq left: Status -> right: Status -> Bool =
+    match (left, right) {
+      (Ready, Ready) -> True
+      (Waiting, Waiting) -> True
+      _ -> False
+    }
+}
+
+fn applyComparison
+  compare: (Status -> Status -> Bool)
+  -> left: Status
+  -> right: Status
+  -> Bool =
+  compare left right
+
+fn applyIntComparison
+  compare: (Int -> Int -> Bool)
+  -> left: Int
+  -> right: Int
+  -> Bool =
+  compare left right
+
+fn applyEquality<T>
+  compare: (T -> T -> Bool)
+  -> left: T
+  -> right: T
+  -> Bool =
+  compare left right
+
+fn genericSame<T> left: T -> right: T -> Bool
+where Eq<T> =
+  applyEquality (==) left right
+
+fn render checks: (Bool, Bool, Bool, Bool, Bool) -> String =
+  match checks {
+    (True, True, True, True, True) -> "Equality sections: same / different"
+    _ -> "unexpected equality section result"
+  }
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ render (
+    applyComparison (==) Ready Ready,
+    applyComparison (!=) Ready Waiting,
+    applyIntComparison (==) 42 42,
+    applyIntComparison (!=) 42 41,
+    genericSame Waiting Waiting
+  )

@@ -1,0 +1,723 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/equality-operator-section",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.bool",
+    "core.int64",
+    "core.string",
+    "core.unit",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "Status",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Ready",
+          "tag": "Ready",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 115,
+            "end": 120
+          }
+        },
+        {
+          "exported": false,
+          "name": "Waiting",
+          "tag": "Waiting",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 125,
+            "end": 132
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 97,
+        "end": 132
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/equality-operator-section::Status>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Status",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 134,
+        "end": 316
+      },
+      "dictionaryExport": "__ssrg$instance$Eq$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "parameters": [
+              {
+                "name": "left",
+                "type": "Status",
+                "implicit": false
+              },
+              {
+                "name": "right",
+                "type": "Status",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "identifier",
+                    "name": "left"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "right"
+                  }
+                ]
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "reference",
+                    "name": "Status",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "Status",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "tag": "Ready"
+                    },
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "tag": "Ready"
+                    }
+                  ],
+                  "value": {
+                    "kind": "boolean",
+                    "value": true
+                  }
+                },
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "tag": "Waiting"
+                    },
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "tag": "Waiting"
+                    }
+                  ],
+                  "value": {
+                    "kind": "boolean",
+                    "value": true
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                }
+              ],
+              "type": {
+                "kind": "boolean"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 158,
+              "end": 314
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "applyComparison",
+      "parameters": [
+        {
+          "name": "compare",
+          "type": "(argument: Status) => (argument: Status) => boolean",
+          "implicit": false
+        },
+        {
+          "name": "left",
+          "type": "Status",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "Status",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "compare",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 318,
+        "end": 444
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "applyIntComparison",
+      "parameters": [
+        {
+          "name": "compare",
+          "type": "(argument: bigint) => (argument: bigint) => boolean",
+          "implicit": false
+        },
+        {
+          "name": "left",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "compare",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 446,
+        "end": 563
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "applyEquality",
+      "typeParameters": [
+        "T"
+      ],
+      "parameters": [
+        {
+          "name": "compare",
+          "type": "(argument: T) => (argument: T) => boolean",
+          "implicit": false
+        },
+        {
+          "name": "left",
+          "type": "T",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "T",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "compare",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 565,
+        "end": 672
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "genericSame",
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Eq",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "type": "T",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "T",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "applyEquality",
+        "arguments": [
+          {
+            "kind": "lambda",
+            "parameter": "_argument0",
+            "body": {
+              "kind": "lambda",
+              "parameter": "_argument1",
+              "body": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                },
+                "method": "eq",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "_argument0"
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "_argument1"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 674,
+        "end": 765
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "checks",
+          "type": "readonly [boolean, boolean, boolean, boolean, boolean]",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "checks"
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "boolean"
+            },
+            {
+              "kind": "boolean"
+            },
+            {
+              "kind": "boolean"
+            },
+            {
+              "kind": "boolean"
+            },
+            {
+              "kind": "boolean"
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "boolean-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "value": true
+              },
+              {
+                "kind": "boolean-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "value": true
+              },
+              {
+                "kind": "boolean-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 2
+                  }
+                ],
+                "value": true
+              },
+              {
+                "kind": "boolean-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 3
+                  }
+                ],
+                "value": true
+              },
+              {
+                "kind": "boolean-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 4
+                  }
+                ],
+                "value": true
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Equality sections: same / different"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "unexpected equality section result"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 767,
+        "end": 970
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "call",
+                    "callee": "applyComparison",
+                    "arguments": [
+                      {
+                        "kind": "lambda",
+                        "parameter": "_argument0",
+                        "body": {
+                          "kind": "lambda",
+                          "parameter": "_argument1",
+                          "body": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "identifier",
+                              "name": "__ssrg$instance$Eq$0"
+                            },
+                            "method": "eq",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "_argument0"
+                              },
+                              {
+                                "kind": "identifier",
+                                "name": "_argument1"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "Ready"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "Ready"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "applyComparison",
+                    "arguments": [
+                      {
+                        "kind": "lambda",
+                        "parameter": "_argument0",
+                        "body": {
+                          "kind": "lambda",
+                          "parameter": "_argument1",
+                          "body": {
+                            "kind": "binary",
+                            "operator": "===",
+                            "left": {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "identifier",
+                                "name": "__ssrg$instance$Eq$0"
+                              },
+                              "method": "eq",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "_argument0"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "_argument1"
+                                }
+                              ]
+                            },
+                            "right": {
+                              "kind": "boolean",
+                              "value": false
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "Ready"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "Waiting"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "applyIntComparison",
+                    "arguments": [
+                      {
+                        "kind": "lambda",
+                        "parameter": "_argument0",
+                        "body": {
+                          "kind": "lambda",
+                          "parameter": "_argument1",
+                          "body": {
+                            "kind": "binary",
+                            "operator": "===",
+                            "left": {
+                              "kind": "identifier",
+                              "name": "_argument0"
+                            },
+                            "right": {
+                              "kind": "identifier",
+                              "name": "_argument1"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "42"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "42"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "applyIntComparison",
+                    "arguments": [
+                      {
+                        "kind": "lambda",
+                        "parameter": "_argument0",
+                        "body": {
+                          "kind": "lambda",
+                          "parameter": "_argument1",
+                          "body": {
+                            "kind": "binary",
+                            "operator": "!==",
+                            "left": {
+                              "kind": "identifier",
+                              "name": "_argument0"
+                            },
+                            "right": {
+                              "kind": "identifier",
+                              "name": "_argument1"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "42"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "41"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "genericSame",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "Waiting"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "Waiting"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "__ssrg$instance$Eq$0"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 972,
+        "end": 1237
+      }
+    }
+  ]
+}

@@ -45,6 +45,13 @@ pub(crate) struct PreludeStandardInstance {
     pub(crate) identity: &'static str,
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct StandardEqualityInstance {
+    pub type_name: &'static str,
+    pub identity: &'static str,
+    pub strict_equality_compatible: bool,
+}
+
 pub(crate) const TRAITS: &[PreludeTrait] = &[
     PreludeTrait {
         name: "Functor",
@@ -171,6 +178,24 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     },
 ];
 
+const STANDARD_EQUALITY_INSTANCES: &[StandardEqualityInstance] = &[
+    StandardEqualityInstance {
+        type_name: "Int",
+        identity: "std/int::Eq",
+        strict_equality_compatible: true,
+    },
+    StandardEqualityInstance {
+        type_name: "Bool",
+        identity: "std/bool::Eq",
+        strict_equality_compatible: true,
+    },
+    StandardEqualityInstance {
+        type_name: "String",
+        identity: "std/string::Eq",
+        strict_equality_compatible: true,
+    },
+];
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) struct PreludeSumType {
     pub(crate) name: &'static str,
@@ -274,10 +299,10 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
                 | "unfold"
                 | "next"
         ),
-        SymbolNamespace::Operator => matches!(
-            spelling,
-            "+" | "-" | "*" | "/" | "%" | "==" | "!=" | "<" | "<=" | ">" | ">="
-        ),
+        SymbolNamespace::Operator => {
+            seseragi_syntax::standard_operator(spelling).is_some()
+                || matches!(spelling, "<" | "<=" | ">" | ">=")
+        }
         SymbolNamespace::Trait => matches!(
             spelling,
             "Eq" | "Ord"
@@ -422,6 +447,26 @@ pub(crate) fn standard_instance_by_identity(
     identity: &str,
 ) -> Option<&'static PreludeStandardInstance> {
     STANDARD_INSTANCES
+        .iter()
+        .find(|instance| instance.identity == identity)
+}
+
+pub(crate) fn standard_equality_instance(
+    type_ref: &TypedType,
+) -> Option<&'static StandardEqualityInstance> {
+    let TypedType::Named { name, arguments } = type_ref else {
+        return None;
+    };
+    arguments.is_empty().then_some(())?;
+    STANDARD_EQUALITY_INSTANCES
+        .iter()
+        .find(|instance| instance.type_name == name)
+}
+
+pub fn standard_equality_instance_by_identity(
+    identity: &str,
+) -> Option<&'static StandardEqualityInstance> {
+    STANDARD_EQUALITY_INSTANCES
         .iter()
         .find(|instance| instance.identity == identity)
 }

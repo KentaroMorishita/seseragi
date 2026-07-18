@@ -1,0 +1,12 @@
+type Status =
+  | Ready
+
+fn applyComparison
+  compare: (Status -> Status -> Bool)
+  -> left: Status
+  -> right: Status
+  -> Bool =
+  compare left right
+
+fn invalid -> Bool =
+  applyComparison (==) Ready Ready

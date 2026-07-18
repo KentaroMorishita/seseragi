@@ -123,6 +123,11 @@ JSON outputで固定します。`schema-1/user-eq-operator/`はlocal `Eq<Status>
 `project-schema-1/imported-user-eq-operator/`がlocal / scoped / imported dispatchを固定し、`eq-missing/`は
 instanceのないADT比較を拒否します。strict equalityやJavaScript object identityをEq instance選択の代用にはしません。
 
+`schema-1/equality-operator-section/`は`(==)` / `(!=)`をcurried関数値としてhigher-order callへ渡し、
+local / generic scoped `Eq<Status>` dictionaryとstandard `Eq<Int>`の選択済みevidenceを同じpipelineで保持します。
+`execution-schema-1/equality-operator-section/`はdictionary callbackとstandard strict equalityの両方をactual executionし、
+`semantic-diagnostics-schema-1/equality-operator-section-missing/`は対応instanceのない関数値を`instance.missing`で停止します。
+
 `schema-1/parse-hand-either/`はString literal matchの結果をstandard `Either<HandInputError, Hand>`で返します。
 `execution-schema-1/parse-hand-either-valid/`と`parse-hand-either-invalid/`はpure entryへtyped String引数を渡し、
 生成TypeScriptとversioned runtimeを通した`Right Rock` / `Left (UnknownHand input)`をJSONで固定します。

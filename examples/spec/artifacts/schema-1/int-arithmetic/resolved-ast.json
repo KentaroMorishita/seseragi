@@ -832,6 +832,18 @@
         "start": 330,
         "end": 338
       }
+    },
+    {
+      "id": 24,
+      "spelling": "**",
+      "canonical": "std/prelude::**",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
     }
   ],
   "references": [
@@ -1144,6 +1156,7 @@
     {
       "spelling": "**",
       "namespace": "operator",
+      "target": 24,
       "origin": {
         "start": 358,
         "end": 360

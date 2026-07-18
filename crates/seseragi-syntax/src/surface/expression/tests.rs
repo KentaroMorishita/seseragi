@@ -231,13 +231,39 @@ fn preserves_grouped_expression_boundaries() {
 
 #[test]
 fn parses_an_arithmetic_operator_as_a_grouped_function_value() {
-    let body = first_body("pub let add: (Int -> Int -> Int) = (+)\n");
+    for operator in ["+", "-", "*", "/", "%", "**"] {
+        let source = format!("pub let operation: (Int -> Int -> Int) = ({operator})\n");
+        let body = first_body(&source);
 
-    assert!(matches!(
-        body,
-        SurfaceExpr::Grouped { value, .. }
-            if matches!(*value, SurfaceExpr::Name { ref name, .. } if name == "+")
-    ));
+        assert!(matches!(
+            body,
+            SurfaceExpr::Grouped { value, .. }
+                if matches!(*value, SurfaceExpr::Name { ref name, .. } if name == operator)
+        ));
+    }
+}
+
+#[test]
+fn parses_equality_operators_as_grouped_function_values() {
+    for operator in ["==", "!="] {
+        let source = format!("pub let compare: (Int -> Int -> Bool) = ({operator})\n");
+        let body = first_body(&source);
+        let operator_start = source.find(operator).unwrap();
+
+        assert!(matches!(
+            body,
+            SurfaceExpr::Grouped { value, .. }
+                if matches!(
+                    *value,
+                    SurfaceExpr::Name {
+                        ref name,
+                        span: ByteSpan { start, end },
+                    } if name == operator
+                        && start == operator_start
+                        && end == operator_start + operator.len()
+                )
+        ));
+    }
 }
 
 #[test]

@@ -224,6 +224,31 @@ fn selects_array_reducible_evidence_for_standard_reduce() {
 }
 
 #[test]
+fn selects_standard_power_evidence_for_an_operator_function_value() {
+    let typed = type_module(
+        "artifact/power-operator-reference/main.ssrg",
+        "fn apply operation: (Int -> Int -> Int) -> left: Int -> right: Int -> Int = operation left right\n\
+         pub fn power base: Int -> exponent: Int -> Int = apply (**) base exponent\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[1] else {
+        panic!("expected power function");
+    };
+    let TypedExpr::Call { arguments, .. } = body else {
+        panic!("expected apply call");
+    };
+    assert!(matches!(
+        arguments.as_slice(),
+        [TypedExpr::Variable { name, evidence, .. }, _, _]
+            if name == "**"
+                && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                    constraint: crate::TypedConstraint { name, .. },
+                    evidence: TypedInstanceEvidence::Standard { identity },
+                }] if name == "Pow" && identity == "std/int::Pow")
+    ));
+}
+
+#[test]
 fn selects_prelude_either_dictionaries_for_explicit_monad_calls() {
     let typed = type_module(
         "artifact/prelude-either-monad/main.ssrg",

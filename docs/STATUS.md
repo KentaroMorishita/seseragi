@@ -197,6 +197,10 @@ pure comparisonをactual executionへ接続済みです。`schema-1/user-eq-oper
 同名execution fixtureと`project-schema-1/imported-user-eq-operator`がlocal / parameter / imported evidenceを実行し、
 `semantic-diagnostics-schema-1/eq-missing`はinstanceのないADT比較を`SES-T0201`で拒否します。
 Playgroundの`自作の等価比較`でも同じsourceを実行できます。`deriving Eq`は後続gateです。
+`schema-1/equality-operator-section`は`(==)` / `(!=)`を期待されるcurried関数型から型付けし、local
+`Eq<Status>`、generic scoped `Eq<T>`、standard `Eq<Int>`の選択済みevidenceを関数値へ保持します。backendは
+dictionaryの`eq`をcurried callbackとして呼び、`!=`はその結果を否定します。同名execution fixtureが全経路をactual executionし、
+`semantic-diagnostics-schema-1/equality-operator-section-missing`はinstanceのないsectionを`SES-T0201`で停止します。
 `schema-1/newtype-user-id`は`newtype UserId = Int`を一constructorのnominal valueとして通常pipelineへ接続し、
 constructor適用、irrefutableなpayload pattern、TypedHir / CoreIr / TypeScriptIr、tagged TypeScript表現を固定します。
 同名execution fixtureがactual outputを検証し、`semantic-diagnostics-schema-1/newtype-no-coercion`は`UserId`から`Int`への

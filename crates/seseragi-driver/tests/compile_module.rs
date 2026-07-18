@@ -161,6 +161,32 @@ fn passes_a_custom_operator_as_a_curried_function_value() {
 }
 
 #[test]
+fn passes_equality_operators_as_curried_function_values() {
+    const SOURCE: &str = include_str!(
+        "../../../examples/spec/artifacts/schema-1/equality-operator-section/main.ssrg"
+    );
+    const EXPECTED_TYPESCRIPT: &str =
+        include_str!("../../../examples/spec/artifacts/schema-1/equality-operator-section/main.ts");
+    let compiled = compile_module(input(
+        "artifact/equality-operator-section/main.ssrg",
+        "artifact/equality-operator-section",
+        SOURCE,
+    ))
+    .expect("equality operator sections should compile");
+
+    assert!(compiled.diagnostics.diagnostics.is_empty());
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("__ssrg$instance$Eq$0[\"eq\"](_argument0)(_argument1)"));
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("__ssrg$instance$Eq$0[\"eq\"](_argument0)(_argument1) === false"));
+    assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
+}
+
+#[test]
 fn preserves_constraint_arguments_through_owned_ir_stages() {
     const SOURCE: &str =
         include_str!("../../../examples/spec/artifacts/schema-1/constraint-arguments/main.ssrg");

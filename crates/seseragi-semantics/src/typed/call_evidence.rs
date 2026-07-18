@@ -811,18 +811,7 @@ fn equality_instance_identity(constraint: &TypedConstraint) -> Option<&'static s
     if constraint.name != "Eq" {
         return None;
     }
-    let TypedType::Named { name, arguments } = value else {
-        return None;
-    };
-    if !arguments.is_empty() {
-        return None;
-    }
-    match name.as_str() {
-        "Int" => Some("std/int::Eq"),
-        "Bool" => Some("std/bool::Eq"),
-        "String" => Some("std/string::Eq"),
-        _ => None,
-    }
+    crate::prelude::standard_equality_instance(value).map(|instance| instance.identity)
 }
 
 fn arithmetic_instance_identity(constraint: &TypedConstraint) -> Option<&'static str> {
@@ -896,6 +885,82 @@ pub(crate) fn select_binary_equality_evidence(
         constraint,
         evidence,
     })
+}
+
+/// Selects an Eq head from the known operand parts of an expected curried
+/// function type. A scoped generic constraint can supply the missing operand
+/// type when higher-order application has not inferred later arguments yet.
+pub(crate) fn select_equality_operator_reference_evidence(
+    left: TypedType,
+    right: TypedType,
+    trait_identity: Option<&str>,
+    resolution: &TypedResolution<'_>,
+    scoped: &[ScopedCallEvidence],
+) -> Result<(TypedType, TypedCallEvidence), TypedConstraint> {
+    let expected =
+        [&left, &right].map(|type_ref| (!matches!(type_ref, TypedType::Hole)).then_some(type_ref));
+    let missing_type = expected
+        .iter()
+        .find_map(|type_ref| (*type_ref).cloned())
+        .unwrap_or(TypedType::Hole);
+    let missing = || TypedConstraint {
+        name: "Eq".to_owned(),
+        arguments: vec![missing_type.clone()],
+    };
+
+    if let Some(trait_identity) = trait_identity {
+        let scoped_matches = scoped
+            .iter()
+            .filter(|available| {
+                available.trait_identity == trait_identity
+                    && matches!(available.constraint.arguments.as_slice(), [value]
+                    if expected.iter().all(|expected| expected.is_none_or(|expected| {
+                        super::semantic_types::semantic_values_are_compatible(
+                            &resolution.semantic_value_from_typed_type(value),
+                            &resolution.semantic_value_from_typed_type(expected),
+                        )
+                    })))
+            })
+            .take(2)
+            .collect::<Vec<_>>();
+        if let [available] = scoped_matches.as_slice() {
+            let [value] = available.constraint.arguments.as_slice() else {
+                unreachable!("scoped equality match must have one argument");
+            };
+            return Ok((
+                value.clone(),
+                TypedCallEvidence {
+                    constraint: available.constraint.clone(),
+                    evidence: TypedInstanceEvidence::Parameter {
+                        index: available.index,
+                    },
+                },
+            ));
+        }
+    }
+
+    let value = expected
+        .iter()
+        .find_map(|type_ref| (*type_ref).cloned())
+        .ok_or_else(missing)?;
+    if !expected.iter().all(|expected| {
+        expected.is_none_or(|expected| {
+            super::semantic_types::semantic_values_are_compatible(
+                &resolution.semantic_value_from_typed_type(&value),
+                &resolution.semantic_value_from_typed_type(expected),
+            )
+        })
+    }) {
+        return Err(missing());
+    }
+    let evidence = select_binary_equality_evidence(
+        value.clone(),
+        value.clone(),
+        trait_identity,
+        resolution,
+        scoped,
+    )?;
+    Ok((value, evidence))
 }
 
 #[cfg(test)]

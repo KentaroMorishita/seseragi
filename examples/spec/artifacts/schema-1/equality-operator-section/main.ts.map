@@ -1,0 +1,38 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/equality-operator-section"
+  ],
+  "sourcesContent": [
+    "// equality operator sectionは選択したEq dictionaryをcurried callbackへ捕捉します。\ntype Status =\n  | Ready\n  | Waiting\n\ninstance Eq<Status> {\n  fn eq left: Status -> right: Status -> Bool =\n    match (left, right) {\n      (Ready, Ready) -> True\n      (Waiting, Waiting) -> True\n      _ -> False\n    }\n}\n\nfn applyComparison\n  compare: (Status -> Status -> Bool)\n  -> left: Status\n  -> right: Status\n  -> Bool =\n  compare left right\n\nfn applyIntComparison\n  compare: (Int -> Int -> Bool)\n  -> left: Int\n  -> right: Int\n  -> Bool =\n  compare left right\n\nfn applyEquality<T>\n  compare: (T -> T -> Bool)\n  -> left: T\n  -> right: T\n  -> Bool =\n  compare left right\n\nfn genericSame<T> left: T -> right: T -> Bool\nwhere Eq<T> =\n  applyEquality (==) left right\n\nfn render checks: (Bool, Bool, Bool, Bool, Bool) -> String =\n  match checks {\n    (True, True, True, True, True) -> \"Equality sections: same / different\"\n    _ -> \"unexpected equality section result\"\n  }\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println $ render (\n    applyComparison (==) Ready Ready,\n    applyComparison (!=) Ready Waiting,\n    applyIntComparison (==) 42 42,\n    applyIntComparison (!=) 42 41,\n    genericSame Waiting Waiting\n  )\n"
+  ],
+  "names": [
+    "Status",
+    "Ready",
+    "Waiting",
+    "__ssrg$instance$Eq$0",
+    "applyComparison",
+    "compare",
+    "applyIntComparison",
+    "compare",
+    "applyEquality",
+    "compare",
+    "genericSame",
+    "applyEquality",
+    "__ssrg$evidence$0",
+    "render",
+    "main",
+    "println",
+    "render",
+    "applyComparison",
+    "__ssrg$instance$Eq$0",
+    "applyComparison",
+    "__ssrg$instance$Eq$0",
+    "applyIntComparison",
+    "applyIntComparison",
+    "genericSame"
+  ],
+  "mappings": ";;AACAA;;;AACIC;AACAC;AAEJC;AASAC;AAOAE;AAOAE;AAOAE;AAIAG;AAMAC"
+}

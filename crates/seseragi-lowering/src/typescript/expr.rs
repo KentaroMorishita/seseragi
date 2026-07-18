@@ -1,5 +1,6 @@
 use crate::collection_ops::runtime_collection_operation;
 use crate::effect_ops::runtime_effect_operation;
+use crate::equality_ops::strict_equality_operator_with_evidence;
 use crate::int_ops::runtime_int_operation_with_evidence;
 use crate::iterator_ops::runtime_iterator_operation;
 use crate::list_ops::runtime_list_literal_operation;
@@ -66,6 +67,24 @@ pub(super) fn lower_core_expr_to_typescript(
                         )
                     {
                         return curried_binary_reference("+");
+                    }
+                }
+                if matches!(
+                    standard_operator(&name).map(|operator| operator.kind),
+                    Some(StandardOperatorKind::Equality)
+                ) {
+                    if let Some(dictionary) = evidence.first().and_then(|selected| {
+                        local_dictionary_expression(
+                            &selected.evidence,
+                            imported_values,
+                            imported_types,
+                        )
+                    }) {
+                        return curried_equality_reference(dictionary, name == "!=");
+                    }
+                    if let Some(operator) = strict_equality_operator_with_evidence(&name, &evidence)
+                    {
+                        return curried_binary_reference(operator);
                     }
                 }
             }
@@ -600,6 +619,13 @@ fn lower_binary(
                 }
             };
         }
+        if let Some(operator) = strict_equality_operator_with_evidence(&operator, &evidence) {
+            return TypeScriptExpr::Binary {
+                operator: operator.to_owned(),
+                left: Box::new(left),
+                right: Box::new(right),
+            };
+        }
     }
     if let Some(method) = operator_trait_method(&operator) {
         if let Some(selected) = evidence.first().and_then(|selected| {
@@ -640,6 +666,37 @@ fn curried_dictionary_method_reference(dictionary: TypeScriptExpr, method: &str)
                     TypeScriptExpr::Identifier { name: right },
                 ],
             }),
+        }),
+    }
+}
+
+fn curried_equality_reference(dictionary: TypeScriptExpr, negated: bool) -> TypeScriptExpr {
+    let left = "_argument0".to_owned();
+    let right = "_argument1".to_owned();
+    let equality = TypeScriptExpr::DictionaryCall {
+        dictionary: Box::new(dictionary),
+        method: "eq".to_owned(),
+        arguments: vec![
+            TypeScriptExpr::Identifier { name: left.clone() },
+            TypeScriptExpr::Identifier {
+                name: right.clone(),
+            },
+        ],
+    };
+    let result = if negated {
+        TypeScriptExpr::Binary {
+            operator: "===".to_owned(),
+            left: Box::new(equality),
+            right: Box::new(TypeScriptExpr::Boolean { value: false }),
+        }
+    } else {
+        equality
+    };
+    TypeScriptExpr::Lambda {
+        parameter: left,
+        body: Box::new(TypeScriptExpr::Lambda {
+            parameter: right,
+            body: Box::new(result),
         }),
     }
 }

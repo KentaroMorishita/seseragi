@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 457,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 2,
+        "endToken": 19,
+        "children": [
+          {
+            "kind": "type-decl",
+            "startToken": 2,
+            "endToken": 19,
+            "children": [
+              {
+                "kind": "variant-decl",
+                "startToken": 9,
+                "endToken": 14,
+                "children": []
+              },
+              {
+                "kind": "variant-decl",
+                "startToken": 14,
+                "endToken": 19,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 19,
+        "endToken": 100,
+        "children": []
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 100,
+        "endToken": 151,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 100,
+            "endToken": 151,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 151,
+        "endToken": 202,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 151,
+            "endToken": 202,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 202,
+        "endToken": 256,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 202,
+            "endToken": 256,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 256,
+        "endToken": 300,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 256,
+            "endToken": 300,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 300,
+        "endToken": 368,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 300,
+            "endToken": 368,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 368,
+        "endToken": 457,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 368,
+            "endToken": 369,
+            "children": []
+          },
+          {
+            "kind": "effect-fn-decl",
+            "startToken": 370,
+            "endToken": 457,
+            "children": [
+              {
+                "kind": "effect-signature",
+                "startToken": 370,
+                "endToken": 380,
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}

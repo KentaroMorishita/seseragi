@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "primary": {
+        "start": 193,
+        "end": 195
+      },
+      "related": [
+        {
+          "message": "no Eq instance matches the inferred call arguments",
+          "primary": {
+            "start": 153,
+            "end": 208
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}
