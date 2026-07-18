@@ -37,6 +37,15 @@ pub(super) fn function_interface_type(
     parameters: &[SurfaceParameter],
     return_type: &TypeRef,
 ) -> InterfaceType {
+    if parameters.is_empty() {
+        return InterfaceType::Function {
+            parameter: Box::new(InterfaceType::Named {
+                name: "Unit".to_owned(),
+                arguments: Vec::new(),
+            }),
+            result: Box::new(interface_type_from_type_ref(return_type)),
+        };
+    }
     parameters.iter().rev().fold(
         interface_type_from_type_ref(return_type),
         |result, parameter| InterfaceType::Function {

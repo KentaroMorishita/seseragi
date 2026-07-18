@@ -13,6 +13,7 @@ mod manifest;
 mod module_path;
 mod package_name;
 mod specifier;
+mod standard;
 
 pub use graph::{ModuleGraph, ModuleGraphError};
 pub use identity::{
@@ -41,3 +42,4 @@ pub use specifier::{
     classify_specifier, resolve_relative_specifier, ImportSpecifier, RelativeSpecifierError,
     SpecifierError,
 };
+pub use standard::{is_standard_module, standard_module_target};

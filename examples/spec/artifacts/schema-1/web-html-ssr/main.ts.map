@@ -1,0 +1,24 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/web-html-ssr"
+  ],
+  "sourcesContent": [
+    "import * as html from \"std/web/html\"\n\ntype Msg =\n  | Confirm\n\nfn page -> html.Html<Msg> =\n  html.div {\n    id: \"app\",\n    className: \"container\",\n    children: [\n      html.p { children: \"Hello <Seseragi>\" },\n      html.button {\n        onClick: Confirm,\n        children: \"OK\"\n      }\n    ]\n  }\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println $ html.renderToString (page ())\n"
+  ],
+  "names": [
+    "Msg",
+    "Confirm",
+    "page",
+    "div",
+    "p",
+    "button",
+    "main",
+    "println",
+    "renderToString",
+    "page"
+  ],
+  "mappings": ";;;AAEAA;;AACIC;AAEJC;AAaAI"
+}

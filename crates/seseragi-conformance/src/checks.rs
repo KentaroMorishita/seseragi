@@ -1,5 +1,5 @@
 use crate::pipeline::{
-    compile_artifact_module, interface_source_name, parse_diagnostics_json,
+    artifact_module_id, compile_artifact_module, interface_source_name, parse_diagnostics_json,
     parse_module_interface_json, parse_resolved_ast_json, parse_semantic_diagnostics_json,
     parse_typed_interface_json,
 };
@@ -122,7 +122,20 @@ pub(crate) fn check_typed_interface_json(case: &Path) -> Result<(), String> {
         .map_err(|error| format!("failed to read source: {error}"))?;
     let expected = fs::read_to_string(&expected_path)
         .map_err(|error| format!("failed to read expected TypedModuleInterface: {error}"))?;
-    let actual_value = parse_typed_interface_json(interface_source_name(case)?, &source)?;
+    let source_name = interface_source_name(case)?;
+    let module_id = artifact_module_id(case)?;
+    let unlinked =
+        seseragi_syntax::parse_unlinked_module_interface(&source_name, &module_id, &source);
+    let actual_value = if unlinked
+        .imports
+        .iter()
+        .any(|import| seseragi_project::is_standard_module(&import.specifier))
+    {
+        serde_json::to_value(&compile_artifact_module(case, &source)?.typed_interface)
+            .map_err(|error| format!("failed to encode TypedModuleInterface: {error}"))?
+    } else {
+        parse_typed_interface_json(source_name, &source)?
+    };
     let expected_value: serde_json::Value = serde_json::from_str(&expected)
         .map_err(|error| format!("failed to parse expected TypedModuleInterface: {error}"))?;
 

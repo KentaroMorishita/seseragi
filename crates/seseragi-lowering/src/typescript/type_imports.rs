@@ -113,7 +113,7 @@ fn collect_type_imports(
                     imports,
                     TypeScriptTypeImport {
                         feature: type_import.runtime_feature.to_owned(),
-                        local: safe_identifier(name),
+                        local: safe_identifier(type_import.export_name),
                     },
                 );
             }
@@ -121,7 +121,21 @@ fn collect_type_imports(
                 collect_type_imports(argument, bindings, requirements, imports);
             }
         }
-        CoreType::ExternalNamed { arguments, .. } => {
+        CoreType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } => {
+            if let Some(type_import) = runtime_type_import(canonical) {
+                push_unique(requirements, type_import.runtime_feature);
+                push_type_import_unique(
+                    imports,
+                    TypeScriptTypeImport {
+                        feature: type_import.runtime_feature.to_owned(),
+                        local: safe_identifier(type_import.export_name),
+                    },
+                );
+            }
             for argument in arguments {
                 collect_type_imports(argument, bindings, requirements, imports);
             }

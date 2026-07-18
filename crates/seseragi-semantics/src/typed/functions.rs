@@ -28,6 +28,14 @@ pub(crate) struct TopLevelPureFunction {
 pub(crate) fn typed_parameters_from_surface(
     parameters: &[SurfaceParameter],
 ) -> Vec<crate::TypedParameter> {
+    if parameters.is_empty() {
+        return vec![crate::TypedParameter::ImplicitUnit {
+            type_ref: TypedType::Named {
+                name: "Unit".to_owned(),
+                arguments: Vec::new(),
+            },
+        }];
+    }
     parameters
         .iter()
         .map(|parameter| crate::TypedParameter::Named {

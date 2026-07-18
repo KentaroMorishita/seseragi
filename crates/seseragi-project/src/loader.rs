@@ -93,6 +93,9 @@ pub fn load_package(root: impl AsRef<Path>) -> Result<LoadedPackage, PackageLoad
         );
         let mut edges = BTreeMap::new();
         for import in unlinked.imports {
+            if crate::is_standard_module(&import.specifier) {
+                continue;
+            }
             let dependency =
                 resolve_import(&path, &import.specifier).map_err(|error| match error {
                     ResolveImportError::Invalid(reason) => PackageLoadError::InvalidImport {

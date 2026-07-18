@@ -4,7 +4,8 @@
   "module": "artifact/array-literal",
   "runtimeRequirements": [
     "core.bool",
-    "core.int64"
+    "core.int64",
+    "core.unit"
   ],
   "functions": [
     {
@@ -62,7 +63,13 @@
       "kind": "const-function",
       "exported": true,
       "name": "matrix",
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
       "body": {
         "kind": "array",
         "elements": [

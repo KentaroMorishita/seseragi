@@ -13,6 +13,7 @@ mod show_ops;
 mod span;
 mod sum_ops;
 mod typescript;
+mod web_html_ops;
 
 pub use core::{
     lower_typed_module, CoreAdt, CoreAdtVariant, CoreBinding, CoreCallEvidence,
@@ -1098,9 +1099,9 @@ fails ConsoleError =
         assert!(bundle.typescript.contains(
             "import { fromArray as _ssrg_list_from_array } from \"@seseragi/runtime/list\""
         ));
-        assert!(bundle
-            .typescript
-            .contains("export const values = _ssrg_list_from_array([1n, 2n, 3n])"));
+        assert!(bundle.typescript.contains(
+            "export const values = (_unit: undefined) => _ssrg_list_from_array([1n, 2n, 3n])"
+        ));
         assert!(bundle
             .metadata
             .runtime

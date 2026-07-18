@@ -24,11 +24,21 @@ const clearOutputButton = requiredElement(
 )
 const stdinInput = requiredElement("#stdin-input", HTMLTextAreaElement)
 const output = requiredElement("#output", HTMLPreElement)
+const htmlPreview = requiredElement("#html-preview", HTMLIFrameElement)
+const showTextOutputButton = requiredElement(
+  "#show-text-output-button",
+  HTMLButtonElement
+)
+const showHtmlPreviewButton = requiredElement(
+  "#show-html-preview-button",
+  HTMLButtonElement
+)
 const statusText = requiredElement("#status-text", HTMLSpanElement)
 const statusDot = requiredElement("#status-dot", HTMLSpanElement)
 const workspace = requiredElement(".workspace", HTMLElement)
 
 let source = samples[0]?.source ?? ""
+let outputMode: "text" | "html" = samples[0]?.outputMode ?? "text"
 
 const sampleGroups = new Map<string, HTMLOptGroupElement>()
 for (const sample of samples) {
@@ -60,9 +70,10 @@ sampleSelect.addEventListener("change", () => {
   )
   if (!sample) return
   source = sample.source
+  outputMode = sample.outputMode
   stdinInput.value = sample.stdin
   replaceEditorSource(editor, source)
-  output.textContent = "Runを押すと結果がここに表示されます。"
+  showTextOutput("Runを押すと結果がここに表示されます。")
   setStatus("ready", "Sample loaded")
 })
 
@@ -76,12 +87,15 @@ clearSourceButton.addEventListener("click", () => {
 })
 clearOutputButton.addEventListener("click", () => {
   output.textContent = ""
+  htmlPreview.srcdoc = ""
 })
+showTextOutputButton.addEventListener("click", () => chooseOutputMode("text"))
+showHtmlPreviewButton.addEventListener("click", () => chooseOutputMode("html"))
 connectMobilePanels(workspace)
 
 async function run(): Promise<void> {
   runButton.disabled = true
-  output.textContent = "Compiling with the shared Rust driver…"
+  showTextOutput("Compiling with the shared Rust driver…")
   setStatus("running", "Compiling…")
 
   try {
@@ -93,14 +107,15 @@ async function run(): Promise<void> {
       ])
     )
     if (compiled.status === "failure") {
-      output.textContent = renderDiagnostics(diagnostics)
+      showTextOutput(renderDiagnostics(diagnostics))
       setStatus("error", `${diagnostics.length} diagnostic(s)`)
       showIoOnSmallScreens()
       return
     }
     if (!compiled.entry) {
-      output.textContent =
+      showTextOutput(
         compiled.entryError ?? "Compile succeeded. No executable main found."
+      )
       setStatus("ready", "Compile succeeded")
       showIoOnSmallScreens()
       return
@@ -112,16 +127,41 @@ async function run(): Promise<void> {
       compiled.entry,
       stdinInput.value
     )
-    output.textContent = result.stdout || "Program completed with no output."
+    showExecutionOutput(result.stdout)
     setStatus("success", "Completed")
     showIoOnSmallScreens()
   } catch (error) {
-    output.textContent = error instanceof Error ? error.message : String(error)
+    showTextOutput(error instanceof Error ? error.message : String(error))
     setStatus("error", "Execution failed")
     showIoOnSmallScreens()
   } finally {
     runButton.disabled = false
   }
+}
+
+function showExecutionOutput(stdout: string): void {
+  output.textContent = stdout || "Program completed with no output."
+  setOutputMode(outputMode)
+  htmlPreview.srcdoc = stdout
+}
+
+function showTextOutput(message: string): void {
+  output.textContent = message
+  htmlPreview.srcdoc = ""
+  setOutputMode("text")
+}
+
+function chooseOutputMode(mode: "text" | "html"): void {
+  outputMode = mode
+  setOutputMode(mode)
+}
+
+function setOutputMode(mode: "text" | "html"): void {
+  const showHtml = mode === "html"
+  output.hidden = showHtml
+  htmlPreview.hidden = !showHtml
+  showTextOutputButton.setAttribute("aria-pressed", String(!showHtml))
+  showHtmlPreviewButton.setAttribute("aria-pressed", String(showHtml))
 }
 
 function setStatus(

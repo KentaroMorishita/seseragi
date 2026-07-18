@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "module": "artifact/web-html-ssr",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "web.html.type",
+      "core.adt",
+      "core.unit",
+      "web.html.div",
+      "core.string",
+      "web.html.p",
+      "web.html.button",
+      "effect.console.println",
+      "web.html.render-to-string"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

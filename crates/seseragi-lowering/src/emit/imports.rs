@@ -6,7 +6,7 @@ use crate::{
     prelude_ops::runtime_prelude_dictionary_for_feature,
     range_ops::runtime_range_operation_for_feature, runtime_types::runtime_type_import_for_feature,
     show_ops::runtime_show_dictionary_for_feature, sum_ops::runtime_sum_constructor_for_feature,
-    TypeScriptModule,
+    web_html_ops::runtime_web_html_operation_for_feature, TypeScriptModule,
 };
 
 pub(super) fn render_import_lines(module: &TypeScriptModule) -> Vec<String> {
@@ -80,6 +80,10 @@ fn render_runtime_imports(module: &TypeScriptModule) -> Vec<String> {
             .or_else(|| {
                 runtime_prelude_dictionary_for_feature(&import.feature)
                     .map(|dictionary| (dictionary.module, dictionary.export_name))
+            })
+            .or_else(|| {
+                runtime_web_html_operation_for_feature(&import.feature)
+                    .map(|operation| (operation.module, operation.export_name))
             });
         if let Some((runtime_module, export_name)) = helper {
             push_grouped_import(

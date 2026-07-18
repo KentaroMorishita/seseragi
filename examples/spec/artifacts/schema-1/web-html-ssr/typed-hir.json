@@ -1,0 +1,672 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/web-html-ssr",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    },
+    {
+      "spelling": "html.Html",
+      "canonical": "std/web/html::Html",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Html"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Html",
+          "local": "html.Html",
+          "canonical": "std/web/html::Html",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "div",
+          "local": "html.div",
+          "canonical": "std/web/html::div",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "p",
+          "local": "html.p",
+          "canonical": "std/web/html::p",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "button",
+          "local": "html.button",
+          "canonical": "std/web/html::button",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "renderToString",
+          "local": "html.renderToString",
+          "canonical": "std/web/html::renderToString",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/web-html-ssr::Msg",
+      "name": "Msg",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/web-html-ssr::Confirm",
+          "name": "Confirm",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Msg",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 53,
+            "end": 60
+          }
+        }
+      ],
+      "origin": {
+        "start": 38,
+        "end": 60
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/web-html-ssr::page",
+      "visibility": "private",
+      "origin": {
+        "start": 62,
+        "end": 295
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "html.Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Msg",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::div",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "id",
+                "value": {
+                  "kind": "string",
+                  "value": "app",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 111,
+                    "end": 116
+                  }
+                },
+                "origin": {
+                  "start": 107,
+                  "end": 116
+                }
+              },
+              {
+                "kind": "field",
+                "name": "className",
+                "value": {
+                  "kind": "string",
+                  "value": "container",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 133,
+                    "end": 144
+                  }
+                },
+                "origin": {
+                  "start": 122,
+                  "end": 144
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::p",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Hello <Seseragi>",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 187,
+                                  "end": 205
+                                }
+                              },
+                              "origin": {
+                                "start": 177,
+                                "end": 205
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 175,
+                            "end": 207
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Msg",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<String>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 168,
+                        "end": 207
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "onClick",
+                              "value": {
+                                "kind": "variable",
+                                "name": "artifact/web-html-ssr::Confirm",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Msg",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 246,
+                                  "end": 253
+                                }
+                              },
+                              "origin": {
+                                "start": 237,
+                                "end": 253
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "OK",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 273,
+                                  "end": 277
+                                }
+                              },
+                              "origin": {
+                                "start": 263,
+                                "end": 277
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onClick",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Msg",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 227,
+                            "end": 285
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Msg",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<String>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 215,
+                        "end": 285
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 160,
+                    "end": 291
+                  }
+                },
+                "origin": {
+                  "start": 150,
+                  "end": 291
+                }
+              }
+            ],
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "className",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "id",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "start": 101,
+              "end": 295
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "IntoChildren",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Msg",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Msg",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/web/html::IntoChildren<Array>"
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Msg",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 92,
+          "end": 295
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/web-html-ssr::main",
+      "visibility": "public",
+      "origin": {
+        "start": 297,
+        "end": 399
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "std/web/html::renderToString",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/web-html-ssr::page",
+                "arguments": [
+                  {
+                    "kind": "unit",
+                    "type": {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 396,
+                      "end": 398
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "html.Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Msg",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 391,
+                  "end": 398
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 370,
+              "end": 399
+            }
+          }
+        ],
+        "origin": {
+          "start": 360,
+          "end": 399
+        }
+      }
+    }
+  ]
+}

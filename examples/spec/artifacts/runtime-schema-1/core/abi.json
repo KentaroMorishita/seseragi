@@ -694,6 +694,115 @@
         "module": "@seseragi/runtime/stdin",
         "export": "readLine"
       }
+    },
+    {
+      "id": "web.html.type",
+      "kind": "value-representation",
+      "typescript": "type Html<Msg>",
+      "boundary": "immutable pure HTML tree with a phantom event message type",
+      "typeIdentity": "std/web/html::Html",
+      "typeImport": {
+        "module": "@seseragi/runtime/html",
+        "export": "Html"
+      },
+      "import": null
+    },
+    {
+      "id": "web.html.text",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "text" }
+    },
+    {
+      "id": "web.html.fragment",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "IntoChildren<C, Msg> => C -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "fragment" }
+    },
+    {
+      "id": "web.html.div",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "div" }
+    },
+    {
+      "id": "web.html.span",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "span" }
+    },
+    {
+      "id": "web.html.p",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "p" }
+    },
+    {
+      "id": "web.html.main",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "main" }
+    },
+    {
+      "id": "web.html.section",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "section" }
+    },
+    {
+      "id": "web.html.h1",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "h1" }
+    },
+    {
+      "id": "web.html.h2",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "h2" }
+    },
+    {
+      "id": "web.html.button",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ButtonProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "button" }
+    },
+    {
+      "id": "web.html.input",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "InputProps<Msg> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "input" }
+    },
+    {
+      "id": "web.html.render-to-string",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Html<Msg> -> String with sink-time escaping",
+      "import": {
+        "module": "@seseragi/runtime/html",
+        "export": "renderToString"
+      }
+    },
+    {
+      "id": "web.html.render-document",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Html<Msg> -> String prefixed by lowercase HTML doctype",
+      "import": {
+        "module": "@seseragi/runtime/html",
+        "export": "renderDocument"
+      }
     }
   ]
 }

@@ -1,11 +1,28 @@
-import rockPaperScissors from "../../../examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg?raw"
-import pipelineApplication from "../../../examples/spec/artifacts/schema-1/pipeline-application/main.ssrg?raw"
-import stringAdd from "../../../examples/spec/artifacts/schema-1/string-add/main.ssrg?raw"
-import templateInterpolation from "../../../examples/spec/artifacts/schema-1/template-interpolation/main.ssrg?raw"
-import rangeComprehension from "../../../examples/spec/artifacts/schema-1/range-comprehension/main.ssrg?raw"
+import applicativeMaybe from "../../../examples/spec/artifacts/schema-1/applicative-maybe/main.ssrg?raw"
+import applicativeValidation from "../../../examples/spec/artifacts/schema-1/applicative-validation/main.ssrg?raw"
+import arrayMonad from "../../../examples/spec/artifacts/schema-1/array-monad/main.ssrg?raw"
 import comprehensionPatternFilter from "../../../examples/spec/artifacts/schema-1/comprehension-pattern-filter/main.ssrg?raw"
-import userIterableComprehension from "../../../examples/spec/artifacts/schema-1/user-iterable-comprehension/main.ssrg?raw"
+import effectMonad from "../../../examples/spec/artifacts/schema-1/effect-monad/main.ssrg?raw"
+import genericStruct from "../../../examples/spec/artifacts/schema-1/generic-struct/main.ssrg?raw"
 import listComprehension from "../../../examples/spec/artifacts/schema-1/list-comprehension/main.ssrg?raw"
+import listMonad from "../../../examples/spec/artifacts/schema-1/list-monad/main.ssrg?raw"
+import monadEither from "../../../examples/spec/artifacts/schema-1/monad-either/main.ssrg?raw"
+import monadMaybe from "../../../examples/spec/artifacts/schema-1/monad-maybe/main.ssrg?raw"
+import newtypeUserId from "../../../examples/spec/artifacts/schema-1/newtype-user-id/main.ssrg?raw"
+import partialConstrainedFunction from "../../../examples/spec/artifacts/schema-1/partial-constrained-function/main.ssrg?raw"
+import pipelineApplication from "../../../examples/spec/artifacts/schema-1/pipeline-application/main.ssrg?raw"
+import partialFunctorValue from "../../../examples/spec/artifacts/schema-1/polymorphic-partial-functor/main.ssrg?raw"
+import rangeComprehension from "../../../examples/spec/artifacts/schema-1/range-comprehension/main.ssrg?raw"
+import recordProfile from "../../../examples/spec/artifacts/schema-1/record-profile/main.ssrg?raw"
+import rockPaperScissors from "../../../examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg?raw"
+import stringAdd from "../../../examples/spec/artifacts/schema-1/string-add/main.ssrg?raw"
+import structProfile from "../../../examples/spec/artifacts/schema-1/struct-profile/main.ssrg?raw"
+import templateInterpolation from "../../../examples/spec/artifacts/schema-1/template-interpolation/main.ssrg?raw"
+import typeClassOperatorSection from "../../../examples/spec/artifacts/schema-1/type-class-operator-section/main.ssrg?raw"
+import userAddOperator from "../../../examples/spec/artifacts/schema-1/user-add-operator/main.ssrg?raw"
+import userEqOperator from "../../../examples/spec/artifacts/schema-1/user-eq-operator/main.ssrg?raw"
+import userIterableComprehension from "../../../examples/spec/artifacts/schema-1/user-iterable-comprehension/main.ssrg?raw"
+import webHtmlSsr from "../../../examples/spec/artifacts/schema-1/web-html-ssr/main.ssrg?raw"
 import helloWorld from "../../../examples/spec/lessons/01-hello-world.ssrg?raw"
 import miniAdventure from "../../../examples/spec/playground/01-mini-adventure.ssrg?raw"
 import shippingAdvisor from "../../../examples/spec/playground/02-shipping-advisor.ssrg?raw"
@@ -13,25 +30,9 @@ import seseragiQuiz from "../../../examples/spec/playground/03-seseragi-quiz.ssr
 import arrayScoreboard from "../../../examples/spec/playground/04-array-scoreboard.ssrg?raw"
 import traitBadges from "../../../examples/spec/playground/05-trait-badges.ssrg?raw"
 import genericInstance from "../../../examples/spec/playground/06-generic-instance.ssrg?raw"
-import userAddOperator from "../../../examples/spec/artifacts/schema-1/user-add-operator/main.ssrg?raw"
-import userEqOperator from "../../../examples/spec/artifacts/schema-1/user-eq-operator/main.ssrg?raw"
-import newtypeUserId from "../../../examples/spec/artifacts/schema-1/newtype-user-id/main.ssrg?raw"
-import recordProfile from "../../../examples/spec/artifacts/schema-1/record-profile/main.ssrg?raw"
-import structProfile from "../../../examples/spec/artifacts/schema-1/struct-profile/main.ssrg?raw"
-import genericStruct from "../../../examples/spec/artifacts/schema-1/generic-struct/main.ssrg?raw"
-import partialFunctorValue from "../../../examples/spec/artifacts/schema-1/polymorphic-partial-functor/main.ssrg?raw"
-import partialConstrainedFunction from "../../../examples/spec/artifacts/schema-1/partial-constrained-function/main.ssrg?raw"
-import applicativeMaybe from "../../../examples/spec/artifacts/schema-1/applicative-maybe/main.ssrg?raw"
-import applicativeValidation from "../../../examples/spec/artifacts/schema-1/applicative-validation/main.ssrg?raw"
-import monadMaybe from "../../../examples/spec/artifacts/schema-1/monad-maybe/main.ssrg?raw"
-import monadEither from "../../../examples/spec/artifacts/schema-1/monad-either/main.ssrg?raw"
-import arrayMonad from "../../../examples/spec/artifacts/schema-1/array-monad/main.ssrg?raw"
-import listMonad from "../../../examples/spec/artifacts/schema-1/list-monad/main.ssrg?raw"
-import effectMonad from "../../../examples/spec/artifacts/schema-1/effect-monad/main.ssrg?raw"
-import typeClassOperatorSection from "../../../examples/spec/artifacts/schema-1/type-class-operator-section/main.ssrg?raw"
 import {
-  sampleCatalog,
   type PlaygroundSampleDefinition,
+  sampleCatalog,
 } from "./sample-catalog"
 
 export type PlaygroundSample = {
@@ -40,6 +41,7 @@ export type PlaygroundSample = {
   readonly category: PlaygroundSampleDefinition["category"]
   readonly source: string
   readonly stdin: string
+  readonly outputMode: "text" | "html"
 }
 
 const sourceById: Readonly<Record<string, string>> = {
@@ -74,6 +76,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "list-monad": listMonad,
   "effect-monad": effectMonad,
   "type-class-operator-section": typeClassOperatorSection,
+  "web-html-ssr": webHtmlSsr,
 }
 
 export const samples: readonly PlaygroundSample[] = sampleCatalog.map(
@@ -88,6 +91,7 @@ export const samples: readonly PlaygroundSample[] = sampleCatalog.map(
       category: definition.category,
       source,
       stdin: definition.stdin,
+      outputMode: definition.outputMode ?? "text",
     }
   }
 )

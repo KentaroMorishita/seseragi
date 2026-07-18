@@ -6,6 +6,7 @@ use crate::iterator_ops::runtime_iterator_operation;
 use crate::list_ops::runtime_list_literal_operation;
 use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
+use crate::web_html_ops::runtime_web_html_operation;
 use crate::{
     CoreExpr, CoreMonadDoStatement, CoreRecordValueItem, CoreStatement, CoreTemplatePart, CoreType,
 };
@@ -90,9 +91,16 @@ pub(super) fn lower_core_expr_to_typescript(
                     }
                 }
             }
-            runtime_sum_constructor(&name)
-                .map(|constructor| TypeScriptExpr::RuntimeReference {
-                    name: constructor.local_name.to_owned(),
+            runtime_web_html_operation(&name)
+                .map(|operation| TypeScriptExpr::RuntimeReference {
+                    name: operation.local_name.to_owned(),
+                })
+                .or_else(|| {
+                    runtime_sum_constructor(&name).map(|constructor| {
+                        TypeScriptExpr::RuntimeReference {
+                            name: constructor.local_name.to_owned(),
+                        }
+                    })
                 })
                 .unwrap_or_else(|| TypeScriptExpr::Identifier {
                     name: imported_values
@@ -183,6 +191,11 @@ pub(super) fn lower_core_expr_to_typescript(
             } else if let Some(constructor) = runtime_sum_constructor(&callee) {
                 TypeScriptExpr::RuntimeCall {
                     callee: constructor.local_name.to_owned(),
+                    arguments,
+                }
+            } else if let Some(operation) = runtime_web_html_operation(&callee) {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
                     arguments,
                 }
             } else {

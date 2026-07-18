@@ -1,4 +1,5 @@
 use super::{ProjectCompileError, ProjectModuleInput};
+use seseragi_project::is_standard_module;
 use seseragi_syntax::UnlinkedModuleInterface;
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -51,6 +52,7 @@ pub(super) fn ensure_graph_imports_match(
     let source_specifiers = unlinked
         .imports
         .iter()
+        .filter(|import| !is_standard_module(&import.specifier))
         .map(|import| import.specifier.clone())
         .collect::<BTreeSet<_>>();
     if graph_specifiers == source_specifiers {

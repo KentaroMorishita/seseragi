@@ -1,0 +1,22 @@
+import * as html from "std/web/html"
+
+type Msg =
+  | Confirm
+
+fn page -> html.Html<Msg> =
+  html.div {
+    id: "app",
+    className: "container",
+    children: [
+      html.p { children: "Hello <Seseragi>" },
+      html.button {
+        onClick: Confirm,
+        children: "OK"
+      }
+    ]
+  }
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ html.renderToString (page ())

@@ -267,22 +267,14 @@ fn collect_callables(
                 return_type,
                 constraints,
                 ..
-            } if !parameters.is_empty() => {
+            } => {
                 let Some(symbol) = resolved.symbols.iter().find(|symbol| {
                     symbol.kind == SymbolKind::Function && symbol.origin == *name_span
                 }) else {
                     continue;
                 };
-                let semantic_parameters = parameters
-                    .iter()
-                    .map(|parameter| {
-                        semantic_types.key_from_type_ref(resolved, &parameter.type_ref)
-                    })
-                    .collect::<Vec<_>>();
-                let parameters = parameters
-                    .iter()
-                    .map(|parameter| typed_type_from_type_ref(&parameter.type_ref))
-                    .collect::<Vec<_>>();
+                let (parameters, semantic_parameters) =
+                    callable_parameter_types(parameters, resolved, semantic_types);
                 let result = typed_type_from_type_ref(return_type);
                 let constraint_identities = constraints
                     .iter()
@@ -433,6 +425,32 @@ fn collect_callables(
         }
     }
     callables
+}
+
+fn callable_parameter_types(
+    parameters: &[seseragi_syntax::SurfaceParameter],
+    resolved: &ResolvedModule,
+    semantic_types: &SemanticTypeCatalog,
+) -> (Vec<TypedType>, Vec<SemanticTypeKey>) {
+    if parameters.is_empty() {
+        return (
+            vec![TypedType::Named {
+                name: "Unit".to_owned(),
+                arguments: Vec::new(),
+            }],
+            vec![SemanticTypeKey::Other],
+        );
+    }
+    (
+        parameters
+            .iter()
+            .map(|parameter| typed_type_from_type_ref(&parameter.type_ref))
+            .collect(),
+        parameters
+            .iter()
+            .map(|parameter| semantic_types.key_from_type_ref(resolved, &parameter.type_ref))
+            .collect(),
+    )
 }
 
 fn standard_trait_method_callable(

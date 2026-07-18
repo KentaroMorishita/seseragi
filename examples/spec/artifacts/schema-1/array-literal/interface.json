@@ -52,21 +52,29 @@
         "typeParameters": [],
         "constraints": [],
         "type": {
-          "kind": "named",
-          "name": "Array",
-          "arguments": [
-            {
-              "kind": "named",
-              "name": "Array",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
-                }
-              ]
-            }
-          ]
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          }
         }
       }
     }

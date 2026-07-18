@@ -1,0 +1,218 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/web-html-ssr",
+  "runtimeRequirements": [
+    "web.html.type",
+    "core.adt",
+    "core.unit",
+    "web.html.div",
+    "core.string",
+    "web.html.p",
+    "web.html.button",
+    "effect.console.println",
+    "web.html.render-to-string"
+  ],
+  "imports": [
+    {
+      "feature": "web.html.div",
+      "local": "_ssrg_html_div"
+    },
+    {
+      "feature": "web.html.p",
+      "local": "_ssrg_html_p"
+    },
+    {
+      "feature": "web.html.button",
+      "local": "_ssrg_html_button"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "web.html.render-to-string",
+      "local": "_ssrg_html_renderToString"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "web.html.type",
+      "local": "Html"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "Msg",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Confirm",
+          "tag": "Confirm",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 53,
+            "end": 60
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 38,
+        "end": 60
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "page",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_div",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "id",
+                "value": {
+                  "kind": "string",
+                  "value": "app"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "className",
+                "value": {
+                  "kind": "string",
+                  "value": "container"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_p",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Hello <Seseragi>"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "onClick",
+                              "value": {
+                                "kind": "identifier",
+                                "name": "Confirm"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "OK"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "reference",
+                    "name": "Html",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Msg",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 62,
+        "end": 295
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_html_renderToString",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "page",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 297,
+        "end": 399
+      }
+    }
+  ]
+}

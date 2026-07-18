@@ -1,3 +1,4 @@
+use crate::runtime_types::runtime_type_import;
 use crate::{CoreModule, SourceSpan};
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -15,6 +16,10 @@ pub(super) fn lower_external_type_imports(
 ) -> Result<BTreeMap<String, String>, TypeScriptLoweringError> {
     let mut names = BTreeMap::new();
     for canonical in referenced {
+        if let Some(type_import) = runtime_type_import(canonical) {
+            names.insert(canonical.clone(), safe_identifier(type_import.export_name));
+            continue;
+        }
         if let Some(existing) = imports
             .iter()
             .flat_map(|group| &group.bindings)

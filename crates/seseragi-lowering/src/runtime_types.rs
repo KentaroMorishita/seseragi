@@ -55,6 +55,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         module: "@seseragi/runtime/list",
         export_name: "List",
     },
+    RuntimeTypeImport {
+        canonical: "std/web/html::Html",
+        runtime_feature: "web.html.type",
+        module: "@seseragi/runtime/html",
+        export_name: "Html",
+    },
 ];
 
 pub(crate) fn runtime_type_import(canonical: &str) -> Option<RuntimeTypeImport> {

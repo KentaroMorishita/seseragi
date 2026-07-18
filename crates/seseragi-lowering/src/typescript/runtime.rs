@@ -4,6 +4,7 @@ use crate::iterator_ops::runtime_iterator_operation;
 use crate::list_ops::runtime_list_literal_operation;
 use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
+use crate::web_html_ops::runtime_web_html_operation;
 use crate::{
     effect_ops::runtime_effect_operation, int_ops::runtime_int_operation_with_evidence,
     prelude_ops::runtime_prelude_dictionary_for_identity,
@@ -51,6 +52,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             if let Some(constructor) = runtime_sum_constructor(name) {
                 push_unique(requirements, constructor.runtime_feature);
             }
+            if let Some(operation) = runtime_web_html_operation(name) {
+                push_unique(requirements, operation.runtime_feature);
+            }
             collect_type_runtime_requirement(type_ref, requirements);
         }
         CoreExpr::Call {
@@ -67,6 +71,8 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(constructor) = runtime_sum_constructor(callee) {
                 push_unique(requirements, constructor.runtime_feature);
+            } else if let Some(operation) = runtime_web_html_operation(callee) {
+                push_unique(requirements, operation.runtime_feature);
             }
             collect_type_runtime_requirement(type_ref, requirements);
             for argument in arguments {
@@ -382,6 +388,15 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             if let Some(constructor) = runtime_sum_constructor(name) {
                 push_sum_constructor_import(imports, constructor);
             }
+            if let Some(operation) = runtime_web_html_operation(name) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            }
         }
         CoreExpr::Call {
             callee,
@@ -408,6 +423,14 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                 );
             } else if let Some(constructor) = runtime_sum_constructor(callee) {
                 push_sum_constructor_import(imports, constructor);
+            } else if let Some(operation) = runtime_web_html_operation(callee) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
             }
             for argument in arguments {
                 collect_expr_runtime_imports(argument, imports);

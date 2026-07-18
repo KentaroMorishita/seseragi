@@ -62,7 +62,7 @@ describe("new Playground product gate", () => {
     expect(html).toContain('aria-label="本文をクリア"')
     expect(html).toContain('id="clear-output-button"')
     expect(main).toContain('clearSourceButton.addEventListener("click"')
-    expect(main).toContain('replaceEditorSource(editor, source)')
+    expect(main).toContain("replaceEditorSource(editor, source)")
     expect(main).toContain('clearOutputButton.addEventListener("click"')
   })
 
@@ -71,11 +71,31 @@ describe("new Playground product gate", () => {
       sampleCatalog.length
     )
     expect(new Set(sampleCatalog.map((sample) => sample.category))).toEqual(
-      new Set(["基本", "アプリ", "型と抽象化"])
+      new Set(["基本", "アプリ", "型と抽象化", "Web"])
     )
     expect(new Set(sampleCatalog.map((sample) => sample.sourcePath)).size).toBe(
       sampleCatalog.length
     )
+  })
+
+  test("renders HTML output in an isolated preview", async () => {
+    const html = await Bun.file(
+      new URL("../index.html", import.meta.url)
+    ).text()
+    const main = await Bun.file(
+      new URL("../src/main.ts", import.meta.url)
+    ).text()
+    const sample = sampleCatalog.find(
+      (candidate) => candidate.id === "web-html-ssr"
+    )
+
+    expect(sample?.outputMode).toBe("html")
+    expect(html).toContain('id="show-text-output-button"')
+    expect(html).toContain('id="show-html-preview-button"')
+    expect(html).toContain('id="html-preview"')
+    expect(html).toMatch(/<iframe[\s\S]*?\ssandbox(?:\s|>)/)
+    expect(html).not.toContain("allow-scripts")
+    expect(main).toContain("htmlPreview.srcdoc = stdout")
   })
 
   for (const sample of sampleCatalog) {

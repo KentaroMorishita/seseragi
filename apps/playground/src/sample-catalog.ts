@@ -1,10 +1,11 @@
 export type PlaygroundSampleDefinition = {
   readonly id: string
   readonly label: string
-  readonly category: "基本" | "アプリ" | "型と抽象化"
+  readonly category: "基本" | "アプリ" | "型と抽象化" | "Web"
   readonly sourcePath: string
   readonly stdin: string
   readonly expectedOutput: string
+  readonly outputMode?: "text" | "html"
 }
 
 export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
@@ -265,5 +266,15 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
       "examples/spec/artifacts/schema-1/type-class-operator-section/main.ssrg",
     stdin: "",
     expectedOutput: "Type-class sections: map / apply / bind / short-circuit",
+  },
+  {
+    id: "web-html-ssr",
+    label: "HTMLをSSR preview",
+    category: "Web",
+    sourcePath: "examples/spec/artifacts/schema-1/web-html-ssr/main.ssrg",
+    stdin: "",
+    expectedOutput:
+      '<div id="app" class="container"><p>Hello &lt;Seseragi&gt;</p><button type="button">OK</button></div>',
+    outputMode: "html",
   },
 ]

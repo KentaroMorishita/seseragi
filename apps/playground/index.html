@@ -82,11 +82,34 @@
           <section class="output-section">
             <div class="panel-heading">
               <span>Output</span>
-              <button id="clear-output-button" class="text-button" type="button">
-                Clear
-              </button>
+              <div class="output-heading-actions">
+                <div class="output-view-toggle" aria-label="出力表示">
+                  <button
+                    id="show-text-output-button"
+                    type="button"
+                    aria-pressed="true"
+                  >Text</button>
+                  <button
+                    id="show-html-preview-button"
+                    type="button"
+                    aria-pressed="false"
+                  >Preview</button>
+                </div>
+                <button id="clear-output-button" class="text-button" type="button">
+                  Clear
+                </button>
+              </div>
             </div>
-            <pre id="output" tabindex="0" aria-live="polite">Runを押すと結果がここに表示されます。</pre>
+            <div class="output-content">
+              <pre id="output" tabindex="0" aria-live="polite">Runを押すと結果がここに表示されます。</pre>
+              <iframe
+                id="html-preview"
+                title="Seseragi HTML preview"
+                sandbox
+                referrerpolicy="no-referrer"
+                hidden
+              ></iframe>
+            </div>
           </section>
         </aside>
       </main>

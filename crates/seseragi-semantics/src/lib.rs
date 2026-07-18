@@ -5,6 +5,7 @@ mod instance_identity;
 mod model;
 mod prelude;
 mod resolve;
+mod standard;
 mod typed;
 
 pub use analysis::{analyze_linked_module, analyze_module_interface, AnalyzedModule};

@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "case": "web-html-ssr",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/web-html-ssr",
+    "export": "main",
+    "compiledModule": "../../schema-1/web-html-ssr/generated-module.json",
+    "typedInterface": "../../schema-1/web-html-ssr/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "web.html.type",
+      "core.adt",
+      "core.unit",
+      "web.html.div",
+      "core.string",
+      "web.html.p",
+      "web.html.button",
+      "effect.console.println",
+      "web.html.render-to-string"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "<div id=\"app\" class=\"container\"><p>Hello &lt;Seseragi&gt;</p><button type=\"button\">OK</button></div>"
+        ],
+        "stdout": "<div id=\"app\" class=\"container\"><p>Hello &lt;Seseragi&gt;</p><button type=\"button\">OK</button></div>\n"
+      }
+    ]
+  }
+}

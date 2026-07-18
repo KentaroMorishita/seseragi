@@ -355,6 +355,11 @@ pub(super) fn select_standard_instance(
     trait_identity: Option<&str>,
     constraint: &TypedConstraint,
 ) -> Option<TypedInstanceEvidence> {
+    if let Some(identity) = crate::standard::standard_module_instance(trait_identity, constraint) {
+        return Some(TypedInstanceEvidence::Standard {
+            identity: identity.to_owned(),
+        });
+    }
     if trait_identity
         .is_some_and(|identity| identity != format!("std/prelude::{}", constraint.name))
     {

@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 73,
+        "end": 87
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 62,
+            "end": 295
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d2",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 92,
+        "end": 100
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 62,
+            "end": 295
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d3",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 168,
+        "end": 174
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 62,
+            "end": 295
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d4",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 215,
+        "end": 226
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 62,
+            "end": 295
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d5",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 370,
+        "end": 389
+      },
+      "related": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 297,
+            "end": 399
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

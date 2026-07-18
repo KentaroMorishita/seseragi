@@ -1,7 +1,4 @@
-use crate::{
-    unit_type, SymbolKind, TypedDecl, TypedExpr, TypedParameter, TypedScheme, TypedStructField,
-    TypedType,
-};
+use crate::{SymbolKind, TypedDecl, TypedExpr, TypedScheme, TypedStructField, TypedType};
 use seseragi_syntax::{SurfaceDecl, SurfaceImplMember, SurfaceVariant};
 
 use super::adt::{typed_adt_decl, AdtDeclInput};
@@ -159,13 +156,7 @@ pub(crate) fn typed_decl_from_surface(
                 visibility,
                 origin: span,
                 inferred_contract,
-                parameters: if typed_parameters.is_empty() {
-                    vec![TypedParameter::ImplicitUnit {
-                        type_ref: unit_type(),
-                    }]
-                } else {
-                    typed_parameters
-                },
+                parameters: typed_parameters,
                 effect,
                 body,
             })

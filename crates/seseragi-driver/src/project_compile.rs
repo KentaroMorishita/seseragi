@@ -3,7 +3,8 @@ use crate::{
     LinkedCompileError,
 };
 use seseragi_project::{
-    link_module, LinkError, LinkTargetError, ModuleGraph, ModuleGraphError, ModuleLinkTarget,
+    link_module, standard_module_target, LinkError, LinkTargetError, ModuleGraph, ModuleGraphError,
+    ModuleLinkTarget,
 };
 use seseragi_syntax::{
     parse_diagnostics, parse_unlinked_module_interface, DiagnosticArtifact, DiagnosticSeverity,
@@ -136,7 +137,14 @@ pub fn compile_project(
                 .expect("graph order contains only registered modules"),
             &unlinked,
         )?;
-        let mut targets = BTreeMap::new();
+        let mut targets = unlinked
+            .imports
+            .iter()
+            .filter_map(|import| {
+                standard_module_target(&import.specifier)
+                    .map(|target| (import.specifier.clone(), target))
+            })
+            .collect::<BTreeMap<_, _>>();
         for (specifier, dependency) in graph
             .dependencies_for(module)
             .expect("graph order contains only registered modules")

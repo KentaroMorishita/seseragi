@@ -11,8 +11,8 @@ pub use model::LoadedLocalProject;
 use crate::loader::audit;
 use crate::loader::filesystem;
 use crate::{
-    discover_local_package_graph, LoadedModule, LocalPackageGraph, ModuleGraph, ModuleIdentity,
-    ModuleRoot, PackageIdentity, PackageLoadError,
+    discover_local_package_graph, is_standard_module, LoadedModule, LocalPackageGraph, ModuleGraph,
+    ModuleIdentity, ModuleRoot, PackageIdentity, PackageLoadError,
 };
 use import::resolve_import;
 use seseragi_syntax::parse_unlinked_module_interface;
@@ -154,6 +154,9 @@ impl<'a> SourceDiscovery<'a> {
         );
         let mut edges = BTreeMap::new();
         for import in unlinked.imports {
+            if is_standard_module(&import.specifier) {
+                continue;
+            }
             let dependency =
                 resolve_import(self.packages, &module, &import.specifier).map_err(|failure| {
                     LocalProjectLoadError::Import {

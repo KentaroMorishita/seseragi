@@ -53,6 +53,10 @@
       "types": "./src/show.ts",
       "default": "./src/show.ts"
     },
+    "./html": {
+      "types": "./src/html.ts",
+      "default": "./src/html.ts"
+    },
     "./browser/console": {
       "types": "./src/browser/console.ts",
       "default": "./src/browser/console.ts"

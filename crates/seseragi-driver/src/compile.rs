@@ -4,32 +4,40 @@ use seseragi_lowering::{
     lower_core_module_to_typescript_ir, lower_core_module_to_typescript_ir_with_plan,
     lower_typed_module, GeneratedOutputPaths, TypeScriptLoweringError, TypeScriptOutputPlan,
 };
-use seseragi_semantics::{analyze_linked_module, analyze_module_interface};
+use seseragi_project::{link_module, standard_module_target};
+use seseragi_semantics::analyze_linked_module;
 use seseragi_syntax::{
-    parse_diagnostics, parse_import_free_module_interface, DiagnosticArtifact, DiagnosticSeverity,
+    parse_diagnostics, parse_unlinked_module_interface, DiagnosticArtifact, DiagnosticSeverity,
 };
+use std::collections::BTreeMap;
 
 /// Compiles one source using an explicit logical module identity. This is a
-/// pure, currently unlinked single-module pipeline; imports require a future
-/// project/module-graph driver and are rejected before typing and lowering.
+/// pure single-module pipeline. Compiler-owned standard modules are linked by
+/// public interface; source-package imports still require the project driver.
 pub fn compile_module(input: CompileInput<'_>) -> Result<CompiledModule, DiagnosticArtifact> {
     let mut diagnostics = parse_diagnostics(input.source_name(), input.source());
     if has_errors(&diagnostics) {
         return Err(diagnostics);
     }
 
-    let interface = match parse_import_free_module_interface(
-        input.source_name(),
-        input.module_id(),
-        input.source(),
-    ) {
-        Ok(interface) => interface,
-        Err(imports) => {
-            crate::dependencies::append_unlinked_dependency_diagnostics(imports, &mut diagnostics);
+    let unlinked =
+        parse_unlinked_module_interface(input.source_name(), input.module_id(), input.source());
+    let targets = unlinked
+        .imports
+        .iter()
+        .filter_map(|import| {
+            standard_module_target(&import.specifier)
+                .map(|target| (import.specifier.clone(), target))
+        })
+        .collect::<BTreeMap<_, _>>();
+    let linked = match link_module(unlinked, &targets) {
+        Ok(linked) => linked,
+        Err(errors) => {
+            crate::dependencies::append_link_diagnostics(errors, &mut diagnostics);
             return Err(diagnostics);
         }
     };
-    let analyzed = analyze_module_interface(diagnostics, interface, input.source())?;
+    let analyzed = analyze_linked_module(diagnostics, linked, input.source())?;
     Ok(finish_compilation(
         analyzed.diagnostics,
         analyzed.typed_hir,
@@ -186,5 +194,79 @@ mod tests {
             diagnostics.diagnostics[0].message_key,
             "operator.invalid-arity"
         );
+    }
+
+    #[test]
+    fn compiles_standard_web_html_through_the_runtime_abi() {
+        let source = r#"import * as html from "std/web/html"
+
+type Msg = | Confirm
+
+fn page -> html.Html<Msg> =
+  html.div {
+    id: "app",
+    className: "container",
+    children: [
+      html.p { children: "Hello <Seseragi>" },
+      html.button { onClick: Confirm, children: "OK" }
+    ]
+  }
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ html.renderToString (page ())
+"#;
+        let compiled = compile_module(CompileInput::new("main.ssrg", "artifact/web-html", source))
+            .expect("standard web HTML should compile");
+
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("@seseragi/runtime/html"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("_ssrg_html_renderToString"));
+        assert!(!compiled.generated.typescript.contains("std/web/html"));
+    }
+
+    #[test]
+    fn rejects_unsupported_html_children_before_lowering() {
+        let source = r#"import * as html from "std/web/html"
+
+type Msg = | Confirm
+
+pub fn invalid -> html.Html<Msg> =
+  html.div { children: 42 }
+"#;
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-html-invalid-child",
+            source,
+        ))
+        .expect_err("unsupported HTML children must reject compilation");
+
+        assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+            diagnostic.code == "SES-T0201" && diagnostic.message_key == "instance.missing"
+        }));
+    }
+
+    #[test]
+    fn lowers_parameterless_pure_functions_with_an_implicit_unit() {
+        let source = "fn answer -> Int = 42\npub fn run -> Int = answer ()\n";
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/implicit-unit-function",
+            source,
+        ))
+        .expect("parameterless pure function should compile");
+
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("const answer = (_unit: undefined)"));
+        assert!(compiled.generated.typescript.contains("answer(undefined)"));
+        assert!(!compiled.generated.typescript.contains("answer(_)"));
     }
 }

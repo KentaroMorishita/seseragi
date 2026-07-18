@@ -80,3 +80,19 @@ export {
   Nothing,
   Right,
 } from "./sum"
+export type { Html } from "./html"
+export {
+  button,
+  div,
+  fragment,
+  h1,
+  h2,
+  input,
+  main,
+  p,
+  renderDocument,
+  renderToString,
+  section,
+  span,
+  text,
+} from "./html"

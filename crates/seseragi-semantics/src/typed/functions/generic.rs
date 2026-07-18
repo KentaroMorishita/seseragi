@@ -250,18 +250,23 @@ pub(crate) fn infer_type_parameters(
         }
         (
             TypedType::Record {
-                closed: parameter_closed,
                 fields: parameter_fields,
+                ..
             },
             TypedType::Record {
-                closed: argument_closed,
                 fields: argument_fields,
+                ..
             },
-        ) if parameter_closed == argument_closed
-            && parameter_fields.len() == argument_fields.len() =>
-        {
-            for (parameter, argument) in parameter_fields.iter().zip(argument_fields) {
-                if parameter.name == argument.name && parameter.optional == argument.optional {
+        ) => {
+            // Record application uses structural width compatibility. Infer
+            // through every supplied matching field, including a concrete
+            // field supplied for an optional parameter field, instead of
+            // requiring identical record shapes.
+            for parameter in parameter_fields {
+                if let Some(argument) = argument_fields
+                    .iter()
+                    .find(|argument| argument.name == parameter.name)
+                {
                     infer_type_parameters(
                         &parameter.type_ref,
                         &argument.type_ref,

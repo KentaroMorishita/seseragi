@@ -132,7 +132,17 @@
         "start": 81,
         "end": 132
       },
-      "parameters": [],
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
       "body": {
         "kind": "array",
         "elements": [

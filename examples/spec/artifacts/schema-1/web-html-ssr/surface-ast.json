@@ -1,0 +1,427 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "imports": [
+    {
+      "specifier": "std/web/html",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 7,
+            "end": 8
+          },
+          "alias": "html",
+          "aliasSpan": {
+            "start": 12,
+            "end": 16
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 36
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "private",
+      "name": "Msg",
+      "nameSpan": {
+        "start": 43,
+        "end": 46
+      },
+      "variants": [
+        {
+          "name": "Confirm",
+          "nameSpan": {
+            "start": 53,
+            "end": 60
+          },
+          "span": {
+            "start": 51,
+            "end": 60
+          }
+        }
+      ],
+      "span": {
+        "start": 38,
+        "end": 60
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "page",
+      "nameSpan": {
+        "start": 65,
+        "end": 69
+      },
+      "parameters": [],
+      "returnType": {
+        "kind": "named",
+        "name": "html.Html",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Msg",
+            "span": {
+              "start": 83,
+              "end": 86
+            }
+          }
+        ],
+        "span": {
+          "start": 73,
+          "end": 87
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "html",
+            "span": {
+              "start": 92,
+              "end": 96
+            }
+          },
+          "field": "div",
+          "fieldSpan": {
+            "start": 97,
+            "end": 100
+          },
+          "span": {
+            "start": 92,
+            "end": 100
+          }
+        },
+        "argument": {
+          "kind": "record",
+          "items": [
+            {
+              "kind": "field",
+              "name": "id",
+              "nameSpan": {
+                "start": 107,
+                "end": 109
+              },
+              "value": {
+                "kind": "string",
+                "raw": "\"app\"",
+                "span": {
+                  "start": 111,
+                  "end": 116
+                }
+              },
+              "span": {
+                "start": 107,
+                "end": 116
+              }
+            },
+            {
+              "kind": "field",
+              "name": "className",
+              "nameSpan": {
+                "start": 122,
+                "end": 131
+              },
+              "value": {
+                "kind": "string",
+                "raw": "\"container\"",
+                "span": {
+                  "start": 133,
+                  "end": 144
+                }
+              },
+              "span": {
+                "start": 122,
+                "end": 144
+              }
+            },
+            {
+              "kind": "field",
+              "name": "children",
+              "nameSpan": {
+                "start": 150,
+                "end": 158
+              },
+              "value": {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "application",
+                    "function": {
+                      "kind": "member",
+                      "receiver": {
+                        "kind": "name",
+                        "name": "html",
+                        "span": {
+                          "start": 168,
+                          "end": 172
+                        }
+                      },
+                      "field": "p",
+                      "fieldSpan": {
+                        "start": 173,
+                        "end": 174
+                      },
+                      "span": {
+                        "start": 168,
+                        "end": 174
+                      }
+                    },
+                    "argument": {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "children",
+                          "nameSpan": {
+                            "start": 177,
+                            "end": 185
+                          },
+                          "value": {
+                            "kind": "string",
+                            "raw": "\"Hello <Seseragi>\"",
+                            "span": {
+                              "start": 187,
+                              "end": 205
+                            }
+                          },
+                          "span": {
+                            "start": 177,
+                            "end": 205
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 175,
+                        "end": 207
+                      }
+                    },
+                    "span": {
+                      "start": 168,
+                      "end": 207
+                    }
+                  },
+                  {
+                    "kind": "application",
+                    "function": {
+                      "kind": "member",
+                      "receiver": {
+                        "kind": "name",
+                        "name": "html",
+                        "span": {
+                          "start": 215,
+                          "end": 219
+                        }
+                      },
+                      "field": "button",
+                      "fieldSpan": {
+                        "start": 220,
+                        "end": 226
+                      },
+                      "span": {
+                        "start": 215,
+                        "end": 226
+                      }
+                    },
+                    "argument": {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "onClick",
+                          "nameSpan": {
+                            "start": 237,
+                            "end": 244
+                          },
+                          "value": {
+                            "kind": "name",
+                            "name": "Confirm",
+                            "span": {
+                              "start": 246,
+                              "end": 253
+                            }
+                          },
+                          "span": {
+                            "start": 237,
+                            "end": 253
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "children",
+                          "nameSpan": {
+                            "start": 263,
+                            "end": 271
+                          },
+                          "value": {
+                            "kind": "string",
+                            "raw": "\"OK\"",
+                            "span": {
+                              "start": 273,
+                              "end": 277
+                            }
+                          },
+                          "span": {
+                            "start": 263,
+                            "end": 277
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 227,
+                        "end": 285
+                      }
+                    },
+                    "span": {
+                      "start": 215,
+                      "end": 285
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 160,
+                  "end": 291
+                }
+              },
+              "span": {
+                "start": 150,
+                "end": 291
+              }
+            }
+          ],
+          "span": {
+            "start": 101,
+            "end": 295
+          }
+        },
+        "span": {
+          "start": 92,
+          "end": 295
+        }
+      },
+      "span": {
+        "start": 62,
+        "end": 295
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 311,
+        "end": 315
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 319,
+          "end": 323
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 329,
+            "end": 336
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 343,
+          "end": 355
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 360,
+            "end": 367
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "member",
+            "receiver": {
+              "kind": "name",
+              "name": "html",
+              "span": {
+                "start": 370,
+                "end": 374
+              }
+            },
+            "field": "renderToString",
+            "fieldSpan": {
+              "start": 375,
+              "end": 389
+            },
+            "span": {
+              "start": 370,
+              "end": 389
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "page",
+                "span": {
+                  "start": 391,
+                  "end": 395
+                }
+              },
+              "argument": {
+                "kind": "unit",
+                "span": {
+                  "start": 396,
+                  "end": 398
+                }
+              },
+              "span": {
+                "start": 391,
+                "end": 398
+              }
+            },
+            "span": {
+              "start": 390,
+              "end": 399
+            }
+          },
+          "span": {
+            "start": 370,
+            "end": 399
+          }
+        },
+        "span": {
+          "start": 360,
+          "end": 399
+        }
+      },
+      "span": {
+        "start": 297,
+        "end": 399
+      }
+    }
+  ]
+}

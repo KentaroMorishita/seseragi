@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "module": "artifact/web-html-ssr",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/web/html",
+      "module": "artifact/web-html-ssr/std/web/html",
+      "origin": {
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/web-html-ssr/std/web/html::*",
+          "localName": "html"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/web-html-ssr::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declaration": {
+        "start": 297,
+        "end": 399
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}
