@@ -1,3 +1,4 @@
+use super::has_callable_scheme;
 use crate::prelude::is_standalone_symbol;
 use crate::{ExternalTraitBinding, SymbolNamespace};
 use seseragi_syntax::{InterfaceExport, ModuleInterface};
@@ -26,10 +27,7 @@ pub(crate) fn export_scheme_trait_bindings(
     provider: &ModuleInterface,
     export: &InterfaceExport,
 ) -> Option<Vec<ExternalTraitBinding>> {
-    if !matches!(
-        export.declaration_kind.as_deref(),
-        Some("function" | "effect-function" | "inherent-method")
-    ) {
+    if !has_callable_scheme(export) {
         return None;
     }
     let candidates = provider_trait_candidates(provider);
@@ -177,6 +175,27 @@ mod tests {
         let provider = module(vec![ready, describe.clone()]);
 
         let bindings = export_scheme_trait_bindings(&provider, &describe).unwrap();
+
+        assert_eq!(bindings.len(), 1);
+        assert_eq!(bindings[0].spelling, "Ready");
+        assert_eq!(bindings[0].canonical, "fixture/provider::trait(Ready)");
+    }
+
+    #[test]
+    fn collects_provider_traits_from_operator_constraints() {
+        let ready = trait_export("Ready", Vec::new());
+        let mut operator = function_export("<^>");
+        operator.symbol = "fixture/provider::operator(<^>)".to_owned();
+        operator.namespace = "operator".to_owned();
+        operator.declaration_kind = Some("custom-operator".to_owned());
+        operator.scheme.constraints.push(InterfaceConstraint {
+            name: "Ready".to_owned(),
+            trait_identity: None,
+            arguments: vec![named("T")],
+        });
+        let provider = module(vec![ready, operator.clone()]);
+
+        let bindings = export_scheme_trait_bindings(&provider, &operator).unwrap();
 
         assert_eq!(bindings.len(), 1);
         assert_eq!(bindings[0].spelling, "Ready");

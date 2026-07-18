@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "dist/imported-custom-infix-operator/operators.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-custom-infix-operator::operators"
+  ],
+  "sourcesContent": [
+    "pub operator infixr 4 <^>\n  left: Int -> right: Int -> Int =\n  left - right\n"
+  ],
+  "names": [
+    "__ssrg$operator$3c5e3e",
+    "subtract"
+  ],
+  "mappings": ";;AAAAA"
+}

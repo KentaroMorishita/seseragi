@@ -7,14 +7,19 @@ mod trait_bindings;
 
 pub(super) use trait_bindings::{export_contract_trait_bindings, export_scheme_trait_bindings};
 
+fn has_callable_scheme(export: &InterfaceExport) -> bool {
+    export.namespace == "operator"
+        || matches!(
+            export.declaration_kind.as_deref(),
+            Some("function" | "effect-function" | "inherent-method")
+        )
+}
+
 pub(super) fn export_scheme_type_bindings(
     provider: &ModuleInterface,
     export: &InterfaceExport,
 ) -> Option<Vec<ExternalTypeBinding>> {
-    if !matches!(
-        export.declaration_kind.as_deref(),
-        Some("function" | "effect-function" | "inherent-method" | "trait")
-    ) {
+    if !has_callable_scheme(export) && export.declaration_kind.as_deref() != Some("trait") {
         return None;
     }
     let candidates = provider_candidates(provider);
@@ -258,6 +263,28 @@ mod tests {
         ]);
 
         let bindings = export_scheme_type_bindings(&provider, &trait_export).unwrap();
+
+        assert_eq!(bindings.len(), 1);
+        assert_eq!(bindings[0].spelling, "User");
+        assert_eq!(bindings[0].canonical, "fixture/provider::User");
+    }
+
+    #[test]
+    fn collects_provider_types_from_operator_schemes() {
+        let provider = module(vec![type_export("User", "fixture/provider::User")]);
+        let mut operator = function_export(
+            "<^>",
+            named("User"),
+            InterfaceType::Function {
+                parameter: Box::new(named("User")),
+                result: Box::new(named("User")),
+            },
+        );
+        operator.symbol = "fixture/provider::operator(<^>)".to_owned();
+        operator.namespace = "operator".to_owned();
+        operator.declaration_kind = Some("custom-operator".to_owned());
+
+        let bindings = export_scheme_type_bindings(&provider, &operator).unwrap();
 
         assert_eq!(bindings.len(), 1);
         assert_eq!(bindings[0].spelling, "User");

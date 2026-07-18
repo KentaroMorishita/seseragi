@@ -100,6 +100,25 @@ pub(super) fn lower_module_imports(
                         },
                     );
                 }
+                "operator" if referenced_values.contains(&import.canonical) => {
+                    let imported = module_value_name(&dependency.module, &import.canonical);
+                    let local = value_names
+                        .entry(import.canonical.clone())
+                        .or_insert_with(|| fresh_name(&imported, &used_values))
+                        .clone();
+                    used_values.insert(local.clone());
+                    push_binding(
+                        group,
+                        TypeScriptSourceImportBinding {
+                            imported,
+                            local,
+                            source_local: import.local.clone(),
+                            canonical: import.canonical.clone(),
+                            type_only: false,
+                            origin: import.origin.clone(),
+                        },
+                    );
+                }
                 "type" if referenced_types.names.contains(&import.local) => {
                     let local = safe_identifier(&import.local);
                     if !used_types.insert(local.clone())

@@ -59,6 +59,95 @@ fn lowers_an_imported_alias_call_to_a_planned_typescript_module_import() {
 }
 
 #[test]
+fn lowers_an_imported_custom_operator_to_its_provider_abi_name() {
+    let domain_source = "pub operator infixr 4 <^> left: Int -> right: Int -> Int = left - right\n";
+    let main_source = "import { operator <^> } from \"./domain\"\n\npub fn run left: Int -> right: Int -> Int = left <^> right\n";
+    let core = linked_core(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+    let canonical = "fixture/game::domain::operator(<^>)";
+
+    let typescript = lower_core_module_to_typescript_ir_with_plan(
+        core,
+        &plan([("fixture/game::domain", "./domain.js")]),
+    )
+    .unwrap();
+
+    let binding = &typescript.source_imports[0].bindings[0];
+    assert_eq!(binding.imported, "__ssrg$operator$3c5e3e");
+    assert_eq!(binding.local, "__ssrg$operator$3c5e3e");
+    assert_eq!(binding.source_local, "<^>");
+    assert_eq!(binding.canonical, canonical);
+    assert!(matches!(
+        &typescript.functions[0],
+        TypeScriptFunction::ConstFunction {
+            body: TypeScriptExpr::Call { callee, .. },
+            ..
+        } if callee == "__ssrg$operator$3c5e3e"
+    ));
+
+    let generated = emit_typescript_module(typescript, main_source);
+    assert!(generated
+        .typescript
+        .starts_with("import { __ssrg$operator$3c5e3e } from \"./domain.js\"\n\n"));
+    assert!(generated.typescript.contains(
+        "export const run = (left: bigint) => (right: bigint) => __ssrg$operator$3c5e3e(left)(right)"
+    ));
+    assert!(!generated.typescript.contains("<^>"));
+}
+
+#[test]
+fn freshens_an_imported_custom_operator_around_a_local_operator_abi_name() {
+    let domain_source = "pub operator infixr 4 <^> left: Int -> right: Int -> Int = left - right\n";
+    let main_source = "import { operator <^> } from \"./domain\"\n\nfn occupied unit: Unit -> Unit = ()\npub fn run left: Int -> right: Int -> Int = left <^> right\n";
+    let mut core = linked_core(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+    core.functions
+        .iter_mut()
+        .find(|function| function.symbol.ends_with("::occupied"))
+        .expect("occupied function must lower")
+        .symbol = "fixture/game::main::operator(<^>)".to_owned();
+
+    let typescript = lower_core_module_to_typescript_ir_with_plan(
+        core,
+        &plan([("fixture/game::domain", "./domain.js")]),
+    )
+    .unwrap();
+
+    let binding = &typescript.source_imports[0].bindings[0];
+    assert_eq!(binding.imported, "__ssrg$operator$3c5e3e");
+    assert_eq!(binding.local, "__ssrg$operator$3c5e3e_1");
+    let run = typescript
+        .functions
+        .iter()
+        .find(|function| {
+            matches!(function, TypeScriptFunction::ConstFunction { name, .. } if name == "run")
+        })
+        .expect("run function must lower");
+    assert!(matches!(
+        run,
+        TypeScriptFunction::ConstFunction {
+            body: TypeScriptExpr::Call { callee, .. },
+            ..
+        } if callee == "__ssrg$operator$3c5e3e_1"
+    ));
+
+    let generated = emit_typescript_module(typescript, main_source);
+    assert!(generated.typescript.starts_with(
+        "import { __ssrg$operator$3c5e3e as __ssrg$operator$3c5e3e_1 } from \"./domain.js\"\n\n"
+    ));
+    assert!(generated
+        .typescript
+        .contains("const __ssrg$operator$3c5e3e = (unit: undefined) => undefined"));
+    assert!(generated.typescript.contains(
+        "export const run = (left: bigint) => (right: bigint) => __ssrg$operator$3c5e3e_1(left)(right)"
+    ));
+}
+
+#[test]
 fn passes_local_evidence_to_an_imported_constrained_function() {
     let domain_source = "\
 pub trait Ready<A> { fn ready value: A -> String }

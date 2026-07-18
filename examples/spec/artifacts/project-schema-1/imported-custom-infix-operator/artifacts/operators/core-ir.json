@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-custom-infix-operator::operators",
+  "functions": [
+    {
+      "symbol": "fixture/imported-custom-infix-operator::operators::operator(<^>)",
+      "visibility": "public",
+      "origin": {
+        "source": "operators.ssrg",
+        "start": 0,
+        "end": 75
+      },
+      "parameters": [
+        {
+          "id": "left",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        {
+          "id": "right",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "-",
+        "left": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "operators.ssrg",
+            "start": 63,
+            "end": 67
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "operators.ssrg",
+            "start": 70,
+            "end": 75
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Sub",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Sub"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "operators.ssrg",
+          "start": 63,
+          "end": 75
+        }
+      }
+    }
+  ]
+}

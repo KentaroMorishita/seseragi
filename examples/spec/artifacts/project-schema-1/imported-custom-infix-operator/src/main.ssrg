@@ -1,0 +1,9 @@
+import { operator <^> } from "./operators"
+
+fn calculate unit: Unit -> Int =
+  10 <^> 3 <^> 2
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println `Imported custom infix: ${calculate ()}`

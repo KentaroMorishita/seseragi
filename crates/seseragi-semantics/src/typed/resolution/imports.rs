@@ -13,7 +13,9 @@ pub(super) fn collect_imported_callables(
         .imports
         .iter()
         .filter(|import| {
-            import.in_scope && import.export.declaration_kind.as_deref() == Some("function")
+            import.in_scope
+                && (import.export.namespace == "operator"
+                    || import.export.declaration_kind.as_deref() == Some("function"))
         })
         .filter_map(|import| {
             imported_callable(&types, import).map(|callable| (import.symbol, callable))
@@ -124,6 +126,77 @@ pub(super) fn imported_callable(
 mod tests {
     use super::*;
     use seseragi_syntax::InterfaceType;
+
+    #[test]
+    fn types_an_imported_operator_from_its_public_scheme() {
+        let provider_source = "\
+pub operator infixr 4 <^>\n\
+  left: Int -> right: Int -> Int =\n\
+  left - right\n";
+        let provider = seseragi_syntax::parse_unlinked_module_interface(
+            "provider.ssrg",
+            "fixture/provider",
+            provider_source,
+        );
+        let provider_interface = crate::analyze_module_interface(
+            seseragi_syntax::parse_diagnostics("provider.ssrg", provider_source),
+            provider.interface.clone(),
+            provider_source,
+        )
+        .unwrap()
+        .typed_interface
+        .into_link_interface();
+        let target =
+            seseragi_project::ModuleLinkTarget::same_package(provider.header, provider_interface)
+                .unwrap();
+        let consumer_source = "\
+import { operator <^> } from \"./provider\"\n\
+pub fn run unit: Unit -> Int = 10 <^> 3 <^> 2\n";
+        let consumer = seseragi_syntax::parse_unlinked_module_interface(
+            "consumer.ssrg",
+            "fixture/consumer",
+            consumer_source,
+        );
+        let linked = seseragi_project::link_module(
+            consumer,
+            &BTreeMap::from([("./provider".to_owned(), target)]),
+        )
+        .unwrap();
+
+        let analyzed = crate::analyze_linked_module(
+            seseragi_syntax::parse_diagnostics("consumer.ssrg", consumer_source),
+            linked,
+            consumer_source,
+        )
+        .unwrap();
+
+        let dependency = &analyzed.typed_hir.module_dependencies[0];
+        assert_eq!(dependency.imports[0].namespace, "operator");
+        assert_eq!(
+            dependency.imports[0].canonical,
+            "fixture/provider::operator(<^>)"
+        );
+        let crate::TypedDecl::Fn { body, .. } = &analyzed.typed_hir.declarations[0] else {
+            panic!("expected typed consumer function");
+        };
+        assert!(matches!(
+            body,
+            crate::TypedExpr::Call {
+                callee,
+                arguments,
+                type_ref: crate::TypedType::Named { name, arguments: type_arguments },
+                ..
+            } if callee == "fixture/provider::operator(<^>)"
+                && arguments.len() == 2
+                && matches!(
+                    &arguments[1],
+                    crate::TypedExpr::Call { callee, .. }
+                        if callee == "fixture/provider::operator(<^>)"
+                )
+                && name == "Int"
+                && type_arguments.is_empty()
+        ));
+    }
 
     #[test]
     fn flattens_a_curried_imported_function_scheme() {

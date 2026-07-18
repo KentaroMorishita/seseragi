@@ -1,0 +1,239 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-custom-infix-operator::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./operators",
+      "module": "fixture/imported-custom-infix-operator::operators",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 42
+      },
+      "imports": [
+        {
+          "namespace": "operator",
+          "imported": "<^>",
+          "local": "<^>",
+          "canonical": "fixture/imported-custom-infix-operator::operators::operator(<^>)",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 18,
+            "end": 21
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-custom-infix-operator::main::calculate",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 44,
+        "end": 93
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/imported-custom-infix-operator::operators::operator(<^>)",
+        "arguments": [
+          {
+            "kind": "int64",
+            "value": "10",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 79,
+              "end": 81
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "fixture/imported-custom-infix-operator::operators::operator(<^>)",
+            "arguments": [
+              {
+                "kind": "int64",
+                "value": "3",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 86,
+                  "end": 87
+                }
+              },
+              {
+                "kind": "int64",
+                "value": "2",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 92,
+                  "end": 93
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 86,
+              "end": 93
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 79,
+          "end": 93
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-custom-infix-operator::main::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 95,
+        "end": 206
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "text",
+                "value": "Imported custom infix: ",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 167,
+                  "end": 190
+                }
+              },
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "call",
+                  "callee": "fixture/imported-custom-infix-operator::main::calculate",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 202,
+                        "end": 204
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 192,
+                    "end": 204
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                },
+                "traitIdentity": "std/prelude::Show",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 190,
+                  "end": 205
+                }
+              }
+            ],
+            "origin": {
+              "source": "main.ssrg",
+              "start": 166,
+              "end": 206
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 158,
+          "end": 206
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-custom-infix-operator::operators",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.int64.subtract"
+    ]
+  },
+  "exports": [
+    "__ssrg$operator$3c5e3e"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-custom-infix-operator/operators.ts",
+    "sourceMap": "dist/imported-custom-infix-operator/operators.ts.map"
+  }
+}

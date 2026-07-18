@@ -79,6 +79,11 @@ pure Unit entryをEffect runnerへ渡さず直接呼び、生成値のJSONをrun
 backend前に停止します。`custom-operator-invalid-declaration`は1文字、generic delimiterと衝突する
 angle-only spelling、二項でない宣言を`SES-P0001`で拒否します。
 
+`project-schema-1/imported-custom-infix-operator/`はpublic operatorのfixityとschemeをdependency interfaceから
+consumerへ渡し、右結合の`10 <^> 3 <^> 2`をproviderの`__ssrg$operator$3c5e3e` exportへlowerします。
+consumerは同じencoded名をES module importし、raw `<^>`を生成TypeScriptへ残しません。closed TypeScript checkと
+project executionは`Imported custom infix: 9`を固定します。
+
 `schema-1/string-add/`は`Add<String, String, String>`のstandard evidenceをTypedHirとCoreIrへ保持し、
 複数の左結合`+`をString連結へlowerします。`execution-schema-1/string-add/`はcurried invitation functionと
 `$`、Consoleを組み合わせ、暗黙の数値変換やInt runtime helperなしでactual outputを固定します。

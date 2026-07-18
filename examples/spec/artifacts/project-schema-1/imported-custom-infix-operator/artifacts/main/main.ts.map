@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "file": "dist/imported-custom-infix-operator/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-custom-infix-operator::main"
+  ],
+  "sourcesContent": [
+    "import { operator <^> } from \"./operators\"\n\nfn calculate unit: Unit -> Int =\n  10 <^> 3 <^> 2\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println `Imported custom infix: ${calculate ()}`\n"
+  ],
+  "names": [
+    "calculate",
+    "<^>",
+    "<^>",
+    "main",
+    "println",
+    "intShow",
+    "calculate"
+  ],
+  "mappings": ";;;;AAEAA;AAGAG"
+}

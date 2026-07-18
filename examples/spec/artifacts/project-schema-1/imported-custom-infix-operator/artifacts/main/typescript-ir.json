@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-custom-infix-operator::main",
+  "runtimeRequirements": [
+    "core.unit",
+    "core.int64",
+    "effect.console.println",
+    "core.string",
+    "core.int64.show"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-custom-infix-operator::operators",
+      "specifier": "./operators.js",
+      "bindings": [
+        {
+          "imported": "__ssrg$operator$3c5e3e",
+          "local": "__ssrg$operator$3c5e3e",
+          "sourceLocal": "<^>",
+          "canonical": "fixture/imported-custom-infix-operator::operators::operator(<^>)",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 18,
+            "end": 21
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 42
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "calculate",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "__ssrg$operator$3c5e3e",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "10"
+          },
+          {
+            "kind": "call",
+            "callee": "__ssrg$operator$3c5e3e",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "3"
+              },
+              {
+                "kind": "bigint",
+                "value": "2"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 44,
+        "end": 93
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "binary",
+            "operator": "+",
+            "left": {
+              "kind": "string",
+              "value": "Imported custom infix: "
+            },
+            "right": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_intShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "calculate",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 95,
+        "end": 206
+      }
+    }
+  ]
+}

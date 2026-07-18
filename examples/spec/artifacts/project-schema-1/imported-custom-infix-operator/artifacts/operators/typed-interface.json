@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-custom-infix-operator::operators",
+  "source": "operators.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/imported-custom-infix-operator::operators::operator(<^>)",
+      "namespace": "operator",
+      "name": "<^>",
+      "visibility": "public",
+      "declarationKind": "custom-operator",
+      "declaration": {
+        "start": 0,
+        "end": 75
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          }
+        }
+      }
+    }
+  ],
+  "operators": [
+    {
+      "symbol": "fixture/imported-custom-infix-operator::operators::operator(<^>)",
+      "spelling": "<^>",
+      "fixity": "infixr",
+      "precedence": 4,
+      "origin": {
+        "start": 0,
+        "end": 75
+      }
+    }
+  ],
+  "instances": []
+}

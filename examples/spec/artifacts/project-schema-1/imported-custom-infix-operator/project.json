@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/imported-custom-infix-operator::operators",
+    "fixture/imported-custom-infix-operator::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/imported-custom-infix-operator::operators",
+      "source": "src/operators.ssrg",
+      "output": "dist/imported-custom-infix-operator/operators.js",
+      "artifacts": "artifacts/operators",
+      "imports": []
+    },
+    {
+      "id": "fixture/imported-custom-infix-operator::main",
+      "source": "src/main.ssrg",
+      "output": "dist/imported-custom-infix-operator/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./operators",
+          "module": "fixture/imported-custom-infix-operator::operators"
+        }
+      ]
+    }
+  ]
+}
