@@ -44,6 +44,9 @@ pub(crate) fn semantic_values_are_compatible(
     expected: &SemanticValueType,
     actual: &SemanticValueType,
 ) -> bool {
+    if crate::standard::standard_type_coercion(&expected.type_ref, &actual.type_ref) {
+        return true;
+    }
     if let (
         TypedType::Record {
             fields: expected_fields,

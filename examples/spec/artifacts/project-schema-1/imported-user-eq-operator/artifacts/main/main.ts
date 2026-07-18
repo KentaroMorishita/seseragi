@@ -1,4 +1,4 @@
-import { Ready, Waiting, __ssrg$instance$Eq$0 } from "./domain.js"
+import { Ready, type Status, Waiting, __ssrg$instance$Eq$0 } from "./domain.js"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 
 const same = <T,>(left: T) => (right: T) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => __ssrg$evidence$0["eq"](left)(right)

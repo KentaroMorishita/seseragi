@@ -1,4 +1,4 @@
-import { box, __ssrg$method$Box$map as map, __ssrg$method$Box$get as get } from "./domain.js"
+import { box, __ssrg$method$Box$map as map, __ssrg$method$Box$get as get, type Box } from "./domain.js"
 import { add as _ssrg_int64_add } from "@seseragi/runtime/int64"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"

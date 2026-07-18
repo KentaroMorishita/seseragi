@@ -57,6 +57,10 @@
       "types": "./src/html.ts",
       "default": "./src/html.ts"
     },
+    "./signal": {
+      "types": "./src/signal.ts",
+      "default": "./src/signal.ts"
+    },
     "./browser/console": {
       "types": "./src/browser/console.ts",
       "default": "./src/browser/console.ts"

@@ -9,7 +9,6 @@ pub(crate) struct RuntimeWebHtmlOperation {
 }
 
 const MODULE: &str = "@seseragi/runtime/html";
-const SOURCE_MODULE: &str = "std/web/html";
 
 macro_rules! operation {
     ($name:literal, $feature:literal, $local:literal) => {
@@ -53,10 +52,6 @@ pub(crate) fn runtime_web_html_operation(canonical: &str) -> Option<RuntimeWebHt
         .iter()
         .copied()
         .find(|operation| operation.canonical == canonical)
-}
-
-pub(crate) fn is_runtime_web_html_module(module: &str) -> bool {
-    module == SOURCE_MODULE
 }
 
 pub(crate) fn runtime_web_html_operation_for_feature(

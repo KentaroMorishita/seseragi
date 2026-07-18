@@ -15,6 +15,7 @@ import partialFunctorValue from "../../../examples/spec/artifacts/schema-1/polym
 import rangeComprehension from "../../../examples/spec/artifacts/schema-1/range-comprehension/main.ssrg?raw"
 import recordProfile from "../../../examples/spec/artifacts/schema-1/record-profile/main.ssrg?raw"
 import rockPaperScissors from "../../../examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg?raw"
+import signalTransaction from "../../../examples/spec/artifacts/schema-1/signal-transaction/main.ssrg?raw"
 import stringAdd from "../../../examples/spec/artifacts/schema-1/string-add/main.ssrg?raw"
 import structProfile from "../../../examples/spec/artifacts/schema-1/struct-profile/main.ssrg?raw"
 import templateInterpolation from "../../../examples/spec/artifacts/schema-1/template-interpolation/main.ssrg?raw"
@@ -77,6 +78,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "effect-monad": effectMonad,
   "type-class-operator-section": typeClassOperatorSection,
   "web-html-ssr": webHtmlSsr,
+  "signal-transaction": signalTransaction,
 }
 
 export const samples: readonly PlaygroundSample[] = sampleCatalog.map(

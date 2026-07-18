@@ -5,6 +5,7 @@ use crate::int_ops::runtime_int_operation_with_evidence;
 use crate::iterator_ops::runtime_iterator_operation;
 use crate::list_ops::runtime_list_literal_operation;
 use crate::range_ops::runtime_range_operation;
+use crate::signal_ops::runtime_signal_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::web_html_ops::runtime_web_html_operation;
 use crate::{
@@ -91,9 +92,16 @@ pub(super) fn lower_core_expr_to_typescript(
                     }
                 }
             }
-            runtime_web_html_operation(&name)
+            runtime_signal_operation(&name)
                 .map(|operation| TypeScriptExpr::RuntimeReference {
                     name: operation.local_name.to_owned(),
+                })
+                .or_else(|| {
+                    runtime_web_html_operation(&name).map(|operation| {
+                        TypeScriptExpr::RuntimeReference {
+                            name: operation.local_name.to_owned(),
+                        }
+                    })
                 })
                 .or_else(|| {
                     runtime_sum_constructor(&name).map(|constructor| {
@@ -194,6 +202,11 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else if let Some(operation) = runtime_web_html_operation(&callee) {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
+            } else if let Some(operation) = runtime_signal_operation(&callee) {
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments,

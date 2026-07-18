@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "case": "signal-transaction",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/signal-transaction",
+    "export": "main",
+    "compiledModule": "../../schema-1/signal-transaction/generated-module.json",
+    "typedInterface": "../../schema-1/signal-transaction/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "signal.mutable-type",
+      "signal.type",
+      "signal.change-type",
+      "core.int64",
+      "core.int64.add",
+      "core.unit",
+      "effect.core.flatMap",
+      "signal.make",
+      "effect.core.type",
+      "signal.map",
+      "signal.combine",
+      "signal.plan-set",
+      "signal.plan-update",
+      "signal.transaction",
+      "signal.read",
+      "effect.console.println",
+      "core.string",
+      "core.int64.show"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["signal: 63"],
+        "stdout": "signal: 63\n"
+      }
+    ]
+  }
+}

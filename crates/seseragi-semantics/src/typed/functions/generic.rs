@@ -213,6 +213,15 @@ pub(crate) fn infer_type_parameters(
         }
     }
 
+    if let Some((parameter_arguments, argument_arguments)) =
+        crate::standard::standard_type_coercion_arguments(parameter, argument)
+    {
+        for (parameter, argument) in parameter_arguments.iter().zip(argument_arguments) {
+            infer_type_parameters(parameter, argument, type_parameters, substitutions);
+        }
+        return;
+    }
+
     match (parameter, argument) {
         (
             TypedType::Named {
@@ -466,6 +475,36 @@ mod tests {
             name: name.to_owned(),
             arguments,
         }
+    }
+
+    fn external(name: &str, canonical: &str, arguments: Vec<TypedType>) -> TypedType {
+        TypedType::ExternalNamed {
+            name: name.to_owned(),
+            canonical: canonical.to_owned(),
+            arguments,
+        }
+    }
+
+    #[test]
+    fn infers_through_standard_read_only_signal_coercion() {
+        let mut substitutions = BTreeMap::new();
+        let parameters = vec![TypeParameter {
+            name: "A".to_owned(),
+            arity: 0,
+        }];
+
+        infer_type_parameters(
+            &external("Signal", "std/signal::Signal", vec![named("A", Vec::new())]),
+            &external(
+                "MutableSignal",
+                "std/signal::MutableSignal",
+                vec![named("Int", Vec::new())],
+            ),
+            &parameters,
+            &mut substitutions,
+        );
+
+        assert_eq!(substitutions.get("A"), Some(&named("Int", Vec::new())));
     }
 
     #[test]

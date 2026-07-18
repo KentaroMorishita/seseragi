@@ -65,6 +65,18 @@
             "start": 45,
             "end": 138
           }
+        },
+        {
+          "imported": "Badge",
+          "local": "Badge",
+          "sourceLocal": "Badge",
+          "canonical": "fixture/transitive-instance-dispatch::provider::Badge",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 45,
+            "end": 138
+          }
         }
       ],
       "origin": {

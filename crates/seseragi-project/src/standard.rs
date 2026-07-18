@@ -11,10 +11,16 @@ struct StandardModuleDefinition {
     interface: fn() -> ModuleInterface,
 }
 
-const STANDARD_MODULES: &[StandardModuleDefinition] = &[StandardModuleDefinition {
-    specifier: "std/web/html",
-    interface: web_html_interface,
-}];
+const STANDARD_MODULES: &[StandardModuleDefinition] = &[
+    StandardModuleDefinition {
+        specifier: "std/web/html",
+        interface: web_html_interface,
+    },
+    StandardModuleDefinition {
+        specifier: "std/signal",
+        interface: signal_interface,
+    },
+];
 
 /// Returns the compiler-owned public interface for a standard module.
 ///
@@ -36,13 +42,14 @@ pub fn is_standard_module(specifier: &str) -> bool {
 
 fn web_html_interface() -> ModuleInterface {
     let mut exports = vec![
-        type_export("Html", 1, "opaque-type"),
-        trait_export("IntoChildren", ["C", "Msg"]),
+        type_export("std/web/html", "Html", 1, "opaque-type"),
+        trait_export("std/web/html", "IntoChildren", ["C", "Msg"]),
         function_export(
+            "std/web/html",
             "text",
             ["Msg"],
             Vec::new(),
-            named("String"),
+            vec![named("String")],
             html(named("Msg")),
         ),
         constrained_html_function("fragment", fragment_parameter()),
@@ -52,18 +59,20 @@ fn web_html_interface() -> ModuleInterface {
     }
     exports.push(constrained_html_function("button", button_props()));
     exports.push(function_export(
+        "std/web/html",
         "input",
         ["Msg"],
         Vec::new(),
-        input_props(),
+        vec![input_props()],
         html(named("Msg")),
     ));
     for renderer in ["renderToString", "renderDocument"] {
         exports.push(function_export(
+            "std/web/html",
             renderer,
             ["Msg"],
             Vec::new(),
-            html(named("Msg")),
+            vec![html(named("Msg"))],
             named("String"),
         ));
     }
@@ -79,8 +88,115 @@ fn web_html_interface() -> ModuleInterface {
     }
 }
 
+fn signal_interface() -> ModuleInterface {
+    let exports = vec![
+        type_export("std/signal", "Signal", 1, "opaque-type"),
+        type_export("std/signal", "MutableSignal", 1, "opaque-type"),
+        type_export("std/signal", "SignalChange", 0, "opaque-type"),
+        signal_function(
+            "make",
+            ["A"],
+            vec![named("A")],
+            task(signal_type("MutableSignal", named("A"))),
+        ),
+        signal_function(
+            "read",
+            ["A"],
+            vec![signal_type("Signal", named("A"))],
+            task(named("A")),
+        ),
+        signal_function(
+            "set",
+            ["A"],
+            vec![named("A"), signal_type("MutableSignal", named("A"))],
+            task(named("Unit")),
+        ),
+        signal_function(
+            "update",
+            ["A"],
+            vec![
+                function_type(vec![named("A")], named("A")),
+                signal_type("MutableSignal", named("A")),
+            ],
+            task(named("Unit")),
+        ),
+        signal_function(
+            "planSet",
+            ["A"],
+            vec![named("A"), signal_type("MutableSignal", named("A"))],
+            named("SignalChange"),
+        ),
+        signal_function(
+            "planUpdate",
+            ["A"],
+            vec![
+                function_type(vec![named("A")], named("A")),
+                signal_type("MutableSignal", named("A")),
+            ],
+            named("SignalChange"),
+        ),
+        signal_function(
+            "transaction",
+            [],
+            vec![named_with("Array", vec![named("SignalChange")])],
+            task(named("Unit")),
+        ),
+        signal_function(
+            "map",
+            ["A", "B"],
+            vec![
+                function_type(vec![named("A")], named("B")),
+                signal_type("Signal", named("A")),
+            ],
+            signal_type("Signal", named("B")),
+        ),
+        signal_function(
+            "combine",
+            ["A", "B", "C"],
+            vec![
+                function_type(vec![named("A"), named("B")], named("C")),
+                signal_type("Signal", named("A")),
+                signal_type("Signal", named("B")),
+            ],
+            signal_type("Signal", named("C")),
+        ),
+        signal_function(
+            "constant",
+            ["A"],
+            vec![named("A")],
+            signal_type("Signal", named("A")),
+        ),
+    ];
+    ModuleInterface {
+        schema: 1,
+        module: "std/signal".to_owned(),
+        source: "std/signal.ssrg".to_owned(),
+        dependencies: Vec::new(),
+        exports,
+        operators: Vec::new(),
+        instances: Vec::new(),
+    }
+}
+
+fn signal_function<const N: usize>(
+    name: &str,
+    parameters: [&str; N],
+    arguments: Vec<InterfaceType>,
+    result: InterfaceType,
+) -> InterfaceExport {
+    function_export(
+        "std/signal",
+        name,
+        parameters,
+        Vec::new(),
+        arguments,
+        result,
+    )
+}
+
 fn constrained_html_function(name: &str, parameter: InterfaceType) -> InterfaceExport {
     function_export(
+        "std/web/html",
         name,
         ["Msg", "C"],
         vec![InterfaceConstraint {
@@ -88,7 +204,7 @@ fn constrained_html_function(name: &str, parameter: InterfaceType) -> InterfaceE
             trait_identity: Some("std/web/html::trait(IntoChildren)".to_owned()),
             arguments: vec![named("C"), named("Msg")],
         }],
-        parameter,
+        vec![parameter],
         html(named("Msg")),
     )
 }
@@ -136,9 +252,9 @@ fn input_props() -> InterfaceType {
     ])
 }
 
-fn type_export(name: &str, arity: u32, declaration_kind: &str) -> InterfaceExport {
+fn type_export(module: &str, name: &str, arity: u32, declaration_kind: &str) -> InterfaceExport {
     InterfaceExport {
-        symbol: format!("std/web/html::{name}"),
+        symbol: format!("{module}::{name}"),
         namespace: "type".to_owned(),
         name: name.to_owned(),
         constructor_of: None,
@@ -160,9 +276,13 @@ fn type_export(name: &str, arity: u32, declaration_kind: &str) -> InterfaceExpor
     }
 }
 
-fn trait_export<const N: usize>(name: &str, parameters: [&str; N]) -> InterfaceExport {
+fn trait_export<const N: usize>(
+    module: &str,
+    name: &str,
+    parameters: [&str; N],
+) -> InterfaceExport {
     InterfaceExport {
-        symbol: format!("std/web/html::trait({name})"),
+        symbol: format!("{module}::trait({name})"),
         namespace: "trait".to_owned(),
         name: name.to_owned(),
         constructor_of: None,
@@ -183,14 +303,15 @@ fn trait_export<const N: usize>(name: &str, parameters: [&str; N]) -> InterfaceE
 }
 
 fn function_export<const N: usize>(
+    module: &str,
     name: &str,
     parameters: [&str; N],
     constraints: Vec<InterfaceConstraint>,
-    parameter: InterfaceType,
+    arguments: Vec<InterfaceType>,
     result: InterfaceType,
 ) -> InterfaceExport {
     InterfaceExport {
-        symbol: format!("std/web/html::{name}"),
+        symbol: format!("{module}::{name}"),
         namespace: "value".to_owned(),
         name: name.to_owned(),
         constructor_of: None,
@@ -200,10 +321,7 @@ fn function_export<const N: usize>(
         scheme: InterfaceScheme {
             type_parameters: parameters.into_iter().map(TypeParameter::value).collect(),
             constraints,
-            type_ref: InterfaceType::Function {
-                parameter: Box::new(parameter),
-                result: Box::new(result),
-            },
+            type_ref: function_type(arguments, result),
         },
         methods: Vec::new(),
         representation: None,
@@ -218,10 +336,32 @@ fn html(message: InterfaceType) -> InterfaceType {
 }
 
 fn named(name: &str) -> InterfaceType {
+    named_with(name, Vec::new())
+}
+
+fn named_with(name: &str, arguments: Vec<InterfaceType>) -> InterfaceType {
     InterfaceType::Named {
         name: name.to_owned(),
-        arguments: Vec::new(),
+        arguments,
     }
+}
+
+fn signal_type(name: &str, value: InterfaceType) -> InterfaceType {
+    named_with(name, vec![value])
+}
+
+fn task(success: InterfaceType) -> InterfaceType {
+    named_with("Effect", vec![record([]), named("Never"), success])
+}
+
+fn function_type(parameters: Vec<InterfaceType>, result: InterfaceType) -> InterfaceType {
+    parameters
+        .into_iter()
+        .rev()
+        .fold(result, |result, parameter| InterfaceType::Function {
+            parameter: Box::new(parameter),
+            result: Box::new(result),
+        })
 }
 
 fn record<const N: usize>(fields: [InterfaceRecordField; N]) -> InterfaceType {
@@ -252,7 +392,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn exposes_web_html_as_an_external_link_target() {
+    fn exposes_compiler_owned_standard_modules_as_external_link_targets() {
         let target = standard_module_target("std/web/html").unwrap();
 
         assert_eq!(target.interface().module, "std/web/html");
@@ -267,5 +407,6 @@ mod tests {
             .iter()
             .any(|export| { export.namespace == "value" && export.name == "renderToString" }));
         assert!(standard_module_target("std/web/missing").is_none());
+        assert!(standard_module_target("std/signal").is_some());
     }
 }

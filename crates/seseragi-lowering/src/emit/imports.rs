@@ -5,7 +5,8 @@ use crate::{
     list_ops::runtime_list_operation_for_feature,
     prelude_ops::runtime_prelude_dictionary_for_feature,
     range_ops::runtime_range_operation_for_feature, runtime_types::runtime_type_import_for_feature,
-    show_ops::runtime_show_dictionary_for_feature, sum_ops::runtime_sum_constructor_for_feature,
+    show_ops::runtime_show_dictionary_for_feature,
+    signal_ops::runtime_signal_operation_for_feature, sum_ops::runtime_sum_constructor_for_feature,
     web_html_ops::runtime_web_html_operation_for_feature, TypeScriptModule,
 };
 
@@ -83,6 +84,10 @@ fn render_runtime_imports(module: &TypeScriptModule) -> Vec<String> {
             })
             .or_else(|| {
                 runtime_web_html_operation_for_feature(&import.feature)
+                    .map(|operation| (operation.module, operation.export_name))
+            })
+            .or_else(|| {
+                runtime_signal_operation_for_feature(&import.feature)
                     .map(|operation| (operation.module, operation.export_name))
             });
         if let Some((runtime_module, export_name)) = helper {

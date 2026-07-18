@@ -6,7 +6,7 @@ use super::{
     TypeScriptLoweringError, TypeScriptOutputPlan, TypeScriptSourceImport,
     TypeScriptSourceImportBinding,
 };
-use crate::web_html_ops::is_runtime_web_html_module;
+use crate::runtime_modules::is_runtime_provided_module;
 
 mod instances;
 mod names;
@@ -38,7 +38,7 @@ pub(super) fn lower_module_imports(
     let mut imports: Vec<TypeScriptSourceImport> = Vec::new();
 
     for dependency in &module.module_dependencies {
-        if is_runtime_web_html_module(&dependency.module) {
+        if is_runtime_provided_module(&dependency.module) {
             continue;
         }
         let Some(specifier) = plan.specifier_for(&dependency.module) else {

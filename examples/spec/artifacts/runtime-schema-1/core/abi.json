@@ -803,6 +803,115 @@
         "module": "@seseragi/runtime/html",
         "export": "renderDocument"
       }
+    },
+    {
+      "id": "signal.type",
+      "kind": "value-representation",
+      "typescript": "type Signal<A>",
+      "boundary": "read-only current value view",
+      "typeIdentity": "std/signal::Signal",
+      "typeImport": {
+        "module": "@seseragi/runtime/signal",
+        "export": "Signal"
+      },
+      "import": null
+    },
+    {
+      "id": "signal.mutable-type",
+      "kind": "value-representation",
+      "typescript": "type MutableSignal<A>",
+      "boundary": "mutable source with implicit read-only Signal<A> coercion",
+      "typeIdentity": "std/signal::MutableSignal",
+      "typeImport": {
+        "module": "@seseragi/runtime/signal",
+        "export": "MutableSignal"
+      },
+      "import": null
+    },
+    {
+      "id": "signal.change-type",
+      "kind": "value-representation",
+      "typescript": "type SignalChange",
+      "boundary": "opaque pure transaction plan",
+      "typeIdentity": "std/signal::SignalChange",
+      "typeImport": {
+        "module": "@seseragi/runtime/signal",
+        "export": "SignalChange"
+      },
+      "import": null
+    },
+    {
+      "id": "signal.make",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "A -> Effect<{}, Never, MutableSignal<A>>",
+      "import": { "module": "@seseragi/runtime/signal", "export": "make" }
+    },
+    {
+      "id": "signal.read",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Signal<A> -> Effect<{}, Never, A>",
+      "import": { "module": "@seseragi/runtime/signal", "export": "read" }
+    },
+    {
+      "id": "signal.set",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "A -> MutableSignal<A> -> Effect<{}, Never, Unit>",
+      "import": { "module": "@seseragi/runtime/signal", "export": "set" }
+    },
+    {
+      "id": "signal.update",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> A) -> MutableSignal<A> -> Effect<{}, Never, Unit>",
+      "import": { "module": "@seseragi/runtime/signal", "export": "update" }
+    },
+    {
+      "id": "signal.plan-set",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "A -> MutableSignal<A> -> SignalChange",
+      "import": { "module": "@seseragi/runtime/signal", "export": "planSet" }
+    },
+    {
+      "id": "signal.plan-update",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> A) -> MutableSignal<A> -> SignalChange",
+      "import": { "module": "@seseragi/runtime/signal", "export": "planUpdate" }
+    },
+    {
+      "id": "signal.transaction",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Array<SignalChange> -> Effect<{}, Never, Unit> with atomic ordered commit",
+      "import": {
+        "module": "@seseragi/runtime/signal",
+        "export": "transaction"
+      }
+    },
+    {
+      "id": "signal.map",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> B) -> Signal<A> -> Signal<B>",
+      "import": { "module": "@seseragi/runtime/signal", "export": "map" }
+    },
+    {
+      "id": "signal.combine",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> B -> C) -> Signal<A> -> Signal<B> -> Signal<C>",
+      "import": { "module": "@seseragi/runtime/signal", "export": "combine" }
+    },
+    {
+      "id": "signal.constant",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "A -> Signal<A>",
+      "import": { "module": "@seseragi/runtime/signal", "export": "constant" }
     }
   ]
 }

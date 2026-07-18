@@ -1,0 +1,24 @@
+import * as signals from "std/signal"
+
+fn twice value: Int -> Int = value + value
+fn add left: Int -> right: Int -> Int = left + right
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    left <- signals.make 20
+    right <- signals.make 1
+    let doubled = signals.map twice left
+    let total = signals.combine add doubled right
+    let setLeft = signals.planSet 21
+    let updateRight = signals.planUpdate (\value: Int -> value + 20)
+
+    signals.transaction [
+      setLeft left,
+      updateRight right,
+    ]
+
+    current <- signals.read total
+    println $ `signal: ${current}`
+  }

@@ -202,8 +202,18 @@ pub(super) fn referenced_types(module: &CoreModule) -> ReferencedTypes {
 
 fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
     match expr {
-        CoreExpr::Variable { type_ref, .. } | CoreExpr::Call { type_ref, .. } => {
+        CoreExpr::Variable { type_ref, .. } => {
             collect_type_names(type_ref, references);
+        }
+        CoreExpr::Call {
+            arguments,
+            type_ref,
+            ..
+        } => {
+            collect_type_names(type_ref, references);
+            for argument in arguments {
+                collect_expr_type_names(argument, references);
+            }
         }
         CoreExpr::Lambda {
             parameter,

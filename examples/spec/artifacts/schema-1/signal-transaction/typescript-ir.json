@@ -1,0 +1,475 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/signal-transaction",
+  "runtimeRequirements": [
+    "signal.mutable-type",
+    "signal.type",
+    "signal.change-type",
+    "core.int64",
+    "core.int64.add",
+    "core.unit",
+    "effect.core.flatMap",
+    "signal.make",
+    "effect.core.type",
+    "signal.map",
+    "signal.combine",
+    "signal.plan-set",
+    "signal.plan-update",
+    "signal.transaction",
+    "signal.read",
+    "effect.console.println",
+    "core.string",
+    "core.int64.show"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "signal.make",
+      "local": "_ssrg_signal_make"
+    },
+    {
+      "feature": "signal.map",
+      "local": "_ssrg_signal_map"
+    },
+    {
+      "feature": "signal.combine",
+      "local": "_ssrg_signal_combine"
+    },
+    {
+      "feature": "signal.plan-set",
+      "local": "_ssrg_signal_planSet"
+    },
+    {
+      "feature": "signal.plan-update",
+      "local": "_ssrg_signal_planUpdate"
+    },
+    {
+      "feature": "signal.transaction",
+      "local": "_ssrg_signal_transaction"
+    },
+    {
+      "feature": "signal.read",
+      "local": "_ssrg_signal_read"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "signal.mutable-type",
+      "local": "MutableSignal"
+    },
+    {
+      "feature": "signal.type",
+      "local": "Signal"
+    },
+    {
+      "feature": "signal.change-type",
+      "local": "SignalChange"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "twice",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_add",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 39,
+        "end": 81
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "add",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_add",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 82,
+        "end": 134
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "const",
+            "name": "left",
+            "type": {
+              "kind": "reference",
+              "name": "MutableSignal",
+              "arguments": [
+                {
+                  "kind": "bigint"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_make",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "20"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 208,
+              "end": 231
+            }
+          },
+          {
+            "kind": "const",
+            "name": "right",
+            "type": {
+              "kind": "reference",
+              "name": "MutableSignal",
+              "arguments": [
+                {
+                  "kind": "bigint"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_make",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "1"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 236,
+              "end": 259
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "doubled",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "bigint"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_map",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "twice"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "left"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 264,
+              "end": 300
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "total",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "bigint"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_combine",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "add"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "doubled"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "right"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 305,
+              "end": 350
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "setLeft",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "reference",
+                "name": "MutableSignal",
+                "arguments": [
+                  {
+                    "kind": "bigint"
+                  }
+                ]
+              },
+              "result": {
+                "kind": "reference",
+                "name": "SignalChange",
+                "arguments": []
+              }
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_planSet",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "21"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 355,
+              "end": 387
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "updateRight",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "reference",
+                "name": "MutableSignal",
+                "arguments": [
+                  {
+                    "kind": "bigint"
+                  }
+                ]
+              },
+              "result": {
+                "kind": "reference",
+                "name": "SignalChange",
+                "arguments": []
+              }
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_planUpdate",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "value: bigint",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_add",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "20"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 392,
+              "end": 456
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_transaction",
+              "arguments": [
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "call",
+                      "callee": "setLeft",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "left"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "updateRight",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "right"
+                        }
+                      ]
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "reference",
+                    "name": "SignalChange",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "const",
+            "name": "current",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_read",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "total"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 540,
+              "end": 569
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "signal: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_intShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "current"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 136,
+        "end": 608
+      }
+    }
+  ]
+}

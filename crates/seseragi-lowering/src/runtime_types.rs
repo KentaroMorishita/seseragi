@@ -61,6 +61,24 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         module: "@seseragi/runtime/html",
         export_name: "Html",
     },
+    RuntimeTypeImport {
+        canonical: "std/signal::Signal",
+        runtime_feature: "signal.type",
+        module: "@seseragi/runtime/signal",
+        export_name: "Signal",
+    },
+    RuntimeTypeImport {
+        canonical: "std/signal::MutableSignal",
+        runtime_feature: "signal.mutable-type",
+        module: "@seseragi/runtime/signal",
+        export_name: "MutableSignal",
+    },
+    RuntimeTypeImport {
+        canonical: "std/signal::SignalChange",
+        runtime_feature: "signal.change-type",
+        module: "@seseragi/runtime/signal",
+        export_name: "SignalChange",
+    },
 ];
 
 pub(crate) fn runtime_type_import(canonical: &str) -> Option<RuntimeTypeImport> {

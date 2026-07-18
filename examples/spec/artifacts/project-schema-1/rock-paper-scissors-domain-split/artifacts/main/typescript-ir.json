@@ -84,6 +84,18 @@
             "start": 49,
             "end": 62
           }
+        },
+        {
+          "imported": "Outcome",
+          "local": "Outcome",
+          "sourceLocal": "Outcome",
+          "canonical": "fixture/rps-domain-split::domain::Outcome",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 80
+          }
         }
       ],
       "origin": {

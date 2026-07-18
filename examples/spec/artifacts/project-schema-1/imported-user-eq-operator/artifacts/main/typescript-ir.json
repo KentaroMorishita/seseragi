@@ -32,6 +32,18 @@
           }
         },
         {
+          "imported": "Status",
+          "local": "Status",
+          "sourceLocal": "Status",
+          "canonical": "fixture/imported-user-eq-operator::domain::Status",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 16,
+            "end": 22
+          }
+        },
+        {
           "imported": "Waiting",
           "local": "Waiting",
           "sourceLocal": "Waiting",

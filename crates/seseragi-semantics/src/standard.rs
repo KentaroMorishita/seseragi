@@ -1,6 +1,39 @@
 use crate::{TypedConstraint, TypedType};
 
 const INTO_CHILDREN: &str = "std/web/html::trait(IntoChildren)";
+const SIGNAL: &str = "std/signal::Signal";
+const MUTABLE_SIGNAL: &str = "std/signal::MutableSignal";
+
+pub(crate) fn standard_type_coercion(expected: &TypedType, actual: &TypedType) -> bool {
+    standard_type_coercion_arguments(expected, actual)
+        .is_some_and(|(expected, actual)| expected == actual)
+}
+
+pub(crate) fn standard_type_coercion_arguments<'a>(
+    expected: &'a TypedType,
+    actual: &'a TypedType,
+) -> Option<(&'a [TypedType], &'a [TypedType])> {
+    match (expected, actual) {
+        (
+            TypedType::ExternalNamed {
+                canonical: expected_canonical,
+                arguments: expected_arguments,
+                ..
+            },
+            TypedType::ExternalNamed {
+                canonical: actual_canonical,
+                arguments: actual_arguments,
+                ..
+            },
+        ) if expected_canonical == SIGNAL
+            && actual_canonical == MUTABLE_SIGNAL
+            && expected_arguments.len() == actual_arguments.len() =>
+        {
+            Some((expected_arguments, actual_arguments))
+        }
+        _ => None,
+    }
+}
 
 pub(crate) fn standard_module_instance(
     trait_identity: Option<&str>,
@@ -85,10 +118,31 @@ mod tests {
         );
     }
 
+    #[test]
+    fn lowers_mutable_signal_to_read_only_signal_only() {
+        let expected = external("Signal", SIGNAL, vec![named("Int")]);
+        let actual = external("MutableSignal", MUTABLE_SIGNAL, vec![named("Int")]);
+
+        assert!(standard_type_coercion(&expected, &actual));
+        assert!(!standard_type_coercion(&actual, &expected));
+        assert!(!standard_type_coercion(
+            &expected,
+            &external("MutableSignal", MUTABLE_SIGNAL, vec![named("String")])
+        ));
+    }
+
     fn named(name: &str) -> TypedType {
         TypedType::Named {
             name: name.to_owned(),
             arguments: Vec::new(),
+        }
+    }
+
+    fn external(name: &str, canonical: &str, arguments: Vec<TypedType>) -> TypedType {
+        TypedType::ExternalNamed {
+            name: name.to_owned(),
+            canonical: canonical.to_owned(),
+            arguments,
         }
     }
 }

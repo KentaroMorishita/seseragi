@@ -277,4 +277,12 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
       '<div id="app" class="container"><p>Hello &lt;Seseragi&gt;</p><button type="button">OK</button></div>',
     outputMode: "html",
   },
+  {
+    id: "signal-transaction",
+    label: "Signalのtransaction",
+    category: "アプリ",
+    sourcePath: "examples/spec/artifacts/schema-1/signal-transaction/main.ssrg",
+    stdin: "",
+    expectedOutput: "signal: 63",
+  },
 ]

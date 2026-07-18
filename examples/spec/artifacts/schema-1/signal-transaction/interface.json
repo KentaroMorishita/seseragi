@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "module": "artifact/signal-transaction",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/signal",
+      "module": "artifact/signal-transaction/std/signal",
+      "origin": {
+        "start": 0,
+        "end": 37
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/signal-transaction/std/signal::*",
+          "localName": "signals"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/signal-transaction::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declaration": {
+        "start": 136,
+        "end": 608
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

@@ -64,6 +64,18 @@
             "start": 0,
             "end": 0
           }
+        },
+        {
+          "imported": "Box",
+          "local": "Box",
+          "sourceLocal": "Box",
+          "canonical": "fixture/imported-inherent-method::domain::Box",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 30
+          }
         }
       ],
       "origin": {
