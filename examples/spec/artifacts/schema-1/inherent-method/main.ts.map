@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/inherent-method"
+  ],
+  "sourcesContent": [
+    "struct Box<A> {\n  value: A,\n}\n\nimpl<A> Box<A> {\n  fn get self: Box<A> -> A = self.value\n\n  fn map<B> self: Box<A> -> transform: (A -> B) -> Box<B> =\n    Box { value: transform self.value }\n}\n\nfn evaluate box: Box<Int> -> Int =\n  (box.map (\\value -> value + value)).get\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println $ `Inherent method: ${evaluate $ Box { value: 21 }}`\n"
+  ],
+  "names": [
+    "Box",
+    "get",
+    "map",
+    "transform",
+    "evaluate",
+    "get",
+    "map",
+    "add",
+    "main",
+    "println",
+    "intShow",
+    "evaluate"
+  ],
+  "mappings": ";;;;;AAAAA;;;;AAKEC;AAEAC;AAIFE;AAGAI"
+}

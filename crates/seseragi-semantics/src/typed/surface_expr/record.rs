@@ -135,15 +135,37 @@ pub(super) fn type_member(
                 .find(|item| item.name == field);
             match found {
                 Some(found) => (found.type_ref.type_ref, false, None),
-                None => (
-                    TypedType::Hole,
-                    false,
-                    Some(RecordIssue::MissingField {
-                        field: field_span,
-                        name: field.to_owned(),
-                    }),
-                ),
+                None => {
+                    if let Some(method) = super::application::type_inherent_method_member(
+                        receiver, field, field_span, span, context,
+                    ) {
+                        return method;
+                    }
+                    (
+                        TypedType::Hole,
+                        false,
+                        Some(RecordIssue::MissingField {
+                            field: field_span,
+                            name: field.to_owned(),
+                        }),
+                    )
+                }
             }
+        }
+        SemanticTypeKey::Adt { .. } => {
+            if let Some(method) = super::application::type_inherent_method_member(
+                receiver, field, field_span, span, context,
+            ) {
+                return method;
+            }
+            (
+                TypedType::Hole,
+                false,
+                Some(RecordIssue::AccessOnNonRecord {
+                    receiver: receiver.span(),
+                    actual: receiver_type.clone(),
+                }),
+            )
         }
         _ => match &receiver_type {
             TypedType::Record { fields, .. } => match fields.iter().find(|item| item.name == field)

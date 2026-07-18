@@ -1,0 +1,572 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/inherent-method",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
+  "structs": [
+    {
+      "symbol": "artifact/inherent-method::Box",
+      "name": "Box",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 18,
+            "end": 23
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 29
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/inherent-method::Box::get",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 50,
+        "end": 87
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "id": "self",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "field-access",
+        "receiver": {
+          "kind": "variable",
+          "name": "self",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 77,
+            "end": 81
+          }
+        },
+        "field": "value",
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 77,
+          "end": 87
+        }
+      }
+    },
+    {
+      "symbol": "artifact/inherent-method::Box::map",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 91,
+        "end": 188
+      },
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "parameters": [
+        {
+          "id": "self",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "transform",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "call",
+              "callee": "transform",
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "variable",
+                    "name": "self",
+                    "type": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 176,
+                      "end": 180
+                    }
+                  },
+                  "field": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 176,
+                    "end": 186
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "B",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 166,
+                "end": 186
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 159,
+              "end": 186
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 153,
+          "end": 188
+        }
+      }
+    },
+    {
+      "symbol": "artifact/inherent-method::evaluate",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 192,
+        "end": 268
+      },
+      "parameters": [
+        {
+          "id": "box",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/inherent-method::Box::get",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/inherent-method::Box::map",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "box",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 230,
+                  "end": 233
+                }
+              },
+              {
+                "kind": "lambda",
+                "parameter": {
+                  "id": "value",
+                  "kind": "named",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                },
+                "body": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "variable",
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 249,
+                      "end": 254
+                    }
+                  },
+                  "right": {
+                    "kind": "variable",
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 257,
+                      "end": 262
+                    }
+                  },
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Add",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/int::Add"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 249,
+                    "end": 262
+                  }
+                },
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 239,
+                  "end": 262
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Box",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 230,
+              "end": 263
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 229,
+          "end": 268
+        }
+      }
+    },
+    {
+      "symbol": "artifact/inherent-method::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 270,
+        "end": 393
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "text",
+                "value": "Inherent method: ",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 344,
+                  "end": 361
+                }
+              },
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "call",
+                  "callee": "artifact/inherent-method::evaluate",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "value",
+                          "value": {
+                            "kind": "int64",
+                            "value": "21",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 387,
+                              "end": 389
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 380,
+                            "end": 389
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Box",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 374,
+                        "end": 391
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 363,
+                    "end": 391
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                },
+                "traitIdentity": "std/prelude::Show",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 361,
+                  "end": 392
+                }
+              }
+            ],
+            "origin": {
+              "source": "main.ssrg",
+              "start": 343,
+              "end": 393
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 333,
+          "end": 393
+        }
+      }
+    }
+  ]
+}

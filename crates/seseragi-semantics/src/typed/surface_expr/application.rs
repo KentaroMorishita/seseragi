@@ -28,6 +28,28 @@ pub(crate) fn type_application_with(
     mut type_argument: impl FnMut(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> SurfaceExpressionAnalysis {
     let (callee, argument_nodes) = flatten_application(expression);
+    if let SurfaceExpr::Member {
+        receiver,
+        field,
+        field_span,
+        ..
+    } = callee
+    {
+        let receiver_analysis = type_argument(receiver, &context.without_expected());
+        if let Some(signature) = context.inherent_method(&receiver_analysis.semantic_type, field) {
+            let mut method_arguments = Vec::with_capacity(argument_nodes.len() + 1);
+            method_arguments.push(receiver.as_ref());
+            method_arguments.extend(argument_nodes);
+            return type_known_application(
+                signature,
+                *field_span,
+                &method_arguments,
+                expression.span(),
+                context,
+                &mut type_argument,
+            );
+        }
+    }
     let callee_span = callee.span();
     let signature = if let Some(target) = context.target(callee_span) {
         let Some(signature) = context.callable_value(target) else {
@@ -58,6 +80,43 @@ pub(crate) fn type_application_with(
         return type_unknown_application(callee, &argument_nodes, expression.span(), context);
     };
 
+    type_known_application(
+        signature,
+        callee_span,
+        &argument_nodes,
+        expression.span(),
+        context,
+        type_argument,
+    )
+}
+
+pub(super) fn type_inherent_method_member(
+    receiver: &SurfaceExpr,
+    field: &str,
+    field_span: ByteSpan,
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+) -> Option<SurfaceExpressionAnalysis> {
+    let receiver_analysis = type_surface_expression(receiver, &context.without_expected());
+    let signature = context.inherent_method(&receiver_analysis.semantic_type, field)?;
+    Some(type_known_application(
+        signature,
+        field_span,
+        &[receiver],
+        span,
+        context,
+        type_surface_expression,
+    ))
+}
+
+fn type_known_application(
+    signature: crate::typed::functions::TopLevelPureFunction,
+    callee_span: ByteSpan,
+    argument_nodes: &[&SurfaceExpr],
+    expression_span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+    mut type_argument: impl FnMut(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
+) -> SurfaceExpressionAnalysis {
     let expected_application = context.expected();
     let mut analyses = (0..argument_nodes.len())
         .map(|_| None)
@@ -151,7 +210,7 @@ pub(crate) fn type_application_with(
         callee_span,
         signature.parameters.len(),
         &application.parameters,
-        &argument_nodes,
+        argument_nodes,
         &arguments,
         &semantic_arguments,
     );
@@ -256,7 +315,7 @@ pub(crate) fn type_application_with(
                     method,
                 }),
             type_ref,
-            origin: expression.span(),
+            origin: expression_span,
         },
         semantic_type,
     );

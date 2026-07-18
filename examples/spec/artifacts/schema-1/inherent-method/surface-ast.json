@@ -1,0 +1,559 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "struct",
+      "visibility": "private",
+      "name": "Box",
+      "nameSpan": {
+        "start": 7,
+        "end": 10
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 18,
+            "end": 23
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 25,
+              "end": 26
+            }
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 29
+      }
+    },
+    {
+      "kind": "impl",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 43,
+              "end": 44
+            }
+          }
+        ],
+        "span": {
+          "start": 39,
+          "end": 45
+        }
+      },
+      "members": [
+        {
+          "kind": "method",
+          "visibility": "private",
+          "name": "get",
+          "nameSpan": {
+            "start": 53,
+            "end": 56
+          },
+          "parameters": [
+            {
+              "name": "self",
+              "nameSpan": {
+                "start": 57,
+                "end": 61
+              },
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "span": {
+                      "start": 67,
+                      "end": 68
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 63,
+                  "end": 69
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 73,
+              "end": 74
+            }
+          },
+          "body": {
+            "kind": "member",
+            "receiver": {
+              "kind": "name",
+              "name": "self",
+              "span": {
+                "start": 77,
+                "end": 81
+              }
+            },
+            "field": "value",
+            "fieldSpan": {
+              "start": 82,
+              "end": 87
+            },
+            "span": {
+              "start": 77,
+              "end": 87
+            }
+          },
+          "span": {
+            "start": 50,
+            "end": 87
+          }
+        },
+        {
+          "kind": "method",
+          "visibility": "private",
+          "name": "map",
+          "nameSpan": {
+            "start": 94,
+            "end": 97
+          },
+          "typeParameters": [
+            "B"
+          ],
+          "parameters": [
+            {
+              "name": "self",
+              "nameSpan": {
+                "start": 101,
+                "end": 105
+              },
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "span": {
+                      "start": 111,
+                      "end": 112
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 107,
+                  "end": 113
+                }
+              }
+            },
+            {
+              "name": "transform",
+              "nameSpan": {
+                "start": 117,
+                "end": 126
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "span": {
+                    "start": 129,
+                    "end": 130
+                  }
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "B",
+                  "span": {
+                    "start": 134,
+                    "end": 135
+                  }
+                },
+                "span": {
+                  "start": 129,
+                  "end": 135
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "B",
+                "span": {
+                  "start": 144,
+                  "end": 145
+                }
+              }
+            ],
+            "span": {
+              "start": 140,
+              "end": 146
+            }
+          },
+          "body": {
+            "kind": "struct",
+            "name": "Box",
+            "nameSpan": {
+              "start": 153,
+              "end": 156
+            },
+            "items": [
+              {
+                "kind": "field",
+                "name": "value",
+                "nameSpan": {
+                  "start": 159,
+                  "end": 164
+                },
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "transform",
+                    "span": {
+                      "start": 166,
+                      "end": 175
+                    }
+                  },
+                  "argument": {
+                    "kind": "member",
+                    "receiver": {
+                      "kind": "name",
+                      "name": "self",
+                      "span": {
+                        "start": 176,
+                        "end": 180
+                      }
+                    },
+                    "field": "value",
+                    "fieldSpan": {
+                      "start": 181,
+                      "end": 186
+                    },
+                    "span": {
+                      "start": 176,
+                      "end": 186
+                    }
+                  },
+                  "span": {
+                    "start": 166,
+                    "end": 186
+                  }
+                },
+                "span": {
+                  "start": 159,
+                  "end": 186
+                }
+              }
+            ],
+            "span": {
+              "start": 153,
+              "end": 188
+            }
+          },
+          "span": {
+            "start": 91,
+            "end": 188
+          }
+        }
+      ],
+      "span": {
+        "start": 31,
+        "end": 190
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "evaluate",
+      "nameSpan": {
+        "start": 195,
+        "end": 203
+      },
+      "parameters": [
+        {
+          "name": "box",
+          "nameSpan": {
+            "start": 204,
+            "end": 207
+          },
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 213,
+                  "end": 216
+                }
+              }
+            ],
+            "span": {
+              "start": 209,
+              "end": 217
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 221,
+          "end": 224
+        }
+      },
+      "body": {
+        "kind": "member",
+        "receiver": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "member",
+              "receiver": {
+                "kind": "name",
+                "name": "box",
+                "span": {
+                  "start": 230,
+                  "end": 233
+                }
+              },
+              "field": "map",
+              "fieldSpan": {
+                "start": 234,
+                "end": 237
+              },
+              "span": {
+                "start": 230,
+                "end": 237
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "lambda",
+                "parameter": {
+                  "name": "value",
+                  "nameSpan": {
+                    "start": 240,
+                    "end": 245
+                  }
+                },
+                "body": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "operatorSpan": {
+                    "start": 255,
+                    "end": 256
+                  },
+                  "left": {
+                    "kind": "name",
+                    "name": "value",
+                    "span": {
+                      "start": 249,
+                      "end": 254
+                    }
+                  },
+                  "right": {
+                    "kind": "name",
+                    "name": "value",
+                    "span": {
+                      "start": 257,
+                      "end": 262
+                    }
+                  },
+                  "span": {
+                    "start": 249,
+                    "end": 262
+                  }
+                },
+                "span": {
+                  "start": 239,
+                  "end": 262
+                }
+              },
+              "span": {
+                "start": 238,
+                "end": 263
+              }
+            },
+            "span": {
+              "start": 230,
+              "end": 263
+            }
+          },
+          "span": {
+            "start": 229,
+            "end": 264
+          }
+        },
+        "field": "get",
+        "fieldSpan": {
+          "start": 265,
+          "end": 268
+        },
+        "span": {
+          "start": 229,
+          "end": 268
+        }
+      },
+      "span": {
+        "start": 192,
+        "end": 268
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 284,
+        "end": 288
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 292,
+          "end": 296
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 302,
+            "end": 309
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 316,
+          "end": 328
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 333,
+            "end": 340
+          }
+        },
+        "argument": {
+          "kind": "template",
+          "parts": [
+            {
+              "kind": "text",
+              "value": "Inherent method: ",
+              "span": {
+                "start": 344,
+                "end": 361
+              }
+            },
+            {
+              "kind": "interpolation",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "evaluate",
+                  "span": {
+                    "start": 363,
+                    "end": 371
+                  }
+                },
+                "argument": {
+                  "kind": "struct",
+                  "name": "Box",
+                  "nameSpan": {
+                    "start": 374,
+                    "end": 377
+                  },
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "value",
+                      "nameSpan": {
+                        "start": 380,
+                        "end": 385
+                      },
+                      "value": {
+                        "kind": "integer",
+                        "raw": "21",
+                        "span": {
+                          "start": 387,
+                          "end": 389
+                        }
+                      },
+                      "span": {
+                        "start": 380,
+                        "end": 389
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 374,
+                    "end": 391
+                  }
+                },
+                "span": {
+                  "start": 363,
+                  "end": 391
+                }
+              },
+              "span": {
+                "start": 361,
+                "end": 392
+              }
+            }
+          ],
+          "span": {
+            "start": 343,
+            "end": 393
+          }
+        },
+        "span": {
+          "start": 333,
+          "end": 393
+        }
+      },
+      "span": {
+        "start": 270,
+        "end": 393
+      }
+    }
+  ]
+}

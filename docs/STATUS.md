@@ -37,7 +37,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | 領域                                       | 仕様          | example / fixture                          | 新仕様実装         |
 | ------------------------------------------ | ------------- | ------------------------------------------ | ------------------ |
 | 基本文法、演算子、pattern                  | 初稿あり      | lessonあり、fixtureは一部                  | tuple / matchまで部分実装 |
-| 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / newtype / HKT / structural Record / generic nominal Struct + `impl` SurfaceAstまで部分実装 |
+| 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / newtype / HKT / structural Record / generic nominal Struct + local inherent method実行まで部分実装 |
 | trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative / Monad実行・law fixtureあり | HKT推論 / local dictionary / transitive supertrait / Prelude Maybe・Either・Array・List・Effect instance実行まで部分実装 |
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
@@ -224,7 +224,12 @@ patternとtype-only import、actual executionを固定します。`schema-1/gene
 `Box { value: 41 }`を`Box<Int>`へ推論し、generic member / pattern / same-argument spread updateをactual executionまで通します。
 同じparameterへ矛盾するfield型が集まる場合と、field / expected typeのどちらからもargumentを決められない場合は
 `SES-T0101`で停止します。opaque Structはrepresentationを公開しません。明示`Box<String> { ... }` construction、
-opaque smart constructor / field visibility、struct deriving / implは後続gateです。
+`schema-1/inherent-method`は`impl<A> Box<A>`のgeneric `map`とparameterなしの`get`をreceiverの
+nominal ownerから選択し、通常の静的function callとしてTypedHir / CoreIr / TypeScriptIrへlowerします。
+contextual lambdaを含む`box.map (\value -> value + value)`から`.get`までactual executionで42を固定します。
+local nominal以外のtarget、不正な第一`self` parameter、同じownerでのmethod名重複はbackend前に停止します。
+method選択に`Box`などの個別型名は使いません。public methodのmodule ABIとoperator糖衣は後続gateです。
+opaque smart constructor / field visibility、struct derivingも後続gateです。
 `schema-1/user-add-operator`はoperand型からlocal `Add<Score, Int, Score>`を選択し、binary `+`と
 curried operator section `(+)`を同じ生成dictionaryの`add` method callへlowerします。`Array<Int>`の`reduce`は
 standard `Reducible` runtimeへこのuser-defined callbackを渡し、actual executionで42を固定します。

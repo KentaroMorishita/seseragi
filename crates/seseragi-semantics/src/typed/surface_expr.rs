@@ -94,6 +94,14 @@ impl<'a> PureExpressionContext<'a> {
         self.resolution.callable(target)
     }
 
+    pub(super) fn inherent_method(
+        &self,
+        receiver: &SemanticTypeKey,
+        name: &str,
+    ) -> Option<TopLevelPureFunction> {
+        self.resolution.inherent_method(receiver, name).cloned()
+    }
+
     pub(super) fn callable_value(&self, target: SymbolId) -> Option<TopLevelPureFunction> {
         if let Some(callable) = self.callable(target) {
             return Some(callable.clone());

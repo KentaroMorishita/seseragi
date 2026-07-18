@@ -2,7 +2,7 @@ use crate::{
     unit_type, SymbolKind, TypedDecl, TypedExpr, TypedParameter, TypedScheme, TypedStructField,
     TypedType,
 };
-use seseragi_syntax::{SurfaceDecl, SurfaceVariant};
+use seseragi_syntax::{SurfaceDecl, SurfaceImplMember, SurfaceVariant, Visibility};
 
 use super::adt::{typed_adt_decl, AdtDeclInput};
 use super::effect::typed_effect_from_surface;
@@ -11,6 +11,79 @@ use super::functions::typed_parameters_from_surface;
 use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::type_ref::{inferred_type_from_expr, typed_type_from_type_ref};
 use super::TypedResolution;
+
+pub(crate) fn typed_decls_from_surface(
+    declaration: SurfaceDecl,
+    resolution: &TypedResolution<'_>,
+) -> Vec<TypedDecl> {
+    match declaration {
+        SurfaceDecl::Impl {
+            type_parameters,
+            target,
+            constraints,
+            members,
+            ..
+        } => members
+            .into_iter()
+            .filter_map(|member| {
+                let SurfaceImplMember::Method { method, .. } = member else {
+                    return None;
+                };
+                let symbol = resolution.inherent_method_symbol(&target, &method.name)?;
+                let mut combined_type_parameters = type_parameters.clone();
+                combined_type_parameters.extend(method.type_parameters.clone());
+                let mut combined_constraints = constraints.clone();
+                combined_constraints.extend(method.constraints.clone());
+                let typed_parameters = typed_parameters_from_surface(&method.parameters);
+                let scoped_evidence =
+                    crate::typed::scoped_call_evidence(&combined_constraints, resolution);
+                let context = PureExpressionContext::new(&typed_parameters, resolution)
+                    .with_evidence_parameters(scoped_evidence)
+                    .with_expected(Some(
+                        resolution.semantic_value_from_type_ref(&method.return_type),
+                    ));
+                let body = method
+                    .body
+                    .as_ref()
+                    .map(|body| analyze_resolved_expression(body, &context).value)
+                    .unwrap_or_else(|| hole_expression(method.span));
+                Some(TypedDecl::Fn {
+                    symbol,
+                    visibility: Visibility::Private,
+                    origin: method.span,
+                    type_constructor_parameters: combined_type_parameters
+                        .iter()
+                        .filter(|parameter| parameter.is_constructor())
+                        .cloned()
+                        .collect(),
+                    scheme: TypedScheme {
+                        type_parameters: combined_type_parameters
+                            .into_iter()
+                            .map(|parameter| parameter.name)
+                            .collect(),
+                        constraints: combined_constraints
+                            .into_iter()
+                            .map(|constraint| crate::TypedConstraint {
+                                name: constraint.name,
+                                arguments: constraint
+                                    .arguments
+                                    .iter()
+                                    .map(typed_type_from_type_ref)
+                                    .collect(),
+                            })
+                            .collect(),
+                        type_ref: typed_type_from_type_ref(&method.return_type),
+                    },
+                    parameters: typed_parameters,
+                    body,
+                })
+            })
+            .collect(),
+        declaration => typed_decl_from_surface(declaration, resolution)
+            .into_iter()
+            .collect(),
+    }
+}
 
 pub(crate) fn typed_decl_from_surface(
     declaration: SurfaceDecl,
@@ -234,8 +307,8 @@ pub(crate) fn typed_decl_from_surface(
         SurfaceDecl::Alias { .. }
         | SurfaceDecl::Trait { .. }
         | SurfaceDecl::Operator { .. }
-        | SurfaceDecl::Impl { .. }
         | SurfaceDecl::Instance { .. } => None,
+        SurfaceDecl::Impl { .. } => unreachable!("impl declarations expand before this point"),
     }
 }
 

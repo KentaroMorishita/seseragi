@@ -42,7 +42,7 @@ pub(crate) use pure_issues::{
     ArrayIssue, ConditionalIssue, MatchIssue, MonadDoIssue, PureCallIssue, RangeIssue, RecordIssue,
 };
 pub(crate) use resolution::TypedResolution;
-use surface::typed_decl_from_surface;
+use surface::typed_decls_from_surface;
 pub(crate) use surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use type_ref::typed_type_from_interface_type;
 pub(crate) use type_ref::{
@@ -122,7 +122,7 @@ pub(crate) fn typed_module_from_resolved(resolved: crate::ResolvedModule) -> Typ
         .declarations
         .clone()
         .into_iter()
-        .filter_map(|declaration| typed_decl_from_surface(declaration, &resolution))
+        .flat_map(|declaration| typed_decls_from_surface(declaration, &resolution))
         .collect();
     let external_type_bindings = resolution.external_type_bindings();
     let module_dependencies = resolution.module_dependencies();
@@ -188,6 +188,50 @@ mod tests {
     use seseragi_syntax::ByteSpan;
     use seseragi_syntax::InterfaceType;
     use seseragi_syntax::Visibility;
+
+    #[test]
+    fn types_generic_inherent_method_calls_as_static_function_calls() {
+        let typed = type_module(
+            "artifact/inherent-method/main.ssrg",
+            "struct Box<A> { value: A }\n\
+             impl<A> Box<A> {\n\
+               fn get self: Box<A> -> A = self.value\n\
+               fn map<B> self: Box<A> -> f: (A -> B) -> Box<B> =\n\
+                 Box { value: f self.value }\n\
+             }\n\
+             let answer: Box<Int> = Box { value: 21 }\n\
+             let doubled: Box<Int> = answer.map (\\value -> value + value)\n\
+             pub let result: Int = doubled.get\n",
+        );
+
+        assert_eq!(typed.declarations.len(), 6);
+        let TypedDecl::Let { value, .. } = &typed.declarations[4] else {
+            panic!("expected doubled binding");
+        };
+        assert!(
+            matches!(
+                value,
+                TypedExpr::Call { callee, arguments, type_ref, .. }
+                    if callee.ends_with("::Box::map")
+                        && arguments.len() == 2
+                        && matches!(type_ref, TypedType::Named { name, arguments } if name == "Box" && matches!(arguments.as_slice(), [TypedType::Named { name, .. }] if name == "Int"))
+            ),
+            "{value:#?}"
+        );
+        let TypedDecl::Let { value, .. } = &typed.declarations[5] else {
+            panic!("expected result binding");
+        };
+        assert!(
+            matches!(
+                value,
+                TypedExpr::Call { callee, arguments, type_ref, .. }
+                    if callee.ends_with("::Box::get")
+                        && arguments.len() == 1
+                        && matches!(type_ref, TypedType::Named { name, .. } if name == "Int")
+            ),
+            "{value:#?}"
+        );
+    }
 
     #[test]
     fn types_template_interpolation_with_selected_show_evidence() {

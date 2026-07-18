@@ -2,7 +2,7 @@ use crate::{
     ExternalTypeBinding, ResolvedModule, ResolvedSymbol, SymbolId, SymbolKind, SymbolNamespace,
     TypedModuleDependency, TypedParameter, TypedType,
 };
-use seseragi_syntax::{ByteSpan, SurfaceDecl, TypeRef};
+use seseragi_syntax::{ByteSpan, SurfaceDecl, SurfaceImplMember, TypeRef};
 use std::collections::{BTreeMap, BTreeSet};
 
 use super::functions::TopLevelPureFunction;
@@ -13,6 +13,7 @@ use super::type_ref::typed_type_from_type_ref;
 mod imported_effects;
 mod imported_types;
 mod imports;
+mod inherent_methods;
 mod module_dependencies;
 mod type_bindings;
 
@@ -20,6 +21,7 @@ pub(crate) struct TypedResolution<'a> {
     resolved: &'a ResolvedModule,
     top_level_values: BTreeMap<SymbolId, TypedType>,
     callables: BTreeMap<SymbolId, TopLevelPureFunction>,
+    inherent_methods: inherent_methods::InherentMethodCatalog,
     imported_effects: BTreeMap<SymbolId, imported_effects::ImportedEffectFunction>,
     semantic_values: BTreeMap<SymbolId, SemanticTypeKey>,
     semantic_types: SemanticTypeCatalog,
@@ -32,6 +34,10 @@ impl<'a> TypedResolution<'a> {
             resolved,
             top_level_values: collect_top_level_value_types(resolved),
             callables: collect_callables(resolved, &semantic_types),
+            inherent_methods: inherent_methods::InherentMethodCatalog::new(
+                resolved,
+                &semantic_types,
+            ),
             imported_effects: imported_effects::collect_imported_effects(resolved),
             semantic_values: collect_semantic_value_types(resolved, &semantic_types),
             semantic_types,
@@ -76,6 +82,35 @@ impl<'a> TypedResolution<'a> {
 
     pub(crate) fn callable(&self, id: SymbolId) -> Option<&TopLevelPureFunction> {
         self.callables.get(&id)
+    }
+
+    pub(crate) fn inherent_method(
+        &self,
+        receiver: &SemanticTypeKey,
+        name: &str,
+    ) -> Option<&TopLevelPureFunction> {
+        self.inherent_methods.unique(receiver, name)
+    }
+
+    pub(crate) fn inherent_method_symbol(&self, target: &TypeRef, name: &str) -> Option<String> {
+        let key = self.semantic_types.key_from_type_ref(self.resolved, target);
+        self.inherent_methods
+            .unique(&key, name)
+            .map(|method| method.symbol.clone())
+    }
+
+    pub(crate) fn local_nominal_owner(&self, target: &TypeRef) -> Option<SymbolId> {
+        match self.semantic_types.key_from_type_ref(self.resolved, target) {
+            SemanticTypeKey::Adt { owner, .. } | SemanticTypeKey::Struct { owner, .. } => {
+                Some(owner)
+            }
+            _ => None,
+        }
+    }
+
+    pub(crate) fn same_semantic_type(&self, left: &TypeRef, right: &TypeRef) -> bool {
+        self.semantic_types.key_from_type_ref(self.resolved, left)
+            == self.semantic_types.key_from_type_ref(self.resolved, right)
     }
 
     pub(crate) fn imported_effect(
@@ -682,6 +717,24 @@ fn collect_semantic_value_types(
             }
             SurfaceDecl::Trait { methods, .. } | SurfaceDecl::Instance { methods, .. } => {
                 for method in methods {
+                    for parameter in &method.parameters {
+                        if let Some(symbol) = resolved.symbols.iter().find(|symbol| {
+                            symbol.kind == SymbolKind::Parameter
+                                && symbol.origin == parameter.name_span
+                        }) {
+                            values.insert(
+                                symbol.id,
+                                semantic_types.key_from_type_ref(resolved, &parameter.type_ref),
+                            );
+                        }
+                    }
+                }
+            }
+            SurfaceDecl::Impl { members, .. } => {
+                for member in members {
+                    let SurfaceImplMember::Method { method, .. } = member else {
+                        continue;
+                    };
                     for parameter in &method.parameters {
                         if let Some(symbol) = resolved.symbols.iter().find(|symbol| {
                             symbol.kind == SymbolKind::Parameter

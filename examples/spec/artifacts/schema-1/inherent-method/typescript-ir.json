@@ -1,0 +1,264 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/inherent-method",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.add",
+    "core.unit",
+    "effect.console.println",
+    "core.string",
+    "core.int64.show"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    }
+  ],
+  "structs": [
+    {
+      "exported": false,
+      "name": "Box",
+      "brand": "__ssrg$brand$Box",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 29
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "get",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "self",
+          "type": "Box<A>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "field-access",
+        "receiver": {
+          "kind": "identifier",
+          "name": "self"
+        },
+        "field": "value"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 50,
+        "end": 87
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "map",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "parameters": [
+        {
+          "name": "self",
+          "type": "Box<A>",
+          "implicit": false
+        },
+        {
+          "name": "transform",
+          "type": "(argument: A) => B",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "call",
+              "callee": "transform",
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "self"
+                  },
+                  "field": "value"
+                }
+              ]
+            }
+          }
+        ],
+        "assertedType": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "B",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 91,
+        "end": 188
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "evaluate",
+      "parameters": [
+        {
+          "name": "box",
+          "type": "Box<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "get",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "map",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "box"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "value: bigint",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_int64_add",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "value"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "value"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 192,
+        "end": 268
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "binary",
+            "operator": "+",
+            "left": {
+              "kind": "string",
+              "value": "Inherent method: "
+            },
+            "right": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_intShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "evaluate",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "value",
+                          "value": {
+                            "kind": "bigint",
+                            "value": "21"
+                          }
+                        }
+                      ],
+                      "assertedType": {
+                        "kind": "reference",
+                        "name": "Box",
+                        "arguments": [
+                          {
+                            "kind": "bigint"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 270,
+        "end": 393
+      }
+    }
+  ]
+}

@@ -1,10 +1,13 @@
 use crate::typed::{analyze_pure_function, TypedResolution};
-use seseragi_syntax::{lex, parse_diagnostics, Diagnostic, DiagnosticArtifact, SurfaceDecl, Token};
+use seseragi_syntax::{
+    lex, parse_diagnostics, Diagnostic, DiagnosticArtifact, SurfaceDecl, SurfaceImplMember, Token,
+};
 
 mod array;
 mod conditional;
 mod effect;
 mod function_body;
+mod impl_blocks;
 #[cfg(test)]
 mod instance_method_tests;
 mod let_binding;
@@ -49,6 +52,7 @@ pub(crate) fn semantic_diagnostics_from_resolved(
         collect_decl_diagnostics(declaration, &tokens, &resolution, &mut diagnostics);
     }
     traits::collect_trait_diagnostics(resolved, &resolution, &mut diagnostics);
+    impl_blocks::collect_impl_diagnostics(resolved, &resolution, &mut diagnostics);
     resolution::collect_resolution_diagnostics(resolved, &mut diagnostics);
 
     artifact.diagnostics = diagnostics
@@ -150,6 +154,35 @@ fn collect_decl_diagnostics(
                 method.span,
                 resolution,
                 &method_evidence,
+                diagnostics,
+            );
+        }
+        return;
+    }
+
+    if let SurfaceDecl::Impl {
+        constraints,
+        members,
+        ..
+    } = declaration
+    {
+        for member in members {
+            let SurfaceImplMember::Method { method, .. } = member else {
+                continue;
+            };
+            let mut scoped_evidence = crate::typed::scoped_call_evidence(constraints, resolution);
+            scoped_evidence.extend(crate::typed::scoped_call_evidence_from(
+                &method.constraints,
+                resolution,
+                scoped_evidence.len(),
+            ));
+            collect_pure_body_diagnostics(
+                method.body.as_ref(),
+                &method.parameters,
+                &method.return_type,
+                method.span,
+                resolution,
+                &scoped_evidence,
                 diagnostics,
             );
         }

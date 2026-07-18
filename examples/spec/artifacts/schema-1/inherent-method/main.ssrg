@@ -1,0 +1,18 @@
+struct Box<A> {
+  value: A,
+}
+
+impl<A> Box<A> {
+  fn get self: Box<A> -> A = self.value
+
+  fn map<B> self: Box<A> -> transform: (A -> B) -> Box<B> =
+    Box { value: transform self.value }
+}
+
+fn evaluate box: Box<Int> -> Int =
+  (box.map (\value -> value + value)).get
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ `Inherent method: ${evaluate $ Box { value: 21 }}`

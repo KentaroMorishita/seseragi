@@ -1,0 +1,23 @@
+struct Box<A> {
+  value: A,
+}
+
+struct Other {
+  value: Int,
+}
+
+impl Int {
+  fn invalidTarget self: Int -> Int = self
+}
+
+impl<A> Box<A> {
+  fn missingSelf value: Int -> Int = value
+
+  fn wrongSelf self: Other -> Int = 0
+
+  fn duplicate self: Box<A> -> A = self.value
+}
+
+impl<A> Box<A> {
+  fn duplicate self: Box<A> -> A = self.value
+}

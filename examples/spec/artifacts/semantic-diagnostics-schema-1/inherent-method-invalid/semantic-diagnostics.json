@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0503",
+      "severity": "Error",
+      "messageKey": "impl.target-not-local-nominal",
+      "primary": {
+        "start": 68,
+        "end": 71
+      },
+      "related": [
+        {
+          "message": "inherent impl target must be a nominal type defined in this module",
+          "primary": {
+            "start": 63,
+            "end": 118
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0503",
+      "severity": "Error",
+      "messageKey": "impl.invalid-self-parameter",
+      "primary": {
+        "start": 154,
+        "end": 159
+      },
+      "related": [
+        {
+          "message": "inherent method first parameter must be named self",
+          "primary": {
+            "start": 139,
+            "end": 179
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d3",
+      "code": "SES-T0503",
+      "severity": "Error",
+      "messageKey": "impl.invalid-self-parameter",
+      "primary": {
+        "start": 202,
+        "end": 207
+      },
+      "related": [
+        {
+          "message": "inherent method self type must match the impl target",
+          "primary": {
+            "start": 183,
+            "end": 218
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d4",
+      "code": "SES-N0002",
+      "severity": "Error",
+      "messageKey": "name.duplicate-definition",
+      "primary": {
+        "start": 291,
+        "end": 300
+      },
+      "related": [
+        {
+          "message": "inherent method duplicate was first defined here",
+          "primary": {
+            "start": 225,
+            "end": 234
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}
