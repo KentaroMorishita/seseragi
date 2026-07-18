@@ -58,6 +58,7 @@ fn declaration_context(declaration: &SurfaceDecl) -> &'static str {
         SurfaceDecl::Struct { .. } => "struct declaration",
         SurfaceDecl::Trait { .. } => "trait declaration",
         SurfaceDecl::Operator { .. } => "operator declaration",
+        SurfaceDecl::Impl { .. } => "impl declaration",
         SurfaceDecl::Instance { .. } => "instance declaration",
     }
 }

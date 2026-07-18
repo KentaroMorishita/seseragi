@@ -151,7 +151,7 @@ fn names_from_declaration(module: &str, declaration: &SurfaceDecl) -> Vec<Module
             "custom-operator",
             *span,
         )],
-        SurfaceDecl::Instance { .. } => Vec::new(),
+        SurfaceDecl::Impl { .. } | SurfaceDecl::Instance { .. } => Vec::new(),
     }
 }
 

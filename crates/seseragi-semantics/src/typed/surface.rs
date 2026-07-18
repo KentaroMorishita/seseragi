@@ -234,6 +234,7 @@ pub(crate) fn typed_decl_from_surface(
         SurfaceDecl::Alias { .. }
         | SurfaceDecl::Trait { .. }
         | SurfaceDecl::Operator { .. }
+        | SurfaceDecl::Impl { .. }
         | SurfaceDecl::Instance { .. } => None,
     }
 }

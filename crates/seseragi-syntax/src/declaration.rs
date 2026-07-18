@@ -8,6 +8,7 @@ pub(crate) fn is_contextual_declaration_start(raw: &str) -> bool {
             | "struct"
             | "opaque"
             | "operator"
+            | "impl"
             | "instance"
             | "trait"
     )

@@ -1,0 +1,15 @@
+struct Box<A> {
+  value: A,
+}
+
+impl<A> Box<A>
+where Show<A> {
+  pub fn copied self: Box<A> -> Box<A> =
+    Box { value: self.value }
+
+  operator + self -> other: Box<A> -> Box<A> =
+    other
+
+  fn unwrap self: Box<A> -> A =
+    self.value
+}

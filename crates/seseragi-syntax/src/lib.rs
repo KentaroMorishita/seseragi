@@ -26,9 +26,9 @@ pub use lexer::lex;
 pub use source::{LineColumn, LineIndex, SourceSnapshot, Span};
 pub use surface::{
     parse_surface_ast, ByteSpan, SurfaceComprehensionClause, SurfaceConstraint, SurfaceDecl,
-    SurfaceDoItem, SurfaceExpr, SurfaceImport, SurfaceImportItem, SurfaceLambdaParameter,
-    SurfaceMatchArm, SurfaceMethod, SurfaceModule, SurfaceParameter, SurfacePattern,
-    SurfaceRecordItem, SurfaceRecordPatternField, SurfaceRequirement, SurfaceTemplatePart,
-    SurfaceVariant, TypeParameter, TypeRef, Visibility,
+    SurfaceDoItem, SurfaceExpr, SurfaceImplMember, SurfaceImport, SurfaceImportItem,
+    SurfaceLambdaParameter, SurfaceMatchArm, SurfaceMethod, SurfaceModule, SurfaceParameter,
+    SurfacePattern, SurfaceRecordItem, SurfaceRecordPatternField, SurfaceRequirement,
+    SurfaceTemplatePart, SurfaceVariant, TypeParameter, TypeRef, Visibility,
 };
 pub use token::{Token, TokenKind, TokenStream};

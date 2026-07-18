@@ -11,11 +11,43 @@ pub(crate) fn validate_surface_ast(module: &Value) -> Result<(), String> {
             .get("kind")
             .and_then(Value::as_str)
             .ok_or_else(|| format!("SurfaceAst declarations[{index}] kind must be a string"))?;
-        if matches!(kind, "let" | "fn" | "effectFn") {
-            let body = declaration.get("body").ok_or_else(|| {
-                format!("valid SurfaceAst {kind} declarations must preserve their body")
-            })?;
-            validate_expression(body, &format!("declarations[{index}].body"))?;
+        match kind {
+            "let" | "fn" | "effectFn" => {
+                let body = declaration.get("body").ok_or_else(|| {
+                    format!("valid SurfaceAst {kind} declarations must preserve their body")
+                })?;
+                validate_expression(body, &format!("declarations[{index}].body"))?;
+            }
+            "impl" => validate_impl_declaration(declaration, index)?,
+            _ => {}
+        }
+    }
+    Ok(())
+}
+
+fn validate_impl_declaration(declaration: &Value, declaration_index: usize) -> Result<(), String> {
+    let path = format!("declarations[{declaration_index}]");
+    require_span(declaration, &path)?;
+    let members = declaration
+        .get("members")
+        .and_then(Value::as_array)
+        .ok_or_else(|| format!("SurfaceAst {path}.members must be an array"))?;
+    for (index, member) in members.iter().enumerate() {
+        let member_path = format!("{path}.members[{index}]");
+        require_span(member, &member_path)?;
+        match member.get("kind").and_then(Value::as_str) {
+            Some("method" | "operator") => {
+                let body = member.get("body").ok_or_else(|| {
+                    format!("valid SurfaceAst {member_path} must preserve its body")
+                })?;
+                validate_expression(body, &format!("{member_path}.body"))?;
+            }
+            Some(other) => {
+                return Err(format!(
+                    "SurfaceAst {member_path} has unknown impl member kind {other}"
+                ));
+            }
+            None => return Err(format!("SurfaceAst {member_path}.kind must be a string")),
         }
     }
     Ok(())

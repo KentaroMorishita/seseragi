@@ -1,0 +1,334 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "struct",
+      "visibility": "private",
+      "name": "Box",
+      "nameSpan": {
+        "start": 7,
+        "end": 10
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 18,
+            "end": 23
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 25,
+              "end": 26
+            }
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 29
+      }
+    },
+    {
+      "kind": "impl",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 43,
+              "end": 44
+            }
+          }
+        ],
+        "span": {
+          "start": 39,
+          "end": 45
+        }
+      },
+      "constraints": [
+        {
+          "name": "Show",
+          "nameSpan": {
+            "start": 52,
+            "end": 56
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 57,
+                "end": 58
+              }
+            }
+          ],
+          "span": {
+            "start": 52,
+            "end": 59
+          }
+        }
+      ],
+      "members": [
+        {
+          "kind": "method",
+          "visibility": "public",
+          "name": "copied",
+          "nameSpan": {
+            "start": 71,
+            "end": 77
+          },
+          "parameters": [
+            {
+              "name": "self",
+              "nameSpan": {
+                "start": 78,
+                "end": 82
+              },
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "span": {
+                      "start": 88,
+                      "end": 89
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 84,
+                  "end": 90
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 98,
+                  "end": 99
+                }
+              }
+            ],
+            "span": {
+              "start": 94,
+              "end": 100
+            }
+          },
+          "body": {
+            "kind": "struct",
+            "name": "Box",
+            "nameSpan": {
+              "start": 107,
+              "end": 110
+            },
+            "items": [
+              {
+                "kind": "field",
+                "name": "value",
+                "nameSpan": {
+                  "start": 113,
+                  "end": 118
+                },
+                "value": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "self",
+                    "span": {
+                      "start": 120,
+                      "end": 124
+                    }
+                  },
+                  "field": "value",
+                  "fieldSpan": {
+                    "start": 125,
+                    "end": 130
+                  },
+                  "span": {
+                    "start": 120,
+                    "end": 130
+                  }
+                },
+                "span": {
+                  "start": 113,
+                  "end": 130
+                }
+              }
+            ],
+            "span": {
+              "start": 107,
+              "end": 132
+            }
+          },
+          "span": {
+            "start": 64,
+            "end": 132
+          }
+        },
+        {
+          "kind": "operator",
+          "visibility": "private",
+          "spelling": "+",
+          "spellingSpan": {
+            "start": 145,
+            "end": 146
+          },
+          "selfSpan": {
+            "start": 147,
+            "end": 151
+          },
+          "parameters": [
+            {
+              "name": "other",
+              "nameSpan": {
+                "start": 155,
+                "end": 160
+              },
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "span": {
+                      "start": 166,
+                      "end": 167
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 162,
+                  "end": 168
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 176,
+                  "end": 177
+                }
+              }
+            ],
+            "span": {
+              "start": 172,
+              "end": 178
+            }
+          },
+          "body": {
+            "kind": "name",
+            "name": "other",
+            "span": {
+              "start": 185,
+              "end": 190
+            }
+          },
+          "span": {
+            "start": 136,
+            "end": 190
+          }
+        },
+        {
+          "kind": "method",
+          "visibility": "private",
+          "name": "unwrap",
+          "nameSpan": {
+            "start": 197,
+            "end": 203
+          },
+          "parameters": [
+            {
+              "name": "self",
+              "nameSpan": {
+                "start": 204,
+                "end": 208
+              },
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "span": {
+                      "start": 214,
+                      "end": 215
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 210,
+                  "end": 216
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 220,
+              "end": 221
+            }
+          },
+          "body": {
+            "kind": "member",
+            "receiver": {
+              "kind": "name",
+              "name": "self",
+              "span": {
+                "start": 228,
+                "end": 232
+              }
+            },
+            "field": "value",
+            "fieldSpan": {
+              "start": 233,
+              "end": 238
+            },
+            "span": {
+              "start": 228,
+              "end": 238
+            }
+          },
+          "span": {
+            "start": 194,
+            "end": 238
+          }
+        }
+      ],
+      "span": {
+        "start": 31,
+        "end": 240
+      }
+    }
+  ]
+}

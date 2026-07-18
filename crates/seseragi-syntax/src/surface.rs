@@ -2,10 +2,10 @@ use crate::declaration::is_contextual_declaration_start;
 use crate::lexer::lex;
 pub use crate::surface_model::{
     ByteSpan, SurfaceComprehensionClause, SurfaceConstraint, SurfaceDecl, SurfaceDoItem,
-    SurfaceExpr, SurfaceImport, SurfaceImportItem, SurfaceLambdaParameter, SurfaceMatchArm,
-    SurfaceMethod, SurfaceModule, SurfaceParameter, SurfacePattern, SurfaceRecordItem,
-    SurfaceRecordPatternField, SurfaceRequirement, SurfaceTemplatePart, SurfaceVariant,
-    TypeParameter, TypeRef, Visibility,
+    SurfaceExpr, SurfaceImplMember, SurfaceImport, SurfaceImportItem, SurfaceLambdaParameter,
+    SurfaceMatchArm, SurfaceMethod, SurfaceModule, SurfaceParameter, SurfacePattern,
+    SurfaceRecordItem, SurfaceRecordPatternField, SurfaceRequirement, SurfaceTemplatePart,
+    SurfaceVariant, TypeParameter, TypeRef, Visibility,
 };
 use crate::token::{Token, TokenKind};
 
@@ -13,6 +13,9 @@ mod constraints;
 mod effects;
 mod expression;
 mod functions;
+#[cfg(test)]
+mod impl_tests;
+mod impls;
 #[cfg(test)]
 mod import_tests;
 mod imports;
@@ -164,6 +167,11 @@ impl SurfaceParser<'_> {
                 if self.raw_at(decl_start) == Some("operator") =>
             {
                 self.parse_operator_decl(visibility, start, decl_start, end)
+            }
+            Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
+                if visibility == Visibility::Private && self.raw_at(decl_start) == Some("impl") =>
+            {
+                self.parse_impl_decl(start, decl_start, end)
             }
             Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
                 if visibility == Visibility::Private

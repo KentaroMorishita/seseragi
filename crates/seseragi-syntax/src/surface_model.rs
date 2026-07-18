@@ -240,6 +240,16 @@ pub enum SurfaceDecl {
         constraints: Vec<SurfaceConstraint>,
         span: ByteSpan,
     },
+    Impl {
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<TypeParameter>,
+        target: TypeRef,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraints: Vec<SurfaceConstraint>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        members: Vec<SurfaceImplMember>,
+        span: ByteSpan,
+    },
     Instance {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<TypeParameter>,
@@ -266,6 +276,7 @@ impl SurfaceDecl {
             | Self::Struct { span, .. }
             | Self::Trait { span, .. }
             | Self::Operator { span, .. }
+            | Self::Impl { span, .. }
             | Self::Instance { span, .. } => *span,
         }
     }
@@ -303,6 +314,40 @@ pub struct SurfaceMethod {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub body: Option<SurfaceExpr>,
     pub span: ByteSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase"
+)]
+pub enum SurfaceImplMember {
+    Method {
+        visibility: Visibility,
+        #[serde(flatten)]
+        method: SurfaceMethod,
+    },
+    Operator {
+        visibility: Visibility,
+        spelling: String,
+        spelling_span: ByteSpan,
+        self_span: ByteSpan,
+        parameters: Vec<SurfaceParameter>,
+        return_type: TypeRef,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        body: Option<SurfaceExpr>,
+        span: ByteSpan,
+    },
+}
+
+impl SurfaceImplMember {
+    pub fn span(&self) -> ByteSpan {
+        match self {
+            Self::Method { method, .. } => method.span,
+            Self::Operator { span, .. } => *span,
+        }
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

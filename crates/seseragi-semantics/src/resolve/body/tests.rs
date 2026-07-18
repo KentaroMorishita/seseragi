@@ -61,6 +61,34 @@ fn resolves_instance_method_signatures_and_bodies_in_child_scopes() {
 }
 
 #[test]
+fn resolves_impl_target_constraints_and_member_bodies() {
+    let resolved = resolve_module(
+        "artifact/impl-members/main.ssrg",
+        "struct Box<A> { value: A }\n\
+         trait Render<A> { fn render value: A -> String }\n\
+         impl<A> Box<A>\n\
+         where Render<A> {\n\
+           fn unwrap self: Box<A> -> A = self.value\n\
+           operator + self -> other: Box<A> -> Box<A> = other\n\
+         }\n",
+    );
+
+    let self_parameter = symbol(&resolved, SymbolKind::Parameter, "self");
+    let other_parameter = symbol(&resolved, SymbolKind::Parameter, "other");
+    assert!(resolved.references.iter().any(|reference| {
+        reference.namespace == SymbolNamespace::Value
+            && reference.spelling == "self"
+            && reference.target == Some(self_parameter)
+    }));
+    assert!(resolved.references.iter().any(|reference| {
+        reference.namespace == SymbolNamespace::Value
+            && reference.spelling == "other"
+            && reference.target == Some(other_parameter)
+    }));
+    assert!(resolved.issues.is_empty(), "{:?}", resolved.issues);
+}
+
+#[test]
 fn resolves_local_trait_instance_heads_and_constraint_names_by_symbol() {
     let resolved = resolve_module(
         "artifact/local-trait-instance/main.ssrg",

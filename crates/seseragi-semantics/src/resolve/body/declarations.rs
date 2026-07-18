@@ -1,7 +1,8 @@
 use super::{expression, Resolver};
 use crate::{ScopeKind, SymbolKind, SymbolNamespace};
 use seseragi_syntax::{
-    ModuleInterface, SurfaceConstraint, SurfaceDecl, SurfaceMethod, SurfaceModule,
+    ModuleInterface, SurfaceConstraint, SurfaceDecl, SurfaceImplMember, SurfaceMethod,
+    SurfaceModule,
 };
 
 mod types;
@@ -98,7 +99,7 @@ pub(super) fn register_module_declarations(resolver: &mut Resolver, declarations
                     *span,
                 );
             }
-            SurfaceDecl::Instance { .. } => {}
+            SurfaceDecl::Impl { .. } | SurfaceDecl::Instance { .. } => {}
         }
     }
 }
@@ -263,6 +264,18 @@ pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[Surf
                 resolve_type_ref(resolver, scope, return_type);
                 resolve_constraints(resolver, scope, constraints);
             }
+            SurfaceDecl::Impl {
+                type_parameters,
+                target,
+                constraints,
+                members,
+                span,
+            } => {
+                let scope = declaration_scope(resolver, module_scope, type_parameters, *span);
+                resolve_type_ref(resolver, scope, target);
+                resolve_constraints(resolver, scope, constraints);
+                resolve_impl_members(resolver, scope, members);
+            }
             SurfaceDecl::Instance {
                 type_parameters,
                 trait_name,
@@ -286,6 +299,43 @@ pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[Surf
                 }
                 resolve_constraints(resolver, scope, constraints);
                 resolve_methods(resolver, scope, methods);
+            }
+        }
+    }
+}
+
+fn resolve_impl_members(
+    resolver: &mut Resolver,
+    parent: crate::ScopeId,
+    members: &[SurfaceImplMember],
+) {
+    for member in members {
+        match member {
+            SurfaceImplMember::Method { method, .. } => {
+                resolve_methods(resolver, parent, std::slice::from_ref(method));
+            }
+            SurfaceImplMember::Operator {
+                self_span,
+                parameters,
+                return_type,
+                body,
+                span,
+                ..
+            } => {
+                let member_scope = resolver.new_scope(parent, ScopeKind::Function, *span);
+                resolver.register(
+                    member_scope,
+                    SymbolNamespace::Value,
+                    SymbolKind::Parameter,
+                    "self",
+                    None,
+                    *self_span,
+                );
+                register_parameters(resolver, member_scope, parameters);
+                resolve_type_ref(resolver, member_scope, return_type);
+                if let Some(body) = body {
+                    expression::resolve_expression(resolver, member_scope, body);
+                }
             }
         }
     }

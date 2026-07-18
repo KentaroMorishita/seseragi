@@ -37,7 +37,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | 領域                                       | 仕様          | example / fixture                          | 新仕様実装         |
 | ------------------------------------------ | ------------- | ------------------------------------------ | ------------------ |
 | 基本文法、演算子、pattern                  | 初稿あり      | lessonあり、fixtureは一部                  | tuple / matchまで部分実装 |
-| 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / newtype / HKT / structural Record / generic nominal Structまで部分実装 |
+| 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / newtype / HKT / structural Record / generic nominal Struct + `impl` SurfaceAstまで部分実装 |
 | trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative / Monad実行・law fixtureあり | HKT推論 / local dictionary / transitive supertrait / Prelude Maybe・Either・Array・List・Effect instance実行まで部分実装 |
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
