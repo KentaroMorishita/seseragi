@@ -3,1636 +3,14 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "artifact/monad-either",
-  "instances": [
-    {
-      "identity": "artifact/monad-either::trait(Functor)<std/prelude::Either<$0,_>>",
-      "traitIdentity": "artifact/monad-either::trait(Functor)",
-      "trait": "Functor",
-      "typeParameters": [
-        "E"
-      ],
-      "arguments": [
-        {
-          "kind": "named",
-          "name": "Either",
-          "arguments": [
-            {
-              "kind": "named",
-              "name": "E",
-              "arguments": []
-            },
-            {
-              "kind": "hole"
-            }
-          ]
-        }
-      ],
-      "argumentIdentities": [
-        "std/prelude::Either<$0,_>"
-      ],
-      "constraints": [],
-      "origin": {
-        "start": 79,
-        "end": 274
-      },
-      "implementation": {
-        "kind": "user-defined",
-        "methods": [
-          {
-            "name": "map",
-            "scheme": {
-              "typeParameters": [
-                "A",
-                "B"
-              ],
-              "constraints": [],
-              "type": {
-                "kind": "named",
-                "name": "Either",
-                "arguments": [
-                  {
-                    "kind": "named",
-                    "name": "E",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "B",
-                    "arguments": []
-                  }
-                ]
-              }
-            },
-            "parameters": [
-              {
-                "kind": "named",
-                "name": "f",
-                "type": {
-                  "kind": "function",
-                  "parameter": {
-                    "kind": "named",
-                    "name": "A",
-                    "arguments": []
-                  },
-                  "result": {
-                    "kind": "named",
-                    "name": "B",
-                    "arguments": []
-                  }
-                },
-                "origin": {
-                  "start": 130,
-                  "end": 131
-                }
-              },
-              {
-                "kind": "named",
-                "name": "value",
-                "type": {
-                  "kind": "named",
-                  "name": "Either",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "E",
-                      "arguments": []
-                    },
-                    {
-                      "kind": "named",
-                      "name": "A",
-                      "arguments": []
-                    }
-                  ]
-                },
-                "origin": {
-                  "start": 145,
-                  "end": 150
-                }
-              }
-            ],
-            "body": {
-              "kind": "match",
-              "scrutinee": {
-                "kind": "variable",
-                "name": "value",
-                "type": {
-                  "kind": "named",
-                  "name": "Either",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "E",
-                      "arguments": []
-                    },
-                    {
-                      "kind": "named",
-                      "name": "A",
-                      "arguments": []
-                    }
-                  ]
-                },
-                "origin": {
-                  "start": 193,
-                  "end": 198
-                }
-              },
-              "arms": [
-                {
-                  "pattern": {
-                    "kind": "constructor",
-                    "symbol": "std/prelude::Left",
-                    "argument": {
-                      "kind": "binding",
-                      "symbol": 26,
-                      "name": "error",
-                      "type": {
-                        "kind": "named",
-                        "name": "E",
-                        "arguments": []
-                      },
-                      "origin": {
-                        "start": 212,
-                        "end": 217
-                      }
-                    },
-                    "type": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "A",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 207,
-                      "end": 217
-                    }
-                  },
-                  "body": {
-                    "kind": "call",
-                    "callee": "std/prelude::Left",
-                    "arguments": [
-                      {
-                        "kind": "variable",
-                        "name": "error",
-                        "type": {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        "origin": {
-                          "start": 226,
-                          "end": 231
-                        }
-                      }
-                    ],
-                    "type": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "B",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 221,
-                      "end": 231
-                    }
-                  },
-                  "origin": {
-                    "start": 207,
-                    "end": 231
-                  }
-                },
-                {
-                  "pattern": {
-                    "kind": "constructor",
-                    "symbol": "std/prelude::Right",
-                    "argument": {
-                      "kind": "binding",
-                      "symbol": 27,
-                      "name": "item",
-                      "type": {
-                        "kind": "named",
-                        "name": "A",
-                        "arguments": []
-                      },
-                      "origin": {
-                        "start": 244,
-                        "end": 248
-                      }
-                    },
-                    "type": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "A",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 238,
-                      "end": 248
-                    }
-                  },
-                  "body": {
-                    "kind": "call",
-                    "callee": "std/prelude::Right",
-                    "arguments": [
-                      {
-                        "kind": "call",
-                        "callee": "f",
-                        "arguments": [
-                          {
-                            "kind": "variable",
-                            "name": "item",
-                            "type": {
-                              "kind": "named",
-                              "name": "A",
-                              "arguments": []
-                            },
-                            "origin": {
-                              "start": 262,
-                              "end": 266
-                            }
-                          }
-                        ],
-                        "type": {
-                          "kind": "named",
-                          "name": "B",
-                          "arguments": []
-                        },
-                        "origin": {
-                          "start": 260,
-                          "end": 266
-                        }
-                      }
-                    ],
-                    "type": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "B",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 252,
-                      "end": 266
-                    }
-                  },
-                  "origin": {
-                    "start": 238,
-                    "end": 266
-                  }
-                }
-              ],
-              "exhaustive": true,
-              "type": {
-                "kind": "named",
-                "name": "Either",
-                "arguments": [
-                  {
-                    "kind": "named",
-                    "name": "E",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "B",
-                    "arguments": []
-                  }
-                ]
-              },
-              "origin": {
-                "start": 187,
-                "end": 272
-              }
-            },
-            "origin": {
-              "start": 117,
-              "end": 272
-            }
-          }
-        ]
-      }
-    },
-    {
-      "identity": "artifact/monad-either::trait(Applicative)<std/prelude::Either<$0,_>>",
-      "traitIdentity": "artifact/monad-either::trait(Applicative)",
-      "trait": "Applicative",
-      "typeParameters": [
-        "E"
-      ],
-      "arguments": [
-        {
-          "kind": "named",
-          "name": "Either",
-          "arguments": [
-            {
-              "kind": "named",
-              "name": "E",
-              "arguments": []
-            },
-            {
-              "kind": "hole"
-            }
-          ]
-        }
-      ],
-      "argumentIdentities": [
-        "std/prelude::Either<$0,_>"
-      ],
-      "constraints": [
-        {
-          "name": "Functor",
-          "arguments": [
-            {
-              "kind": "named",
-              "name": "Either",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "E",
-                  "arguments": []
-                },
-                {
-                  "kind": "hole"
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      "constraintIdentities": [
-        "artifact/monad-either::trait(Functor)"
-      ],
-      "supertraitCount": 1,
-      "origin": {
-        "start": 415,
-        "end": 761
-      },
-      "implementation": {
-        "kind": "user-defined",
-        "methods": [
-          {
-            "name": "pure",
-            "scheme": {
-              "typeParameters": [
-                "A"
-              ],
-              "constraints": [],
-              "type": {
-                "kind": "named",
-                "name": "Either",
-                "arguments": [
-                  {
-                    "kind": "named",
-                    "name": "E",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "A",
-                    "arguments": []
-                  }
-                ]
-              }
-            },
-            "parameters": [
-              {
-                "kind": "named",
-                "name": "value",
-                "type": {
-                  "kind": "named",
-                  "name": "A",
-                  "arguments": []
-                },
-                "origin": {
-                  "start": 468,
-                  "end": 473
-                }
-              }
-            ],
-            "body": {
-              "kind": "call",
-              "callee": "std/prelude::Right",
-              "arguments": [
-                {
-                  "kind": "variable",
-                  "name": "value",
-                  "type": {
-                    "kind": "named",
-                    "name": "A",
-                    "arguments": []
-                  },
-                  "origin": {
-                    "start": 501,
-                    "end": 506
-                  }
-                }
-              ],
-              "type": {
-                "kind": "named",
-                "name": "Either",
-                "arguments": [
-                  {
-                    "kind": "named",
-                    "name": "E",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "A",
-                    "arguments": []
-                  }
-                ]
-              },
-              "origin": {
-                "start": 495,
-                "end": 506
-              }
-            },
-            "origin": {
-              "start": 457,
-              "end": 506
-            }
-          },
-          {
-            "name": "apply",
-            "scheme": {
-              "typeParameters": [
-                "A",
-                "B"
-              ],
-              "constraints": [],
-              "type": {
-                "kind": "named",
-                "name": "Either",
-                "arguments": [
-                  {
-                    "kind": "named",
-                    "name": "E",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "B",
-                    "arguments": []
-                  }
-                ]
-              }
-            },
-            "parameters": [
-              {
-                "kind": "named",
-                "name": "wrapped",
-                "type": {
-                  "kind": "named",
-                  "name": "Either",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "E",
-                      "arguments": []
-                    },
-                    {
-                      "kind": "function",
-                      "parameter": {
-                        "kind": "named",
-                        "name": "A",
-                        "arguments": []
-                      },
-                      "result": {
-                        "kind": "named",
-                        "name": "B",
-                        "arguments": []
-                      }
-                    }
-                  ]
-                },
-                "origin": {
-                  "start": 525,
-                  "end": 532
-                }
-              },
-              {
-                "kind": "named",
-                "name": "value",
-                "type": {
-                  "kind": "named",
-                  "name": "Either",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "E",
-                      "arguments": []
-                    },
-                    {
-                      "kind": "named",
-                      "name": "A",
-                      "arguments": []
-                    }
-                  ]
-                },
-                "origin": {
-                  "start": 555,
-                  "end": 560
-                }
-              }
-            ],
-            "body": {
-              "kind": "match",
-              "scrutinee": {
-                "kind": "tuple",
-                "elements": [
-                  {
-                    "kind": "variable",
-                    "name": "wrapped",
-                    "type": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "function",
-                          "parameter": {
-                            "kind": "named",
-                            "name": "A",
-                            "arguments": []
-                          },
-                          "result": {
-                            "kind": "named",
-                            "name": "B",
-                            "arguments": []
-                          }
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 604,
-                      "end": 611
-                    }
-                  },
-                  {
-                    "kind": "variable",
-                    "name": "value",
-                    "type": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "A",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 613,
-                      "end": 618
-                    }
-                  }
-                ],
-                "type": {
-                  "kind": "tuple",
-                  "elements": [
-                    {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "function",
-                          "parameter": {
-                            "kind": "named",
-                            "name": "A",
-                            "arguments": []
-                          },
-                          "result": {
-                            "kind": "named",
-                            "name": "B",
-                            "arguments": []
-                          }
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "A",
-                          "arguments": []
-                        }
-                      ]
-                    }
-                  ]
-                },
-                "origin": {
-                  "start": 603,
-                  "end": 619
-                }
-              },
-              "arms": [
-                {
-                  "pattern": {
-                    "kind": "tuple",
-                    "elements": [
-                      {
-                        "kind": "constructor",
-                        "symbol": "std/prelude::Right",
-                        "argument": {
-                          "kind": "binding",
-                          "symbol": 42,
-                          "name": "function",
-                          "type": {
-                            "kind": "function",
-                            "parameter": {
-                              "kind": "named",
-                              "name": "A",
-                              "arguments": []
-                            },
-                            "result": {
-                              "kind": "named",
-                              "name": "B",
-                              "arguments": []
-                            }
-                          },
-                          "origin": {
-                            "start": 635,
-                            "end": 643
-                          }
-                        },
-                        "type": {
-                          "kind": "named",
-                          "name": "Either",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "E",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "function",
-                              "parameter": {
-                                "kind": "named",
-                                "name": "A",
-                                "arguments": []
-                              },
-                              "result": {
-                                "kind": "named",
-                                "name": "B",
-                                "arguments": []
-                              }
-                            }
-                          ]
-                        },
-                        "origin": {
-                          "start": 629,
-                          "end": 643
-                        }
-                      },
-                      {
-                        "kind": "constructor",
-                        "symbol": "std/prelude::Right",
-                        "argument": {
-                          "kind": "binding",
-                          "symbol": 43,
-                          "name": "item",
-                          "type": {
-                            "kind": "named",
-                            "name": "A",
-                            "arguments": []
-                          },
-                          "origin": {
-                            "start": 651,
-                            "end": 655
-                          }
-                        },
-                        "type": {
-                          "kind": "named",
-                          "name": "Either",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "E",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "named",
-                              "name": "A",
-                              "arguments": []
-                            }
-                          ]
-                        },
-                        "origin": {
-                          "start": 645,
-                          "end": 655
-                        }
-                      }
-                    ],
-                    "type": {
-                      "kind": "tuple",
-                      "elements": [
-                        {
-                          "kind": "named",
-                          "name": "Either",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "E",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "function",
-                              "parameter": {
-                                "kind": "named",
-                                "name": "A",
-                                "arguments": []
-                              },
-                              "result": {
-                                "kind": "named",
-                                "name": "B",
-                                "arguments": []
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Either",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "E",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "named",
-                              "name": "A",
-                              "arguments": []
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 628,
-                      "end": 656
-                    }
-                  },
-                  "body": {
-                    "kind": "call",
-                    "callee": "std/prelude::Right",
-                    "arguments": [
-                      {
-                        "kind": "call",
-                        "callee": "function",
-                        "arguments": [
-                          {
-                            "kind": "variable",
-                            "name": "item",
-                            "type": {
-                              "kind": "named",
-                              "name": "A",
-                              "arguments": []
-                            },
-                            "origin": {
-                              "start": 677,
-                              "end": 681
-                            }
-                          }
-                        ],
-                        "type": {
-                          "kind": "named",
-                          "name": "B",
-                          "arguments": []
-                        },
-                        "origin": {
-                          "start": 668,
-                          "end": 681
-                        }
-                      }
-                    ],
-                    "type": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "B",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 660,
-                      "end": 681
-                    }
-                  },
-                  "origin": {
-                    "start": 628,
-                    "end": 681
-                  }
-                },
-                {
-                  "pattern": {
-                    "kind": "tuple",
-                    "elements": [
-                      {
-                        "kind": "constructor",
-                        "symbol": "std/prelude::Left",
-                        "argument": {
-                          "kind": "binding",
-                          "symbol": 44,
-                          "name": "error",
-                          "type": {
-                            "kind": "named",
-                            "name": "E",
-                            "arguments": []
-                          },
-                          "origin": {
-                            "start": 694,
-                            "end": 699
-                          }
-                        },
-                        "type": {
-                          "kind": "named",
-                          "name": "Either",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "E",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "function",
-                              "parameter": {
-                                "kind": "named",
-                                "name": "A",
-                                "arguments": []
-                              },
-                              "result": {
-                                "kind": "named",
-                                "name": "B",
-                                "arguments": []
-                              }
-                            }
-                          ]
-                        },
-                        "origin": {
-                          "start": 689,
-                          "end": 699
-                        }
-                      },
-                      {
-                        "kind": "wildcard",
-                        "type": {
-                          "kind": "named",
-                          "name": "Either",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "E",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "named",
-                              "name": "A",
-                              "arguments": []
-                            }
-                          ]
-                        },
-                        "origin": {
-                          "start": 701,
-                          "end": 702
-                        }
-                      }
-                    ],
-                    "type": {
-                      "kind": "tuple",
-                      "elements": [
-                        {
-                          "kind": "named",
-                          "name": "Either",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "E",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "function",
-                              "parameter": {
-                                "kind": "named",
-                                "name": "A",
-                                "arguments": []
-                              },
-                              "result": {
-                                "kind": "named",
-                                "name": "B",
-                                "arguments": []
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Either",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "E",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "named",
-                              "name": "A",
-                              "arguments": []
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 688,
-                      "end": 703
-                    }
-                  },
-                  "body": {
-                    "kind": "call",
-                    "callee": "std/prelude::Left",
-                    "arguments": [
-                      {
-                        "kind": "variable",
-                        "name": "error",
-                        "type": {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        "origin": {
-                          "start": 712,
-                          "end": 717
-                        }
-                      }
-                    ],
-                    "type": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "B",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 707,
-                      "end": 717
-                    }
-                  },
-                  "origin": {
-                    "start": 688,
-                    "end": 717
-                  }
-                },
-                {
-                  "pattern": {
-                    "kind": "tuple",
-                    "elements": [
-                      {
-                        "kind": "wildcard",
-                        "type": {
-                          "kind": "named",
-                          "name": "Either",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "E",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "function",
-                              "parameter": {
-                                "kind": "named",
-                                "name": "A",
-                                "arguments": []
-                              },
-                              "result": {
-                                "kind": "named",
-                                "name": "B",
-                                "arguments": []
-                              }
-                            }
-                          ]
-                        },
-                        "origin": {
-                          "start": 725,
-                          "end": 726
-                        }
-                      },
-                      {
-                        "kind": "constructor",
-                        "symbol": "std/prelude::Left",
-                        "argument": {
-                          "kind": "binding",
-                          "symbol": 45,
-                          "name": "error",
-                          "type": {
-                            "kind": "named",
-                            "name": "E",
-                            "arguments": []
-                          },
-                          "origin": {
-                            "start": 733,
-                            "end": 738
-                          }
-                        },
-                        "type": {
-                          "kind": "named",
-                          "name": "Either",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "E",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "named",
-                              "name": "A",
-                              "arguments": []
-                            }
-                          ]
-                        },
-                        "origin": {
-                          "start": 728,
-                          "end": 738
-                        }
-                      }
-                    ],
-                    "type": {
-                      "kind": "tuple",
-                      "elements": [
-                        {
-                          "kind": "named",
-                          "name": "Either",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "E",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "function",
-                              "parameter": {
-                                "kind": "named",
-                                "name": "A",
-                                "arguments": []
-                              },
-                              "result": {
-                                "kind": "named",
-                                "name": "B",
-                                "arguments": []
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Either",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "E",
-                              "arguments": []
-                            },
-                            {
-                              "kind": "named",
-                              "name": "A",
-                              "arguments": []
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 724,
-                      "end": 739
-                    }
-                  },
-                  "body": {
-                    "kind": "call",
-                    "callee": "std/prelude::Left",
-                    "arguments": [
-                      {
-                        "kind": "variable",
-                        "name": "error",
-                        "type": {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        "origin": {
-                          "start": 748,
-                          "end": 753
-                        }
-                      }
-                    ],
-                    "type": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "B",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 743,
-                      "end": 753
-                    }
-                  },
-                  "origin": {
-                    "start": 724,
-                    "end": 753
-                  }
-                }
-              ],
-              "exhaustive": true,
-              "type": {
-                "kind": "named",
-                "name": "Either",
-                "arguments": [
-                  {
-                    "kind": "named",
-                    "name": "E",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "B",
-                    "arguments": []
-                  }
-                ]
-              },
-              "origin": {
-                "start": 597,
-                "end": 759
-              }
-            },
-            "origin": {
-              "start": 510,
-              "end": 759
-            }
-          }
-        ]
-      }
-    },
-    {
-      "identity": "artifact/monad-either::trait(Monad)<std/prelude::Either<$0,_>>",
-      "traitIdentity": "artifact/monad-either::trait(Monad)",
-      "trait": "Monad",
-      "typeParameters": [
-        "E"
-      ],
-      "arguments": [
-        {
-          "kind": "named",
-          "name": "Either",
-          "arguments": [
-            {
-              "kind": "named",
-              "name": "E",
-              "arguments": []
-            },
-            {
-              "kind": "hole"
-            }
-          ]
-        }
-      ],
-      "argumentIdentities": [
-        "std/prelude::Either<$0,_>"
-      ],
-      "constraints": [
-        {
-          "name": "Applicative",
-          "arguments": [
-            {
-              "kind": "named",
-              "name": "Either",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "E",
-                  "arguments": []
-                },
-                {
-                  "kind": "hole"
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      "constraintIdentities": [
-        "artifact/monad-either::trait(Applicative)"
-      ],
-      "supertraitCount": 1,
-      "origin": {
-        "start": 868,
-        "end": 1068
-      },
-      "implementation": {
-        "kind": "user-defined",
-        "methods": [
-          {
-            "name": "flatMap",
-            "scheme": {
-              "typeParameters": [
-                "A",
-                "B"
-              ],
-              "constraints": [],
-              "type": {
-                "kind": "named",
-                "name": "Either",
-                "arguments": [
-                  {
-                    "kind": "named",
-                    "name": "E",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "B",
-                    "arguments": []
-                  }
-                ]
-              }
-            },
-            "parameters": [
-              {
-                "kind": "named",
-                "name": "f",
-                "type": {
-                  "kind": "function",
-                  "parameter": {
-                    "kind": "named",
-                    "name": "A",
-                    "arguments": []
-                  },
-                  "result": {
-                    "kind": "named",
-                    "name": "Either",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "E",
-                        "arguments": []
-                      },
-                      {
-                        "kind": "named",
-                        "name": "B",
-                        "arguments": []
-                      }
-                    ]
-                  }
-                },
-                "origin": {
-                  "start": 921,
-                  "end": 922
-                }
-              },
-              {
-                "kind": "named",
-                "name": "value",
-                "type": {
-                  "kind": "named",
-                  "name": "Either",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "E",
-                      "arguments": []
-                    },
-                    {
-                      "kind": "named",
-                      "name": "A",
-                      "arguments": []
-                    }
-                  ]
-                },
-                "origin": {
-                  "start": 947,
-                  "end": 952
-                }
-              }
-            ],
-            "body": {
-              "kind": "match",
-              "scrutinee": {
-                "kind": "variable",
-                "name": "value",
-                "type": {
-                  "kind": "named",
-                  "name": "Either",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "E",
-                      "arguments": []
-                    },
-                    {
-                      "kind": "named",
-                      "name": "A",
-                      "arguments": []
-                    }
-                  ]
-                },
-                "origin": {
-                  "start": 995,
-                  "end": 1000
-                }
-              },
-              "arms": [
-                {
-                  "pattern": {
-                    "kind": "constructor",
-                    "symbol": "std/prelude::Left",
-                    "argument": {
-                      "kind": "binding",
-                      "symbol": 56,
-                      "name": "error",
-                      "type": {
-                        "kind": "named",
-                        "name": "E",
-                        "arguments": []
-                      },
-                      "origin": {
-                        "start": 1014,
-                        "end": 1019
-                      }
-                    },
-                    "type": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "A",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 1009,
-                      "end": 1019
-                    }
-                  },
-                  "body": {
-                    "kind": "call",
-                    "callee": "std/prelude::Left",
-                    "arguments": [
-                      {
-                        "kind": "variable",
-                        "name": "error",
-                        "type": {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        "origin": {
-                          "start": 1028,
-                          "end": 1033
-                        }
-                      }
-                    ],
-                    "type": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "B",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 1023,
-                      "end": 1033
-                    }
-                  },
-                  "origin": {
-                    "start": 1009,
-                    "end": 1033
-                  }
-                },
-                {
-                  "pattern": {
-                    "kind": "constructor",
-                    "symbol": "std/prelude::Right",
-                    "argument": {
-                      "kind": "binding",
-                      "symbol": 57,
-                      "name": "item",
-                      "type": {
-                        "kind": "named",
-                        "name": "A",
-                        "arguments": []
-                      },
-                      "origin": {
-                        "start": 1046,
-                        "end": 1050
-                      }
-                    },
-                    "type": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "A",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 1040,
-                      "end": 1050
-                    }
-                  },
-                  "body": {
-                    "kind": "call",
-                    "callee": "f",
-                    "arguments": [
-                      {
-                        "kind": "variable",
-                        "name": "item",
-                        "type": {
-                          "kind": "named",
-                          "name": "A",
-                          "arguments": []
-                        },
-                        "origin": {
-                          "start": 1056,
-                          "end": 1060
-                        }
-                      }
-                    ],
-                    "type": {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "E",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "B",
-                          "arguments": []
-                        }
-                      ]
-                    },
-                    "origin": {
-                      "start": 1054,
-                      "end": 1060
-                    }
-                  },
-                  "origin": {
-                    "start": 1040,
-                    "end": 1060
-                  }
-                }
-              ],
-              "exhaustive": true,
-              "type": {
-                "kind": "named",
-                "name": "Either",
-                "arguments": [
-                  {
-                    "kind": "named",
-                    "name": "E",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "B",
-                    "arguments": []
-                  }
-                ]
-              },
-              "origin": {
-                "start": 989,
-                "end": 1066
-              }
-            },
-            "origin": {
-              "start": 904,
-              "end": 1066
-            }
-          }
-        ]
-      }
-    }
-  ],
   "declarations": [
     {
       "kind": "fn",
       "symbol": "artifact/monad-either::addEither",
       "visibility": "private",
       "origin": {
-        "start": 1070,
-        "end": 1244
+        "start": 0,
+        "end": 174
       },
       "scheme": {
         "typeParameters": [],
@@ -1675,8 +53,8 @@
             ]
           },
           "origin": {
-            "start": 1085,
-            "end": 1089
+            "start": 15,
+            "end": 19
           }
         },
         {
@@ -1699,8 +77,8 @@
             ]
           },
           "origin": {
-            "start": 1116,
-            "end": 1121
+            "start": 46,
+            "end": 51
           }
         }
       ],
@@ -1735,13 +113,13 @@
                 ]
               },
               "origin": {
-                "start": 1190,
-                "end": 1194
+                "start": 120,
+                "end": 124
               }
             },
             "origin": {
-              "start": 1181,
-              "end": 1194
+              "start": 111,
+              "end": 124
             }
           },
           {
@@ -1772,19 +150,19 @@
                 ]
               },
               "origin": {
-                "start": 1209,
-                "end": 1214
+                "start": 139,
+                "end": 144
               }
             },
             "origin": {
-              "start": 1199,
-              "end": 1214
+              "start": 129,
+              "end": 144
             }
           }
         ],
         "result": {
           "kind": "call",
-          "callee": "artifact/monad-either::trait(Applicative)::pure",
+          "callee": "std/prelude::Applicative::pure",
           "arguments": [
             {
               "kind": "binary",
@@ -1798,8 +176,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1226,
-                  "end": 1231
+                  "start": 156,
+                  "end": 161
                 }
               },
               "right": {
@@ -1811,8 +189,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1234,
-                  "end": 1240
+                  "start": 164,
+                  "end": 170
                 }
               },
               "evidence": [
@@ -1849,8 +227,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1226,
-                "end": 1240
+                "start": 156,
+                "end": 170
               }
             }
           ],
@@ -1873,51 +251,13 @@
                 ]
               },
               "evidence": {
-                "kind": "local",
-                "identity": "artifact/monad-either::trait(Applicative)<std/prelude::Either<$0,_>>",
-                "typeArguments": [
-                  {
-                    "kind": "named",
-                    "name": "String",
-                    "arguments": []
-                  }
-                ],
-                "evidenceArguments": [
-                  {
-                    "constraint": {
-                      "name": "Functor",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "Either",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "String",
-                              "arguments": []
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    "evidence": {
-                      "kind": "local",
-                      "identity": "artifact/monad-either::trait(Functor)<std/prelude::Either<$0,_>>",
-                      "typeArguments": [
-                        {
-                          "kind": "named",
-                          "name": "String",
-                          "arguments": []
-                        }
-                      ]
-                    }
-                  }
-                ]
+                "kind": "standard",
+                "identity": "std/either::Applicative"
               }
             }
           ],
           "traitDispatch": {
-            "traitIdentity": "artifact/monad-either::trait(Applicative)",
+            "traitIdentity": "std/prelude::Applicative",
             "method": "pure"
           },
           "type": {
@@ -1937,8 +277,8 @@
             ]
           },
           "origin": {
-            "start": 1219,
-            "end": 1240
+            "start": 149,
+            "end": 170
           }
         },
         "evidence": {
@@ -1959,77 +299,8 @@
             ]
           },
           "evidence": {
-            "kind": "local",
-            "identity": "artifact/monad-either::trait(Monad)<std/prelude::Either<$0,_>>",
-            "typeArguments": [
-              {
-                "kind": "named",
-                "name": "String",
-                "arguments": []
-              }
-            ],
-            "evidenceArguments": [
-              {
-                "constraint": {
-                  "name": "Applicative",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Either",
-                      "arguments": [
-                        {
-                          "kind": "named",
-                          "name": "String",
-                          "arguments": []
-                        }
-                      ]
-                    }
-                  ]
-                },
-                "evidence": {
-                  "kind": "local",
-                  "identity": "artifact/monad-either::trait(Applicative)<std/prelude::Either<$0,_>>",
-                  "typeArguments": [
-                    {
-                      "kind": "named",
-                      "name": "String",
-                      "arguments": []
-                    }
-                  ],
-                  "evidenceArguments": [
-                    {
-                      "constraint": {
-                        "name": "Functor",
-                        "arguments": [
-                          {
-                            "kind": "named",
-                            "name": "Either",
-                            "arguments": [
-                              {
-                                "kind": "named",
-                                "name": "String",
-                                "arguments": []
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "evidence": {
-                        "kind": "local",
-                        "identity": "artifact/monad-either::trait(Functor)<std/prelude::Either<$0,_>>",
-                        "typeArguments": [
-                          {
-                            "kind": "named",
-                            "name": "String",
-                            "arguments": []
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "kind": "standard",
+            "identity": "std/either::Monad"
           }
         },
         "type": {
@@ -2049,8 +320,8 @@
           ]
         },
         "origin": {
-          "start": 1172,
-          "end": 1244
+          "start": 102,
+          "end": 174
         }
       }
     },
@@ -2059,8 +330,8 @@
       "symbol": "artifact/monad-either::addEitherExplicit",
       "visibility": "private",
       "origin": {
-        "start": 1246,
-        "end": 1431
+        "start": 176,
+        "end": 361
       },
       "scheme": {
         "typeParameters": [],
@@ -2103,8 +374,8 @@
             ]
           },
           "origin": {
-            "start": 1269,
-            "end": 1273
+            "start": 199,
+            "end": 203
           }
         },
         {
@@ -2127,14 +398,14 @@
             ]
           },
           "origin": {
-            "start": 1300,
-            "end": 1305
+            "start": 230,
+            "end": 235
           }
         }
       ],
       "body": {
         "kind": "call",
-        "callee": "artifact/monad-either::trait(Monad)::flatMap",
+        "callee": "std/prelude::Monad::flatMap",
         "arguments": [
           {
             "kind": "lambda",
@@ -2147,13 +418,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1367,
-                "end": 1372
+                "start": 297,
+                "end": 302
               }
             },
             "body": {
               "kind": "call",
-              "callee": "artifact/monad-either::trait(Monad)::flatMap",
+              "callee": "std/prelude::Monad::flatMap",
               "arguments": [
                 {
                   "kind": "lambda",
@@ -2166,13 +437,13 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 1392,
-                      "end": 1398
+                      "start": 322,
+                      "end": 328
                     }
                   },
                   "body": {
                     "kind": "call",
-                    "callee": "artifact/monad-either::trait(Applicative)::pure",
+                    "callee": "std/prelude::Applicative::pure",
                     "arguments": [
                       {
                         "kind": "binary",
@@ -2186,8 +457,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 1415,
-                            "end": 1420
+                            "start": 345,
+                            "end": 350
                           }
                         },
                         "right": {
@@ -2199,8 +470,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 1423,
-                            "end": 1429
+                            "start": 353,
+                            "end": 359
                           }
                         },
                         "evidence": [
@@ -2237,8 +508,8 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 1415,
-                          "end": 1429
+                          "start": 345,
+                          "end": 359
                         }
                       }
                     ],
@@ -2261,51 +532,13 @@
                           ]
                         },
                         "evidence": {
-                          "kind": "local",
-                          "identity": "artifact/monad-either::trait(Applicative)<std/prelude::Either<$0,_>>",
-                          "typeArguments": [
-                            {
-                              "kind": "named",
-                              "name": "String",
-                              "arguments": []
-                            }
-                          ],
-                          "evidenceArguments": [
-                            {
-                              "constraint": {
-                                "name": "Functor",
-                                "arguments": [
-                                  {
-                                    "kind": "named",
-                                    "name": "Either",
-                                    "arguments": [
-                                      {
-                                        "kind": "named",
-                                        "name": "String",
-                                        "arguments": []
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              "evidence": {
-                                "kind": "local",
-                                "identity": "artifact/monad-either::trait(Functor)<std/prelude::Either<$0,_>>",
-                                "typeArguments": [
-                                  {
-                                    "kind": "named",
-                                    "name": "String",
-                                    "arguments": []
-                                  }
-                                ]
-                              }
-                            }
-                          ]
+                          "kind": "standard",
+                          "identity": "std/either::Applicative"
                         }
                       }
                     ],
                     "traitDispatch": {
-                      "traitIdentity": "artifact/monad-either::trait(Applicative)",
+                      "traitIdentity": "std/prelude::Applicative",
                       "method": "pure"
                     },
                     "type": {
@@ -2325,8 +558,8 @@
                       ]
                     },
                     "origin": {
-                      "start": 1408,
-                      "end": 1429
+                      "start": 338,
+                      "end": 359
                     }
                   },
                   "type": {
@@ -2354,8 +587,8 @@
                     }
                   },
                   "origin": {
-                    "start": 1391,
-                    "end": 1429
+                    "start": 321,
+                    "end": 359
                   }
                 },
                 {
@@ -2378,8 +611,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 1380,
-                    "end": 1385
+                    "start": 310,
+                    "end": 315
                   }
                 }
               ],
@@ -2402,82 +635,13 @@
                     ]
                   },
                   "evidence": {
-                    "kind": "local",
-                    "identity": "artifact/monad-either::trait(Monad)<std/prelude::Either<$0,_>>",
-                    "typeArguments": [
-                      {
-                        "kind": "named",
-                        "name": "String",
-                        "arguments": []
-                      }
-                    ],
-                    "evidenceArguments": [
-                      {
-                        "constraint": {
-                          "name": "Applicative",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "Either",
-                              "arguments": [
-                                {
-                                  "kind": "named",
-                                  "name": "String",
-                                  "arguments": []
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "evidence": {
-                          "kind": "local",
-                          "identity": "artifact/monad-either::trait(Applicative)<std/prelude::Either<$0,_>>",
-                          "typeArguments": [
-                            {
-                              "kind": "named",
-                              "name": "String",
-                              "arguments": []
-                            }
-                          ],
-                          "evidenceArguments": [
-                            {
-                              "constraint": {
-                                "name": "Functor",
-                                "arguments": [
-                                  {
-                                    "kind": "named",
-                                    "name": "Either",
-                                    "arguments": [
-                                      {
-                                        "kind": "named",
-                                        "name": "String",
-                                        "arguments": []
-                                      }
-                                    ]
-                                  }
-                                ]
-                              },
-                              "evidence": {
-                                "kind": "local",
-                                "identity": "artifact/monad-either::trait(Functor)<std/prelude::Either<$0,_>>",
-                                "typeArguments": [
-                                  {
-                                    "kind": "named",
-                                    "name": "String",
-                                    "arguments": []
-                                  }
-                                ]
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    ]
+                    "kind": "standard",
+                    "identity": "std/either::Monad"
                   }
                 }
               ],
               "traitDispatch": {
-                "traitIdentity": "artifact/monad-either::trait(Monad)",
+                "traitIdentity": "std/prelude::Monad",
                 "method": "flatMap"
               },
               "type": {
@@ -2497,8 +661,8 @@
                 ]
               },
               "origin": {
-                "start": 1380,
-                "end": 1430
+                "start": 310,
+                "end": 360
               }
             },
             "type": {
@@ -2526,8 +690,8 @@
               }
             },
             "origin": {
-              "start": 1366,
-              "end": 1430
+              "start": 296,
+              "end": 360
             }
           },
           {
@@ -2550,8 +714,8 @@
               ]
             },
             "origin": {
-              "start": 1356,
-              "end": 1360
+              "start": 286,
+              "end": 290
             }
           }
         ],
@@ -2574,82 +738,13 @@
               ]
             },
             "evidence": {
-              "kind": "local",
-              "identity": "artifact/monad-either::trait(Monad)<std/prelude::Either<$0,_>>",
-              "typeArguments": [
-                {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                }
-              ],
-              "evidenceArguments": [
-                {
-                  "constraint": {
-                    "name": "Applicative",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Either",
-                        "arguments": [
-                          {
-                            "kind": "named",
-                            "name": "String",
-                            "arguments": []
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "evidence": {
-                    "kind": "local",
-                    "identity": "artifact/monad-either::trait(Applicative)<std/prelude::Either<$0,_>>",
-                    "typeArguments": [
-                      {
-                        "kind": "named",
-                        "name": "String",
-                        "arguments": []
-                      }
-                    ],
-                    "evidenceArguments": [
-                      {
-                        "constraint": {
-                          "name": "Functor",
-                          "arguments": [
-                            {
-                              "kind": "named",
-                              "name": "Either",
-                              "arguments": [
-                                {
-                                  "kind": "named",
-                                  "name": "String",
-                                  "arguments": []
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "evidence": {
-                          "kind": "local",
-                          "identity": "artifact/monad-either::trait(Functor)<std/prelude::Either<$0,_>>",
-                          "typeArguments": [
-                            {
-                              "kind": "named",
-                              "name": "String",
-                              "arguments": []
-                            }
-                          ]
-                        }
-                      }
-                    ]
-                  }
-                }
-              ]
+              "kind": "standard",
+              "identity": "std/either::Monad"
             }
           }
         ],
         "traitDispatch": {
-          "traitIdentity": "artifact/monad-either::trait(Monad)",
+          "traitIdentity": "std/prelude::Monad",
           "method": "flatMap"
         },
         "type": {
@@ -2669,8 +764,8 @@
           ]
         },
         "origin": {
-          "start": 1356,
-          "end": 1431
+          "start": 286,
+          "end": 361
         }
       }
     },
@@ -2679,8 +774,8 @@
       "symbol": "artifact/monad-either::render",
       "visibility": "private",
       "origin": {
-        "start": 1433,
-        "end": 1599
+        "start": 363,
+        "end": 529
       },
       "scheme": {
         "typeParameters": [],
@@ -2712,8 +807,8 @@
             ]
           },
           "origin": {
-            "start": 1443,
-            "end": 1448
+            "start": 373,
+            "end": 378
           }
         }
       ],
@@ -2739,8 +834,8 @@
             ]
           },
           "origin": {
-            "start": 1490,
-            "end": 1495
+            "start": 420,
+            "end": 425
           }
         },
         "arms": [
@@ -2750,7 +845,7 @@
               "symbol": "std/prelude::Left",
               "argument": {
                 "kind": "binding",
-                "symbol": 70,
+                "symbol": 25,
                 "name": "error",
                 "type": {
                   "kind": "named",
@@ -2758,8 +853,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1507,
-                  "end": 1512
+                  "start": 437,
+                  "end": 442
                 }
               },
               "type": {
@@ -2779,8 +874,8 @@
                 ]
               },
               "origin": {
-                "start": 1502,
-                "end": 1512
+                "start": 432,
+                "end": 442
               }
             },
             "body": {
@@ -2795,8 +890,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1516,
-                  "end": 1523
+                  "start": 446,
+                  "end": 453
                 }
               },
               "right": {
@@ -2808,8 +903,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1526,
-                  "end": 1531
+                  "start": 456,
+                  "end": 461
                 }
               },
               "evidence": [
@@ -2846,13 +941,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1516,
-                "end": 1531
+                "start": 446,
+                "end": 461
               }
             },
             "origin": {
-              "start": 1502,
-              "end": 1531
+              "start": 432,
+              "end": 461
             }
           },
           {
@@ -2868,8 +963,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1542,
-                  "end": 1544
+                  "start": 472,
+                  "end": 474
                 }
               },
               "type": {
@@ -2889,8 +984,8 @@
                 ]
               },
               "origin": {
-                "start": 1536,
-                "end": 1544
+                "start": 466,
+                "end": 474
               }
             },
             "body": {
@@ -2902,13 +997,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1548,
-                "end": 1558
+                "start": 478,
+                "end": 488
               }
             },
             "origin": {
-              "start": 1536,
-              "end": 1558
+              "start": 466,
+              "end": 488
             }
           },
           {
@@ -2923,8 +1018,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1569,
-                  "end": 1570
+                  "start": 499,
+                  "end": 500
                 }
               },
               "type": {
@@ -2944,8 +1039,8 @@
                 ]
               },
               "origin": {
-                "start": 1563,
-                "end": 1570
+                "start": 493,
+                "end": 500
               }
             },
             "body": {
@@ -2957,13 +1052,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1574,
-                "end": 1595
+                "start": 504,
+                "end": 525
               }
             },
             "origin": {
-              "start": 1563,
-              "end": 1595
+              "start": 493,
+              "end": 525
             }
           }
         ],
@@ -2974,8 +1069,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 1484,
-          "end": 1599
+          "start": 414,
+          "end": 529
         }
       }
     },
@@ -2984,8 +1079,8 @@
       "symbol": "artifact/monad-either::main",
       "visibility": "public",
       "origin": {
-        "start": 1601,
-        "end": 1923
+        "start": 531,
+        "end": 853
       },
       "inferredContract": true,
       "parameters": [
@@ -3080,8 +1175,8 @@
                                 "arguments": []
                               },
                               "origin": {
-                                "start": 1650,
-                                "end": 1652
+                                "start": 580,
+                                "end": 582
                               }
                             }
                           ],
@@ -3102,8 +1197,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 1644,
-                            "end": 1652
+                            "start": 574,
+                            "end": 582
                           }
                         },
                         {
@@ -3119,8 +1214,8 @@
                                 "arguments": []
                               },
                               "origin": {
-                                "start": 1661,
-                                "end": 1663
+                                "start": 591,
+                                "end": 593
                               }
                             }
                           ],
@@ -3141,8 +1236,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 1655,
-                            "end": 1663
+                            "start": 585,
+                            "end": 593
                           }
                         }
                       ],
@@ -3163,8 +1258,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1633,
-                        "end": 1664
+                        "start": 563,
+                        "end": 594
                       }
                     }
                   ],
@@ -3174,14 +1269,14 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1633,
-                    "end": 1678
+                    "start": 563,
+                    "end": 608
                   }
                 }
               ],
               "origin": {
-                "start": 1633,
-                "end": 1693
+                "start": 563,
+                "end": 623
               }
             }
           },
@@ -3238,8 +1333,8 @@
                                 "arguments": []
                               },
                               "origin": {
-                                "start": 1724,
-                                "end": 1726
+                                "start": 654,
+                                "end": 656
                               }
                             }
                           ],
@@ -3260,8 +1355,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 1718,
-                            "end": 1726
+                            "start": 648,
+                            "end": 656
                           }
                         },
                         {
@@ -3277,8 +1372,8 @@
                                 "arguments": []
                               },
                               "origin": {
-                                "start": 1735,
-                                "end": 1737
+                                "start": 665,
+                                "end": 667
                               }
                             }
                           ],
@@ -3299,8 +1394,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 1729,
-                            "end": 1737
+                            "start": 659,
+                            "end": 667
                           }
                         }
                       ],
@@ -3321,8 +1416,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1699,
-                        "end": 1738
+                        "start": 629,
+                        "end": 668
                       }
                     }
                   ],
@@ -3332,14 +1427,14 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1699,
-                    "end": 1752
+                    "start": 629,
+                    "end": 682
                   }
                 }
               ],
               "origin": {
-                "start": 1699,
-                "end": 1767
+                "start": 629,
+                "end": 697
               }
             }
           },
@@ -3396,8 +1491,8 @@
                                 "arguments": []
                               },
                               "origin": {
-                                "start": 1789,
-                                "end": 1798
+                                "start": 719,
+                                "end": 728
                               }
                             }
                           ],
@@ -3418,8 +1513,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 1784,
-                            "end": 1798
+                            "start": 714,
+                            "end": 728
                           }
                         },
                         {
@@ -3435,8 +1530,8 @@
                                 "arguments": []
                               },
                               "origin": {
-                                "start": 1807,
-                                "end": 1809
+                                "start": 737,
+                                "end": 739
                               }
                             }
                           ],
@@ -3457,8 +1552,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 1801,
-                            "end": 1809
+                            "start": 731,
+                            "end": 739
                           }
                         }
                       ],
@@ -3479,8 +1574,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1773,
-                        "end": 1810
+                        "start": 703,
+                        "end": 740
                       }
                     }
                   ],
@@ -3490,14 +1585,14 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1773,
-                    "end": 1824
+                    "start": 703,
+                    "end": 754
                   }
                 }
               ],
               "origin": {
-                "start": 1773,
-                "end": 1839
+                "start": 703,
+                "end": 769
               }
             }
           }
@@ -3553,8 +1648,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 1869,
-                            "end": 1878
+                            "start": 799,
+                            "end": 808
                           }
                         }
                       ],
@@ -3575,8 +1670,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1864,
-                        "end": 1878
+                        "start": 794,
+                        "end": 808
                       }
                     },
                     {
@@ -3592,8 +1687,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 1887,
-                            "end": 1889
+                            "start": 817,
+                            "end": 819
                           }
                         }
                       ],
@@ -3614,8 +1709,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1881,
-                        "end": 1889
+                        "start": 811,
+                        "end": 819
                       }
                     }
                   ],
@@ -3636,8 +1731,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 1845,
-                    "end": 1890
+                    "start": 775,
+                    "end": 820
                   }
                 }
               ],
@@ -3647,19 +1742,19 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1845,
-                "end": 1904
+                "start": 775,
+                "end": 834
               }
             }
           ],
           "origin": {
-            "start": 1845,
-            "end": 1919
+            "start": 775,
+            "end": 849
           }
         },
         "origin": {
-          "start": 1624,
-          "end": 1923
+          "start": 554,
+          "end": 853
         }
       }
     }

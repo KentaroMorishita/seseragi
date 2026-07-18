@@ -223,6 +223,77 @@ fn selects_array_reducible_evidence_for_standard_reduce() {
     ));
 }
 
+#[test]
+fn selects_prelude_either_dictionaries_for_explicit_monad_calls() {
+    let typed = type_module(
+        "artifact/prelude-either-monad/main.ssrg",
+        "fn increment value: Int -> Int = value + 1\n\
+         fn bind value: Either<String, Int> -> Either<String, Int> =\n\
+           value >>= (\\item -> pure $ increment item)\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[1] else {
+        panic!("expected bind function");
+    };
+    let TypedExpr::Call {
+        callee,
+        arguments,
+        evidence,
+        type_ref,
+        ..
+    } = body
+    else {
+        panic!("expected flatMap call");
+    };
+    assert_eq!(callee, "std/prelude::Monad::flatMap");
+    assert_eq!(
+        type_ref,
+        &applied("Either", vec![named("String"), named("Int")])
+    );
+    assert!(matches!(
+        evidence.as_slice(),
+        [crate::TypedCallEvidence {
+            evidence: TypedInstanceEvidence::Standard { identity },
+            ..
+        }] if identity == "std/either::Monad"
+    ));
+    let TypedExpr::Lambda { body, .. } = &arguments[0] else {
+        panic!("expected explicit lambda");
+    };
+    assert!(matches!(
+        body.as_ref(),
+        TypedExpr::Call { callee, evidence, .. }
+            if callee == "std/prelude::Applicative::pure"
+                && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity },
+                    ..
+                }] if identity == "std/either::Applicative")
+    ));
+}
+
+#[test]
+fn selects_the_prelude_maybe_functor_without_source_declarations() {
+    let typed = type_module(
+        "artifact/prelude-maybe-functor/main.ssrg",
+        "fn increment value: Int -> Int = value + 1\n\
+         fn transform value: Maybe<Int> -> Maybe<Int> = map increment value\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[1] else {
+        panic!("expected transform function");
+    };
+    assert!(matches!(
+        body,
+        TypedExpr::Call { callee, evidence, type_ref, .. }
+            if callee == "std/prelude::Functor::map"
+                && type_ref == &applied("Maybe", vec![named("Int")])
+                && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity },
+                    ..
+                }] if identity == "std/maybe::Functor")
+    ));
+}
+
 fn named(name: &str) -> TypedType {
     TypedType::Named {
         name: name.to_owned(),

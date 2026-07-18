@@ -34,3 +34,59 @@ export function Left<Error>(error: Error): Left<Error> {
 export function Right<Value>(value: Value): Right<Value> {
   return { tag: "Right", value };
 }
+
+export const maybeFunctor = Object.freeze({
+  map:
+    <Value, Result>(f: (value: Value) => Result) =>
+    (value: Maybe<Value>): Maybe<Result> =>
+      value.tag === "Nothing" ? Nothing : Just(f(value.value)),
+});
+
+export const maybeApplicative = Object.freeze({
+  ...maybeFunctor,
+  pure: <Value>(value: Value): Maybe<Value> => Just(value),
+  apply:
+    <Value, Result>(wrappedFunction: Maybe<(value: Value) => Result>) =>
+    (wrappedValue: Maybe<Value>): Maybe<Result> => {
+      if (wrappedFunction.tag === "Nothing") return Nothing;
+      if (wrappedValue.tag === "Nothing") return Nothing;
+      return Just(wrappedFunction.value(wrappedValue.value));
+    },
+});
+
+export const maybeMonad = Object.freeze({
+  ...maybeApplicative,
+  flatMap:
+    <Value, Result>(f: (value: Value) => Maybe<Result>) =>
+    (value: Maybe<Value>): Maybe<Result> =>
+      value.tag === "Nothing" ? Nothing : f(value.value),
+});
+
+export const eitherFunctor = Object.freeze({
+  map:
+    <Value, Result>(f: (value: Value) => Result) =>
+    <Error>(value: Either<Error, Value>): Either<Error, Result> =>
+      value.tag === "Left" ? value : Right(f(value.value)),
+});
+
+export const eitherApplicative = Object.freeze({
+  ...eitherFunctor,
+  pure: <Error, Value>(value: Value): Either<Error, Value> => Right(value),
+  apply:
+    <Error, Value, Result>(
+      wrappedFunction: Either<Error, (value: Value) => Result>,
+    ) =>
+    (wrappedValue: Either<Error, Value>): Either<Error, Result> => {
+      if (wrappedFunction.tag === "Left") return wrappedFunction;
+      if (wrappedValue.tag === "Left") return wrappedValue;
+      return Right(wrappedFunction.value(wrappedValue.value));
+    },
+});
+
+export const eitherMonad = Object.freeze({
+  ...eitherApplicative,
+  flatMap:
+    <Error, Value, Result>(f: (value: Value) => Either<Error, Result>) =>
+    (value: Either<Error, Value>): Either<Error, Result> =>
+      value.tag === "Left" ? value : f(value.value),
+});

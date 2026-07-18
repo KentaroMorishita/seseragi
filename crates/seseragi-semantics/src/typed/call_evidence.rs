@@ -121,33 +121,28 @@ fn expanded_supertrait_constraints(
     resolution: &TypedResolution<'_>,
 ) -> Vec<ResolvedCallConstraint> {
     fn visit(
-        origin: seseragi_syntax::ByteSpan,
-        arguments: &[TypedType],
+        direct: Vec<ResolvedCallConstraint>,
         resolution: &TypedResolution<'_>,
         visited: &mut BTreeSet<String>,
         output: &mut Vec<ResolvedCallConstraint>,
     ) {
-        for supertrait in direct_supertrait_constraints(origin, arguments, resolution) {
+        for supertrait in direct {
             if !visited.insert(supertrait.trait_identity.clone()) {
                 continue;
             }
-            if let Some(origin) = trait_origin(resolution, &supertrait.trait_identity) {
-                visit(
-                    origin,
-                    &supertrait.constraint.arguments,
-                    resolution,
-                    visited,
-                    output,
-                );
-            }
+            let nested = direct_supertrait_constraints_for_identity(
+                &supertrait.trait_identity,
+                &supertrait.constraint.arguments,
+                resolution,
+            );
+            visit(nested, resolution, visited, output);
             output.push(supertrait);
         }
     }
 
     let mut output = Vec::new();
     visit(
-        origin,
-        arguments,
+        direct_supertrait_constraints(origin, arguments, resolution),
         resolution,
         &mut BTreeSet::new(),
         &mut output,
@@ -168,6 +163,13 @@ fn direct_supertrait_constraints_inner(
                 symbol.namespace == SymbolNamespace::Trait && symbol.origin == trait_origin
             })
         })?;
+    if let Some(identity) = symbol.canonical.as_deref() {
+        if crate::prelude::trait_by_canonical(identity).is_some() {
+            return Some(direct_supertrait_constraints_for_identity(
+                identity, arguments, resolution,
+            ));
+        }
+    }
     let (parameters, constraints) = resolution.resolved().declarations.iter().find_map(|decl| {
         let SurfaceDecl::Trait {
             name_span,
@@ -214,6 +216,34 @@ fn direct_supertrait_constraints_inner(
             })
             .collect(),
     )
+}
+
+fn direct_supertrait_constraints_for_identity(
+    trait_identity: &str,
+    arguments: &[TypedType],
+    resolution: &TypedResolution<'_>,
+) -> Vec<ResolvedCallConstraint> {
+    if let Some(trait_spec) = crate::prelude::trait_by_canonical(trait_identity) {
+        let Some(supertrait_name) = trait_spec.supertrait else {
+            return Vec::new();
+        };
+        let Some(supertrait) = crate::prelude::trait_by_name(supertrait_name) else {
+            return Vec::new();
+        };
+        if arguments.len() != 1 {
+            return Vec::new();
+        }
+        return vec![ResolvedCallConstraint {
+            trait_identity: supertrait.canonical.to_owned(),
+            constraint: TypedConstraint {
+                name: supertrait.name.to_owned(),
+                arguments: arguments.to_vec(),
+            },
+        }];
+    }
+    trait_origin(resolution, trait_identity)
+        .and_then(|origin| direct_supertrait_constraints_inner(origin, arguments, resolution))
+        .unwrap_or_default()
 }
 
 fn trait_origin(
@@ -335,12 +365,17 @@ pub(super) fn select_standard_instance(
     // dedicated operation ABIs rather than first-class dictionary values.
     // Only select a standard instance for dictionary passing when the runtime
     // actually exports the corresponding dictionary object.
-    identity
-        .starts_with("Show<")
-        .then_some(TypedInstanceEvidence::Standard { identity })
+    (identity.starts_with("Show<")
+        || crate::prelude::standard_instance_by_identity(&identity).is_some())
+    .then_some(TypedInstanceEvidence::Standard { identity })
 }
 
 fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
+    if let [type_ref] = constraint.arguments.as_slice() {
+        if let Some(instance) = crate::prelude::standard_instance(&constraint.name, type_ref) {
+            return Some(instance.identity.to_owned());
+        }
+    }
     if let Some(identity) = show_instance_identity(constraint) {
         return Some(identity.to_owned());
     }

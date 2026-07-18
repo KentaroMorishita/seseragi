@@ -38,12 +38,16 @@ pub(super) fn select_trait_method_candidate(
     let type_matches = candidates
         .into_iter()
         .filter_map(|signature| {
-            let application = instantiated_application(
+            let mut application = instantiated_application(
                 &signature,
                 context.expected(),
                 argument_nodes.len(),
                 &semantic_arguments,
             );
+            for parameter in &mut application.parameters {
+                *parameter = context.hydrate_semantic_value(parameter.clone());
+            }
+            application.result = context.hydrate_semantic_value(application.result);
             let issue = call_issue(
                 callee,
                 signature.parameters.len(),

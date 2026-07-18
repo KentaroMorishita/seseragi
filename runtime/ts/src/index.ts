@@ -59,4 +59,15 @@ export type {
 } from "./stdin"
 export { createProcessStdin, readLine } from "./stdin"
 export type { Either, Maybe } from "./sum"
-export { Just, Left, Nothing, Right } from "./sum"
+export {
+  eitherApplicative,
+  eitherFunctor,
+  eitherMonad,
+  Just,
+  Left,
+  maybeApplicative,
+  maybeFunctor,
+  maybeMonad,
+  Nothing,
+  Right,
+} from "./sum"

@@ -1,5 +1,5 @@
 use crate::{
-    prelude::{is_standalone_symbol, sum_type_for_symbol, PreludeSumType},
+    prelude::{is_standalone_symbol, sum_type_for_symbol, trait_methods_named, PreludeSumType},
     ResolveIssue, ResolvedModule, ResolvedReference, ResolvedScope, ResolvedSymbol, ScopeId,
     ScopeKind, SymbolId, SymbolKind, SymbolNamespace,
 };
@@ -341,6 +341,10 @@ impl Resolver {
         }
         if target.is_none() && namespace == SymbolNamespace::Value {
             candidates = self.lookup_trait_methods(scope, spelling);
+            if candidates.is_empty() {
+                self.materialize_prelude_trait_methods(spelling);
+                candidates = self.lookup_trait_methods(scope, spelling);
+            }
             if let [candidate] = candidates.as_slice() {
                 target = Some(*candidate);
             }
@@ -470,6 +474,39 @@ impl Resolver {
             );
             self.prelude_names
                 .insert((SymbolNamespace::Value, variant.name.to_owned()), symbol);
+        }
+    }
+
+    fn materialize_prelude_trait_methods(&mut self, spelling: &str) {
+        let methods = trait_methods_named(spelling);
+        for method in methods {
+            if self
+                .trait_methods
+                .get(&(self.module_scope(), spelling.to_owned()))
+                .into_iter()
+                .flatten()
+                .any(|symbol| {
+                    self.symbols
+                        .get(symbol.0 as usize)
+                        .and_then(|symbol| symbol.canonical.as_deref())
+                        == Some(method.canonical)
+                })
+            {
+                continue;
+            }
+            self.ensure_prelude(SymbolNamespace::Trait, method.trait_name);
+            let symbol = self.push_symbol(
+                self.module_scope(),
+                SymbolNamespace::Value,
+                SymbolKind::TraitMethod,
+                method.name,
+                Some(method.canonical.to_owned()),
+                ByteSpan { start: 0, end: 0 },
+            );
+            self.trait_methods
+                .entry((self.module_scope(), method.name.to_owned()))
+                .or_default()
+                .push(symbol);
         }
     }
 }

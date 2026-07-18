@@ -1,7 +1,9 @@
 use std::collections::BTreeMap;
 
-use crate::show_ops::runtime_show_dictionary_for_identity;
-use crate::CoreInstanceEvidence;
+use crate::{
+    prelude_ops::runtime_prelude_dictionary_for_identity,
+    show_ops::runtime_show_dictionary_for_identity, CoreInstanceEvidence,
+};
 
 use super::instances::local_instance_expression_key;
 use super::types::type_ref_from_core_type;
@@ -18,10 +20,14 @@ pub(super) fn local_dictionary_expression(
         });
     }
     if let CoreInstanceEvidence::Standard { identity } = evidence {
-        return runtime_show_dictionary_for_identity(identity).map(|dictionary| {
-            TypeScriptExpr::RuntimeReference {
-                name: dictionary.local_name.to_owned(),
-            }
+        let local_name = runtime_show_dictionary_for_identity(identity)
+            .map(|dictionary| dictionary.local_name)
+            .or_else(|| {
+                runtime_prelude_dictionary_for_identity(identity)
+                    .map(|dictionary| dictionary.local_name)
+            })?;
+        return Some(TypeScriptExpr::RuntimeReference {
+            name: local_name.to_owned(),
         });
     }
     let (identity, type_arguments, evidence_arguments) = match evidence {
@@ -95,5 +101,23 @@ mod tests {
         );
 
         assert_eq!(expression, None);
+    }
+
+    #[test]
+    fn materializes_a_registered_standard_prelude_dictionary() {
+        let expression = local_dictionary_expression(
+            &CoreInstanceEvidence::Standard {
+                identity: "std/either::Monad".to_owned(),
+            },
+            &BTreeMap::new(),
+            &BTreeMap::new(),
+        );
+
+        assert_eq!(
+            expression,
+            Some(TypeScriptExpr::RuntimeReference {
+                name: "_ssrg_either_monad".to_owned(),
+            })
+        );
     }
 }

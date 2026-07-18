@@ -34,15 +34,17 @@
     "exit": { "kind": "success", "value": "Unit" },
     "runtimeRequirements": [
       "core.either",
-      "core.adt",
-      "core.either.left",
-      "core.either.right",
       "core.string",
       "core.int64",
+      "core.either.monad",
+      "core.either.applicative",
       "core.int64.add",
+      "core.adt",
       "core.unit",
       "effect.core.flatMap",
-      "effect.console.println"
+      "effect.console.println",
+      "core.either.right",
+      "core.either.left"
     ],
     "process": { "exitCode": 0 },
     "stdout": "stdout.txt",

@@ -454,6 +454,66 @@
       }
     },
     {
+      "id": "core.maybe.functor",
+      "kind": "runtime-binding",
+      "typescript": "readonly Functor dictionary",
+      "boundary": "standard Functor<Maybe> dictionary",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "maybeFunctor"
+      }
+    },
+    {
+      "id": "core.maybe.applicative",
+      "kind": "runtime-binding",
+      "typescript": "readonly Applicative dictionary",
+      "boundary": "standard Applicative<Maybe> dictionary including Functor methods",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "maybeApplicative"
+      }
+    },
+    {
+      "id": "core.maybe.monad",
+      "kind": "runtime-binding",
+      "typescript": "readonly Monad dictionary",
+      "boundary": "standard Monad<Maybe> dictionary including inherited methods",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "maybeMonad"
+      }
+    },
+    {
+      "id": "core.either.functor",
+      "kind": "runtime-binding",
+      "typescript": "readonly Functor dictionary",
+      "boundary": "standard Functor<Either<E>> dictionary",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "eitherFunctor"
+      }
+    },
+    {
+      "id": "core.either.applicative",
+      "kind": "runtime-binding",
+      "typescript": "readonly Applicative dictionary",
+      "boundary": "standard Applicative<Either<E>> dictionary including Functor methods",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "eitherApplicative"
+      }
+    },
+    {
+      "id": "core.either.monad",
+      "kind": "runtime-binding",
+      "typescript": "readonly Monad dictionary",
+      "boundary": "standard Monad<Either<E>> dictionary including inherited methods",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "eitherMonad"
+      }
+    },
+    {
       "id": "effect.core.succeed",
       "kind": "runtime-helper",
       "typescript": "function",

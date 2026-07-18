@@ -307,6 +307,14 @@ fn collect_callables(
     collect_local_trait_methods(resolved, semantic_types, &mut callables);
     callables.extend(imports::collect_imported_callables(resolved));
     for symbol in &resolved.symbols {
+        if let Some(method) = symbol
+            .canonical
+            .as_deref()
+            .and_then(crate::prelude::trait_method_by_canonical)
+        {
+            callables.insert(symbol.id, standard_trait_method_callable(method));
+            continue;
+        }
         match symbol.canonical.as_deref() {
             Some("std/prelude::reduce") => {
                 callables.insert(symbol.id, standard_reduce_callable());
@@ -321,6 +329,32 @@ fn collect_callables(
         }
     }
     callables
+}
+
+fn standard_trait_method_callable(
+    method: &crate::prelude::PreludeTraitMethod,
+) -> TopLevelPureFunction {
+    let trait_spec = crate::prelude::trait_by_name(method.trait_name)
+        .expect("Prelude trait method owner must exist");
+    let signature = crate::prelude::trait_method_signature(method);
+    TopLevelPureFunction {
+        symbol: method.canonical.to_owned(),
+        trait_identity: Some(trait_spec.canonical.to_owned()),
+        trait_method: Some(method.name.to_owned()),
+        type_parameters: signature.type_parameters,
+        constraints: vec![crate::TypedConstraint {
+            name: trait_spec.name.to_owned(),
+            arguments: vec![TypedType::Named {
+                name: trait_spec.type_parameter.to_owned(),
+                arguments: Vec::new(),
+            }],
+        }],
+        constraint_identities: vec![Some(trait_spec.canonical.to_owned())],
+        semantic_parameters: vec![SemanticTypeKey::Other; signature.parameters.len()],
+        parameters: signature.parameters,
+        result: signature.result,
+        semantic_result: SemanticTypeKey::Other,
+    }
 }
 
 fn standard_reduce_callable() -> TopLevelPureFunction {

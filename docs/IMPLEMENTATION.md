@@ -805,13 +805,23 @@ pure letはcontinuation内の通常constであり、Effect runtime importやrequ
 
 `schema-1/monad-either`は`Either<String, Int>`を、固定prefix `Either<String, _>`と最後のpayload `Int`へ
 分解します。`F<A> ~ Either<String, Int>`のHKT inferenceは`F = Either<String, _>`を保持し、substitution時は
-固定prefixの後ろへ新しいpayloadを適用します。local instance head `Either<E, _>`は値の型へholeを残さず、
-constructor constraintとの照合時だけtrailing holeを正規化して`E = String`を求めます。
-これによりFunctor / Applicative / Monadの三factoryとdo loweringはMaybe専用分岐なしで再利用され、
+固定prefixの後ろへ新しいpayloadを適用します。Preludeの標準instance照合は型構築子arityから
+`Either<String, _>`の残りarity 1を確認し、saturatedな値型や異なる型構築子を誤選択しません。
+これによりFunctor / Applicative / Monadの標準dictionaryとdo loweringはcall siteのEither専用分岐なしで再利用され、
 `execution-schema-1/monad-either`がdo版と明示lambdaによる`>>=`版の両方でRightの成功とLeftの短絡を
 実行します。application typingは非lambda実引数を先に型付けしてgeneric substitutionを作り、元の引数位置に
 対応する期待関数型をlambdaへ渡します。これは`Either`や`flatMap`名の判定ではなく、任意のhigher-order callへ
 使うindexed argument inferenceです。解決不能なlambda parameterはHoleのままbackendへ送らずcompile diagnosticにします。
+
+Prelude調査時点では、semantic preludeはtrait名とMaybe / Either constructorだけを登録し、trait method schemeと
+標準instanceはuser sourceで再宣言しなければ使えませんでした。またbackendでmaterializeできる標準dictionaryは
+Showだけで、sum runtime ABIはconstructorと表現に留まっていました。今回の最小sliceでは
+Functor / Applicative / Monadのmethod schemeとsupertrait chain、Maybe / Eitherの6標準instanceをsemantic registryへ
+集約し、同じidentityをlowering registryからreadonly runtime dictionaryへ接続します。Monad / Applicative dictionaryは
+継承methodも同じobjectに含むため、supertrait evidenceのparameter projectionと同じ呼出規約を保ちます。
+`monad-either`はこのPrelude経路へ移し、`monad-maybe`はuserlandでtraitとinstanceを定義できる独立sampleとして残します。
+後続sliceではArray / List / Effectなど仕様に列挙した型を同じ登録境界へ足し、標準moduleのexportとcoherence範囲を
+artifactで固定します。
 
 `schema-1/monad-laws`はFunctor identity / composition、Applicative identity / homomorphism、Monad left identity /
 right identity / associativityを一つの小さいuser-defined Maybe instance群で表現します。

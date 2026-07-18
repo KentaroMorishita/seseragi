@@ -76,12 +76,15 @@ pub(super) fn type_application(
             .enumerate()
             .filter_map(|(index, argument)| argument.clone().map(|argument| (index, argument)))
             .collect::<Vec<_>>();
-        let partial_application = instantiated_application_indexed(
+        let mut partial_application = instantiated_application_indexed(
             &signature,
             expected_application,
             argument_nodes.len(),
             &indexed_arguments,
         );
+        for parameter in &mut partial_application.parameters {
+            *parameter = context.hydrate_semantic_value(parameter.clone());
+        }
         let expected = partial_application
             .parameters
             .get(index)
@@ -114,12 +117,16 @@ pub(super) fn type_application(
         .enumerate()
         .filter_map(|(index, argument)| argument.clone().map(|argument| (index, argument)))
         .collect::<Vec<_>>();
-    let application = instantiated_application_indexed(
+    let mut application = instantiated_application_indexed(
         &signature,
         expected_application,
         argument_nodes.len(),
         &indexed_arguments,
     );
+    for parameter in &mut application.parameters {
+        *parameter = context.hydrate_semantic_value(parameter.clone());
+    }
+    application.result = context.hydrate_semantic_value(application.result);
     let child_analyses = analyses
         .into_iter()
         .map(|analysis| analysis.expect("every application argument is typed"))

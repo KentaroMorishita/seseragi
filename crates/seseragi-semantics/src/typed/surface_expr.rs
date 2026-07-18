@@ -134,6 +134,18 @@ impl<'a> PureExpressionContext<'a> {
         self.resolution.semantic_value_from_typed_type(type_ref)
     }
 
+    pub(super) fn hydrate_semantic_value(&self, value: SemanticValueType) -> SemanticValueType {
+        if value.key != SemanticTypeKey::Other {
+            return value;
+        }
+        let hydrated = self.semantic_value_from_typed_type(&value.type_ref);
+        if hydrated.key != SemanticTypeKey::Other {
+            hydrated
+        } else {
+            value
+        }
+    }
+
     pub(super) fn semantic_value_from_type_ref(
         &self,
         type_ref: &seseragi_syntax::TypeRef,

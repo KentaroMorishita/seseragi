@@ -226,7 +226,7 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
   },
   {
     id: "monad-maybe",
-    label: "Monadの流れ",
+    label: "型クラスを定義する",
     category: "型と抽象化",
     sourcePath: "examples/spec/artifacts/schema-1/monad-maybe/main.ssrg",
     stdin: "",

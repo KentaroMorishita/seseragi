@@ -5,6 +5,7 @@ mod emit;
 mod int_ops;
 mod iterator_ops;
 mod list_ops;
+mod prelude_ops;
 mod range_ops;
 mod runtime_types;
 mod show_ops;

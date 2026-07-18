@@ -6,6 +6,7 @@ use crate::range_ops::runtime_range_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::{
     effect_ops::runtime_effect_operation, int_ops::runtime_int_operation_with_evidence,
+    prelude_ops::runtime_prelude_dictionary_for_identity,
     show_ops::runtime_show_dictionary_for_identity, CoreCallEvidence, CoreComprehensionClause,
     CoreExpr, CoreInstanceEvidence, CoreStatement, CoreTemplatePart, CoreType,
 };
@@ -602,6 +603,8 @@ fn collect_evidence_runtime_requirements(
             CoreInstanceEvidence::Standard { identity } => {
                 if let Some(dictionary) = runtime_show_dictionary_for_identity(identity) {
                     push_unique(requirements, dictionary.runtime_feature);
+                } else if let Some(dictionary) = runtime_prelude_dictionary_for_identity(identity) {
+                    push_unique(requirements, dictionary.runtime_feature);
                 }
             }
             CoreInstanceEvidence::Parameter { .. } => {}
@@ -623,6 +626,14 @@ fn collect_evidence_runtime_imports(
             } => collect_evidence_runtime_imports(evidence_arguments, imports),
             CoreInstanceEvidence::Standard { identity } => {
                 if let Some(dictionary) = runtime_show_dictionary_for_identity(identity) {
+                    push_import_unique(
+                        imports,
+                        TypeScriptImport {
+                            feature: dictionary.runtime_feature.to_owned(),
+                            local: dictionary.local_name.to_owned(),
+                        },
+                    );
+                } else if let Some(dictionary) = runtime_prelude_dictionary_for_identity(identity) {
                     push_import_unique(
                         imports,
                         TypeScriptImport {
