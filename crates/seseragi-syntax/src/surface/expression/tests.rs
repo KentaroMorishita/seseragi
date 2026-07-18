@@ -359,6 +359,28 @@ fn parses_trait_operators_as_grouped_function_values() {
 }
 
 #[test]
+fn rejects_non_referenceable_and_pending_operator_sections_as_expressions() {
+    for operator in [
+        "&&", "||", "??", "|>", "$", ":=", "!", "..", "..=", "<", "<=", ">", ">=", ":", "^",
+    ] {
+        let source = format!("pub let operation = ({operator})\n");
+        let body = first_body(&source);
+        let operator_start = source.find(operator).unwrap();
+
+        assert!(matches!(
+            body,
+            SurfaceExpr::Grouped { value, .. }
+                if matches!(
+                    *value,
+                    SurfaceExpr::Error {
+                        span: ByteSpan { start, end },
+                    } if start == operator_start && end == operator_start + operator.len()
+                )
+        ));
+    }
+}
+
+#[test]
 fn keeps_a_tuple_as_one_application_argument() {
     let body =
         first_body("pub fn usePair left: Int -> right: Bool -> Int = consume (left, right)\n");

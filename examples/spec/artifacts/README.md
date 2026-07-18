@@ -135,6 +135,10 @@ dictionary identityを通常infixと共有します。`execution-schema-1/type-c
 Nothing short-circuitをactual outputで固定し、`semantic-diagnostics-schema-1/type-class-operator-section-missing/`は
 Monad instanceのない`Box`を`SES-T0201 instance.missing`でlowering前に停止します。
 
+`schema-1/operator-section-forbidden/`は`(&&)` / `(||)` / `(??)` / `(|>)` / `($)` / `(:=)` / `(!)` /
+`(..)` / `(..=)`を関数値にせず、operator自身のrangeを持つ`SES-P0001 parser.expected-expression`で停止します。
+未接続の`Ord` / cons sectionもruntime holeへ流さず、valid custom candidateは従来どおりsemanticsで解決します。
+
 `schema-1/parse-hand-either/`はString literal matchの結果をstandard `Either<HandInputError, Hand>`で返します。
 `execution-schema-1/parse-hand-either-valid/`と`parse-hand-either-invalid/`はpure entryへtyped String引数を渡し、
 生成TypeScriptとversioned runtimeを通した`Right Rock` / `Left (UnknownHand input)`をJSONで固定します。

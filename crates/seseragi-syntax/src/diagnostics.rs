@@ -503,6 +503,31 @@ mod tests {
     }
 
     #[test]
+    fn reports_operator_sections_that_cannot_be_function_values() {
+        for operator in [
+            "&&", "||", "??", "|>", "$", ":=", "!", "..", "..=", "<", "<=", ">", ">=", ":", "^",
+        ] {
+            let source = format!("pub let operation = ({operator})\n");
+            let diagnostics = parse_diagnostics("main.ssrg", &source);
+            let start = source.find(operator).unwrap();
+
+            assert_eq!(diagnostics.diagnostics.len(), 1, "{operator}");
+            assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
+            assert_eq!(
+                diagnostics.diagnostics[0].message_key,
+                "parser.expected-expression"
+            );
+            assert_eq!(
+                diagnostics.diagnostics[0].primary,
+                ByteRange {
+                    start,
+                    end: start + operator.len(),
+                }
+            );
+        }
+    }
+
+    #[test]
     fn reports_and_recovers_a_missing_match_arm_expression() {
         let source = "type Label =\n  | Missing\n  | Present String\n\nfn recover value: Label -> String =\n  match value {\n    Missing ->\n    Present item -> item\n    Missing -> \"missing\"\n  }\n";
         let diagnostics = parse_diagnostics("main.ssrg", source);

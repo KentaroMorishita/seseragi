@@ -1,0 +1,115 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.expected-expression",
+      "primary": {
+        "start": 22,
+        "end": 24
+      },
+      "related": [],
+      "fixes": []
+    },
+    {
+      "id": "d2",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.expected-expression",
+      "primary": {
+        "start": 47,
+        "end": 49
+      },
+      "related": [],
+      "fixes": []
+    },
+    {
+      "id": "d3",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.expected-expression",
+      "primary": {
+        "start": 71,
+        "end": 73
+      },
+      "related": [],
+      "fixes": []
+    },
+    {
+      "id": "d4",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.expected-expression",
+      "primary": {
+        "start": 95,
+        "end": 97
+      },
+      "related": [],
+      "fixes": []
+    },
+    {
+      "id": "d5",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.expected-expression",
+      "primary": {
+        "start": 122,
+        "end": 123
+      },
+      "related": [],
+      "fixes": []
+    },
+    {
+      "id": "d6",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.expected-expression",
+      "primary": {
+        "start": 146,
+        "end": 148
+      },
+      "related": [],
+      "fixes": []
+    },
+    {
+      "id": "d7",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.expected-expression",
+      "primary": {
+        "start": 171,
+        "end": 172
+      },
+      "related": [],
+      "fixes": []
+    },
+    {
+      "id": "d8",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.expected-expression",
+      "primary": {
+        "start": 200,
+        "end": 202
+      },
+      "related": [],
+      "fixes": []
+    },
+    {
+      "id": "d9",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "parser.expected-expression",
+      "primary": {
+        "start": 230,
+        "end": 233
+      },
+      "related": [],
+      "fixes": []
+    }
+  ]
+}

@@ -133,6 +133,26 @@ mod tests {
     }
 
     #[test]
+    fn stops_non_referenceable_operator_sections_before_lowering() {
+        let source = "pub let invalid = (&&)\n";
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/operator-section-forbidden",
+            source,
+        ))
+        .expect_err("non-referenceable operator sections must reject compilation");
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "parser.expected-expression"
+        );
+        assert_eq!(diagnostics.diagnostics[0].primary.start, 19);
+        assert_eq!(diagnostics.diagnostics[0].primary.end, 21);
+    }
+
+    #[test]
     fn lowers_local_custom_infix_calls_without_raw_typescript_operators() {
         let source = "operator infixr 4 <.> left: Int -> right: Int -> Int = left - right\n\
                       pub fn calculate unit: Unit -> Int = 10 <.> 3 <.> 2\n";

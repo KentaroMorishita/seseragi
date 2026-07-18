@@ -206,6 +206,9 @@ bare / 一引数部分適用 / 二引数飽和callを同じregistry-driven adapt
 Functor / Applicative / Monad evidence、generic `where Monad<M>` parameter evidence、lexicalなuserland同名traitを
 通常infixと共有し、actual executionでmap / apply / bind / Nothing short-circuitを固定します。
 `semantic-diagnostics-schema-1/type-class-operator-section-missing`はMonad instanceのない`Box`を`SES-T0201`で停止します。
+`schema-1/operator-section-forbidden`は短絡、pipeline、`$`、Signal set、prefix、rangeと未接続の
+`Ord` / cons sectionを共通policyでSurface errorにし、`SES-P0001`でcompileを停止します。valid custom candidateは
+引き続きoperator namespaceへ進み、`SES-P0101 operator.unknown`との責務を混ぜません。
 `schema-1/newtype-user-id`は`newtype UserId = Int`を一constructorのnominal valueとして通常pipelineへ接続し、
 constructor適用、irrefutableなpayload pattern、TypedHir / CoreIr / TypeScriptIr、tagged TypeScript表現を固定します。
 同名execution fixtureがactual outputを検証し、`semantic-diagnostics-schema-1/newtype-no-coercion`は`UserId`から`Int`への

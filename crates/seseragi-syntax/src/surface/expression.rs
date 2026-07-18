@@ -223,7 +223,9 @@ impl ExpressionParser<'_> {
 
     fn infix_operator_occurrence(&self) -> Option<InfixOperatorOccurrence> {
         let first = self.tokens.get(self.cursor)?;
-        if !super::operators::is_operator_spelling_token(first.kind) {
+        if first.kind != TokenKind::PunctuationColon
+            && !super::operators::is_operator_spelling_token(first.kind)
+        {
             return None;
         }
 

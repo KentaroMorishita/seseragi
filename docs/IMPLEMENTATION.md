@@ -617,6 +617,12 @@ TypeScript loweringは0 / 1 / 2個の既適用source引数を一つのadapterで
 `where Monad<M>` parameter evidence、Nothingのshort-circuitをactual executionし、対応instanceのない`Box`は
 `SES-T0201 instance.missing`でlowering前に停止します。`<` / `<=` / `>` / `>=`の`Ord` sectionは後続sliceです。
 
+operator sectionの可否は`OperatorSectionPolicy`へ集約します。算術・Eq・型クラスoperatorとvalid custom candidateだけを
+関数値候補にし、短絡operator、pipeline、低優先順位application、Signal set、prefix not、rangeはoperator spanを持つ
+Surface errorへ変換します。未接続の`Ord` / cons sectionも同じcompile boundaryで停止するため、body欠落がholeや
+TypeScriptの`_`としてruntimeへ流れません。`schema-1/operator-section-forbidden`は各固定spellingを
+`SES-P0001 parser.expected-expression`で拒否し、driverはparse error時点でloweringを開始しません。
+
 user-defined instanceへ進む前提として、SurfaceAstの`instance`はhead / constraintだけでなく、各methodの型parameter、
 parameter、戻り型、constraint、body、source spanを保持します。resolverもinstance scopeを親にmethod scopeを作り、
 method signatureとbodyの型名・値名を通常のreferenceとして解決します。以前のようにfrontendでmethod bodyを捨てると、

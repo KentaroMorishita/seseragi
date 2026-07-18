@@ -33,6 +33,15 @@ pub struct StandardTraitOperator {
     pub associativity: OperatorAssociativity,
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum OperatorSectionPolicy {
+    Referenceable,
+    PendingReferenceable,
+    NonReferenceable,
+    CustomCandidate,
+    Invalid,
+}
+
 const STANDARD_OPERATORS: &[StandardOperator] = &[
     arithmetic("+", "Add", "add"),
     arithmetic("-", "Sub", "sub"),
@@ -110,6 +119,26 @@ pub fn standard_trait_operator(spelling: &str) -> Option<&'static StandardTraitO
     STANDARD_TRAIT_OPERATORS
         .iter()
         .find(|operator| operator.spelling == spelling)
+}
+
+pub fn operator_section_policy(spelling: &str) -> OperatorSectionPolicy {
+    if standard_operator(spelling).is_some() || standard_trait_operator(spelling).is_some() {
+        return OperatorSectionPolicy::Referenceable;
+    }
+    if matches!(spelling, "<" | "<=" | ">" | ">=" | ":") {
+        return OperatorSectionPolicy::PendingReferenceable;
+    }
+    if matches!(
+        spelling,
+        "&&" | "||" | "??" | "|>" | "$" | ":=" | "!" | ".." | "..="
+    ) {
+        return OperatorSectionPolicy::NonReferenceable;
+    }
+    if crate::is_custom_operator_candidate(spelling) {
+        OperatorSectionPolicy::CustomCandidate
+    } else {
+        OperatorSectionPolicy::Invalid
+    }
 }
 
 pub fn declarable_standard_operator(spelling: &str) -> Option<&'static StandardOperator> {
@@ -234,6 +263,33 @@ mod tests {
                 .method_operand_sources,
             [1, 0]
         );
+    }
+
+    #[test]
+    fn classifies_operator_section_policy_without_spelling_fallbacks() {
+        for spelling in ["+", "==", "<$>", "<*>", ">>="] {
+            assert_eq!(
+                operator_section_policy(spelling),
+                OperatorSectionPolicy::Referenceable
+            );
+        }
+        for spelling in ["<", "<=", ">", ">=", ":"] {
+            assert_eq!(
+                operator_section_policy(spelling),
+                OperatorSectionPolicy::PendingReferenceable
+            );
+        }
+        for spelling in ["&&", "||", "??", "|>", "$", ":=", "!", "..", "..="] {
+            assert_eq!(
+                operator_section_policy(spelling),
+                OperatorSectionPolicy::NonReferenceable
+            );
+        }
+        assert_eq!(
+            operator_section_policy("<^>"),
+            OperatorSectionPolicy::CustomCandidate
+        );
+        assert_eq!(operator_section_policy("^"), OperatorSectionPolicy::Invalid);
     }
 
     #[test]

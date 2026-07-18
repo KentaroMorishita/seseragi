@@ -15,24 +15,30 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open_token: &Token) -> Op
         });
     }
 
-    if let Some(operator) = parser.infix_operator_occurrence().filter(|operator| {
-        crate::standard_operator(&operator.token.raw).is_some()
-            || crate::standard_trait_operator(&operator.token.raw).is_some()
-            || super::is_unresolved_infix_operator(&operator.token)
-    }) {
+    if let Some(operator) = parser.infix_operator_occurrence() {
         parser.cursor = operator.next;
         parser.skip_trivia();
         if parser.kind_at_cursor() == Some(TokenKind::PunctuationParenRight) {
             let close = parser.tokens.get(parser.cursor)?;
             parser.cursor += 1;
-            return Some(SurfaceExpr::Grouped {
-                value: Box::new(SurfaceExpr::Name {
+            let operator_span = ByteSpan {
+                start: operator.token.start,
+                end: operator.token.end,
+            };
+            let value = match crate::operator_section_policy(&operator.token.raw) {
+                crate::OperatorSectionPolicy::Referenceable
+                | crate::OperatorSectionPolicy::CustomCandidate => SurfaceExpr::Name {
                     name: operator.token.raw,
-                    span: ByteSpan {
-                        start: operator.token.start,
-                        end: operator.token.end,
-                    },
-                }),
+                    span: operator_span,
+                },
+                crate::OperatorSectionPolicy::PendingReferenceable
+                | crate::OperatorSectionPolicy::NonReferenceable
+                | crate::OperatorSectionPolicy::Invalid => SurfaceExpr::Error {
+                    span: operator_span,
+                },
+            };
+            return Some(SurfaceExpr::Grouped {
+                value: Box::new(value),
                 span: ByteSpan {
                     start: open_token.start,
                     end: close.end,

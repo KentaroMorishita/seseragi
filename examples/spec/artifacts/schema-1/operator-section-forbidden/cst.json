@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 108,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 0,
+        "endToken": 12,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 0,
+            "endToken": 1,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 2,
+            "endToken": 12,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 12,
+        "endToken": 24,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 12,
+            "endToken": 13,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 14,
+            "endToken": 24,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 24,
+        "endToken": 36,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 24,
+            "endToken": 25,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 26,
+            "endToken": 36,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 36,
+        "endToken": 48,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 36,
+            "endToken": 37,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 38,
+            "endToken": 48,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 48,
+        "endToken": 60,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 48,
+            "endToken": 49,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 50,
+            "endToken": 60,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 60,
+        "endToken": 72,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 60,
+            "endToken": 61,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 62,
+            "endToken": 72,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 72,
+        "endToken": 84,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 72,
+            "endToken": 73,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 74,
+            "endToken": 84,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 84,
+        "endToken": 96,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 84,
+            "endToken": 85,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 86,
+            "endToken": 96,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 96,
+        "endToken": 108,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 96,
+            "endToken": 97,
+            "children": []
+          },
+          {
+            "kind": "let-decl",
+            "startToken": 98,
+            "endToken": 108,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}
