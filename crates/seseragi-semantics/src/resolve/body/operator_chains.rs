@@ -23,7 +23,10 @@ enum OperatorMeaning {
     Binary,
     Apply,
     Pipeline,
-    TraitMethod { method: &'static str, flipped: bool },
+    TraitMethod {
+        method: &'static str,
+        method_operand_sources: [usize; 2],
+    },
     Custom,
 }
 
@@ -412,9 +415,17 @@ fn apply_operator(operator: PendingOperator, left: SurfaceExpr, right: SurfaceEx
             argument: Box::new(left),
             span,
         },
-        OperatorMeaning::TraitMethod { method, flipped } => {
-            trait_method_application(method, operator.span, left, right, flipped, span)
-        }
+        OperatorMeaning::TraitMethod {
+            method,
+            method_operand_sources,
+        } => trait_method_application(
+            method,
+            operator.span,
+            left,
+            right,
+            method_operand_sources,
+            span,
+        ),
         OperatorMeaning::Custom => {
             custom_operator_application(operator.spelling, operator.span, left, right, span)
         }
@@ -451,14 +462,17 @@ fn trait_method_application(
     operator_span: ByteSpan,
     left: SurfaceExpr,
     right: SurfaceExpr,
-    flipped: bool,
+    method_operand_sources: [usize; 2],
     span: ByteSpan,
 ) -> SurfaceExpr {
-    let (first, second) = if flipped {
-        (right, left)
-    } else {
-        (left, right)
-    };
+    let mut source_operands = [Some(left), Some(right)];
+    let [first_source, second_source] = method_operand_sources;
+    let first = source_operands[first_source]
+        .take()
+        .expect("trait operator method order must be a permutation");
+    let second = source_operands[second_source]
+        .take()
+        .expect("trait operator method order must be a permutation");
     let first_span = ByteSpan {
         start: operator_span.start.min(first.span().start),
         end: operator_span.end.max(first.span().end),
@@ -478,33 +492,24 @@ fn trait_method_application(
 }
 
 fn builtin_operator_spec(spelling: &str) -> Option<OperatorSpec> {
+    if let Some(operator) = seseragi_syntax::standard_trait_operator(spelling) {
+        return Some(OperatorSpec {
+            fixity: Fixity {
+                rank: operator.fixity_rank,
+                associativity: match operator.associativity {
+                    seseragi_syntax::OperatorAssociativity::Left => Associativity::Left,
+                    seseragi_syntax::OperatorAssociativity::Right => Associativity::Right,
+                },
+            },
+            meaning: OperatorMeaning::TraitMethod {
+                method: operator.method_name,
+                method_operand_sources: operator.method_operand_sources,
+            },
+        });
+    }
     let (rank, associativity, meaning) = match spelling {
         "$" => (-4, Associativity::Right, OperatorMeaning::Apply),
         "|>" => (-2, Associativity::Left, OperatorMeaning::Pipeline),
-        ">>=" => (
-            -2,
-            Associativity::Left,
-            OperatorMeaning::TraitMethod {
-                method: "flatMap",
-                flipped: true,
-            },
-        ),
-        "<$>" => (
-            -2,
-            Associativity::Left,
-            OperatorMeaning::TraitMethod {
-                method: "map",
-                flipped: false,
-            },
-        ),
-        "<*>" => (
-            -2,
-            Associativity::Left,
-            OperatorMeaning::TraitMethod {
-                method: "apply",
-                flipped: false,
-            },
-        ),
         "==" | "!=" | "<" | "<=" | ">" | ">=" => (6, Associativity::None, OperatorMeaning::Binary),
         ".." | "..=" => (7, Associativity::Left, OperatorMeaning::Binary),
         "+" | "-" => (8, Associativity::Left, OperatorMeaning::Binary),

@@ -405,6 +405,12 @@ fn collect_callables(
     collect_local_trait_methods(resolved, semantic_types, &mut callables);
     callables.extend(imports::collect_imported_callables(resolved));
     for symbol in &resolved.symbols {
+        if symbol.namespace == SymbolNamespace::Operator {
+            if let Some(operator) = seseragi_syntax::standard_trait_operator(&symbol.spelling) {
+                callables.insert(symbol.id, standard_trait_operator_callable(operator));
+                continue;
+            }
+        }
         if let Some(method) = symbol
             .canonical
             .as_deref()
@@ -453,6 +459,37 @@ fn standard_trait_method_callable(
         result: signature.result,
         semantic_result: SemanticTypeKey::Other,
     }
+}
+
+fn standard_trait_operator_callable(
+    operator: &seseragi_syntax::StandardTraitOperator,
+) -> TopLevelPureFunction {
+    let method = crate::prelude::trait_method(operator.trait_name, operator.method_name)
+        .expect("standard trait operator method must exist in Prelude");
+    let mut callable = standard_trait_method_callable(method);
+    let method_parameters = std::mem::take(&mut callable.parameters);
+    let method_semantic_parameters = std::mem::take(&mut callable.semantic_parameters);
+    assert_eq!(
+        method_parameters.len(),
+        operator.method_operand_sources.len()
+    );
+    let mut source_parameters = [None, None];
+    let mut source_semantic_parameters = [None, None];
+    for (method_index, source_index) in operator.method_operand_sources.into_iter().enumerate() {
+        source_parameters[source_index] = Some(method_parameters[method_index].clone());
+        source_semantic_parameters[source_index] =
+            Some(method_semantic_parameters[method_index].clone());
+    }
+    callable.symbol = operator.spelling.to_owned();
+    callable.parameters = source_parameters
+        .into_iter()
+        .map(|parameter| parameter.expect("trait operator order must be a permutation"))
+        .collect();
+    callable.semantic_parameters = source_semantic_parameters
+        .into_iter()
+        .map(|parameter| parameter.expect("trait operator order must be a permutation"))
+        .collect();
+    callable
 }
 
 fn standard_reduce_callable() -> TopLevelPureFunction {

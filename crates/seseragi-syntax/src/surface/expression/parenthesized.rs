@@ -17,6 +17,7 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open_token: &Token) -> Op
 
     if let Some(operator) = parser.infix_operator_occurrence().filter(|operator| {
         crate::standard_operator(&operator.token.raw).is_some()
+            || crate::standard_trait_operator(&operator.token.raw).is_some()
             || super::is_unresolved_infix_operator(&operator.token)
     }) {
         parser.cursor = operator.next;

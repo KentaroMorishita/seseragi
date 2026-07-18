@@ -28,6 +28,7 @@ import monadEither from "../../../examples/spec/artifacts/schema-1/monad-either/
 import arrayMonad from "../../../examples/spec/artifacts/schema-1/array-monad/main.ssrg?raw"
 import listMonad from "../../../examples/spec/artifacts/schema-1/list-monad/main.ssrg?raw"
 import effectMonad from "../../../examples/spec/artifacts/schema-1/effect-monad/main.ssrg?raw"
+import typeClassOperatorSection from "../../../examples/spec/artifacts/schema-1/type-class-operator-section/main.ssrg?raw"
 import {
   sampleCatalog,
   type PlaygroundSampleDefinition,
@@ -72,6 +73,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "array-monad": arrayMonad,
   "list-monad": listMonad,
   "effect-monad": effectMonad,
+  "type-class-operator-section": typeClassOperatorSection,
 }
 
 export const samples: readonly PlaygroundSample[] = sampleCatalog.map(

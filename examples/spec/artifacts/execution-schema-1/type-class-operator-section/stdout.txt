@@ -1,0 +1,1 @@
+Type-class sections: map / apply / bind / short-circuit

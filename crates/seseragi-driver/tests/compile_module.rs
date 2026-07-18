@@ -187,6 +187,69 @@ fn passes_equality_operators_as_curried_function_values() {
 }
 
 #[test]
+fn passes_type_class_operators_as_source_order_function_values() {
+    const SOURCE: &str = include_str!(
+        "../../../examples/spec/artifacts/schema-1/type-class-operator-section/main.ssrg"
+    );
+    const EXPECTED_TYPESCRIPT: &str = include_str!(
+        "../../../examples/spec/artifacts/schema-1/type-class-operator-section/main.ts"
+    );
+    let compiled = compile_module(input(
+        "artifact/type-class-operator-section/main.ssrg",
+        "artifact/type-class-operator-section",
+        SOURCE,
+    ))
+    .expect("type-class operator sections should compile");
+
+    assert!(compiled.diagnostics.diagnostics.is_empty());
+    assert!(compiled.generated.typescript.contains(
+        "(__ssrg$operator$argument$0) => (__ssrg$operator$argument$1) => _ssrg_maybe_functor[\"map\"](__ssrg$operator$argument$0)(__ssrg$operator$argument$1)"
+    ));
+    assert!(compiled.generated.typescript.contains(
+        "(__ssrg$operator$argument$1) => _ssrg_maybe_applicative[\"apply\"](_ssrg_maybe_Just(increment))(__ssrg$operator$argument$1)"
+    ));
+    assert!(compiled.generated.typescript.contains(
+        "(__ssrg$operator$argument$0) => (__ssrg$operator$argument$1) => _ssrg_maybe_monad[\"flatMap\"](__ssrg$operator$argument$1)(__ssrg$operator$argument$0)"
+    ));
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("__ssrg$evidence$0[\"flatMap\"](next)(value)"));
+    assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
+}
+
+#[test]
+fn resolves_type_class_operator_sections_to_the_lexical_trait_identity() {
+    let source = concat!(
+        "type Box<A> = | Box A\n",
+        "trait Monad<M<_>> {\n",
+        "  fn flatMap<A, B> f: (A -> M<B>) -> value: M<A> -> M<B>\n",
+        "}\n",
+        "instance Monad<Box> {\n",
+        "  fn flatMap<A, B> f: (A -> Box<B>) -> value: Box<A> -> Box<B> =\n",
+        "    match value { Box item -> f item }\n",
+        "}\n",
+        "fn next value: Int -> Box<Int> = Box $ value + 1\n",
+        "pub fn viaInfix value: Box<Int> -> Box<Int> = value >>= next\n",
+        "pub fn viaSection value: Box<Int> -> Box<Int> = (>>=) value next\n",
+    );
+    let compiled = compile_module(input(
+        "artifact/local-monad-operator-section/main.ssrg",
+        "artifact/local-monad-operator-section",
+        source,
+    ))
+    .expect("operator section should use the same lexical Monad as infix syntax");
+
+    assert!(compiled.diagnostics.diagnostics.is_empty());
+    assert!(compiled.generated.typescript.contains(
+        "export const viaInfix = (value: Box<bigint>) => __ssrg$instance$Monad$0[\"flatMap\"](next)(value)"
+    ));
+    assert!(compiled.generated.typescript.contains(
+        "export const viaSection = (value: Box<bigint>) => __ssrg$instance$Monad$0[\"flatMap\"](next)(value)"
+    ));
+}
+
+#[test]
 fn preserves_constraint_arguments_through_owned_ir_stages() {
     const SOURCE: &str =
         include_str!("../../../examples/spec/artifacts/schema-1/constraint-arguments/main.ssrg");

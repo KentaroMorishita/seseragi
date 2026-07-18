@@ -257,4 +257,13 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     stdin: "",
     expectedOutput: "Effect map: 42\nEffect apply: 42\nEffect flatMap: 51",
   },
+  {
+    id: "type-class-operator-section",
+    label: "型クラス演算子を渡す",
+    category: "型と抽象化",
+    sourcePath:
+      "examples/spec/artifacts/schema-1/type-class-operator-section/main.ssrg",
+    stdin: "",
+    expectedOutput: "Type-class sections: map / apply / bind / short-circuit",
+  },
 ]

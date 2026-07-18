@@ -3,8 +3,8 @@ use crate::{
     TypedTemplatePart, TypedType,
 };
 use seseragi_syntax::{
-    standard_operator, ByteSpan, StandardOperator, StandardOperatorKind, SurfaceExpr,
-    SurfaceRecordItem, SurfaceTemplatePart,
+    standard_operator, standard_trait_operator, ByteSpan, StandardOperator, StandardOperatorKind,
+    SurfaceExpr, SurfaceRecordItem, SurfaceTemplatePart,
 };
 use std::collections::BTreeMap;
 
@@ -107,7 +107,20 @@ impl<'a> PureExpressionContext<'a> {
 
     pub(super) fn callable_value(&self, target: SymbolId) -> Option<TopLevelPureFunction> {
         if let Some(callable) = self.callable(target) {
-            return Some(callable.clone());
+            let mut callable = callable.clone();
+            if let Some(operator) = self
+                .resolution
+                .symbol(target)
+                .filter(|symbol| symbol.namespace == SymbolNamespace::Operator)
+                .and_then(|symbol| standard_trait_operator(&symbol.spelling))
+            {
+                let identity = self.trait_identity(operator.trait_name);
+                callable.trait_identity = identity.clone();
+                if let Some(primary) = callable.constraint_identities.first_mut() {
+                    *primary = identity;
+                }
+            }
+            return Some(callable);
         }
         let value = self.parameters.get(&target)?;
         let symbol = self.resolution.symbol(target)?;
@@ -684,6 +697,14 @@ fn type_name(
 ) -> SurfaceExpressionAnalysis {
     if let Some(operator) = standard_operator(name) {
         return type_standard_operator_reference(operator, span, context);
+    }
+    if standard_trait_operator(name).is_some() {
+        if let Some(signature) = context
+            .operator_target(span)
+            .and_then(|target| context.callable_value(target))
+        {
+            return application::type_callable_value(&signature, span, context);
+        }
     }
     let Some(target) = context
         .target(span)

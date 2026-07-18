@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "module": "artifact/type-class-operator-section",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.int64.add",
+      "core.maybe.just",
+      "core.maybe",
+      "core.string",
+      "core.adt",
+      "core.unit",
+      "effect.console.println",
+      "core.maybe.functor",
+      "core.maybe.applicative",
+      "core.maybe.monad",
+      "core.maybe.nothing"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

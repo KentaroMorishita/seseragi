@@ -1,0 +1,44 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/type-class-operator-section"
+  ],
+  "sourcesContent": [
+    "// Prelude type-class operators are ordinary curried values in source order.\nfn increment value: Int -> Int = value + 1\n\nfn incrementMaybe value: Int -> Maybe<Int> =\n  Just $ value + 2\n\nfn mapWith\n  operation: ((Int -> Int) -> Maybe<Int> -> Maybe<Int>)\n  -> Maybe<Int> =\n  operation increment (Just 41)\n\nfn applyWith\n  operation: (Maybe<Int> -> Maybe<Int>)\n  -> Maybe<Int> =\n  operation (Just 41)\n\nfn bindWith\n  operation: (Maybe<Int> -> (Int -> Maybe<Int>) -> Maybe<Int>)\n  -> value: Maybe<Int>\n  -> Maybe<Int> =\n  operation value incrementMaybe\n\nfn bindGeneric<M<_>, A, B>\n  value: M<A>\n  -> next: (A -> M<B>)\n  -> M<B>\nwhere Monad<M> =\n  (>>=) value next\n\nfn render\n  checks: (Maybe<Int>, Maybe<Int>, Maybe<Int>, Maybe<Int>)\n  -> String =\n  match checks {\n    (Just 42, Just 42, Just 42, Nothing) ->\n      \"Type-class sections: map / apply / bind / short-circuit\"\n    _ -> \"unexpected type-class section result\"\n  }\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println $ render (\n    mapWith (<$>),\n    applyWith ((<*>) (Just increment)),\n    bindGeneric (Just 40) incrementMaybe,\n    bindWith (>>=) Nothing\n  )\n"
+  ],
+  "names": [
+    "increment",
+    "add",
+    "incrementMaybe",
+    "Just",
+    "add",
+    "mapWith",
+    "operation",
+    "Just",
+    "applyWith",
+    "operation",
+    "Just",
+    "bindWith",
+    "operation",
+    "bindGeneric",
+    "__ssrg$evidence$0",
+    "render",
+    "main",
+    "println",
+    "render",
+    "mapWith",
+    "maybeFunctor",
+    "applyWith",
+    "maybeApplicative",
+    "Just",
+    "bindGeneric",
+    "Just",
+    "maybeMonad",
+    "bindWith",
+    "maybeMonad",
+    "Nothing"
+  ],
+  "mappings": ";;;;AACAA;AAEAE;AAGAG;AAKAG;AAKAG;AAMAE;AAOAE;AASAC"
+}

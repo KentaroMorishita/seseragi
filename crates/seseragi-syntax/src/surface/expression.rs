@@ -144,12 +144,15 @@ impl ExpressionParser<'_> {
                     argument: Box::new(left),
                     span,
                 },
-                ParsedOperator::TraitMethod { method, flipped } => trait_method_application(
+                ParsedOperator::TraitMethod {
+                    method,
+                    method_operand_sources,
+                } => trait_method_application(
                     method,
                     token_span(operator),
                     left,
                     right,
-                    flipped,
+                    method_operand_sources,
                     span,
                 ),
                 ParsedOperator::Binary => SurfaceExpr::Binary {
@@ -502,7 +505,10 @@ struct InfixOperatorOccurrence {
 enum ParsedOperator {
     Apply,
     Pipeline,
-    TraitMethod { method: &'static str, flipped: bool },
+    TraitMethod {
+        method: &'static str,
+        method_operand_sources: [usize; 2],
+    },
     Binary,
 }
 
@@ -510,30 +516,20 @@ fn binary_binding_power(token: &Token) -> Option<(u8, u8, ParsedOperator)> {
     let (precedence, right_associative, kind) = match (token.kind, token.raw.as_str()) {
         (TokenKind::OperatorApply, "$") => (5, true, ParsedOperator::Apply),
         (TokenKind::OperatorPipeline, "|>") => (10, false, ParsedOperator::Pipeline),
-        (TokenKind::OperatorCustom, ">>=") => (
-            10,
-            false,
-            ParsedOperator::TraitMethod {
-                method: "flatMap",
-                flipped: true,
-            },
-        ),
-        (TokenKind::OperatorCustom, "<$>") => (
-            10,
-            false,
-            ParsedOperator::TraitMethod {
-                method: "map",
-                flipped: false,
-            },
-        ),
-        (TokenKind::OperatorCustom, "<*>") => (
-            10,
-            false,
-            ParsedOperator::TraitMethod {
-                method: "apply",
-                flipped: false,
-            },
-        ),
+        (TokenKind::OperatorCustom, spelling)
+            if crate::standard_trait_operator(spelling).is_some() =>
+        {
+            let operator = crate::standard_trait_operator(spelling)
+                .expect("matched standard trait operator must remain registered");
+            (
+                operator.parser_precedence,
+                operator.associativity == crate::OperatorAssociativity::Right,
+                ParsedOperator::TraitMethod {
+                    method: operator.method_name,
+                    method_operand_sources: operator.method_operand_sources,
+                },
+            )
+        }
         (TokenKind::OperatorComparison, _) => (30, false, ParsedOperator::Binary),
         (TokenKind::OperatorRangeExclusive | TokenKind::OperatorRangeInclusive, _) => {
             (35, false, ParsedOperator::Binary)
@@ -569,14 +565,17 @@ fn trait_method_application(
     operator_span: ByteSpan,
     left: SurfaceExpr,
     right: SurfaceExpr,
-    flipped: bool,
+    method_operand_sources: [usize; 2],
     span: ByteSpan,
 ) -> SurfaceExpr {
-    let (first, second) = if flipped {
-        (right, left)
-    } else {
-        (left, right)
-    };
+    let mut source_operands = [Some(left), Some(right)];
+    let [first_source, second_source] = method_operand_sources;
+    let first = source_operands[first_source]
+        .take()
+        .expect("trait operator method order must be a permutation");
+    let second = source_operands[second_source]
+        .take()
+        .expect("trait operator method order must be a permutation");
     let first_span = ByteSpan {
         start: operator_span.start.min(first.span().start),
         end: operator_span.end.max(first.span().end),

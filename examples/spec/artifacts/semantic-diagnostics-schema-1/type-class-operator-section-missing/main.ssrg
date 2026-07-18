@@ -1,0 +1,11 @@
+type Box<A> =
+  | Box A
+
+fn bindWith
+  operation: (Box<Int> -> (Int -> Box<Int>) -> Box<Int>)
+  -> value: Box<Int>
+  -> Box<Int> =
+  operation value (\item -> Box item)
+
+fn invalid -> Box<Int> =
+  bindWith (>>=) (Box 42)

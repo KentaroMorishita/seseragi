@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "case": "type-class-operator-section",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/type-class-operator-section",
+    "export": "main",
+    "compiledModule": "../../schema-1/type-class-operator-section/generated-module.json",
+    "typedInterface": "../../schema-1/type-class-operator-section/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.int64",
+      "core.int64.add",
+      "core.maybe.just",
+      "core.maybe",
+      "core.string",
+      "core.adt",
+      "core.unit",
+      "effect.console.println",
+      "core.maybe.functor",
+      "core.maybe.applicative",
+      "core.maybe.monad",
+      "core.maybe.nothing"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Type-class sections: map / apply / bind / short-circuit"],
+        "stdout": "Type-class sections: map / apply / bind / short-circuit\n"
+      }
+    ]
+  }
+}

@@ -1,0 +1,594 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/type-class-operator-section",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.add",
+    "core.maybe.just",
+    "core.maybe",
+    "core.string",
+    "core.adt",
+    "core.unit",
+    "effect.console.println",
+    "core.maybe.functor",
+    "core.maybe.applicative",
+    "core.maybe.monad",
+    "core.maybe.nothing"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.maybe.functor",
+      "local": "_ssrg_maybe_functor"
+    },
+    {
+      "feature": "core.maybe.applicative",
+      "local": "_ssrg_maybe_applicative"
+    },
+    {
+      "feature": "core.maybe.monad",
+      "local": "_ssrg_maybe_monad"
+    },
+    {
+      "feature": "core.maybe.nothing",
+      "local": "_ssrg_maybe_Nothing"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "increment",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_add",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "bigint",
+            "value": "1"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 77,
+        "end": 119
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "incrementMaybe",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_maybe_Just",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int64_add",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "value"
+              },
+              {
+                "kind": "bigint",
+                "value": "2"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 121,
+        "end": 184
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "mapWith",
+      "parameters": [
+        {
+          "name": "operation",
+          "type": "(argument: (argument: bigint) => bigint) => (argument: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "operation",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "increment"
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_maybe_Just",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "41"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 186,
+        "end": 302
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "applyWith",
+      "parameters": [
+        {
+          "name": "operation",
+          "type": "(argument: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "operation",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_maybe_Just",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "41"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 304,
+        "end": 396
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "bindWith",
+      "parameters": [
+        {
+          "name": "operation",
+          "type": "(argument: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }) => (argument: (argument: bigint) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "implicit": false
+        },
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "operation",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "identifier",
+            "name": "incrementMaybe"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 398,
+        "end": 546
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "bindGeneric",
+      "typeParameters": [
+        "M",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        {
+          "name": "Monad",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "M",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "unknown",
+          "implicit": false
+        },
+        {
+          "name": "next",
+          "type": "(argument: A) => unknown",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "flatMap",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "next"
+          },
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 548,
+        "end": 657
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "checks",
+          "type": "readonly [{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }, { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }, { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }, { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }]",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "checks"
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "maybe",
+              "element": {
+                "kind": "bigint"
+              }
+            },
+            {
+              "kind": "maybe",
+              "element": {
+                "kind": "bigint"
+              }
+            },
+            {
+              "kind": "maybe",
+              "element": {
+                "kind": "bigint"
+              }
+            },
+            {
+              "kind": "maybe",
+              "element": {
+                "kind": "bigint"
+              }
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "tag": "Just"
+              },
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  },
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "value": "42"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "tag": "Just"
+              },
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  },
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "value": "42"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 2
+                  }
+                ],
+                "tag": "Just"
+              },
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 2
+                  },
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "value": "42"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 3
+                  }
+                ],
+                "tag": "Nothing"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Type-class sections: map / apply / bind / short-circuit"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "unexpected type-class section result"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 659,
+        "end": 918
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "call",
+                    "callee": "mapWith",
+                    "arguments": [
+                      {
+                        "kind": "lambda",
+                        "parameter": "__ssrg$operator$argument$0",
+                        "body": {
+                          "kind": "lambda",
+                          "parameter": "__ssrg$operator$argument$1",
+                          "body": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_maybe_functor"
+                            },
+                            "method": "map",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "__ssrg$operator$argument$0"
+                              },
+                              {
+                                "kind": "identifier",
+                                "name": "__ssrg$operator$argument$1"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "applyWith",
+                    "arguments": [
+                      {
+                        "kind": "lambda",
+                        "parameter": "__ssrg$operator$argument$1",
+                        "body": {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_maybe_applicative"
+                          },
+                          "method": "apply",
+                          "arguments": [
+                            {
+                              "kind": "runtime-call",
+                              "callee": "_ssrg_maybe_Just",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "increment"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "__ssrg$operator$argument$1"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "bindGeneric",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_maybe_Just",
+                        "arguments": [
+                          {
+                            "kind": "bigint",
+                            "value": "40"
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "incrementMaybe"
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_maybe_monad"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "bindWith",
+                    "arguments": [
+                      {
+                        "kind": "lambda",
+                        "parameter": "__ssrg$operator$argument$0",
+                        "body": {
+                          "kind": "lambda",
+                          "parameter": "__ssrg$operator$argument$1",
+                          "body": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_maybe_monad"
+                            },
+                            "method": "flatMap",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "__ssrg$operator$argument$1"
+                              },
+                              {
+                                "kind": "identifier",
+                                "name": "__ssrg$operator$argument$0"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_maybe_Nothing"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 920,
+        "end": 1133
+      }
+    }
+  ]
+}

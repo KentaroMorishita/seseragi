@@ -301,6 +301,7 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
         ),
         SymbolNamespace::Operator => {
             seseragi_syntax::standard_operator(spelling).is_some()
+                || seseragi_syntax::standard_trait_operator(spelling).is_some()
                 || matches!(spelling, "<" | "<=" | ">" | ">=")
         }
         SymbolNamespace::Trait => matches!(
@@ -372,6 +373,15 @@ pub(crate) fn trait_methods_named(name: &str) -> Vec<&'static PreludeTraitMethod
         .iter()
         .filter(move |method| method.name == name)
         .collect()
+}
+
+pub(crate) fn trait_method(
+    trait_name: &str,
+    method_name: &str,
+) -> Option<&'static PreludeTraitMethod> {
+    TRAIT_METHODS
+        .iter()
+        .find(|method| method.trait_name == trait_name && method.name == method_name)
 }
 
 pub(crate) fn trait_method_by_canonical(canonical: &str) -> Option<&'static PreludeTraitMethod> {

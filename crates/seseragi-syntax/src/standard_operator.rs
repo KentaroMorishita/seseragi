@@ -15,6 +15,24 @@ pub struct StandardOperator {
     pub declarable: bool,
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum OperatorAssociativity {
+    Left,
+    Right,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct StandardTraitOperator {
+    pub spelling: &'static str,
+    pub trait_name: &'static str,
+    pub method_name: &'static str,
+    /// For each method argument, identifies the corresponding source operand.
+    pub method_operand_sources: [usize; 2],
+    pub parser_precedence: u8,
+    pub fixity_rank: i32,
+    pub associativity: OperatorAssociativity,
+}
+
 const STANDARD_OPERATORS: &[StandardOperator] = &[
     arithmetic("+", "Add", "add"),
     arithmetic("-", "Sub", "sub"),
@@ -38,6 +56,36 @@ const STANDARD_OPERATORS: &[StandardOperator] = &[
     },
 ];
 
+const STANDARD_TRAIT_OPERATORS: &[StandardTraitOperator] = &[
+    StandardTraitOperator {
+        spelling: "<$>",
+        trait_name: "Functor",
+        method_name: "map",
+        method_operand_sources: [0, 1],
+        parser_precedence: 10,
+        fixity_rank: -2,
+        associativity: OperatorAssociativity::Left,
+    },
+    StandardTraitOperator {
+        spelling: "<*>",
+        trait_name: "Applicative",
+        method_name: "apply",
+        method_operand_sources: [0, 1],
+        parser_precedence: 10,
+        fixity_rank: -2,
+        associativity: OperatorAssociativity::Left,
+    },
+    StandardTraitOperator {
+        spelling: ">>=",
+        trait_name: "Monad",
+        method_name: "flatMap",
+        method_operand_sources: [1, 0],
+        parser_precedence: 10,
+        fixity_rank: -2,
+        associativity: OperatorAssociativity::Left,
+    },
+];
+
 const fn arithmetic(
     spelling: &'static str,
     trait_name: &'static str,
@@ -54,6 +102,12 @@ const fn arithmetic(
 
 pub fn standard_operator(spelling: &str) -> Option<&'static StandardOperator> {
     STANDARD_OPERATORS
+        .iter()
+        .find(|operator| operator.spelling == spelling)
+}
+
+pub fn standard_trait_operator(spelling: &str) -> Option<&'static StandardTraitOperator> {
+    STANDARD_TRAIT_OPERATORS
         .iter()
         .find(|operator| operator.spelling == spelling)
 }
@@ -164,6 +218,22 @@ mod tests {
     fn does_not_offer_inequality_as_an_overload_declaration() {
         assert!(standard_operator("!=").is_some());
         assert!(declarable_standard_operator("!=").is_none());
+    }
+
+    #[test]
+    fn records_trait_operator_source_to_method_order() {
+        assert_eq!(
+            standard_trait_operator("<$>")
+                .unwrap()
+                .method_operand_sources,
+            [0, 1]
+        );
+        assert_eq!(
+            standard_trait_operator(">>=")
+                .unwrap()
+                .method_operand_sources,
+            [1, 0]
+        );
     }
 
     #[test]

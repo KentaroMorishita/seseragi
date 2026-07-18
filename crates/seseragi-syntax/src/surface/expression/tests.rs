@@ -336,6 +336,29 @@ fn parses_tuple_values_without_losing_grouped_expressions() {
 }
 
 #[test]
+fn parses_trait_operators_as_grouped_function_values() {
+    for operator in ["<$>", "<*>", ">>="] {
+        let source = format!("pub let operation = ({operator})\n");
+        let body = first_body(&source);
+        let operator_start = source.find(operator).unwrap();
+
+        assert!(matches!(
+            body,
+            SurfaceExpr::Grouped { value, .. }
+                if matches!(
+                    *value,
+                    SurfaceExpr::Name {
+                        ref name,
+                        span: ByteSpan { start, end },
+                    } if name == operator
+                        && start == operator_start
+                        && end == operator_start + operator.len()
+                )
+        ));
+    }
+}
+
+#[test]
 fn keeps_a_tuple_as_one_application_argument() {
     let body =
         first_body("pub fn usePair left: Int -> right: Bool -> Int = consume (left, right)\n");

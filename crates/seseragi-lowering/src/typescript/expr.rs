@@ -9,7 +9,9 @@ use crate::sum_ops::runtime_sum_constructor;
 use crate::{
     CoreExpr, CoreMonadDoStatement, CoreRecordValueItem, CoreStatement, CoreTemplatePart, CoreType,
 };
-use seseragi_syntax::{standard_operator, StandardOperatorKind};
+use seseragi_syntax::{
+    standard_operator, standard_trait_operator, StandardOperatorKind, StandardTraitOperator,
+};
 use std::collections::BTreeMap;
 
 use super::decision::lower_core_decision;
@@ -109,7 +111,33 @@ pub(super) fn lower_core_expr_to_typescript(
             ..
         } => {
             let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
-            if let Some(dispatch) = trait_dispatch {
+            if let Some(operator) = standard_trait_operator(&callee) {
+                let dispatch = trait_dispatch
+                    .as_ref()
+                    .expect("standard trait operator requires typed trait dispatch");
+                assert_eq!(dispatch.method, operator.method_name);
+                let (selected, method_evidence) = evidence
+                    .split_first()
+                    .expect("trait operator requires primary instance evidence");
+                let selected = local_dictionary_expression(
+                    &selected.evidence,
+                    imported_values,
+                    imported_types,
+                )
+                .expect("trait operator requires materialized primary evidence");
+                let method_evidence = method_evidence
+                    .iter()
+                    .map(|selected| {
+                        local_dictionary_expression(
+                            &selected.evidence,
+                            imported_values,
+                            imported_types,
+                        )
+                        .expect("trait operator method constraint requires materialized evidence")
+                    })
+                    .collect();
+                lower_trait_operator_call(selected, operator, arguments, method_evidence)
+            } else if let Some(dispatch) = trait_dispatch {
                 let (selected, method_evidence) = evidence
                     .split_first()
                     .expect("trait dispatch requires primary instance evidence");
@@ -668,6 +696,46 @@ fn curried_dictionary_method_reference(dictionary: TypeScriptExpr, method: &str)
             }),
         }),
     }
+}
+
+fn lower_trait_operator_call(
+    dictionary: TypeScriptExpr,
+    operator: &StandardTraitOperator,
+    supplied_source_arguments: Vec<TypeScriptExpr>,
+    method_evidence: Vec<TypeScriptExpr>,
+) -> TypeScriptExpr {
+    assert!(supplied_source_arguments.len() <= operator.method_operand_sources.len());
+    let supplied_count = supplied_source_arguments.len();
+    let mut source_arguments = [None, None];
+    for (source_index, argument) in supplied_source_arguments.into_iter().enumerate() {
+        source_arguments[source_index] = Some(argument);
+    }
+    for source_index in supplied_count..source_arguments.len() {
+        source_arguments[source_index] = Some(TypeScriptExpr::Identifier {
+            name: format!("__ssrg$operator$argument${source_index}"),
+        });
+    }
+    let mut method_arguments = operator
+        .method_operand_sources
+        .map(|source_index| {
+            source_arguments[source_index]
+                .take()
+                .expect("trait operator order must be a permutation")
+        })
+        .to_vec();
+    method_arguments.extend(method_evidence);
+    let mut result = TypeScriptExpr::DictionaryCall {
+        dictionary: Box::new(dictionary),
+        method: operator.method_name.to_owned(),
+        arguments: method_arguments,
+    };
+    for source_index in (supplied_count..source_arguments.len()).rev() {
+        result = TypeScriptExpr::Lambda {
+            parameter: format!("__ssrg$operator$argument${source_index}"),
+            body: Box::new(result),
+        };
+    }
+    result
 }
 
 fn curried_equality_reference(dictionary: TypeScriptExpr, negated: bool) -> TypeScriptExpr {

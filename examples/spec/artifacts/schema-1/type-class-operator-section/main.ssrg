@@ -1,0 +1,47 @@
+// Prelude type-class operators are ordinary curried values in source order.
+fn increment value: Int -> Int = value + 1
+
+fn incrementMaybe value: Int -> Maybe<Int> =
+  Just $ value + 2
+
+fn mapWith
+  operation: ((Int -> Int) -> Maybe<Int> -> Maybe<Int>)
+  -> Maybe<Int> =
+  operation increment (Just 41)
+
+fn applyWith
+  operation: (Maybe<Int> -> Maybe<Int>)
+  -> Maybe<Int> =
+  operation (Just 41)
+
+fn bindWith
+  operation: (Maybe<Int> -> (Int -> Maybe<Int>) -> Maybe<Int>)
+  -> value: Maybe<Int>
+  -> Maybe<Int> =
+  operation value incrementMaybe
+
+fn bindGeneric<M<_>, A, B>
+  value: M<A>
+  -> next: (A -> M<B>)
+  -> M<B>
+where Monad<M> =
+  (>>=) value next
+
+fn render
+  checks: (Maybe<Int>, Maybe<Int>, Maybe<Int>, Maybe<Int>)
+  -> String =
+  match checks {
+    (Just 42, Just 42, Just 42, Nothing) ->
+      "Type-class sections: map / apply / bind / short-circuit"
+    _ -> "unexpected type-class section result"
+  }
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ render (
+    mapWith (<$>),
+    applyWith ((<*>) (Just increment)),
+    bindGeneric (Just 40) incrementMaybe,
+    bindWith (>>=) Nothing
+  )
