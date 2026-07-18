@@ -39,6 +39,7 @@ const workspace = requiredElement(".workspace", HTMLElement)
 
 let source = samples[0]?.source ?? ""
 let outputMode: "text" | "html" = samples[0]?.outputMode ?? "text"
+let htmlPreviewUrl: string | undefined
 
 const sampleGroups = new Map<string, HTMLOptGroupElement>()
 for (const sample of samples) {
@@ -87,7 +88,7 @@ clearSourceButton.addEventListener("click", () => {
 })
 clearOutputButton.addEventListener("click", () => {
   output.textContent = ""
-  htmlPreview.srcdoc = ""
+  clearHtmlPreview()
 })
 showTextOutputButton.addEventListener("click", () => chooseOutputMode("text"))
 showHtmlPreviewButton.addEventListener("click", () => chooseOutputMode("html"))
@@ -142,13 +143,37 @@ async function run(): Promise<void> {
 function showExecutionOutput(stdout: string): void {
   output.textContent = stdout || "Program completed with no output."
   setOutputMode(outputMode)
-  htmlPreview.srcdoc = stdout
+  renderHtmlPreview(stdout)
 }
 
 function showTextOutput(message: string): void {
   output.textContent = message
-  htmlPreview.srcdoc = ""
+  clearHtmlPreview()
   setOutputMode("text")
+}
+
+function renderHtmlPreview(html: string): void {
+  clearHtmlPreview()
+  if (html === "") return
+
+  const url = URL.createObjectURL(new Blob([html], { type: "text/html" }))
+  htmlPreviewUrl = url
+  htmlPreview.addEventListener(
+    "load",
+    () => {
+      if (htmlPreviewUrl !== url) return
+      URL.revokeObjectURL(url)
+      htmlPreviewUrl = undefined
+    },
+    { once: true }
+  )
+  htmlPreview.src = url
+}
+
+function clearHtmlPreview(): void {
+  if (htmlPreviewUrl !== undefined) URL.revokeObjectURL(htmlPreviewUrl)
+  htmlPreviewUrl = undefined
+  htmlPreview.removeAttribute("src")
 }
 
 function chooseOutputMode(mode: "text" | "html"): void {

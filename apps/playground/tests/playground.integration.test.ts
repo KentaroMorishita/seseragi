@@ -95,7 +95,11 @@ describe("new Playground product gate", () => {
     expect(html).toContain('id="html-preview"')
     expect(html).toMatch(/<iframe[\s\S]*?\ssandbox(?:\s|>)/)
     expect(html).not.toContain("allow-scripts")
-    expect(main).toContain("htmlPreview.srcdoc = stdout")
+    expect(main).toContain(
+      'URL.createObjectURL(new Blob([html], { type: "text/html" }))'
+    )
+    expect(main).toContain('htmlPreview.addEventListener(\n    "load"')
+    expect(main).toContain('htmlPreview.removeAttribute("src")')
   })
 
   for (const sample of sampleCatalog) {
