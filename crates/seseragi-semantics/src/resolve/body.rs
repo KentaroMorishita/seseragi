@@ -405,9 +405,14 @@ impl Resolver {
                 .is_some_and(|reference| reference.candidates.is_empty())
             && report_unresolved
         {
+            let (code, message_key) = if namespace == SymbolNamespace::Operator {
+                ("SES-P0101", "operator.unknown")
+            } else {
+                ("SES-N0001", "name.unresolved")
+            };
             self.issues.push(ResolveIssue {
-                code: "SES-N0001".to_owned(),
-                message_key: "name.unresolved".to_owned(),
+                code: code.to_owned(),
+                message_key: message_key.to_owned(),
                 primary: origin,
             });
         }

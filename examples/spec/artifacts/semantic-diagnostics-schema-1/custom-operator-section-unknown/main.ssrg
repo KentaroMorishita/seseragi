@@ -1,0 +1,2 @@
+fn invalid left: Int -> Int =
+  (<^>) left 1

@@ -15,19 +15,21 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open_token: &Token) -> Op
         });
     }
 
-    if parser.kind_at_cursor() == Some(TokenKind::OperatorArithmetic) {
-        let operator = parser.tokens.get(parser.cursor)?.clone();
-        parser.cursor += 1;
+    if let Some(operator) = parser.infix_operator_occurrence().filter(|operator| {
+        operator.token.kind == TokenKind::OperatorArithmetic
+            || super::is_unresolved_infix_operator(&operator.token)
+    }) {
+        parser.cursor = operator.next;
         parser.skip_trivia();
         if parser.kind_at_cursor() == Some(TokenKind::PunctuationParenRight) {
             let close = parser.tokens.get(parser.cursor)?;
             parser.cursor += 1;
             return Some(SurfaceExpr::Grouped {
                 value: Box::new(SurfaceExpr::Name {
-                    name: operator.raw,
+                    name: operator.token.raw,
                     span: ByteSpan {
-                        start: operator.start,
-                        end: operator.end,
+                        start: operator.token.start,
+                        end: operator.token.end,
                     },
                 }),
                 span: ByteSpan {

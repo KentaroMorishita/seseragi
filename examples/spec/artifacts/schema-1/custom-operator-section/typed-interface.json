@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/custom-operator-section",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/custom-operator-section::trait(Difference)",
+      "namespace": "trait",
+      "name": "Difference",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 101,
+        "end": 169
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Difference",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "difference",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          "origin": {
+            "start": 129,
+            "end": 167
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "artifact/custom-operator-section::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 610,
+        "end": 774
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "artifact/custom-operator-section::trait(Difference)<std/prelude::Int>",
+      "providerModule": "artifact/custom-operator-section",
+      "traitIdentity": "artifact/custom-operator-section::trait(Difference)",
+      "argumentIdentities": [
+        "std/prelude::Int"
+      ],
+      "trait": "Difference",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Difference",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 171,
+        "end": 265
+      }
+    }
+  ]
+}

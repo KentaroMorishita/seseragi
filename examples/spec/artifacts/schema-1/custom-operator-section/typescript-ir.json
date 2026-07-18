@@ -1,0 +1,375 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/custom-operator-section",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.subtract",
+    "core.unit",
+    "effect.console.println",
+    "core.string",
+    "core.int64.show"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.subtract",
+      "local": "_ssrg_int64_subtract"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/custom-operator-section::trait(Difference)<std/prelude::Int>",
+      "trait": "Difference",
+      "arguments": [
+        {
+          "kind": "bigint"
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 171,
+        "end": 265
+      },
+      "dictionaryExport": "__ssrg$instance$Difference$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "difference",
+            "parameters": [
+              {
+                "name": "left",
+                "type": "bigint",
+                "implicit": false
+              },
+              {
+                "name": "right",
+                "type": "bigint",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_subtract",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "left"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "right"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 200,
+              "end": 263
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "__ssrg$operator$3c5e3e",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Difference",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "type": "A",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "difference",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 267,
+        "end": 364
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "applyPair",
+      "parameters": [
+        {
+          "name": "step",
+          "type": "(argument: bigint) => (argument: bigint) => bigint",
+          "implicit": false
+        },
+        {
+          "name": "left",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "step",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 366,
+        "end": 466
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "applyOne",
+      "parameters": [
+        {
+          "name": "step",
+          "type": "(argument: bigint) => bigint",
+          "implicit": false
+        },
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "step",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 468,
+        "end": 540
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "subtractFromTen",
+      "parameters": [
+        {
+          "name": "right",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "applyOne",
+        "arguments": [
+          {
+            "kind": "lambda",
+            "parameter": "__ssrg$partial$0: bigint",
+            "body": {
+              "kind": "call",
+              "callee": "__ssrg$operator$3c5e3e",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "10"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$partial$0"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$instance$Difference$0"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 542,
+        "end": 608
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "binary",
+            "operator": "+",
+            "left": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "string",
+                  "value": "Custom operator section: higher-order="
+                },
+                "right": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_intShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "applyPair",
+                      "arguments": [
+                        {
+                          "kind": "lambda",
+                          "parameter": "__ssrg$partial$0: bigint",
+                          "body": {
+                            "kind": "lambda",
+                            "parameter": "__ssrg$partial$1: bigint",
+                            "body": {
+                              "kind": "call",
+                              "callee": "__ssrg$operator$3c5e3e",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$partial$0"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$partial$1"
+                                },
+                                {
+                                  "kind": "identifier",
+                                  "name": "__ssrg$instance$Difference$0"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "10"
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "3"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "right": {
+                "kind": "string",
+                "value": ", partial="
+              }
+            },
+            "right": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_intShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "subtractFromTen",
+                  "arguments": [
+                    {
+                      "kind": "bigint",
+                      "value": "3"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 610,
+        "end": 774
+      }
+    }
+  ]
+}

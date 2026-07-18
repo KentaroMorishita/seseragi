@@ -38,17 +38,6 @@ pub(crate) fn typed_parameters_from_surface(
         .collect()
 }
 
-pub(crate) fn application_result_type(
-    signature: &TopLevelPureFunction,
-    argument_count: usize,
-) -> TypedType {
-    application_result_type_from(
-        &signature.parameters,
-        signature.result.clone(),
-        argument_count,
-    )
-}
-
 pub(super) fn application_result_type_from(
     parameters: &[TypedType],
     result: TypedType,

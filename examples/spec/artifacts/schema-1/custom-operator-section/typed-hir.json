@@ -1,0 +1,882 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/custom-operator-section",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/custom-operator-section::trait(Difference)<std/prelude::Int>",
+      "traitIdentity": "artifact/custom-operator-section::trait(Difference)",
+      "trait": "Difference",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "std/prelude::Int"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 171,
+        "end": 265
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "difference",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "left",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 214,
+                  "end": 218
+                }
+              },
+              {
+                "kind": "named",
+                "name": "right",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 227,
+                  "end": 232
+                }
+              }
+            ],
+            "body": {
+              "kind": "binary",
+              "operator": "-",
+              "left": {
+                "kind": "variable",
+                "name": "left",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 251,
+                  "end": 255
+                }
+              },
+              "right": {
+                "kind": "variable",
+                "name": "right",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 258,
+                  "end": 263
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Sub",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Sub"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 251,
+                "end": 263
+              }
+            },
+            "origin": {
+              "start": 200,
+              "end": 263
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/custom-operator-section::operator(<^>)",
+      "visibility": "private",
+      "origin": {
+        "start": 267,
+        "end": 364
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [
+          {
+            "name": "Difference",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 294,
+            "end": 298
+          }
+        },
+        {
+          "kind": "named",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 305,
+            "end": 310
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/custom-operator-section::trait(Difference)::difference",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "start": 354,
+              "end": 358
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "right",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "start": 359,
+              "end": 364
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Difference",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "artifact/custom-operator-section::trait(Difference)",
+          "method": "difference"
+        },
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "start": 343,
+          "end": 364
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/custom-operator-section::applyPair",
+      "visibility": "private",
+      "origin": {
+        "start": 366,
+        "end": 466
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "step",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 381,
+            "end": 385
+          }
+        },
+        {
+          "kind": "named",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 412,
+            "end": 416
+          }
+        },
+        {
+          "kind": "named",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 427,
+            "end": 432
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "step",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 456,
+              "end": 460
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "right",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 461,
+              "end": 466
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 451,
+          "end": 466
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/custom-operator-section::applyOne",
+      "visibility": "private",
+      "origin": {
+        "start": 468,
+        "end": 540
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "step",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 482,
+            "end": 486
+          }
+        },
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 506,
+            "end": 511
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "step",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 535,
+              "end": 540
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 530,
+          "end": 540
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/custom-operator-section::subtractFromTen",
+      "visibility": "private",
+      "origin": {
+        "start": 542,
+        "end": 608
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 561,
+            "end": 566
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/custom-operator-section::applyOne",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/custom-operator-section::operator(<^>)",
+            "arguments": [
+              {
+                "kind": "integer",
+                "value": "10",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 599,
+                  "end": 601
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Difference",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "local",
+                  "identity": "artifact/custom-operator-section::trait(Difference)<std/prelude::Int>"
+                }
+              }
+            ],
+            "deferredEvidenceParameters": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 593,
+              "end": 601
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "right",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 603,
+              "end": 608
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 583,
+          "end": 608
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/custom-operator-section::main",
+      "visibility": "public",
+      "origin": {
+        "start": 610,
+        "end": 774
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "text",
+                "value": "Custom operator section: higher-order=",
+                "origin": {
+                  "start": 682,
+                  "end": 720
+                }
+              },
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "call",
+                  "callee": "artifact/custom-operator-section::applyPair",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/custom-operator-section::operator(<^>)",
+                      "arguments": [],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Difference",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "local",
+                            "identity": "artifact/custom-operator-section::trait(Difference)<std/prelude::Int>"
+                          }
+                        }
+                      ],
+                      "deferredEvidenceParameters": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ],
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        }
+                      },
+                      "origin": {
+                        "start": 733,
+                        "end": 736
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "value": "10",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 738,
+                        "end": 740
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "value": "3",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 741,
+                        "end": 742
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 722,
+                    "end": 742
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                },
+                "traitIdentity": "std/prelude::Show",
+                "origin": {
+                  "start": 720,
+                  "end": 743
+                }
+              },
+              {
+                "kind": "text",
+                "value": ", partial=",
+                "origin": {
+                  "start": 743,
+                  "end": 753
+                }
+              },
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "call",
+                  "callee": "artifact/custom-operator-section::subtractFromTen",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "3",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 771,
+                        "end": 772
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 755,
+                    "end": 772
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                },
+                "traitIdentity": "std/prelude::Show",
+                "origin": {
+                  "start": 753,
+                  "end": 773
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 681,
+              "end": 774
+            }
+          }
+        ],
+        "origin": {
+          "start": 673,
+          "end": 774
+        }
+      }
+    }
+  ]
+}

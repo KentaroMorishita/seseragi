@@ -1,0 +1,31 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/custom-operator-section"
+  ],
+  "sourcesContent": [
+    "// generic custom operator sectionは選択済みevidenceを捕捉するcurried function値です。\npub trait Difference<A> {\n  fn difference left: A -> right: A -> A\n}\n\ninstance Difference<Int> {\n  fn difference left: Int -> right: Int -> Int =\n    left - right\n}\n\noperator<A> infixr 4 <^>\n  left: A -> right: A -> A\nwhere Difference<A> =\n  difference left right\n\nfn applyPair\n  step: (Int -> Int -> Int)\n  -> left: Int\n  -> right: Int\n  -> Int =\n  step left right\n\nfn applyOne\n  step: (Int -> Int)\n  -> value: Int\n  -> Int =\n  step value\n\nfn subtractFromTen right: Int -> Int =\n  applyOne ((<^>) 10) right\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println `Custom operator section: higher-order=${applyPair (<^>) 10 3}, partial=${subtractFromTen 3}`\n"
+  ],
+  "names": [
+    "__ssrg$instance$Difference$0",
+    "__ssrg$operator$3c5e3e",
+    "__ssrg$evidence$0",
+    "applyPair",
+    "step",
+    "applyOne",
+    "step",
+    "subtractFromTen",
+    "applyOne",
+    "__ssrg$operator$3c5e3e",
+    "main",
+    "println",
+    "intShow",
+    "applyPair",
+    "__ssrg$operator$3c5e3e",
+    "intShow",
+    "subtractFromTen"
+  ],
+  "mappings": ";;;;AAKAA;AAKAC;AAKAE;AAOAE;AAMAE;AAGAG"
+}

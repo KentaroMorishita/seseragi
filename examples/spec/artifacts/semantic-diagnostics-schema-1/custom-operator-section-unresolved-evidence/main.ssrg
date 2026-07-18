@@ -1,0 +1,10 @@
+trait Difference<A> {
+  fn difference left: A -> right: A -> A
+}
+
+operator<A> infixr 4 <^>
+  left: A -> right: A -> A
+where Difference<A> =
+  difference left right
+
+let invalid = (<^>)

@@ -241,6 +241,27 @@ fn parses_an_arithmetic_operator_as_a_grouped_function_value() {
 }
 
 #[test]
+fn parses_a_custom_operator_run_as_a_grouped_function_value() {
+    let source = "pub let compose: (Int -> Int -> Int) = (<.>)\n";
+    let body = first_body(source);
+    let operator_start = source.find("<.>").unwrap();
+
+    assert!(matches!(
+        body,
+        SurfaceExpr::Grouped { value, .. }
+            if matches!(
+                *value,
+                SurfaceExpr::Name {
+                    ref name,
+                    span: ByteSpan { start, end },
+                } if name == "<.>"
+                    && start == operator_start
+                    && end == operator_start + 3
+            )
+    ));
+}
+
+#[test]
 fn parses_annotated_and_curried_lambdas_as_nested_expressions() {
     let body = first_body("fn answer -> Int = combine (\\first: Int second -> first + second)\n");
     let SurfaceExpr::Application { argument, .. } = body else {

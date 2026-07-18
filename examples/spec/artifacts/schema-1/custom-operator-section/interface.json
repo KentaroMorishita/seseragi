@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "module": "artifact/custom-operator-section",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/custom-operator-section::trait(Difference)",
+      "namespace": "trait",
+      "name": "Difference",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 101,
+        "end": 169
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Difference",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "difference",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          "origin": {
+            "start": 129,
+            "end": 167
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "artifact/custom-operator-section::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declaration": {
+        "start": 610,
+        "end": 774
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "trait": "Difference",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Difference",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 171,
+        "end": 265
+      }
+    }
+  ]
+}

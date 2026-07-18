@@ -5,7 +5,7 @@ use crate::{
 use seseragi_syntax::{ByteSpan, SurfaceExpr, SurfaceRecordItem, SurfaceTemplatePart};
 use std::collections::BTreeMap;
 
-use super::functions::{application_result_type, TopLevelPureFunction};
+use super::functions::TopLevelPureFunction;
 use super::pure_issues::{
     ArrayIssue, ConditionalIssue, MatchIssue, MonadDoIssue, PureCallIssue, RangeIssue, RecordIssue,
 };
@@ -667,7 +667,10 @@ fn type_name(
     if is_arithmetic_operator_reference(name) {
         return type_arithmetic_operator_reference(name, span, context);
     }
-    let Some(target) = context.target(span) else {
+    let Some(target) = context
+        .target(span)
+        .or_else(|| context.operator_target(span))
+    else {
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
                 name: name.to_owned(),
@@ -706,32 +709,7 @@ fn type_name(
         );
     }
     if let Some(function) = context.callable(target) {
-        let application = if function.parameters.is_empty() {
-            Some(super::functions::instantiated_application(
-                function,
-                context.expected(),
-                0,
-                &[],
-            ))
-        } else {
-            None
-        };
-        let semantic_type = application
-            .as_ref()
-            .map(|application| application.result.key.clone())
-            .unwrap_or(SemanticTypeKey::Other);
-        let type_ref = application
-            .map(|application| application.result.type_ref)
-            .unwrap_or_else(|| application_result_type(function, 0));
-        return SurfaceExpressionAnalysis::valid_with_semantic_type(
-            TypedExpr::Variable {
-                name: function.symbol.clone(),
-                evidence: Vec::new(),
-                type_ref,
-                origin: span,
-            },
-            semantic_type,
-        );
+        return application::type_callable_value(function, span, context);
     }
 
     SurfaceExpressionAnalysis::valid_with_semantic_type(

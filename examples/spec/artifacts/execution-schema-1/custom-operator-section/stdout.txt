@@ -1,0 +1,1 @@
+Custom operator section: higher-order=7, partial=7

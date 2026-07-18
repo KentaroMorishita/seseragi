@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 270,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 2,
+        "endToken": 37,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 2,
+            "endToken": 3,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 37,
+        "endToken": 79,
+        "children": []
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 79,
+        "endToken": 125,
+        "children": []
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 125,
+        "endToken": 176,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 125,
+            "endToken": 176,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 176,
+        "endToken": 213,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 176,
+            "endToken": 213,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 213,
+        "endToken": 243,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 213,
+            "endToken": 243,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 243,
+        "endToken": 270,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 243,
+            "endToken": 244,
+            "children": []
+          },
+          {
+            "kind": "effect-fn-decl",
+            "startToken": 245,
+            "endToken": 270,
+            "children": [
+              {
+                "kind": "effect-signature",
+                "startToken": 245,
+                "endToken": 255,
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}

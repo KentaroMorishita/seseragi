@@ -39,7 +39,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | 基本文法、演算子、pattern                  | 初稿あり      | lessonあり、fixtureは一部                  | tuple / matchまで部分実装 |
 | 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / newtype / HKT / structural Record / generic nominal Struct + local inherent method実行まで部分実装 |
 | trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative / Monad実行・law fixtureあり | HKT推論 / local dictionary / transitive supertrait / Prelude Maybe・Either・Array・List・Effect instance実行まで部分実装 |
-| custom infix operator                      | 初稿あり      | local / imported positive・negative・execution fixtureあり | local / imported宣言・fixity・型検査・TS実行まで実装、operator sectionは後続 |
+| custom infix operator                      | 初稿あり      | local / imported positive・negative・execution fixtureあり | local / imported宣言・fixity・generic constrained関数値参照・部分適用・型検査・TS実行まで実装 |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
 | module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | strict core manifest + canonical local discovery + linked compile / executionまで部分実装 |
@@ -252,7 +252,12 @@ dot入りspellingも共通raw operator分類で保持します。unknown operato
 `SES-P0101` / `SES-P0102`、不正spellingと非二項宣言は`SES-P0001`でbackend前に停止します。
 `project-schema-1/imported-custom-infix-operator`はdependency interfaceのfixityと型schemeだけでconsumerの
 右結合chainを解決し、providerのbyte-encoded operator exportを通常のES module importとして呼び出します。
-closed TypeScript checkとactual project executionで9を固定し、operator section `(<+>)`は後続sliceです。
+closed TypeScript checkとactual project executionで9を固定します。`schema-1/custom-operator-section`は
+`(<^>)`を同じcurried function値としてhigher-order parameterへ渡し、部分適用できることをactual executionで固定します。
+期待関数型からgeneric argumentを具体化し、local / imported / scoped constraint evidenceを残りのvalue parameterの後へ
+捕捉するため、constrained operatorもdictionary待ちの関数をruntimeへ漏らしません。imported sectionも同じencoded
+ES module bindingとprovider evidenceを値として渡します。未知のsectionは`SES-P0101 operator.unknown`、期待型も
+scoped evidenceもない未具体化constraintは`SES-T0201 instance.missing`でlowering前に停止します。
 opaque smart constructor / field visibility、struct derivingも後続gateです。
 `schema-1/user-add-operator`はoperand型からlocal `Add<Score, Int, Score>`を選択し、binary `+`と
 curried operator section `(+)`を同じ生成dictionaryの`add` method callへlowerします。`Array<Int>`の`reduce`は

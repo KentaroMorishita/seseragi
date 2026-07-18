@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "module": "artifact/custom-operator-section",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.int64.subtract",
+      "core.unit",
+      "effect.console.println",
+      "core.string",
+      "core.int64.show"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "artifact/custom-operator-section::trait(Difference)<std/prelude::Int>",
+      "trait": "Difference",
+      "arguments": [
+        {
+          "kind": "bigint"
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Difference$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

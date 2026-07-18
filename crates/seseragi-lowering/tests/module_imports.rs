@@ -98,6 +98,95 @@ fn lowers_an_imported_custom_operator_to_its_provider_abi_name() {
 }
 
 #[test]
+fn passes_an_imported_custom_operator_as_a_curried_function_value() {
+    let domain_source = "pub operator infixr 4 <^> left: Int -> right: Int -> Int = left - right\n";
+    let main_source = "\
+import { operator <^> } from \"./domain\"
+
+fn apply
+  step: (Int -> Int -> Int)
+  -> left: Int
+  -> right: Int
+  -> Int =
+  step left right
+
+pub fn run left: Int -> right: Int -> Int =
+  apply (<^>) left right
+";
+    let core = linked_core(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let typescript = lower_core_module_to_typescript_ir_with_plan(
+        core,
+        &plan([("fixture/game::domain", "./domain.js")]),
+    )
+    .unwrap();
+
+    let binding = &typescript.source_imports[0].bindings[0];
+    assert_eq!(binding.imported, "__ssrg$operator$3c5e3e");
+    assert_eq!(binding.local, "__ssrg$operator$3c5e3e");
+
+    let generated = emit_typescript_module(typescript, main_source);
+    assert!(generated
+        .typescript
+        .starts_with("import { __ssrg$operator$3c5e3e } from \"./domain.js\"\n\n"));
+    assert!(generated.typescript.contains(
+        "export const run = (left: bigint) => (right: bigint) => apply(__ssrg$operator$3c5e3e)(left)(right)"
+    ));
+    assert!(!generated.typescript.contains("<^>"));
+}
+
+#[test]
+fn captures_provider_evidence_for_an_imported_generic_operator_value() {
+    let domain_source = "\
+pub trait Difference<A> { fn difference left: A -> right: A -> A }
+instance Difference<Int> {
+  fn difference left: Int -> right: Int -> Int = left - right
+}
+pub operator<A> infixr 4 <^>
+  left: A -> right: A -> A
+where Difference<A> =
+  difference left right
+";
+    let main_source = "\
+import { operator <^> } from \"./domain\"
+
+fn apply
+  step: (Int -> Int -> Int)
+  -> left: Int
+  -> right: Int
+  -> Int =
+  step left right
+
+pub fn run left: Int -> right: Int -> Int =
+  apply (<^>) left right
+";
+    let core = linked_core(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+    let identity = "fixture/game::domain::trait(Difference)<std/prelude::Int>";
+    let output_plan = plan([("fixture/game::domain", "./domain.js")]).with_instance_exports([(
+        ("fixture/game::domain".to_owned(), identity.to_owned()),
+        "__ssrg$instance$Difference$0".to_owned(),
+    )]);
+
+    let typescript = lower_core_module_to_typescript_ir_with_plan(core, &output_plan).unwrap();
+    let generated = emit_typescript_module(typescript, main_source);
+
+    assert!(generated.typescript.contains("__ssrg$operator$3c5e3e"));
+    assert!(generated
+        .typescript
+        .contains("__ssrg$instance$Difference$0"));
+    assert!(generated.typescript.contains(
+        "__ssrg$operator$3c5e3e(__ssrg$partial$0)(__ssrg$partial$1)(__ssrg$instance$Difference$0)"
+    ));
+    assert!(!generated.typescript.contains("<^>"));
+}
+
+#[test]
 fn freshens_an_imported_custom_operator_around_a_local_operator_abi_name() {
     let domain_source = "pub operator infixr 4 <^> left: Int -> right: Int -> Int = left - right\n";
     let main_source = "import { operator <^> } from \"./domain\"\n\nfn occupied unit: Unit -> Unit = ()\npub fn run left: Int -> right: Int -> Int = left <^> right\n";

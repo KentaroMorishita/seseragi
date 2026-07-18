@@ -3,7 +3,8 @@ use seseragi_syntax::{ByteSpan, SurfaceExpr};
 
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
 use crate::typed::functions::{
-    instantiated_application_indexed, instantiated_application_result_type,
+    instantiated_application, instantiated_application_indexed,
+    instantiated_application_result_type, TopLevelPureFunction,
 };
 use crate::typed::pure_issues::PureCallIssue;
 use crate::typed::semantic_types::{
@@ -20,6 +21,68 @@ pub(super) fn type_application(
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
     type_application_with(expression, context, type_surface_expression)
+}
+
+/// Types a named callable used without value arguments. Unconstrained
+/// callables remain ordinary variables, while constrained callables reuse the
+/// partial-application path so their dictionaries are captured after every
+/// remaining curried value parameter.
+pub(super) fn type_callable_value(
+    signature: &TopLevelPureFunction,
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    let mut application = instantiated_application(signature, context.expected(), 0, &[]);
+    for parameter in &mut application.parameters {
+        *parameter = context.hydrate_semantic_value(parameter.clone());
+    }
+    application.result = context.hydrate_semantic_value(application.result);
+
+    if signature.constraints.is_empty() {
+        let semantic_type = if signature.parameters.is_empty() {
+            application.result.key.clone()
+        } else {
+            SemanticTypeKey::Other
+        };
+        return SurfaceExpressionAnalysis::valid_with_semantic_type(
+            TypedExpr::Variable {
+                name: signature.symbol.clone(),
+                evidence: Vec::new(),
+                type_ref: instantiated_application_result_type(&application, 0),
+                origin: span,
+            },
+            semantic_type,
+        );
+    }
+
+    let mut analysis = type_known_application(
+        signature.clone(),
+        span,
+        &[],
+        span,
+        context,
+        type_surface_expression,
+    );
+    let unresolved_constraint = matches!(
+        &analysis.value,
+        TypedExpr::Call { evidence, .. } if evidence.is_empty()
+    ) && analysis.pure_call_issue.is_none();
+    if unresolved_constraint {
+        let constraint = application
+            .constraints
+            .into_iter()
+            .next()
+            .expect("constrained callable must retain its first constraint");
+        analysis.pure_call_issue = Some(PureCallIssue::MissingInstance {
+            callee: span,
+            constraint,
+        });
+        analysis.semantic_type = SemanticTypeKey::Invalid;
+        if let TypedExpr::Call { type_ref, .. } = &mut analysis.value {
+            *type_ref = TypedType::Hole;
+        }
+    }
+    analysis
 }
 
 pub(crate) fn type_application_with(
@@ -399,12 +462,17 @@ fn call_issue(
 fn flatten_application(expression: &SurfaceExpr) -> (&SurfaceExpr, Vec<&SurfaceExpr>) {
     let mut callee = expression;
     let mut arguments = Vec::new();
-    while let SurfaceExpr::Application {
-        function, argument, ..
-    } = callee
-    {
-        arguments.push(argument.as_ref());
-        callee = function.as_ref();
+    loop {
+        match callee {
+            SurfaceExpr::Application {
+                function, argument, ..
+            } => {
+                arguments.push(argument.as_ref());
+                callee = function.as_ref();
+            }
+            SurfaceExpr::Grouped { value, .. } => callee = value.as_ref(),
+            _ => break,
+        }
     }
     arguments.reverse();
     (callee, arguments)

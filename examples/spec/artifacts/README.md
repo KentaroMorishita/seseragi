@@ -84,6 +84,14 @@ consumerへ渡し、右結合の`10 <^> 3 <^> 2`をproviderの`__ssrg$operator$3
 consumerは同じencoded名をES module importし、raw `<^>`を生成TypeScriptへ残しません。closed TypeScript checkと
 project executionは`Imported custom infix: 9`を固定します。
 
+`schema-1/custom-operator-section/`はgeneric constrained `(<^>)`を通常のcurried function値としてhigher-order
+parameterへ渡し、同じ値を部分適用できることを全IRと生成TypeScriptへ固定します。期待関数型で`A = Int`を具体化し、
+選択した`Difference<Int>` dictionaryを残りのvalue parameterの後へ捕捉します。同名execution fixtureは両経路が7になる
+actual outputを確認します。imported operator sectionはproviderのencoded ES module bindingとevidenceをcallbackへ渡し、
+raw spellingをbackendへ残しません。`semantic-diagnostics-schema-1/custom-operator-section-unknown/`は未定義sectionを
+`SES-P0101 operator.unknown`、`custom-operator-section-unresolved-evidence/`は期待型なしの未具体化constraintを
+`SES-T0201 instance.missing`でlowering前に停止します。
+
 `schema-1/string-add/`は`Add<String, String, String>`のstandard evidenceをTypedHirとCoreIrへ保持し、
 複数の左結合`+`をString連結へlowerします。`execution-schema-1/string-add/`はcurried invitation functionと
 `$`、Consoleを組み合わせ、暗黙の数値変換やInt runtime helperなしでactual outputを固定します。

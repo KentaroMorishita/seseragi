@@ -128,3 +128,47 @@ fn captures_scoped_evidence_in_a_polymorphic_partial_function_value() {
         )
     ));
 }
+
+#[test]
+fn captures_concrete_evidence_for_a_generic_custom_operator_value() {
+    let typed = type_module(
+        "artifact/constrained-operator-value/main.ssrg",
+        "pub trait Combine<A> { fn combine left: A -> right: A -> A }\n\
+         instance Combine<Int> { fn combine left: Int -> right: Int -> Int = left + right }\n\
+         operator<A> infixr 4 <^> left: A -> right: A -> A\n\
+         where Combine<A> =\n\
+           combine left right\n\
+         fn applyPair step: (Int -> Int -> Int) -> left: Int -> right: Int -> Int =\n\
+           step left right\n\
+         pub fn total left: Int -> right: Int -> Int = applyPair (<^>) left right\n",
+    );
+    let body = typed.declarations.iter().find_map(|declaration| {
+        let TypedDecl::Fn { symbol, body, .. } = declaration else {
+            return None;
+        };
+        symbol.ends_with("::total").then_some(body)
+    });
+    let Some(TypedExpr::Call { arguments, .. }) = body else {
+        panic!("expected total function call");
+    };
+
+    assert!(matches!(
+        arguments.as_slice(),
+        [TypedExpr::Call {
+            arguments,
+            evidence,
+            deferred_evidence_parameters,
+            ..
+        }, _, _]
+            if arguments.is_empty()
+                && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Local { .. },
+                    ..
+                }])
+                && matches!(deferred_evidence_parameters.as_slice(), [
+                    crate::TypedType::Named { name: left, arguments: left_arguments },
+                    crate::TypedType::Named { name: right, arguments: right_arguments },
+                ] if left == "Int" && left_arguments.is_empty()
+                    && right == "Int" && right_arguments.is_empty())
+    ));
+}

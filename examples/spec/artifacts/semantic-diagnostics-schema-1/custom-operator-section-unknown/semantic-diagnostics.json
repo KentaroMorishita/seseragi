@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-P0101",
+      "severity": "Error",
+      "messageKey": "operator.unknown",
+      "primary": {
+        "start": 33,
+        "end": 36
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 0,
+            "end": 44
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

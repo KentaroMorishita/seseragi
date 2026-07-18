@@ -1,0 +1,35 @@
+// generic custom operator sectionは選択済みevidenceを捕捉するcurried function値です。
+pub trait Difference<A> {
+  fn difference left: A -> right: A -> A
+}
+
+instance Difference<Int> {
+  fn difference left: Int -> right: Int -> Int =
+    left - right
+}
+
+operator<A> infixr 4 <^>
+  left: A -> right: A -> A
+where Difference<A> =
+  difference left right
+
+fn applyPair
+  step: (Int -> Int -> Int)
+  -> left: Int
+  -> right: Int
+  -> Int =
+  step left right
+
+fn applyOne
+  step: (Int -> Int)
+  -> value: Int
+  -> Int =
+  step value
+
+fn subtractFromTen right: Int -> Int =
+  applyOne ((<^>) 10) right
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println `Custom operator section: higher-order=${applyPair (<^>) 10 3}, partial=${subtractFromTen 3}`

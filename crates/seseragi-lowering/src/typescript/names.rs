@@ -74,10 +74,11 @@ pub(super) fn safe_identifier(name: &str) -> String {
 }
 
 pub(super) fn local_name(symbol: &str) -> String {
-    symbol
-        .rsplit_once("::")
-        .map(|(_, name)| safe_identifier(name))
-        .unwrap_or_else(|| safe_identifier(symbol))
+    if let Some(name) = canonical_operator_name(symbol) {
+        return name;
+    }
+    let relative = symbol.rsplit_once("::").map_or(symbol, |(_, name)| name);
+    operator_name(relative).unwrap_or_else(|| safe_identifier(relative))
 }
 
 /// Produces a stable backend binding for a value owned by `module`.
@@ -88,21 +89,35 @@ pub(super) fn module_value_name(module: &str, symbol: &str) -> String {
         .strip_prefix(module)
         .and_then(|relative| relative.strip_prefix("::"));
     match relative {
-        Some(relative) if relative.starts_with("operator(") && relative.ends_with(')') => {
-            let spelling = &relative["operator(".len()..relative.len() - 1];
-            let encoded = spelling
-                .as_bytes()
-                .iter()
-                .map(|byte| format!("{byte:02x}"))
-                .collect::<String>();
-            format!("__ssrg$operator${encoded}")
+        Some(relative) => {
+            if let Some(name) = operator_name(relative) {
+                name
+            } else if relative.contains("::") {
+                safe_identifier(&format!("__ssrg$method${}", relative.replace("::", "$")))
+            } else {
+                safe_identifier(relative)
+            }
         }
-        Some(relative) if relative.contains("::") => {
-            safe_identifier(&format!("__ssrg$method${}", relative.replace("::", "$")))
-        }
-        Some(relative) => safe_identifier(relative),
         None => local_name(symbol),
     }
+}
+
+fn operator_name(relative: &str) -> Option<String> {
+    let spelling = relative.strip_prefix("operator(")?.strip_suffix(')')?;
+    let encoded = spelling
+        .as_bytes()
+        .iter()
+        .map(|byte| format!("{byte:02x}"))
+        .collect::<String>();
+    Some(format!("__ssrg$operator${encoded}"))
+}
+
+fn canonical_operator_name(symbol: &str) -> Option<String> {
+    if symbol.starts_with("operator(") {
+        return operator_name(symbol);
+    }
+    let (_, suffix) = symbol.rsplit_once("::operator(")?;
+    operator_name(&format!("operator({suffix}"))
 }
 
 #[cfg(test)]
@@ -133,6 +148,14 @@ mod tests {
     #[test]
     fn removes_the_module_qualification_at_the_backend_boundary() {
         assert_eq!(local_name("artifact/example::answer"), "answer");
+        assert_eq!(
+            local_name("artifact/example::operator(<^>)"),
+            "__ssrg$operator$3c5e3e"
+        );
+        assert_eq!(
+            local_name("artifact/example::operator(<::>)"),
+            "__ssrg$operator$3c3a3a3e"
+        );
     }
 
     #[test]

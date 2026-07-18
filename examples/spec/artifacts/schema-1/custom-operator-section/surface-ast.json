@@ -1,0 +1,805 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "trait",
+      "visibility": "public",
+      "name": "Difference",
+      "nameSpan": {
+        "start": 111,
+        "end": 121
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "difference",
+          "nameSpan": {
+            "start": 132,
+            "end": 142
+          },
+          "parameters": [
+            {
+              "name": "left",
+              "nameSpan": {
+                "start": 143,
+                "end": 147
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 149,
+                  "end": 150
+                }
+              }
+            },
+            {
+              "name": "right",
+              "nameSpan": {
+                "start": 154,
+                "end": 159
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 161,
+                  "end": 162
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 166,
+              "end": 167
+            }
+          },
+          "span": {
+            "start": 129,
+            "end": 167
+          }
+        }
+      ],
+      "span": {
+        "start": 101,
+        "end": 169
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Difference",
+      "traitNameSpan": {
+        "start": 180,
+        "end": 190
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Int",
+          "span": {
+            "start": 191,
+            "end": 194
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "difference",
+          "nameSpan": {
+            "start": 203,
+            "end": 213
+          },
+          "parameters": [
+            {
+              "name": "left",
+              "nameSpan": {
+                "start": 214,
+                "end": 218
+              },
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 220,
+                  "end": 223
+                }
+              }
+            },
+            {
+              "name": "right",
+              "nameSpan": {
+                "start": 227,
+                "end": 232
+              },
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 234,
+                  "end": 237
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 241,
+              "end": 244
+            }
+          },
+          "body": {
+            "kind": "binary",
+            "operator": "-",
+            "operatorSpan": {
+              "start": 256,
+              "end": 257
+            },
+            "left": {
+              "kind": "name",
+              "name": "left",
+              "span": {
+                "start": 251,
+                "end": 255
+              }
+            },
+            "right": {
+              "kind": "name",
+              "name": "right",
+              "span": {
+                "start": 258,
+                "end": 263
+              }
+            },
+            "span": {
+              "start": 251,
+              "end": 263
+            }
+          },
+          "span": {
+            "start": 200,
+            "end": 263
+          }
+        }
+      ],
+      "span": {
+        "start": 171,
+        "end": 265
+      }
+    },
+    {
+      "kind": "operator",
+      "visibility": "private",
+      "typeParameters": [
+        "A"
+      ],
+      "fixity": "infixr",
+      "precedence": 4,
+      "spelling": "<^>",
+      "spellingSpan": {
+        "start": 288,
+        "end": 291
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 294,
+            "end": 298
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 300,
+              "end": 301
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 305,
+            "end": 310
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 312,
+              "end": 313
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "A",
+        "span": {
+          "start": 317,
+          "end": 318
+        }
+      },
+      "constraints": [
+        {
+          "name": "Difference",
+          "nameSpan": {
+            "start": 325,
+            "end": 335
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 336,
+                "end": 337
+              }
+            }
+          ],
+          "span": {
+            "start": 325,
+            "end": 338
+          }
+        }
+      ],
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "difference",
+            "span": {
+              "start": 343,
+              "end": 353
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "left",
+            "span": {
+              "start": 354,
+              "end": 358
+            }
+          },
+          "span": {
+            "start": 343,
+            "end": 358
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 359,
+            "end": 364
+          }
+        },
+        "span": {
+          "start": 343,
+          "end": 364
+        }
+      },
+      "span": {
+        "start": 267,
+        "end": 364
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "applyPair",
+      "nameSpan": {
+        "start": 369,
+        "end": 378
+      },
+      "parameters": [
+        {
+          "name": "step",
+          "nameSpan": {
+            "start": 381,
+            "end": 385
+          },
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 388,
+                "end": 391
+              }
+            },
+            "result": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 395,
+                  "end": 398
+                }
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 402,
+                  "end": 405
+                }
+              },
+              "span": {
+                "start": 395,
+                "end": 405
+              }
+            },
+            "span": {
+              "start": 388,
+              "end": 405
+            }
+          }
+        },
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 412,
+            "end": 416
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 418,
+              "end": 421
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 427,
+            "end": 432
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 434,
+              "end": 437
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 443,
+          "end": 446
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "step",
+            "span": {
+              "start": 451,
+              "end": 455
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "left",
+            "span": {
+              "start": 456,
+              "end": 460
+            }
+          },
+          "span": {
+            "start": 451,
+            "end": 460
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 461,
+            "end": 466
+          }
+        },
+        "span": {
+          "start": 451,
+          "end": 466
+        }
+      },
+      "span": {
+        "start": 366,
+        "end": 466
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "applyOne",
+      "nameSpan": {
+        "start": 471,
+        "end": 479
+      },
+      "parameters": [
+        {
+          "name": "step",
+          "nameSpan": {
+            "start": 482,
+            "end": 486
+          },
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 489,
+                "end": 492
+              }
+            },
+            "result": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 496,
+                "end": 499
+              }
+            },
+            "span": {
+              "start": 489,
+              "end": 499
+            }
+          }
+        },
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 506,
+            "end": 511
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 513,
+              "end": 516
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 522,
+          "end": 525
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "step",
+          "span": {
+            "start": 530,
+            "end": 534
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 535,
+            "end": 540
+          }
+        },
+        "span": {
+          "start": 530,
+          "end": 540
+        }
+      },
+      "span": {
+        "start": 468,
+        "end": 540
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "subtractFromTen",
+      "nameSpan": {
+        "start": 545,
+        "end": 560
+      },
+      "parameters": [
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 561,
+            "end": 566
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 568,
+              "end": 571
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 575,
+          "end": 578
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "applyOne",
+            "span": {
+              "start": 583,
+              "end": 591
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "name",
+                  "name": "<^>",
+                  "span": {
+                    "start": 594,
+                    "end": 597
+                  }
+                },
+                "span": {
+                  "start": 593,
+                  "end": 598
+                }
+              },
+              "argument": {
+                "kind": "integer",
+                "raw": "10",
+                "span": {
+                  "start": 599,
+                  "end": 601
+                }
+              },
+              "span": {
+                "start": 593,
+                "end": 601
+              }
+            },
+            "span": {
+              "start": 592,
+              "end": 602
+            }
+          },
+          "span": {
+            "start": 583,
+            "end": 602
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 603,
+            "end": 608
+          }
+        },
+        "span": {
+          "start": 583,
+          "end": 608
+        }
+      },
+      "span": {
+        "start": 542,
+        "end": 608
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 624,
+        "end": 628
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 632,
+          "end": 636
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 642,
+            "end": 649
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 656,
+          "end": 668
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 673,
+            "end": 680
+          }
+        },
+        "argument": {
+          "kind": "template",
+          "parts": [
+            {
+              "kind": "text",
+              "value": "Custom operator section: higher-order=",
+              "span": {
+                "start": 682,
+                "end": 720
+              }
+            },
+            {
+              "kind": "interpolation",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "applyPair",
+                      "span": {
+                        "start": 722,
+                        "end": 731
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "name",
+                        "name": "<^>",
+                        "span": {
+                          "start": 733,
+                          "end": 736
+                        }
+                      },
+                      "span": {
+                        "start": 732,
+                        "end": 737
+                      }
+                    },
+                    "span": {
+                      "start": 722,
+                      "end": 737
+                    }
+                  },
+                  "argument": {
+                    "kind": "integer",
+                    "raw": "10",
+                    "span": {
+                      "start": 738,
+                      "end": 740
+                    }
+                  },
+                  "span": {
+                    "start": 722,
+                    "end": 740
+                  }
+                },
+                "argument": {
+                  "kind": "integer",
+                  "raw": "3",
+                  "span": {
+                    "start": 741,
+                    "end": 742
+                  }
+                },
+                "span": {
+                  "start": 722,
+                  "end": 742
+                }
+              },
+              "span": {
+                "start": 720,
+                "end": 743
+              }
+            },
+            {
+              "kind": "text",
+              "value": ", partial=",
+              "span": {
+                "start": 743,
+                "end": 753
+              }
+            },
+            {
+              "kind": "interpolation",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "subtractFromTen",
+                  "span": {
+                    "start": 755,
+                    "end": 770
+                  }
+                },
+                "argument": {
+                  "kind": "integer",
+                  "raw": "3",
+                  "span": {
+                    "start": 771,
+                    "end": 772
+                  }
+                },
+                "span": {
+                  "start": 755,
+                  "end": 772
+                }
+              },
+              "span": {
+                "start": 753,
+                "end": 773
+              }
+            }
+          ],
+          "span": {
+            "start": 681,
+            "end": 774
+          }
+        },
+        "span": {
+          "start": 673,
+          "end": 774
+        }
+      },
+      "span": {
+        "start": 610,
+        "end": 774
+      }
+    }
+  ]
+}

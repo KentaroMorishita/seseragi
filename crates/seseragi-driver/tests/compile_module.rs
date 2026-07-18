@@ -136,6 +136,31 @@ fn passes_an_arithmetic_operator_as_a_function_value() {
 }
 
 #[test]
+fn passes_a_custom_operator_as_a_curried_function_value() {
+    const SOURCE: &str =
+        include_str!("../../../examples/spec/artifacts/schema-1/custom-operator-section/main.ssrg");
+    const EXPECTED_TYPESCRIPT: &str =
+        include_str!("../../../examples/spec/artifacts/schema-1/custom-operator-section/main.ts");
+    let compiled = compile_module(input(
+        "artifact/custom-operator-section/main.ssrg",
+        "artifact/custom-operator-section",
+        SOURCE,
+    ))
+    .expect("custom operator section should compile");
+
+    assert!(compiled.diagnostics.diagnostics.is_empty());
+    assert!(compiled.generated.typescript.contains(
+        "__ssrg$operator$3c5e3e(__ssrg$partial$0)(__ssrg$partial$1)(__ssrg$instance$Difference$0)"
+    ));
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("__ssrg$operator$3c5e3e(10n)(__ssrg$partial$0)(__ssrg$instance$Difference$0)"));
+    assert!(!compiled.generated.typescript.contains("<^>"));
+    assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
+}
+
+#[test]
 fn preserves_constraint_arguments_through_owned_ir_stages() {
     const SOURCE: &str =
         include_str!("../../../examples/spec/artifacts/schema-1/constraint-arguments/main.ssrg");
