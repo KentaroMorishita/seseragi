@@ -1,4 +1,6 @@
 import { describe, expect, test } from "bun:test"
+import { toggleBlockComment, toggleComment } from "@codemirror/commands"
+import { EditorState, type StateCommand } from "@codemirror/state"
 import { classHighlighter, highlightTree } from "@lezer/highlight"
 import {
   classifyIdentifier,
@@ -15,6 +17,26 @@ function highlightedTokens(source: string) {
     }
   )
   return tokens
+}
+
+function runCommand(
+  source: string,
+  command: StateCommand,
+  selection = { anchor: 0, head: 0 }
+): string {
+  let state = EditorState.create({
+    doc: source,
+    selection,
+    extensions: [seseragiLanguage],
+  })
+  const handled = command({
+    state,
+    dispatch: (transaction) => {
+      state = transaction.state
+    },
+  })
+  expect(handled).toBe(true)
+  return state.doc.toString()
 }
 
 describe("Seseragi syntax classification", () => {
@@ -83,5 +105,37 @@ describe("Seseragi syntax classification", () => {
         { text: "render", classes: "tok-variableName" },
         { text: "name", classes: "tok-variableName" },
       ])
+  })
+
+  test("toggles line comments through the CodeMirror comment command", () => {
+    const source = "let answer = 42\nprintln answer"
+    const commented = runCommand(source, toggleComment, {
+      anchor: 0,
+      head: source.length,
+    })
+
+    expect(commented).toBe("// let answer = 42\n// println answer")
+    expect(
+      runCommand(commented, toggleComment, {
+        anchor: 0,
+        head: commented.length,
+      })
+    ).toBe(source)
+  })
+
+  test("toggles block comments through the CodeMirror comment command", () => {
+    const source = "value + 1"
+    const commented = runCommand(source, toggleBlockComment, {
+      anchor: 0,
+      head: source.length,
+    })
+
+    expect(commented).toBe("/* value + 1 */")
+    expect(
+      runCommand(commented, toggleBlockComment, {
+        anchor: 0,
+        head: commented.length,
+      })
+    ).toBe(source)
   })
 })

@@ -39,6 +39,10 @@ export function createEditor(
         highlightActiveLineGutter(),
         lintGutter(),
         EditorView.lineWrapping,
+        EditorView.contentAttributes.of({
+          "aria-label": "Seseragi source editor",
+          "aria-keyshortcuts": "Control+/ Meta+/",
+        }),
         keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
         seseragiLanguage,
         ...seseragiEditorTheme,

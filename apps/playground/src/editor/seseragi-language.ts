@@ -93,6 +93,12 @@ function scanTemplateText(stream: StringStream, state: State) {
 }
 
 const parser: StreamParser<State> = {
+  languageData: {
+    commentTokens: {
+      line: "//",
+      block: { open: "/*", close: "*/" },
+    },
+  },
   tokenTable: {
     keyword: tags.keyword,
     bool: tags.bool,
