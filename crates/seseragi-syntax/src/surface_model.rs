@@ -234,10 +234,13 @@ pub enum SurfaceDecl {
         fixity: String,
         precedence: u32,
         spelling: String,
+        spelling_span: ByteSpan,
         parameters: Vec<SurfaceParameter>,
         return_type: TypeRef,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         constraints: Vec<SurfaceConstraint>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        body: Option<SurfaceExpr>,
         span: ByteSpan,
     },
     Impl {
@@ -467,6 +470,11 @@ pub enum SurfaceExpr {
         right: Box<SurfaceExpr>,
         span: ByteSpan,
     },
+    InfixChain {
+        first: Box<SurfaceExpr>,
+        steps: Vec<SurfaceInfixStep>,
+        span: ByteSpan,
+    },
     If {
         condition: Box<SurfaceExpr>,
         then_branch: Box<SurfaceExpr>,
@@ -513,6 +521,7 @@ impl SurfaceExpr {
             | Self::ArrayComprehension { span, .. }
             | Self::ListComprehension { span, .. }
             | Self::Binary { span, .. }
+            | Self::InfixChain { span, .. }
             | Self::If { span, .. }
             | Self::Match { span, .. }
             | Self::Do { span, .. }
@@ -520,6 +529,14 @@ impl SurfaceExpr {
             | Self::Error { span } => *span,
         }
     }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SurfaceInfixStep {
+    pub operator: String,
+    pub operator_span: ByteSpan,
+    pub operand: SurfaceExpr,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

@@ -112,3 +112,59 @@ fn finish_compilation(
         generated,
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn stops_unknown_custom_operators_before_lowering() {
+        let source = "fn invalid value: Int -> Int = value <^> 1\n";
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/custom-operator-unknown",
+            source,
+        ))
+        .expect_err("unknown custom operator must reject compilation");
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-P0101");
+        assert_eq!(diagnostics.diagnostics[0].message_key, "operator.unknown");
+    }
+
+    #[test]
+    fn lowers_local_custom_infix_calls_without_raw_typescript_operators() {
+        let source = "operator infixr 4 <.> left: Int -> right: Int -> Int = left - right\n\
+                      pub fn calculate unit: Unit -> Int = 10 <.> 3 <.> 2\n";
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/custom-operator",
+            source,
+        ))
+        .expect("valid custom operator should compile");
+
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("__ssrg$operator$3c2e3e"));
+        assert!(!compiled.generated.typescript.contains(" <.> "));
+    }
+
+    #[test]
+    fn stops_non_binary_custom_operator_declarations_before_lowering() {
+        let source = "operator infixl 4 <^> value: Int -> Int = value\n";
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/custom-operator-invalid-arity",
+            source,
+        ))
+        .expect_err("non-binary custom operator must reject compilation");
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "operator.invalid-arity"
+        );
+    }
+}

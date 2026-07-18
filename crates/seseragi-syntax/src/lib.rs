@@ -23,7 +23,7 @@ pub use interface::{
     InterfaceInstance, InterfaceMethod, InterfaceOperator, InterfaceRecordField, InterfaceScheme,
     InterfaceType, ModuleHeader, ModuleHeaderName, ModuleInterface, UnlinkedModuleInterface,
 };
-pub use lexer::lex;
+pub use lexer::{is_custom_operator_candidate, lex};
 pub use source::{LineColumn, LineIndex, SourceSnapshot, Span};
 pub use standard_operator::{
     declarable_standard_operator, impl_operator_instances, standard_operator, StandardOperator,
@@ -32,8 +32,8 @@ pub use standard_operator::{
 pub use surface::{
     parse_surface_ast, ByteSpan, SurfaceComprehensionClause, SurfaceConstraint, SurfaceDecl,
     SurfaceDoItem, SurfaceExpr, SurfaceImplMember, SurfaceImport, SurfaceImportItem,
-    SurfaceLambdaParameter, SurfaceMatchArm, SurfaceMethod, SurfaceModule, SurfaceParameter,
-    SurfacePattern, SurfaceRecordItem, SurfaceRecordPatternField, SurfaceRequirement,
-    SurfaceTemplatePart, SurfaceVariant, TypeParameter, TypeRef, Visibility,
+    SurfaceInfixStep, SurfaceLambdaParameter, SurfaceMatchArm, SurfaceMethod, SurfaceModule,
+    SurfaceParameter, SurfacePattern, SurfaceRecordItem, SurfaceRecordPatternField,
+    SurfaceRequirement, SurfaceTemplatePart, SurfaceVariant, TypeParameter, TypeRef, Visibility,
 };
 pub use token::{Token, TokenKind, TokenStream};

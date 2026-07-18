@@ -80,6 +80,12 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
             collect_expression_errors(left, errors);
             collect_expression_errors(right, errors);
         }
+        SurfaceExpr::InfixChain { first, steps, .. } => {
+            collect_expression_errors(first, errors);
+            for step in steps {
+                collect_expression_errors(&step.operand, errors);
+            }
+        }
         SurfaceExpr::If {
             condition,
             then_branch,

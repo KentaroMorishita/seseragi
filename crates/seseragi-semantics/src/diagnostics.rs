@@ -111,6 +111,28 @@ fn collect_decl_diagnostics(
         return;
     }
 
+    if let SurfaceDecl::Operator {
+        constraints,
+        parameters,
+        return_type,
+        body,
+        span,
+        ..
+    } = declaration
+    {
+        let scoped_evidence = crate::typed::scoped_call_evidence(constraints, resolution);
+        collect_pure_body_diagnostics(
+            body.as_ref(),
+            parameters,
+            return_type,
+            *span,
+            resolution,
+            &scoped_evidence,
+            diagnostics,
+        );
+        return;
+    }
+
     if let SurfaceDecl::Instance {
         trait_name_span,
         arguments,

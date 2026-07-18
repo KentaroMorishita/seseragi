@@ -15,6 +15,7 @@ fn parses_operator_type_parameters() {
             fixity: "infixr".to_owned(),
             precedence: 5,
             spelling: "<+>".to_owned(),
+            spelling_span: ByteSpan { start: 25, end: 28 },
             parameters: vec![
                 SurfaceParameter {
                     name: "left".to_owned(),
@@ -41,9 +42,44 @@ fn parses_operator_type_parameters() {
                 span: ByteSpan { start: 54, end: 55 },
             },
             constraints: Vec::new(),
+            body: Some(SurfaceExpr::Name {
+                name: "left".to_owned(),
+                span: ByteSpan { start: 60, end: 64 },
+            }),
             span: ByteSpan { start: 0, end: 64 },
         }
     );
+}
+
+#[test]
+fn retains_operator_spelling_span_and_body_expression() {
+    let source = "operator infixl 4 <+> left: Int -> right: Int -> Int = left + right\n";
+    let module = parse_surface_ast("main.ssrg", source);
+
+    assert!(matches!(
+        &module.declarations[0],
+        SurfaceDecl::Operator {
+            spelling,
+            spelling_span: ByteSpan { start: 18, end: 21 },
+            body: Some(SurfaceExpr::Binary { operator, .. }),
+            ..
+        } if spelling == "<+>" && operator == "+"
+    ));
+}
+
+#[test]
+fn rejoins_dot_inside_a_custom_operator_spelling() {
+    let source = "operator infixl 4 <.> left: Int -> right: Int -> Int = left\n";
+    let module = parse_surface_ast("main.ssrg", source);
+
+    assert!(matches!(
+        &module.declarations[0],
+        SurfaceDecl::Operator {
+            spelling,
+            spelling_span: ByteSpan { start: 18, end: 21 },
+            ..
+        } if spelling == "<.>"
+    ));
 }
 
 #[test]

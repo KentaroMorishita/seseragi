@@ -71,6 +71,14 @@ pure Unit entryをEffect runnerへ渡さず直接呼び、生成値のJSONをrun
 `execution-schema-1/pipeline-application/`は同じsourceをConsole hostで実行し、checked Int helperを経た
 `Pipeline answer: 42`とactual operation traceを固定します。
 
+`schema-1/custom-infix-operator/`は未知operatorを含む式をSurfaceAstのflat chainへ保持し、全local headerを
+読んだ後に`infixl` / `infixr`とstandard precedenceから再結合します。custom nodeやraw JavaScript operatorを増やさず、
+通常のcurried function callとしてTypedHir、CoreIr、TypeScriptIrへ運びます。同名execution fixtureは宣言位置より前にある
+右結合式の9と左結合式の5をactual outputで固定します。`semantic-diagnostics-schema-1/custom-operator-unknown`と
+`custom-operator-fixity-conflict`は、未解決spellingと非結合chainをそれぞれ`SES-P0101` / `SES-P0102`で
+backend前に停止します。`custom-operator-invalid-declaration`は1文字、generic delimiterと衝突する
+angle-only spelling、二項でない宣言を`SES-P0001`で拒否します。
+
 `schema-1/string-add/`は`Add<String, String, String>`のstandard evidenceをTypedHirとCoreIrへ保持し、
 複数の左結合`+`をString連結へlowerします。`execution-schema-1/string-add/`はcurried invitation functionと
 `$`、Consoleを組み合わせ、暗黙の数値変換やInt runtime helperなしでactual outputを固定します。

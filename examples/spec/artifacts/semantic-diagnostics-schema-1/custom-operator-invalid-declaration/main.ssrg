@@ -1,0 +1,11 @@
+operator infixl 4 ^
+  left: Int -> right: Int -> Int =
+  left
+
+operator infixl 4 <<
+  left: Int -> right: Int -> Int =
+  left
+
+operator infixl 4 <.>
+  value: Int -> Int =
+  value

@@ -474,6 +474,7 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
         | SurfaceExpr::Member { .. }
         | SurfaceExpr::Application { .. }
         | SurfaceExpr::Binary { .. }
+        | SurfaceExpr::InfixChain { .. }
         | SurfaceExpr::Do { .. }
         | SurfaceExpr::Error { .. } => None,
     }
@@ -557,6 +558,20 @@ pub(super) fn type_surface_expression(
             right,
             span,
         } => binary::type_binary(operator, *operator_span, left, right, *span, context),
+        SurfaceExpr::InfixChain { span, .. } => {
+            // The resolver normalizes every valid chain. Retaining a typed
+            // recovery hole here prevents malformed source from reaching a
+            // backend as a raw JavaScript operator.
+            SurfaceExpressionAnalysis::valid_with_semantic_type(
+                TypedExpr::Variable {
+                    name: String::new(),
+                    evidence: Vec::new(),
+                    type_ref: TypedType::Hole,
+                    origin: *span,
+                },
+                SemanticTypeKey::Invalid,
+            )
+        }
         SurfaceExpr::If {
             condition,
             then_branch,

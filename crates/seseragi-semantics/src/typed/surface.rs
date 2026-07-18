@@ -223,6 +223,64 @@ pub(crate) fn typed_decl_from_surface(
                 body,
             })
         }
+        SurfaceDecl::Operator {
+            visibility,
+            spelling,
+            spelling_span,
+            type_parameters,
+            parameters,
+            return_type,
+            constraints,
+            body,
+            span,
+            ..
+        } => {
+            let typed_parameters = typed_parameters_from_surface(&parameters);
+            let scoped_evidence = crate::typed::scoped_call_evidence(&constraints, resolution);
+            let context = PureExpressionContext::new(&typed_parameters, resolution)
+                .with_evidence_parameters(scoped_evidence)
+                .with_expected(Some(resolution.semantic_value_from_type_ref(&return_type)));
+            let body = body
+                .as_ref()
+                .map(|body| analyze_resolved_expression(body, &context).value)
+                .unwrap_or_else(|| hole_expression(span));
+            let type_constructor_parameters = type_parameters
+                .iter()
+                .filter(|parameter| parameter.is_constructor())
+                .cloned()
+                .collect();
+            Some(TypedDecl::Fn {
+                symbol: declaration_symbol(
+                    resolution,
+                    spelling_span,
+                    SymbolKind::Operator,
+                    &spelling,
+                ),
+                visibility,
+                origin: span,
+                type_constructor_parameters,
+                scheme: TypedScheme {
+                    type_parameters: type_parameters
+                        .into_iter()
+                        .map(|parameter| parameter.name)
+                        .collect(),
+                    constraints: constraints
+                        .into_iter()
+                        .map(|constraint| crate::TypedConstraint {
+                            name: constraint.name,
+                            arguments: constraint
+                                .arguments
+                                .iter()
+                                .map(typed_type_from_type_ref)
+                                .collect(),
+                        })
+                        .collect(),
+                    type_ref: typed_type_from_type_ref(&return_type),
+                },
+                parameters: typed_parameters,
+                body,
+            })
+        }
         SurfaceDecl::Type {
             visibility,
             opaque,
@@ -304,10 +362,9 @@ pub(crate) fn typed_decl_from_surface(
                 .collect(),
             origin: span,
         }),
-        SurfaceDecl::Alias { .. }
-        | SurfaceDecl::Trait { .. }
-        | SurfaceDecl::Operator { .. }
-        | SurfaceDecl::Instance { .. } => None,
+        SurfaceDecl::Alias { .. } | SurfaceDecl::Trait { .. } | SurfaceDecl::Instance { .. } => {
+            None
+        }
         SurfaceDecl::Impl { .. } => unreachable!("impl declarations expand before this point"),
     }
 }

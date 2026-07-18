@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "operator.invalid-spelling",
+      "primary": {
+        "start": 18,
+        "end": 19
+      },
+      "related": [
+        {
+          "message": "operator declaration",
+          "primary": {
+            "start": 0,
+            "end": 61
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d2",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "operator.invalid-spelling",
+      "primary": {
+        "start": 81,
+        "end": 83
+      },
+      "related": [
+        {
+          "message": "operator declaration",
+          "primary": {
+            "start": 63,
+            "end": 125
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d3",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "messageKey": "operator.invalid-arity",
+      "primary": {
+        "start": 145,
+        "end": 148
+      },
+      "related": [
+        {
+          "message": "operator declaration",
+          "primary": {
+            "start": 127,
+            "end": 178
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

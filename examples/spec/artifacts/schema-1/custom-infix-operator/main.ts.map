@@ -1,0 +1,30 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/custom-infix-operator"
+  ],
+  "sourcesContent": [
+    "// custom operatorのfixityは宣言位置より前の式にも適用されます。\nfn rightAssociated unit: Unit -> Int = 10 <^> 3 <^> 2\nfn leftAssociated unit: Unit -> Int = 10 <~> 3 <~> 2\n\noperator infixr 4 <^>\n  left: Int -> right: Int -> Int =\n  left - right\n\noperator infixl 4 <~>\n  left: Int -> right: Int -> Int =\n  left - right\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println `Custom infix: right=${rightAssociated ()}, left=${leftAssociated ()}`\n"
+  ],
+  "names": [
+    "rightAssociated",
+    "__ssrg$operator$3c5e3e",
+    "__ssrg$operator$3c5e3e",
+    "leftAssociated",
+    "__ssrg$operator$3c7e3e",
+    "__ssrg$operator$3c7e3e",
+    "__ssrg$operator$3c5e3e",
+    "subtract",
+    "__ssrg$operator$3c7e3e",
+    "subtract",
+    "main",
+    "println",
+    "intShow",
+    "rightAssociated",
+    "intShow",
+    "leftAssociated"
+  ],
+  "mappings": ";;;;AACAA;AACAG;AAEAG;AAIAE;AAIAE"
+}

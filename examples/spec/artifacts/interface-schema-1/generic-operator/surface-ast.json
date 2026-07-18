@@ -11,6 +11,10 @@
       "fixity": "infixr",
       "precedence": 5,
       "spelling": "<+>",
+      "spellingSpan": {
+        "start": 25,
+        "end": 28
+      },
       "parameters": [
         {
           "name": "left",
@@ -74,6 +78,14 @@
           }
         }
       ],
+      "body": {
+        "kind": "name",
+        "name": "left",
+        "span": {
+          "start": 79,
+          "end": 83
+        }
+      },
       "span": {
         "start": 0,
         "end": 83

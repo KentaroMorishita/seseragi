@@ -48,6 +48,10 @@
       "fixity": "infixl",
       "precedence": 4,
       "spelling": "<+>",
+      "spellingSpan": {
+        "start": 81,
+        "end": 84
+      },
       "parameters": [
         {
           "name": "left",
@@ -86,6 +90,29 @@
         "span": {
           "start": 118,
           "end": 123
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "identity",
+          "span": {
+            "start": 128,
+            "end": 136
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 137,
+            "end": 141
+          }
+        },
+        "span": {
+          "start": 128,
+          "end": 141
         }
       },
       "span": {
@@ -236,13 +263,13 @@
     {
       "id": 2,
       "spelling": "<+>",
-      "canonical": "artifact/rich::<+>",
+      "canonical": "artifact/rich::operator(<+>)",
       "namespace": "operator",
       "kind": "operator",
       "scope": 0,
       "origin": {
-        "start": 59,
-        "end": 141
+        "start": 81,
+        "end": 84
       }
     },
     {
@@ -362,6 +389,24 @@
       "origin": {
         "start": 118,
         "end": 123
+      }
+    },
+    {
+      "spelling": "identity",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 128,
+        "end": 136
+      }
+    },
+    {
+      "spelling": "left",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 137,
+        "end": 141
       }
     },
     {

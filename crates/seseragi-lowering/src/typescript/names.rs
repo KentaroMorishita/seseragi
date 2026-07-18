@@ -88,6 +88,15 @@ pub(super) fn module_value_name(module: &str, symbol: &str) -> String {
         .strip_prefix(module)
         .and_then(|relative| relative.strip_prefix("::"));
     match relative {
+        Some(relative) if relative.starts_with("operator(") && relative.ends_with(')') => {
+            let spelling = &relative["operator(".len()..relative.len() - 1];
+            let encoded = spelling
+                .as_bytes()
+                .iter()
+                .map(|byte| format!("{byte:02x}"))
+                .collect::<String>();
+            format!("__ssrg$operator${encoded}")
+        }
         Some(relative) if relative.contains("::") => {
             safe_identifier(&format!("__ssrg$method${}", relative.replace("::", "$")))
         }
@@ -135,6 +144,18 @@ mod tests {
         assert_eq!(
             module_value_name("artifact/example", "artifact/example::answer"),
             "answer"
+        );
+    }
+
+    #[test]
+    fn gives_custom_operators_distinct_stable_backend_names() {
+        assert_eq!(
+            module_value_name("artifact/example", "artifact/example::operator(<+>)"),
+            "__ssrg$operator$3c2b3e"
+        );
+        assert_eq!(
+            module_value_name("artifact/example", "artifact/example::operator(<*>)"),
+            "__ssrg$operator$3c2a3e"
         );
     }
 }

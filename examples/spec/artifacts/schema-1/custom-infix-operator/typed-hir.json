@@ -1,0 +1,657 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/custom-infix-operator",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/custom-infix-operator::rightAssociated",
+      "visibility": "private",
+      "origin": {
+        "start": 85,
+        "end": 138
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 104,
+            "end": 108
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/custom-infix-operator::operator(<^>)",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "10",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 124,
+              "end": 126
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/custom-infix-operator::operator(<^>)",
+            "arguments": [
+              {
+                "kind": "integer",
+                "value": "3",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 131,
+                  "end": 132
+                }
+              },
+              {
+                "kind": "integer",
+                "value": "2",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 137,
+                  "end": 138
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 131,
+              "end": 138
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 124,
+          "end": 138
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/custom-infix-operator::leftAssociated",
+      "visibility": "private",
+      "origin": {
+        "start": 139,
+        "end": 191
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 157,
+            "end": 161
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/custom-infix-operator::operator(<~>)",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/custom-infix-operator::operator(<~>)",
+            "arguments": [
+              {
+                "kind": "integer",
+                "value": "10",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 177,
+                  "end": 179
+                }
+              },
+              {
+                "kind": "integer",
+                "value": "3",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 184,
+                  "end": 185
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 177,
+              "end": 185
+            }
+          },
+          {
+            "kind": "integer",
+            "value": "2",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 190,
+              "end": 191
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 177,
+          "end": 191
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/custom-infix-operator::operator(<^>)",
+      "visibility": "private",
+      "origin": {
+        "start": 193,
+        "end": 264
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 217,
+            "end": 221
+          }
+        },
+        {
+          "kind": "named",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 230,
+            "end": 235
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "-",
+        "left": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 252,
+            "end": 256
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 259,
+            "end": 264
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Sub",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Sub"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 252,
+          "end": 264
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/custom-infix-operator::operator(<~>)",
+      "visibility": "private",
+      "origin": {
+        "start": 266,
+        "end": 337
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 290,
+            "end": 294
+          }
+        },
+        {
+          "kind": "named",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 303,
+            "end": 308
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "-",
+        "left": {
+          "kind": "variable",
+          "name": "left",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 325,
+            "end": 329
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "right",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 332,
+            "end": 337
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Sub",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Sub"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 325,
+          "end": 337
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/custom-infix-operator::main",
+      "visibility": "public",
+      "origin": {
+        "start": 339,
+        "end": 480
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "text",
+                "value": "Custom infix: right=",
+                "origin": {
+                  "start": 411,
+                  "end": 431
+                }
+              },
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "call",
+                  "callee": "artifact/custom-infix-operator::rightAssociated",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 449,
+                        "end": 451
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 433,
+                    "end": 451
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                },
+                "traitIdentity": "std/prelude::Show",
+                "origin": {
+                  "start": 431,
+                  "end": 452
+                }
+              },
+              {
+                "kind": "text",
+                "value": ", left=",
+                "origin": {
+                  "start": 452,
+                  "end": 459
+                }
+              },
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "call",
+                  "callee": "artifact/custom-infix-operator::leftAssociated",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 476,
+                        "end": 478
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 461,
+                    "end": 478
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                },
+                "traitIdentity": "std/prelude::Show",
+                "origin": {
+                  "start": 459,
+                  "end": 479
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 410,
+              "end": 480
+            }
+          }
+        ],
+        "origin": {
+          "start": 402,
+          "end": 480
+        }
+      }
+    }
+  ]
+}

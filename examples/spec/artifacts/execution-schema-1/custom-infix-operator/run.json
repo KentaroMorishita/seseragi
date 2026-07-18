@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "case": "custom-infix-operator",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/custom-infix-operator",
+    "export": "main",
+    "compiledModule": "../../schema-1/custom-infix-operator/generated-module.json",
+    "typedInterface": "../../schema-1/custom-infix-operator/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.unit",
+      "core.int64",
+      "core.int64.subtract",
+      "effect.console.println",
+      "core.string",
+      "core.int64.show"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Custom infix: right=9, left=5"],
+        "stdout": "Custom infix: right=9, left=5\n"
+      }
+    ]
+  }
+}

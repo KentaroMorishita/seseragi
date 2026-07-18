@@ -1,0 +1,16 @@
+// custom operatorのfixityは宣言位置より前の式にも適用されます。
+fn rightAssociated unit: Unit -> Int = 10 <^> 3 <^> 2
+fn leftAssociated unit: Unit -> Int = 10 <~> 3 <~> 2
+
+operator infixr 4 <^>
+  left: Int -> right: Int -> Int =
+  left - right
+
+operator infixl 4 <~>
+  left: Int -> right: Int -> Int =
+  left - right
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println `Custom infix: right=${rightAssociated ()}, left=${leftAssociated ()}`

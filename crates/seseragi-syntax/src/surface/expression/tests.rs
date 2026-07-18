@@ -735,6 +735,56 @@ fn desugars_functor_applicative_and_monad_operators_to_trait_methods() {
 }
 
 #[test]
+fn retains_custom_infix_sequences_as_one_flat_chain() {
+    let source = "fn combine left: Int -> middle: Int -> right: Int -> tail: Int -> Int = left + middle <+> right * 2 <**> tail\n";
+    let body = first_body(source);
+    let SurfaceExpr::InfixChain { first, steps, span } = body else {
+        panic!("expected unresolved infix chain");
+    };
+
+    assert!(matches!(
+        first.as_ref(),
+        SurfaceExpr::Name { name, .. } if name == "left"
+    ));
+    assert_eq!(
+        steps
+            .iter()
+            .map(|step| step.operator.as_str())
+            .collect::<Vec<_>>(),
+        ["+", "<+>", "*", "<**>"]
+    );
+    assert!(matches!(
+        &steps[0].operand,
+        SurfaceExpr::Name { name, .. } if name == "middle"
+    ));
+    assert!(matches!(
+        &steps[2].operand,
+        SurfaceExpr::Integer { raw, .. } if raw == "2"
+    ));
+    let custom_start = source.find("<+>").unwrap();
+    assert_eq!(
+        steps[1].operator_span,
+        ByteSpan {
+            start: custom_start,
+            end: custom_start + 3,
+        }
+    );
+    assert_eq!(span.start, source.find("left +").unwrap());
+    assert_eq!(span.end, source.rfind("tail").unwrap() + "tail".len());
+}
+
+#[test]
+fn rejoins_dot_inside_a_custom_infix_chain() {
+    let body = first_body("fn compose left: Int -> right: Int -> Int = left <.> right\n");
+    let SurfaceExpr::InfixChain { steps, .. } = body else {
+        panic!("expected unresolved infix chain");
+    };
+
+    assert_eq!(steps.len(), 1);
+    assert_eq!(steps[0].operator, "<.>");
+}
+
+#[test]
 fn keeps_multiline_monad_bind_in_one_expression() {
     let body =
         first_body("fn bound value: Maybe<Int> -> Maybe<Int> =\n  value\n  >>= incrementMaybe\n");

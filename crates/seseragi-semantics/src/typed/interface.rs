@@ -151,7 +151,10 @@ fn typed_value_export(
             scheme,
             parameters,
             ..
-        } if *visibility == Visibility::Public && !is_inherent_method_symbol(module, symbol) => {
+        } if *visibility == Visibility::Public
+            && !is_inherent_method_symbol(module, symbol)
+            && !is_operator_symbol(module, symbol) =>
+        {
             Some(InterfaceExport {
                 symbol: symbol.clone(),
                 namespace: "value".to_owned(),
@@ -231,6 +234,13 @@ fn is_inherent_method_symbol(module: &str, symbol: &str) -> bool {
         .strip_prefix(module)
         .and_then(|relative| relative.strip_prefix("::"))
         .is_some_and(|relative| relative.contains("::"))
+}
+
+fn is_operator_symbol(module: &str, symbol: &str) -> bool {
+    symbol
+        .strip_prefix(module)
+        .and_then(|relative| relative.strip_prefix("::"))
+        .is_some_and(|relative| relative.starts_with("operator(") && relative.ends_with(')'))
 }
 
 fn interface_scheme_from_typed_scheme(

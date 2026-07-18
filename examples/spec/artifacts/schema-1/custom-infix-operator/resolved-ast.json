@@ -1,0 +1,995 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/custom-infix-operator",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "rightAssociated",
+      "nameSpan": {
+        "start": 88,
+        "end": 103
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 104,
+            "end": 108
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 110,
+              "end": 114
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 118,
+          "end": 121
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "<^>",
+            "span": {
+              "start": 127,
+              "end": 130
+            }
+          },
+          "argument": {
+            "kind": "integer",
+            "raw": "10",
+            "span": {
+              "start": 124,
+              "end": 126
+            }
+          },
+          "span": {
+            "start": 124,
+            "end": 130
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "<^>",
+              "span": {
+                "start": 133,
+                "end": 136
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "3",
+              "span": {
+                "start": 131,
+                "end": 132
+              }
+            },
+            "span": {
+              "start": 131,
+              "end": 136
+            }
+          },
+          "argument": {
+            "kind": "integer",
+            "raw": "2",
+            "span": {
+              "start": 137,
+              "end": 138
+            }
+          },
+          "span": {
+            "start": 131,
+            "end": 138
+          }
+        },
+        "span": {
+          "start": 124,
+          "end": 138
+        }
+      },
+      "span": {
+        "start": 85,
+        "end": 138
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "leftAssociated",
+      "nameSpan": {
+        "start": 142,
+        "end": 156
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 157,
+            "end": 161
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 163,
+              "end": 167
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 171,
+          "end": 174
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "<~>",
+            "span": {
+              "start": 186,
+              "end": 189
+            }
+          },
+          "argument": {
+            "kind": "application",
+            "function": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "<~>",
+                "span": {
+                  "start": 180,
+                  "end": 183
+                }
+              },
+              "argument": {
+                "kind": "integer",
+                "raw": "10",
+                "span": {
+                  "start": 177,
+                  "end": 179
+                }
+              },
+              "span": {
+                "start": 177,
+                "end": 183
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "3",
+              "span": {
+                "start": 184,
+                "end": 185
+              }
+            },
+            "span": {
+              "start": 177,
+              "end": 185
+            }
+          },
+          "span": {
+            "start": 177,
+            "end": 189
+          }
+        },
+        "argument": {
+          "kind": "integer",
+          "raw": "2",
+          "span": {
+            "start": 190,
+            "end": 191
+          }
+        },
+        "span": {
+          "start": 177,
+          "end": 191
+        }
+      },
+      "span": {
+        "start": 139,
+        "end": 191
+      }
+    },
+    {
+      "kind": "operator",
+      "visibility": "private",
+      "fixity": "infixr",
+      "precedence": 4,
+      "spelling": "<^>",
+      "spellingSpan": {
+        "start": 211,
+        "end": 214
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 217,
+            "end": 221
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 223,
+              "end": 226
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 230,
+            "end": 235
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 237,
+              "end": 240
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 244,
+          "end": 247
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "-",
+        "operatorSpan": {
+          "start": 257,
+          "end": 258
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 252,
+            "end": 256
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 259,
+            "end": 264
+          }
+        },
+        "span": {
+          "start": 252,
+          "end": 264
+        }
+      },
+      "span": {
+        "start": 193,
+        "end": 264
+      }
+    },
+    {
+      "kind": "operator",
+      "visibility": "private",
+      "fixity": "infixl",
+      "precedence": 4,
+      "spelling": "<~>",
+      "spellingSpan": {
+        "start": 284,
+        "end": 287
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 290,
+            "end": 294
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 296,
+              "end": 299
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 303,
+            "end": 308
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 310,
+              "end": 313
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 317,
+          "end": 320
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "-",
+        "operatorSpan": {
+          "start": 330,
+          "end": 331
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 325,
+            "end": 329
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 332,
+            "end": 337
+          }
+        },
+        "span": {
+          "start": 325,
+          "end": 337
+        }
+      },
+      "span": {
+        "start": 266,
+        "end": 337
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 353,
+        "end": 357
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 361,
+          "end": 365
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 371,
+            "end": 378
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 385,
+          "end": 397
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 402,
+            "end": 409
+          }
+        },
+        "argument": {
+          "kind": "template",
+          "parts": [
+            {
+              "kind": "text",
+              "value": "Custom infix: right=",
+              "span": {
+                "start": 411,
+                "end": 431
+              }
+            },
+            {
+              "kind": "interpolation",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "rightAssociated",
+                  "span": {
+                    "start": 433,
+                    "end": 448
+                  }
+                },
+                "argument": {
+                  "kind": "unit",
+                  "span": {
+                    "start": 449,
+                    "end": 451
+                  }
+                },
+                "span": {
+                  "start": 433,
+                  "end": 451
+                }
+              },
+              "span": {
+                "start": 431,
+                "end": 452
+              }
+            },
+            {
+              "kind": "text",
+              "value": ", left=",
+              "span": {
+                "start": 452,
+                "end": 459
+              }
+            },
+            {
+              "kind": "interpolation",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "leftAssociated",
+                  "span": {
+                    "start": 461,
+                    "end": 475
+                  }
+                },
+                "argument": {
+                  "kind": "unit",
+                  "span": {
+                    "start": 476,
+                    "end": 478
+                  }
+                },
+                "span": {
+                  "start": 461,
+                  "end": 478
+                }
+              },
+              "span": {
+                "start": 459,
+                "end": 479
+              }
+            }
+          ],
+          "span": {
+            "start": 410,
+            "end": 480
+          }
+        },
+        "span": {
+          "start": 402,
+          "end": 480
+        }
+      },
+      "span": {
+        "start": 339,
+        "end": 480
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 85,
+        "end": 480
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 85,
+        "end": 138
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 139,
+        "end": 191
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 193,
+        "end": 264
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 266,
+        "end": 337
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 339,
+        "end": 480
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "rightAssociated",
+      "canonical": "artifact/custom-infix-operator::rightAssociated",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 88,
+        "end": 103
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "leftAssociated",
+      "canonical": "artifact/custom-infix-operator::leftAssociated",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 142,
+        "end": 156
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "<^>",
+      "canonical": "artifact/custom-infix-operator::operator(<^>)",
+      "namespace": "operator",
+      "kind": "operator",
+      "scope": 0,
+      "origin": {
+        "start": 211,
+        "end": 214
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "<~>",
+      "canonical": "artifact/custom-infix-operator::operator(<~>)",
+      "namespace": "operator",
+      "kind": "operator",
+      "scope": 0,
+      "origin": {
+        "start": 284,
+        "end": 287
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "main",
+      "canonical": "artifact/custom-infix-operator::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 353,
+        "end": 357
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 104,
+        "end": 108
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 157,
+        "end": 161
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "left",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 217,
+        "end": 221
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "right",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 230,
+        "end": 235
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "-",
+      "canonical": "std/prelude::-",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "left",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 290,
+        "end": 294
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "right",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 303,
+        "end": 308
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 110,
+        "end": 114
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 118,
+        "end": 121
+      }
+    },
+    {
+      "spelling": "<^>",
+      "namespace": "operator",
+      "target": 2,
+      "origin": {
+        "start": 127,
+        "end": 130
+      }
+    },
+    {
+      "spelling": "<^>",
+      "namespace": "operator",
+      "target": 2,
+      "origin": {
+        "start": 133,
+        "end": 136
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 163,
+        "end": 167
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 171,
+        "end": 174
+      }
+    },
+    {
+      "spelling": "<~>",
+      "namespace": "operator",
+      "target": 3,
+      "origin": {
+        "start": 186,
+        "end": 189
+      }
+    },
+    {
+      "spelling": "<~>",
+      "namespace": "operator",
+      "target": 3,
+      "origin": {
+        "start": 180,
+        "end": 183
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 223,
+        "end": 226
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 237,
+        "end": 240
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 244,
+        "end": 247
+      }
+    },
+    {
+      "spelling": "left",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 252,
+        "end": 256
+      }
+    },
+    {
+      "spelling": "-",
+      "namespace": "operator",
+      "target": 11,
+      "origin": {
+        "start": 257,
+        "end": 258
+      }
+    },
+    {
+      "spelling": "right",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 259,
+        "end": 264
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 296,
+        "end": 299
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 310,
+        "end": 313
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 317,
+        "end": 320
+      }
+    },
+    {
+      "spelling": "left",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 325,
+        "end": 329
+      }
+    },
+    {
+      "spelling": "-",
+      "namespace": "operator",
+      "target": 11,
+      "origin": {
+        "start": 330,
+        "end": 331
+      }
+    },
+    {
+      "spelling": "right",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 332,
+        "end": 337
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 361,
+        "end": 365
+      }
+    },
+    {
+      "spelling": "ConsoleError",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 385,
+        "end": 397
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 402,
+        "end": 409
+      }
+    },
+    {
+      "spelling": "rightAssociated",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 433,
+        "end": 448
+      }
+    },
+    {
+      "spelling": "leftAssociated",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 461,
+        "end": 475
+      }
+    }
+  ],
+  "issues": []
+}

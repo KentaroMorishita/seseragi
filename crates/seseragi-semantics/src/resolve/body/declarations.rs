@@ -91,12 +91,16 @@ pub(super) fn register_module_declarations(resolver: &mut Resolver, declarations
                     resolver.register_trait_method(name, &method.name, method.name_span);
                 }
             }
-            SurfaceDecl::Operator { spelling, span, .. } => {
+            SurfaceDecl::Operator {
+                spelling,
+                spelling_span,
+                ..
+            } => {
                 resolver.register_module(
                     SymbolNamespace::Operator,
                     SymbolKind::Operator,
                     spelling,
-                    *span,
+                    *spelling_span,
                 );
             }
             SurfaceDecl::Impl { .. } | SurfaceDecl::Instance { .. } => {}
@@ -256,6 +260,7 @@ pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[Surf
                 parameters,
                 return_type,
                 constraints,
+                body,
                 span,
                 ..
             } => {
@@ -263,6 +268,9 @@ pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[Surf
                 register_parameters(resolver, scope, parameters);
                 resolve_type_ref(resolver, scope, return_type);
                 resolve_constraints(resolver, scope, constraints);
+                if let Some(body) = body {
+                    expression::resolve_expression(resolver, scope, body);
+                }
             }
             SurfaceDecl::Impl {
                 type_parameters,

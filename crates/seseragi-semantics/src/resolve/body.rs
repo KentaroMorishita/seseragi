@@ -13,6 +13,7 @@ mod expression;
 mod imports;
 mod instances;
 mod namespace;
+mod operator_chains;
 mod pattern;
 mod scheme_types;
 #[cfg(test)]
@@ -28,20 +29,39 @@ pub(crate) fn resolve_module_from_interface(
     interface: ModuleInterface,
     source: &str,
 ) -> ResolvedModule {
-    let surface =
+    let mut surface =
         expand_impl_operator_instances(parse_surface_ast(interface.source.clone(), source));
-    resolve_surface_module(interface, surface, Vec::new())
+    let operator_issues = operator_chains::normalize_operator_chains(&mut surface.declarations, []);
+    resolve_surface_module(interface, surface, Vec::new(), operator_issues)
 }
 
 pub fn resolve_linked_module(
     linked: seseragi_project::LinkedModule,
     source: &str,
 ) -> ResolvedModule {
-    let surface =
+    let mut surface =
         expand_impl_operator_instances(parse_surface_ast(linked.interface.source.clone(), source));
+    let imported_fixities = linked.dependencies.iter().flat_map(|dependency| {
+        dependency.imports.iter().filter_map(|import| {
+            let seseragi_project::LinkedImport::Operator {
+                spelling, operator, ..
+            } = import
+            else {
+                return None;
+            };
+            Some((
+                spelling.clone(),
+                operator.fixity.clone(),
+                operator.precedence,
+            ))
+        })
+    });
+    let operator_issues =
+        operator_chains::normalize_operator_chains(&mut surface.declarations, imported_fixities);
     let (dependency_instances, dependency_instance_issues) =
         instances::resolve_dependency_instances(&linked.dependencies);
     let mut resolver = Resolver::new(&linked.interface.module, module_origin(&surface));
+    resolver.issues.extend(operator_issues);
     resolver.issues.extend(dependency_instance_issues);
     declarations::register_module_declarations(&mut resolver, &surface.declarations);
     let imports = imports::register_linked_imports(&mut resolver, &linked.dependencies);
@@ -71,9 +91,11 @@ fn resolve_surface_module(
     interface: ModuleInterface,
     surface: SurfaceModule,
     imports: Vec<crate::ResolvedImport>,
+    operator_issues: Vec<ResolveIssue>,
 ) -> ResolvedModule {
     let module_origin = module_origin(&surface);
     let mut resolver = Resolver::new(&interface.module, module_origin);
+    resolver.issues.extend(operator_issues);
     declarations::register_module_declarations(&mut resolver, &surface.declarations);
     declarations::register_imports(&mut resolver, &interface, &surface);
     declarations::resolve_declarations(&mut resolver, &surface.declarations);
@@ -302,6 +324,7 @@ impl Resolver {
     ) -> SymbolId {
         let canonical = match namespace {
             SymbolNamespace::Trait => format!("{}::trait({spelling})", self.module),
+            SymbolNamespace::Operator => format!("{}::operator({spelling})", self.module),
             _ => format!("{}::{spelling}", self.module),
         };
         self.register(

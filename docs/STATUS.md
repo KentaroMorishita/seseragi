@@ -39,7 +39,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | 基本文法、演算子、pattern                  | 初稿あり      | lessonあり、fixtureは一部                  | tuple / matchまで部分実装 |
 | 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / newtype / HKT / structural Record / generic nominal Struct + local inherent method実行まで部分実装 |
 | trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative / Monad実行・law fixtureあり | HKT推論 / local dictionary / transitive supertrait / Prelude Maybe・Either・Array・List・Effect instance実行まで部分実装 |
-| custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
+| custom infix operator                      | 初稿あり      | local positive / negative / execution fixtureあり | local宣言・fixity・型検査・TS実行まで実装、import ABIは後続 |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
 | module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | strict core manifest + canonical local discovery + linked compile / executionまで部分実装 |
@@ -243,6 +243,14 @@ dictionary loweringを再利用し、actual executionで加算と比較の両方
 operator / trait / method対応は共通registryに集約し、generic `impl<A>`のconstraintもinstance factoryへ保持します。
 標準traitと一致しないsignature、個別overloadを持たない`!=`宣言、同じheadの明示instanceとの重複は
 backend前に停止します。
+`schema-1/custom-infix-operator`はtop-levelの`infixl` / `infixr`宣言を、宣言位置より前の式を含む
+flat operator chainからfixity-awareに再結合します。custom operatorは通常のcurried function callへ正規化し、
+既存のgeneric application typing、constraint evidence、CoreIr / TypeScriptIr loweringを再利用します。
+backend bindingはoperator spellingのUTF-8 bytesを衝突なく符号化し、raw operatorをJavaScriptへ流しません。
+同名execution fixtureは右結合の`10 <^> 3 <^> 2 = 9`と左結合の`10 <~> 3 <~> 2 = 5`を実行し、
+dot入りspellingも共通raw operator分類で保持します。unknown operatorと非結合fixity conflictは
+`SES-P0101` / `SES-P0102`、不正spellingと非二項宣言は`SES-P0001`でbackend前に停止します。
+imported operatorのruntime ABIとoperator section `(<+>)`は後続sliceです。
 opaque smart constructor / field visibility、struct derivingも後続gateです。
 `schema-1/user-add-operator`はoperand型からlocal `Add<Score, Int, Score>`を選択し、binary `+`と
 curried operator section `(+)`を同じ生成dictionaryの`add` method callへlowerします。`Array<Int>`の`reduce`は

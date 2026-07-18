@@ -1,0 +1,5 @@
+operator infix 4 <^>
+  left: Int -> right: Int -> Int =
+  left - right
+
+fn invalid value: Int -> Int = value <^> 2 <^> 1

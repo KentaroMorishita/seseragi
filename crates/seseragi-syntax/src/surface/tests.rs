@@ -365,6 +365,7 @@ fn parses_rich_interface_surface_declarations() {
             fixity: "infixl".to_owned(),
             precedence: 4,
             spelling: "<+>".to_owned(),
+            spelling_span: ByteSpan { start: 81, end: 84 },
             parameters: vec![
                 SurfaceParameter {
                     name: "left".to_owned(),
@@ -400,6 +401,26 @@ fn parses_rich_interface_surface_declarations() {
                 },
             },
             constraints: Vec::new(),
+            body: Some(SurfaceExpr::Application {
+                function: Box::new(SurfaceExpr::Name {
+                    name: "identity".to_owned(),
+                    span: ByteSpan {
+                        start: 128,
+                        end: 136,
+                    },
+                }),
+                argument: Box::new(SurfaceExpr::Name {
+                    name: "left".to_owned(),
+                    span: ByteSpan {
+                        start: 137,
+                        end: 141,
+                    },
+                }),
+                span: ByteSpan {
+                    start: 128,
+                    end: 141,
+                },
+            }),
             span: ByteSpan {
                 start: 59,
                 end: 141

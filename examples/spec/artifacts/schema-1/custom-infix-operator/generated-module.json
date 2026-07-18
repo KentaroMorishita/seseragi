@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "module": "artifact/custom-infix-operator",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.unit",
+      "core.int64",
+      "core.int64.subtract",
+      "effect.console.println",
+      "core.string",
+      "core.int64.show"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

@@ -1,5 +1,5 @@
 use super::SurfaceParser;
-use crate::surface_model::{SurfaceDecl, Visibility};
+use crate::surface_model::{ByteSpan, SurfaceDecl, Visibility};
 use crate::token::TokenKind;
 
 impl SurfaceParser<'_> {
@@ -17,6 +17,11 @@ impl SurfaceParser<'_> {
         let precedence = self.tokens.get(precedence_index)?.raw.parse::<u32>().ok()?;
         let spelling_start = self.next_significant_token(precedence_index + 1, end)?;
         let (spelling, after_spelling) = self.operator_spelling(spelling_start)?;
+        let spelling_end = after_spelling.checked_sub(1)?;
+        let spelling_span = ByteSpan {
+            start: self.tokens.get(spelling_start)?.start,
+            end: self.tokens.get(spelling_end)?.end,
+        };
         let equals = self.find_significant_token(after_spelling, end, |kind| {
             kind == TokenKind::OperatorEquals
         })?;
@@ -34,9 +39,11 @@ impl SurfaceParser<'_> {
             fixity: self.tokens.get(fixity_index)?.raw.clone(),
             precedence,
             spelling,
+            spelling_span,
             parameters,
             return_type,
             constraints,
+            body: self.parse_expression(equals + 1, end),
             span: self.declaration_span(top_start, end)?,
         })
     }
@@ -61,7 +68,7 @@ impl SurfaceParser<'_> {
     }
 }
 
-fn is_operator_spelling_token(kind: TokenKind) -> bool {
+pub(super) fn is_operator_spelling_token(kind: TokenKind) -> bool {
     matches!(
         kind,
         TokenKind::OperatorArithmetic
@@ -72,5 +79,6 @@ fn is_operator_spelling_token(kind: TokenKind) -> bool {
             | TokenKind::OperatorApply
             | TokenKind::OperatorRangeExclusive
             | TokenKind::OperatorRangeInclusive
+            | TokenKind::PunctuationDot
     )
 }

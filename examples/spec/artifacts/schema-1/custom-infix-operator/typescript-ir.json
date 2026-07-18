@@ -1,0 +1,264 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/custom-infix-operator",
+  "runtimeRequirements": [
+    "core.unit",
+    "core.int64",
+    "core.int64.subtract",
+    "effect.console.println",
+    "core.string",
+    "core.int64.show"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.subtract",
+      "local": "_ssrg_int64_subtract"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "rightAssociated",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "__ssrg$operator$3c5e3e",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "10"
+          },
+          {
+            "kind": "call",
+            "callee": "__ssrg$operator$3c5e3e",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "3"
+              },
+              {
+                "kind": "bigint",
+                "value": "2"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 85,
+        "end": 138
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "leftAssociated",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "__ssrg$operator$3c7e3e",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "__ssrg$operator$3c7e3e",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "10"
+              },
+              {
+                "kind": "bigint",
+                "value": "3"
+              }
+            ]
+          },
+          {
+            "kind": "bigint",
+            "value": "2"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 139,
+        "end": 191
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "__ssrg$operator$3c5e3e",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_subtract",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 193,
+        "end": 264
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "__ssrg$operator$3c7e3e",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_subtract",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 266,
+        "end": 337
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "binary",
+            "operator": "+",
+            "left": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "string",
+                  "value": "Custom infix: right="
+                },
+                "right": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_intShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "rightAssociated",
+                      "arguments": [
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "right": {
+                "kind": "string",
+                "value": ", left="
+              }
+            },
+            "right": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_intShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "leftAssociated",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 339,
+        "end": 480
+      }
+    }
+  ]
+}

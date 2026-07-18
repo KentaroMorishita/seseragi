@@ -1,5 +1,5 @@
 use super::SurfaceParser;
-use crate::surface_model::{ByteSpan, SurfaceExpr, SurfaceLambdaParameter};
+use crate::surface_model::{ByteSpan, SurfaceExpr, SurfaceInfixStep, SurfaceLambdaParameter};
 use crate::token::{Token, TokenKind};
 
 mod array;
@@ -48,6 +48,14 @@ struct ExpressionParser<'tokens> {
 
 impl ExpressionParser<'_> {
     fn parse_expr_bp(&mut self, min_bp: u8, stops: &[TokenKind]) -> Option<SurfaceExpr> {
+        if min_bp == 0 {
+            let saved = self.cursor;
+            if let Some(chain) = self.parse_unresolved_infix_chain(stops) {
+                return Some(chain);
+            }
+            self.cursor = saved;
+        }
+
         self.skip_trivia();
         if self.at_stop(stops) {
             return None;
@@ -155,6 +163,93 @@ impl ExpressionParser<'_> {
         }
 
         Some(left)
+    }
+
+    /// Retains a complete infix sequence whenever it contains an operator
+    /// whose fixity must be supplied by module semantics. Known operators are
+    /// kept in the same flat sequence so a later stage can reassociate the
+    /// whole expression rather than inheriting an arbitrary parser choice.
+    /// Expressions containing only language-defined operators continue down
+    /// the existing Pratt path unchanged.
+    fn parse_unresolved_infix_chain(&mut self, stops: &[TokenKind]) -> Option<SurfaceExpr> {
+        const INFIX_OPERAND_BP: u8 = 70;
+
+        self.skip_trivia();
+        if self.at_stop(stops) {
+            return None;
+        }
+        let first = self.parse_expr_bp(INFIX_OPERAND_BP, stops)?;
+        let mut steps = Vec::new();
+        let mut contains_unresolved = false;
+
+        loop {
+            self.skip_trivia();
+            if self.cursor >= self.end || self.at_stop(stops) {
+                break;
+            }
+            let Some(operator) = self.infix_operator_occurrence() else {
+                break;
+            };
+            if !is_infix_operator(&operator.token) {
+                break;
+            }
+            contains_unresolved |= is_unresolved_infix_operator(&operator.token);
+            self.cursor = operator.next;
+            let operand = self.parse_expr_bp(INFIX_OPERAND_BP, stops)?;
+            let operator_span = token_span(&operator.token);
+            steps.push(SurfaceInfixStep {
+                operator: operator.token.raw,
+                operator_span,
+                operand,
+            });
+        }
+
+        if !contains_unresolved {
+            return None;
+        }
+        let end = steps.last()?.operand.span().end;
+        Some(SurfaceExpr::InfixChain {
+            span: ByteSpan {
+                start: first.span().start,
+                end,
+            },
+            first: Box::new(first),
+            steps,
+        })
+    }
+
+    fn infix_operator_occurrence(&self) -> Option<InfixOperatorOccurrence> {
+        let first = self.tokens.get(self.cursor)?;
+        if !super::operators::is_operator_spelling_token(first.kind) {
+            return None;
+        }
+
+        let mut next = self.cursor + 1;
+        let mut end = first.end;
+        let mut spelling = first.raw.clone();
+        while next < self.end {
+            let token = self.tokens.get(next)?;
+            if token.start != end || !super::operators::is_operator_spelling_token(token.kind) {
+                break;
+            }
+            spelling.push_str(&token.raw);
+            end = token.end;
+            next += 1;
+        }
+
+        Some(InfixOperatorOccurrence {
+            token: Token {
+                kind: if next == self.cursor + 1 {
+                    first.kind
+                } else {
+                    TokenKind::OperatorCustom
+                },
+                start: first.start,
+                end,
+                raw: spelling,
+            },
+            next,
+        })
     }
 
     fn parse_prefix(&mut self, stops: &[TokenKind]) -> Option<SurfaceExpr> {
@@ -398,6 +493,11 @@ impl ExpressionParser<'_> {
     }
 }
 
+struct InfixOperatorOccurrence {
+    token: Token,
+    next: usize,
+}
+
 #[derive(Clone, Copy)]
 enum ParsedOperator {
     Apply,
@@ -452,6 +552,16 @@ fn binary_binding_power(token: &Token) -> Option<(u8, u8, ParsedOperator)> {
         },
         kind,
     ))
+}
+
+fn is_infix_operator(token: &Token) -> bool {
+    binary_binding_power(token).is_some() || is_unresolved_infix_operator(token)
+}
+
+fn is_unresolved_infix_operator(token: &Token) -> bool {
+    token.kind == TokenKind::OperatorCustom
+        && token.raw != "|"
+        && binary_binding_power(token).is_none()
 }
 
 fn trait_method_application(

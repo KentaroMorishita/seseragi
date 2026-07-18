@@ -147,6 +147,22 @@ pub(super) fn resolve_expression(
             );
             resolve_expression(resolver, scope, right);
         }
+        SurfaceExpr::InfixChain { first, steps, .. } => {
+            // Normal project resolution associates these chains before this
+            // walk. Keep the raw form lossless for recovery callers and make
+            // sure it can never bypass operator-namespace resolution.
+            resolve_expression(resolver, scope, first);
+            for step in steps {
+                resolver.reference(
+                    scope,
+                    SymbolNamespace::Operator,
+                    &step.operator,
+                    step.operator_span,
+                    true,
+                );
+                resolve_expression(resolver, scope, &step.operand);
+            }
+        }
         SurfaceExpr::If {
             condition,
             then_branch,
@@ -193,7 +209,29 @@ pub(super) fn resolve_expression(
 }
 
 fn is_operator_reference(name: &str) -> bool {
-    matches!(name, "+" | "-" | "*" | "/" | "%" | "**")
+    !name.is_empty()
+        && name.chars().all(|character| {
+            matches!(
+                character,
+                '!' | '$'
+                    | '%'
+                    | '&'
+                    | '*'
+                    | '+'
+                    | '-'
+                    | '.'
+                    | '/'
+                    | ':'
+                    | '<'
+                    | '='
+                    | '>'
+                    | '?'
+                    | '@'
+                    | '^'
+                    | '|'
+                    | '~'
+            )
+        })
 }
 
 fn resolve_do_item(resolver: &mut Resolver, scope: ScopeId, item: &SurfaceDoItem) {

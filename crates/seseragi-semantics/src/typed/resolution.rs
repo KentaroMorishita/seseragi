@@ -317,6 +317,59 @@ fn collect_callables(
                     },
                 );
             }
+            SurfaceDecl::Operator {
+                spelling_span,
+                type_parameters,
+                parameters,
+                return_type,
+                constraints,
+                ..
+            } if !parameters.is_empty() => {
+                let Some(symbol) = resolved.symbols.iter().find(|symbol| {
+                    symbol.kind == SymbolKind::Operator && symbol.origin == *spelling_span
+                }) else {
+                    continue;
+                };
+                let Some(canonical) = symbol.canonical.clone() else {
+                    continue;
+                };
+                callables.insert(
+                    symbol.id,
+                    TopLevelPureFunction {
+                        symbol: canonical,
+                        trait_identity: None,
+                        trait_method: None,
+                        type_parameters: type_parameters.clone(),
+                        constraints: constraints
+                            .iter()
+                            .map(|constraint| crate::TypedConstraint {
+                                name: constraint.name.clone(),
+                                arguments: constraint
+                                    .arguments
+                                    .iter()
+                                    .map(typed_type_from_type_ref)
+                                    .collect(),
+                            })
+                            .collect(),
+                        constraint_identities: constraints
+                            .iter()
+                            .map(|constraint| constraint_identity(resolved, constraint.name_span))
+                            .collect(),
+                        parameters: parameters
+                            .iter()
+                            .map(|parameter| typed_type_from_type_ref(&parameter.type_ref))
+                            .collect(),
+                        semantic_parameters: parameters
+                            .iter()
+                            .map(|parameter| {
+                                semantic_types.key_from_type_ref(resolved, &parameter.type_ref)
+                            })
+                            .collect(),
+                        result: typed_type_from_type_ref(return_type),
+                        semantic_result: semantic_types.key_from_type_ref(resolved, return_type),
+                    },
+                );
+            }
             _ => {}
         }
     }

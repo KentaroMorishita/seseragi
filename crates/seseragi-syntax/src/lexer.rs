@@ -251,10 +251,29 @@ fn is_operator_char(char: char) -> bool {
     )
 }
 
+/// Returns whether a raw spelling satisfies the lexical shape shared by
+/// custom-operator declarations, imports, and semantic fixity resolution.
+/// Reserved language operators are filtered separately by the caller.
+pub fn is_custom_operator_candidate(spelling: &str) -> bool {
+    spelling.len() >= 2
+        && spelling.chars().all(is_operator_char)
+        && !spelling
+            .chars()
+            .all(|character| matches!(character, '<' | '>'))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::token::TokenKind;
+
+    #[test]
+    fn validates_custom_operator_candidate_shapes() {
+        assert!(is_custom_operator_candidate("<.>"));
+        assert!(!is_custom_operator_candidate("^"));
+        assert!(!is_custom_operator_candidate("<<"));
+        assert!(!is_custom_operator_candidate("<lambda>"));
+    }
 
     #[test]
     fn lexes_basic_answer_fixture() {

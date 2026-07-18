@@ -12,7 +12,7 @@ pub(crate) fn validate_surface_ast(module: &Value) -> Result<(), String> {
             .and_then(Value::as_str)
             .ok_or_else(|| format!("SurfaceAst declarations[{index}] kind must be a string"))?;
         match kind {
-            "let" | "fn" | "effectFn" => {
+            "let" | "fn" | "effectFn" | "operator" => {
                 let body = declaration.get("body").ok_or_else(|| {
                     format!("valid SurfaceAst {kind} declarations must preserve their body")
                 })?;
@@ -103,6 +103,7 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
             validate_child(expression, "left", path)?;
             validate_child(expression, "right", path)
         }
+        "infixChain" => validate_infix_chain(expression, path),
         "if" => {
             validate_child(expression, "condition", path)?;
             validate_child(expression, "thenBranch", path)?;
@@ -114,6 +115,31 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
             "SurfaceAst {path} has unknown expression kind {other}"
         )),
     }
+}
+
+fn validate_infix_chain(expression: &Value, path: &str) -> Result<(), String> {
+    validate_child(expression, "first", path)?;
+    let steps = expression
+        .get("steps")
+        .and_then(Value::as_array)
+        .ok_or_else(|| format!("SurfaceAst {path}.steps must be an array"))?;
+    if steps.is_empty() {
+        return Err(format!(
+            "SurfaceAst {path}.steps must contain at least one step"
+        ));
+    }
+    for (index, step) in steps.iter().enumerate() {
+        let step_path = format!("{path}.steps[{index}]");
+        step.get("operator")
+            .and_then(Value::as_str)
+            .ok_or_else(|| format!("SurfaceAst {step_path}.operator must be a string"))?;
+        let operator_span = step
+            .get("operatorSpan")
+            .ok_or_else(|| format!("SurfaceAst {step_path}.operatorSpan is required"))?;
+        require_span_value(operator_span, &format!("{step_path}.operatorSpan"))?;
+        validate_child(step, "operand", &step_path)?;
+    }
+    Ok(())
 }
 
 fn validate_record(expression: &Value, path: &str) -> Result<(), String> {
@@ -437,6 +463,27 @@ mod tests {
                     },
                     "argument": { "kind": "integer", "span": { "start": 6, "end": 7 } },
                     "span": { "start": 0, "end": 7 }
+                }
+            }]
+        });
+
+        assert!(validate_surface_ast(&module).is_ok());
+    }
+
+    #[test]
+    fn accepts_an_operator_body_with_a_flat_infix_chain() {
+        let module = json!({
+            "declarations": [{
+                "kind": "operator",
+                "body": {
+                    "kind": "infixChain",
+                    "first": { "kind": "integer", "span": { "start": 0, "end": 2 } },
+                    "steps": [{
+                        "operator": "<^>",
+                        "operatorSpan": { "start": 3, "end": 6 },
+                        "operand": { "kind": "integer", "span": { "start": 7, "end": 8 } }
+                    }],
+                    "span": { "start": 0, "end": 8 }
                 }
             }]
         });

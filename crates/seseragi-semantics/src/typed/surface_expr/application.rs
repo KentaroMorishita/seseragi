@@ -51,7 +51,10 @@ pub(crate) fn type_application_with(
         }
     }
     let callee_span = callee.span();
-    let signature = if let Some(target) = context.target(callee_span) {
+    let signature = if let Some(target) = context
+        .target(callee_span)
+        .or_else(|| context.operator_target(callee_span))
+    {
         let Some(signature) = context.callable_value(target) else {
             return type_unknown_application(callee, &argument_nodes, expression.span(), context);
         };
