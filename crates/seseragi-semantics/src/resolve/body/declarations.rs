@@ -6,9 +6,9 @@ use seseragi_syntax::{
 
 mod types;
 
+pub(super) use types::resolve_type_ref;
 use types::{
     declaration_scope, register_parameters, register_type_parameters, resolve_requirements,
-    resolve_type_ref,
 };
 
 pub(super) fn register_module_declarations(resolver: &mut Resolver, declarations: &[SurfaceDecl]) {

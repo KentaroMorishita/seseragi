@@ -115,6 +115,7 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
             }
         }
         SurfaceExpr::Grouped { value, .. } => collect_expression_errors(value, errors),
+        SurfaceExpr::Lambda { body, .. } => collect_expression_errors(body, errors),
         SurfaceExpr::Error { span } => errors.push(ByteRange {
             start: span.start,
             end: span.end,

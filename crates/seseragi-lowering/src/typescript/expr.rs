@@ -14,7 +14,8 @@ use super::decision::lower_core_decision;
 use super::dictionaries::local_dictionary_expression;
 use super::names::{local_name, safe_identifier};
 use super::types::{
-    render_typescript_type, type_ref_from_core_type, type_ref_from_core_type_with_erasure,
+    lower_core_parameter_to_typescript, render_typescript_type, type_ref_from_core_type,
+    type_ref_from_core_type_with_erasure,
 };
 use super::{TypeScriptExpr, TypeScriptRecordValueItem, TypeScriptStatement};
 
@@ -160,6 +161,19 @@ pub(super) fn lower_core_expr_to_typescript(
                     deferred_evidence_type_constructor_parameters,
                     imported_types,
                 )
+            }
+        }
+        CoreExpr::Lambda {
+            parameter, body, ..
+        } => {
+            let parameter = lower_core_parameter_to_typescript(parameter, imported_types, &[]);
+            TypeScriptExpr::Lambda {
+                parameter: format!("{}: {}", parameter.name, parameter.type_name),
+                body: Box::new(lower_core_expr_to_typescript(
+                    *body,
+                    imported_values,
+                    imported_types,
+                )),
             }
         }
         CoreExpr::Tuple { elements, .. } => TypeScriptExpr::Tuple {

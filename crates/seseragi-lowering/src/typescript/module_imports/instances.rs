@@ -105,6 +105,7 @@ fn collect_expr(expr: &CoreExpr, imported: &mut BTreeSet<(String, String)>) {
                 collect_expr(argument, imported);
             }
         }
+        CoreExpr::Lambda { body, .. } => collect_expr(body, imported),
         CoreExpr::Tuple { elements, .. }
         | CoreExpr::Array { elements, .. }
         | CoreExpr::List { elements, .. } => {

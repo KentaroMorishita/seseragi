@@ -1,5 +1,5 @@
 use super::SurfaceParser;
-use crate::surface_model::{ByteSpan, SurfaceExpr};
+use crate::surface_model::{ByteSpan, SurfaceExpr, SurfaceLambdaParameter};
 use crate::token::{Token, TokenKind};
 
 mod array;
@@ -197,6 +197,7 @@ impl ExpressionParser<'_> {
                 name: token.raw.clone(),
                 span: token_span(token),
             }),
+            TokenKind::OperatorLambda => self.parse_lambda(token, stops),
             TokenKind::KeywordIf => self.parse_if(token, stops),
             TokenKind::KeywordMatch => match_expression::parse(self, token),
             TokenKind::KeywordDo => self.parse_do(token),
@@ -258,6 +259,7 @@ impl ExpressionParser<'_> {
                     | TokenKind::LiteralBoolean
                     | TokenKind::IdentifierLower
                     | TokenKind::IdentifierUpper
+                    | TokenKind::OperatorLambda
                     | TokenKind::KeywordIf
                     | TokenKind::KeywordMatch
                     | TokenKind::KeywordDo
@@ -266,6 +268,69 @@ impl ExpressionParser<'_> {
                     | TokenKind::PunctuationListLeft
                     | TokenKind::PunctuationSquareLeft
             )
+        )
+    }
+
+    fn parse_lambda(
+        &mut self,
+        lambda_token: &Token,
+        inherited_stops: &[TokenKind],
+    ) -> Option<SurfaceExpr> {
+        let mut parameters = Vec::new();
+        loop {
+            self.skip_trivia();
+            if self.kind_at_cursor() == Some(TokenKind::OperatorArrow) {
+                break;
+            }
+            let parameter = self.tokens.get(self.cursor)?.clone();
+            if parameter.kind != TokenKind::IdentifierLower {
+                return None;
+            }
+            self.cursor += 1;
+            self.skip_trivia();
+            let type_ref = if self.kind_at_cursor() == Some(TokenKind::PunctuationColon) {
+                self.cursor += 1;
+                let parser = SurfaceParser {
+                    tokens: self.tokens,
+                    non_eof_token_count: self.end,
+                };
+                let (type_ref, after_type) = parser.parse_type_atom(self.cursor, self.end)?;
+                self.cursor = after_type;
+                Some(type_ref)
+            } else {
+                None
+            };
+            let name_span = token_span(&parameter);
+            parameters.push(SurfaceLambdaParameter {
+                name: parameter.raw,
+                name_span,
+                type_ref,
+            });
+        }
+        if parameters.is_empty() {
+            return None;
+        }
+        self.consume(TokenKind::OperatorArrow)?;
+        let body = self.parse_expr_bp(0, inherited_stops)?;
+        let body_end = body.span().end;
+        let parameter_count = parameters.len();
+        Some(
+            parameters
+                .into_iter()
+                .rev()
+                .enumerate()
+                .fold(body, |body, (index, parameter)| SurfaceExpr::Lambda {
+                    span: ByteSpan {
+                        start: if index + 1 == parameter_count {
+                            lambda_token.start
+                        } else {
+                            parameter.name_span.start
+                        },
+                        end: body_end,
+                    },
+                    parameter,
+                    body: Box::new(body),
+                }),
         )
     }
 

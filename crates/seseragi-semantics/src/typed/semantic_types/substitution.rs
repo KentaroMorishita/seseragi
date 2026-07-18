@@ -215,12 +215,29 @@ pub(crate) fn instantiate_callable(
     arguments: &[SemanticValueType],
     result_template: &SemanticValueType,
 ) -> InstantiatedSemanticCallable {
+    let indexed_arguments = arguments.iter().cloned().enumerate().collect::<Vec<_>>();
+    instantiate_callable_indexed(
+        parameter_templates,
+        expected_result,
+        &indexed_arguments,
+        result_template,
+    )
+}
+
+pub(crate) fn instantiate_callable_indexed(
+    parameter_templates: &[SemanticValueType],
+    expected_result: Option<&SemanticValueType>,
+    arguments: &[(usize, SemanticValueType)],
+    result_template: &SemanticValueType,
+) -> InstantiatedSemanticCallable {
     let mut substitutions = BTreeMap::new();
     if let Some(expected_result) = expected_result {
         collect_substitutions(&result_template.key, expected_result, &mut substitutions);
     }
-    for (template, argument) in parameter_templates.iter().zip(arguments) {
-        collect_substitutions(&template.key, argument, &mut substitutions);
+    for (index, argument) in arguments {
+        if let Some(template) = parameter_templates.get(*index) {
+            collect_substitutions(&template.key, argument, &mut substitutions);
+        }
     }
     InstantiatedSemanticCallable {
         parameters: parameter_templates

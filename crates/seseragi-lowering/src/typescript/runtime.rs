@@ -72,6 +72,16 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
                 collect_expr_runtime_requirements(argument, requirements);
             }
         }
+        CoreExpr::Lambda {
+            parameter,
+            body,
+            type_ref,
+            ..
+        } => {
+            collect_type_runtime_requirement(&parameter.type_ref, requirements);
+            collect_type_runtime_requirement(type_ref, requirements);
+            collect_expr_runtime_requirements(body, requirements);
+        }
         CoreExpr::Tuple {
             elements, type_ref, ..
         }
@@ -402,6 +412,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                 collect_expr_runtime_imports(argument, imports);
             }
         }
+        CoreExpr::Lambda { body, .. } => collect_expr_runtime_imports(body, imports),
         CoreExpr::Tuple { elements, .. } | CoreExpr::Array { elements, .. } => {
             for element in elements {
                 collect_expr_runtime_imports(element, imports);

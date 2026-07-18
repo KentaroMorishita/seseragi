@@ -9,7 +9,9 @@ mod imports;
 mod prelude;
 mod substitution;
 
-pub(crate) use substitution::{instantiate_callable, substitute_remaining_scheme_parameters};
+pub(crate) use substitution::{
+    instantiate_callable, instantiate_callable_indexed, substitute_remaining_scheme_parameters,
+};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum SemanticTypeKey {

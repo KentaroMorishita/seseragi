@@ -17,6 +17,7 @@ mod array;
 mod binary;
 mod comprehension;
 mod conditional;
+mod lambda;
 mod match_expression;
 mod monad_do;
 mod record;
@@ -83,6 +84,12 @@ impl<'a> PureExpressionContext<'a> {
             .map(|symbol| symbol.id)
     }
 
+    pub(super) fn lambda_parameter_symbol(&self, origin: ByteSpan) -> Option<SymbolId> {
+        self.resolution
+            .declaration_symbol(origin, SymbolKind::Parameter)
+            .map(|symbol| symbol.id)
+    }
+
     pub(super) fn callable(&self, target: SymbolId) -> Option<&TopLevelPureFunction> {
         self.resolution.callable(target)
     }
@@ -125,6 +132,13 @@ impl<'a> PureExpressionContext<'a> {
 
     pub(super) fn semantic_value_from_typed_type(&self, type_ref: &TypedType) -> SemanticValueType {
         self.resolution.semantic_value_from_typed_type(type_ref)
+    }
+
+    pub(super) fn semantic_value_from_type_ref(
+        &self,
+        type_ref: &seseragi_syntax::TypeRef,
+    ) -> SemanticValueType {
+        self.resolution.semantic_value_from_type_ref(type_ref)
     }
 
     pub(super) fn select_call_evidence(
@@ -406,6 +420,14 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
             arguments: vec![surface_expression_type_hint(element)?],
         }),
         SurfaceExpr::Grouped { value, .. } => surface_expression_type_hint(value),
+        SurfaceExpr::Lambda {
+            parameter, body, ..
+        } => Some(TypedType::Function {
+            parameter: Box::new(super::type_ref::typed_type_from_type_ref(
+                parameter.type_ref.as_ref()?,
+            )),
+            result: Box::new(surface_expression_type_hint(body)?),
+        }),
         SurfaceExpr::If {
             then_branch,
             else_branch,
@@ -463,6 +485,11 @@ pub(super) fn type_surface_expression(
             span,
         } => record::type_member(receiver, field, *field_span, *span, context),
         SurfaceExpr::Grouped { value, .. } => type_surface_expression(value, context),
+        SurfaceExpr::Lambda {
+            parameter,
+            body,
+            span,
+        } => lambda::type_lambda(parameter, body, *span, context),
         SurfaceExpr::Application { .. } => application::type_application(expression, context),
         SurfaceExpr::Tuple { elements, span } => tuple::type_tuple(elements, *span, context),
         SurfaceExpr::Array { elements, span } => array::type_array(elements, *span, context),

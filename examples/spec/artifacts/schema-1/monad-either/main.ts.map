@@ -6,7 +6,7 @@
     "seseragi://artifact/monad-either"
   ],
   "sourcesContent": [
-    "pub trait Functor<F<_>> {\n  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>\n}\n\ninstance<E> Functor<Either<E, _>> {\n  fn map<A, B> f: (A -> B) -> value: Either<E, A> -> Either<E, B> =\n    match value {\n      Left error -> Left error\n      Right item -> Right $ f item\n    }\n}\n\npub trait Applicative<F<_>>\nwhere Functor<F> {\n  fn pure<A> value: A -> F<A>\n  fn apply<A, B> wrapped: F<A -> B> -> value: F<A> -> F<B>\n}\n\ninstance<E> Applicative<Either<E, _>> {\n  fn pure<A> value: A -> Either<E, A> = Right value\n\n  fn apply<A, B> wrapped: Either<E, A -> B> -> value: Either<E, A> -> Either<E, B> =\n    match (wrapped, value) {\n      (Right function, Right item) -> Right $ function item\n      (Left error, _) -> Left error\n      (_, Left error) -> Left error\n    }\n}\n\npub trait Monad<M<_>>\nwhere Applicative<M> {\n  fn flatMap<A, B> f: (A -> M<B>) -> value: M<A> -> M<B>\n}\n\ninstance<E> Monad<Either<E, _>> {\n  fn flatMap<A, B> f: (A -> Either<E, B>) -> value: Either<E, A> -> Either<E, B> =\n    match value {\n      Left error -> Left error\n      Right item -> f item\n    }\n}\n\nfn addEither\n  left: Either<String, Int>\n  -> right: Either<String, Int>\n  -> Either<String, Int> =\n  do {\n    first <- left\n    second <- right\n    pure $ first + second\n  }\n\nfn render value: Either<String, Int> -> String =\n  match value {\n    Left error -> \"Left \" + error\n    Right 42 -> \"Right 42\"\n    Right _ -> \"Right another value\"\n  }\n\npub effect fn main =\n  do {\n    addEither (Right 20) (Right 22)\n    |> render\n    |> println\n\n    addEither (Left \"stopped\") (Right 22)\n    |> render\n    |> println\n  }\n"
+    "pub trait Functor<F<_>> {\n  fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>\n}\n\ninstance<E> Functor<Either<E, _>> {\n  fn map<A, B> f: (A -> B) -> value: Either<E, A> -> Either<E, B> =\n    match value {\n      Left error -> Left error\n      Right item -> Right $ f item\n    }\n}\n\npub trait Applicative<F<_>>\nwhere Functor<F> {\n  fn pure<A> value: A -> F<A>\n  fn apply<A, B> wrapped: F<A -> B> -> value: F<A> -> F<B>\n}\n\ninstance<E> Applicative<Either<E, _>> {\n  fn pure<A> value: A -> Either<E, A> = Right value\n\n  fn apply<A, B> wrapped: Either<E, A -> B> -> value: Either<E, A> -> Either<E, B> =\n    match (wrapped, value) {\n      (Right function, Right item) -> Right $ function item\n      (Left error, _) -> Left error\n      (_, Left error) -> Left error\n    }\n}\n\npub trait Monad<M<_>>\nwhere Applicative<M> {\n  fn flatMap<A, B> f: (A -> M<B>) -> value: M<A> -> M<B>\n}\n\ninstance<E> Monad<Either<E, _>> {\n  fn flatMap<A, B> f: (A -> Either<E, B>) -> value: Either<E, A> -> Either<E, B> =\n    match value {\n      Left error -> Left error\n      Right item -> f item\n    }\n}\n\nfn addEither\n  left: Either<String, Int>\n  -> right: Either<String, Int>\n  -> Either<String, Int> =\n  do {\n    first <- left\n    second <- right\n    pure $ first + second\n  }\n\nfn addEitherExplicit\n  left: Either<String, Int>\n  -> right: Either<String, Int>\n  -> Either<String, Int> =\n  left >>= (\\first ->\n    right >>= (\\second ->\n      pure $ first + second))\n\nfn render value: Either<String, Int> -> String =\n  match value {\n    Left error -> \"Left \" + error\n    Right 42 -> \"Right 42\"\n    Right _ -> \"Right another value\"\n  }\n\npub effect fn main =\n  do {\n    addEither (Right 20) (Right 22)\n    |> render\n    |> println\n\n    addEitherExplicit (Right 20) (Right 22)\n    |> render\n    |> println\n\n    addEither (Left \"stopped\") (Right 22)\n    |> render\n    |> println\n\n    addEitherExplicit (Left \"stopped\") (Right 22)\n    |> render\n    |> println\n  }\n"
   ],
   "names": [
     "__ssrg$instance$Functor$0",
@@ -21,6 +21,16 @@
     "__ssrg$instance$Applicative$1",
     "__ssrg$instance$Functor$0",
     "add",
+    "addEitherExplicit",
+    "__ssrg$instance$Monad$2",
+    "__ssrg$instance$Applicative$1",
+    "__ssrg$instance$Functor$0",
+    "__ssrg$instance$Monad$2",
+    "__ssrg$instance$Applicative$1",
+    "__ssrg$instance$Functor$0",
+    "__ssrg$instance$Applicative$1",
+    "__ssrg$instance$Functor$0",
+    "add",
     "render",
     "error",
     "main",
@@ -31,9 +41,19 @@
     "Right",
     "println",
     "render",
+    "addEitherExplicit",
+    "Right",
+    "Right",
+    "println",
+    "render",
     "addEither",
+    "Left",
+    "Right",
+    "println",
+    "render",
+    "addEitherExplicit",
     "Left",
     "Right"
   ],
-  "mappings": ";;;;;AAIAA;AAcAC;AAgBAC;AAQAC;AAUAS;AAOAE"
+  "mappings": ";;;;;AAIAA;AAcAC;AAgBAC;AAQAC;AAUAS;AAQAU;AAOAE"
 }

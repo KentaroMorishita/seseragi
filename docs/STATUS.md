@@ -354,8 +354,11 @@ TypedHir / CoreIr / TypeScriptIrへ保持します。bindは選択済みdictiona
 final monadic expression欠落を、それぞれ専用の`do.*` diagnosticとsource rangeで固定します。
 `schema-1/monad-either`は`instance<E> Monad<Either<E, _>>`を選び、`Either<String, A>`から
 `M = Either<String, _>`とpayload `A`を分離します。do loweringは同じdictionary `flatMap`を使い、
-`Right 42`と`Left "stopped"`の短絡をactual executionで固定します。Maybeという標準型名やruntime tagへの
-専用分岐ではありません。`schema-1/monad-laws`と`execution-schema-1/monad-laws`は同じuser-defined
+明示lambdaを使う`left >>= (\first -> ...)`もSurface AST、名前解決、型付け、Core IR、TypeScript IRを通して
+同じdictionary callへlowerします。execution fixtureはdo版と明示`>>=`版の`Right 42`と`Left "stopped"`を
+同じ出力として固定します。lambda parameterを注釈または期待関数型から決められない場合は
+`lambda.parameter-type-unresolved`でcompileを止めます。Maybeという標準型名やruntime tagへの専用分岐では
+ありません。`schema-1/monad-laws`と`execution-schema-1/monad-laws`は同じuser-defined
 Maybe dictionaryを使い、Functorのidentity / composition、Applicativeのidentity / homomorphism、
 Monadのleft identity / right identity / associativityをactual executionで固定します。これは全instanceのlawfulnessを
 compilerが証明する機能ではなく、現在のdictionary selectionと生成コードが代表的なlawful instanceの意味を壊さないための

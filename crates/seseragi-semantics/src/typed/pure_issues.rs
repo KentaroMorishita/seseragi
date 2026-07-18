@@ -24,6 +24,19 @@ pub(crate) enum PureCallIssue {
     TraitMethodNoMatch {
         callee: ByteSpan,
     },
+    LambdaParameterTypeUnresolved {
+        parameter: ByteSpan,
+    },
+    LambdaParameterTypeMismatch {
+        parameter: ByteSpan,
+        expected: TypedType,
+        actual: TypedType,
+    },
+    LambdaBodyTypeMismatch {
+        body: ByteSpan,
+        expected: TypedType,
+        actual: TypedType,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

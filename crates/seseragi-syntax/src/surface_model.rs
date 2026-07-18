@@ -282,6 +282,15 @@ pub struct SurfaceParameter {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct SurfaceLambdaParameter {
+    pub name: String,
+    pub name_span: ByteSpan,
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub type_ref: Option<TypeRef>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct SurfaceMethod {
     pub name: String,
     pub name_span: ByteSpan,
@@ -367,6 +376,11 @@ pub enum SurfaceExpr {
         argument: Box<SurfaceExpr>,
         span: ByteSpan,
     },
+    Lambda {
+        parameter: SurfaceLambdaParameter,
+        body: Box<SurfaceExpr>,
+        span: ByteSpan,
+    },
     Tuple {
         elements: Vec<SurfaceExpr>,
         span: ByteSpan,
@@ -443,6 +457,7 @@ impl SurfaceExpr {
             | Self::Name { span, .. }
             | Self::Member { span, .. }
             | Self::Application { span, .. }
+            | Self::Lambda { span, .. }
             | Self::Tuple { span, .. }
             | Self::Array { span, .. }
             | Self::List { span, .. }

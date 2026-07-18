@@ -857,6 +857,161 @@
     {
       "kind": "const-function",
       "exported": false,
+      "name": "addEitherExplicit",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: bigint }",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "__ssrg$instance$Monad$2",
+          "typeArguments": [
+            {
+              "kind": "string"
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "type-application-call",
+              "callee": "__ssrg$instance$Applicative$1",
+              "typeArguments": [
+                {
+                  "kind": "string"
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "type-application-call",
+                  "callee": "__ssrg$instance$Functor$0",
+                  "typeArguments": [
+                    {
+                      "kind": "string"
+                    }
+                  ],
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "method": "flatMap",
+        "arguments": [
+          {
+            "kind": "lambda",
+            "parameter": "first: bigint",
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "type-application-call",
+                "callee": "__ssrg$instance$Monad$2",
+                "typeArguments": [
+                  {
+                    "kind": "string"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "type-application-call",
+                    "callee": "__ssrg$instance$Applicative$1",
+                    "typeArguments": [
+                      {
+                        "kind": "string"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "type-application-call",
+                        "callee": "__ssrg$instance$Functor$0",
+                        "typeArguments": [
+                          {
+                            "kind": "string"
+                          }
+                        ],
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "method": "flatMap",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "second: bigint",
+                  "body": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$Applicative$1",
+                      "typeArguments": [
+                        {
+                          "kind": "string"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "type-application-call",
+                          "callee": "__ssrg$instance$Functor$0",
+                          "typeArguments": [
+                            {
+                              "kind": "string"
+                            }
+                          ],
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "method": "pure",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_int64_add",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "first"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "second"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "right"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "identifier",
+            "name": "left"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1246,
+        "end": 1431
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
       "name": "render",
       "parameters": [
         {
@@ -951,8 +1106,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1246,
-        "end": 1412
+        "start": 1433,
+        "end": 1599
       }
     },
     {
@@ -1009,6 +1164,88 @@
                 }
               ]
             }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "addEitherExplicit",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_either_Right",
+                          "arguments": [
+                            {
+                              "kind": "bigint",
+                              "value": "20"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_either_Right",
+                          "arguments": [
+                            {
+                              "kind": "bigint",
+                              "value": "22"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "addEither",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_either_Left",
+                          "arguments": [
+                            {
+                              "kind": "string",
+                              "value": "stopped"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_either_Right",
+                          "arguments": [
+                            {
+                              "kind": "bigint",
+                              "value": "22"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
           }
         ],
         "result": {
@@ -1021,7 +1258,7 @@
               "arguments": [
                 {
                   "kind": "call",
-                  "callee": "addEither",
+                  "callee": "addEitherExplicit",
                   "arguments": [
                     {
                       "kind": "runtime-call",
@@ -1052,8 +1289,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1414,
-        "end": 1582
+        "start": 1601,
+        "end": 1923
       }
     }
   ]

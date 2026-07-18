@@ -315,6 +315,13 @@ pub enum CoreExpr {
         type_ref: CoreType,
         origin: SourceSpan,
     },
+    Lambda {
+        parameter: CoreParameter,
+        body: Box<CoreExpr>,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
     Tuple {
         elements: Vec<CoreExpr>,
         #[serde(rename = "type")]

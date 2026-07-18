@@ -202,6 +202,41 @@ fn parses_an_arithmetic_operator_as_a_grouped_function_value() {
 }
 
 #[test]
+fn parses_annotated_and_curried_lambdas_as_nested_expressions() {
+    let body = first_body("fn answer -> Int = combine (\\first: Int second -> first + second)\n");
+    let SurfaceExpr::Application { argument, .. } = body else {
+        panic!("expected lambda argument")
+    };
+    let SurfaceExpr::Grouped { value, .. } = argument.as_ref() else {
+        panic!("expected grouped lambda")
+    };
+    let SurfaceExpr::Lambda {
+        parameter: first,
+        body,
+        ..
+    } = value.as_ref()
+    else {
+        panic!("expected outer lambda")
+    };
+    assert_eq!(first.name, "first");
+    assert!(matches!(
+        first.type_ref,
+        Some(crate::TypeRef::Named { ref name, .. }) if name == "Int"
+    ));
+    let SurfaceExpr::Lambda {
+        parameter: second,
+        body,
+        ..
+    } = body.as_ref()
+    else {
+        panic!("expected inner lambda")
+    };
+    assert_eq!(second.name, "second");
+    assert!(second.type_ref.is_none());
+    assert!(matches!(body.as_ref(), SurfaceExpr::Binary { operator, .. } if operator == "+"));
+}
+
+#[test]
 fn parses_tuple_values_without_losing_grouped_expressions() {
     let body = first_body("pub fn pair left: Int -> right: Bool -> (Int, Bool) = (left, right)\n");
 

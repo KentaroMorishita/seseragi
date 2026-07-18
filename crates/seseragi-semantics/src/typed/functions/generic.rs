@@ -4,7 +4,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use super::{application_result_type_from, TopLevelPureFunction};
 use crate::typed::semantic_types::{
-    instantiate_callable, substitute_remaining_scheme_parameters, SemanticValueType,
+    instantiate_callable_indexed, substitute_remaining_scheme_parameters, SemanticValueType,
 };
 use crate::typed::type_ref::typed_type_contains_hole;
 
@@ -23,6 +23,21 @@ pub(crate) fn instantiated_application(
     application_argument_count: usize,
     arguments: &[SemanticValueType],
 ) -> InstantiatedApplication {
+    let indexed_arguments = arguments.iter().cloned().enumerate().collect::<Vec<_>>();
+    instantiated_application_indexed(
+        signature,
+        expected_application,
+        application_argument_count,
+        &indexed_arguments,
+    )
+}
+
+pub(crate) fn instantiated_application_indexed(
+    signature: &TopLevelPureFunction,
+    expected_application: Option<&SemanticValueType>,
+    application_argument_count: usize,
+    arguments: &[(usize, SemanticValueType)],
+) -> InstantiatedApplication {
     let mut substitutions = BTreeMap::new();
     if let Some(expected_application) = expected_application {
         let remaining = application_result_type_from(
@@ -37,13 +52,15 @@ pub(crate) fn instantiated_application(
             &mut substitutions,
         );
     }
-    for (parameter, argument) in signature.parameters.iter().zip(arguments) {
-        infer_type_parameters(
-            parameter,
-            &argument.type_ref,
-            &signature.type_parameters,
-            &mut substitutions,
-        );
+    for (index, argument) in arguments {
+        if let Some(parameter) = signature.parameters.get(*index) {
+            infer_type_parameters(
+                parameter,
+                &argument.type_ref,
+                &signature.type_parameters,
+                &mut substitutions,
+            );
+        }
     }
     let semantic_parameters = signature
         .parameters
@@ -61,7 +78,7 @@ pub(crate) fn instantiated_application(
                 .saturating_sub(application_argument_count),
         )
     });
-    let semantic = instantiate_callable(
+    let semantic = instantiate_callable_indexed(
         &semantic_parameters,
         expected_result.as_ref(),
         arguments,

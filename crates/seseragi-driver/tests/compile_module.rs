@@ -254,6 +254,23 @@ fn rejects_semantically_invalid_source_before_producing_outputs() {
 }
 
 #[test]
+fn rejects_an_unconstrained_lambda_before_producing_typescript() {
+    let diagnostics = compile_module(input(
+        "artifact/driver-invalid-lambda/main.ssrg",
+        "artifact/driver-invalid-lambda",
+        "pub let identity = \\value -> value\n",
+    ))
+    .expect_err("an unresolved lambda parameter must prevent emission");
+
+    assert_eq!(diagnostics.diagnostics.len(), 1);
+    assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+    assert_eq!(
+        diagnostics.diagnostics[0].message_key,
+        "lambda.parameter-type-unresolved"
+    );
+}
+
+#[test]
 fn rejects_imports_until_a_project_resolver_can_link_them() {
     let diagnostics = compile_module(input(
         "entry.ssrg",

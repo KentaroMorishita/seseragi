@@ -4,6 +4,7 @@ use seseragi_syntax::{
     SurfaceComprehensionClause, SurfaceDoItem, SurfaceExpr, SurfaceTemplatePart,
 };
 
+use super::declarations::resolve_type_ref;
 use super::pattern::resolve_pattern;
 
 pub(super) fn resolve_expression(
@@ -42,6 +43,25 @@ pub(super) fn resolve_expression(
         } => {
             resolve_expression(resolver, scope, function);
             resolve_expression(resolver, scope, argument);
+        }
+        SurfaceExpr::Lambda {
+            parameter,
+            body,
+            span,
+        } => {
+            let lambda_scope = resolver.new_scope(scope, ScopeKind::Lambda, *span);
+            if let Some(type_ref) = &parameter.type_ref {
+                resolve_type_ref(resolver, lambda_scope, type_ref);
+            }
+            resolver.register(
+                lambda_scope,
+                SymbolNamespace::Value,
+                crate::SymbolKind::Parameter,
+                &parameter.name,
+                None,
+                parameter.name_span,
+            );
+            resolve_expression(resolver, lambda_scope, body);
         }
         SurfaceExpr::Tuple { elements, .. }
         | SurfaceExpr::Array { elements, .. }

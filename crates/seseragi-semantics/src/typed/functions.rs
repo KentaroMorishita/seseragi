@@ -7,8 +7,8 @@ use super::type_ref::typed_type_from_type_ref;
 mod generic;
 
 pub(crate) use generic::{
-    infer_type_parameters, instantiated_application, instantiated_application_result_type,
-    substitute_type_parameters,
+    infer_type_parameters, instantiated_application, instantiated_application_indexed,
+    instantiated_application_result_type, substitute_type_parameters,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]

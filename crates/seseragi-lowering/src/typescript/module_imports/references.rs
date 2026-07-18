@@ -36,6 +36,7 @@ fn collect_expr_value_symbols(expr: &CoreExpr, values: &mut BTreeSet<String>) {
                 collect_expr_value_symbols(argument, values);
             }
         }
+        CoreExpr::Lambda { body, .. } => collect_expr_value_symbols(body, values),
         CoreExpr::Tuple { elements, .. }
         | CoreExpr::Array { elements, .. }
         | CoreExpr::List { elements, .. } => {
@@ -203,6 +204,16 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
     match expr {
         CoreExpr::Variable { type_ref, .. } | CoreExpr::Call { type_ref, .. } => {
             collect_type_names(type_ref, references);
+        }
+        CoreExpr::Lambda {
+            parameter,
+            body,
+            type_ref,
+            ..
+        } => {
+            collect_type_names(&parameter.type_ref, references);
+            collect_type_names(type_ref, references);
+            collect_expr_type_names(body, references);
         }
         CoreExpr::Template { parts, .. } => {
             for part in parts {

@@ -238,6 +238,6 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     category: "型と抽象化",
     sourcePath: "examples/spec/artifacts/schema-1/monad-either/main.ssrg",
     stdin: "",
-    expectedOutput: "Right 42\nLeft stopped",
+    expectedOutput: "Right 42\nRight 42\nLeft stopped\nLeft stopped",
   },
 ]

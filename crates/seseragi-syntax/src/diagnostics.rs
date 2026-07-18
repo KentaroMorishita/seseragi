@@ -270,6 +270,10 @@ fn malformed_tuple_body_range(
                 end: last.end,
             })
         }
+        (Some(first), Some(last)) if first.kind == TokenKind::OperatorLambda => Some(ByteRange {
+            start: first.start,
+            end: last.end,
+        }),
         _ => None,
     }
 }
@@ -479,6 +483,23 @@ mod tests {
                 diagnostics.diagnostics[0].primary.start < diagnostics.diagnostics[0].primary.end
             );
         }
+    }
+
+    #[test]
+    fn reports_a_malformed_lambda_instead_of_dropping_the_body() {
+        let source = "pub let broken = \\ -> 42\n";
+        let diagnostics = parse_diagnostics("main.ssrg", source);
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "parser.expected-expression"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange { start: 17, end: 24 }
+        );
     }
 
     #[test]

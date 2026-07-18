@@ -50,6 +50,14 @@ fn addEither
     pure $ first + second
   }
 
+fn addEitherExplicit
+  left: Either<String, Int>
+  -> right: Either<String, Int>
+  -> Either<String, Int> =
+  left >>= (\first ->
+    right >>= (\second ->
+      pure $ first + second))
+
 fn render value: Either<String, Int> -> String =
   match value {
     Left error -> "Left " + error
@@ -63,7 +71,15 @@ pub effect fn main =
     |> render
     |> println
 
+    addEitherExplicit (Right 20) (Right 22)
+    |> render
+    |> println
+
     addEither (Left "stopped") (Right 22)
+    |> render
+    |> println
+
+    addEitherExplicit (Left "stopped") (Right 22)
     |> render
     |> println
   }

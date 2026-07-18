@@ -57,6 +57,18 @@
       {
         "service": "console",
         "operation": "println",
+        "arguments": ["Right 42"],
+        "stdout": "Right 42\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Left stopped"],
+        "stdout": "Left stopped\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
         "arguments": ["Left stopped"],
         "stdout": "Left stopped\n"
       }

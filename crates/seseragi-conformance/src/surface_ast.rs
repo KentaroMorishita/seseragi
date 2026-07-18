@@ -49,6 +49,20 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
         "template" => validate_template(expression, path),
         "arrayComprehension" | "listComprehension" => validate_comprehension(expression, path),
         "grouped" => validate_child(expression, "value", path),
+        "lambda" => {
+            let parameter = expression
+                .get("parameter")
+                .ok_or_else(|| format!("SurfaceAst {path}.parameter is required"))?;
+            parameter
+                .get("name")
+                .and_then(Value::as_str)
+                .ok_or_else(|| format!("SurfaceAst {path}.parameter.name must be a string"))?;
+            let name_span = parameter
+                .get("nameSpan")
+                .ok_or_else(|| format!("SurfaceAst {path}.parameter.nameSpan is required"))?;
+            require_span_value(name_span, &format!("{path}.parameter.nameSpan"))?;
+            validate_child(expression, "body", path)
+        }
         "application" => {
             validate_child(expression, "function", path)?;
             validate_child(expression, "argument", path)
@@ -322,6 +336,21 @@ fn require_span(value: &Value, path: &str) -> Result<(), String> {
     }
 }
 
+fn require_span_value(span: &Value, path: &str) -> Result<(), String> {
+    let start = span
+        .get("start")
+        .and_then(Value::as_u64)
+        .ok_or_else(|| format!("SurfaceAst {path}.start must be an integer"))?;
+    let end = span
+        .get("end")
+        .and_then(Value::as_u64)
+        .ok_or_else(|| format!("SurfaceAst {path}.end must be an integer"))?;
+    if start > end {
+        return Err(format!("SurfaceAst {path} must be ordered"));
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -339,6 +368,26 @@ mod tests {
         assert!(validate_surface_ast(&module)
             .unwrap_err()
             .contains("must preserve their body"));
+    }
+
+    #[test]
+    fn accepts_a_lambda_parameter_and_body() {
+        let module = json!({
+            "declarations": [{
+                "kind": "let",
+                "body": {
+                    "kind": "lambda",
+                    "parameter": {
+                        "name": "value",
+                        "nameSpan": { "start": 1, "end": 6 }
+                    },
+                    "body": { "kind": "name", "span": { "start": 10, "end": 15 } },
+                    "span": { "start": 0, "end": 15 }
+                }
+            }]
+        });
+
+        assert!(validate_surface_ast(&module).is_ok());
     }
 
     #[test]

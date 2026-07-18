@@ -16,6 +16,7 @@ pub(super) fn type_ref_from_core_expr(
         CoreExpr::Boolean { .. } => TypeScriptType::Boolean,
         CoreExpr::Variable { type_ref, .. }
         | CoreExpr::Call { type_ref, .. }
+        | CoreExpr::Lambda { type_ref, .. }
         | CoreExpr::Tuple { type_ref, .. }
         | CoreExpr::FieldAccess { type_ref, .. }
         | CoreExpr::OptionalFieldAccess { type_ref, .. }

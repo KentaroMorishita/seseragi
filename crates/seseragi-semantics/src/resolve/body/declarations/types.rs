@@ -61,7 +61,11 @@ pub(super) fn resolve_requirements(
     }
 }
 
-pub(super) fn resolve_type_ref(resolver: &mut Resolver, scope: ScopeId, type_ref: &TypeRef) {
+pub(in crate::resolve::body) fn resolve_type_ref(
+    resolver: &mut Resolver,
+    scope: ScopeId,
+    type_ref: &TypeRef,
+) {
     match type_ref {
         TypeRef::Named {
             name,

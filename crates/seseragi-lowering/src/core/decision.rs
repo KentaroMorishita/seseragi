@@ -228,6 +228,7 @@ fn typed_expr_type(expression: &TypedExpr) -> TypedType {
         | TypedExpr::Boolean { type_ref, .. }
         | TypedExpr::Variable { type_ref, .. }
         | TypedExpr::Call { type_ref, .. }
+        | TypedExpr::Lambda { type_ref, .. }
         | TypedExpr::Tuple { type_ref, .. }
         | TypedExpr::FieldAccess { type_ref, .. }
         | TypedExpr::OptionalFieldAccess { type_ref, .. }

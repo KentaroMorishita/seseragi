@@ -122,6 +122,17 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
+        TypedExpr::Lambda {
+            parameter,
+            body,
+            type_ref,
+            origin,
+        } => CoreExpr::Lambda {
+            parameter: lower_parameter(&parameter),
+            body: Box::new(lower_expr(source, *body)),
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
         TypedExpr::Tuple {
             elements,
             type_ref,

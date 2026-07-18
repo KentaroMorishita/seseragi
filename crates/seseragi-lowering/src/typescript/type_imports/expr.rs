@@ -33,6 +33,16 @@ pub(super) fn collect_expr_type_imports(
             collect_type_imports(type_ref, bindings, requirements, imports);
             collect_exprs(arguments, bindings, requirements, imports);
         }
+        CoreExpr::Lambda {
+            parameter,
+            body,
+            type_ref,
+            ..
+        } => {
+            collect_type_imports(&parameter.type_ref, bindings, requirements, imports);
+            collect_type_imports(type_ref, bindings, requirements, imports);
+            collect_expr_type_imports(body, bindings, requirements, imports);
+        }
         CoreExpr::Tuple {
             elements, type_ref, ..
         }

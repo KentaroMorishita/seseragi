@@ -2,7 +2,9 @@ use crate::{TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr};
 
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
-use crate::typed::functions::{instantiated_application, instantiated_application_result_type};
+use crate::typed::functions::{
+    instantiated_application_indexed, instantiated_application_result_type,
+};
 use crate::typed::pure_issues::PureCallIssue;
 use crate::typed::semantic_types::{
     semantic_values_are_compatible, SemanticTypeKey, SemanticValueType,
@@ -49,15 +51,36 @@ pub(super) fn type_application(
     };
 
     let expected_application = context.expected();
-    let mut arguments = Vec::with_capacity(argument_nodes.len());
-    let mut semantic_arguments = Vec::with_capacity(argument_nodes.len());
-    let mut child_analyses = Vec::with_capacity(argument_nodes.len());
-    for (index, argument) in argument_nodes.iter().enumerate() {
-        let partial_application = instantiated_application(
+    let mut analyses = (0..argument_nodes.len())
+        .map(|_| None)
+        .collect::<Vec<Option<SurfaceExpressionAnalysis>>>();
+    let mut semantic_arguments = (0..argument_nodes.len())
+        .map(|_| None)
+        .collect::<Vec<Option<SemanticValueType>>>();
+    let argument_order = argument_nodes
+        .iter()
+        .enumerate()
+        .filter(|(_, argument)| !is_lambda_expression(argument))
+        .chain(
+            argument_nodes
+                .iter()
+                .enumerate()
+                .filter(|(_, argument)| is_lambda_expression(argument)),
+        )
+        .map(|(index, _)| index)
+        .collect::<Vec<_>>();
+    for index in argument_order {
+        let argument = argument_nodes[index];
+        let indexed_arguments = semantic_arguments
+            .iter()
+            .enumerate()
+            .filter_map(|(index, argument)| argument.clone().map(|argument| (index, argument)))
+            .collect::<Vec<_>>();
+        let partial_application = instantiated_application_indexed(
             &signature,
             expected_application,
             argument_nodes.len(),
-            &semantic_arguments,
+            &indexed_arguments,
         );
         let expected = partial_application
             .parameters
@@ -80,19 +103,35 @@ pub(super) fn type_application(
             });
         let argument_context = context.with_expected(expected);
         let analysis = type_surface_expression(argument, &argument_context);
-        semantic_arguments.push(SemanticValueType {
+        semantic_arguments[index] = Some(SemanticValueType {
             type_ref: inferred_type_from_expr(&analysis.value),
             key: analysis.semantic_type.clone(),
         });
-        arguments.push(analysis.value.clone());
-        child_analyses.push(analysis);
+        analyses[index] = Some(analysis);
     }
-    let application = instantiated_application(
+    let indexed_arguments = semantic_arguments
+        .iter()
+        .enumerate()
+        .filter_map(|(index, argument)| argument.clone().map(|argument| (index, argument)))
+        .collect::<Vec<_>>();
+    let application = instantiated_application_indexed(
         &signature,
         expected_application,
         argument_nodes.len(),
-        &semantic_arguments,
+        &indexed_arguments,
     );
+    let child_analyses = analyses
+        .into_iter()
+        .map(|analysis| analysis.expect("every application argument is typed"))
+        .collect::<Vec<_>>();
+    let arguments = child_analyses
+        .iter()
+        .map(|analysis| analysis.value.clone())
+        .collect::<Vec<_>>();
+    let semantic_arguments = semantic_arguments
+        .into_iter()
+        .map(|argument| argument.expect("every application argument has a semantic type"))
+        .collect::<Vec<_>>();
     let mut issue = call_issue(
         callee_span,
         signature.parameters.len(),
@@ -211,6 +250,14 @@ pub(super) fn type_application(
         result.merge_issues_from(child);
     }
     result
+}
+
+fn is_lambda_expression(expression: &SurfaceExpr) -> bool {
+    match expression {
+        SurfaceExpr::Lambda { .. } => true,
+        SurfaceExpr::Grouped { value, .. } => is_lambda_expression(value),
+        _ => false,
+    }
 }
 
 fn type_unknown_application(

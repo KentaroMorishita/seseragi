@@ -69,6 +69,41 @@ pub(super) fn call_diagnostic(
             callee,
             "no same-named trait method accepts the inferred call arguments".to_owned(),
         ),
+        PureCallIssue::LambdaParameterTypeUnresolved { parameter } => (
+            "SES-T0101",
+            "lambda.parameter-type-unresolved",
+            parameter,
+            "add a parameter type annotation or use the lambda where a function type is expected"
+                .to_owned(),
+        ),
+        PureCallIssue::LambdaParameterTypeMismatch {
+            parameter,
+            expected,
+            actual,
+        } => (
+            "SES-T0101",
+            "lambda.parameter-type-mismatch",
+            parameter,
+            format!(
+                "lambda context expects {}, annotation declares {}",
+                type_label(&expected),
+                type_label(&actual)
+            ),
+        ),
+        PureCallIssue::LambdaBodyTypeMismatch {
+            body,
+            expected,
+            actual,
+        } => (
+            "SES-T0101",
+            "lambda.body-type-mismatch",
+            body,
+            format!(
+                "lambda context expects {}, body produces {}",
+                type_label(&expected),
+                type_label(&actual)
+            ),
+        ),
     };
     Diagnostic {
         id: String::new(),
@@ -101,6 +136,21 @@ fn argument_word(count: usize) -> &'static str {
 #[cfg(test)]
 mod tests {
     use crate::semantic_diagnostics;
+
+    #[test]
+    fn reports_a_lambda_parameter_without_annotation_or_function_context() {
+        let artifact = semantic_diagnostics(
+            "lambda-unresolved.ssrg",
+            "pub let identity = \\value -> value\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(
+            artifact.diagnostics[0].message_key,
+            "lambda.parameter-type-unresolved"
+        );
+    }
 
     #[test]
     fn reports_a_non_function_higher_order_argument() {

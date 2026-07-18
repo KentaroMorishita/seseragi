@@ -808,7 +808,10 @@ pure letはcontinuation内の通常constであり、Effect runtime importやrequ
 固定prefixの後ろへ新しいpayloadを適用します。local instance head `Either<E, _>`は値の型へholeを残さず、
 constructor constraintとの照合時だけtrailing holeを正規化して`E = String`を求めます。
 これによりFunctor / Applicative / Monadの三factoryとdo loweringはMaybe専用分岐なしで再利用され、
-`execution-schema-1/monad-either`がRightの成功とLeftの短絡を実行します。
+`execution-schema-1/monad-either`がdo版と明示lambdaによる`>>=`版の両方でRightの成功とLeftの短絡を
+実行します。application typingは非lambda実引数を先に型付けしてgeneric substitutionを作り、元の引数位置に
+対応する期待関数型をlambdaへ渡します。これは`Either`や`flatMap`名の判定ではなく、任意のhigher-order callへ
+使うindexed argument inferenceです。解決不能なlambda parameterはHoleのままbackendへ送らずcompile diagnosticにします。
 
 `schema-1/monad-laws`はFunctor identity / composition、Applicative identity / homomorphism、Monad left identity /
 right identity / associativityを一つの小さいuser-defined Maybe instance群で表現します。

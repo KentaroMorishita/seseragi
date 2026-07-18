@@ -87,6 +87,12 @@ fn collect_local_expr_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
                 collect_local_expr_names(argument, names);
             }
         }
+        CoreExpr::Lambda {
+            parameter, body, ..
+        } => {
+            names.insert(safe_identifier(&parameter.id));
+            collect_local_expr_names(body, names);
+        }
         CoreExpr::FieldAccess { receiver, .. } | CoreExpr::OptionalFieldAccess { receiver, .. } => {
             collect_local_expr_names(receiver, names)
         }

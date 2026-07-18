@@ -1769,17 +1769,17 @@
     {
       "kind": "fn",
       "visibility": "private",
-      "name": "render",
+      "name": "addEitherExplicit",
       "nameSpan": {
         "start": 1249,
-        "end": 1255
+        "end": 1266
       },
       "parameters": [
         {
-          "name": "value",
+          "name": "left",
           "nameSpan": {
-            "start": 1256,
-            "end": 1261
+            "start": 1269,
+            "end": 1273
           },
           "type": {
             "kind": "named",
@@ -1789,22 +1789,274 @@
                 "kind": "named",
                 "name": "String",
                 "span": {
-                  "start": 1270,
-                  "end": 1276
+                  "start": 1282,
+                  "end": 1288
                 }
               },
               {
                 "kind": "named",
                 "name": "Int",
                 "span": {
-                  "start": 1278,
-                  "end": 1281
+                  "start": 1290,
+                  "end": 1293
                 }
               }
             ],
             "span": {
-              "start": 1263,
-              "end": 1282
+              "start": 1275,
+              "end": 1294
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 1300,
+            "end": 1305
+          },
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 1314,
+                  "end": 1320
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 1322,
+                  "end": 1325
+                }
+              }
+            ],
+            "span": {
+              "start": 1307,
+              "end": 1326
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 1339,
+              "end": 1345
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 1347,
+              "end": 1350
+            }
+          }
+        ],
+        "span": {
+          "start": 1332,
+          "end": 1351
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "flatMap",
+            "span": {
+              "start": 1361,
+              "end": 1364
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "lambda",
+              "parameter": {
+                "name": "first",
+                "nameSpan": {
+                  "start": 1367,
+                  "end": 1372
+                }
+              },
+              "body": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "flatMap",
+                    "span": {
+                      "start": 1386,
+                      "end": 1389
+                    }
+                  },
+                  "argument": {
+                    "kind": "grouped",
+                    "value": {
+                      "kind": "lambda",
+                      "parameter": {
+                        "name": "second",
+                        "nameSpan": {
+                          "start": 1392,
+                          "end": 1398
+                        }
+                      },
+                      "body": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "name",
+                          "name": "pure",
+                          "span": {
+                            "start": 1408,
+                            "end": 1412
+                          }
+                        },
+                        "argument": {
+                          "kind": "binary",
+                          "operator": "+",
+                          "operatorSpan": {
+                            "start": 1421,
+                            "end": 1422
+                          },
+                          "left": {
+                            "kind": "name",
+                            "name": "first",
+                            "span": {
+                              "start": 1415,
+                              "end": 1420
+                            }
+                          },
+                          "right": {
+                            "kind": "name",
+                            "name": "second",
+                            "span": {
+                              "start": 1423,
+                              "end": 1429
+                            }
+                          },
+                          "span": {
+                            "start": 1415,
+                            "end": 1429
+                          }
+                        },
+                        "span": {
+                          "start": 1408,
+                          "end": 1429
+                        }
+                      },
+                      "span": {
+                        "start": 1391,
+                        "end": 1429
+                      }
+                    },
+                    "span": {
+                      "start": 1390,
+                      "end": 1430
+                    }
+                  },
+                  "span": {
+                    "start": 1386,
+                    "end": 1430
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "right",
+                  "span": {
+                    "start": 1380,
+                    "end": 1385
+                  }
+                },
+                "span": {
+                  "start": 1380,
+                  "end": 1430
+                }
+              },
+              "span": {
+                "start": 1366,
+                "end": 1430
+              }
+            },
+            "span": {
+              "start": 1365,
+              "end": 1431
+            }
+          },
+          "span": {
+            "start": 1361,
+            "end": 1431
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 1356,
+            "end": 1360
+          }
+        },
+        "span": {
+          "start": 1356,
+          "end": 1431
+        }
+      },
+      "span": {
+        "start": 1246,
+        "end": 1431
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "render",
+      "nameSpan": {
+        "start": 1436,
+        "end": 1442
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 1443,
+            "end": 1448
+          },
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 1457,
+                  "end": 1463
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 1465,
+                  "end": 1468
+                }
+              }
+            ],
+            "span": {
+              "start": 1450,
+              "end": 1469
             }
           }
         }
@@ -1813,8 +2065,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 1286,
-          "end": 1292
+          "start": 1473,
+          "end": 1479
         }
       },
       "body": {
@@ -1823,8 +2075,8 @@
           "kind": "name",
           "name": "value",
           "span": {
-            "start": 1303,
-            "end": 1308
+            "start": 1490,
+            "end": 1495
           }
         },
         "arms": [
@@ -1833,57 +2085,57 @@
               "kind": "constructor",
               "name": "Left",
               "nameSpan": {
-                "start": 1315,
-                "end": 1319
+                "start": 1502,
+                "end": 1506
               },
               "argument": {
                 "kind": "name",
                 "name": "error",
                 "nameSpan": {
-                  "start": 1320,
-                  "end": 1325
+                  "start": 1507,
+                  "end": 1512
                 },
                 "span": {
-                  "start": 1320,
-                  "end": 1325
+                  "start": 1507,
+                  "end": 1512
                 }
               },
               "span": {
-                "start": 1315,
-                "end": 1325
+                "start": 1502,
+                "end": 1512
               }
             },
             "body": {
               "kind": "binary",
               "operator": "+",
               "operatorSpan": {
-                "start": 1337,
-                "end": 1338
+                "start": 1524,
+                "end": 1525
               },
               "left": {
                 "kind": "string",
                 "raw": "\"Left \"",
                 "span": {
-                  "start": 1329,
-                  "end": 1336
+                  "start": 1516,
+                  "end": 1523
                 }
               },
               "right": {
                 "kind": "name",
                 "name": "error",
                 "span": {
-                  "start": 1339,
-                  "end": 1344
+                  "start": 1526,
+                  "end": 1531
                 }
               },
               "span": {
-                "start": 1329,
-                "end": 1344
+                "start": 1516,
+                "end": 1531
               }
             },
             "span": {
-              "start": 1315,
-              "end": 1344
+              "start": 1502,
+              "end": 1531
             }
           },
           {
@@ -1891,33 +2143,33 @@
               "kind": "constructor",
               "name": "Right",
               "nameSpan": {
-                "start": 1349,
-                "end": 1354
+                "start": 1536,
+                "end": 1541
               },
               "argument": {
                 "kind": "integer",
                 "raw": "42",
                 "span": {
-                  "start": 1355,
-                  "end": 1357
+                  "start": 1542,
+                  "end": 1544
                 }
               },
               "span": {
-                "start": 1349,
-                "end": 1357
+                "start": 1536,
+                "end": 1544
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"Right 42\"",
               "span": {
-                "start": 1361,
-                "end": 1371
+                "start": 1548,
+                "end": 1558
               }
             },
             "span": {
-              "start": 1349,
-              "end": 1371
+              "start": 1536,
+              "end": 1558
             }
           },
           {
@@ -1925,43 +2177,43 @@
               "kind": "constructor",
               "name": "Right",
               "nameSpan": {
-                "start": 1376,
-                "end": 1381
+                "start": 1563,
+                "end": 1568
               },
               "argument": {
                 "kind": "wildcard",
                 "span": {
-                  "start": 1382,
-                  "end": 1383
+                  "start": 1569,
+                  "end": 1570
                 }
               },
               "span": {
-                "start": 1376,
-                "end": 1383
+                "start": 1563,
+                "end": 1570
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"Right another value\"",
               "span": {
-                "start": 1387,
-                "end": 1408
+                "start": 1574,
+                "end": 1595
               }
             },
             "span": {
-              "start": 1376,
-              "end": 1408
+              "start": 1563,
+              "end": 1595
             }
           }
         ],
         "span": {
-          "start": 1297,
-          "end": 1412
+          "start": 1484,
+          "end": 1599
         }
       },
       "span": {
-        "start": 1246,
-        "end": 1412
+        "start": 1433,
+        "end": 1599
       }
     },
     {
@@ -1969,8 +2221,8 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 1428,
-        "end": 1432
+        "start": 1615,
+        "end": 1619
       },
       "inferredContract": true,
       "returnType": null,
@@ -1985,8 +2237,8 @@
                 "kind": "name",
                 "name": "println",
                 "span": {
-                  "start": 1499,
-                  "end": 1506
+                  "start": 1686,
+                  "end": 1693
                 }
               },
               "argument": {
@@ -1995,8 +2247,8 @@
                   "kind": "name",
                   "name": "render",
                   "span": {
-                    "start": 1485,
-                    "end": 1491
+                    "start": 1672,
+                    "end": 1678
                   }
                 },
                 "argument": {
@@ -2007,8 +2259,8 @@
                       "kind": "name",
                       "name": "addEither",
                       "span": {
-                        "start": 1446,
-                        "end": 1455
+                        "start": 1633,
+                        "end": 1642
                       }
                     },
                     "argument": {
@@ -2019,31 +2271,31 @@
                           "kind": "name",
                           "name": "Right",
                           "span": {
-                            "start": 1457,
-                            "end": 1462
+                            "start": 1644,
+                            "end": 1649
                           }
                         },
                         "argument": {
                           "kind": "integer",
                           "raw": "20",
                           "span": {
-                            "start": 1463,
-                            "end": 1465
+                            "start": 1650,
+                            "end": 1652
                           }
                         },
                         "span": {
-                          "start": 1457,
-                          "end": 1465
+                          "start": 1644,
+                          "end": 1652
                         }
                       },
                       "span": {
-                        "start": 1456,
-                        "end": 1466
+                        "start": 1643,
+                        "end": 1653
                       }
                     },
                     "span": {
-                      "start": 1446,
-                      "end": 1466
+                      "start": 1633,
+                      "end": 1653
                     }
                   },
                   "argument": {
@@ -2054,46 +2306,284 @@
                         "kind": "name",
                         "name": "Right",
                         "span": {
-                          "start": 1468,
-                          "end": 1473
+                          "start": 1655,
+                          "end": 1660
                         }
                       },
                       "argument": {
                         "kind": "integer",
                         "raw": "22",
                         "span": {
-                          "start": 1474,
-                          "end": 1476
+                          "start": 1661,
+                          "end": 1663
                         }
                       },
                       "span": {
-                        "start": 1468,
-                        "end": 1476
+                        "start": 1655,
+                        "end": 1663
                       }
                     },
                     "span": {
-                      "start": 1467,
-                      "end": 1477
+                      "start": 1654,
+                      "end": 1664
                     }
                   },
                   "span": {
-                    "start": 1446,
-                    "end": 1477
+                    "start": 1633,
+                    "end": 1664
                   }
                 },
                 "span": {
-                  "start": 1446,
-                  "end": 1491
+                  "start": 1633,
+                  "end": 1678
                 }
               },
               "span": {
-                "start": 1446,
-                "end": 1506
+                "start": 1633,
+                "end": 1693
               }
             },
             "span": {
-              "start": 1446,
-              "end": 1506
+              "start": 1633,
+              "end": 1693
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1760,
+                  "end": 1767
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "render",
+                  "span": {
+                    "start": 1746,
+                    "end": 1752
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "addEitherExplicit",
+                      "span": {
+                        "start": 1699,
+                        "end": 1716
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "name",
+                          "name": "Right",
+                          "span": {
+                            "start": 1718,
+                            "end": 1723
+                          }
+                        },
+                        "argument": {
+                          "kind": "integer",
+                          "raw": "20",
+                          "span": {
+                            "start": 1724,
+                            "end": 1726
+                          }
+                        },
+                        "span": {
+                          "start": 1718,
+                          "end": 1726
+                        }
+                      },
+                      "span": {
+                        "start": 1717,
+                        "end": 1727
+                      }
+                    },
+                    "span": {
+                      "start": 1699,
+                      "end": 1727
+                    }
+                  },
+                  "argument": {
+                    "kind": "grouped",
+                    "value": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "Right",
+                        "span": {
+                          "start": 1729,
+                          "end": 1734
+                        }
+                      },
+                      "argument": {
+                        "kind": "integer",
+                        "raw": "22",
+                        "span": {
+                          "start": 1735,
+                          "end": 1737
+                        }
+                      },
+                      "span": {
+                        "start": 1729,
+                        "end": 1737
+                      }
+                    },
+                    "span": {
+                      "start": 1728,
+                      "end": 1738
+                    }
+                  },
+                  "span": {
+                    "start": 1699,
+                    "end": 1738
+                  }
+                },
+                "span": {
+                  "start": 1699,
+                  "end": 1752
+                }
+              },
+              "span": {
+                "start": 1699,
+                "end": 1767
+              }
+            },
+            "span": {
+              "start": 1699,
+              "end": 1767
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1832,
+                  "end": 1839
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "render",
+                  "span": {
+                    "start": 1818,
+                    "end": 1824
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "addEither",
+                      "span": {
+                        "start": 1773,
+                        "end": 1782
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "name",
+                          "name": "Left",
+                          "span": {
+                            "start": 1784,
+                            "end": 1788
+                          }
+                        },
+                        "argument": {
+                          "kind": "string",
+                          "raw": "\"stopped\"",
+                          "span": {
+                            "start": 1789,
+                            "end": 1798
+                          }
+                        },
+                        "span": {
+                          "start": 1784,
+                          "end": 1798
+                        }
+                      },
+                      "span": {
+                        "start": 1783,
+                        "end": 1799
+                      }
+                    },
+                    "span": {
+                      "start": 1773,
+                      "end": 1799
+                    }
+                  },
+                  "argument": {
+                    "kind": "grouped",
+                    "value": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "Right",
+                        "span": {
+                          "start": 1801,
+                          "end": 1806
+                        }
+                      },
+                      "argument": {
+                        "kind": "integer",
+                        "raw": "22",
+                        "span": {
+                          "start": 1807,
+                          "end": 1809
+                        }
+                      },
+                      "span": {
+                        "start": 1801,
+                        "end": 1809
+                      }
+                    },
+                    "span": {
+                      "start": 1800,
+                      "end": 1810
+                    }
+                  },
+                  "span": {
+                    "start": 1773,
+                    "end": 1810
+                  }
+                },
+                "span": {
+                  "start": 1773,
+                  "end": 1824
+                }
+              },
+              "span": {
+                "start": 1773,
+                "end": 1839
+              }
+            },
+            "span": {
+              "start": 1773,
+              "end": 1839
             }
           }
         ],
@@ -2103,8 +2593,8 @@
             "kind": "name",
             "name": "println",
             "span": {
-              "start": 1571,
-              "end": 1578
+              "start": 1912,
+              "end": 1919
             }
           },
           "argument": {
@@ -2113,8 +2603,8 @@
               "kind": "name",
               "name": "render",
               "span": {
-                "start": 1557,
-                "end": 1563
+                "start": 1898,
+                "end": 1904
               }
             },
             "argument": {
@@ -2123,10 +2613,10 @@
                 "kind": "application",
                 "function": {
                   "kind": "name",
-                  "name": "addEither",
+                  "name": "addEitherExplicit",
                   "span": {
-                    "start": 1512,
-                    "end": 1521
+                    "start": 1845,
+                    "end": 1862
                   }
                 },
                 "argument": {
@@ -2137,31 +2627,31 @@
                       "kind": "name",
                       "name": "Left",
                       "span": {
-                        "start": 1523,
-                        "end": 1527
+                        "start": 1864,
+                        "end": 1868
                       }
                     },
                     "argument": {
                       "kind": "string",
                       "raw": "\"stopped\"",
                       "span": {
-                        "start": 1528,
-                        "end": 1537
+                        "start": 1869,
+                        "end": 1878
                       }
                     },
                     "span": {
-                      "start": 1523,
-                      "end": 1537
+                      "start": 1864,
+                      "end": 1878
                     }
                   },
                   "span": {
-                    "start": 1522,
-                    "end": 1538
+                    "start": 1863,
+                    "end": 1879
                   }
                 },
                 "span": {
-                  "start": 1512,
-                  "end": 1538
+                  "start": 1845,
+                  "end": 1879
                 }
               },
               "argument": {
@@ -2172,51 +2662,51 @@
                     "kind": "name",
                     "name": "Right",
                     "span": {
-                      "start": 1540,
-                      "end": 1545
+                      "start": 1881,
+                      "end": 1886
                     }
                   },
                   "argument": {
                     "kind": "integer",
                     "raw": "22",
                     "span": {
-                      "start": 1546,
-                      "end": 1548
+                      "start": 1887,
+                      "end": 1889
                     }
                   },
                   "span": {
-                    "start": 1540,
-                    "end": 1548
+                    "start": 1881,
+                    "end": 1889
                   }
                 },
                 "span": {
-                  "start": 1539,
-                  "end": 1549
+                  "start": 1880,
+                  "end": 1890
                 }
               },
               "span": {
-                "start": 1512,
-                "end": 1549
+                "start": 1845,
+                "end": 1890
               }
             },
             "span": {
-              "start": 1512,
-              "end": 1563
+              "start": 1845,
+              "end": 1904
             }
           },
           "span": {
-            "start": 1512,
-            "end": 1578
+            "start": 1845,
+            "end": 1919
           }
         },
         "span": {
-          "start": 1437,
-          "end": 1582
+          "start": 1624,
+          "end": 1923
         }
       },
       "span": {
-        "start": 1414,
-        "end": 1582
+        "start": 1601,
+        "end": 1923
       }
     }
   ],
@@ -2226,7 +2716,7 @@
       "kind": "module",
       "origin": {
         "start": 0,
-        "end": 1582
+        "end": 1923
       }
     },
     {
@@ -2451,52 +2941,79 @@
       "kind": "function",
       "origin": {
         "start": 1246,
-        "end": 1412
+        "end": 1431
       }
     },
     {
       "id": 26,
       "parent": 25,
-      "kind": "match-arm",
+      "kind": "lambda",
       "origin": {
-        "start": 1315,
-        "end": 1344
+        "start": 1366,
+        "end": 1430
       }
     },
     {
       "id": 27,
-      "parent": 25,
-      "kind": "match-arm",
+      "parent": 26,
+      "kind": "lambda",
       "origin": {
-        "start": 1349,
-        "end": 1371
+        "start": 1391,
+        "end": 1429
       }
     },
     {
       "id": 28,
-      "parent": 25,
-      "kind": "match-arm",
+      "parent": 0,
+      "kind": "function",
       "origin": {
-        "start": 1376,
-        "end": 1408
+        "start": 1433,
+        "end": 1599
       }
     },
     {
       "id": 29,
-      "parent": 0,
-      "kind": "function",
+      "parent": 28,
+      "kind": "match-arm",
       "origin": {
-        "start": 1414,
-        "end": 1582
+        "start": 1502,
+        "end": 1531
       }
     },
     {
       "id": 30,
-      "parent": 29,
+      "parent": 28,
+      "kind": "match-arm",
+      "origin": {
+        "start": 1536,
+        "end": 1558
+      }
+    },
+    {
+      "id": 31,
+      "parent": 28,
+      "kind": "match-arm",
+      "origin": {
+        "start": 1563,
+        "end": 1595
+      }
+    },
+    {
+      "id": 32,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 1601,
+        "end": 1923
+      }
+    },
+    {
+      "id": 33,
+      "parent": 32,
       "kind": "do-block",
       "origin": {
-        "start": 1437,
-        "end": 1582
+        "start": 1624,
+        "end": 1923
       }
     }
   ],
@@ -2599,30 +3116,42 @@
     },
     {
       "id": 8,
+      "spelling": "addEitherExplicit",
+      "canonical": "artifact/monad-either::addEitherExplicit",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 1249,
+        "end": 1266
+      }
+    },
+    {
+      "id": 9,
       "spelling": "render",
       "canonical": "artifact/monad-either::render",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 1249,
-        "end": 1255
+        "start": 1436,
+        "end": 1442
       }
     },
     {
-      "id": 9,
+      "id": 10,
       "spelling": "main",
       "canonical": "artifact/monad-either::main",
       "namespace": "value",
       "kind": "effect-function",
       "scope": 0,
       "origin": {
-        "start": 1428,
-        "end": 1432
+        "start": 1615,
+        "end": 1619
       }
     },
     {
-      "id": 10,
+      "id": 11,
       "spelling": "F",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2633,7 +3162,7 @@
       }
     },
     {
-      "id": 11,
+      "id": 12,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2644,7 +3173,7 @@
       }
     },
     {
-      "id": 12,
+      "id": 13,
       "spelling": "B",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2655,7 +3184,7 @@
       }
     },
     {
-      "id": 13,
+      "id": 14,
       "spelling": "f",
       "namespace": "value",
       "kind": "parameter",
@@ -2666,7 +3195,7 @@
       }
     },
     {
-      "id": 14,
+      "id": 15,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -2677,7 +3206,7 @@
       }
     },
     {
-      "id": 15,
+      "id": 16,
       "spelling": "E",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2688,7 +3217,7 @@
       }
     },
     {
-      "id": 16,
+      "id": 17,
       "spelling": "Either",
       "canonical": "std/prelude::Either",
       "namespace": "type",
@@ -2700,7 +3229,7 @@
       }
     },
     {
-      "id": 17,
+      "id": 18,
       "spelling": "E",
       "canonical": "std/prelude::Either::E",
       "namespace": "type",
@@ -2712,7 +3241,7 @@
       }
     },
     {
-      "id": 18,
+      "id": 19,
       "spelling": "A",
       "canonical": "std/prelude::Either::A",
       "namespace": "type",
@@ -2724,7 +3253,7 @@
       }
     },
     {
-      "id": 19,
+      "id": 20,
       "spelling": "Left",
       "canonical": "std/prelude::Left",
       "namespace": "value",
@@ -2736,7 +3265,7 @@
       }
     },
     {
-      "id": 20,
+      "id": 21,
       "spelling": "Right",
       "canonical": "std/prelude::Right",
       "namespace": "value",
@@ -2748,19 +3277,8 @@
       }
     },
     {
-      "id": 21,
-      "spelling": "A",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "scope": 5,
-      "origin": {
-        "start": 117,
-        "end": 272
-      }
-    },
-    {
       "id": 22,
-      "spelling": "B",
+      "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
       "scope": 5,
@@ -2771,6 +3289,17 @@
     },
     {
       "id": 23,
+      "spelling": "B",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 5,
+      "origin": {
+        "start": 117,
+        "end": 272
+      }
+    },
+    {
+      "id": 24,
       "spelling": "f",
       "namespace": "value",
       "kind": "parameter",
@@ -2781,7 +3310,7 @@
       }
     },
     {
-      "id": 24,
+      "id": 25,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -2792,7 +3321,7 @@
       }
     },
     {
-      "id": 25,
+      "id": 26,
       "spelling": "error",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -2803,7 +3332,7 @@
       }
     },
     {
-      "id": 26,
+      "id": 27,
       "spelling": "item",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -2814,7 +3343,7 @@
       }
     },
     {
-      "id": 27,
+      "id": 28,
       "spelling": "F",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2825,7 +3354,7 @@
       }
     },
     {
-      "id": 28,
+      "id": 29,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2836,7 +3365,7 @@
       }
     },
     {
-      "id": 29,
+      "id": 30,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -2847,19 +3376,8 @@
       }
     },
     {
-      "id": 30,
-      "spelling": "A",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "scope": 10,
-      "origin": {
-        "start": 355,
-        "end": 411
-      }
-    },
-    {
       "id": 31,
-      "spelling": "B",
+      "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
       "scope": 10,
@@ -2870,6 +3388,17 @@
     },
     {
       "id": 32,
+      "spelling": "B",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 10,
+      "origin": {
+        "start": 355,
+        "end": 411
+      }
+    },
+    {
+      "id": 33,
       "spelling": "wrapped",
       "namespace": "value",
       "kind": "parameter",
@@ -2880,7 +3409,7 @@
       }
     },
     {
-      "id": 33,
+      "id": 34,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -2891,7 +3420,7 @@
       }
     },
     {
-      "id": 34,
+      "id": 35,
       "spelling": "E",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2902,7 +3431,7 @@
       }
     },
     {
-      "id": 35,
+      "id": 36,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -2913,7 +3442,7 @@
       }
     },
     {
-      "id": 36,
+      "id": 37,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -2924,19 +3453,8 @@
       }
     },
     {
-      "id": 37,
-      "spelling": "A",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "scope": 13,
-      "origin": {
-        "start": 510,
-        "end": 759
-      }
-    },
-    {
       "id": 38,
-      "spelling": "B",
+      "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
       "scope": 13,
@@ -2947,6 +3465,17 @@
     },
     {
       "id": 39,
+      "spelling": "B",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 13,
+      "origin": {
+        "start": 510,
+        "end": 759
+      }
+    },
+    {
+      "id": 40,
       "spelling": "wrapped",
       "namespace": "value",
       "kind": "parameter",
@@ -2957,7 +3486,7 @@
       }
     },
     {
-      "id": 40,
+      "id": 41,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -2968,7 +3497,7 @@
       }
     },
     {
-      "id": 41,
+      "id": 42,
       "spelling": "function",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -2979,7 +3508,7 @@
       }
     },
     {
-      "id": 42,
+      "id": 43,
       "spelling": "item",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -2990,7 +3519,7 @@
       }
     },
     {
-      "id": 43,
+      "id": 44,
       "spelling": "error",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -3001,7 +3530,7 @@
       }
     },
     {
-      "id": 44,
+      "id": 45,
       "spelling": "error",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -3012,7 +3541,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 46,
       "spelling": "M",
       "namespace": "type",
       "kind": "type-parameter",
@@ -3023,19 +3552,8 @@
       }
     },
     {
-      "id": 46,
-      "spelling": "A",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "scope": 18,
-      "origin": {
-        "start": 810,
-        "end": 864
-      }
-    },
-    {
       "id": 47,
-      "spelling": "B",
+      "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
       "scope": 18,
@@ -3046,6 +3564,17 @@
     },
     {
       "id": 48,
+      "spelling": "B",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 18,
+      "origin": {
+        "start": 810,
+        "end": 864
+      }
+    },
+    {
+      "id": 49,
       "spelling": "f",
       "namespace": "value",
       "kind": "parameter",
@@ -3056,7 +3585,7 @@
       }
     },
     {
-      "id": 49,
+      "id": 50,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -3067,7 +3596,7 @@
       }
     },
     {
-      "id": 50,
+      "id": 51,
       "spelling": "E",
       "namespace": "type",
       "kind": "type-parameter",
@@ -3078,7 +3607,7 @@
       }
     },
     {
-      "id": 51,
+      "id": 52,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -3089,7 +3618,7 @@
       }
     },
     {
-      "id": 52,
+      "id": 53,
       "spelling": "B",
       "namespace": "type",
       "kind": "type-parameter",
@@ -3100,7 +3629,7 @@
       }
     },
     {
-      "id": 53,
+      "id": 54,
       "spelling": "f",
       "namespace": "value",
       "kind": "parameter",
@@ -3111,7 +3640,7 @@
       }
     },
     {
-      "id": 54,
+      "id": 55,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
@@ -3122,7 +3651,7 @@
       }
     },
     {
-      "id": 55,
+      "id": 56,
       "spelling": "error",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -3133,7 +3662,7 @@
       }
     },
     {
-      "id": 56,
+      "id": 57,
       "spelling": "item",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -3144,7 +3673,7 @@
       }
     },
     {
-      "id": 57,
+      "id": 58,
       "spelling": "String",
       "canonical": "std/prelude::String",
       "namespace": "type",
@@ -3156,7 +3685,7 @@
       }
     },
     {
-      "id": 58,
+      "id": 59,
       "spelling": "Int",
       "canonical": "std/prelude::Int",
       "namespace": "type",
@@ -3168,7 +3697,7 @@
       }
     },
     {
-      "id": 59,
+      "id": 60,
       "spelling": "left",
       "namespace": "value",
       "kind": "parameter",
@@ -3179,7 +3708,7 @@
       }
     },
     {
-      "id": 60,
+      "id": 61,
       "spelling": "right",
       "namespace": "value",
       "kind": "parameter",
@@ -3190,7 +3719,7 @@
       }
     },
     {
-      "id": 61,
+      "id": 62,
       "spelling": "first",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -3201,7 +3730,7 @@
       }
     },
     {
-      "id": 62,
+      "id": 63,
       "spelling": "second",
       "namespace": "value",
       "kind": "pattern-binding",
@@ -3212,7 +3741,7 @@
       }
     },
     {
-      "id": 63,
+      "id": 64,
       "spelling": "+",
       "canonical": "std/prelude::+",
       "namespace": "operator",
@@ -3224,29 +3753,73 @@
       }
     },
     {
-      "id": 64,
-      "spelling": "value",
+      "id": 65,
+      "spelling": "left",
       "namespace": "value",
       "kind": "parameter",
       "scope": 25,
       "origin": {
-        "start": 1256,
-        "end": 1261
-      }
-    },
-    {
-      "id": 65,
-      "spelling": "error",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "scope": 26,
-      "origin": {
-        "start": 1320,
-        "end": 1325
+        "start": 1269,
+        "end": 1273
       }
     },
     {
       "id": 66,
+      "spelling": "right",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 25,
+      "origin": {
+        "start": 1300,
+        "end": 1305
+      }
+    },
+    {
+      "id": 67,
+      "spelling": "first",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 26,
+      "origin": {
+        "start": 1367,
+        "end": 1372
+      }
+    },
+    {
+      "id": 68,
+      "spelling": "second",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 27,
+      "origin": {
+        "start": 1392,
+        "end": 1398
+      }
+    },
+    {
+      "id": 69,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 28,
+      "origin": {
+        "start": 1443,
+        "end": 1448
+      }
+    },
+    {
+      "id": 70,
+      "spelling": "error",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 29,
+      "origin": {
+        "start": 1507,
+        "end": 1512
+      }
+    },
+    {
+      "id": 71,
       "spelling": "println",
       "canonical": "std/prelude::println",
       "namespace": "value",
@@ -3262,7 +3835,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 11,
+      "target": 12,
       "origin": {
         "start": 45,
         "end": 46
@@ -3271,7 +3844,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 12,
+      "target": 13,
       "origin": {
         "start": 50,
         "end": 51
@@ -3280,7 +3853,7 @@
     {
       "spelling": "F",
       "namespace": "type",
-      "target": 10,
+      "target": 11,
       "origin": {
         "start": 63,
         "end": 67
@@ -3289,7 +3862,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 11,
+      "target": 12,
       "origin": {
         "start": 65,
         "end": 66
@@ -3298,7 +3871,7 @@
     {
       "spelling": "F",
       "namespace": "type",
-      "target": 10,
+      "target": 11,
       "origin": {
         "start": 71,
         "end": 75
@@ -3307,7 +3880,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 12,
+      "target": 13,
       "origin": {
         "start": 73,
         "end": 74
@@ -3325,7 +3898,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 99,
         "end": 111
@@ -3334,7 +3907,7 @@
     {
       "spelling": "E",
       "namespace": "type",
-      "target": 15,
+      "target": 16,
       "origin": {
         "start": 106,
         "end": 107
@@ -3343,7 +3916,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 21,
+      "target": 22,
       "origin": {
         "start": 134,
         "end": 135
@@ -3352,7 +3925,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 22,
+      "target": 23,
       "origin": {
         "start": 139,
         "end": 140
@@ -3361,7 +3934,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 152,
         "end": 164
@@ -3370,7 +3943,7 @@
     {
       "spelling": "E",
       "namespace": "type",
-      "target": 15,
+      "target": 16,
       "origin": {
         "start": 159,
         "end": 160
@@ -3379,7 +3952,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 21,
+      "target": 22,
       "origin": {
         "start": 162,
         "end": 163
@@ -3388,7 +3961,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 168,
         "end": 180
@@ -3397,7 +3970,7 @@
     {
       "spelling": "E",
       "namespace": "type",
-      "target": 15,
+      "target": 16,
       "origin": {
         "start": 175,
         "end": 176
@@ -3406,7 +3979,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 22,
+      "target": 23,
       "origin": {
         "start": 178,
         "end": 179
@@ -3415,7 +3988,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 24,
+      "target": 25,
       "origin": {
         "start": 193,
         "end": 198
@@ -3424,7 +3997,7 @@
     {
       "spelling": "Left",
       "namespace": "value",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 207,
         "end": 211
@@ -3433,7 +4006,7 @@
     {
       "spelling": "Left",
       "namespace": "value",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 221,
         "end": 225
@@ -3442,7 +4015,7 @@
     {
       "spelling": "error",
       "namespace": "value",
-      "target": 25,
+      "target": 26,
       "origin": {
         "start": 226,
         "end": 231
@@ -3451,7 +4024,7 @@
     {
       "spelling": "Right",
       "namespace": "value",
-      "target": 20,
+      "target": 21,
       "origin": {
         "start": 238,
         "end": 243
@@ -3460,7 +4033,7 @@
     {
       "spelling": "Right",
       "namespace": "value",
-      "target": 20,
+      "target": 21,
       "origin": {
         "start": 252,
         "end": 257
@@ -3469,7 +4042,7 @@
     {
       "spelling": "f",
       "namespace": "value",
-      "target": 23,
+      "target": 24,
       "origin": {
         "start": 260,
         "end": 261
@@ -3478,7 +4051,7 @@
     {
       "spelling": "item",
       "namespace": "value",
-      "target": 26,
+      "target": 27,
       "origin": {
         "start": 262,
         "end": 266
@@ -3496,7 +4069,7 @@
     {
       "spelling": "F",
       "namespace": "type",
-      "target": 27,
+      "target": 28,
       "origin": {
         "start": 318,
         "end": 319
@@ -3505,7 +4078,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 28,
+      "target": 29,
       "origin": {
         "start": 343,
         "end": 344
@@ -3514,7 +4087,7 @@
     {
       "spelling": "F",
       "namespace": "type",
-      "target": 27,
+      "target": 28,
       "origin": {
         "start": 348,
         "end": 352
@@ -3523,7 +4096,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 28,
+      "target": 29,
       "origin": {
         "start": 350,
         "end": 351
@@ -3532,7 +4105,7 @@
     {
       "spelling": "F",
       "namespace": "type",
-      "target": 27,
+      "target": 28,
       "origin": {
         "start": 379,
         "end": 388
@@ -3541,7 +4114,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 30,
+      "target": 31,
       "origin": {
         "start": 381,
         "end": 382
@@ -3550,7 +4123,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 31,
+      "target": 32,
       "origin": {
         "start": 386,
         "end": 387
@@ -3559,7 +4132,7 @@
     {
       "spelling": "F",
       "namespace": "type",
-      "target": 27,
+      "target": 28,
       "origin": {
         "start": 399,
         "end": 403
@@ -3568,7 +4141,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 30,
+      "target": 31,
       "origin": {
         "start": 401,
         "end": 402
@@ -3577,7 +4150,7 @@
     {
       "spelling": "F",
       "namespace": "type",
-      "target": 27,
+      "target": 28,
       "origin": {
         "start": 407,
         "end": 411
@@ -3586,7 +4159,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 31,
+      "target": 32,
       "origin": {
         "start": 409,
         "end": 410
@@ -3604,7 +4177,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 439,
         "end": 451
@@ -3613,7 +4186,7 @@
     {
       "spelling": "E",
       "namespace": "type",
-      "target": 34,
+      "target": 35,
       "origin": {
         "start": 446,
         "end": 447
@@ -3622,7 +4195,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 35,
+      "target": 36,
       "origin": {
         "start": 475,
         "end": 476
@@ -3631,7 +4204,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 480,
         "end": 492
@@ -3640,7 +4213,7 @@
     {
       "spelling": "E",
       "namespace": "type",
-      "target": 34,
+      "target": 35,
       "origin": {
         "start": 487,
         "end": 488
@@ -3649,7 +4222,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 35,
+      "target": 36,
       "origin": {
         "start": 490,
         "end": 491
@@ -3658,7 +4231,7 @@
     {
       "spelling": "Right",
       "namespace": "value",
-      "target": 20,
+      "target": 21,
       "origin": {
         "start": 495,
         "end": 500
@@ -3667,7 +4240,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 36,
+      "target": 37,
       "origin": {
         "start": 501,
         "end": 506
@@ -3676,7 +4249,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 534,
         "end": 551
@@ -3685,7 +4258,7 @@
     {
       "spelling": "E",
       "namespace": "type",
-      "target": 34,
+      "target": 35,
       "origin": {
         "start": 541,
         "end": 542
@@ -3694,7 +4267,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 37,
+      "target": 38,
       "origin": {
         "start": 544,
         "end": 545
@@ -3703,7 +4276,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 38,
+      "target": 39,
       "origin": {
         "start": 549,
         "end": 550
@@ -3712,7 +4285,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 562,
         "end": 574
@@ -3721,7 +4294,7 @@
     {
       "spelling": "E",
       "namespace": "type",
-      "target": 34,
+      "target": 35,
       "origin": {
         "start": 569,
         "end": 570
@@ -3730,7 +4303,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 37,
+      "target": 38,
       "origin": {
         "start": 572,
         "end": 573
@@ -3739,7 +4312,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 578,
         "end": 590
@@ -3748,7 +4321,7 @@
     {
       "spelling": "E",
       "namespace": "type",
-      "target": 34,
+      "target": 35,
       "origin": {
         "start": 585,
         "end": 586
@@ -3757,7 +4330,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 38,
+      "target": 39,
       "origin": {
         "start": 588,
         "end": 589
@@ -3766,7 +4339,7 @@
     {
       "spelling": "wrapped",
       "namespace": "value",
-      "target": 39,
+      "target": 40,
       "origin": {
         "start": 604,
         "end": 611
@@ -3775,7 +4348,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 40,
+      "target": 41,
       "origin": {
         "start": 613,
         "end": 618
@@ -3784,7 +4357,7 @@
     {
       "spelling": "Right",
       "namespace": "value",
-      "target": 20,
+      "target": 21,
       "origin": {
         "start": 629,
         "end": 634
@@ -3793,7 +4366,7 @@
     {
       "spelling": "Right",
       "namespace": "value",
-      "target": 20,
+      "target": 21,
       "origin": {
         "start": 645,
         "end": 650
@@ -3802,7 +4375,7 @@
     {
       "spelling": "Right",
       "namespace": "value",
-      "target": 20,
+      "target": 21,
       "origin": {
         "start": 660,
         "end": 665
@@ -3811,7 +4384,7 @@
     {
       "spelling": "function",
       "namespace": "value",
-      "target": 41,
+      "target": 42,
       "origin": {
         "start": 668,
         "end": 676
@@ -3820,7 +4393,7 @@
     {
       "spelling": "item",
       "namespace": "value",
-      "target": 42,
+      "target": 43,
       "origin": {
         "start": 677,
         "end": 681
@@ -3829,7 +4402,7 @@
     {
       "spelling": "Left",
       "namespace": "value",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 689,
         "end": 693
@@ -3838,7 +4411,7 @@
     {
       "spelling": "Left",
       "namespace": "value",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 707,
         "end": 711
@@ -3847,7 +4420,7 @@
     {
       "spelling": "error",
       "namespace": "value",
-      "target": 43,
+      "target": 44,
       "origin": {
         "start": 712,
         "end": 717
@@ -3856,7 +4429,7 @@
     {
       "spelling": "Left",
       "namespace": "value",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 728,
         "end": 732
@@ -3865,7 +4438,7 @@
     {
       "spelling": "Left",
       "namespace": "value",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 743,
         "end": 747
@@ -3874,7 +4447,7 @@
     {
       "spelling": "error",
       "namespace": "value",
-      "target": 44,
+      "target": 45,
       "origin": {
         "start": 748,
         "end": 753
@@ -3892,7 +4465,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 45,
+      "target": 46,
       "origin": {
         "start": 803,
         "end": 804
@@ -3901,7 +4474,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 46,
+      "target": 47,
       "origin": {
         "start": 831,
         "end": 832
@@ -3910,7 +4483,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 45,
+      "target": 46,
       "origin": {
         "start": 836,
         "end": 840
@@ -3919,7 +4492,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 47,
+      "target": 48,
       "origin": {
         "start": 838,
         "end": 839
@@ -3928,7 +4501,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 45,
+      "target": 46,
       "origin": {
         "start": 852,
         "end": 856
@@ -3937,7 +4510,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 46,
+      "target": 47,
       "origin": {
         "start": 854,
         "end": 855
@@ -3946,7 +4519,7 @@
     {
       "spelling": "M",
       "namespace": "type",
-      "target": 45,
+      "target": 46,
       "origin": {
         "start": 860,
         "end": 864
@@ -3955,7 +4528,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 47,
+      "target": 48,
       "origin": {
         "start": 862,
         "end": 863
@@ -3973,7 +4546,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 886,
         "end": 898
@@ -3982,7 +4555,7 @@
     {
       "spelling": "E",
       "namespace": "type",
-      "target": 50,
+      "target": 51,
       "origin": {
         "start": 893,
         "end": 894
@@ -3991,7 +4564,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 51,
+      "target": 52,
       "origin": {
         "start": 925,
         "end": 926
@@ -4000,7 +4573,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 930,
         "end": 942
@@ -4009,7 +4582,7 @@
     {
       "spelling": "E",
       "namespace": "type",
-      "target": 50,
+      "target": 51,
       "origin": {
         "start": 937,
         "end": 938
@@ -4018,7 +4591,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 52,
+      "target": 53,
       "origin": {
         "start": 940,
         "end": 941
@@ -4027,7 +4600,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 954,
         "end": 966
@@ -4036,7 +4609,7 @@
     {
       "spelling": "E",
       "namespace": "type",
-      "target": 50,
+      "target": 51,
       "origin": {
         "start": 961,
         "end": 962
@@ -4045,7 +4618,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 51,
+      "target": 52,
       "origin": {
         "start": 964,
         "end": 965
@@ -4054,7 +4627,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 970,
         "end": 982
@@ -4063,7 +4636,7 @@
     {
       "spelling": "E",
       "namespace": "type",
-      "target": 50,
+      "target": 51,
       "origin": {
         "start": 977,
         "end": 978
@@ -4072,7 +4645,7 @@
     {
       "spelling": "B",
       "namespace": "type",
-      "target": 52,
+      "target": 53,
       "origin": {
         "start": 980,
         "end": 981
@@ -4081,7 +4654,7 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 54,
+      "target": 55,
       "origin": {
         "start": 995,
         "end": 1000
@@ -4090,7 +4663,7 @@
     {
       "spelling": "Left",
       "namespace": "value",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 1009,
         "end": 1013
@@ -4099,7 +4672,7 @@
     {
       "spelling": "Left",
       "namespace": "value",
-      "target": 19,
+      "target": 20,
       "origin": {
         "start": 1023,
         "end": 1027
@@ -4108,7 +4681,7 @@
     {
       "spelling": "error",
       "namespace": "value",
-      "target": 55,
+      "target": 56,
       "origin": {
         "start": 1028,
         "end": 1033
@@ -4117,7 +4690,7 @@
     {
       "spelling": "Right",
       "namespace": "value",
-      "target": 20,
+      "target": 21,
       "origin": {
         "start": 1040,
         "end": 1045
@@ -4126,7 +4699,7 @@
     {
       "spelling": "f",
       "namespace": "value",
-      "target": 53,
+      "target": 54,
       "origin": {
         "start": 1054,
         "end": 1055
@@ -4135,7 +4708,7 @@
     {
       "spelling": "item",
       "namespace": "value",
-      "target": 56,
+      "target": 57,
       "origin": {
         "start": 1056,
         "end": 1060
@@ -4144,7 +4717,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 1091,
         "end": 1110
@@ -4153,7 +4726,7 @@
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 57,
+      "target": 58,
       "origin": {
         "start": 1098,
         "end": 1104
@@ -4162,7 +4735,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 58,
+      "target": 59,
       "origin": {
         "start": 1106,
         "end": 1109
@@ -4171,7 +4744,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 1123,
         "end": 1142
@@ -4180,7 +4753,7 @@
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 57,
+      "target": 58,
       "origin": {
         "start": 1130,
         "end": 1136
@@ -4189,7 +4762,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 58,
+      "target": 59,
       "origin": {
         "start": 1138,
         "end": 1141
@@ -4198,7 +4771,7 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
         "start": 1148,
         "end": 1167
@@ -4207,7 +4780,7 @@
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 57,
+      "target": 58,
       "origin": {
         "start": 1155,
         "end": 1161
@@ -4216,7 +4789,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 58,
+      "target": 59,
       "origin": {
         "start": 1163,
         "end": 1166
@@ -4225,7 +4798,7 @@
     {
       "spelling": "left",
       "namespace": "value",
-      "target": 59,
+      "target": 60,
       "origin": {
         "start": 1190,
         "end": 1194
@@ -4234,7 +4807,7 @@
     {
       "spelling": "right",
       "namespace": "value",
-      "target": 60,
+      "target": 61,
       "origin": {
         "start": 1209,
         "end": 1214
@@ -4255,7 +4828,7 @@
     {
       "spelling": "first",
       "namespace": "value",
-      "target": 61,
+      "target": 62,
       "origin": {
         "start": 1226,
         "end": 1231
@@ -4264,7 +4837,7 @@
     {
       "spelling": "+",
       "namespace": "operator",
-      "target": 63,
+      "target": 64,
       "origin": {
         "start": 1232,
         "end": 1233
@@ -4273,7 +4846,7 @@
     {
       "spelling": "second",
       "namespace": "value",
-      "target": 62,
+      "target": 63,
       "origin": {
         "start": 1234,
         "end": 1240
@@ -4282,181 +4855,433 @@
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 16,
+      "target": 17,
       "origin": {
-        "start": 1263,
-        "end": 1282
+        "start": 1275,
+        "end": 1294
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 57,
+      "target": 58,
       "origin": {
-        "start": 1270,
-        "end": 1276
+        "start": 1282,
+        "end": 1288
       }
     },
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 58,
+      "target": 59,
       "origin": {
-        "start": 1278,
-        "end": 1281
+        "start": 1290,
+        "end": 1293
+      }
+    },
+    {
+      "spelling": "Either",
+      "namespace": "type",
+      "target": 17,
+      "origin": {
+        "start": 1307,
+        "end": 1326
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 57,
+      "target": 58,
       "origin": {
-        "start": 1286,
-        "end": 1292
+        "start": 1314,
+        "end": 1320
       }
     },
     {
-      "spelling": "value",
-      "namespace": "value",
-      "target": 64,
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 59,
       "origin": {
-        "start": 1303,
-        "end": 1308
+        "start": 1322,
+        "end": 1325
       }
     },
     {
-      "spelling": "Left",
-      "namespace": "value",
-      "target": 19,
+      "spelling": "Either",
+      "namespace": "type",
+      "target": 17,
       "origin": {
-        "start": 1315,
-        "end": 1319
+        "start": 1332,
+        "end": 1351
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 58,
+      "origin": {
+        "start": 1339,
+        "end": 1345
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 59,
+      "origin": {
+        "start": 1347,
+        "end": 1350
+      }
+    },
+    {
+      "spelling": "flatMap",
+      "namespace": "value",
+      "target": 6,
+      "candidates": [
+        6
+      ],
+      "origin": {
+        "start": 1361,
+        "end": 1364
+      }
+    },
+    {
+      "spelling": "flatMap",
+      "namespace": "value",
+      "target": 6,
+      "candidates": [
+        6
+      ],
+      "origin": {
+        "start": 1386,
+        "end": 1389
+      }
+    },
+    {
+      "spelling": "pure",
+      "namespace": "value",
+      "target": 3,
+      "candidates": [
+        3
+      ],
+      "origin": {
+        "start": 1408,
+        "end": 1412
+      }
+    },
+    {
+      "spelling": "first",
+      "namespace": "value",
+      "target": 67,
+      "origin": {
+        "start": 1415,
+        "end": 1420
       }
     },
     {
       "spelling": "+",
       "namespace": "operator",
-      "target": 63,
+      "target": 64,
       "origin": {
-        "start": 1337,
-        "end": 1338
+        "start": 1421,
+        "end": 1422
       }
     },
     {
-      "spelling": "error",
+      "spelling": "second",
+      "namespace": "value",
+      "target": 68,
+      "origin": {
+        "start": 1423,
+        "end": 1429
+      }
+    },
+    {
+      "spelling": "right",
+      "namespace": "value",
+      "target": 66,
+      "origin": {
+        "start": 1380,
+        "end": 1385
+      }
+    },
+    {
+      "spelling": "left",
       "namespace": "value",
       "target": 65,
       "origin": {
-        "start": 1339,
-        "end": 1344
+        "start": 1356,
+        "end": 1360
       }
     },
     {
-      "spelling": "Right",
-      "namespace": "value",
-      "target": 20,
+      "spelling": "Either",
+      "namespace": "type",
+      "target": 17,
       "origin": {
-        "start": 1349,
-        "end": 1354
+        "start": 1450,
+        "end": 1469
       }
     },
     {
-      "spelling": "Right",
-      "namespace": "value",
-      "target": 20,
-      "origin": {
-        "start": 1376,
-        "end": 1381
-      }
-    },
-    {
-      "spelling": "println",
-      "namespace": "value",
-      "target": 66,
-      "origin": {
-        "start": 1499,
-        "end": 1506
-      }
-    },
-    {
-      "spelling": "render",
-      "namespace": "value",
-      "target": 8,
-      "origin": {
-        "start": 1485,
-        "end": 1491
-      }
-    },
-    {
-      "spelling": "addEither",
-      "namespace": "value",
-      "target": 7,
-      "origin": {
-        "start": 1446,
-        "end": 1455
-      }
-    },
-    {
-      "spelling": "Right",
-      "namespace": "value",
-      "target": 20,
+      "spelling": "String",
+      "namespace": "type",
+      "target": 58,
       "origin": {
         "start": 1457,
-        "end": 1462
+        "end": 1463
       }
     },
     {
-      "spelling": "Right",
-      "namespace": "value",
-      "target": 20,
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 59,
       "origin": {
-        "start": 1468,
-        "end": 1473
+        "start": 1465,
+        "end": 1468
       }
     },
     {
-      "spelling": "println",
-      "namespace": "value",
-      "target": 66,
+      "spelling": "String",
+      "namespace": "type",
+      "target": 58,
       "origin": {
-        "start": 1571,
-        "end": 1578
+        "start": 1473,
+        "end": 1479
       }
     },
     {
-      "spelling": "render",
+      "spelling": "value",
       "namespace": "value",
-      "target": 8,
+      "target": 69,
       "origin": {
-        "start": 1557,
-        "end": 1563
-      }
-    },
-    {
-      "spelling": "addEither",
-      "namespace": "value",
-      "target": 7,
-      "origin": {
-        "start": 1512,
-        "end": 1521
+        "start": 1490,
+        "end": 1495
       }
     },
     {
       "spelling": "Left",
       "namespace": "value",
-      "target": 19,
+      "target": 20,
       "origin": {
-        "start": 1523,
-        "end": 1527
+        "start": 1502,
+        "end": 1506
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 64,
+      "origin": {
+        "start": 1524,
+        "end": 1525
+      }
+    },
+    {
+      "spelling": "error",
+      "namespace": "value",
+      "target": 70,
+      "origin": {
+        "start": 1526,
+        "end": 1531
       }
     },
     {
       "spelling": "Right",
       "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 1536,
+        "end": 1541
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 1563,
+        "end": 1568
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 71,
+      "origin": {
+        "start": 1686,
+        "end": 1693
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 1672,
+        "end": 1678
+      }
+    },
+    {
+      "spelling": "addEither",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 1633,
+        "end": 1642
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 1644,
+        "end": 1649
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 1655,
+        "end": 1660
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 71,
+      "origin": {
+        "start": 1760,
+        "end": 1767
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 1746,
+        "end": 1752
+      }
+    },
+    {
+      "spelling": "addEitherExplicit",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 1699,
+        "end": 1716
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 1718,
+        "end": 1723
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 1729,
+        "end": 1734
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 71,
+      "origin": {
+        "start": 1832,
+        "end": 1839
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 1818,
+        "end": 1824
+      }
+    },
+    {
+      "spelling": "addEither",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 1773,
+        "end": 1782
+      }
+    },
+    {
+      "spelling": "Left",
+      "namespace": "value",
       "target": 20,
       "origin": {
-        "start": 1540,
-        "end": 1545
+        "start": 1784,
+        "end": 1788
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 1801,
+        "end": 1806
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 71,
+      "origin": {
+        "start": 1912,
+        "end": 1919
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 1898,
+        "end": 1904
+      }
+    },
+    {
+      "spelling": "addEitherExplicit",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 1845,
+        "end": 1862
+      }
+    },
+    {
+      "spelling": "Left",
+      "namespace": "value",
+      "target": 20,
+      "origin": {
+        "start": 1864,
+        "end": 1868
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 1881,
+        "end": 1886
       }
     }
   ],

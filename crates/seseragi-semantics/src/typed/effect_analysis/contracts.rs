@@ -72,6 +72,7 @@ fn collect_failures(expression: &TypedExpr, failures: &mut Vec<EffectFailureOrig
         }
         TypedExpr::FieldAccess { receiver, .. }
         | TypedExpr::OptionalFieldAccess { receiver, .. } => collect_failures(receiver, failures),
+        TypedExpr::Lambda { body, .. } => collect_failures(body, failures),
         TypedExpr::Record { items, .. } => {
             for item in items {
                 collect_failures(item.value(), failures);
