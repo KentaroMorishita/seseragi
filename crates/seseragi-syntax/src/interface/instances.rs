@@ -3,7 +3,16 @@ use crate::surface::SurfaceDecl;
 use super::types::interface_type_from_type_ref;
 use super::{InterfaceConstraint, InterfaceInstance, InterfaceType};
 
-pub(super) fn instance_from_surface_decl(declaration: SurfaceDecl) -> Option<InterfaceInstance> {
+pub(super) fn instances_from_surface_decl(declaration: &SurfaceDecl) -> Vec<InterfaceInstance> {
+    let mut instances = crate::impl_operator_instances(declaration)
+        .iter()
+        .filter_map(instance_from_surface_decl)
+        .collect::<Vec<_>>();
+    instances.extend(instance_from_surface_decl(declaration));
+    instances
+}
+
+fn instance_from_surface_decl(declaration: &SurfaceDecl) -> Option<InterfaceInstance> {
     match declaration {
         SurfaceDecl::Instance {
             type_parameters,
@@ -20,9 +29,9 @@ pub(super) fn instance_from_surface_decl(declaration: SurfaceDecl) -> Option<Int
             argument_identities: Vec::new(),
             type_identity: None,
             trait_name: trait_name.clone(),
-            type_parameters,
+            type_parameters: type_parameters.clone(),
             head: InterfaceType::Apply {
-                constructor: trait_name,
+                constructor: trait_name.clone(),
                 arguments: arguments.iter().map(interface_type_from_type_ref).collect(),
             },
             constraints: constraints
@@ -37,7 +46,7 @@ pub(super) fn instance_from_surface_decl(declaration: SurfaceDecl) -> Option<Int
                         .collect(),
                 })
                 .collect(),
-            origin: span,
+            origin: *span,
         }),
         _ => None,
     }

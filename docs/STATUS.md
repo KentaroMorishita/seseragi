@@ -228,7 +228,13 @@ patternとtype-only import、actual executionを固定します。`schema-1/gene
 nominal ownerから選択し、通常の静的function callとしてTypedHir / CoreIr / TypeScriptIrへlowerします。
 contextual lambdaを含む`box.map (\value -> value + value)`から`.get`までactual executionで42を固定します。
 local nominal以外のtarget、不正な第一`self` parameter、同じownerでのmethod名重複はbackend前に停止します。
-method選択に`Box`などの個別型名は使いません。public methodのmodule ABIとoperator糖衣は後続gateです。
+method選択に`Box`などの個別型名は使いません。public methodのmodule ABIは後続gateです。
+`schema-1/impl-operator`は`impl Score`内の`operator +`と`operator ==`を、それぞれ通常の
+`Add<Score, Int, Score>` / `Eq<Score>` instanceへ展開します。既存のinstance contract、coherence、
+dictionary loweringを再利用し、actual executionで加算と比較の両方を通して42を固定します。
+operator / trait / method対応は共通registryに集約し、generic `impl<A>`のconstraintもinstance factoryへ保持します。
+標準traitと一致しないsignature、個別overloadを持たない`!=`宣言、同じheadの明示instanceとの重複は
+backend前に停止します。
 opaque smart constructor / field visibility、struct derivingも後続gateです。
 `schema-1/user-add-operator`はoperand型からlocal `Add<Score, Int, Score>`を選択し、binary `+`と
 curried operator section `(+)`を同じ生成dictionaryの`add` method callへlowerします。`Array<Int>`の`reduce`は

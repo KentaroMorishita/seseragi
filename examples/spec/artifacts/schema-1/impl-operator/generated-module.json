@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "module": "artifact/impl-operator",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.int64.add",
+      "core.bool",
+      "core.unit",
+      "core.string",
+      "core.int64.show",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Add<artifact/impl-operator::Score,std/prelude::Int,artifact/impl-operator::Score>",
+      "trait": "Add",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        },
+        {
+          "kind": "bigint"
+        },
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Add$0"
+    },
+    {
+      "identity": "std/prelude::Eq<artifact/impl-operator::Score>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Eq$1"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

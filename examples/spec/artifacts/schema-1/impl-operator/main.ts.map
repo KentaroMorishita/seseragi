@@ -1,0 +1,27 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/impl-operator"
+  ],
+  "sourcesContent": [
+    "struct Score {\n  value: Int,\n}\n\nimpl Score {\n  operator + self -> bonus: Int -> Score =\n    Score { value: self.value + bonus }\n\n  operator == self -> other: Score -> Bool =\n    self.value == other.value\n}\n\nfn total unit: Unit -> Score =\n  Score { value: 21 } + 21\n\nfn render score: Score -> String =\n  if score == Score { value: 42 } then\n    match score {\n      Score { value } -> `Impl operator: ${value}`\n    }\n  else\n    \"unexpected score\"\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println $ render $ total ()\n"
+  ],
+  "names": [
+    "Score",
+    "__ssrg$instance$Add$0",
+    "__ssrg$instance$Eq$1",
+    "total",
+    "__ssrg$instance$Add$0",
+    "render",
+    "__ssrg$instance$Eq$1",
+    "value",
+    "intShow",
+    "main",
+    "println",
+    "render",
+    "total"
+  ],
+  "mappings": ";;;;;AAAAA;;;;AAKEC;AAGAC;AAIFC;AAGAE;AAQAI"
+}

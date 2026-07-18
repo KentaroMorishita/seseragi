@@ -17,7 +17,7 @@ use dependencies::dependency_from_surface_import;
 use exports::{exports_from_surface_decl, operator_from_surface_decl};
 use header::{empty_module_header, module_header_from_surface};
 pub use header::{ModuleHeader, ModuleHeaderName};
-use instances::instance_from_surface_decl;
+use instances::instances_from_surface_decl;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ImportOccurrence {
@@ -133,8 +133,8 @@ fn parse_unlinked_module_interface_inner(
             .collect(),
         instances: surface_module
             .declarations
-            .into_iter()
-            .filter_map(instance_from_surface_decl)
+            .iter()
+            .flat_map(instances_from_surface_decl)
             .collect(),
     };
     UnlinkedModuleInterface {

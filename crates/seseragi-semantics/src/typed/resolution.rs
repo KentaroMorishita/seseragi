@@ -113,6 +113,16 @@ impl<'a> TypedResolution<'a> {
             == self.semantic_types.key_from_type_ref(self.resolved, right)
     }
 
+    pub(crate) fn type_has_canonical_identity(&self, type_ref: &TypeRef, canonical: &str) -> bool {
+        let TypeRef::Named { span, .. } = type_ref else {
+            return false;
+        };
+        self.target(*span, SymbolNamespace::Type)
+            .and_then(|target| self.symbol(target))
+            .and_then(|symbol| symbol.canonical.as_deref())
+            == Some(canonical)
+    }
+
     pub(crate) fn imported_effect(
         &self,
         id: SymbolId,

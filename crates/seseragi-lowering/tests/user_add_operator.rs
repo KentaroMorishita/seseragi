@@ -37,6 +37,73 @@ pub fn combine left: Score -> right: Score -> Score = left + right
 }
 
 #[test]
+fn lowers_impl_operator_sugar_through_the_same_dictionary_path() {
+    let source = "\
+struct Score { value: Int }
+impl Score {
+  operator + self -> bonus: Int -> Score =
+    Score { value: self.value + bonus }
+}
+pub fn addBonus score: Score -> bonus: Int -> Score = score + bonus
+";
+    let typed = type_module("artifact/impl-add-operator/main.ssrg", source);
+    assert_eq!(typed.instances.len(), 1);
+    assert_eq!(typed.instances[0].trait_name, "Add");
+
+    let core = lower_typed_module(typed);
+    assert!(matches!(
+        core.functions[0].body,
+        CoreExpr::Binary { ref evidence, .. }
+            if matches!(evidence.as_slice(), [selected]
+                if matches!(selected.evidence, seseragi_lowering::CoreInstanceEvidence::Local { .. }))
+    ));
+
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+    assert!(bundle
+        .typescript
+        .contains("__ssrg$instance$Add$0[\"add\"](score)(bonus)"));
+}
+
+#[test]
+fn carries_generic_impl_constraints_into_the_operator_dictionary() {
+    let source = "\
+struct Pair<A> { value: A }
+impl<A> Pair<A>
+where Add<A, A, A> {
+  operator + self -> other: Pair<A> -> Pair<A> =
+    Pair { value: self.value + other.value }
+}
+pub fn combine<A> left: Pair<A> -> right: Pair<A> -> Pair<A>
+where Add<A, A, A> =
+  left + right
+";
+    let typed = type_module("artifact/generic-impl-operator/main.ssrg", source);
+    assert_eq!(typed.instances.len(), 1);
+    assert_eq!(typed.instances[0].constraints.len(), 1);
+
+    let core = lower_typed_module(typed);
+    assert!(matches!(
+        core.functions[0].body,
+        CoreExpr::Binary { ref evidence, .. }
+            if matches!(evidence.as_slice(), [selected]
+                if matches!(
+                    selected.evidence,
+                    seseragi_lowering::CoreInstanceEvidence::Local {
+                        ref evidence_arguments,
+                        ..
+                    } if matches!(
+                        evidence_arguments.as_slice(),
+                        [required] if matches!(
+                            required.evidence,
+                            seseragi_lowering::CoreInstanceEvidence::Parameter { index: 0 }
+                        )
+                    )
+                ))
+    ));
+}
+
+#[test]
 fn lowers_a_scoped_add_operator_section_to_a_curried_dictionary_method() {
     let source = "\
 pub fn apply<T> step: (T -> T -> T) -> left: T -> right: T -> T =

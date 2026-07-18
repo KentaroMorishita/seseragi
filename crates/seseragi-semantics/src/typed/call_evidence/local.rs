@@ -14,8 +14,15 @@ pub(super) fn select_local_instance(
     trait_identity: &str,
     constraint: &TypedConstraint,
     resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
 ) -> Option<TypedInstanceEvidence> {
-    select_local_instance_with_stack(trait_identity, constraint, resolution, &mut Vec::new())
+    select_local_instance_with_stack(
+        trait_identity,
+        constraint,
+        resolution,
+        scoped,
+        &mut Vec::new(),
+    )
 }
 
 pub(super) fn infer_local_functional_instance(
@@ -23,6 +30,7 @@ pub(super) fn infer_local_functional_instance(
     trait_name: &str,
     collection: &TypedType,
     resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
 ) -> Option<(TypedType, TypedInstanceEvidence)> {
     let matches = resolution
         .resolved()
@@ -35,6 +43,7 @@ pub(super) fn infer_local_functional_instance(
                 trait_name,
                 collection,
                 resolution,
+                scoped,
             )
         })
         .take(2)
@@ -51,6 +60,7 @@ pub(super) fn infer_local_binary_instance(
     left: &TypedType,
     right: &TypedType,
     resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
 ) -> Option<(TypedType, TypedInstanceEvidence)> {
     let matches = resolution
         .resolved()
@@ -64,6 +74,7 @@ pub(super) fn infer_local_binary_instance(
                 left,
                 right,
                 resolution,
+                scoped,
             )
         })
         .take(2)
@@ -79,6 +90,7 @@ pub(super) fn infer_local_binary_instance_from_partial(
     trait_name: &str,
     expected: &[Option<&TypedType>; 3],
     resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
 ) -> Option<([TypedType; 3], TypedInstanceEvidence)> {
     let matches = resolution
         .resolved()
@@ -91,6 +103,7 @@ pub(super) fn infer_local_binary_instance_from_partial(
                 trait_name,
                 expected,
                 resolution,
+                scoped,
             )
         })
         .take(2)
@@ -108,6 +121,7 @@ fn infer_binary_instance_candidate(
     left: &TypedType,
     right: &TypedType,
     resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
 ) -> Option<(TypedType, TypedInstanceEvidence)> {
     let SurfaceDecl::Instance {
         type_parameters,
@@ -150,6 +164,7 @@ fn infer_binary_instance_candidate(
         trait_identity,
         &constraint,
         resolution,
+        scoped,
         &mut Vec::new(),
     )
     .map(|evidence| (output, evidence))
@@ -161,6 +176,7 @@ fn infer_binary_instance_candidate_from_partial(
     trait_name: &str,
     expected: &[Option<&TypedType>; 3],
     resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
 ) -> Option<([TypedType; 3], TypedInstanceEvidence)> {
     let SurfaceDecl::Instance {
         type_parameters,
@@ -213,6 +229,7 @@ fn infer_binary_instance_candidate_from_partial(
         trait_identity,
         &constraint,
         resolution,
+        scoped,
         &mut Vec::new(),
     )
     .map(|evidence| (head, evidence))
@@ -224,6 +241,7 @@ fn infer_functional_instance_candidate(
     trait_name: &str,
     collection: &TypedType,
     resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
 ) -> Option<(TypedType, TypedInstanceEvidence)> {
     let SurfaceDecl::Instance {
         type_parameters,
@@ -270,6 +288,7 @@ fn infer_functional_instance_candidate(
         trait_identity,
         &constraint,
         resolution,
+        scoped,
         &mut Vec::new(),
     )
     .map(|evidence| (element, evidence))
@@ -279,6 +298,7 @@ fn select_local_instance_with_stack(
     trait_identity: &str,
     constraint: &TypedConstraint,
     resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
     stack: &mut Vec<(String, Vec<TypedType>)>,
 ) -> Option<TypedInstanceEvidence> {
     let key = (trait_identity.to_owned(), constraint.arguments.clone());
@@ -291,8 +311,15 @@ fn select_local_instance_with_stack(
         .declarations
         .iter()
         .filter_map(|declaration| {
-            match_instance(declaration, trait_identity, constraint, resolution, stack)
-                .or_else(|| match_derived_show(declaration, trait_identity, constraint, resolution))
+            match_instance(
+                declaration,
+                trait_identity,
+                constraint,
+                resolution,
+                scoped,
+                stack,
+            )
+            .or_else(|| match_derived_show(declaration, trait_identity, constraint, resolution))
         })
         .take(2)
         .collect::<Vec<_>>();
@@ -351,6 +378,7 @@ fn match_instance(
     trait_identity: &str,
     constraint: &TypedConstraint,
     resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
     stack: &mut Vec<(String, Vec<TypedType>)>,
 ) -> Option<TypedInstanceEvidence> {
     let SurfaceDecl::Instance {
@@ -416,12 +444,21 @@ fn match_instance(
         super::direct_supertrait_constraints(*trait_name_span, &constraint.arguments, resolution);
     let mut evidence_arguments = Vec::new();
     for required in supertraits {
-        let evidence = select_local_instance_with_stack(
+        let evidence = select_scoped_instance(
             &required.trait_identity,
             &required.constraint,
             resolution,
-            stack,
+            scoped,
         )
+        .or_else(|| {
+            select_local_instance_with_stack(
+                &required.trait_identity,
+                &required.constraint,
+                resolution,
+                scoped,
+                stack,
+            )
+        })
         .or_else(|| {
             super::select_standard_instance(Some(&required.trait_identity), &required.constraint)
         })?;
@@ -442,9 +479,17 @@ fn match_instance(
                 .map(|argument| substitute_type_parameters(&argument, &substitutions))
                 .collect(),
         };
-        let evidence =
-            select_local_instance_with_stack(&required_trait, &constraint, resolution, stack)
-                .or_else(|| super::select_standard_instance(Some(&required_trait), &constraint))?;
+        let evidence = select_scoped_instance(&required_trait, &constraint, resolution, scoped)
+            .or_else(|| {
+                select_local_instance_with_stack(
+                    &required_trait,
+                    &constraint,
+                    resolution,
+                    scoped,
+                    stack,
+                )
+            })
+            .or_else(|| super::select_standard_instance(Some(&required_trait), &constraint))?;
         evidence_arguments.push(TypedCallEvidence {
             constraint,
             evidence,
@@ -455,6 +500,34 @@ fn match_instance(
         type_arguments,
         evidence_arguments,
     })
+}
+
+fn select_scoped_instance(
+    trait_identity: &str,
+    constraint: &TypedConstraint,
+    resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
+) -> Option<TypedInstanceEvidence> {
+    scoped
+        .iter()
+        .find(|available| {
+            available.trait_identity == trait_identity
+                && available.constraint.arguments.len() == constraint.arguments.len()
+                && available
+                    .constraint
+                    .arguments
+                    .iter()
+                    .zip(&constraint.arguments)
+                    .all(|(available, required)| {
+                        semantic_values_are_compatible(
+                            &resolution.semantic_value_from_typed_type(available),
+                            &resolution.semantic_value_from_typed_type(required),
+                        )
+                    })
+        })
+        .map(|available| TypedInstanceEvidence::Parameter {
+            index: available.index,
+        })
 }
 
 pub(super) fn normalize_partial_constructor_template(

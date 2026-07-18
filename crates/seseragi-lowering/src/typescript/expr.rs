@@ -8,6 +8,7 @@ use crate::sum_ops::runtime_sum_constructor;
 use crate::{
     CoreExpr, CoreMonadDoStatement, CoreRecordValueItem, CoreStatement, CoreTemplatePart, CoreType,
 };
+use seseragi_syntax::{standard_operator, StandardOperatorKind};
 use std::collections::BTreeMap;
 
 use super::decision::lower_core_decision;
@@ -619,15 +620,9 @@ fn lower_binary(
 }
 
 fn operator_trait_method(operator: &str) -> Option<&'static str> {
-    match operator {
-        "+" => Some("add"),
-        "-" => Some("sub"),
-        "*" => Some("mul"),
-        "/" => Some("div"),
-        "%" => Some("rem"),
-        "**" => Some("pow"),
-        _ => None,
-    }
+    standard_operator(operator)
+        .filter(|operator| operator.kind == StandardOperatorKind::Arithmetic)
+        .map(|operator| operator.method_name)
 }
 
 fn curried_dictionary_method_reference(dictionary: TypeScriptExpr, method: &str) -> TypeScriptExpr {

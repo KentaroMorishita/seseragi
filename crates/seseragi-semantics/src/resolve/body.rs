@@ -28,7 +28,8 @@ pub(crate) fn resolve_module_from_interface(
     interface: ModuleInterface,
     source: &str,
 ) -> ResolvedModule {
-    let surface = parse_surface_ast(interface.source.clone(), source);
+    let surface =
+        expand_impl_operator_instances(parse_surface_ast(interface.source.clone(), source));
     resolve_surface_module(interface, surface, Vec::new())
 }
 
@@ -36,7 +37,8 @@ pub fn resolve_linked_module(
     linked: seseragi_project::LinkedModule,
     source: &str,
 ) -> ResolvedModule {
-    let surface = parse_surface_ast(linked.interface.source.clone(), source);
+    let surface =
+        expand_impl_operator_instances(parse_surface_ast(linked.interface.source.clone(), source));
     let (dependency_instances, dependency_instance_issues) =
         instances::resolve_dependency_instances(&linked.dependencies);
     let mut resolver = Resolver::new(&linked.interface.module, module_origin(&surface));
@@ -51,6 +53,18 @@ pub fn resolve_linked_module(
         dependency_instances,
         resolver,
     )
+}
+
+fn expand_impl_operator_instances(mut surface: SurfaceModule) -> SurfaceModule {
+    surface.declarations = surface
+        .declarations
+        .into_iter()
+        .flat_map(|declaration| {
+            let instances = seseragi_syntax::impl_operator_instances(&declaration);
+            std::iter::once(declaration).chain(instances)
+        })
+        .collect();
+    surface
 }
 
 fn resolve_surface_module(

@@ -344,7 +344,7 @@ fn select_resolved_evidence(
             index: parameter.index,
         });
     }
-    local::select_local_instance(trait_identity, constraint, resolution)
+    local::select_local_instance(trait_identity, constraint, resolution, scoped)
         .or_else(|| {
             imported::select_imported_instance(trait_identity, constraint, resolution, scoped)
         })
@@ -474,6 +474,7 @@ pub(crate) fn select_iterable_evidence(
             "Iterable",
             &collection,
             resolution,
+            scoped,
         ) {
             return Ok((
                 element.clone(),
@@ -561,6 +562,7 @@ pub(crate) fn select_binary_operator_evidence(
             &left,
             &right,
             resolution,
+            scoped,
         ) {
             return Ok((
                 output.clone(),
@@ -659,6 +661,7 @@ pub(crate) fn select_binary_operator_reference_evidence(
             trait_name,
             &expected,
             resolution,
+            scoped,
         ) {
             return Ok((
                 head.clone(),

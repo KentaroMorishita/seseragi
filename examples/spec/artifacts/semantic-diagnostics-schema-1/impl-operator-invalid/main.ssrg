@@ -1,0 +1,15 @@
+struct Score {
+  value: Int,
+}
+
+instance Add<Score, Int, Score> {
+  fn add left: Score -> right: Int -> Score = left
+}
+
+impl Score {
+  operator + self -> bonus: Int -> Score = self
+
+  operator == self -> other: Int -> Int = 0
+
+  operator != self -> other: Score -> Bool = False
+}

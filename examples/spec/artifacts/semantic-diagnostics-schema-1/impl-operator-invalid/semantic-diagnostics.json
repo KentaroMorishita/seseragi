@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0202",
+      "severity": "Error",
+      "messageKey": "trait.instance-duplicate",
+      "primary": {
+        "start": 135,
+        "end": 180
+      },
+      "related": [
+        {
+          "message": "Add instance std/prelude::Add<main::Score,std/prelude::Int,main::Score> was first defined here",
+          "primary": {
+            "start": 32,
+            "end": 118
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0505",
+      "severity": "Error",
+      "messageKey": "impl.invalid-operator-signature",
+      "primary": {
+        "start": 211,
+        "end": 214
+      },
+      "related": [
+        {
+          "message": "equality operator right operand must match the impl target",
+          "primary": {
+            "start": 184,
+            "end": 225
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d3",
+      "code": "SES-T0504",
+      "severity": "Error",
+      "messageKey": "impl.operator-not-overloadable",
+      "primary": {
+        "start": 238,
+        "end": 240
+      },
+      "related": [
+        {
+          "message": "operator != cannot declare an individual overload",
+          "primary": {
+            "start": 229,
+            "end": 277
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

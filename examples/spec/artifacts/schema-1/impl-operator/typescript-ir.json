@@ -1,0 +1,398 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/impl-operator",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.add",
+    "core.bool",
+    "core.unit",
+    "core.string",
+    "core.int64.show",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "structs": [
+    {
+      "exported": false,
+      "name": "Score",
+      "brand": "__ssrg$brand$Score",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "bigint"
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 30
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Add<artifact/impl-operator::Score,std/prelude::Int,artifact/impl-operator::Score>",
+      "trait": "Add",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        },
+        {
+          "kind": "bigint"
+        },
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 47,
+        "end": 127
+      },
+      "dictionaryExport": "__ssrg$instance$Add$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "add",
+            "parameters": [
+              {
+                "name": "self",
+                "type": "Score",
+                "implicit": false
+              },
+              {
+                "name": "bonus",
+                "type": "bigint",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_add",
+                    "arguments": [
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "self"
+                        },
+                        "field": "value"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "bonus"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "Score",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 47,
+              "end": 127
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Eq<artifact/impl-operator::Score>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 131,
+        "end": 203
+      },
+      "dictionaryExport": "__ssrg$instance$Eq$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "parameters": [
+              {
+                "name": "self",
+                "type": "Score",
+                "implicit": false
+              },
+              {
+                "name": "other",
+                "type": "Score",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "binary",
+              "operator": "===",
+              "left": {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "identifier",
+                  "name": "self"
+                },
+                "field": "value"
+              },
+              "right": {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "identifier",
+                  "name": "other"
+                },
+                "field": "value"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 131,
+              "end": 203
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "total",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$instance$Add$0"
+        },
+        "method": "add",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "value",
+                "value": {
+                  "kind": "bigint",
+                  "value": "21"
+                }
+              }
+            ],
+            "assertedType": {
+              "kind": "reference",
+              "name": "Score",
+              "arguments": []
+            }
+          },
+          {
+            "kind": "bigint",
+            "value": "21"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 207,
+        "end": 264
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "score",
+          "type": "Score",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "conditional",
+        "condition": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "identifier",
+            "name": "__ssrg$instance$Eq$1"
+          },
+          "method": "eq",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "score"
+            },
+            {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "bigint",
+                    "value": "42"
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "Score",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "thenBranch": {
+          "kind": "decision",
+          "scrutinee": {
+            "kind": "identifier",
+            "name": "score"
+          },
+          "scrutineeType": {
+            "kind": "reference",
+            "name": "Score",
+            "arguments": []
+          },
+          "branches": [
+            {
+              "tests": [],
+              "bindings": [
+                {
+                  "name": "value",
+                  "type": {
+                    "kind": "bigint"
+                  },
+                  "path": [
+                    {
+                      "kind": "record-field",
+                      "name": "value"
+                    }
+                  ]
+                }
+              ],
+              "value": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "string",
+                  "value": "Impl operator: "
+                },
+                "right": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_intShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "value"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "type": {
+            "kind": "string"
+          }
+        },
+        "elseBranch": {
+          "kind": "string",
+          "value": "unexpected score"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 266,
+        "end": 444
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "total",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 446,
+        "end": 536
+      }
+    }
+  ]
+}

@@ -490,7 +490,7 @@ fn select_required_evidence(
             });
         }
         if let Some(local) =
-            super::local::select_local_instance(trait_identity, constraint, resolution)
+            super::local::select_local_instance(trait_identity, constraint, resolution, scoped)
         {
             return Some(local);
         }

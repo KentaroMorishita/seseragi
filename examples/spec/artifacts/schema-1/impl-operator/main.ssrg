@@ -1,0 +1,27 @@
+struct Score {
+  value: Int,
+}
+
+impl Score {
+  operator + self -> bonus: Int -> Score =
+    Score { value: self.value + bonus }
+
+  operator == self -> other: Score -> Bool =
+    self.value == other.value
+}
+
+fn total unit: Unit -> Score =
+  Score { value: 21 } + 21
+
+fn render score: Score -> String =
+  if score == Score { value: 42 } then
+    match score {
+      Score { value } -> `Impl operator: ${value}`
+    }
+  else
+    "unexpected score"
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ render $ total ()

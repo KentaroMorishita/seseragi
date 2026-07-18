@@ -1,5 +1,6 @@
-use crate::{ResolvedModule, TypedInstance};
+use crate::{ResolvedModule, TypedInstance, TypedInstanceImplementation};
 use seseragi_syntax::ByteSpan;
+use std::collections::BTreeMap;
 
 use super::TypedResolution;
 
@@ -44,6 +45,12 @@ pub(crate) enum DerivedInstanceIssue {
         provider_module: String,
         primary: ByteSpan,
     },
+    DuplicateLocalInstance {
+        trait_name: String,
+        identity: String,
+        primary: ByteSpan,
+        first: ByteSpan,
+    },
     OverlappingStandardInstance {
         trait_name: String,
         standard_identity: String,
@@ -60,9 +67,33 @@ pub(crate) fn analyze_instances(
     let mut instances = show.instances;
     instances.extend(user::analyze_user_defined_instances(resolved, resolution));
     issues.extend(show.issues);
+    issues.extend(local_instance_conflicts(&instances));
     issues.extend(standard_instance_conflicts(&instances));
     issues.extend(local_dependency_conflicts(resolved, &instances));
     InstanceAnalysis { instances, issues }
+}
+
+fn local_instance_conflicts(local_instances: &[TypedInstance]) -> Vec<DerivedInstanceIssue> {
+    let mut first_by_identity = BTreeMap::<&str, ByteSpan>::new();
+    let mut issues = Vec::new();
+    for instance in local_instances.iter().filter(|instance| {
+        matches!(
+            instance.implementation,
+            TypedInstanceImplementation::UserDefined { .. }
+        )
+    }) {
+        if let Some(first) = first_by_identity.get(instance.identity.as_str()) {
+            issues.push(DerivedInstanceIssue::DuplicateLocalInstance {
+                trait_name: instance.trait_name.clone(),
+                identity: instance.identity.clone(),
+                primary: instance.origin,
+                first: *first,
+            });
+        } else {
+            first_by_identity.insert(&instance.identity, instance.origin);
+        }
+    }
+    issues
 }
 
 fn standard_instance_conflicts(local_instances: &[TypedInstance]) -> Vec<DerivedInstanceIssue> {

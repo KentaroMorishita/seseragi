@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/impl-operator",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/impl-operator::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 446,
+        "end": 536
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Add<artifact/impl-operator::Score,std/prelude::Int,artifact/impl-operator::Score>",
+      "providerModule": "artifact/impl-operator",
+      "traitIdentity": "std/prelude::Add",
+      "argumentIdentities": [
+        "artifact/impl-operator::Score",
+        "std/prelude::Int",
+        "artifact/impl-operator::Score"
+      ],
+      "trait": "Add",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Add",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 47,
+        "end": 127
+      }
+    },
+    {
+      "identity": "std/prelude::Eq<artifact/impl-operator::Score>",
+      "providerModule": "artifact/impl-operator",
+      "traitIdentity": "std/prelude::Eq",
+      "argumentIdentities": [
+        "artifact/impl-operator::Score"
+      ],
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 131,
+        "end": 203
+      }
+    }
+  ]
+}

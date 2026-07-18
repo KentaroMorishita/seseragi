@@ -1,5 +1,5 @@
 use crate::{TypedExpr, TypedType};
-use seseragi_syntax::{ByteSpan, SurfaceExpr};
+use seseragi_syntax::{standard_operator, ByteSpan, StandardOperatorKind, SurfaceExpr};
 
 use super::{
     named_type, named_type_is, type_surface_expression, PureExpressionContext,
@@ -24,9 +24,12 @@ pub(super) fn type_binary(
     let left_type = inferred_type_from_expr(&left.value);
     let right_type = inferred_type_from_expr(&right.value);
     let mut missing_instance = None;
-    let (result_type, evidence) = if let Some(trait_name) = arithmetic_trait_name(operator) {
+    let standard = standard_operator(operator);
+    let (result_type, evidence) = if let Some(standard) =
+        standard.filter(|operator| operator.kind == StandardOperatorKind::Arithmetic)
+    {
         match context.select_binary_operator_evidence(
-            trait_name,
+            standard.trait_name,
             left_type.clone(),
             right_type.clone(),
         ) {
@@ -41,7 +44,7 @@ pub(super) fn type_binary(
                 (TypedType::Hole, Vec::new())
             }
         }
-    } else if matches!(operator, "==" | "!=") {
+    } else if standard.is_some_and(|operator| operator.kind == StandardOperatorKind::Equality) {
         if left_type != TypedType::Hole && right_type != TypedType::Hole && left_type != right_type
         {
             missing_instance = Some(PureCallIssue::ArgumentType {
@@ -83,18 +86,6 @@ pub(super) fn type_binary(
     result.range_issue = result.range_issue.or(range_issue);
     result.pure_call_issue = result.pure_call_issue.or(missing_instance);
     result
-}
-
-fn arithmetic_trait_name(operator: &str) -> Option<&'static str> {
-    match operator {
-        "+" => Some("Add"),
-        "-" => Some("Sub"),
-        "*" => Some("Mul"),
-        "/" => Some("Div"),
-        "%" => Some("Rem"),
-        "**" => Some("Pow"),
-        _ => None,
-    }
 }
 
 fn binary_result_type(operator: &str, left: &TypedExpr, right: &TypedExpr) -> TypedType {

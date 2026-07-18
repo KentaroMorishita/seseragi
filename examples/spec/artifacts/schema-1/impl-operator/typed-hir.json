@@ -1,0 +1,887 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/impl-operator",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Add<artifact/impl-operator::Score,std/prelude::Int,artifact/impl-operator::Score>",
+      "traitIdentity": "std/prelude::Add",
+      "trait": "Add",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        },
+        {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/impl-operator::Score",
+        "std/prelude::Int",
+        "artifact/impl-operator::Score"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 47,
+        "end": 127
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "add",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Score",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "self",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 58,
+                  "end": 62
+                }
+              },
+              {
+                "kind": "named",
+                "name": "bonus",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 66,
+                  "end": 71
+                }
+              }
+            ],
+            "body": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "field-access",
+                      "receiver": {
+                        "kind": "variable",
+                        "name": "self",
+                        "type": {
+                          "kind": "named",
+                          "name": "Score",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 107,
+                          "end": 111
+                        }
+                      },
+                      "field": "value",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 107,
+                        "end": 117
+                      }
+                    },
+                    "right": {
+                      "kind": "variable",
+                      "name": "bonus",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 120,
+                        "end": 125
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Add",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Add"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 107,
+                      "end": 125
+                    }
+                  },
+                  "origin": {
+                    "start": 100,
+                    "end": 125
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Score",
+                "arguments": []
+              },
+              "origin": {
+                "start": 92,
+                "end": 127
+              }
+            },
+            "origin": {
+              "start": 47,
+              "end": 127
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Eq<artifact/impl-operator::Score>",
+      "traitIdentity": "std/prelude::Eq",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/impl-operator::Score"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 131,
+        "end": 203
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "self",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 143,
+                  "end": 147
+                }
+              },
+              {
+                "kind": "named",
+                "name": "other",
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 151,
+                  "end": 156
+                }
+              }
+            ],
+            "body": {
+              "kind": "binary",
+              "operator": "==",
+              "left": {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "variable",
+                  "name": "self",
+                  "type": {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 178,
+                    "end": 182
+                  }
+                },
+                "field": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 178,
+                  "end": 188
+                }
+              },
+              "right": {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "variable",
+                  "name": "other",
+                  "type": {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 192,
+                    "end": 197
+                  }
+                },
+                "field": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 192,
+                  "end": 203
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Eq"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "start": 178,
+                "end": 203
+              }
+            },
+            "origin": {
+              "start": 131,
+              "end": 203
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "struct",
+      "symbol": "artifact/impl-operator::Score",
+      "name": "Score",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 17,
+            "end": 22
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 30
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/impl-operator::total",
+      "visibility": "private",
+      "origin": {
+        "start": 207,
+        "end": 264
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 216,
+            "end": 220
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "record",
+          "items": [
+            {
+              "kind": "field",
+              "name": "value",
+              "value": {
+                "kind": "integer",
+                "value": "21",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 255,
+                  "end": 257
+                }
+              },
+              "origin": {
+                "start": 248,
+                "end": 257
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          "origin": {
+            "start": 240,
+            "end": 259
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "value": "21",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 262,
+            "end": 264
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "local",
+              "identity": "std/prelude::Add<artifact/impl-operator::Score,std/prelude::Int,artifact/impl-operator::Score>"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Score",
+          "arguments": []
+        },
+        "origin": {
+          "start": 240,
+          "end": 264
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/impl-operator::render",
+      "visibility": "private",
+      "origin": {
+        "start": 266,
+        "end": 444
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "score",
+          "type": {
+            "kind": "named",
+            "name": "Score",
+            "arguments": []
+          },
+          "origin": {
+            "start": 276,
+            "end": 281
+          }
+        }
+      ],
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "binary",
+          "operator": "==",
+          "left": {
+            "kind": "variable",
+            "name": "score",
+            "type": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            },
+            "origin": {
+              "start": 306,
+              "end": 311
+            }
+          },
+          "right": {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "value",
+                "value": {
+                  "kind": "integer",
+                  "value": "42",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 330,
+                    "end": 332
+                  }
+                },
+                "origin": {
+                  "start": 323,
+                  "end": 332
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            },
+            "origin": {
+              "start": 315,
+              "end": 334
+            }
+          },
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Eq",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Score",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "local",
+                "identity": "std/prelude::Eq<artifact/impl-operator::Score>"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 306,
+            "end": 334
+          }
+        },
+        "thenBranch": {
+          "kind": "match",
+          "scrutinee": {
+            "kind": "variable",
+            "name": "score",
+            "type": {
+              "kind": "named",
+              "name": "Score",
+              "arguments": []
+            },
+            "origin": {
+              "start": 350,
+              "end": 355
+            }
+          },
+          "arms": [
+            {
+              "pattern": {
+                "kind": "record",
+                "fields": [
+                  {
+                    "name": "value",
+                    "pattern": {
+                      "kind": "binding",
+                      "symbol": 22,
+                      "name": "value",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 372,
+                        "end": 377
+                      }
+                    },
+                    "origin": {
+                      "start": 372,
+                      "end": 377
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 364,
+                  "end": 379
+                }
+              },
+              "body": {
+                "kind": "template",
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "Impl operator: ",
+                    "origin": {
+                      "start": 384,
+                      "end": 399
+                    }
+                  },
+                  {
+                    "kind": "interpolation",
+                    "value": {
+                      "kind": "variable",
+                      "name": "value",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 401,
+                        "end": 406
+                      }
+                    },
+                    "evidence": {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Int>"
+                      }
+                    },
+                    "traitIdentity": "std/prelude::Show",
+                    "origin": {
+                      "start": 399,
+                      "end": 407
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 383,
+                  "end": 408
+                }
+              },
+              "origin": {
+                "start": 364,
+                "end": 408
+              }
+            }
+          ],
+          "exhaustive": true,
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 344,
+            "end": 414
+          }
+        },
+        "elseBranch": {
+          "kind": "string",
+          "value": "unexpected score",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 426,
+            "end": 444
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 303,
+          "end": 444
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/impl-operator::main",
+      "visibility": "public",
+      "origin": {
+        "start": 446,
+        "end": 536
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/impl-operator::render",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/impl-operator::total",
+                "arguments": [
+                  {
+                    "kind": "unit",
+                    "type": {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 534,
+                      "end": 536
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Score",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 528,
+                  "end": 536
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 519,
+              "end": 536
+            }
+          }
+        ],
+        "origin": {
+          "start": 509,
+          "end": 536
+        }
+      }
+    }
+  ]
+}

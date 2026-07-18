@@ -100,6 +100,23 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             }],
             fixes: Vec::new(),
         },
+        DerivedInstanceIssue::DuplicateLocalInstance {
+            trait_name,
+            identity,
+            primary,
+            first,
+        } => Diagnostic {
+            id: String::new(),
+            code: "SES-T0202".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "trait.instance-duplicate".to_owned(),
+            primary: byte_range(*primary),
+            related: vec![RelatedDiagnostic {
+                message: format!("{trait_name} instance {identity} was first defined here"),
+                primary: byte_range(*first),
+            }],
+            fixes: Vec::new(),
+        },
         DerivedInstanceIssue::OverlappingStandardInstance {
             trait_name,
             standard_identity,

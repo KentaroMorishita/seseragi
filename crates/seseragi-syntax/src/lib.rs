@@ -6,6 +6,7 @@ mod interface_model;
 mod lexer;
 mod line_continuation;
 mod source;
+mod standard_operator;
 mod surface;
 mod surface_model;
 mod template;
@@ -24,6 +25,10 @@ pub use interface::{
 };
 pub use lexer::lex;
 pub use source::{LineColumn, LineIndex, SourceSnapshot, Span};
+pub use standard_operator::{
+    declarable_standard_operator, impl_operator_instances, standard_operator, StandardOperator,
+    StandardOperatorKind,
+};
 pub use surface::{
     parse_surface_ast, ByteSpan, SurfaceComprehensionClause, SurfaceConstraint, SurfaceDecl,
     SurfaceDoItem, SurfaceExpr, SurfaceImplMember, SurfaceImport, SurfaceImportItem,
