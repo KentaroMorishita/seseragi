@@ -50,7 +50,17 @@
               <span class="status-dot" id="status-dot"></span>
               <span id="status-text">Rust compiler ready</span>
             </div>
-            <span class="file-name">main.ssrg</span>
+            <div class="panel-heading-actions">
+              <span class="file-name">main.ssrg</span>
+              <button
+                id="clear-source-button"
+                class="text-button"
+                type="button"
+                aria-label="本文をクリア"
+              >
+                Clear
+              </button>
+            </div>
           </div>
           <div id="editor" class="editor-host"></div>
         </section>
@@ -72,7 +82,9 @@
           <section class="output-section">
             <div class="panel-heading">
               <span>Output</span>
-              <button id="clear-button" class="text-button" type="button">Clear</button>
+              <button id="clear-output-button" class="text-button" type="button">
+                Clear
+              </button>
             </div>
             <pre id="output" tabindex="0" aria-live="polite">Runを押すと結果がここに表示されます。</pre>
           </section>

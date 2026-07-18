@@ -50,6 +50,22 @@ describe("new Playground product gate", () => {
     expect(html).not.toContain("rock&#10;scissors")
   })
 
+  test("keeps source and output clear controls independent", async () => {
+    const html = await Bun.file(
+      new URL("../index.html", import.meta.url)
+    ).text()
+    const main = await Bun.file(
+      new URL("../src/main.ts", import.meta.url)
+    ).text()
+
+    expect(html).toContain('id="clear-source-button"')
+    expect(html).toContain('aria-label="本文をクリア"')
+    expect(html).toContain('id="clear-output-button"')
+    expect(main).toContain('clearSourceButton.addEventListener("click"')
+    expect(main).toContain('replaceEditorSource(editor, source)')
+    expect(main).toContain('clearOutputButton.addEventListener("click"')
+  })
+
   test("keeps the catalog curated and grouped by learning purpose", () => {
     expect(new Set(sampleCatalog.map((sample) => sample.id)).size).toBe(
       sampleCatalog.length

@@ -14,7 +14,14 @@ import { connectMobilePanels } from "./ui/mobile-panels"
 const editorHost = requiredElement("#editor", HTMLDivElement)
 const sampleSelect = requiredElement("#sample-select", HTMLSelectElement)
 const runButton = requiredElement("#run-button", HTMLButtonElement)
-const clearButton = requiredElement("#clear-button", HTMLButtonElement)
+const clearSourceButton = requiredElement(
+  "#clear-source-button",
+  HTMLButtonElement
+)
+const clearOutputButton = requiredElement(
+  "#clear-output-button",
+  HTMLButtonElement
+)
 const stdinInput = requiredElement("#stdin-input", HTMLTextAreaElement)
 const output = requiredElement("#output", HTMLPreElement)
 const statusText = requiredElement("#status-text", HTMLSpanElement)
@@ -60,7 +67,14 @@ sampleSelect.addEventListener("change", () => {
 })
 
 runButton.addEventListener("click", () => void run())
-clearButton.addEventListener("click", () => {
+clearSourceButton.addEventListener("click", () => {
+  source = ""
+  replaceEditorSource(editor, source)
+  editor.dispatch(setDiagnostics(editor.state, []))
+  editor.focus()
+  setStatus("ready", "Source cleared")
+})
+clearOutputButton.addEventListener("click", () => {
   output.textContent = ""
 })
 connectMobilePanels(workspace)
