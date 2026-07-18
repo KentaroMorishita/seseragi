@@ -1,0 +1,1142 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/array-monad",
+  "functions": [
+    {
+      "symbol": "artifact/array-monad::increment",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 42
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 33,
+            "end": 38
+          }
+        },
+        "right": {
+          "kind": "int64",
+          "value": "1",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 41,
+            "end": 42
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 33,
+          "end": 42
+        }
+      }
+    },
+    {
+      "symbol": "artifact/array-monad::expand",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 44,
+        "end": 100
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 82,
+              "end": 87
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "+",
+            "left": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 89,
+                "end": 94
+              }
+            },
+            "right": {
+              "kind": "int64",
+              "value": "10",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 97,
+                "end": 99
+              }
+            },
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Add",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/int::Add"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 89,
+              "end": 99
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 81,
+          "end": 100
+        }
+      }
+    },
+    {
+      "symbol": "artifact/array-monad::total",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 102,
+        "end": 158
+      },
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::reduce",
+        "arguments": [
+          {
+            "kind": "int64",
+            "value": "0",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 146,
+              "end": 147
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "+",
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Add",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/int::Add"
+                }
+              }
+            ],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 149,
+              "end": 150
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 152,
+              "end": 158
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 139,
+          "end": 158
+        }
+      }
+    },
+    {
+      "symbol": "artifact/array-monad::render",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 160,
+        "end": 230
+      },
+      "parameters": [
+        {
+          "id": "label",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        },
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "variable",
+              "name": "label",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 213,
+                "end": 218
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::String>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 211,
+              "end": 219
+            }
+          },
+          {
+            "kind": "text",
+            "value": ": ",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 219,
+              "end": 221
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 223,
+                "end": 228
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::Int>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 221,
+              "end": 229
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 210,
+          "end": 230
+        }
+      }
+    },
+    {
+      "symbol": "artifact/array-monad::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 232,
+        "end": 523
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/array-monad::render",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "Array map",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 315,
+                        "end": 326
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "artifact/array-monad::total",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Functor::map",
+                          "arguments": [
+                            {
+                              "kind": "variable",
+                              "name": "artifact/array-monad::increment",
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 268,
+                                "end": 277
+                              }
+                            },
+                            {
+                              "kind": "array",
+                              "elements": [
+                                {
+                                  "kind": "int64",
+                                  "value": "1",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 279,
+                                    "end": 280
+                                  }
+                                },
+                                {
+                                  "kind": "int64",
+                                  "value": "2",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 282,
+                                    "end": 283
+                                  }
+                                },
+                                {
+                                  "kind": "int64",
+                                  "value": "3",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 285,
+                                    "end": 286
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Array",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 278,
+                                "end": 287
+                              }
+                            }
+                          ],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Functor",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Array",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/array::Functor"
+                              }
+                            }
+                          ],
+                          "traitDispatch": {
+                            "traitIdentity": "std/prelude::Functor",
+                            "method": "map"
+                          },
+                          "type": {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 264,
+                            "end": 287
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 264,
+                        "end": 300
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 264,
+                    "end": 326
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 264,
+                "end": 341
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/array-monad::render",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "Array apply",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 406,
+                        "end": 419
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "artifact/array-monad::total",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Applicative::apply",
+                          "arguments": [
+                            {
+                              "kind": "call",
+                              "callee": "std/prelude::Applicative::pure",
+                              "arguments": [
+                                {
+                                  "kind": "variable",
+                                  "name": "artifact/array-monad::increment",
+                                  "type": {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "result": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 359,
+                                    "end": 368
+                                  }
+                                }
+                              ],
+                              "evidence": [
+                                {
+                                  "constraint": {
+                                    "name": "Applicative",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Array",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "evidence": {
+                                    "kind": "standard",
+                                    "identity": "std/array::Applicative"
+                                  }
+                                }
+                              ],
+                              "traitDispatch": {
+                                "traitIdentity": "std/prelude::Applicative",
+                                "method": "pure"
+                              },
+                              "type": {
+                                "kind": "named",
+                                "name": "Array",
+                                "arguments": [
+                                  {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "result": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 354,
+                                "end": 368
+                              }
+                            },
+                            {
+                              "kind": "array",
+                              "elements": [
+                                {
+                                  "kind": "int64",
+                                  "value": "40",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 371,
+                                    "end": 373
+                                  }
+                                },
+                                {
+                                  "kind": "int64",
+                                  "value": "41",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 375,
+                                    "end": 377
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Array",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 370,
+                                "end": 378
+                              }
+                            }
+                          ],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Applicative",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Array",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/array::Applicative"
+                              }
+                            }
+                          ],
+                          "traitDispatch": {
+                            "traitIdentity": "std/prelude::Applicative",
+                            "method": "apply"
+                          },
+                          "type": {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 347,
+                            "end": 378
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 347,
+                        "end": 391
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 347,
+                    "end": 419
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 347,
+                "end": 434
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "console.println",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "artifact/array-monad::render",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Array flatMap",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 489,
+                    "end": 504
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "artifact/array-monad::total",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::Monad::flatMap",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "artifact/array-monad::expand",
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Array",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 448,
+                            "end": 454
+                          }
+                        },
+                        {
+                          "kind": "array",
+                          "elements": [
+                            {
+                              "kind": "int64",
+                              "value": "1",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 456,
+                                "end": 457
+                              }
+                            },
+                            {
+                              "kind": "int64",
+                              "value": "2",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 459,
+                                "end": 460
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 455,
+                            "end": 461
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Monad",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Array",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/array::Monad"
+                          }
+                        }
+                      ],
+                      "traitDispatch": {
+                        "traitIdentity": "std/prelude::Monad",
+                        "method": "flatMap"
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 440,
+                        "end": 461
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 440,
+                    "end": 474
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 440,
+                "end": 504
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 440,
+            "end": 519
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 255,
+          "end": 523
+        }
+      }
+    }
+  ]
+}

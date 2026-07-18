@@ -1,0 +1,1474 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/array-monad",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "increment",
+      "nameSpan": {
+        "start": 3,
+        "end": 12
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 13,
+            "end": 18
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 20,
+              "end": 23
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 27,
+          "end": 30
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "operatorSpan": {
+          "start": 39,
+          "end": 40
+        },
+        "left": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 33,
+            "end": 38
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "raw": "1",
+          "span": {
+            "start": 41,
+            "end": 42
+          }
+        },
+        "span": {
+          "start": 33,
+          "end": 42
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 42
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "expand",
+      "nameSpan": {
+        "start": 47,
+        "end": 53
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 54,
+            "end": 59
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 61,
+              "end": 64
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 74,
+              "end": 77
+            }
+          }
+        ],
+        "span": {
+          "start": 68,
+          "end": 78
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "name",
+            "name": "value",
+            "span": {
+              "start": 82,
+              "end": 87
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "+",
+            "operatorSpan": {
+              "start": 95,
+              "end": 96
+            },
+            "left": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 89,
+                "end": 94
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "10",
+              "span": {
+                "start": 97,
+                "end": 99
+              }
+            },
+            "span": {
+              "start": 89,
+              "end": 99
+            }
+          }
+        ],
+        "span": {
+          "start": 81,
+          "end": 100
+        }
+      },
+      "span": {
+        "start": 44,
+        "end": 100
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "total",
+      "nameSpan": {
+        "start": 105,
+        "end": 110
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 111,
+            "end": 117
+          },
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 125,
+                  "end": 128
+                }
+              }
+            ],
+            "span": {
+              "start": 119,
+              "end": 129
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 133,
+          "end": 136
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "reduce",
+              "span": {
+                "start": 139,
+                "end": 145
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "0",
+              "span": {
+                "start": 146,
+                "end": 147
+              }
+            },
+            "span": {
+              "start": 139,
+              "end": 147
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "name",
+              "name": "+",
+              "span": {
+                "start": 149,
+                "end": 150
+              }
+            },
+            "span": {
+              "start": 148,
+              "end": 151
+            }
+          },
+          "span": {
+            "start": 139,
+            "end": 151
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "values",
+          "span": {
+            "start": 152,
+            "end": 158
+          }
+        },
+        "span": {
+          "start": 139,
+          "end": 158
+        }
+      },
+      "span": {
+        "start": 102,
+        "end": 158
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "render",
+      "nameSpan": {
+        "start": 163,
+        "end": 169
+      },
+      "parameters": [
+        {
+          "name": "label",
+          "nameSpan": {
+            "start": 170,
+            "end": 175
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 177,
+              "end": 183
+            }
+          }
+        },
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 187,
+            "end": 192
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 194,
+              "end": 197
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 201,
+          "end": 207
+        }
+      },
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "name",
+              "name": "label",
+              "span": {
+                "start": 213,
+                "end": 218
+              }
+            },
+            "span": {
+              "start": 211,
+              "end": 219
+            }
+          },
+          {
+            "kind": "text",
+            "value": ": ",
+            "span": {
+              "start": 219,
+              "end": 221
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 223,
+                "end": 228
+              }
+            },
+            "span": {
+              "start": 221,
+              "end": 229
+            }
+          }
+        ],
+        "span": {
+          "start": 210,
+          "end": 230
+        }
+      },
+      "span": {
+        "start": 160,
+        "end": 230
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 246,
+        "end": 250
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 334,
+                  "end": 341
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "render",
+                    "span": {
+                      "start": 308,
+                      "end": 314
+                    }
+                  },
+                  "argument": {
+                    "kind": "string",
+                    "raw": "\"Array map\"",
+                    "span": {
+                      "start": 315,
+                      "end": 326
+                    }
+                  },
+                  "span": {
+                    "start": 308,
+                    "end": 326
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "total",
+                    "span": {
+                      "start": 295,
+                      "end": 300
+                    }
+                  },
+                  "argument": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "map",
+                        "span": {
+                          "start": 264,
+                          "end": 267
+                        }
+                      },
+                      "argument": {
+                        "kind": "name",
+                        "name": "increment",
+                        "span": {
+                          "start": 268,
+                          "end": 277
+                        }
+                      },
+                      "span": {
+                        "start": 264,
+                        "end": 277
+                      }
+                    },
+                    "argument": {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "integer",
+                          "raw": "1",
+                          "span": {
+                            "start": 279,
+                            "end": 280
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "raw": "2",
+                          "span": {
+                            "start": 282,
+                            "end": 283
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "raw": "3",
+                          "span": {
+                            "start": 285,
+                            "end": 286
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 278,
+                        "end": 287
+                      }
+                    },
+                    "span": {
+                      "start": 264,
+                      "end": 287
+                    }
+                  },
+                  "span": {
+                    "start": 264,
+                    "end": 300
+                  }
+                },
+                "span": {
+                  "start": 264,
+                  "end": 326
+                }
+              },
+              "span": {
+                "start": 264,
+                "end": 341
+              }
+            },
+            "span": {
+              "start": 264,
+              "end": 341
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 427,
+                  "end": 434
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "render",
+                    "span": {
+                      "start": 399,
+                      "end": 405
+                    }
+                  },
+                  "argument": {
+                    "kind": "string",
+                    "raw": "\"Array apply\"",
+                    "span": {
+                      "start": 406,
+                      "end": 419
+                    }
+                  },
+                  "span": {
+                    "start": 399,
+                    "end": 419
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "total",
+                    "span": {
+                      "start": 386,
+                      "end": 391
+                    }
+                  },
+                  "argument": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "apply",
+                        "span": {
+                          "start": 347,
+                          "end": 352
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "name",
+                            "name": "pure",
+                            "span": {
+                              "start": 354,
+                              "end": 358
+                            }
+                          },
+                          "argument": {
+                            "kind": "name",
+                            "name": "increment",
+                            "span": {
+                              "start": 359,
+                              "end": 368
+                            }
+                          },
+                          "span": {
+                            "start": 354,
+                            "end": 368
+                          }
+                        },
+                        "span": {
+                          "start": 353,
+                          "end": 369
+                        }
+                      },
+                      "span": {
+                        "start": 347,
+                        "end": 369
+                      }
+                    },
+                    "argument": {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "integer",
+                          "raw": "40",
+                          "span": {
+                            "start": 371,
+                            "end": 373
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "raw": "41",
+                          "span": {
+                            "start": 375,
+                            "end": 377
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 370,
+                        "end": 378
+                      }
+                    },
+                    "span": {
+                      "start": 347,
+                      "end": 378
+                    }
+                  },
+                  "span": {
+                    "start": 347,
+                    "end": 391
+                  }
+                },
+                "span": {
+                  "start": 347,
+                  "end": 419
+                }
+              },
+              "span": {
+                "start": 347,
+                "end": 434
+              }
+            },
+            "span": {
+              "start": 347,
+              "end": 434
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 512,
+              "end": 519
+            }
+          },
+          "argument": {
+            "kind": "application",
+            "function": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "render",
+                "span": {
+                  "start": 482,
+                  "end": 488
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"Array flatMap\"",
+                "span": {
+                  "start": 489,
+                  "end": 504
+                }
+              },
+              "span": {
+                "start": 482,
+                "end": 504
+              }
+            },
+            "argument": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "total",
+                "span": {
+                  "start": 469,
+                  "end": 474
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "flatMap",
+                    "span": {
+                      "start": 440,
+                      "end": 447
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "expand",
+                    "span": {
+                      "start": 448,
+                      "end": 454
+                    }
+                  },
+                  "span": {
+                    "start": 440,
+                    "end": 454
+                  }
+                },
+                "argument": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 456,
+                        "end": 457
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "raw": "2",
+                      "span": {
+                        "start": 459,
+                        "end": 460
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 455,
+                    "end": 461
+                  }
+                },
+                "span": {
+                  "start": 440,
+                  "end": 461
+                }
+              },
+              "span": {
+                "start": 440,
+                "end": 474
+              }
+            },
+            "span": {
+              "start": 440,
+              "end": 504
+            }
+          },
+          "span": {
+            "start": 440,
+            "end": 519
+          }
+        },
+        "span": {
+          "start": 255,
+          "end": 523
+        }
+      },
+      "span": {
+        "start": 232,
+        "end": 523
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 523
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 42
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 44,
+        "end": 100
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 102,
+        "end": 158
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 160,
+        "end": 230
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 232,
+        "end": 523
+      }
+    },
+    {
+      "id": 6,
+      "parent": 5,
+      "kind": "do-block",
+      "origin": {
+        "start": 255,
+        "end": 523
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "increment",
+      "canonical": "artifact/array-monad::increment",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 3,
+        "end": 12
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "expand",
+      "canonical": "artifact/array-monad::expand",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 47,
+        "end": 53
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "total",
+      "canonical": "artifact/array-monad::total",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 105,
+        "end": 110
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "render",
+      "canonical": "artifact/array-monad::render",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 163,
+        "end": 169
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "main",
+      "canonical": "artifact/array-monad::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 246,
+        "end": 250
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 13,
+        "end": 18
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "+",
+      "canonical": "std/prelude::+",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 54,
+        "end": 59
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "Array",
+      "canonical": "std/prelude::Array",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "values",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 111,
+        "end": 117
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "reduce",
+      "canonical": "std/prelude::reduce",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "label",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 170,
+        "end": 175
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 187,
+        "end": 192
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "Functor",
+      "canonical": "std/prelude::Functor",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "map",
+      "canonical": "std/prelude::Functor::map",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "Applicative",
+      "canonical": "std/prelude::Applicative",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "apply",
+      "canonical": "std/prelude::Applicative::apply",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "pure",
+      "canonical": "std/prelude::Applicative::pure",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 21,
+      "spelling": "Monad",
+      "canonical": "std/prelude::Monad",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 22,
+      "spelling": "flatMap",
+      "canonical": "std/prelude::Monad::flatMap",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 20,
+        "end": 23
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 27,
+        "end": 30
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 33,
+        "end": 38
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 7,
+      "origin": {
+        "start": 39,
+        "end": 40
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 61,
+        "end": 64
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 68,
+        "end": 78
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 74,
+        "end": 77
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 82,
+        "end": 87
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 89,
+        "end": 94
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 7,
+      "origin": {
+        "start": 95,
+        "end": 96
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 119,
+        "end": 129
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 125,
+        "end": 128
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 133,
+        "end": 136
+      }
+    },
+    {
+      "spelling": "reduce",
+      "namespace": "value",
+      "target": 11,
+      "origin": {
+        "start": 139,
+        "end": 145
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 7,
+      "origin": {
+        "start": 149,
+        "end": 150
+      }
+    },
+    {
+      "spelling": "values",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 152,
+        "end": 158
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 177,
+        "end": 183
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 5,
+      "origin": {
+        "start": 194,
+        "end": 197
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 201,
+        "end": 207
+      }
+    },
+    {
+      "spelling": "label",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 213,
+        "end": 218
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 223,
+        "end": 228
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 334,
+        "end": 341
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 308,
+        "end": 314
+      }
+    },
+    {
+      "spelling": "total",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 295,
+        "end": 300
+      }
+    },
+    {
+      "spelling": "map",
+      "namespace": "value",
+      "target": 17,
+      "candidates": [
+        17
+      ],
+      "origin": {
+        "start": 264,
+        "end": 267
+      }
+    },
+    {
+      "spelling": "increment",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 268,
+        "end": 277
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 427,
+        "end": 434
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 399,
+        "end": 405
+      }
+    },
+    {
+      "spelling": "total",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 386,
+        "end": 391
+      }
+    },
+    {
+      "spelling": "apply",
+      "namespace": "value",
+      "target": 19,
+      "candidates": [
+        19
+      ],
+      "origin": {
+        "start": 347,
+        "end": 352
+      }
+    },
+    {
+      "spelling": "pure",
+      "namespace": "value",
+      "target": 20,
+      "candidates": [
+        20
+      ],
+      "origin": {
+        "start": 354,
+        "end": 358
+      }
+    },
+    {
+      "spelling": "increment",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 359,
+        "end": 368
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 512,
+        "end": 519
+      }
+    },
+    {
+      "spelling": "render",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 482,
+        "end": 488
+      }
+    },
+    {
+      "spelling": "total",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 469,
+        "end": 474
+      }
+    },
+    {
+      "spelling": "flatMap",
+      "namespace": "value",
+      "target": 22,
+      "candidates": [
+        22
+      ],
+      "origin": {
+        "start": 440,
+        "end": 447
+      }
+    },
+    {
+      "spelling": "expand",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 448,
+        "end": 454
+      }
+    }
+  ],
+  "issues": []
+}

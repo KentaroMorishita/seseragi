@@ -1,0 +1,38 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/array-monad"
+  ],
+  "sourcesContent": [
+    "fn increment value: Int -> Int = value + 1\n\nfn expand value: Int -> Array<Int> = [value, value + 10]\n\nfn total values: Array<Int> -> Int = reduce 0 (+) values\n\nfn render label: String -> value: Int -> String = `${label}: ${value}`\n\npub effect fn main =\n  do {\n    map increment [1, 2, 3]\n    |> total\n    |> render \"Array map\"\n    |> println\n\n    apply (pure increment) [40, 41]\n    |> total\n    |> render \"Array apply\"\n    |> println\n\n    flatMap expand [1, 2]\n    |> total\n    |> render \"Array flatMap\"\n    |> println\n  }\n"
+  ],
+  "names": [
+    "increment",
+    "add",
+    "expand",
+    "add",
+    "total",
+    "_ssrg_array_reduce",
+    "add",
+    "render",
+    "stringShow",
+    "intShow",
+    "main",
+    "println",
+    "render",
+    "total",
+    "arrayFunctor",
+    "println",
+    "render",
+    "total",
+    "arrayApplicative",
+    "arrayApplicative",
+    "println",
+    "render",
+    "total",
+    "arrayMonad"
+  ],
+  "mappings": ";;;;;;AAAAA;AAEAE;AAEAE;AAEAG;AAEAG"
+}

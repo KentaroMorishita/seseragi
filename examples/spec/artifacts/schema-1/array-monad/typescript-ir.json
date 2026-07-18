@@ -1,0 +1,429 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/array-monad",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.add",
+    "core.array.reduce",
+    "core.string",
+    "core.string.show",
+    "core.int64.show",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println",
+    "core.array.functor",
+    "core.array.applicative",
+    "core.array.monad"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.array.reduce",
+      "local": "_ssrg_array_reduce"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.array.functor",
+      "local": "_ssrg_array_functor"
+    },
+    {
+      "feature": "core.array.applicative",
+      "local": "_ssrg_array_applicative"
+    },
+    {
+      "feature": "core.array.monad",
+      "local": "_ssrg_array_monad"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "increment",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_add",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "bigint",
+            "value": "1"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 42
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "expand",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int64_add",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "value"
+              },
+              {
+                "kind": "bigint",
+                "value": "10"
+              }
+            ]
+          }
+        ],
+        "elementType": {
+          "kind": "bigint"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 44,
+        "end": 100
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "total",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_array_reduce",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "0"
+          },
+          {
+            "kind": "curried-runtime-reference",
+            "name": "_ssrg_int64_add",
+            "arity": 2
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 102,
+        "end": 158
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "label",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "binary",
+          "operator": "+",
+          "left": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_show_stringShow"
+            },
+            "method": "show",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "label"
+              }
+            ]
+          },
+          "right": {
+            "kind": "string",
+            "value": ": "
+          }
+        },
+        "right": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_intShow"
+          },
+          "method": "show",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 160,
+        "end": 230
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "Array map"
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "total",
+                      "arguments": [
+                        {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_array_functor"
+                          },
+                          "method": "map",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "increment"
+                            },
+                            {
+                              "kind": "array",
+                              "elements": [
+                                {
+                                  "kind": "bigint",
+                                  "value": "1"
+                                },
+                                {
+                                  "kind": "bigint",
+                                  "value": "2"
+                                },
+                                {
+                                  "kind": "bigint",
+                                  "value": "3"
+                                }
+                              ],
+                              "elementType": {
+                                "kind": "bigint"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "Array apply"
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "total",
+                      "arguments": [
+                        {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_array_applicative"
+                          },
+                          "method": "apply",
+                          "arguments": [
+                            {
+                              "kind": "dictionary-call",
+                              "dictionary": {
+                                "kind": "runtime-reference",
+                                "name": "_ssrg_array_applicative"
+                              },
+                              "method": "pure",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "increment"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "array",
+                              "elements": [
+                                {
+                                  "kind": "bigint",
+                                  "value": "40"
+                                },
+                                {
+                                  "kind": "bigint",
+                                  "value": "41"
+                                }
+                              ],
+                              "elementType": {
+                                "kind": "bigint"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "render",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Array flatMap"
+                },
+                {
+                  "kind": "call",
+                  "callee": "total",
+                  "arguments": [
+                    {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_array_monad"
+                      },
+                      "method": "flatMap",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "expand"
+                        },
+                        {
+                          "kind": "array",
+                          "elements": [
+                            {
+                              "kind": "bigint",
+                              "value": "1"
+                            },
+                            {
+                              "kind": "bigint",
+                              "value": "2"
+                            }
+                          ],
+                          "elementType": {
+                            "kind": "bigint"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 232,
+        "end": 523
+      }
+    }
+  ]
+}

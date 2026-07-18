@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "module": "artifact/array-monad",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.int64.add",
+      "core.array.reduce",
+      "core.string",
+      "core.string.show",
+      "core.int64.show",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.array.functor",
+      "core.array.applicative",
+      "core.array.monad"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

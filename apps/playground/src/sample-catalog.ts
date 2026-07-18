@@ -121,8 +121,7 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     id: "newtype-user-id",
     label: "newtypeでUserId",
     category: "型と抽象化",
-    sourcePath:
-      "examples/spec/artifacts/schema-1/newtype-user-id/main.ssrg",
+    sourcePath: "examples/spec/artifacts/schema-1/newtype-user-id/main.ssrg",
     stdin: "",
     expectedOutput: "UserId keeps its nominal boundary: 42",
   },
@@ -130,8 +129,7 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     id: "record-profile",
     label: "Recordでプロフィール",
     category: "型と抽象化",
-    sourcePath:
-      "examples/spec/artifacts/schema-1/record-profile/main.ssrg",
+    sourcePath: "examples/spec/artifacts/schema-1/record-profile/main.ssrg",
     stdin: "",
     expectedOutput: "Record profile: Mio\nPlayer: Mio",
   },
@@ -139,8 +137,7 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     id: "struct-profile",
     label: "Structでプロフィール更新",
     category: "型と抽象化",
-    sourcePath:
-      "examples/spec/artifacts/schema-1/struct-profile/main.ssrg",
+    sourcePath: "examples/spec/artifacts/schema-1/struct-profile/main.ssrg",
     stdin: "",
     expectedOutput: "Mio: perfect 42",
   },
@@ -148,8 +145,7 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     id: "generic-struct",
     label: "Generic Structの推論",
     category: "型と抽象化",
-    sourcePath:
-      "examples/spec/artifacts/schema-1/generic-struct/main.ssrg",
+    sourcePath: "examples/spec/artifacts/schema-1/generic-struct/main.ssrg",
     stdin: "",
     expectedOutput: "Generic Struct: 42",
   },
@@ -157,8 +153,7 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     id: "user-add-operator",
     label: "自作の足し算",
     category: "型と抽象化",
-    sourcePath:
-      "examples/spec/artifacts/schema-1/user-add-operator/main.ssrg",
+    sourcePath: "examples/spec/artifacts/schema-1/user-add-operator/main.ssrg",
     stdin: "",
     expectedOutput: "User Add: 42",
   },
@@ -166,8 +161,7 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     id: "user-eq-operator",
     label: "自作の等価比較",
     category: "型と抽象化",
-    sourcePath:
-      "examples/spec/artifacts/schema-1/user-eq-operator/main.ssrg",
+    sourcePath: "examples/spec/artifacts/schema-1/user-eq-operator/main.ssrg",
     stdin: "",
     expectedOutput: "User Eq: same / different",
   },
@@ -184,8 +178,7 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     id: "list-comprehension",
     label: "永続Listの流れ",
     category: "型と抽象化",
-    sourcePath:
-      "examples/spec/artifacts/schema-1/list-comprehension/main.ssrg",
+    sourcePath: "examples/spec/artifacts/schema-1/list-comprehension/main.ssrg",
     stdin: "",
     expectedOutput: "persistent List total: 35",
   },
@@ -239,5 +232,13 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     sourcePath: "examples/spec/artifacts/schema-1/monad-either/main.ssrg",
     stdin: "",
     expectedOutput: "Right 42\nRight 42\nLeft stopped\nLeft stopped",
+  },
+  {
+    id: "array-monad",
+    label: "ArrayのMonad",
+    category: "型と抽象化",
+    sourcePath: "examples/spec/artifacts/schema-1/array-monad/main.ssrg",
+    stdin: "",
+    expectedOutput: "Array map: 9\nArray apply: 83\nArray flatMap: 26",
   },
 ]

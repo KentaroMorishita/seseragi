@@ -1,0 +1,25 @@
+fn increment value: Int -> Int = value + 1
+
+fn expand value: Int -> Array<Int> = [value, value + 10]
+
+fn total values: Array<Int> -> Int = reduce 0 (+) values
+
+fn render label: String -> value: Int -> String = `${label}: ${value}`
+
+pub effect fn main =
+  do {
+    map increment [1, 2, 3]
+    |> total
+    |> render "Array map"
+    |> println
+
+    apply (pure increment) [40, 41]
+    |> total
+    |> render "Array apply"
+    |> println
+
+    flatMap expand [1, 2]
+    |> total
+    |> render "Array flatMap"
+    |> println
+  }

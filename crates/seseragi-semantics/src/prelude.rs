@@ -118,6 +118,21 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         type_name: "Either",
         identity: "std/either::Monad",
     },
+    PreludeStandardInstance {
+        trait_name: "Functor",
+        type_name: "Array",
+        identity: "std/array::Functor",
+    },
+    PreludeStandardInstance {
+        trait_name: "Applicative",
+        type_name: "Array",
+        identity: "std/array::Applicative",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monad",
+        type_name: "Array",
+        identity: "std/array::Monad",
+    },
 ];
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -457,6 +472,10 @@ mod tests {
         assert_eq!(
             standard_instance("Applicative", &either_error).map(|instance| instance.identity),
             Some("std/either::Applicative")
+        );
+        assert_eq!(
+            standard_instance("Functor", &named("Array")).map(|instance| instance.identity),
+            Some("std/array::Functor")
         );
         assert!(standard_instance("Monad", &saturated_either).is_none());
     }

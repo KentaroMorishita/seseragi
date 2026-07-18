@@ -294,6 +294,29 @@ fn selects_the_prelude_maybe_functor_without_source_declarations() {
     ));
 }
 
+#[test]
+fn selects_the_prelude_array_monad_without_source_declarations() {
+    let typed = type_module(
+        "artifact/prelude-array-monad/main.ssrg",
+        "fn expand value: Int -> Array<Int> = [value, value + 10]\n\
+         fn expanded values: Array<Int> -> Array<Int> = flatMap expand values\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[1] else {
+        panic!("expected expanded function");
+    };
+    assert!(matches!(
+        body,
+        TypedExpr::Call { callee, evidence, type_ref, .. }
+            if callee == "std/prelude::Monad::flatMap"
+                && type_ref == &applied("Array", vec![named("Int")])
+                && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity },
+                    ..
+                }] if identity == "std/array::Monad")
+    ));
+}
+
 fn named(name: &str) -> TypedType {
     TypedType::Named {
         name: name.to_owned(),

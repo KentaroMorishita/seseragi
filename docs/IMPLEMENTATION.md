@@ -820,7 +820,11 @@ Functor / Applicative / Monadのmethod schemeとsupertrait chain、Maybe / Eithe
 集約し、同じidentityをlowering registryからreadonly runtime dictionaryへ接続します。Monad / Applicative dictionaryは
 継承methodも同じobjectに含むため、supertrait evidenceのparameter projectionと同じ呼出規約を保ちます。
 `monad-either`はこのPrelude経路へ移し、`monad-maybe`はuserlandでtraitとinstanceを定義できる独立sampleとして残します。
-後続sliceではArray / List / Effectなど仕様に列挙した型を同じ登録境界へ足し、標準moduleのexportとcoherence範囲を
+`schema-1/array-monad`はこの境界へArrayのFunctor / Applicative / Monadを追加します。runtime dictionaryは
+既存`@seseragi/runtime/array`に置き、mapは順序保持、pureはsingleton、applyはfunctionを外側にしたCartesian product、
+flatMapは各結果のsource-order連結として実装します。fixtureは3 dictionary identityを個別に選択してactual executionし、
+Playgroundにも同じPrelude-only sourceを公開します。
+後続sliceではList / Effectなど仕様に列挙した型を同じ登録境界へ足し、標準moduleのexportとcoherence範囲を
 artifactで固定します。
 
 `schema-1/monad-laws`はFunctor identity / composition、Applicative identity / homomorphism、Monad left identity /

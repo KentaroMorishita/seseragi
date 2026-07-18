@@ -1,0 +1,3 @@
+Array map: 9
+Array apply: 83
+Array flatMap: 26

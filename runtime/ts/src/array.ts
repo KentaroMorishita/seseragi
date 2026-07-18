@@ -2,7 +2,7 @@
 export function reduce<A, B>(
   initial: B,
   step: (accumulator: B) => (value: A) => B,
-  values: ReadonlyArray<A>,
+  values: ReadonlyArray<A>
 ): B {
   let accumulator = initial
   for (const value of values) {
@@ -15,7 +15,7 @@ export function reduce<A, B>(
 export function collectMap<A, B>(
   values: ReadonlyArray<A>,
   predicate: (value: A) => boolean,
-  transform: (value: A) => B,
+  transform: (value: A) => B
 ): ReadonlyArray<B> {
   const result: B[] = []
   for (const value of values) {
@@ -30,7 +30,7 @@ export function collectMap<A, B>(
 export function collectFlatMap<A, B>(
   values: ReadonlyArray<A>,
   predicate: (value: A) => boolean,
-  transform: (value: A) => ReadonlyArray<B>,
+  transform: (value: A) => ReadonlyArray<B>
 ): ReadonlyArray<B> {
   const result: B[] = []
   for (const value of values) {
@@ -40,3 +40,39 @@ export function collectFlatMap<A, B>(
   }
   return result
 }
+
+export const arrayFunctor = Object.freeze({
+  map:
+    <Value, Result>(f: (value: Value) => Result) =>
+    (values: ReadonlyArray<Value>): ReadonlyArray<Result> =>
+      values.map(f),
+})
+
+export const arrayApplicative = Object.freeze({
+  ...arrayFunctor,
+  pure: <Value>(value: Value): ReadonlyArray<Value> => [value],
+  apply:
+    <Value, Result>(functions: ReadonlyArray<(value: Value) => Result>) =>
+    (values: ReadonlyArray<Value>): ReadonlyArray<Result> => {
+      const result: Result[] = []
+      for (const f of functions) {
+        for (const value of values) {
+          result.push(f(value))
+        }
+      }
+      return result
+    },
+})
+
+export const arrayMonad = Object.freeze({
+  ...arrayApplicative,
+  flatMap:
+    <Value, Result>(f: (value: Value) => ReadonlyArray<Result>) =>
+    (values: ReadonlyArray<Value>): ReadonlyArray<Result> => {
+      const result: Result[] = []
+      for (const value of values) {
+        result.push(...f(value))
+      }
+      return result
+    },
+})

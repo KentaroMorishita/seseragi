@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "case": "array-monad",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/array-monad",
+    "export": "main",
+    "compiledModule": "../../schema-1/array-monad/generated-module.json",
+    "typedInterface": "../../schema-1/array-monad/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.int64",
+      "core.int64.add",
+      "core.array.reduce",
+      "core.string",
+      "core.string.show",
+      "core.int64.show",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.array.functor",
+      "core.array.applicative",
+      "core.array.monad"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Array map: 9"],
+        "stdout": "Array map: 9\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Array apply: 83"],
+        "stdout": "Array apply: 83\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Array flatMap: 26"],
+        "stdout": "Array flatMap: 26\n"
+      }
+    ]
+  }
+}

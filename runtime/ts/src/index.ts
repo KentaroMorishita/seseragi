@@ -18,6 +18,9 @@ export {
 } from "./effect"
 export { add, divide, multiply, power, remainder, subtract } from "./int64"
 export {
+  arrayApplicative,
+  arrayFunctor,
+  arrayMonad,
   collectFlatMap as collectFlatMapArray,
   collectMap as collectMapArray,
   reduce,

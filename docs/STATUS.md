@@ -38,7 +38,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | ------------------------------------------ | ------------- | ------------------------------------------ | ------------------ |
 | 基本文法、演算子、pattern                  | 初稿あり      | lessonあり、fixtureは一部                  | tuple / matchまで部分実装 |
 | 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / newtype / HKT / structural Record / generic nominal Structまで部分実装 |
-| trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative / Monad実行・law fixtureあり | HKT推論 / local dictionary / transitive supertrait / Prelude Maybe・Either instance実行まで部分実装 |
+| trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative / Monad実行・law fixtureあり | HKT推論 / local dictionary / transitive supertrait / Prelude Maybe・Either・Array instance実行まで部分実装 |
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
@@ -365,7 +365,10 @@ Prelude化の現状調査では、従来のresolverはFunctor / Applicative / Mo
 Maybe / Eitherの6 instanceを共通registryへ置き、semantic evidenceからruntime ABIまで接続しました。通常の
 Playground `MonadとEither`はsource内でtrait / instanceを再定義しません。一方`schema-1/monad-maybe`は
 `型クラスを定義する`sampleとしてuserland定義を残し、標準Prelude経路と一般trait実装経路を別々に回帰します。
-次のstdlib gateはArray / List / Effect等の標準instanceを同じregistry境界へ追加することと、標準moduleの公開surfaceを
+`schema-1/array-monad`は同じregistry境界へArrayの3標準instanceを追加します。Functorはsource-order map、
+Applicativeの`pure`はsingleton、`apply`はfunction-majorのCartesian product、Monadの`flatMap`はsource-order連結です。
+executionとPlayground sampleが`map` / `pure` + `apply` / `flatMap`をすべてPrelude宣言だけで実行します。
+次のstdlib gateはList / Effect等の標準instanceを同じregistry境界へ追加することと、標準moduleの公開surfaceを
 package / documentation artifactとして固定することです。
 
 `schema-1/monad-laws`と`execution-schema-1/monad-laws`は同じuser-defined

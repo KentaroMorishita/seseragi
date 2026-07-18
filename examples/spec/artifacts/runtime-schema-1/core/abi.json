@@ -514,6 +514,36 @@
       }
     },
     {
+      "id": "core.array.functor",
+      "kind": "runtime-binding",
+      "typescript": "readonly Functor dictionary",
+      "boundary": "standard Functor<Array> dictionary",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "arrayFunctor"
+      }
+    },
+    {
+      "id": "core.array.applicative",
+      "kind": "runtime-binding",
+      "typescript": "readonly Applicative dictionary",
+      "boundary": "standard Applicative<Array> Cartesian product dictionary",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "arrayApplicative"
+      }
+    },
+    {
+      "id": "core.array.monad",
+      "kind": "runtime-binding",
+      "typescript": "readonly Monad dictionary",
+      "boundary": "standard Monad<Array> source-order concatenation dictionary",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "arrayMonad"
+      }
+    },
+    {
       "id": "effect.core.succeed",
       "kind": "runtime-helper",
       "typescript": "function",
