@@ -1,0 +1,576 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/effect-monad",
+  "runtimeRequirements": [
+    "effect.core.type",
+    "core.int64",
+    "core.int64.add",
+    "effect.core.applicative",
+    "effect.core.functor",
+    "effect.core.monad",
+    "core.string",
+    "core.string.show",
+    "core.int64.show",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "effect.core.applicative",
+      "local": "_ssrg_effect_applicative"
+    },
+    {
+      "feature": "effect.core.functor",
+      "local": "_ssrg_effect_functor"
+    },
+    {
+      "feature": "effect.core.monad",
+      "local": "_ssrg_effect_monad"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "increment",
+      "type": {
+        "kind": "function",
+        "parameter": {
+          "kind": "bigint"
+        },
+        "result": {
+          "kind": "bigint"
+        }
+      },
+      "initializer": {
+        "kind": "lambda",
+        "parameter": "value: bigint",
+        "body": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_int64_add",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            },
+            {
+              "kind": "bigint",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 54
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "source",
+      "type": {
+        "kind": "reference",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "fields": []
+          },
+          {
+            "kind": "never"
+          },
+          {
+            "kind": "bigint"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_effect_applicative"
+        },
+        "method": "pure",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "41"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 56,
+        "end": 100
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "liftedIncrement",
+      "type": {
+        "kind": "reference",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "fields": []
+          },
+          {
+            "kind": "never"
+          },
+          {
+            "kind": "function",
+            "parameter": {
+              "kind": "bigint"
+            },
+            "result": {
+              "kind": "bigint"
+            }
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_effect_applicative"
+        },
+        "method": "pure",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "increment"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 102,
+        "end": 171
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "plusTen",
+      "type": {
+        "kind": "function",
+        "parameter": {
+          "kind": "bigint"
+        },
+        "result": {
+          "kind": "reference",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "fields": []
+            },
+            {
+              "kind": "never"
+            },
+            {
+              "kind": "bigint"
+            }
+          ]
+        }
+      },
+      "initializer": {
+        "kind": "lambda",
+        "parameter": "value: bigint",
+        "body": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_effect_applicative"
+          },
+          "method": "pure",
+          "arguments": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_add",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                },
+                {
+                  "kind": "bigint",
+                  "value": "10"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 173,
+        "end": 254
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "mapped",
+      "type": {
+        "kind": "reference",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "fields": []
+          },
+          {
+            "kind": "never"
+          },
+          {
+            "kind": "bigint"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_effect_functor"
+        },
+        "method": "map",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "increment"
+          },
+          {
+            "kind": "identifier",
+            "name": "source"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 256,
+        "end": 313
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "applied",
+      "type": {
+        "kind": "reference",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "fields": []
+          },
+          {
+            "kind": "never"
+          },
+          {
+            "kind": "bigint"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_effect_applicative"
+        },
+        "method": "apply",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "liftedIncrement"
+          },
+          {
+            "kind": "identifier",
+            "name": "source"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 315,
+        "end": 383
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "chained",
+      "type": {
+        "kind": "reference",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "fields": []
+          },
+          {
+            "kind": "never"
+          },
+          {
+            "kind": "bigint"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_effect_monad"
+        },
+        "method": "flatMap",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "plusTen"
+          },
+          {
+            "kind": "identifier",
+            "name": "source"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 385,
+        "end": 445
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "label",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "binary",
+          "operator": "+",
+          "left": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_show_stringShow"
+            },
+            "method": "show",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "label"
+              }
+            ]
+          },
+          "right": {
+            "kind": "string",
+            "value": ": "
+          }
+        },
+        "right": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_intShow"
+          },
+          "method": "show",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 447,
+        "end": 517
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "const",
+            "name": "mappedValue",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "mapped"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 551,
+              "end": 572
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "Effect map"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "mappedValue"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "const",
+            "name": "appliedValue",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "applied"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 624,
+              "end": 647
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "Effect apply"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "appliedValue"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "const",
+            "name": "chainedValue",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "chained"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 702,
+              "end": 725
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "render",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Effect flatMap"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "chainedValue"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 519,
+        "end": 780
+      }
+    }
+  ]
+}

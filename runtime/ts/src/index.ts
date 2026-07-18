@@ -8,6 +8,9 @@ export type {
   Unit,
 } from "./effect"
 export {
+  effectApplicative,
+  effectFunctor,
+  effectMonad,
   fail,
   flatMap,
   fromEither,

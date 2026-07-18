@@ -89,6 +89,9 @@ pub(super) fn type_ref_from_core_type_with_erasure(
         CoreType::Named { name, arguments } if name == "Unit" && arguments.is_empty() => {
             TypeScriptType::Undefined
         }
+        CoreType::Named { name, arguments } if name == "Never" && arguments.is_empty() => {
+            TypeScriptType::Never
+        }
         CoreType::Named { name, arguments } if name == "Maybe" && arguments.len() == 1 => {
             TypeScriptType::Maybe {
                 element: Box::new(type_ref_from_core_type_with_erasure(
@@ -224,6 +227,7 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
         TypeScriptType::Boolean => "boolean".to_owned(),
         TypeScriptType::String => "string".to_owned(),
         TypeScriptType::Undefined => "undefined".to_owned(),
+        TypeScriptType::Never => "never".to_owned(),
         TypeScriptType::Unknown => "unknown".to_owned(),
         TypeScriptType::Reference { name, arguments } if arguments.is_empty() => name.clone(),
         TypeScriptType::Reference { name, arguments } => format!(
@@ -357,6 +361,23 @@ mod tests {
         assert_eq!(
             render_typescript_type(&type_ref_from_core_type(&type_ref, &Default::default())),
             "{ readonly tag: \"Left\"; readonly value: InputError } | { readonly tag: \"Right\"; readonly value: string }"
+        );
+    }
+
+    #[test]
+    fn renders_never_as_the_typescript_bottom_type() {
+        let type_ref = CoreType::Named {
+            name: "Never".to_owned(),
+            arguments: Vec::new(),
+        };
+
+        assert_eq!(
+            type_ref_from_core_type(&type_ref, &Default::default()),
+            TypeScriptType::Never
+        );
+        assert_eq!(
+            render_typescript_type(&type_ref_from_core_type(&type_ref, &Default::default())),
+            "never"
         );
     }
 

@@ -12,7 +12,7 @@ use super::pure_issues::{
 use super::semantic_types::{SemanticTypeCatalog, SemanticTypeKey, SemanticValueType};
 use super::TypedResolution;
 
-mod application;
+pub(crate) mod application;
 mod array;
 mod binary;
 mod comprehension;
@@ -319,7 +319,7 @@ impl SurfaceExpressionAnalysis {
         }
     }
 
-    pub(super) fn valid_with_semantic_type(
+    pub(crate) fn valid_with_semantic_type(
         value: TypedExpr,
         semantic_type: SemanticTypeKey,
     ) -> Self {

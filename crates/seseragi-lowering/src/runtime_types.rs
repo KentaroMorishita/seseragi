@@ -38,6 +38,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "StdinError",
     },
     RuntimeTypeImport {
+        canonical: "std/prelude::Effect",
+        runtime_feature: "effect.core.type",
+        module: "@seseragi/runtime/effect",
+        export_name: "Effect",
+    },
+    RuntimeTypeImport {
         canonical: "std/prelude::Iterator",
         runtime_feature: "core.iterator",
         module: "@seseragi/runtime/iterator",
@@ -76,6 +82,11 @@ mod tests {
         assert_eq!(type_import.runtime_feature, "effect.stdin.error");
         assert_eq!(type_import.module, "@seseragi/runtime/stdin");
         assert_eq!(type_import.export_name, "StdinError");
+
+        let effect = runtime_type_import("std/prelude::Effect").unwrap();
+        assert_eq!(effect.runtime_feature, "effect.core.type");
+        assert_eq!(effect.module, "@seseragi/runtime/effect");
+        assert_eq!(effect.export_name, "Effect");
     }
 
     #[test]

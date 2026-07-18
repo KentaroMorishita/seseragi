@@ -584,6 +584,18 @@
       }
     },
     {
+      "id": "effect.core.type",
+      "kind": "value-representation",
+      "typescript": "type Effect<R, E, A>",
+      "boundary": "cold environment function with typed failure marker",
+      "typeIdentity": "std/prelude::Effect",
+      "typeImport": {
+        "module": "@seseragi/runtime/effect",
+        "export": "Effect"
+      },
+      "import": null
+    },
+    {
       "id": "effect.core.fail",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -621,6 +633,36 @@
       "import": {
         "module": "@seseragi/runtime/effect",
         "export": "flatMap"
+      }
+    },
+    {
+      "id": "effect.core.functor",
+      "kind": "runtime-binding",
+      "typescript": "readonly Functor dictionary",
+      "boundary": "standard Functor<Effect<R, E, _>> cold mapping dictionary",
+      "import": {
+        "module": "@seseragi/runtime/effect",
+        "export": "effectFunctor"
+      }
+    },
+    {
+      "id": "effect.core.applicative",
+      "kind": "runtime-binding",
+      "typescript": "readonly Applicative dictionary",
+      "boundary": "standard Applicative<Effect<R, E, _>> sequential dictionary",
+      "import": {
+        "module": "@seseragi/runtime/effect",
+        "export": "effectApplicative"
+      }
+    },
+    {
+      "id": "effect.core.monad",
+      "kind": "runtime-binding",
+      "typescript": "readonly Monad dictionary",
+      "boundary": "standard Monad<Effect<R, E, _>> cold sequential dictionary",
+      "import": {
+        "module": "@seseragi/runtime/effect",
+        "export": "effectMonad"
       }
     },
     {

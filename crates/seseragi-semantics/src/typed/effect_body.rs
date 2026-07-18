@@ -7,8 +7,12 @@ use std::collections::BTreeMap;
 
 use super::pure_issues::{ArrayIssue, PureCallIssue, RangeIssue, RecordIssue};
 use super::semantic_types::SemanticValueType;
-use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
-use super::type_ref::inferred_type_from_expr;
+use super::surface_expr::{
+    analyze_resolved_expression, application, PureExpressionContext, SurfaceExpressionAnalysis,
+};
+use super::type_ref::{
+    application_argument_type_from_expr, effect_success_type_from_expr, inferred_type_from_expr,
+};
 use super::TypedResolution;
 
 mod imported;
@@ -106,6 +110,21 @@ fn type_effect_expression(
         return type_do_block(items, result.as_deref(), *span, context, resolution, issues);
     }
 
+    if matches!(expression, SurfaceExpr::Application { .. }) {
+        let analysis = application::type_application_with(
+            expression,
+            context,
+            |argument, argument_context| {
+                let value = type_effect_expression(argument, argument_context, resolution, issues);
+                let semantic_type = argument_context
+                    .semantic_value_from_typed_type(&application_argument_type_from_expr(&value))
+                    .key;
+                SurfaceExpressionAnalysis::valid_with_semantic_type(value, semantic_type)
+            },
+        );
+        return finish_expression_analysis(analysis, issues);
+    }
+
     type_pure_expression(expression, context, issues)
 }
 
@@ -172,7 +191,7 @@ fn type_do_block(
                 span,
             } => {
                 let value = type_effect_expression(value, &context, resolution, issues);
-                let type_ref = inferred_type_from_expr(&value);
+                let type_ref = effect_success_type_from_expr(&value);
                 if let Some((symbol, name)) = binding(pattern, resolution) {
                     locals.insert(symbol, resolution.semantic_value_from_typed_type(&type_ref));
                     statements.push(TypedDoStatement::Bind {
@@ -239,7 +258,13 @@ fn type_pure_expression(
     context: &PureExpressionContext<'_>,
     issues: &mut EffectBodyIssues<'_>,
 ) -> TypedExpr {
-    let analysis = analyze_resolved_expression(expression, context);
+    finish_expression_analysis(analyze_resolved_expression(expression, context), issues)
+}
+
+fn finish_expression_analysis(
+    analysis: SurfaceExpressionAnalysis,
+    issues: &mut EffectBodyIssues<'_>,
+) -> TypedExpr {
     if let Some(issue) = analysis.array_issue {
         issues.arrays.push(issue);
     }

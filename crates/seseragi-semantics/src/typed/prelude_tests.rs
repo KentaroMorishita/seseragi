@@ -340,6 +340,62 @@ fn selects_the_prelude_list_monad_without_source_declarations() {
     ));
 }
 
+#[test]
+fn selects_the_prelude_effect_functor_without_source_declarations() {
+    let typed = type_module(
+        "artifact/prelude-effect-functor/main.ssrg",
+        "fn increment value: Int -> Int = value + 1\n\
+         effect fn incremented -> Int = map increment (succeed 41)\n",
+    );
+
+    let TypedDecl::EffectFn { body, .. } = &typed.declarations[1] else {
+        panic!("expected incremented effect function");
+    };
+    assert!(
+        matches!(
+            body,
+            TypedExpr::Call { callee, evidence, type_ref, .. }
+                if callee == "std/prelude::Functor::map"
+                    && type_ref == &applied(
+                        "Effect",
+                        vec![
+                            TypedType::Record {
+                                fields: Vec::new(),
+                                closed: true,
+                            },
+                            named("Never"),
+                            named("Int"),
+                        ],
+                    )
+                    && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                        evidence: TypedInstanceEvidence::Standard { identity },
+                        ..
+                    }] if identity == "std/effect::Functor")
+        ),
+        "{body:#?}"
+    );
+
+    let typed = type_module(
+        "artifact/prelude-effect-value/main.ssrg",
+        "let source: Effect<{}, Never, Int> = pure 41\n\
+         pub effect fn main = do { value <- source; succeed () }\n",
+    );
+    let TypedDecl::EffectFn { body, .. } = &typed.declarations[1] else {
+        panic!("expected effect main function");
+    };
+    assert!(
+        matches!(
+            body,
+            TypedExpr::DoBlock { statements, .. }
+                if matches!(statements.as_slice(), [crate::TypedDoStatement::Bind {
+                    value: TypedExpr::Variable { type_ref, .. },
+                    ..
+                }] if matches!(type_ref, TypedType::Named { name, arguments } if name == "Effect" && arguments.len() == 3))
+        ),
+        "{body:#?}"
+    );
+}
+
 fn named(name: &str) -> TypedType {
     TypedType::Named {
         name: name.to_owned(),

@@ -148,6 +148,21 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         type_name: "List",
         identity: "std/list::Monad",
     },
+    PreludeStandardInstance {
+        trait_name: "Functor",
+        type_name: "Effect",
+        identity: "std/effect::Functor",
+    },
+    PreludeStandardInstance {
+        trait_name: "Applicative",
+        type_name: "Effect",
+        identity: "std/effect::Applicative",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monad",
+        type_name: "Effect",
+        identity: "std/effect::Monad",
+    },
 ];
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -305,6 +320,7 @@ pub(crate) fn is_external_nominal_type(canonical: &str) -> bool {
             | "std/prelude::ConsoleError"
             | "std/prelude::Stdin"
             | "std/prelude::StdinError"
+            | "std/prelude::Effect"
             | "std/prelude::Iterator"
             | "std/prelude::List"
     )
@@ -495,6 +511,17 @@ mod tests {
         assert_eq!(
             standard_instance("Monad", &named("List")).map(|instance| instance.identity),
             Some("std/list::Monad")
+        );
+        assert_eq!(
+            standard_instance(
+                "Applicative",
+                &TypedType::Named {
+                    name: "Effect".to_owned(),
+                    arguments: vec![named("ConsoleEnvironment"), named("ConsoleError")],
+                }
+            )
+            .map(|instance| instance.identity),
+            Some("std/effect::Applicative")
         );
         assert!(standard_instance("Monad", &saturated_either).is_none());
     }

@@ -1,4 +1,4 @@
-use crate::{unit_type, TypedExpr, TypedType};
+use crate::{unit_type, TypedEffect, TypedExpr, TypedType};
 use seseragi_syntax::{InterfaceType, TypeRef};
 
 pub(crate) fn typed_type_from_interface_type(type_ref: InterfaceType) -> Option<TypedType> {
@@ -118,6 +118,46 @@ pub(crate) fn inferred_type_from_expr(expr: &TypedExpr) -> TypedType {
         }
         TypedExpr::DoBlock { result, .. } => inferred_type_from_expr(result),
         TypedExpr::MonadDo { type_ref, .. } => type_ref.clone(),
+    }
+}
+
+pub(crate) fn application_argument_type_from_expr(expr: &TypedExpr) -> TypedType {
+    match expr {
+        TypedExpr::EffectCall { effect, .. } | TypedExpr::EffectInvoke { effect, .. } => {
+            effect_value_type(effect)
+        }
+        _ => inferred_type_from_expr(expr),
+    }
+}
+
+pub(crate) fn effect_from_value_type(type_ref: &TypedType) -> Option<TypedEffect> {
+    let TypedType::Named { name, arguments } = type_ref else {
+        return None;
+    };
+    let [environment, failure, success] = arguments.as_slice() else {
+        return None;
+    };
+    (name == "Effect").then(|| TypedEffect {
+        environment: environment.clone(),
+        failure: failure.clone(),
+        success: success.clone(),
+    })
+}
+
+pub(crate) fn effect_success_type_from_expr(expr: &TypedExpr) -> TypedType {
+    effect_from_value_type(&application_argument_type_from_expr(expr))
+        .map(|effect| effect.success)
+        .unwrap_or_else(|| inferred_type_from_expr(expr))
+}
+
+fn effect_value_type(effect: &TypedEffect) -> TypedType {
+    TypedType::Named {
+        name: "Effect".to_owned(),
+        arguments: vec![
+            effect.environment.clone(),
+            effect.failure.clone(),
+            effect.success.clone(),
+        ],
     }
 }
 

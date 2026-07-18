@@ -9,7 +9,7 @@ use crate::typed::pure_issues::PureCallIssue;
 use crate::typed::semantic_types::{
     semantic_values_are_compatible, SemanticTypeKey, SemanticValueType,
 };
-use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
+use crate::typed::type_ref::{application_argument_type_from_expr, typed_type_contains_hole};
 
 mod candidates;
 
@@ -18,6 +18,14 @@ use candidates::{select_trait_method_candidate, type_trait_method_selection_erro
 pub(super) fn type_application(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    type_application_with(expression, context, type_surface_expression)
+}
+
+pub(crate) fn type_application_with(
+    expression: &SurfaceExpr,
+    context: &PureExpressionContext<'_>,
+    mut type_argument: impl FnMut(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> SurfaceExpressionAnalysis {
     let (callee, argument_nodes) = flatten_application(expression);
     let callee_span = callee.span();
@@ -105,9 +113,9 @@ pub(super) fn type_application(
                 expected
             });
         let argument_context = context.with_expected(expected);
-        let analysis = type_surface_expression(argument, &argument_context);
+        let analysis = type_argument(argument, &argument_context);
         semantic_arguments[index] = Some(SemanticValueType {
-            type_ref: inferred_type_from_expr(&analysis.value),
+            type_ref: application_argument_type_from_expr(&analysis.value),
             key: analysis.semantic_type.clone(),
         });
         analyses[index] = Some(analysis);
@@ -312,7 +320,7 @@ fn call_issue(
         .enumerate()
         .find_map(
             |(index, (((argument, actual_semantic), expected), source))| {
-                let actual = inferred_type_from_expr(argument);
+                let actual = application_argument_type_from_expr(argument);
                 (!typed_type_contains_hole(&actual)
                     && expected.type_ref != actual
                     && !semantic_values_are_compatible(expected, actual_semantic))

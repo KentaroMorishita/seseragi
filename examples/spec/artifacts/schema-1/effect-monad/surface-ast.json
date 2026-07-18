@@ -1,0 +1,1013 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "increment",
+      "nameSpan": {
+        "start": 4,
+        "end": 13
+      },
+      "typeRef": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Int",
+          "span": {
+            "start": 16,
+            "end": 19
+          }
+        },
+        "result": {
+          "kind": "named",
+          "name": "Int",
+          "span": {
+            "start": 23,
+            "end": 26
+          }
+        },
+        "span": {
+          "start": 16,
+          "end": 26
+        }
+      },
+      "body": {
+        "kind": "lambda",
+        "parameter": {
+          "name": "value",
+          "nameSpan": {
+            "start": 31,
+            "end": 36
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 38,
+              "end": 41
+            }
+          }
+        },
+        "body": {
+          "kind": "binary",
+          "operator": "+",
+          "operatorSpan": {
+            "start": 51,
+            "end": 52
+          },
+          "left": {
+            "kind": "name",
+            "name": "value",
+            "span": {
+              "start": 45,
+              "end": 50
+            }
+          },
+          "right": {
+            "kind": "integer",
+            "raw": "1",
+            "span": {
+              "start": 53,
+              "end": 54
+            }
+          },
+          "span": {
+            "start": 45,
+            "end": 54
+          }
+        },
+        "span": {
+          "start": 30,
+          "end": 54
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 54
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "source",
+      "nameSpan": {
+        "start": 60,
+        "end": 66
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "closed": true,
+            "fields": [],
+            "span": {
+              "start": 75,
+              "end": 77
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Never",
+            "span": {
+              "start": 79,
+              "end": 84
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 86,
+              "end": 89
+            }
+          }
+        ],
+        "span": {
+          "start": 68,
+          "end": 90
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "pure",
+          "span": {
+            "start": 93,
+            "end": 97
+          }
+        },
+        "argument": {
+          "kind": "integer",
+          "raw": "41",
+          "span": {
+            "start": 98,
+            "end": 100
+          }
+        },
+        "span": {
+          "start": 93,
+          "end": 100
+        }
+      },
+      "span": {
+        "start": 56,
+        "end": 100
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "liftedIncrement",
+      "nameSpan": {
+        "start": 106,
+        "end": 121
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "closed": true,
+            "fields": [],
+            "span": {
+              "start": 130,
+              "end": 132
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Never",
+            "span": {
+              "start": 134,
+              "end": 139
+            }
+          },
+          {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 142,
+                "end": 145
+              }
+            },
+            "result": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 149,
+                "end": 152
+              }
+            },
+            "span": {
+              "start": 142,
+              "end": 152
+            }
+          }
+        ],
+        "span": {
+          "start": 123,
+          "end": 154
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "pure",
+          "span": {
+            "start": 157,
+            "end": 161
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "increment",
+          "span": {
+            "start": 162,
+            "end": 171
+          }
+        },
+        "span": {
+          "start": 157,
+          "end": 171
+        }
+      },
+      "span": {
+        "start": 102,
+        "end": 171
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "plusTen",
+      "nameSpan": {
+        "start": 177,
+        "end": 184
+      },
+      "typeRef": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "Int",
+          "span": {
+            "start": 187,
+            "end": 190
+          }
+        },
+        "result": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [],
+              "span": {
+                "start": 201,
+                "end": 203
+              }
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "span": {
+                "start": 205,
+                "end": 210
+              }
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 212,
+                "end": 215
+              }
+            }
+          ],
+          "span": {
+            "start": 194,
+            "end": 216
+          }
+        },
+        "span": {
+          "start": 187,
+          "end": 216
+        }
+      },
+      "body": {
+        "kind": "lambda",
+        "parameter": {
+          "name": "value",
+          "nameSpan": {
+            "start": 223,
+            "end": 228
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 230,
+              "end": 233
+            }
+          }
+        },
+        "body": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "pure",
+            "span": {
+              "start": 237,
+              "end": 241
+            }
+          },
+          "argument": {
+            "kind": "binary",
+            "operator": "+",
+            "operatorSpan": {
+              "start": 250,
+              "end": 251
+            },
+            "left": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 244,
+                "end": 249
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "10",
+              "span": {
+                "start": 252,
+                "end": 254
+              }
+            },
+            "span": {
+              "start": 244,
+              "end": 254
+            }
+          },
+          "span": {
+            "start": 237,
+            "end": 254
+          }
+        },
+        "span": {
+          "start": 222,
+          "end": 254
+        }
+      },
+      "span": {
+        "start": 173,
+        "end": 254
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "mapped",
+      "nameSpan": {
+        "start": 260,
+        "end": 266
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "closed": true,
+            "fields": [],
+            "span": {
+              "start": 275,
+              "end": 277
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Never",
+            "span": {
+              "start": 279,
+              "end": 284
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 286,
+              "end": 289
+            }
+          }
+        ],
+        "span": {
+          "start": 268,
+          "end": 290
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "map",
+            "span": {
+              "start": 293,
+              "end": 296
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "increment",
+            "span": {
+              "start": 297,
+              "end": 306
+            }
+          },
+          "span": {
+            "start": 293,
+            "end": 306
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "source",
+          "span": {
+            "start": 307,
+            "end": 313
+          }
+        },
+        "span": {
+          "start": 293,
+          "end": 313
+        }
+      },
+      "span": {
+        "start": 256,
+        "end": 313
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "applied",
+      "nameSpan": {
+        "start": 319,
+        "end": 326
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "closed": true,
+            "fields": [],
+            "span": {
+              "start": 335,
+              "end": 337
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Never",
+            "span": {
+              "start": 339,
+              "end": 344
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 346,
+              "end": 349
+            }
+          }
+        ],
+        "span": {
+          "start": 328,
+          "end": 350
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "apply",
+            "span": {
+              "start": 355,
+              "end": 360
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "liftedIncrement",
+            "span": {
+              "start": 361,
+              "end": 376
+            }
+          },
+          "span": {
+            "start": 355,
+            "end": 376
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "source",
+          "span": {
+            "start": 377,
+            "end": 383
+          }
+        },
+        "span": {
+          "start": 355,
+          "end": 383
+        }
+      },
+      "span": {
+        "start": 315,
+        "end": 383
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "chained",
+      "nameSpan": {
+        "start": 389,
+        "end": 396
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "closed": true,
+            "fields": [],
+            "span": {
+              "start": 405,
+              "end": 407
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Never",
+            "span": {
+              "start": 409,
+              "end": 414
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 416,
+              "end": 419
+            }
+          }
+        ],
+        "span": {
+          "start": 398,
+          "end": 420
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "flatMap",
+            "span": {
+              "start": 423,
+              "end": 430
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "plusTen",
+            "span": {
+              "start": 431,
+              "end": 438
+            }
+          },
+          "span": {
+            "start": 423,
+            "end": 438
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "source",
+          "span": {
+            "start": 439,
+            "end": 445
+          }
+        },
+        "span": {
+          "start": 423,
+          "end": 445
+        }
+      },
+      "span": {
+        "start": 385,
+        "end": 445
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "render",
+      "nameSpan": {
+        "start": 450,
+        "end": 456
+      },
+      "parameters": [
+        {
+          "name": "label",
+          "nameSpan": {
+            "start": 457,
+            "end": 462
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 464,
+              "end": 470
+            }
+          }
+        },
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 474,
+            "end": 479
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 481,
+              "end": 484
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 488,
+          "end": 494
+        }
+      },
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "name",
+              "name": "label",
+              "span": {
+                "start": 500,
+                "end": 505
+              }
+            },
+            "span": {
+              "start": 498,
+              "end": 506
+            }
+          },
+          {
+            "kind": "text",
+            "value": ": ",
+            "span": {
+              "start": 506,
+              "end": 508
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 510,
+                "end": 515
+              }
+            },
+            "span": {
+              "start": 508,
+              "end": 516
+            }
+          }
+        ],
+        "span": {
+          "start": 497,
+          "end": 517
+        }
+      },
+      "span": {
+        "start": 447,
+        "end": 517
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 533,
+        "end": 537
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "mappedValue",
+              "nameSpan": {
+                "start": 551,
+                "end": 562
+              },
+              "span": {
+                "start": 551,
+                "end": 562
+              }
+            },
+            "value": {
+              "kind": "name",
+              "name": "mapped",
+              "span": {
+                "start": 566,
+                "end": 572
+              }
+            },
+            "span": {
+              "start": 551,
+              "end": 572
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 577,
+                  "end": 584
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "render",
+                    "span": {
+                      "start": 587,
+                      "end": 593
+                    }
+                  },
+                  "argument": {
+                    "kind": "string",
+                    "raw": "\"Effect map\"",
+                    "span": {
+                      "start": 594,
+                      "end": 606
+                    }
+                  },
+                  "span": {
+                    "start": 587,
+                    "end": 606
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "mappedValue",
+                  "span": {
+                    "start": 607,
+                    "end": 618
+                  }
+                },
+                "span": {
+                  "start": 587,
+                  "end": 618
+                }
+              },
+              "span": {
+                "start": 577,
+                "end": 618
+              }
+            },
+            "span": {
+              "start": 577,
+              "end": 618
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "appliedValue",
+              "nameSpan": {
+                "start": 624,
+                "end": 636
+              },
+              "span": {
+                "start": 624,
+                "end": 636
+              }
+            },
+            "value": {
+              "kind": "name",
+              "name": "applied",
+              "span": {
+                "start": 640,
+                "end": 647
+              }
+            },
+            "span": {
+              "start": 624,
+              "end": 647
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 652,
+                  "end": 659
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "render",
+                    "span": {
+                      "start": 662,
+                      "end": 668
+                    }
+                  },
+                  "argument": {
+                    "kind": "string",
+                    "raw": "\"Effect apply\"",
+                    "span": {
+                      "start": 669,
+                      "end": 683
+                    }
+                  },
+                  "span": {
+                    "start": 662,
+                    "end": 683
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "appliedValue",
+                  "span": {
+                    "start": 684,
+                    "end": 696
+                  }
+                },
+                "span": {
+                  "start": 662,
+                  "end": 696
+                }
+              },
+              "span": {
+                "start": 652,
+                "end": 696
+              }
+            },
+            "span": {
+              "start": 652,
+              "end": 696
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "chainedValue",
+              "nameSpan": {
+                "start": 702,
+                "end": 714
+              },
+              "span": {
+                "start": 702,
+                "end": 714
+              }
+            },
+            "value": {
+              "kind": "name",
+              "name": "chained",
+              "span": {
+                "start": 718,
+                "end": 725
+              }
+            },
+            "span": {
+              "start": 702,
+              "end": 725
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 730,
+              "end": 737
+            }
+          },
+          "argument": {
+            "kind": "application",
+            "function": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "render",
+                "span": {
+                  "start": 740,
+                  "end": 746
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"Effect flatMap\"",
+                "span": {
+                  "start": 747,
+                  "end": 763
+                }
+              },
+              "span": {
+                "start": 740,
+                "end": 763
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "chainedValue",
+              "span": {
+                "start": 764,
+                "end": 776
+              }
+            },
+            "span": {
+              "start": 740,
+              "end": 776
+            }
+          },
+          "span": {
+            "start": 730,
+            "end": 776
+          }
+        },
+        "span": {
+          "start": 542,
+          "end": 780
+        }
+      },
+      "span": {
+        "start": 519,
+        "end": 780
+      }
+    }
+  ]
+}

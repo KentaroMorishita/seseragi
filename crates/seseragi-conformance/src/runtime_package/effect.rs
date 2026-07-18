@@ -6,7 +6,7 @@ pub(super) fn check_typed_failure_boundary(root: &Path) -> Result<(), String> {
     let output = Command::new("bun")
         .arg("--eval")
         .arg(
-            "import { fail, flatMap, mapError, run, succeed } from \"./src/effect.ts\";\n\
+            "import { effectApplicative, effectFunctor, effectMonad, fail, flatMap, mapError, run, succeed } from \"./src/effect.ts\";\n\
              let continued = false;\n\
              const effect = flatMap(fail({ kind: \"expected\" }), () => { continued = true; return succeed(1); });\n\
              const cold = continued === false;\n\
@@ -20,7 +20,15 @@ pub(super) fn check_typed_failure_boundary(root: &Path) -> Result<(), String> {
              try { await run(mapError(() => ({ kind: \"wrong\" }), () => { throw new Error(\"defect\"); }), {}); } catch (error) { defect = error instanceof Error && error.message === \"defect\"; }\n\
              let mapperDefect = false;\n\
              try { await run(mapError(() => { throw new Error(\"mapper-defect\"); }, fail({ kind: \"source\" })), {}); } catch (error) { mapperDefect = error instanceof Error && error.message === \"mapper-defect\"; }\n\
-             process.stdout.write(JSON.stringify({ cold, continued, result, mapCold, mapped, mappedResult, successResult, defect, mapperDefect }));\n",
+             let dictionaryEvaluations = 0;\n\
+             const dictionarySource = () => { dictionaryEvaluations += 1; return 41; };\n\
+             const mappedValue = effectFunctor.map((value) => value + 1)(dictionarySource);\n\
+             const appliedValue = effectApplicative.apply(effectApplicative.pure((value) => value + 1))(dictionarySource);\n\
+             const flatMappedValue = effectMonad.flatMap((value) => succeed(value + 1))(dictionarySource);\n\
+             const dictionaryCold = dictionaryEvaluations === 0;\n\
+             const dictionaryResults = [await run(mappedValue, {}), await run(appliedValue, {}), await run(flatMappedValue, {})];\n\
+             const dictionaryFailure = await run(effectMonad.flatMap(() => { throw new Error(\"continued-after-failure\"); })(fail(\"stopped\")), {});\n\
+             process.stdout.write(JSON.stringify({ cold, continued, result, mapCold, mapped, mappedResult, successResult, defect, mapperDefect, dictionaryCold, dictionaryEvaluations, dictionaryResults, dictionaryFailure }));\n",
         )
         .current_dir(root.join("runtime/ts"))
         .output()
@@ -32,7 +40,7 @@ pub(super) fn check_typed_failure_boundary(root: &Path) -> Result<(), String> {
             String::from_utf8_lossy(&output.stderr)
         ));
     }
-    let expected = b"{\"cold\":true,\"continued\":false,\"result\":{\"kind\":\"failure\",\"error\":{\"kind\":\"expected\"}},\"mapCold\":true,\"mapped\":1,\"mappedResult\":{\"kind\":\"failure\",\"error\":{\"kind\":\"mapped\",\"source\":{\"kind\":\"source\"}}},\"successResult\":{\"kind\":\"success\",\"value\":7},\"defect\":true,\"mapperDefect\":true}";
+    let expected = b"{\"cold\":true,\"continued\":false,\"result\":{\"kind\":\"failure\",\"error\":{\"kind\":\"expected\"}},\"mapCold\":true,\"mapped\":1,\"mappedResult\":{\"kind\":\"failure\",\"error\":{\"kind\":\"mapped\",\"source\":{\"kind\":\"source\"}}},\"successResult\":{\"kind\":\"success\",\"value\":7},\"defect\":true,\"mapperDefect\":true,\"dictionaryCold\":true,\"dictionaryEvaluations\":3,\"dictionaryResults\":[{\"kind\":\"success\",\"value\":42},{\"kind\":\"success\",\"value\":42},{\"kind\":\"success\",\"value\":42}],\"dictionaryFailure\":{\"kind\":\"failure\",\"error\":\"stopped\"}}";
     if output.stdout != expected {
         return Err(format!(
             "TypeScript typed failure probe returned unexpected result: {}",

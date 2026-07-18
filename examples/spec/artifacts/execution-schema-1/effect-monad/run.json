@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "case": "effect-monad",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/effect-monad",
+    "export": "main",
+    "compiledModule": "../../schema-1/effect-monad/generated-module.json",
+    "typedInterface": "../../schema-1/effect-monad/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "effect.core.type",
+      "core.int64",
+      "core.int64.add",
+      "effect.core.applicative",
+      "effect.core.functor",
+      "effect.core.monad",
+      "core.string",
+      "core.string.show",
+      "core.int64.show",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Effect map: 42"],
+        "stdout": "Effect map: 42\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Effect apply: 42"],
+        "stdout": "Effect apply: 42\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Effect flatMap: 51"],
+        "stdout": "Effect flatMap: 51\n"
+      }
+    ]
+  }
+}

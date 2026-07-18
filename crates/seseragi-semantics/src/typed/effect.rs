@@ -1,7 +1,10 @@
 use crate::{unit_type, TypedDoStatement, TypedEffect, TypedExpr, TypedRecordField, TypedType};
 use seseragi_syntax::{SurfaceRequirement, TypeRef};
 
-use super::type_ref::{inferred_type_from_expr, typed_type_from_type_ref};
+use super::type_ref::{
+    application_argument_type_from_expr, effect_from_value_type, inferred_type_from_expr,
+    typed_type_from_type_ref,
+};
 
 pub(crate) fn typed_effect_from_surface(
     return_type: &Option<TypeRef>,
@@ -43,6 +46,9 @@ fn explicit_effect(
 }
 
 fn infer_compact_effect(body: &TypedExpr) -> TypedEffect {
+    if let Some(effect) = effect_from_value_type(&inferred_type_from_expr(body)) {
+        return effect;
+    }
     let mut requirements = Vec::new();
     let mut failure = named_type("Never");
 
@@ -63,15 +69,16 @@ fn collect_effect_contract(
     requirements: &mut Vec<TypedRecordField>,
     failure: &mut TypedType,
 ) {
-    match expr {
-        TypedExpr::EffectCall { effect, .. } | TypedExpr::EffectInvoke { effect, .. } => {
-            if let TypedType::Record { fields, .. } = &effect.environment {
-                for field in fields {
-                    push_requirement_unique(requirements, field.clone());
-                }
+    if let Some(effect) = effect_from_value_type(&application_argument_type_from_expr(expr)) {
+        if let TypedType::Record { fields, .. } = effect.environment {
+            for field in fields {
+                push_requirement_unique(requirements, field);
             }
-            widen_failure_from_never(failure, effect.failure.clone());
         }
+        widen_failure_from_never(failure, effect.failure);
+        return;
+    }
+    match expr {
         TypedExpr::DoBlock {
             statements, result, ..
         } => {
@@ -112,6 +119,8 @@ fn collect_effect_contract(
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. }
         | TypedExpr::Call { .. }
+        | TypedExpr::EffectCall { .. }
+        | TypedExpr::EffectInvoke { .. }
         | TypedExpr::Tuple { .. }
         | TypedExpr::Array { .. }
         | TypedExpr::List { .. }

@@ -38,7 +38,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | ------------------------------------------ | ------------- | ------------------------------------------ | ------------------ |
 | 基本文法、演算子、pattern                  | 初稿あり      | lessonあり、fixtureは一部                  | tuple / matchまで部分実装 |
 | 型、generic、ADT、struct、record           | 初稿あり      | lessonあり、fixtureは一部                  | ADT / newtype / HKT / structural Record / generic nominal Structまで部分実装 |
-| trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative / Monad実行・law fixtureあり | HKT推論 / local dictionary / transitive supertrait / Prelude Maybe・Either・Array・List instance実行まで部分実装 |
+| trait、Functor、Applicative、Monad、Monoid | 初稿あり      | Functor / Applicative / Monad実行・law fixtureあり | HKT推論 / local dictionary / transitive supertrait / Prelude Maybe・Either・Array・List・Effect instance実行まで部分実装 |
 | custom infix operator                      | 初稿あり      | compile fixtureあり                        | 未着手             |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
 | Signal、Stream                             | 初稿あり      | lessonあり、runtime fixture不足            | 未着手             |
@@ -371,7 +371,10 @@ executionとPlayground sampleが`map` / `pure` + `apply` / `flatMap`をすべて
 `schema-1/list-monad`はpersistent `Empty` / `Cons`表現を維持したListの3標準instanceを同じ境界へ追加します。
 `map`は要素順を維持し、`pure`はsingleton、`apply`はfunction-majorのCartesian product、`flatMap`はList結果を
 source-orderで連結します。execution、Playground、runtime package probeが辞書の型選択と永続表現を固定します。
-次のstdlib gateはEffectの標準instanceを同じregistry境界へ追加することと、標準moduleの公開surfaceを
+`schema-1/effect-monad`は`Effect<R, E, _>`を同じ部分適用HKT推論へ載せ、coldなFunctor / Applicative / Monad辞書、
+first-class Effect値を受ける通常application、do bindでのsuccess型抽出を接続します。`Effect`型のruntime importと
+`Never`のTypeScript bottom typeもABIで固定し、execution / runtime probe / Playgroundで実行します。
+次のstdlib gateは標準moduleの公開surfaceを
 package / documentation artifactとして固定することです。
 
 `schema-1/monad-laws`と`execution-schema-1/monad-laws`は同じuser-defined

@@ -696,6 +696,7 @@ pub(super) fn collect_type_runtime_requirement(
                 "String" => push_unique(requirements, "core.string"),
                 "Bool" => push_unique(requirements, "core.bool"),
                 "Unit" => push_unique(requirements, "core.unit"),
+                "Effect" => push_unique(requirements, "effect.core.type"),
                 "Maybe" => push_unique(requirements, "core.maybe"),
                 "Either" => push_unique(requirements, "core.either"),
                 "Range" => push_unique(requirements, "core.range"),

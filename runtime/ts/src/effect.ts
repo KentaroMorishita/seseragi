@@ -48,6 +48,39 @@ export function flatMap<Environment, Failure, Success, NextEnvironment, NextFail
   };
 }
 
+export const effectFunctor = Object.freeze({
+  map:
+    <Value, Result>(f: (value: Value) => Result) =>
+    <Environment, Failure>(
+      effect: Effect<Environment, Failure, Value>
+    ): Effect<Environment, Failure, Result> =>
+    async (environment) =>
+      f(await effect(environment)),
+});
+
+export const effectApplicative = Object.freeze({
+  ...effectFunctor,
+  pure: succeed,
+  apply:
+    <Environment, Failure, Value, Result>(
+      functions: Effect<Environment, Failure, (value: Value) => Result>
+    ) =>
+    (
+      values: Effect<Environment, Failure, Value>
+    ): Effect<Environment, Failure, Result> =>
+      flatMap(functions, (f) => effectFunctor.map(f)(values)),
+});
+
+export const effectMonad = Object.freeze({
+  ...effectApplicative,
+  flatMap:
+    <Value, NextEnvironment, NextFailure, Result>(
+      f: (value: Value) => Effect<NextEnvironment, NextFailure, Result>
+    ) =>
+    <Environment, Failure>(effect: Effect<Environment, Failure, Value>) =>
+      flatMap(effect, f),
+});
+
 export function fail<Failure>(error: Failure): Effect<unknown, Failure, never> {
   return () => {
     throw new TypedFailureSignal(error);

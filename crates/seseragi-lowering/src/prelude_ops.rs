@@ -105,6 +105,30 @@ const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
         export_name: "listMonad",
         source_map_name: "listMonad",
     },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/effect::Functor",
+        runtime_feature: "effect.core.functor",
+        local_name: "_ssrg_effect_functor",
+        module: "@seseragi/runtime/effect",
+        export_name: "effectFunctor",
+        source_map_name: "effectFunctor",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/effect::Applicative",
+        runtime_feature: "effect.core.applicative",
+        local_name: "_ssrg_effect_applicative",
+        module: "@seseragi/runtime/effect",
+        export_name: "effectApplicative",
+        source_map_name: "effectApplicative",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/effect::Monad",
+        runtime_feature: "effect.core.monad",
+        local_name: "_ssrg_effect_monad",
+        module: "@seseragi/runtime/effect",
+        export_name: "effectMonad",
+        source_map_name: "effectMonad",
+    },
 ];
 
 pub(crate) fn runtime_prelude_dictionary_for_feature(
@@ -203,6 +227,24 @@ mod tests {
                 "core.list.monad",
                 "@seseragi/runtime/list",
                 "listMonad",
+            ),
+            (
+                "std/effect::Functor",
+                "effect.core.functor",
+                "@seseragi/runtime/effect",
+                "effectFunctor",
+            ),
+            (
+                "std/effect::Applicative",
+                "effect.core.applicative",
+                "@seseragi/runtime/effect",
+                "effectApplicative",
+            ),
+            (
+                "std/effect::Monad",
+                "effect.core.monad",
+                "@seseragi/runtime/effect",
+                "effectMonad",
             ),
         ] {
             let dictionary = runtime_prelude_dictionary_for_feature(feature).unwrap();

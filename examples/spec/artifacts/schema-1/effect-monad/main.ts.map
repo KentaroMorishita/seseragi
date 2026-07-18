@@ -1,0 +1,42 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-monad"
+  ],
+  "sourcesContent": [
+    "let increment: (Int -> Int) = \\value: Int -> value + 1\n\nlet source: Effect<{}, Never, Int> = pure 41\n\nlet liftedIncrement: Effect<{}, Never, (Int -> Int)> = pure increment\n\nlet plusTen: (Int -> Effect<{}, Never, Int>) =\n  \\value: Int -> pure $ value + 10\n\nlet mapped: Effect<{}, Never, Int> = map increment source\n\nlet applied: Effect<{}, Never, Int> =\n  apply liftedIncrement source\n\nlet chained: Effect<{}, Never, Int> = flatMap plusTen source\n\nfn render label: String -> value: Int -> String = `${label}: ${value}`\n\npub effect fn main =\n  do {\n    mappedValue <- mapped\n    println $ render \"Effect map\" mappedValue\n\n    appliedValue <- applied\n    println $ render \"Effect apply\" appliedValue\n\n    chainedValue <- chained\n    println $ render \"Effect flatMap\" chainedValue\n  }\n"
+  ],
+  "names": [
+    "increment",
+    "add",
+    "source",
+    "effectApplicative",
+    "liftedIncrement",
+    "effectApplicative",
+    "plusTen",
+    "effectApplicative",
+    "add",
+    "mapped",
+    "effectFunctor",
+    "applied",
+    "effectApplicative",
+    "chained",
+    "effectMonad",
+    "render",
+    "stringShow",
+    "intShow",
+    "main",
+    "mappedValue",
+    "println",
+    "render",
+    "appliedValue",
+    "println",
+    "render",
+    "chainedValue",
+    "println",
+    "render"
+  ],
+  "mappings": ";;;;;AAAAA;AAEAE;AAEAE;AAEAE;AAGAG;AAEAE;AAGAE;AAEAE;AAEAG"
+}

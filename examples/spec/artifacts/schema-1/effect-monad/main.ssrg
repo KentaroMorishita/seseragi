@@ -1,0 +1,29 @@
+let increment: (Int -> Int) = \value: Int -> value + 1
+
+let source: Effect<{}, Never, Int> = pure 41
+
+let liftedIncrement: Effect<{}, Never, (Int -> Int)> = pure increment
+
+let plusTen: (Int -> Effect<{}, Never, Int>) =
+  \value: Int -> pure $ value + 10
+
+let mapped: Effect<{}, Never, Int> = map increment source
+
+let applied: Effect<{}, Never, Int> =
+  apply liftedIncrement source
+
+let chained: Effect<{}, Never, Int> = flatMap plusTen source
+
+fn render label: String -> value: Int -> String = `${label}: ${value}`
+
+pub effect fn main =
+  do {
+    mappedValue <- mapped
+    println $ render "Effect map" mappedValue
+
+    appliedValue <- applied
+    println $ render "Effect apply" appliedValue
+
+    chainedValue <- chained
+    println $ render "Effect flatMap" chainedValue
+  }

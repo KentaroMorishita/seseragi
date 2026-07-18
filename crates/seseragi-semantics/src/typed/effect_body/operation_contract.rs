@@ -1,6 +1,8 @@
 use crate::{unit_type, KnownEffectOperation, TypedEffect, TypedExpr, TypedRecordField, TypedType};
 
-use super::super::type_ref::inferred_type_from_expr;
+use super::super::type_ref::{
+    application_argument_type_from_expr, effect_from_value_type, inferred_type_from_expr,
+};
 
 pub(super) fn operation_effect(
     operation: KnownEffectOperation,
@@ -63,10 +65,12 @@ fn map_error_effect(arguments: &[TypedExpr]) -> TypedEffect {
         .unwrap_or(TypedType::Hole);
     TypedEffect {
         environment: source
+            .as_ref()
             .map(|effect| effect.environment.clone())
             .unwrap_or(TypedType::Hole),
         failure: mapped_failure,
         success: source
+            .as_ref()
             .map(|effect| effect.success.clone())
             .unwrap_or(TypedType::Hole),
     }
@@ -95,12 +99,12 @@ fn either_arguments(type_ref: TypedType) -> Option<(TypedType, TypedType)> {
     (name == "Either").then(|| (failure.clone(), success.clone()))
 }
 
-fn expression_effect(expression: &TypedExpr) -> Option<&TypedEffect> {
+fn expression_effect(expression: &TypedExpr) -> Option<TypedEffect> {
     match expression {
         TypedExpr::EffectCall { effect, .. } | TypedExpr::EffectInvoke { effect, .. } => {
-            Some(effect)
+            Some(effect.clone())
         }
-        _ => None,
+        _ => effect_from_value_type(&application_argument_type_from_expr(expression)),
     }
 }
 

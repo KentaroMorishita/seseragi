@@ -249,4 +249,12 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     stdin: "",
     expectedOutput: "List map: 9\nList apply: 83\nList flatMap: 26",
   },
+  {
+    id: "effect-monad",
+    label: "EffectのMonad",
+    category: "型と抽象化",
+    sourcePath: "examples/spec/artifacts/schema-1/effect-monad/main.ssrg",
+    stdin: "",
+    expectedOutput: "Effect map: 42\nEffect apply: 42\nEffect flatMap: 51",
+  },
 ]

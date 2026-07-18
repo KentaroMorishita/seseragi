@@ -161,16 +161,11 @@ fn collect_map_error_issues(
             return;
         }
     };
-    let source_effect = match source {
-        TypedExpr::EffectCall { effect, .. } | TypedExpr::EffectInvoke { effect, .. } => effect,
-        _ if matches!(
-            super::super::type_ref::inferred_type_from_expr(source),
-            TypedType::Hole
-        ) =>
-        {
-            return
-        }
-        _ => {
+    let source_type = super::super::type_ref::application_argument_type_from_expr(source);
+    let source_effect = match super::super::type_ref::effect_from_value_type(&source_type) {
+        Some(effect) => effect,
+        None if matches!(source_type, TypedType::Hole) => return,
+        None => {
             issues.push(EffectFunctionIssue::MapErrorSourceNotEffect {
                 primary: expression_origin(source),
             });

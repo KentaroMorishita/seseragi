@@ -1,0 +1,1417 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-monad",
+  "externalTypeBindings": [
+    {
+      "spelling": "Effect",
+      "canonical": "std/prelude::Effect"
+    }
+  ],
+  "bindings": [
+    {
+      "symbol": "artifact/effect-monad::increment",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 54
+      },
+      "value": {
+        "kind": "lambda",
+        "parameter": {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        "body": {
+          "kind": "binary",
+          "operator": "+",
+          "left": {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 45,
+              "end": 50
+            }
+          },
+          "right": {
+            "kind": "int64",
+            "value": "1",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 53,
+              "end": 54
+            }
+          },
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Add",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/int::Add"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 45,
+            "end": 54
+          }
+        },
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 30,
+          "end": 54
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-monad::source",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 56,
+        "end": 100
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/prelude::Applicative::pure",
+        "arguments": [
+          {
+            "kind": "int64",
+            "value": "41",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 98,
+              "end": 100
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Applicative",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/effect::Applicative"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Applicative",
+          "method": "pure"
+        },
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 93,
+          "end": 100
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-monad::liftedIncrement",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 102,
+        "end": 171
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/prelude::Applicative::pure",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "increment",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 162,
+              "end": 171
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Applicative",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/effect::Applicative"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Applicative",
+          "method": "pure"
+        },
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 157,
+          "end": 171
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-monad::plusTen",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 173,
+        "end": 254
+      },
+      "value": {
+        "kind": "lambda",
+        "parameter": {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        "body": {
+          "kind": "call",
+          "callee": "std/prelude::Applicative::pure",
+          "arguments": [
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 244,
+                  "end": 249
+                }
+              },
+              "right": {
+                "kind": "int64",
+                "value": "10",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 252,
+                  "end": 254
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 244,
+                "end": 254
+              }
+            }
+          ],
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Applicative",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/effect::Applicative"
+              }
+            }
+          ],
+          "traitDispatch": {
+            "traitIdentity": "std/prelude::Applicative",
+            "method": "pure"
+          },
+          "type": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 237,
+            "end": 254
+          }
+        },
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 222,
+          "end": 254
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-monad::mapped",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 256,
+        "end": 313
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/prelude::Functor::map",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "increment",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 297,
+              "end": 306
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "source",
+            "type": {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 307,
+              "end": 313
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Functor",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/effect::Functor"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Functor",
+          "method": "map"
+        },
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 293,
+          "end": 313
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-monad::applied",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 315,
+        "end": 383
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/prelude::Applicative::apply",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "liftedIncrement",
+            "type": {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 361,
+              "end": 376
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "source",
+            "type": {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 377,
+              "end": 383
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Applicative",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/effect::Applicative"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Applicative",
+          "method": "apply"
+        },
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 355,
+          "end": 383
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-monad::chained",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 385,
+        "end": 445
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/prelude::Monad::flatMap",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "plusTen",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 431,
+              "end": 438
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "source",
+            "type": {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 439,
+              "end": 445
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Monad",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/effect::Monad"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Monad",
+          "method": "flatMap"
+        },
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 423,
+          "end": 445
+        }
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/effect-monad::render",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 447,
+        "end": 517
+      },
+      "parameters": [
+        {
+          "id": "label",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        },
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "variable",
+              "name": "label",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 500,
+                "end": 505
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::String>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 498,
+              "end": 506
+            }
+          },
+          {
+            "kind": "text",
+            "value": ": ",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 506,
+              "end": 508
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 510,
+                "end": 515
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::Int>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 508,
+              "end": 516
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 497,
+          "end": 517
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-monad::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 519,
+        "end": 780
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "mappedValue",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "variable",
+              "name": "mapped",
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 566,
+                "end": 572
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 551,
+              "end": 572
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/effect-monad::render",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "Effect map",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 594,
+                        "end": 606
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "mappedValue",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 607,
+                        "end": 618
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 587,
+                    "end": 618
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 577,
+                "end": 618
+              }
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "appliedValue",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "variable",
+              "name": "applied",
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 640,
+                "end": 647
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 624,
+              "end": 647
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/effect-monad::render",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "Effect apply",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 669,
+                        "end": 683
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "appliedValue",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 684,
+                        "end": 696
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 662,
+                    "end": 696
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 652,
+                "end": 696
+              }
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "chainedValue",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "variable",
+              "name": "chained",
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 718,
+                "end": 725
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 702,
+              "end": 725
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "console.println",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "artifact/effect-monad::render",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Effect flatMap",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 747,
+                    "end": 763
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "chainedValue",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 764,
+                    "end": 776
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 740,
+                "end": 776
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 730,
+            "end": 776
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 542,
+          "end": 780
+        }
+      }
+    }
+  ]
+}

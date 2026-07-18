@@ -1,0 +1,3 @@
+Effect map: 42
+Effect apply: 42
+Effect flatMap: 51

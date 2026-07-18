@@ -829,7 +829,13 @@ Playgroundにも同じPrelude-only sourceを公開します。
 Cartesian product、flatMapは各persistent Listをsource-orderで連結します。辞書の戻り値はArrayへ変換せずListのままです。
 execution fixtureとPlayground sampleは3操作をPrelude宣言だけで実行し、runtime package probeはimmutable nodeと
 dictionaryの順序規約を合わせて検査します。
-後続sliceではEffectなど仕様に列挙した型を同じ登録境界へ足し、標準moduleのexportとcoherence範囲を
+`schema-1/effect-monad`は`Effect<R, E, _>`の固定environment / failure prefixを既存の部分適用型構築子推論へ
+載せ、同じ3標準instanceを追加します。effect body内の通常applicationは共通のgeneric application推論を再利用しつつ、
+子のEffect式をfirst-class `Effect<R, E, A>`引数として扱います。do bindでは同じ値からsuccess `A`だけを取り出します。
+runtime dictionaryはcold性を保ち、mapはfailureを変更せず、applyはfunction effectからvalue effectの順に実行し、
+flatMapは既存のenvironment intersection / failure union primitiveを使います。`Effect` runtime type importと`Never`の
+TypeScript bottom typeもABIへ固定し、fixture、runtime probe、Playgroundが辞書経路を実行します。
+後続sliceでは標準moduleのexportとcoherence範囲を
 artifactで固定します。
 
 `schema-1/monad-laws`はFunctor identity / composition、Applicative identity / homomorphism、Monad left identity /

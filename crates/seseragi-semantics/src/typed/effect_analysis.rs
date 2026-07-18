@@ -4,6 +4,7 @@ use seseragi_syntax::{ByteSpan, SurfaceDecl, SurfaceExpr, Token, TokenKind};
 use super::effect_body::analyze_effect_body;
 use super::functions::typed_parameters_from_surface;
 use super::pure_issues::{ArrayIssue, PureCallIssue, RangeIssue, RecordIssue};
+use super::type_ref::{effect_from_value_type, inferred_type_from_expr};
 use super::TypedResolution;
 
 mod contracts;
@@ -235,7 +236,7 @@ fn is_effect_expression(expression: &TypedExpr) -> bool {
     matches!(
         expression,
         TypedExpr::EffectCall { .. } | TypedExpr::EffectInvoke { .. } | TypedExpr::DoBlock { .. }
-    )
+    ) || effect_from_value_type(&inferred_type_from_expr(expression)).is_some()
 }
 
 fn compact_contract_clause(tokens: &[Token], span: ByteSpan) -> Option<ByteSpan> {

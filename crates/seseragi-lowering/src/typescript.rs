@@ -287,6 +287,7 @@ pub enum TypeScriptType {
     Boolean,
     String,
     Undefined,
+    Never,
     Unknown,
     Reference {
         name: String,

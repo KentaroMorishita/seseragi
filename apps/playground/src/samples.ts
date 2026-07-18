@@ -27,6 +27,7 @@ import monadMaybe from "../../../examples/spec/artifacts/schema-1/monad-maybe/ma
 import monadEither from "../../../examples/spec/artifacts/schema-1/monad-either/main.ssrg?raw"
 import arrayMonad from "../../../examples/spec/artifacts/schema-1/array-monad/main.ssrg?raw"
 import listMonad from "../../../examples/spec/artifacts/schema-1/list-monad/main.ssrg?raw"
+import effectMonad from "../../../examples/spec/artifacts/schema-1/effect-monad/main.ssrg?raw"
 import {
   sampleCatalog,
   type PlaygroundSampleDefinition,
@@ -70,6 +71,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "monad-either": monadEither,
   "array-monad": arrayMonad,
   "list-monad": listMonad,
+  "effect-monad": effectMonad,
 }
 
 export const samples: readonly PlaygroundSample[] = sampleCatalog.map(
