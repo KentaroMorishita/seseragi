@@ -241,4 +241,12 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     stdin: "",
     expectedOutput: "Array map: 9\nArray apply: 83\nArray flatMap: 26",
   },
+  {
+    id: "list-monad",
+    label: "ListのMonad",
+    category: "型と抽象化",
+    sourcePath: "examples/spec/artifacts/schema-1/list-monad/main.ssrg",
+    stdin: "",
+    expectedOutput: "List map: 9\nList apply: 83\nList flatMap: 26",
+  },
 ]

@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "module": "artifact/list-monad",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}

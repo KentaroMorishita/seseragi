@@ -544,6 +544,36 @@
       }
     },
     {
+      "id": "core.list.functor",
+      "kind": "runtime-binding",
+      "typescript": "readonly Functor dictionary",
+      "boundary": "standard Functor<List> dictionary preserving element order",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "listFunctor"
+      }
+    },
+    {
+      "id": "core.list.applicative",
+      "kind": "runtime-binding",
+      "typescript": "readonly Applicative dictionary",
+      "boundary": "standard Applicative<List> persistent Cartesian product dictionary",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "listApplicative"
+      }
+    },
+    {
+      "id": "core.list.monad",
+      "kind": "runtime-binding",
+      "typescript": "readonly Monad dictionary",
+      "boundary": "standard Monad<List> persistent source-order concatenation dictionary",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "listMonad"
+      }
+    },
+    {
       "id": "effect.core.succeed",
       "kind": "runtime-helper",
       "typescript": "function",

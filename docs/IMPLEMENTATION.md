@@ -824,7 +824,12 @@ Functor / Applicative / Monadのmethod schemeとsupertrait chain、Maybe / Eithe
 既存`@seseragi/runtime/array`に置き、mapは順序保持、pureはsingleton、applyはfunctionを外側にしたCartesian product、
 flatMapは各結果のsource-order連結として実装します。fixtureは3 dictionary identityを個別に選択してactual executionし、
 Playgroundにも同じPrelude-only sourceを公開します。
-後続sliceではList / Effectなど仕様に列挙した型を同じ登録境界へ足し、標準moduleのexportとcoherence範囲を
+`schema-1/list-monad`は同じ3 instanceをpersistent `List`へ追加します。各辞書は既存の`Empty` / `Cons`表現と
+`fromArray` constructorを再利用し、mapは要素順を保持、pureはsingleton `Cons`、applyはfunction-majorの
+Cartesian product、flatMapは各persistent Listをsource-orderで連結します。辞書の戻り値はArrayへ変換せずListのままです。
+execution fixtureとPlayground sampleは3操作をPrelude宣言だけで実行し、runtime package probeはimmutable nodeと
+dictionaryの順序規約を合わせて検査します。
+後続sliceではEffectなど仕様に列挙した型を同じ登録境界へ足し、標準moduleのexportとcoherence範囲を
 artifactで固定します。
 
 `schema-1/monad-laws`はFunctor identity / composition、Applicative identity / homomorphism、Monad left identity /

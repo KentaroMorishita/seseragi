@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "module": "artifact/list-monad",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.list",
+      "core.int64",
+      "core.int64.add",
+      "core.list.from-array",
+      "core.list.reduce",
+      "core.string",
+      "core.string.show",
+      "core.int64.show",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.list.functor",
+      "core.list.applicative",
+      "core.list.monad"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

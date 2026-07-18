@@ -81,6 +81,30 @@ const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
         export_name: "arrayMonad",
         source_map_name: "arrayMonad",
     },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/list::Functor",
+        runtime_feature: "core.list.functor",
+        local_name: "_ssrg_list_functor",
+        module: "@seseragi/runtime/list",
+        export_name: "listFunctor",
+        source_map_name: "listFunctor",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/list::Applicative",
+        runtime_feature: "core.list.applicative",
+        local_name: "_ssrg_list_applicative",
+        module: "@seseragi/runtime/list",
+        export_name: "listApplicative",
+        source_map_name: "listApplicative",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/list::Monad",
+        runtime_feature: "core.list.monad",
+        local_name: "_ssrg_list_monad",
+        module: "@seseragi/runtime/list",
+        export_name: "listMonad",
+        source_map_name: "listMonad",
+    },
 ];
 
 pub(crate) fn runtime_prelude_dictionary_for_feature(
@@ -107,42 +131,82 @@ mod tests {
 
     #[test]
     fn maps_the_standard_prelude_dictionary_families() {
-        for (identity, feature, export_name) in [
-            ("std/maybe::Functor", "core.maybe.functor", "maybeFunctor"),
+        for (identity, feature, module, export_name) in [
+            (
+                "std/maybe::Functor",
+                "core.maybe.functor",
+                "@seseragi/runtime/sum",
+                "maybeFunctor",
+            ),
             (
                 "std/maybe::Applicative",
                 "core.maybe.applicative",
+                "@seseragi/runtime/sum",
                 "maybeApplicative",
             ),
-            ("std/maybe::Monad", "core.maybe.monad", "maybeMonad"),
+            (
+                "std/maybe::Monad",
+                "core.maybe.monad",
+                "@seseragi/runtime/sum",
+                "maybeMonad",
+            ),
             (
                 "std/either::Functor",
                 "core.either.functor",
+                "@seseragi/runtime/sum",
                 "eitherFunctor",
             ),
             (
                 "std/either::Applicative",
                 "core.either.applicative",
+                "@seseragi/runtime/sum",
                 "eitherApplicative",
             ),
-            ("std/either::Monad", "core.either.monad", "eitherMonad"),
-            ("std/array::Functor", "core.array.functor", "arrayFunctor"),
+            (
+                "std/either::Monad",
+                "core.either.monad",
+                "@seseragi/runtime/sum",
+                "eitherMonad",
+            ),
+            (
+                "std/array::Functor",
+                "core.array.functor",
+                "@seseragi/runtime/array",
+                "arrayFunctor",
+            ),
             (
                 "std/array::Applicative",
                 "core.array.applicative",
+                "@seseragi/runtime/array",
                 "arrayApplicative",
             ),
-            ("std/array::Monad", "core.array.monad", "arrayMonad"),
+            (
+                "std/array::Monad",
+                "core.array.monad",
+                "@seseragi/runtime/array",
+                "arrayMonad",
+            ),
+            (
+                "std/list::Functor",
+                "core.list.functor",
+                "@seseragi/runtime/list",
+                "listFunctor",
+            ),
+            (
+                "std/list::Applicative",
+                "core.list.applicative",
+                "@seseragi/runtime/list",
+                "listApplicative",
+            ),
+            (
+                "std/list::Monad",
+                "core.list.monad",
+                "@seseragi/runtime/list",
+                "listMonad",
+            ),
         ] {
             let dictionary = runtime_prelude_dictionary_for_feature(feature).unwrap();
-            assert_eq!(
-                dictionary.module,
-                if feature.starts_with("core.array.") {
-                    "@seseragi/runtime/array"
-                } else {
-                    "@seseragi/runtime/sum"
-                }
-            );
+            assert_eq!(dictionary.module, module);
             assert_eq!(dictionary.export_name, export_name);
             assert_eq!(dictionary.source_map_name, export_name);
             assert_eq!(

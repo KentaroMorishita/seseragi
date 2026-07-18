@@ -133,6 +133,21 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         type_name: "Array",
         identity: "std/array::Monad",
     },
+    PreludeStandardInstance {
+        trait_name: "Functor",
+        type_name: "List",
+        identity: "std/list::Functor",
+    },
+    PreludeStandardInstance {
+        trait_name: "Applicative",
+        type_name: "List",
+        identity: "std/list::Applicative",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monad",
+        type_name: "List",
+        identity: "std/list::Monad",
+    },
 ];
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -476,6 +491,10 @@ mod tests {
         assert_eq!(
             standard_instance("Functor", &named("Array")).map(|instance| instance.identity),
             Some("std/array::Functor")
+        );
+        assert_eq!(
+            standard_instance("Monad", &named("List")).map(|instance| instance.identity),
+            Some("std/list::Monad")
         );
         assert!(standard_instance("Monad", &saturated_either).is_none());
     }

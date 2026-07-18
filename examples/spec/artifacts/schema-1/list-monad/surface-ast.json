@@ -1,0 +1,786 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "increment",
+      "nameSpan": {
+        "start": 3,
+        "end": 12
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 13,
+            "end": 18
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 20,
+              "end": 23
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 27,
+          "end": 30
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "operatorSpan": {
+          "start": 39,
+          "end": 40
+        },
+        "left": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 33,
+            "end": 38
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "raw": "1",
+          "span": {
+            "start": 41,
+            "end": 42
+          }
+        },
+        "span": {
+          "start": 33,
+          "end": 42
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 42
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "expand",
+      "nameSpan": {
+        "start": 47,
+        "end": 53
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 54,
+            "end": 59
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 61,
+              "end": 64
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "List",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 73,
+              "end": 76
+            }
+          }
+        ],
+        "span": {
+          "start": 68,
+          "end": 77
+        }
+      },
+      "body": {
+        "kind": "list",
+        "elements": [
+          {
+            "kind": "name",
+            "name": "value",
+            "span": {
+              "start": 82,
+              "end": 87
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "+",
+            "operatorSpan": {
+              "start": 95,
+              "end": 96
+            },
+            "left": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 89,
+                "end": 94
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "10",
+              "span": {
+                "start": 97,
+                "end": 99
+              }
+            },
+            "span": {
+              "start": 89,
+              "end": 99
+            }
+          }
+        ],
+        "span": {
+          "start": 80,
+          "end": 100
+        }
+      },
+      "span": {
+        "start": 44,
+        "end": 100
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "total",
+      "nameSpan": {
+        "start": 105,
+        "end": 110
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 111,
+            "end": 117
+          },
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 124,
+                  "end": 127
+                }
+              }
+            ],
+            "span": {
+              "start": 119,
+              "end": 128
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 132,
+          "end": 135
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "reduce",
+              "span": {
+                "start": 138,
+                "end": 144
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "0",
+              "span": {
+                "start": 145,
+                "end": 146
+              }
+            },
+            "span": {
+              "start": 138,
+              "end": 146
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "name",
+              "name": "+",
+              "span": {
+                "start": 148,
+                "end": 149
+              }
+            },
+            "span": {
+              "start": 147,
+              "end": 150
+            }
+          },
+          "span": {
+            "start": 138,
+            "end": 150
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "values",
+          "span": {
+            "start": 151,
+            "end": 157
+          }
+        },
+        "span": {
+          "start": 138,
+          "end": 157
+        }
+      },
+      "span": {
+        "start": 102,
+        "end": 157
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "render",
+      "nameSpan": {
+        "start": 162,
+        "end": 168
+      },
+      "parameters": [
+        {
+          "name": "label",
+          "nameSpan": {
+            "start": 169,
+            "end": 174
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 176,
+              "end": 182
+            }
+          }
+        },
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 186,
+            "end": 191
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 193,
+              "end": 196
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 200,
+          "end": 206
+        }
+      },
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "name",
+              "name": "label",
+              "span": {
+                "start": 212,
+                "end": 217
+              }
+            },
+            "span": {
+              "start": 210,
+              "end": 218
+            }
+          },
+          {
+            "kind": "text",
+            "value": ": ",
+            "span": {
+              "start": 218,
+              "end": 220
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 222,
+                "end": 227
+              }
+            },
+            "span": {
+              "start": 220,
+              "end": 228
+            }
+          }
+        ],
+        "span": {
+          "start": 209,
+          "end": 229
+        }
+      },
+      "span": {
+        "start": 159,
+        "end": 229
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 245,
+        "end": 249
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 333,
+                  "end": 340
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "render",
+                    "span": {
+                      "start": 308,
+                      "end": 314
+                    }
+                  },
+                  "argument": {
+                    "kind": "string",
+                    "raw": "\"List map\"",
+                    "span": {
+                      "start": 315,
+                      "end": 325
+                    }
+                  },
+                  "span": {
+                    "start": 308,
+                    "end": 325
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "total",
+                    "span": {
+                      "start": 295,
+                      "end": 300
+                    }
+                  },
+                  "argument": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "map",
+                        "span": {
+                          "start": 263,
+                          "end": 266
+                        }
+                      },
+                      "argument": {
+                        "kind": "name",
+                        "name": "increment",
+                        "span": {
+                          "start": 267,
+                          "end": 276
+                        }
+                      },
+                      "span": {
+                        "start": 263,
+                        "end": 276
+                      }
+                    },
+                    "argument": {
+                      "kind": "list",
+                      "elements": [
+                        {
+                          "kind": "integer",
+                          "raw": "1",
+                          "span": {
+                            "start": 279,
+                            "end": 280
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "raw": "2",
+                          "span": {
+                            "start": 282,
+                            "end": 283
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "raw": "3",
+                          "span": {
+                            "start": 285,
+                            "end": 286
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 277,
+                        "end": 287
+                      }
+                    },
+                    "span": {
+                      "start": 263,
+                      "end": 287
+                    }
+                  },
+                  "span": {
+                    "start": 263,
+                    "end": 300
+                  }
+                },
+                "span": {
+                  "start": 263,
+                  "end": 325
+                }
+              },
+              "span": {
+                "start": 263,
+                "end": 340
+              }
+            },
+            "span": {
+              "start": 263,
+              "end": 340
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 426,
+                  "end": 433
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "render",
+                    "span": {
+                      "start": 399,
+                      "end": 405
+                    }
+                  },
+                  "argument": {
+                    "kind": "string",
+                    "raw": "\"List apply\"",
+                    "span": {
+                      "start": 406,
+                      "end": 418
+                    }
+                  },
+                  "span": {
+                    "start": 399,
+                    "end": 418
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "total",
+                    "span": {
+                      "start": 386,
+                      "end": 391
+                    }
+                  },
+                  "argument": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "apply",
+                        "span": {
+                          "start": 346,
+                          "end": 351
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "application",
+                          "function": {
+                            "kind": "name",
+                            "name": "pure",
+                            "span": {
+                              "start": 353,
+                              "end": 357
+                            }
+                          },
+                          "argument": {
+                            "kind": "name",
+                            "name": "increment",
+                            "span": {
+                              "start": 358,
+                              "end": 367
+                            }
+                          },
+                          "span": {
+                            "start": 353,
+                            "end": 367
+                          }
+                        },
+                        "span": {
+                          "start": 352,
+                          "end": 368
+                        }
+                      },
+                      "span": {
+                        "start": 346,
+                        "end": 368
+                      }
+                    },
+                    "argument": {
+                      "kind": "list",
+                      "elements": [
+                        {
+                          "kind": "integer",
+                          "raw": "40",
+                          "span": {
+                            "start": 371,
+                            "end": 373
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "raw": "41",
+                          "span": {
+                            "start": 375,
+                            "end": 377
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 369,
+                        "end": 378
+                      }
+                    },
+                    "span": {
+                      "start": 346,
+                      "end": 378
+                    }
+                  },
+                  "span": {
+                    "start": 346,
+                    "end": 391
+                  }
+                },
+                "span": {
+                  "start": 346,
+                  "end": 418
+                }
+              },
+              "span": {
+                "start": 346,
+                "end": 433
+              }
+            },
+            "span": {
+              "start": 346,
+              "end": 433
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 511,
+              "end": 518
+            }
+          },
+          "argument": {
+            "kind": "application",
+            "function": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "render",
+                "span": {
+                  "start": 482,
+                  "end": 488
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"List flatMap\"",
+                "span": {
+                  "start": 489,
+                  "end": 503
+                }
+              },
+              "span": {
+                "start": 482,
+                "end": 503
+              }
+            },
+            "argument": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "total",
+                "span": {
+                  "start": 469,
+                  "end": 474
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "flatMap",
+                    "span": {
+                      "start": 439,
+                      "end": 446
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "expand",
+                    "span": {
+                      "start": 447,
+                      "end": 453
+                    }
+                  },
+                  "span": {
+                    "start": 439,
+                    "end": 453
+                  }
+                },
+                "argument": {
+                  "kind": "list",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 456,
+                        "end": 457
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "raw": "2",
+                      "span": {
+                        "start": 459,
+                        "end": 460
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 454,
+                    "end": 461
+                  }
+                },
+                "span": {
+                  "start": 439,
+                  "end": 461
+                }
+              },
+              "span": {
+                "start": 439,
+                "end": 474
+              }
+            },
+            "span": {
+              "start": 439,
+              "end": 503
+            }
+          },
+          "span": {
+            "start": 439,
+            "end": 518
+          }
+        },
+        "span": {
+          "start": 254,
+          "end": 522
+        }
+      },
+      "span": {
+        "start": 231,
+        "end": 522
+      }
+    }
+  ]
+}

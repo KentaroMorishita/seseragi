@@ -1,0 +1,1265 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/list-monad",
+  "externalTypeBindings": [
+    {
+      "spelling": "List",
+      "canonical": "std/prelude::List"
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/list-monad::increment",
+      "visibility": "private",
+      "origin": {
+        "start": 0,
+        "end": 42
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 13,
+            "end": 18
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 33,
+            "end": 38
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "value": "1",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 41,
+            "end": 42
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 33,
+          "end": 42
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/list-monad::expand",
+      "visibility": "private",
+      "origin": {
+        "start": 44,
+        "end": 100
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 54,
+            "end": 59
+          }
+        }
+      ],
+      "body": {
+        "kind": "list",
+        "elements": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 82,
+              "end": 87
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "+",
+            "left": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 89,
+                "end": 94
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "value": "10",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 97,
+                "end": 99
+              }
+            },
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Add",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/int::Add"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 89,
+              "end": 99
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 80,
+          "end": 100
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/list-monad::total",
+      "visibility": "private",
+      "origin": {
+        "start": 102,
+        "end": 157
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 111,
+            "end": 117
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::reduce",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "0",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 145,
+              "end": 146
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "+",
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Add",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/int::Add"
+                }
+              }
+            ],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            },
+            "origin": {
+              "start": 148,
+              "end": 149
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 151,
+              "end": 157
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/list::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 138,
+          "end": 157
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/list-monad::render",
+      "visibility": "private",
+      "origin": {
+        "start": 159,
+        "end": 229
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "label",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 169,
+            "end": 174
+          }
+        },
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 186,
+            "end": 191
+          }
+        }
+      ],
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "variable",
+              "name": "label",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 212,
+                "end": 217
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::String>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "start": 210,
+              "end": 218
+            }
+          },
+          {
+            "kind": "text",
+            "value": ": ",
+            "origin": {
+              "start": 218,
+              "end": 220
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 222,
+                "end": 227
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::Int>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "start": 220,
+              "end": 228
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 209,
+          "end": 229
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/list-monad::main",
+      "visibility": "public",
+      "origin": {
+        "start": 231,
+        "end": 522
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/list-monad::render",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "List map",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 315,
+                        "end": 325
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "artifact/list-monad::total",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Functor::map",
+                          "arguments": [
+                            {
+                              "kind": "variable",
+                              "name": "artifact/list-monad::increment",
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "result": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              },
+                              "origin": {
+                                "start": 267,
+                                "end": 276
+                              }
+                            },
+                            {
+                              "kind": "list",
+                              "elements": [
+                                {
+                                  "kind": "integer",
+                                  "value": "1",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "start": 279,
+                                    "end": 280
+                                  }
+                                },
+                                {
+                                  "kind": "integer",
+                                  "value": "2",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "start": 282,
+                                    "end": 283
+                                  }
+                                },
+                                {
+                                  "kind": "integer",
+                                  "value": "3",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "start": 285,
+                                    "end": 286
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "List",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "start": 277,
+                                "end": 287
+                              }
+                            }
+                          ],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Functor",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/list::Functor"
+                              }
+                            }
+                          ],
+                          "traitDispatch": {
+                            "traitIdentity": "std/prelude::Functor",
+                            "method": "map"
+                          },
+                          "type": {
+                            "kind": "named",
+                            "name": "List",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 263,
+                            "end": 287
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 263,
+                        "end": 300
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 263,
+                    "end": 325
+                  }
+                }
+              ],
+              "origin": {
+                "start": 263,
+                "end": 340
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/list-monad::render",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "List apply",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 406,
+                        "end": 418
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "artifact/list-monad::total",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Applicative::apply",
+                          "arguments": [
+                            {
+                              "kind": "call",
+                              "callee": "std/prelude::Applicative::pure",
+                              "arguments": [
+                                {
+                                  "kind": "variable",
+                                  "name": "artifact/list-monad::increment",
+                                  "type": {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "result": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  },
+                                  "origin": {
+                                    "start": 358,
+                                    "end": 367
+                                  }
+                                }
+                              ],
+                              "evidence": [
+                                {
+                                  "constraint": {
+                                    "name": "Applicative",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "List",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "evidence": {
+                                    "kind": "standard",
+                                    "identity": "std/list::Applicative"
+                                  }
+                                }
+                              ],
+                              "traitDispatch": {
+                                "traitIdentity": "std/prelude::Applicative",
+                                "method": "pure"
+                              },
+                              "type": {
+                                "kind": "named",
+                                "name": "List",
+                                "arguments": [
+                                  {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "result": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "start": 353,
+                                "end": 367
+                              }
+                            },
+                            {
+                              "kind": "list",
+                              "elements": [
+                                {
+                                  "kind": "integer",
+                                  "value": "40",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "start": 371,
+                                    "end": 373
+                                  }
+                                },
+                                {
+                                  "kind": "integer",
+                                  "value": "41",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "start": 375,
+                                    "end": 377
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "List",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "start": 369,
+                                "end": 378
+                              }
+                            }
+                          ],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Applicative",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "List",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/list::Applicative"
+                              }
+                            }
+                          ],
+                          "traitDispatch": {
+                            "traitIdentity": "std/prelude::Applicative",
+                            "method": "apply"
+                          },
+                          "type": {
+                            "kind": "named",
+                            "name": "List",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 346,
+                            "end": 378
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 346,
+                        "end": 391
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 346,
+                    "end": 418
+                  }
+                }
+              ],
+              "origin": {
+                "start": 346,
+                "end": 433
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "artifact/list-monad::render",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "List flatMap",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 489,
+                    "end": 503
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "artifact/list-monad::total",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::Monad::flatMap",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "artifact/list-monad::expand",
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "List",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          },
+                          "origin": {
+                            "start": 447,
+                            "end": 453
+                          }
+                        },
+                        {
+                          "kind": "list",
+                          "elements": [
+                            {
+                              "kind": "integer",
+                              "value": "1",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 456,
+                                "end": 457
+                              }
+                            },
+                            {
+                              "kind": "integer",
+                              "value": "2",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 459,
+                                "end": 460
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "List",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 454,
+                            "end": 461
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Monad",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "List",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/list::Monad"
+                          }
+                        }
+                      ],
+                      "traitDispatch": {
+                        "traitIdentity": "std/prelude::Monad",
+                        "method": "flatMap"
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 439,
+                        "end": 461
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 439,
+                    "end": 474
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 439,
+                "end": 503
+              }
+            }
+          ],
+          "origin": {
+            "start": 439,
+            "end": 518
+          }
+        },
+        "origin": {
+          "start": 254,
+          "end": 522
+        }
+      }
+    }
+  ]
+}

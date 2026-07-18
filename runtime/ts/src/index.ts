@@ -42,6 +42,9 @@ export {
   Cons,
   Empty,
   fromArray as listFromArray,
+  listApplicative,
+  listFunctor,
+  listMonad,
   reduce as reduceList,
 } from "./list"
 export type {

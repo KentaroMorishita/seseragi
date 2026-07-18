@@ -26,6 +26,7 @@ import applicativeValidation from "../../../examples/spec/artifacts/schema-1/app
 import monadMaybe from "../../../examples/spec/artifacts/schema-1/monad-maybe/main.ssrg?raw"
 import monadEither from "../../../examples/spec/artifacts/schema-1/monad-either/main.ssrg?raw"
 import arrayMonad from "../../../examples/spec/artifacts/schema-1/array-monad/main.ssrg?raw"
+import listMonad from "../../../examples/spec/artifacts/schema-1/list-monad/main.ssrg?raw"
 import {
   sampleCatalog,
   type PlaygroundSampleDefinition,
@@ -68,6 +69,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "monad-maybe": monadMaybe,
   "monad-either": monadEither,
   "array-monad": arrayMonad,
+  "list-monad": listMonad,
 }
 
 export const samples: readonly PlaygroundSample[] = sampleCatalog.map(

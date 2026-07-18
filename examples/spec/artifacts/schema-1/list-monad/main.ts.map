@@ -1,0 +1,42 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/list-monad"
+  ],
+  "sourcesContent": [
+    "fn increment value: Int -> Int = value + 1\n\nfn expand value: Int -> List<Int> = `[value, value + 10]\n\nfn total values: List<Int> -> Int = reduce 0 (+) values\n\nfn render label: String -> value: Int -> String = `${label}: ${value}`\n\npub effect fn main =\n  do {\n    map increment `[1, 2, 3]\n    |> total\n    |> render \"List map\"\n    |> println\n\n    apply (pure increment) `[40, 41]\n    |> total\n    |> render \"List apply\"\n    |> println\n\n    flatMap expand `[1, 2]\n    |> total\n    |> render \"List flatMap\"\n    |> println\n  }\n"
+  ],
+  "names": [
+    "increment",
+    "add",
+    "expand",
+    "fromArray",
+    "add",
+    "total",
+    "_ssrg_list_reduce",
+    "add",
+    "render",
+    "stringShow",
+    "intShow",
+    "main",
+    "println",
+    "render",
+    "total",
+    "listFunctor",
+    "fromArray",
+    "println",
+    "render",
+    "total",
+    "listApplicative",
+    "listApplicative",
+    "fromArray",
+    "println",
+    "render",
+    "total",
+    "listMonad",
+    "fromArray"
+  ],
+  "mappings": ";;;;;;AAAAA;AAEAE;AAEAG;AAEAG;AAEAG"
+}
