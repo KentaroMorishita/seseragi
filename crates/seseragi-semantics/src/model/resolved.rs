@@ -45,6 +45,10 @@ pub struct ResolvedImport {
     pub origin: seseragi_syntax::ByteSpan,
     pub in_scope: bool,
     pub export: InterfaceExport,
+    /// Nominal receiver that owns an automatically retained inherent method.
+    /// The method is not introduced into lexical value scope.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub member_owner: Option<SymbolId>,
     /// Nominal types referenced by a public callable scheme, resolved while
     /// the provider's final interface is still available. `None` means the
     /// callable scheme could not be resolved without ambiguity.

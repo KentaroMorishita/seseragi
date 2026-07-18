@@ -413,6 +413,78 @@ mod tests {
             .typescript
             .contains("__ssrg$instance$Show$1.show(value.value)"));
     }
+
+    #[test]
+    fn imports_a_public_inherent_method_with_its_nominal_owner() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module(
+                "fixture/method::main".to_owned(),
+                [("./domain".to_owned(), "fixture/method::domain".to_owned())],
+            )
+            .unwrap();
+        graph
+            .add_module("fixture/method::domain".to_owned(), [])
+            .unwrap();
+
+        let project = compile_project(
+            graph,
+            [
+                ProjectModuleInput::new(
+                    "domain.ssrg",
+                    "fixture/method::domain",
+                    "pub opaque struct Box<A> {\n  value: A,\n}\n\npub fn box<A> value: A -> Box<A> = Box { value }\n\nimpl<A> Box<A> {\n  pub fn get self: Box<A> -> A = self.value\n\n  pub fn map self: Box<A> -> transform: (A -> A) -> Box<A> =\n    Box { value: transform self.value }\n}\n",
+                    "dist/method/domain.js",
+                ),
+                ProjectModuleInput::new(
+                    "main.ssrg",
+                    "fixture/method::main",
+                    "import { box } from \"./domain\"\n\npub fn run value: Int -> Int =\n  ((box value).map (\\item -> item + item)).get\n",
+                    "dist/method/main.js",
+                ),
+            ],
+        )
+        .unwrap();
+
+        let domain = project.modules.get("fixture/method::domain").unwrap();
+        let owner = domain
+            .typed_interface
+            .exports
+            .iter()
+            .find(|export| export.namespace == "type" && export.name == "Box")
+            .unwrap();
+        let method = owner
+            .methods
+            .iter()
+            .find(|method| method.name == "get")
+            .unwrap();
+        assert_eq!(method.scheme.type_parameters.len(), 1);
+        assert_eq!(owner.methods.len(), 2);
+        assert!(!domain
+            .typed_interface
+            .exports
+            .iter()
+            .any(|export| { export.namespace == "value" && export.name == "get" }));
+        assert!(domain
+            .generated
+            .typescript
+            .contains("export const __ssrg$method$Box$get"));
+        assert!(domain
+            .generated
+            .typescript
+            .contains("export const __ssrg$method$Box$map"));
+
+        let main = project.modules.get("fixture/method::main").unwrap();
+        assert!(main
+            .generated
+            .typescript
+            .contains("__ssrg$method$Box$get as get"));
+        assert!(main
+            .generated
+            .typescript
+            .contains("__ssrg$method$Box$map as map"));
+        assert!(main.generated.typescript.contains("get(map(box(value))"));
+    }
 }
 
 #[cfg(test)]

@@ -1,0 +1,9 @@
+import { box } from "./domain"
+
+fn evaluate value: Int -> Int =
+  ((box value).map (\item -> item + item)).get
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ `Imported inherent method: ${evaluate 21}`

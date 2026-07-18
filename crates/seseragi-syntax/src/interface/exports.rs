@@ -1,4 +1,4 @@
-use crate::surface::{SurfaceDecl, TypeParameter, Visibility};
+use crate::surface::{SurfaceDecl, SurfaceImplMember, TypeParameter, TypeRef, Visibility};
 
 use super::methods::{
     function_interface_type, interface_constraint_from_surface, interface_method_from_surface,
@@ -237,6 +237,57 @@ fn nominal_type_export(
         },
         methods: Vec::new(),
         representation: None,
+    }
+}
+
+pub(super) fn attach_inherent_methods(
+    module_name: &str,
+    declarations: &[SurfaceDecl],
+    exports: &mut [InterfaceExport],
+) {
+    for declaration in declarations {
+        let SurfaceDecl::Impl {
+            type_parameters,
+            target: TypeRef::Named { name: owner, .. },
+            constraints,
+            members,
+            ..
+        } = declaration
+        else {
+            continue;
+        };
+        let owner_symbol = format!("{module_name}::{owner}");
+        let Some(owner_export) = exports
+            .iter_mut()
+            .find(|export| export.namespace == "type" && export.symbol == owner_symbol)
+        else {
+            continue;
+        };
+        owner_export
+            .methods
+            .extend(members.iter().filter_map(|member| {
+                let SurfaceImplMember::Method { visibility, method } = member else {
+                    return None;
+                };
+                if *visibility != Visibility::Public {
+                    return None;
+                }
+                let mut method_type_parameters = type_parameters.clone();
+                method_type_parameters.extend(method.type_parameters.clone());
+                Some(super::InterfaceMethod {
+                    name: method.name.clone(),
+                    scheme: InterfaceScheme {
+                        type_parameters: method_type_parameters,
+                        constraints: constraints
+                            .iter()
+                            .chain(&method.constraints)
+                            .map(interface_constraint_from_surface)
+                            .collect(),
+                        type_ref: function_interface_type(&method.parameters, &method.return_type),
+                    },
+                    origin: method.span,
+                })
+            }));
     }
 }
 

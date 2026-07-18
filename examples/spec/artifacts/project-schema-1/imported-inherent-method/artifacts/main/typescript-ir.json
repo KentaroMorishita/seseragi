@@ -1,0 +1,186 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-inherent-method::main",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.add",
+    "core.unit",
+    "effect.console.println",
+    "core.string",
+    "core.int64.show"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-inherent-method::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "box",
+          "local": "box",
+          "sourceLocal": "box",
+          "canonical": "fixture/imported-inherent-method::domain::box",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 12
+          }
+        },
+        {
+          "imported": "__ssrg$method$Box$map",
+          "local": "map",
+          "sourceLocal": "map",
+          "canonical": "fixture/imported-inherent-method::domain::Box::map",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "imported": "__ssrg$method$Box$get",
+          "local": "get",
+          "sourceLocal": "get",
+          "canonical": "fixture/imported-inherent-method::domain::Box::get",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 0
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 30
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "evaluate",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "get",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "map",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "box",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                ]
+              },
+              {
+                "kind": "lambda",
+                "parameter": "item: bigint",
+                "body": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_int64_add",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "item"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "item"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 32,
+        "end": 110
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "binary",
+            "operator": "+",
+            "left": {
+              "kind": "string",
+              "value": "Imported inherent method: "
+            },
+            "right": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_intShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "evaluate",
+                  "arguments": [
+                    {
+                      "kind": "bigint",
+                      "value": "21"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 112,
+        "end": 227
+      }
+    }
+  ]
+}

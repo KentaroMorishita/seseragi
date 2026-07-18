@@ -28,7 +28,7 @@ pub(crate) fn typed_interface_from_modules(
         typed
             .declarations
             .iter()
-            .filter_map(|declaration| typed_value_export(declaration, &types))
+            .filter_map(|declaration| typed_value_export(declaration, &typed.module, &types))
             .collect::<Vec<_>>(),
     );
 
@@ -120,6 +120,7 @@ fn interface_instance_from_dependency(instance: &ResolvedDependencyInstance) -> 
 
 fn typed_value_export(
     declaration: &TypedDecl,
+    module: &str,
     types: &InterfaceTypes<'_>,
 ) -> Option<InterfaceExport> {
     match declaration {
@@ -150,48 +151,50 @@ fn typed_value_export(
             scheme,
             parameters,
             ..
-        } if *visibility == Visibility::Public => Some(InterfaceExport {
-            symbol: symbol.clone(),
-            namespace: "value".to_owned(),
-            name: local_name(symbol),
-            constructor_of: None,
-            visibility: *visibility,
-            declaration_kind: Some("function".to_owned()),
-            declaration: *origin,
-            scheme: InterfaceScheme {
-                type_parameters: scheme
-                    .type_parameters
-                    .iter()
-                    .map(|name| {
-                        type_constructor_parameters
-                            .iter()
-                            .find(|parameter| parameter.name == *name)
-                            .cloned()
-                            .unwrap_or_else(|| seseragi_syntax::TypeParameter::value(name))
-                    })
-                    .collect(),
-                constraints: scheme
-                    .constraints
-                    .iter()
-                    .map(|constraint| InterfaceConstraint {
-                        name: constraint.name.clone(),
-                        trait_identity: None,
-                        arguments: constraint
-                            .arguments
-                            .iter()
-                            .map(|argument| types.convert(argument))
-                            .collect(),
-                    })
-                    .collect(),
-                type_ref: function_interface_type(
-                    parameters,
-                    &types.convert(&scheme.type_ref),
-                    types,
-                ),
-            },
-            methods: Vec::new(),
-            representation: None,
-        }),
+        } if *visibility == Visibility::Public && !is_inherent_method_symbol(module, symbol) => {
+            Some(InterfaceExport {
+                symbol: symbol.clone(),
+                namespace: "value".to_owned(),
+                name: local_name(symbol),
+                constructor_of: None,
+                visibility: *visibility,
+                declaration_kind: Some("function".to_owned()),
+                declaration: *origin,
+                scheme: InterfaceScheme {
+                    type_parameters: scheme
+                        .type_parameters
+                        .iter()
+                        .map(|name| {
+                            type_constructor_parameters
+                                .iter()
+                                .find(|parameter| parameter.name == *name)
+                                .cloned()
+                                .unwrap_or_else(|| seseragi_syntax::TypeParameter::value(name))
+                        })
+                        .collect(),
+                    constraints: scheme
+                        .constraints
+                        .iter()
+                        .map(|constraint| InterfaceConstraint {
+                            name: constraint.name.clone(),
+                            trait_identity: None,
+                            arguments: constraint
+                                .arguments
+                                .iter()
+                                .map(|argument| types.convert(argument))
+                                .collect(),
+                        })
+                        .collect(),
+                    type_ref: function_interface_type(
+                        parameters,
+                        &types.convert(&scheme.type_ref),
+                        types,
+                    ),
+                },
+                methods: Vec::new(),
+                representation: None,
+            })
+        }
         TypedDecl::EffectFn {
             symbol,
             visibility,
@@ -221,6 +224,13 @@ fn typed_value_export(
         }),
         _ => None,
     }
+}
+
+fn is_inherent_method_symbol(module: &str, symbol: &str) -> bool {
+    symbol
+        .strip_prefix(module)
+        .and_then(|relative| relative.strip_prefix("::"))
+        .is_some_and(|relative| relative.contains("::"))
 }
 
 fn interface_scheme_from_typed_scheme(

@@ -228,7 +228,11 @@ patternとtype-only import、actual executionを固定します。`schema-1/gene
 nominal ownerから選択し、通常の静的function callとしてTypedHir / CoreIr / TypeScriptIrへlowerします。
 contextual lambdaを含む`box.map (\value -> value + value)`から`.get`までactual executionで42を固定します。
 local nominal以外のtarget、不正な第一`self` parameter、同じownerでのmethod名重複はbackend前に停止します。
-method選択に`Box`などの個別型名は使いません。public methodのmodule ABIは後続gateです。
+method選択に`Box`などの個別型名は使いません。
+`project-schema-1/imported-inherent-method`はpublic inherent methodをnominal型exportのmethod contractへ載せ、
+method自体をnamed value exportへ漏らさず、opaque generic `Box`をfactoryから受け取ったconsumerで
+`map`から`get`までactual executionして42を固定します。provider / consumerはcanonical ownerでmethodを共有し、
+backendではownerを含むcompiler-private bindingへ落とすため、別型の同名methodやtop-level関数と衝突しません。
 `schema-1/impl-operator`は`impl Score`内の`operator +`と`operator ==`を、それぞれ通常の
 `Add<Score, Int, Score>` / `Eq<Score>` instanceへ展開します。既存のinstance contract、coherence、
 dictionary loweringを再利用し、actual executionで加算と比較の両方を通して42を固定します。

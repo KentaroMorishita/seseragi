@@ -44,6 +44,7 @@ pub(super) fn register_linked_imports(
                         origin: *origin,
                         in_scope: true,
                         export: export.clone(),
+                        member_owner: None,
                         scheme_type_bindings: export_scheme_type_bindings(
                             &dependency.interface,
                             export,
@@ -107,6 +108,7 @@ pub(super) fn register_linked_imports(
                         origin: *origin,
                         in_scope: true,
                         export: export.clone(),
+                        member_owner: None,
                         scheme_type_bindings: export_scheme_type_bindings(
                             &dependency.interface,
                             export,
@@ -123,18 +125,22 @@ pub(super) fn register_linked_imports(
                 }
             }
         }
-        add_dependency_adt_members(resolver, dependency, &mut resolved);
+        add_dependency_nominal_members(resolver, dependency, &mut resolved);
     }
     resolved
 }
 
-fn add_dependency_adt_members(
+fn add_dependency_nominal_members(
     resolver: &mut Resolver,
     dependency: &LinkedDependency,
     resolved: &mut Vec<ResolvedImport>,
 ) {
     for owner in dependency.interface.exports.iter().filter(|export| {
-        export.namespace == "type" && export.declaration_kind.as_deref() == Some("type")
+        export.namespace == "type"
+            && matches!(
+                export.declaration_kind.as_deref(),
+                Some("type" | "opaque-type" | "newtype" | "struct" | "opaque-struct")
+            )
     }) {
         for parameter in &owner.scheme.type_parameters {
             resolver.dependency_symbol(
@@ -145,6 +151,15 @@ fn add_dependency_adt_members(
             );
         }
         ensure_dependency_member(resolver, dependency, owner, resolved);
+        let Some(owner_symbol) = resolved
+            .iter()
+            .find(|import| {
+                import.export.namespace == "type" && import.export.symbol == owner.symbol
+            })
+            .map(|import| import.symbol)
+        else {
+            continue;
+        };
         for constructor in dependency
             .interface
             .exports
@@ -152,6 +167,9 @@ fn add_dependency_adt_members(
             .filter(|export| export.constructor_of.as_ref() == Some(&owner.symbol))
         {
             ensure_dependency_member(resolver, dependency, constructor, resolved);
+        }
+        for method in &owner.methods {
+            ensure_dependency_method(resolver, dependency, owner, owner_symbol, method, resolved);
         }
     }
 }
@@ -184,9 +202,58 @@ fn ensure_dependency_member(
         origin: seseragi_syntax::ByteSpan { start: 0, end: 0 },
         in_scope: false,
         export: export.clone(),
+        member_owner: None,
         scheme_type_bindings: export_scheme_type_bindings(&dependency.interface, export),
         scheme_trait_bindings: export_scheme_trait_bindings(&dependency.interface, export),
         contract_trait_bindings: export_contract_trait_bindings(&dependency.interface, export),
+    });
+}
+
+fn ensure_dependency_method(
+    resolver: &mut Resolver,
+    dependency: &LinkedDependency,
+    owner: &seseragi_syntax::InterfaceExport,
+    owner_symbol: crate::SymbolId,
+    method: &seseragi_syntax::InterfaceMethod,
+    resolved: &mut Vec<ResolvedImport>,
+) {
+    let canonical = format!("{}::{}", owner.symbol, method.name);
+    if resolved
+        .iter()
+        .any(|import| import.export.namespace == "method" && import.export.symbol == canonical)
+    {
+        return;
+    }
+    let export = seseragi_syntax::InterfaceExport {
+        symbol: canonical,
+        namespace: "method".to_owned(),
+        name: method.name.clone(),
+        constructor_of: None,
+        visibility: seseragi_syntax::Visibility::Public,
+        declaration_kind: Some("inherent-method".to_owned()),
+        declaration: method.origin,
+        scheme: method.scheme.clone(),
+        methods: Vec::new(),
+        representation: None,
+    };
+    let symbol = resolver.dependency_symbol(
+        SymbolNamespace::Value,
+        SymbolKind::Imported,
+        &export.name,
+        export.symbol.clone(),
+    );
+    resolved.push(ResolvedImport {
+        symbol,
+        specifier: dependency.specifier.clone(),
+        module: dependency.interface.module.clone(),
+        local_name: export.name.clone(),
+        origin: seseragi_syntax::ByteSpan { start: 0, end: 0 },
+        in_scope: false,
+        member_owner: Some(owner_symbol),
+        scheme_type_bindings: export_scheme_type_bindings(&dependency.interface, &export),
+        scheme_trait_bindings: export_scheme_trait_bindings(&dependency.interface, &export),
+        contract_trait_bindings: None,
+        export,
     });
 }
 

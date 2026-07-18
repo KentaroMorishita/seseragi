@@ -1,0 +1,17 @@
+pub opaque struct Box<A> {
+  value: A,
+}
+
+pub fn box<A> value: A -> Box<A> =
+  Box { value }
+
+impl<A> Box<A> {
+  pub fn map self: Box<A> -> transform: (A -> A) -> Box<A> =
+    Box { value: transform self.value }
+
+  pub fn get self: Box<A> -> A =
+    self.value
+
+  fn hidden self: Box<A> -> A =
+    self.value
+}

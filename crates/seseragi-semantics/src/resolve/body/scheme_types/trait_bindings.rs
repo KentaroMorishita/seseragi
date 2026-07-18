@@ -28,7 +28,7 @@ pub(crate) fn export_scheme_trait_bindings(
 ) -> Option<Vec<ExternalTraitBinding>> {
     if !matches!(
         export.declaration_kind.as_deref(),
-        Some("function" | "effect-function")
+        Some("function" | "effect-function" | "inherent-method")
     ) {
         return None;
     }

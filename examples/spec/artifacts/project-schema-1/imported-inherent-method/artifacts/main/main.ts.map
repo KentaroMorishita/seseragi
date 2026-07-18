@@ -1,0 +1,23 @@
+{
+  "version": 3,
+  "file": "dist/imported-inherent-method/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-inherent-method::main"
+  ],
+  "sourcesContent": [
+    "import { box } from \"./domain\"\n\nfn evaluate value: Int -> Int =\n  ((box value).map (\\item -> item + item)).get\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println $ `Imported inherent method: ${evaluate 21}`\n"
+  ],
+  "names": [
+    "evaluate",
+    "get",
+    "map",
+    "box",
+    "add",
+    "main",
+    "println",
+    "intShow",
+    "evaluate"
+  ],
+  "mappings": ";;;;;AAEAA;AAGAK"
+}

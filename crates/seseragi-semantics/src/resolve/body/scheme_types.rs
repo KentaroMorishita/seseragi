@@ -13,7 +13,7 @@ pub(super) fn export_scheme_type_bindings(
 ) -> Option<Vec<ExternalTypeBinding>> {
     if !matches!(
         export.declaration_kind.as_deref(),
-        Some("function" | "effect-function" | "trait")
+        Some("function" | "effect-function" | "inherent-method" | "trait")
     ) {
         return None;
     }

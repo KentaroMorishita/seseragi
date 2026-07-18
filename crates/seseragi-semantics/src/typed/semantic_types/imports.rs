@@ -14,7 +14,7 @@ impl SemanticTypeCatalog {
             import.export.namespace == "type"
                 && matches!(
                     import.export.declaration_kind.as_deref(),
-                    Some("type" | "newtype")
+                    Some("type" | "opaque-type" | "newtype")
                 )
         }) {
             let owner = owner_import.symbol;
@@ -77,12 +77,19 @@ impl SemanticTypeCatalog {
     pub(super) fn collect_imported_structs(&mut self, resolved: &ResolvedModule) {
         for owner_import in resolved.imports.iter().filter(|import| {
             import.export.namespace == "type"
-                && import.export.declaration_kind.as_deref() == Some("struct")
+                && matches!(
+                    import.export.declaration_kind.as_deref(),
+                    Some("struct" | "opaque-struct")
+                )
         }) {
-            let Some(InterfaceType::Record { fields, .. }) =
-                owner_import.export.representation.as_ref()
-            else {
-                continue;
+            let fields = match owner_import.export.representation.as_ref() {
+                Some(InterfaceType::Record { fields, .. }) => fields.as_slice(),
+                None if owner_import.export.declaration_kind.as_deref()
+                    == Some("opaque-struct") =>
+                {
+                    &[]
+                }
+                _ => continue,
             };
             let owner = owner_import.symbol;
             let owner_canonical = &owner_import.export.symbol;

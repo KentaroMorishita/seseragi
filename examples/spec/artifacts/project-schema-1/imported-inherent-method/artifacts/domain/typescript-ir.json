@@ -1,0 +1,194 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-inherent-method::domain",
+  "runtimeRequirements": [],
+  "structs": [
+    {
+      "exported": true,
+      "name": "Box",
+      "brand": "__ssrg$brand$Box",
+      "opaque": true,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 40
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "box",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          }
+        ],
+        "assertedType": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 42,
+        "end": 92
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "__ssrg$method$Box$map",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "self",
+          "type": "Box<A>",
+          "implicit": false
+        },
+        {
+          "name": "transform",
+          "type": "(argument: A) => A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "call",
+              "callee": "transform",
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "self"
+                  },
+                  "field": "value"
+                }
+              ]
+            }
+          }
+        ],
+        "assertedType": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 113,
+        "end": 211
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "__ssrg$method$Box$get",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "self",
+          "type": "Box<A>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "field-access",
+        "receiver": {
+          "kind": "identifier",
+          "name": "self"
+        },
+        "field": "value"
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 215,
+        "end": 260
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "__ssrg$method$Box$hidden",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "self",
+          "type": "Box<A>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "field-access",
+        "receiver": {
+          "kind": "identifier",
+          "name": "self"
+        },
+        "field": "value"
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 264,
+        "end": 308
+      }
+    }
+  ]
+}

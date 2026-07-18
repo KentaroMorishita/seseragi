@@ -12,7 +12,7 @@ pub(super) fn collect_module_dependencies(resolved: &ResolvedModule) -> Vec<Type
                 .imports
                 .iter()
                 .filter(|import| {
-                    import.in_scope
+                    (import.in_scope || import.export.namespace == "method")
                         && import.specifier == dependency.specifier
                         && import.module == dependency.module
                 })
@@ -103,6 +103,7 @@ mod tests {
                 methods: Vec::new(),
                 representation: None,
             },
+            member_owner: None,
             scheme_type_bindings: None,
             scheme_trait_bindings: None,
             contract_trait_bindings: None,

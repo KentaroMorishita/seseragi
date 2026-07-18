@@ -166,7 +166,10 @@ fn link_named(
         .interface()
         .exports
         .iter()
-        .filter(|export| export.name == item.name && export.namespace != "operator")
+        .filter(|export| {
+            export.name == item.name
+                && matches!(export.namespace.as_str(), "type" | "value" | "trait")
+        })
         .collect::<Vec<_>>();
     if exports.is_empty() {
         errors.push(missing_export(target, item, None));

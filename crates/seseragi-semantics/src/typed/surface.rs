@@ -2,7 +2,7 @@ use crate::{
     unit_type, SymbolKind, TypedDecl, TypedExpr, TypedParameter, TypedScheme, TypedStructField,
     TypedType,
 };
-use seseragi_syntax::{SurfaceDecl, SurfaceImplMember, SurfaceVariant, Visibility};
+use seseragi_syntax::{SurfaceDecl, SurfaceImplMember, SurfaceVariant};
 
 use super::adt::{typed_adt_decl, AdtDeclInput};
 use super::effect::typed_effect_from_surface;
@@ -26,7 +26,7 @@ pub(crate) fn typed_decls_from_surface(
         } => members
             .into_iter()
             .filter_map(|member| {
-                let SurfaceImplMember::Method { method, .. } = member else {
+                let SurfaceImplMember::Method { visibility, method } = member else {
                     return None;
                 };
                 let symbol = resolution.inherent_method_symbol(&target, &method.name)?;
@@ -49,7 +49,7 @@ pub(crate) fn typed_decls_from_surface(
                     .unwrap_or_else(|| hole_expression(method.span));
                 Some(TypedDecl::Fn {
                     symbol,
-                    visibility: Visibility::Private,
+                    visibility,
                     origin: method.span,
                     type_constructor_parameters: combined_type_parameters
                         .iter()

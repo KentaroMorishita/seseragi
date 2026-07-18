@@ -1,7 +1,7 @@
 use crate::CoreModule;
 use std::collections::BTreeMap;
 
-use super::names::safe_identifier;
+use super::names::{module_value_name, safe_identifier};
 use super::{
     TypeScriptLoweringError, TypeScriptOutputPlan, TypeScriptSourceImport,
     TypeScriptSourceImportBinding,
@@ -72,6 +72,26 @@ pub(super) fn lower_module_imports(
                         group,
                         TypeScriptSourceImportBinding {
                             imported: safe_identifier(&import.imported),
+                            local,
+                            source_local: import.local.clone(),
+                            canonical: import.canonical.clone(),
+                            type_only: false,
+                            origin: import.origin.clone(),
+                        },
+                    );
+                }
+                "method" if referenced_values.contains(&import.canonical) => {
+                    let local = value_names
+                        .entry(import.canonical.clone())
+                        .or_insert_with(|| {
+                            fresh_name(&safe_identifier(&import.local), &used_values)
+                        })
+                        .clone();
+                    used_values.insert(local.clone());
+                    push_binding(
+                        group,
+                        TypeScriptSourceImportBinding {
+                            imported: module_value_name(&dependency.module, &import.canonical),
                             local,
                             source_local: import.local.clone(),
                             canonical: import.canonical.clone(),

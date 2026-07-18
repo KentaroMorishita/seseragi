@@ -7,6 +7,7 @@ use crate::{ResolvedModule, SymbolId, TypedConstraint};
 use super::super::functions::TopLevelPureFunction;
 use super::super::semantic_types::{SemanticTypeCatalog, SemanticTypeKey};
 use super::super::type_ref::typed_type_from_type_ref;
+use super::imported_types::ImportedTypeContext;
 
 #[derive(Default)]
 pub(super) struct InherentMethodCatalog {
@@ -92,6 +93,23 @@ impl InherentMethodCatalog {
                     .or_default()
                     .push(callable);
             }
+        }
+        let imported_types = ImportedTypeContext::new(resolved);
+        for import in resolved.imports.iter().filter(|import| {
+            import.export.namespace == "method"
+                && import.export.declaration_kind.as_deref() == Some("inherent-method")
+        }) {
+            let Some(owner) = import.member_owner else {
+                continue;
+            };
+            let Some(callable) = super::imports::imported_callable(&imported_types, import) else {
+                continue;
+            };
+            catalog
+                .methods
+                .entry((owner, import.export.name.clone()))
+                .or_default()
+                .push(callable);
         }
         catalog
     }

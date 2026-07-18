@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "kind": "effect-project-execution",
+  "target": "node-process",
+  "entry": {
+    "module": "fixture/imported-inherent-method::main",
+    "export": "main"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.int64",
+      "core.int64.add",
+      "core.unit",
+      "effect.console.println",
+      "core.string",
+      "core.int64.show"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "execution.stdout.txt",
+    "stderr": "execution.stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Imported inherent method: 42"],
+        "stdout": "Imported inherent method: 42\n"
+      }
+    ]
+  }
+}

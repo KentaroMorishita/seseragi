@@ -7,7 +7,7 @@ type Box<A> = {
   readonly "value": A;
   readonly [__ssrg$brand$Box]: true;
 };
-const get = <A,>(self: Box<A>) => (self)["value"]
-const map = <A, B,>(self: Box<A>) => (transform: (argument: A) => B) => (({ "value": transform((self)["value"]) } as const) as unknown as Box<B>)
-const evaluate = (box: Box<bigint>) => get(map(box)((value: bigint) => _ssrg_int64_add(value, value)))
+const __ssrg$method$Box$get = <A,>(self: Box<A>) => (self)["value"]
+const __ssrg$method$Box$map = <A, B,>(self: Box<A>) => (transform: (argument: A) => B) => (({ "value": transform((self)["value"]) } as const) as unknown as Box<B>)
+const evaluate = (box: Box<bigint>) => __ssrg$method$Box$get(__ssrg$method$Box$map(box)((value: bigint) => _ssrg_int64_add(value, value)))
 export const main = (_unit: undefined) => _ssrg_console_println("Inherent method: " + _ssrg_show_intShow["show"](evaluate((({ "value": 21n } as const) as unknown as Box<bigint>))))

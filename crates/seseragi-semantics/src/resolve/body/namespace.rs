@@ -206,6 +206,7 @@ impl Resolver {
             origin: member.origin,
             in_scope: true,
             export: member.export,
+            member_owner: None,
             scheme_type_bindings: member.scheme_type_bindings,
             scheme_trait_bindings: member.scheme_trait_bindings,
             contract_trait_bindings: None,

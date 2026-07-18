@@ -55,7 +55,7 @@
     {
       "kind": "const-function",
       "exported": false,
-      "name": "get",
+      "name": "__ssrg$method$Box$get",
       "typeParameters": [
         "A"
       ],
@@ -83,7 +83,7 @@
     {
       "kind": "const-function",
       "exported": false,
-      "name": "map",
+      "name": "__ssrg$method$Box$map",
       "typeParameters": [
         "A",
         "B"
@@ -153,11 +153,11 @@
       ],
       "body": {
         "kind": "call",
-        "callee": "get",
+        "callee": "__ssrg$method$Box$get",
         "arguments": [
           {
             "kind": "call",
-            "callee": "map",
+            "callee": "__ssrg$method$Box$map",
             "arguments": [
               {
                 "kind": "identifier",

@@ -28,7 +28,7 @@ pub use instances::{
     TypeScriptShowDictionaryReference,
 };
 use module_imports::lower_module_imports;
-use names::local_name;
+use names::{local_name, module_value_name};
 use runtime::{
     collect_expr_runtime_imports, collect_expr_runtime_requirements,
     collect_type_runtime_requirement,
@@ -552,6 +552,12 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
         })
         .collect();
     let mut expression_value_names = module_imports.value_names.clone();
+    for function in &module.functions {
+        expression_value_names.insert(
+            function.symbol.clone(),
+            module_value_name(&module.module, &function.symbol),
+        );
+    }
     for ((_, identity), local) in &module_imports.instance_names {
         expression_value_names.insert(local_instance_expression_key(identity), local.clone());
     }
@@ -607,7 +613,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
             TypeScriptFunction::ConstFunction {
                 exported: function.visibility == Visibility::Public,
                 is_async: typescript_expr_contains_await(&body),
-                name: local_name(&function.symbol),
+                name: module_value_name(&module.module, &function.symbol),
                 type_parameters: function.type_parameters,
                 constraints: function
                     .constraints

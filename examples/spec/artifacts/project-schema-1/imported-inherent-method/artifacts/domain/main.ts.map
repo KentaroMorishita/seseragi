@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "file": "dist/imported-inherent-method/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-inherent-method::domain"
+  ],
+  "sourcesContent": [
+    "pub opaque struct Box<A> {\n  value: A,\n}\n\npub fn box<A> value: A -> Box<A> =\n  Box { value }\n\nimpl<A> Box<A> {\n  pub fn map self: Box<A> -> transform: (A -> A) -> Box<A> =\n    Box { value: transform self.value }\n\n  pub fn get self: Box<A> -> A =\n    self.value\n\n  fn hidden self: Box<A> -> A =\n    self.value\n}\n"
+  ],
+  "names": [
+    "Box",
+    "box",
+    "__ssrg$method$Box$map",
+    "transform",
+    "__ssrg$method$Box$get",
+    "__ssrg$method$Box$hidden"
+  ],
+  "mappings": ";AAAAA;;;;AAIAC;AAIEC;AAGAE;AAGAC"
+}

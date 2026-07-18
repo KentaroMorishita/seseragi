@@ -1,0 +1,407 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/imported-inherent-method::domain",
+  "declarations": [
+    {
+      "kind": "struct",
+      "symbol": "fixture/imported-inherent-method::domain::Box",
+      "name": "Box",
+      "visibility": "public",
+      "opaque": true,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 29,
+            "end": 34
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 40
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-inherent-method::domain::box",
+      "visibility": "public",
+      "origin": {
+        "start": 42,
+        "end": 92
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 56,
+            "end": 61
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "start": 85,
+                "end": 90
+              }
+            },
+            "origin": {
+              "start": 85,
+              "end": 90
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 79,
+          "end": 92
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-inherent-method::domain::Box::map",
+      "visibility": "public",
+      "origin": {
+        "start": 113,
+        "end": 211
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "self",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 124,
+            "end": 128
+          }
+        },
+        {
+          "kind": "named",
+          "name": "transform",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 140,
+            "end": 149
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "call",
+              "callee": "transform",
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "variable",
+                    "name": "self",
+                    "type": {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 199,
+                      "end": 203
+                    }
+                  },
+                  "field": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 199,
+                    "end": 209
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "start": 189,
+                "end": 209
+              }
+            },
+            "origin": {
+              "start": 182,
+              "end": 209
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 176,
+          "end": 211
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-inherent-method::domain::Box::get",
+      "visibility": "public",
+      "origin": {
+        "start": 215,
+        "end": 260
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "self",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 226,
+            "end": 230
+          }
+        }
+      ],
+      "body": {
+        "kind": "field-access",
+        "receiver": {
+          "kind": "variable",
+          "name": "self",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 250,
+            "end": 254
+          }
+        },
+        "field": "value",
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "start": 250,
+          "end": 260
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-inherent-method::domain::Box::hidden",
+      "visibility": "private",
+      "origin": {
+        "start": 264,
+        "end": 308
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "self",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 274,
+            "end": 278
+          }
+        }
+      ],
+      "body": {
+        "kind": "field-access",
+        "receiver": {
+          "kind": "variable",
+          "name": "self",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 298,
+            "end": 302
+          }
+        },
+        "field": "value",
+        "type": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "origin": {
+          "start": 298,
+          "end": 308
+        }
+      }
+    }
+  ]
+}

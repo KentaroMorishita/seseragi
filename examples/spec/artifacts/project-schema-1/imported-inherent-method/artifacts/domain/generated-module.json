@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-inherent-method::domain",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": []
+  },
+  "exports": [
+    "box",
+    "__ssrg$method$Box$map",
+    "__ssrg$method$Box$get"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-inherent-method/domain.ts",
+    "sourceMap": "dist/imported-inherent-method/domain.ts.map"
+  }
+}

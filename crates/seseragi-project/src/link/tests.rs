@@ -72,6 +72,25 @@ fn one_named_newtype_import_introduces_type_and_constructor_namespaces() {
 }
 
 #[test]
+fn does_not_expose_inherent_methods_as_named_value_imports() {
+    let domain = target(
+        "fixture/game::domain",
+        "pub struct Box { value: Int }\nimpl Box { pub fn get self: Box -> Int = self.value }\n",
+    );
+    let main = parse_unlinked_module_interface(
+        "src/main.ssrg",
+        "fixture/game::main",
+        "import { get } from \"./domain\"\npub let answer: Int = 42\n",
+    );
+    let targets = BTreeMap::from([("./domain".to_owned(), domain)]);
+
+    assert!(matches!(
+        link_module(main, &targets).unwrap_err().as_slice(),
+        [LinkError::MissingExport { name, .. }] if name == "get"
+    ));
+}
+
+#[test]
 fn links_namespace_and_operator_metadata_without_reading_dependency_bodies() {
     let support = target(
         "fixture/game::support",

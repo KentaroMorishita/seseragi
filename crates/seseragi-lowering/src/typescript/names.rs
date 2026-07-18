@@ -80,9 +80,25 @@ pub(super) fn local_name(symbol: &str) -> String {
         .unwrap_or_else(|| safe_identifier(symbol))
 }
 
+/// Produces a stable backend binding for a value owned by `module`.
+/// Top-level values keep their source spelling, while nested semantic values
+/// (such as inherent methods) retain their owner path to avoid collisions.
+pub(super) fn module_value_name(module: &str, symbol: &str) -> String {
+    let relative = symbol
+        .strip_prefix(module)
+        .and_then(|relative| relative.strip_prefix("::"));
+    match relative {
+        Some(relative) if relative.contains("::") => {
+            safe_identifier(&format!("__ssrg$method${}", relative.replace("::", "$")))
+        }
+        Some(relative) => safe_identifier(relative),
+        None => local_name(symbol),
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use super::{local_name, safe_identifier};
+    use super::{local_name, module_value_name, safe_identifier};
 
     #[test]
     fn preserves_simple_identifiers() {
@@ -108,5 +124,17 @@ mod tests {
     #[test]
     fn removes_the_module_qualification_at_the_backend_boundary() {
         assert_eq!(local_name("artifact/example::answer"), "answer");
+    }
+
+    #[test]
+    fn retains_nested_value_owners_at_the_backend_boundary() {
+        assert_eq!(
+            module_value_name("artifact/example", "artifact/example::Box::map"),
+            "__ssrg$method$Box$map"
+        );
+        assert_eq!(
+            module_value_name("artifact/example", "artifact/example::answer"),
+            "answer"
+        );
     }
 }

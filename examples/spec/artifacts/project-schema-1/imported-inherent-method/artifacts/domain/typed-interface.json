@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-inherent-method::domain",
+  "source": "domain.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/imported-inherent-method::domain::Box",
+      "namespace": "type",
+      "name": "Box",
+      "visibility": "public",
+      "declarationKind": "opaque-struct",
+      "declaration": {
+        "start": 0,
+        "end": 40
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Box",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "map",
+          "scheme": {
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "result": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "origin": {
+            "start": 113,
+            "end": 211
+          }
+        },
+        {
+          "name": "get",
+          "scheme": {
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "result": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 215,
+            "end": 260
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "fixture/imported-inherent-method::domain::box",
+      "namespace": "value",
+      "name": "box",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 42,
+        "end": 92
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

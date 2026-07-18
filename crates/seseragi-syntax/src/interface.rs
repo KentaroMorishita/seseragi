@@ -14,7 +14,7 @@ mod methods;
 mod types;
 
 use dependencies::dependency_from_surface_import;
-use exports::{exports_from_surface_decl, operator_from_surface_decl};
+use exports::{attach_inherent_methods, exports_from_surface_decl, operator_from_surface_decl};
 use header::{empty_module_header, module_header_from_surface};
 pub use header::{ModuleHeader, ModuleHeaderName};
 use instances::instances_from_surface_decl;
@@ -116,16 +116,18 @@ fn parse_unlinked_module_interface_inner(
 
     let header = module_header_from_surface(&module_name, &surface_module);
     let imports = surface_module.imports;
+    let mut exports = surface_module
+        .declarations
+        .iter()
+        .flat_map(|declaration| exports_from_surface_decl(&module_name, declaration))
+        .collect::<Vec<_>>();
+    attach_inherent_methods(&module_name, &surface_module.declarations, &mut exports);
     let interface = ModuleInterface {
         schema: 1,
         module: module_name.clone(),
         source: surface_module.source.clone(),
         dependencies: Vec::new(),
-        exports: surface_module
-            .declarations
-            .iter()
-            .flat_map(|declaration| exports_from_surface_decl(&module_name, declaration))
-            .collect(),
+        exports,
         operators: surface_module
             .declarations
             .iter()

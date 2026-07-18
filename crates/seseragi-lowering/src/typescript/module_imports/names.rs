@@ -3,7 +3,7 @@ use crate::{
 };
 use std::collections::BTreeSet;
 
-use super::super::names::safe_identifier;
+use super::super::names::{module_value_name, safe_identifier};
 
 pub(super) fn fresh_name(base: &str, used: &BTreeSet<String>) -> String {
     if !used.contains(base) {
@@ -27,13 +27,12 @@ pub(super) fn local_value_names(module: &CoreModule) -> BTreeSet<String> {
                 .map_or(binding.symbol.as_str(), |(_, name)| name)
                 .to_owned()
         }))
-        .chain(module.functions.iter().map(|function| {
-            function
-                .symbol
-                .rsplit_once("::")
-                .map_or(function.symbol.as_str(), |(_, name)| name)
-                .to_owned()
-        }))
+        .chain(
+            module
+                .functions
+                .iter()
+                .map(|function| module_value_name(&module.module, &function.symbol)),
+        )
         .chain(
             module
                 .instances

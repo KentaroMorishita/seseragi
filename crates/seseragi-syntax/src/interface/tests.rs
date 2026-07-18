@@ -484,6 +484,45 @@ fn exports_public_struct_names_in_interface() {
 }
 
 #[test]
+fn attaches_only_public_inherent_methods_to_their_nominal_export() {
+    let interface = parse_module_interface(
+        "artifact/public-method/main.ssrg",
+        "pub struct Box<A> { value: A }\n\nimpl<A> Box<A>\nwhere Show<A> {\n  pub fn map<B> self: Box<A> -> transform: (A -> B) -> Box<B>\n  where Eq<B> = Box { value: transform self.value }\n\n  fn hidden self: Box<A> -> A = self.value\n}\n",
+    );
+
+    let owner = interface
+        .exports
+        .iter()
+        .find(|export| export.namespace == "type" && export.name == "Box")
+        .unwrap();
+    assert_eq!(owner.methods.len(), 1);
+    let method = &owner.methods[0];
+    assert_eq!(method.name, "map");
+    assert_eq!(
+        method
+            .scheme
+            .type_parameters
+            .iter()
+            .map(|parameter| parameter.name.as_str())
+            .collect::<Vec<_>>(),
+        ["A", "B"]
+    );
+    assert_eq!(
+        method
+            .scheme
+            .constraints
+            .iter()
+            .map(|constraint| constraint.name.as_str())
+            .collect::<Vec<_>>(),
+        ["Show", "Eq"]
+    );
+    assert!(interface
+        .exports
+        .iter()
+        .all(|export| export.name != "map" && export.name != "hidden"));
+}
+
+#[test]
 fn parses_aliased_import_in_interface() {
     let interface = parse_module_interface(
         "artifact/import-alias/main.ssrg",

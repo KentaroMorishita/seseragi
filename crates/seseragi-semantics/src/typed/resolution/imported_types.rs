@@ -10,6 +10,7 @@ pub(super) struct ImportedTypeContext {
     canonical_names: BTreeMap<String, String>,
     owners: BTreeMap<(String, String), SymbolId>,
     canonical_owners: BTreeMap<String, SymbolId>,
+    struct_owners: BTreeSet<SymbolId>,
 }
 
 impl ImportedTypeContext {
@@ -30,7 +31,10 @@ impl ImportedTypeContext {
             .iter()
             .filter(|import| {
                 import.export.namespace == "type"
-                    && import.export.declaration_kind.as_deref() == Some("type")
+                    && matches!(
+                        import.export.declaration_kind.as_deref(),
+                        Some("type" | "opaque-type" | "newtype" | "struct" | "opaque-struct")
+                    )
             })
             .map(|import| {
                 (
@@ -51,11 +55,24 @@ impl ImportedTypeContext {
             .filter(|import| import.export.namespace == "type")
             .map(|import| (import.export.symbol.clone(), import.symbol))
             .collect();
+        let struct_owners = resolved
+            .imports
+            .iter()
+            .filter(|import| {
+                import.export.namespace == "type"
+                    && matches!(
+                        import.export.declaration_kind.as_deref(),
+                        Some("struct" | "opaque-struct")
+                    )
+            })
+            .map(|import| import.symbol)
+            .collect();
         Self {
             names,
             canonical_names,
             owners,
             canonical_owners,
+            struct_owners,
         }
     }
 
@@ -173,21 +190,14 @@ impl ImportedTypeContext {
                             canonical: binding.canonical.clone(),
                             arguments: arguments.clone(),
                         },
-                        |owner| SemanticTypeKey::Adt {
-                            owner: *owner,
-                            arguments: arguments.clone(),
-                        },
+                        |owner| self.owner_key(*owner, arguments.clone()),
                     ));
                 }
-                self.owners.get(&(module.to_owned(), name.clone())).map_or(
-                    Some(SemanticTypeKey::Other),
-                    |owner| {
-                        Some(SemanticTypeKey::Adt {
-                            owner: *owner,
-                            arguments,
-                        })
-                    },
-                )
+                self.owners
+                    .get(&(module.to_owned(), name.clone()))
+                    .map_or(Some(SemanticTypeKey::Other), |owner| {
+                        Some(self.owner_key(*owner, arguments))
+                    })
             }
             InterfaceType::ExternalNamed {
                 canonical,
@@ -202,10 +212,7 @@ impl ImportedTypeContext {
                     })
                     .collect::<Option<Vec<_>>>()?;
                 Some(match self.canonical_owners.get(canonical) {
-                    Some(owner) => SemanticTypeKey::Adt {
-                        owner: *owner,
-                        arguments,
-                    },
+                    Some(owner) => self.owner_key(*owner, arguments),
                     None => SemanticTypeKey::ExternalNominal {
                         canonical: canonical.clone(),
                         arguments,
@@ -223,6 +230,14 @@ impl ImportedTypeContext {
             | InterfaceType::TypeConstructor { .. }
             | InterfaceType::Apply { .. }
             | InterfaceType::Record { .. } => Some(SemanticTypeKey::Other),
+        }
+    }
+
+    fn owner_key(&self, owner: SymbolId, arguments: Vec<SemanticValueType>) -> SemanticTypeKey {
+        if self.struct_owners.contains(&owner) {
+            SemanticTypeKey::Struct { owner, arguments }
+        } else {
+            SemanticTypeKey::Adt { owner, arguments }
         }
     }
 }
