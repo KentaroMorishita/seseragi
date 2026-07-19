@@ -1,0 +1,17 @@
+import * as signals from "std/signal"
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    source <- signals.make 10
+    mirror <- signals.make 0
+    let selected = signals.switchMap (\value: Int -> signals.constant (value + 1)) source
+
+    subscription <- signals.subscribe (\value: Int -> mirror := value) selected
+    source := 41
+    signals.unsubscribe subscription
+
+    current <- *mirror
+    println $ `switchMap: ${current}`
+  }

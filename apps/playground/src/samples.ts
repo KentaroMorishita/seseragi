@@ -16,6 +16,7 @@ import rangeComprehension from "../../../examples/spec/artifacts/schema-1/range-
 import recordProfile from "../../../examples/spec/artifacts/schema-1/record-profile/main.ssrg?raw"
 import rockPaperScissors from "../../../examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg?raw"
 import signalSubscription from "../../../examples/spec/artifacts/schema-1/signal-subscription/main.ssrg?raw"
+import signalSwitchMap from "../../../examples/spec/artifacts/schema-1/signal-switch-map/main.ssrg?raw"
 import signalTransaction from "../../../examples/spec/artifacts/schema-1/signal-transaction/main.ssrg?raw"
 import stringAdd from "../../../examples/spec/artifacts/schema-1/string-add/main.ssrg?raw"
 import structProfile from "../../../examples/spec/artifacts/schema-1/struct-profile/main.ssrg?raw"
@@ -81,6 +82,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "web-html-ssr": webHtmlSsr,
   "signal-transaction": signalTransaction,
   "signal-subscription": signalSubscription,
+  "signal-switch-map": signalSwitchMap,
 }
 
 export const samples: readonly PlaygroundSample[] = sampleCatalog.map(

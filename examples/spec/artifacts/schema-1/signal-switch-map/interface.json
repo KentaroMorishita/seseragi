@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "module": "artifact/signal-switch-map",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/signal",
+      "module": "artifact/signal-switch-map/std/signal",
+      "origin": {
+        "start": 0,
+        "end": 37
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/signal-switch-map/std/signal::*",
+          "localName": "signals"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/signal-switch-map::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declaration": {
+        "start": 39,
+        "end": 456
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

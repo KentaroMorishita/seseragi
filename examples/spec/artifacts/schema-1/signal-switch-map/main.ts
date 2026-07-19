@@ -1,0 +1,7 @@
+import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
+import { make as _ssrg_signal_make, switchMap as _ssrg_signal_switchMap, constant as _ssrg_signal_constant, subscribe as _ssrg_signal_subscribe, set as _ssrg_signal_set, unsubscribe as _ssrg_signal_unsubscribe, read as _ssrg_signal_read, type MutableSignal as MutableSignal, type Signal as Signal, type Subscription as Subscription } from "@seseragi/runtime/signal"
+import { add as _ssrg_int64_add } from "@seseragi/runtime/int64"
+import { println as _ssrg_console_println } from "@seseragi/runtime/console"
+import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
+
+export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_signal_make(10n), (source: MutableSignal<bigint>) => _ssrg_effect_flatMap(_ssrg_signal_make(0n), (mirror: MutableSignal<bigint>) => (() => { const selected: Signal<bigint> = _ssrg_signal_switchMap((value: bigint) => _ssrg_signal_constant(_ssrg_int64_add(value, 1n)), source); return _ssrg_effect_flatMap(_ssrg_signal_subscribe((value: bigint) => _ssrg_signal_set(value, mirror), selected), (subscription: Subscription) => _ssrg_effect_flatMap(_ssrg_signal_set(41n, source), () => _ssrg_effect_flatMap(_ssrg_signal_unsubscribe(subscription), () => _ssrg_effect_flatMap(_ssrg_signal_read(mirror), (current: bigint) => _ssrg_console_println("switchMap: " + _ssrg_show_intShow["show"](current)))))); })()))

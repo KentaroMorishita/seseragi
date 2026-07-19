@@ -1,0 +1,32 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/signal-switch-map"
+  ],
+  "sourcesContent": [
+    "import * as signals from \"std/signal\"\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    source <- signals.make 10\n    mirror <- signals.make 0\n    let selected = signals.switchMap (\\value: Int -> signals.constant (value + 1)) source\n\n    subscription <- signals.subscribe (\\value: Int -> mirror := value) selected\n    source := 41\n    signals.unsubscribe subscription\n\n    current <- *mirror\n    println $ `switchMap: ${current}`\n  }\n"
+  ],
+  "names": [
+    "main",
+    "source",
+    "make",
+    "mirror",
+    "make",
+    "selected",
+    "switchMap",
+    "constant",
+    "add",
+    "subscription",
+    "subscribe",
+    "set",
+    "set",
+    "unsubscribe",
+    "current",
+    "read",
+    "println",
+    "intShow"
+  ],
+  "mappings": ";;;;;;AAEAA"
+}

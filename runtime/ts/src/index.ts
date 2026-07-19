@@ -112,6 +112,7 @@ export {
   read as readSignal,
   set as setSignal,
   subscribe as subscribeSignal,
+  switchMap as switchMapSignal,
   transaction as transactSignals,
   unsubscribe as unsubscribeSignal,
   update as updateSignal,

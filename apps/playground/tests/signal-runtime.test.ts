@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import {
   combine,
+  constant,
   make,
   map,
   planSet,
@@ -8,6 +9,7 @@ import {
   read,
   set,
   subscribe,
+  switchMap,
   transaction,
   unsubscribe,
 } from "../../../runtime/ts/src/signal"
@@ -124,5 +126,59 @@ describe("Signal browser runtime", () => {
     expect(defects).toBe(1)
     expect(healthyValues).toEqual([0, 1, 2])
     await unsubscribe(healthy)({})
+  })
+
+  test("switches dynamic dependencies without observing the old branch", async () => {
+    const chooseLeft = await make(true)({})
+    const left = await make(10)({})
+    const right = await make(20)({})
+    let selections = 0
+    const selected = switchMap((useLeft: boolean) => {
+      selections += 1
+      return useLeft ? left : right
+    }, chooseLeft)
+    const observed: number[] = []
+    const subscription = await subscribe(
+      (value: number) => () => {
+        observed.push(value)
+        return undefined
+      },
+      selected
+    )({})
+
+    await set(21, right)({})
+    await set(false, chooseLeft)({})
+    await set(11, left)({})
+    await set(22, right)({})
+
+    expect(selections).toBe(2)
+    expect(observed).toEqual([10, 21, 22])
+    await unsubscribe(subscription)({})
+  })
+
+  test("publishes nested switches when dependency revisions collide", async () => {
+    const chooseLeft = await make(true)({})
+    const left = await make(10)({})
+    const right = await make(20)({})
+    await set(11, left)({})
+
+    const selected = switchMap(
+      (useLeft: boolean) => (useLeft ? left : right),
+      chooseLeft
+    )
+    const nested = switchMap((value: number) => constant(value * 2), selected)
+    const observed: number[] = []
+    const subscription = await subscribe(
+      (value: number) => () => {
+        observed.push(value)
+        return undefined
+      },
+      nested
+    )({})
+
+    await set(false, chooseLeft)({})
+
+    expect(observed).toEqual([22, 40])
+    await unsubscribe(subscription)({})
   })
 })

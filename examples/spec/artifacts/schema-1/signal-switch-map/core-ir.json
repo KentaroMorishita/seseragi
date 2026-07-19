@@ -1,0 +1,920 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/signal-switch-map",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    },
+    {
+      "spelling": "MutableSignal",
+      "canonical": "std/signal::MutableSignal",
+      "provider": {
+        "module": "std/signal",
+        "export": "MutableSignal"
+      }
+    },
+    {
+      "spelling": "Signal",
+      "canonical": "std/signal::Signal",
+      "provider": {
+        "module": "std/signal",
+        "export": "Signal"
+      }
+    },
+    {
+      "spelling": "Subscription",
+      "canonical": "std/signal::Subscription",
+      "provider": {
+        "module": "std/signal",
+        "export": "Subscription"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 37
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "make",
+          "local": "signals.make",
+          "canonical": "std/signal::make",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "switchMap",
+          "local": "signals.switchMap",
+          "canonical": "std/signal::switchMap",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "constant",
+          "local": "signals.constant",
+          "canonical": "std/signal::constant",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "subscribe",
+          "local": "signals.subscribe",
+          "canonical": "std/signal::subscribe",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "unsubscribe",
+          "local": "signals.unsubscribe",
+          "canonical": "std/signal::unsubscribe",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 19
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/signal-switch-map::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 39,
+        "end": 456
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "source",
+            "type": {
+              "kind": "external-named",
+              "name": "MutableSignal",
+              "canonical": "std/signal::MutableSignal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::make",
+              "arguments": [
+                {
+                  "kind": "int64",
+                  "value": "10",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 134,
+                    "end": 136
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 121,
+                "end": 136
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 111,
+              "end": 136
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "mirror",
+            "type": {
+              "kind": "external-named",
+              "name": "MutableSignal",
+              "canonical": "std/signal::MutableSignal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::make",
+              "arguments": [
+                {
+                  "kind": "int64",
+                  "value": "0",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 164,
+                    "end": 165
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 151,
+                "end": 165
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 141,
+              "end": 165
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "selected",
+            "type": {
+              "kind": "external-named",
+              "name": "Signal",
+              "canonical": "std/signal::Signal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::switchMap",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": {
+                    "id": "value",
+                    "kind": "named",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  },
+                  "body": {
+                    "kind": "call",
+                    "callee": "std/signal::constant",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "+",
+                        "left": {
+                          "kind": "variable",
+                          "name": "value",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 237,
+                            "end": 242
+                          }
+                        },
+                        "right": {
+                          "kind": "int64",
+                          "value": "1",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 245,
+                            "end": 246
+                          }
+                        },
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Add",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/int::Add"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 237,
+                          "end": 246
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "external-named",
+                      "name": "Signal",
+                      "canonical": "std/signal::Signal",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 219,
+                      "end": 247
+                    }
+                  },
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "Signal",
+                      "canonical": "std/signal::Signal",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 204,
+                    "end": 247
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "source",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 249,
+                    "end": 255
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 185,
+                "end": 255
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 170,
+              "end": 255
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "subscription",
+            "type": {
+              "kind": "external-named",
+              "name": "Subscription",
+              "canonical": "std/signal::Subscription",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::subscribe",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": {
+                    "id": "value",
+                    "kind": "named",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  },
+                  "body": {
+                    "kind": "call",
+                    "callee": "std/signal::set",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "value",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 321,
+                          "end": 326
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "mirror",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "MutableSignal",
+                          "canonical": "std/signal::MutableSignal",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 311,
+                          "end": 317
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 311,
+                      "end": 326
+                    }
+                  },
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 296,
+                    "end": 326
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "selected",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 328,
+                    "end": 336
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Subscription",
+                    "canonical": "std/signal::Subscription",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 277,
+                "end": 336
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 261,
+              "end": 336
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::set",
+              "arguments": [
+                {
+                  "kind": "int64",
+                  "value": "41",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 351,
+                    "end": 353
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "source",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 341,
+                    "end": 347
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 341,
+                "end": 353
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::unsubscribe",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "subscription",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Subscription",
+                    "canonical": "std/signal::Subscription",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 378,
+                    "end": 390
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 358,
+                "end": 390
+              }
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "current",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::read",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "mirror",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 408,
+                    "end": 414
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 407,
+                "end": 414
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 396,
+              "end": 414
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "console.println",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "switchMap: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 430,
+                    "end": 441
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "current",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 443,
+                      "end": 450
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 441,
+                    "end": 451
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 429,
+                "end": 452
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 419,
+            "end": 452
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 102,
+          "end": 456
+        }
+      }
+    }
+  ]
+}

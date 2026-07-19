@@ -9,8 +9,9 @@ const cancelSubscriptionBrand = Symbol("seseragi.cancel-subscription")
 
 type SignalState = {
   readonly current: () => unknown
-  readonly dependencies: readonly SignalState[]
-  readonly depth: number
+  dependencies: readonly SignalState[]
+  depth: number
+  readonly revision: () => number
   readonly subscribers: Set<Subscriber>
 }
 
@@ -55,11 +56,13 @@ const queuedTransactions: QueuedTransaction[] = []
 
 function mutable<Value>(initial: Value): MutableSignal<Value> {
   let current = initial
+  let revision = 0
   const subscribers = new Set<Subscriber>()
   const state: SignalState = {
     current: () => current,
     dependencies: [],
     depth: 0,
+    revision: () => revision,
     subscribers,
   }
   return Object.freeze({
@@ -69,6 +72,7 @@ function mutable<Value>(initial: Value): MutableSignal<Value> {
     current: () => current,
     commit: (value: Value) => {
       current = value
+      revision += 1
     },
   })
 }
@@ -95,6 +99,11 @@ function derived<Value>(
         ? 0
         : Math.max(...dependencyStates.map((dependency) => dependency.depth)) +
           1,
+    revision: () =>
+      dependencyStates.reduce(
+        (revision, dependency) => revision + dependency.revision(),
+        0
+      ),
     subscribers: new Set(),
   }
   return Object.freeze({
@@ -254,13 +263,17 @@ function publish(changed: ReadonlySet<SignalState>): Promise<Unit> | undefined {
   }
 
   const affected = new Map<SignalState, boolean>()
-  const signals = [...subscribedSignals]
-    .filter((source) => signalWasAffected(source, changed, affected))
-    .sort((left, right) => left.depth - right.depth)
+  const signals = [...subscribedSignals].filter((source) =>
+    signalWasAffected(source, changed, affected)
+  )
   if (signals.length === 0) {
     return undefined
   }
 
+  for (const source of signals) {
+    source.current()
+  }
+  signals.sort((left, right) => left.depth - right.depth)
   publicationActive = true
   return notifySubscribers(signals)
 }
@@ -391,6 +404,73 @@ export function combine<Left, Right, Result>(
 
 export function constant<Value>(value: Value): Signal<Value> {
   return derived(() => value, [])
+}
+
+export function switchMap<Value, Result>(
+  mapper: (value: Value) => Signal<Result>
+): (source: Signal<Value>) => Signal<Result>
+export function switchMap<Value, Result>(
+  mapper: (value: Value) => Signal<Result>,
+  source: Signal<Value>
+): Signal<Result>
+export function switchMap<Value, Result>(
+  mapper: (value: Value) => Signal<Result>,
+  source?: Signal<Value>
+): Signal<Result> | ((source: Signal<Value>) => Signal<Result>) {
+  if (source === undefined) {
+    return (source: Signal<Value>) => switchMap(mapper, source)
+  }
+
+  const outerState = signalState(source)
+  let outerRevision = outerState.revision()
+  let selected = mapper(source.current())
+  let selectedState = signalState(selected)
+  let selectedRevision = selectedState.revision()
+  let revision = 0
+  let cachedEpoch = signalEpoch
+  let cached = selected.current()
+  const state: SignalState = {
+    current: () => current(),
+    dependencies: [outerState, selectedState],
+    depth: Math.max(outerState.depth, selectedState.depth) + 1,
+    revision: () => {
+      current()
+      return revision
+    },
+    subscribers: new Set(),
+  }
+  const current = () => {
+    if (cachedEpoch !== signalEpoch) {
+      let changed = false
+      const nextOuterRevision = outerState.revision()
+      if (nextOuterRevision !== outerRevision) {
+        selected = mapper(source.current())
+        selectedState = signalState(selected)
+        outerRevision = nextOuterRevision
+        selectedRevision = selectedState.revision()
+        state.dependencies = [outerState, selectedState]
+        state.depth = Math.max(outerState.depth, selectedState.depth) + 1
+        changed = true
+      } else {
+        const nextSelectedRevision = selectedState.revision()
+        if (nextSelectedRevision !== selectedRevision) {
+          selectedRevision = nextSelectedRevision
+          changed = true
+        }
+      }
+      cached = selected.current()
+      cachedEpoch = signalEpoch
+      if (changed) {
+        revision += 1
+      }
+    }
+    return cached
+  }
+  return Object.freeze({
+    [signalBrand]: true as const,
+    [signalStateBrand]: state,
+    current,
+  })
 }
 
 export function subscribe<Environment, Value>(

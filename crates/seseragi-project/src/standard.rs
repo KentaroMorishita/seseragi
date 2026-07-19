@@ -168,6 +168,15 @@ fn signal_interface() -> ModuleInterface {
             signal_type("Signal", named("A")),
         ),
         signal_function(
+            "switchMap",
+            ["A", "B"],
+            vec![
+                function_type(vec![named("A")], signal_type("Signal", named("B"))),
+                signal_type("Signal", named("A")),
+            ],
+            signal_type("Signal", named("B")),
+        ),
+        signal_function(
             "subscribe",
             ["R", "A"],
             vec![

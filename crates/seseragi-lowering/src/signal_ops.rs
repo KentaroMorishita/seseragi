@@ -34,6 +34,7 @@ const OPERATIONS: &[RuntimeSignalOperation] = &[
     operation!("map", "signal.map"),
     operation!("combine", "signal.combine"),
     operation!("constant", "signal.constant"),
+    operation!("switchMap", "signal.switch-map"),
     operation!("subscribe", "signal.subscribe"),
     operation!("unsubscribe", "signal.unsubscribe"),
 ];

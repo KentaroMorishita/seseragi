@@ -294,4 +294,12 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     stdin: "",
     expectedOutput: "subscription: 30",
   },
+  {
+    id: "signal-switch-map",
+    label: "SignalのswitchMap",
+    category: "アプリ",
+    sourcePath: "examples/spec/artifacts/schema-1/signal-switch-map/main.ssrg",
+    stdin: "",
+    expectedOutput: "switchMap: 42",
+  },
 ]

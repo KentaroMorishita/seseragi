@@ -1,0 +1,617 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "imports": [
+    {
+      "specifier": "std/signal",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 7,
+            "end": 8
+          },
+          "alias": "signals",
+          "aliasSpan": {
+            "start": 12,
+            "end": 19
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 37
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 53,
+        "end": 57
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 61,
+          "end": 65
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 71,
+            "end": 78
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 85,
+          "end": 97
+        }
+      },
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "source",
+              "nameSpan": {
+                "start": 111,
+                "end": 117
+              },
+              "span": {
+                "start": 111,
+                "end": 117
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "signals",
+                  "span": {
+                    "start": 121,
+                    "end": 128
+                  }
+                },
+                "field": "make",
+                "fieldSpan": {
+                  "start": 129,
+                  "end": 133
+                },
+                "span": {
+                  "start": 121,
+                  "end": 133
+                }
+              },
+              "argument": {
+                "kind": "integer",
+                "raw": "10",
+                "span": {
+                  "start": 134,
+                  "end": 136
+                }
+              },
+              "span": {
+                "start": 121,
+                "end": 136
+              }
+            },
+            "span": {
+              "start": 111,
+              "end": 136
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "mirror",
+              "nameSpan": {
+                "start": 141,
+                "end": 147
+              },
+              "span": {
+                "start": 141,
+                "end": 147
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "signals",
+                  "span": {
+                    "start": 151,
+                    "end": 158
+                  }
+                },
+                "field": "make",
+                "fieldSpan": {
+                  "start": 159,
+                  "end": 163
+                },
+                "span": {
+                  "start": 151,
+                  "end": 163
+                }
+              },
+              "argument": {
+                "kind": "integer",
+                "raw": "0",
+                "span": {
+                  "start": 164,
+                  "end": 165
+                }
+              },
+              "span": {
+                "start": 151,
+                "end": 165
+              }
+            },
+            "span": {
+              "start": 141,
+              "end": 165
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "selected",
+              "nameSpan": {
+                "start": 174,
+                "end": 182
+              },
+              "span": {
+                "start": 174,
+                "end": 182
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "signals",
+                    "span": {
+                      "start": 185,
+                      "end": 192
+                    }
+                  },
+                  "field": "switchMap",
+                  "fieldSpan": {
+                    "start": 193,
+                    "end": 202
+                  },
+                  "span": {
+                    "start": 185,
+                    "end": 202
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "value",
+                      "nameSpan": {
+                        "start": 205,
+                        "end": 210
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "span": {
+                          "start": 212,
+                          "end": 215
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "member",
+                        "receiver": {
+                          "kind": "name",
+                          "name": "signals",
+                          "span": {
+                            "start": 219,
+                            "end": 226
+                          }
+                        },
+                        "field": "constant",
+                        "fieldSpan": {
+                          "start": 227,
+                          "end": 235
+                        },
+                        "span": {
+                          "start": 219,
+                          "end": 235
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "binary",
+                          "operator": "+",
+                          "operatorSpan": {
+                            "start": 243,
+                            "end": 244
+                          },
+                          "left": {
+                            "kind": "name",
+                            "name": "value",
+                            "span": {
+                              "start": 237,
+                              "end": 242
+                            }
+                          },
+                          "right": {
+                            "kind": "integer",
+                            "raw": "1",
+                            "span": {
+                              "start": 245,
+                              "end": 246
+                            }
+                          },
+                          "span": {
+                            "start": 237,
+                            "end": 246
+                          }
+                        },
+                        "span": {
+                          "start": 236,
+                          "end": 247
+                        }
+                      },
+                      "span": {
+                        "start": 219,
+                        "end": 247
+                      }
+                    },
+                    "span": {
+                      "start": 204,
+                      "end": 247
+                    }
+                  },
+                  "span": {
+                    "start": 203,
+                    "end": 248
+                  }
+                },
+                "span": {
+                  "start": 185,
+                  "end": 248
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "source",
+                "span": {
+                  "start": 249,
+                  "end": 255
+                }
+              },
+              "span": {
+                "start": 185,
+                "end": 255
+              }
+            },
+            "span": {
+              "start": 170,
+              "end": 255
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "subscription",
+              "nameSpan": {
+                "start": 261,
+                "end": 273
+              },
+              "span": {
+                "start": 261,
+                "end": 273
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "signals",
+                    "span": {
+                      "start": 277,
+                      "end": 284
+                    }
+                  },
+                  "field": "subscribe",
+                  "fieldSpan": {
+                    "start": 285,
+                    "end": 294
+                  },
+                  "span": {
+                    "start": 277,
+                    "end": 294
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "value",
+                      "nameSpan": {
+                        "start": 297,
+                        "end": 302
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "span": {
+                          "start": 304,
+                          "end": 307
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "assignment",
+                      "target": {
+                        "kind": "name",
+                        "name": "mirror",
+                        "span": {
+                          "start": 311,
+                          "end": 317
+                        }
+                      },
+                      "value": {
+                        "kind": "name",
+                        "name": "value",
+                        "span": {
+                          "start": 321,
+                          "end": 326
+                        }
+                      },
+                      "operatorSpan": {
+                        "start": 318,
+                        "end": 320
+                      },
+                      "span": {
+                        "start": 311,
+                        "end": 326
+                      }
+                    },
+                    "span": {
+                      "start": 296,
+                      "end": 326
+                    }
+                  },
+                  "span": {
+                    "start": 295,
+                    "end": 327
+                  }
+                },
+                "span": {
+                  "start": 277,
+                  "end": 327
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "selected",
+                "span": {
+                  "start": 328,
+                  "end": 336
+                }
+              },
+              "span": {
+                "start": 277,
+                "end": 336
+              }
+            },
+            "span": {
+              "start": 261,
+              "end": 336
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "assignment",
+              "target": {
+                "kind": "name",
+                "name": "source",
+                "span": {
+                  "start": 341,
+                  "end": 347
+                }
+              },
+              "value": {
+                "kind": "integer",
+                "raw": "41",
+                "span": {
+                  "start": 351,
+                  "end": 353
+                }
+              },
+              "operatorSpan": {
+                "start": 348,
+                "end": 350
+              },
+              "span": {
+                "start": 341,
+                "end": 353
+              }
+            },
+            "span": {
+              "start": 341,
+              "end": 353
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "signals",
+                  "span": {
+                    "start": 358,
+                    "end": 365
+                  }
+                },
+                "field": "unsubscribe",
+                "fieldSpan": {
+                  "start": 366,
+                  "end": 377
+                },
+                "span": {
+                  "start": 358,
+                  "end": 377
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "subscription",
+                "span": {
+                  "start": 378,
+                  "end": 390
+                }
+              },
+              "span": {
+                "start": 358,
+                "end": 390
+              }
+            },
+            "span": {
+              "start": 358,
+              "end": 390
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "current",
+              "nameSpan": {
+                "start": 396,
+                "end": 403
+              },
+              "span": {
+                "start": 396,
+                "end": 403
+              }
+            },
+            "value": {
+              "kind": "prefix",
+              "operator": "*",
+              "operatorSpan": {
+                "start": 407,
+                "end": 408
+              },
+              "operand": {
+                "kind": "name",
+                "name": "mirror",
+                "span": {
+                  "start": 408,
+                  "end": 414
+                }
+              },
+              "span": {
+                "start": 407,
+                "end": 414
+              }
+            },
+            "span": {
+              "start": 396,
+              "end": 414
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 419,
+              "end": 426
+            }
+          },
+          "argument": {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "text",
+                "value": "switchMap: ",
+                "span": {
+                  "start": 430,
+                  "end": 441
+                }
+              },
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "name",
+                  "name": "current",
+                  "span": {
+                    "start": 443,
+                    "end": 450
+                  }
+                },
+                "span": {
+                  "start": 441,
+                  "end": 451
+                }
+              }
+            ],
+            "span": {
+              "start": 429,
+              "end": 452
+            }
+          },
+          "span": {
+            "start": 419,
+            "end": 452
+          }
+        },
+        "span": {
+          "start": 102,
+          "end": 456
+        }
+      },
+      "span": {
+        "start": 39,
+        "end": 456
+      }
+    }
+  ]
+}

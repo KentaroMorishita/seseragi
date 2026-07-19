@@ -926,6 +926,16 @@
       "import": { "module": "@seseragi/runtime/signal", "export": "constant" }
     },
     {
+      "id": "signal.switch-map",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> Signal<B>) -> Signal<A> -> Signal<B> with transaction-local dependency switching",
+      "import": {
+        "module": "@seseragi/runtime/signal",
+        "export": "switchMap"
+      }
+    },
+    {
       "id": "signal.subscribe",
       "kind": "runtime-helper",
       "typescript": "function",

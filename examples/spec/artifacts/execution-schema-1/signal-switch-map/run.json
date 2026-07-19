@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "case": "signal-switch-map",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/signal-switch-map",
+    "export": "main",
+    "compiledModule": "../../schema-1/signal-switch-map/generated-module.json",
+    "typedInterface": "../../schema-1/signal-switch-map/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "signal.mutable-type",
+      "signal.type",
+      "signal.subscription-type",
+      "core.unit",
+      "effect.core.flatMap",
+      "signal.make",
+      "effect.core.type",
+      "core.int64",
+      "signal.switch-map",
+      "signal.constant",
+      "core.int64.add",
+      "signal.subscribe",
+      "signal.set",
+      "signal.unsubscribe",
+      "signal.read",
+      "effect.console.println",
+      "core.string",
+      "core.int64.show"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["switchMap: 42"],
+        "stdout": "switchMap: 42\n"
+      }
+    ]
+  }
+}
