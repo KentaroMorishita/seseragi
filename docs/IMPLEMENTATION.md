@@ -73,9 +73,9 @@ runtime/
   typescript/              Effect、collection、interop、service、DOM runtime
 ```
 
-実際のdirectory作成はWave 0開始時に行い、現行`src/`を途中で新coreへ混在させません。移行中は現行compilerと
-新compilerを別command / package identityで実行し、同じ`.ssrg`に対する結果をconformance runnerが明示的に
-選びます。「新実装の一部だけ現行parserへfallbackする」互換経路は作りません。
+Wave 0以降のcompilerは`crates/`へ分離し、Rust driverをcanonical implementationとして育てました。
+移行完了後に旧root `src/`のTypeScript compilerと互換commandを削除しています。
+`runtime/ts`は生成コードの現行runtimeであり、compiler fallbackではありません。
 
 `source`から`core-ir`まではfilesystem、process、Node、browser APIへ依存できないpure coreにします。`cli`、
 `lsp`、`wasm`は同じ`driver`を呼び、playground専用parserを持ちません。`runtime/typescript`はRust crateへ逆依存せず、
@@ -106,8 +106,9 @@ playground adapterは生成TypeScriptをbrowser用Console / Stdin service provid
 加えてPhase 1累積じゃんけんをdeterministic inputで実行します。`bun run test:playground:wasm`がWASM生成とintegration、
 `bun run build:playground`がWASMを含むproduction bundleを検証します。
 
-Playground-1では`apps/playground`を旧React / Monaco UIから独立させ、CodeMirror 6、Seseragi専用stream language、
-mobile panel、任意Stdinを実装しました。diagnostic rangeはshared UTF-8 byte rangeをUI boundaryでのみUTF-16へ変換し、
+Playground-1では`apps/playground`へCodeMirror 6、Seseragi専用stream language、mobile panel、任意Stdinを
+実装しました。旧React / Monaco UIはRust移行完了後に削除しています。diagnostic rangeはshared UTF-8 byte rangeを
+UI boundaryでのみUTF-16へ変換し、
 compiler diagnosticを再生成しません。初期application chunkは約18 KB、editor chunkは約330 KBです。約3.6 MBのbrowser
 TypeScript transpilerはRun時だけlazy loadし、約900 KBのWASMもdriver初回利用時に初期化します。
 

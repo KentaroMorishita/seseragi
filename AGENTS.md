@@ -1,39 +1,48 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
-- `src/`: Core TypeScript sources — CLI (`cli/`), parser/formatter, LSP (`lsp/`), runtime, and shared types.
-- `tests/`: Bun test suites (`*.test.ts`). Keep unit tests close to features they cover.
-- `extensions/`: VS Code extension source (packaged by scripts).
-- `playground/`: Demo app for local experimenting.
-- `examples/`: Example `.ssrg` programs; use for docs and sanity checks.
-- `dist/`: Build artifacts (generated; do not edit).
+## Canonical implementation boundary
 
-## Build, Test, and Development Commands
-- `bun run dev`: Run the CLI in watch mode from `src/cli.ts`.
-- `bun run build` or `./scripts/build.sh`: Clean and build LSP + extension artifacts into `dist/`.
-- `bun run check` or `./scripts/check.sh`: Format+lint, type-check, and run tests.
-- `bun run format` or `./scripts/format.sh`: Apply Biome formatting.
-- `bun test` / `bun test --watch`: Run tests once / in watch mode.
-- VS Code extension: `bun run vscode` to build/package and reinstall locally.
+- `crates/`: current Rust compiler, driver, CLI, LSP, WASM adapter, runtime
+  staging, and conformance runner.
+- `runtime/ts/`: active TypeScript runtime used by generated programs.
+- `apps/playground/`: active browser Playground using the Rust WASM driver.
+- `examples/spec/`: canonical lessons, fixtures, and executable artifacts.
+- `docs/spec/`: normative language specification.
+- `extensions/seseragi-spec-preview/`: syntax-only VS Code support.
 
-## Coding Style & Naming Conventions
-- Language: TypeScript (ESNext), Bun runtime.
-- Formatting via Biome: 2 spaces, LF line endings, 80 cols, double quotes, semicolons as needed, ES5 trailing commas. See `biome.json`.
-- Naming: `camelCase` for vars/functions, `PascalCase` for types/classes, `SCREAMING_SNAKE_CASE` for constants.
-- Files: Type-centric modules (e.g., `parser/lexer.ts`), tests mirror names (e.g., `lexer.test.ts`).
+The former root TypeScript compiler and React/Monaco Playground were removed
+after the Rust migration. Do not recreate compiler code under root `src/`, and
+do not treat `runtime/ts` or `apps/playground` as legacy code.
 
-## Testing Guidelines
-- Framework: Bun test runner.
-- Location: `tests/` with `*.test.ts` naming.
-- Coverage: Add tests for new features and bug fixes; prefer small, focused cases. Run `bun run check` before pushing.
+## Build, test, and development commands
 
-## Commit & Pull Request Guidelines
-- Commits: Imperative mood, concise scope-first subject (e.g., `parser: handle unicode escapes`). Group related changes.
-- PRs: Include summary, rationale, and testing steps. Link issues (e.g., `Closes #123`). Add screenshots or CLI output for UX/LSP changes.
-- Quality gate: CI-equivalent locally is `./scripts/check.sh`; PRs should pass and contain no formatting diffs.
+- `bun run build`: build the Rust workspace and production Playground bundle.
+- `bun run check`: run formatting checks, Rust workspace tests, spec/example
+  validation, conformance artifacts, WASM freshness checks, and Playground QA.
+- `bun run format`: format Rust and active TypeScript/HTML sources.
+- `cargo run -p seseragi-cli -- run <path>`: run a source file or package.
+- `cargo run -p seseragi-cli -- format [--check] <path>`: format source.
+- `bun run dev:playground`: run the local Playground.
+- `bun run build:playground:wasm`: regenerate the committed WASM artifact
+  after compiler, runtime contract, or WASM adapter changes.
 
-## Security & Configuration Tips
-- Do not commit secrets or machine-specific paths. The repo is `private: true` and uses local `@seseragi/runtime`.
-- Generated code in `dist/` should be produced by scripts; never hand-edit.
-- Requirements: Bun installed (`bun --version`), `code` CLI for extension packaging. If packaging fails, ensure `vsce` is available (script calls `bunx vsce`).
+## Coding conventions
+
+- Rust uses `cargo fmt`; keep crate responsibilities narrow and reuse the
+  shared driver, diagnostics, Typed HIR, lowering, and runtime ABI.
+- Active TypeScript uses Biome: 2 spaces, LF, 80 columns, double quotes.
+- Never hand-edit `apps/playground/src/wasm/pkg`; regenerate it through the
+  repository script.
+- Keep user-visible samples grounded in `examples/spec`. A language slice is
+  complete only when parser/semantics/lowering/runtime behavior and diagnostics
+  are verified at the appropriate boundaries.
+
+## Testing and commits
+
+- Add focused Rust tests and execution fixtures for compiler changes.
+- Add Bun tests under `apps/playground/tests` for browser/UI behavior.
+- Run `bun run check` before pushing.
+- Use concise, imperative, scope-first commit subjects.
+- Preserve unrelated worktree changes and never edit generated `dist/`
+  artifacts by hand.
 

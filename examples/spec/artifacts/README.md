@@ -362,19 +362,8 @@ TypedHirから生成して固定するstageです。たとえばcompact inferred
 固定します。syntax/CST由来の`diagnostics.json`とは分け、compact inferred `effect fn` のbodyがEffect型へ
 解決できないcaseなど、typed stageで初めて分かる問題を扱います。
 
-初期runner skeletonは次でartifact bundleを発見し、必須file、JSON envelope、参照snapshotを検査します。
-
-```sh
-bun run conformance:artifacts
-```
-
-machine-readableなreportだけが必要な場合は、Bunのcommand echoを抑えて次を使います。
-
-```sh
-bun run --silent conformance:artifacts --json
-```
-
-Rust再実装側のconformance runnerも同じ目的でJSON出力を持ちます。通常runのsummaryは
+canonical conformance runnerはartifact bundleを発見し、compiler各stage、project compile / execution、
+runtime ABIまで検査します。通常runのsummaryは
 `kind: "conformance-run"`、case discoveryだけが必要な場合は`kind: "conformance-list"`です。
 
 ```sh

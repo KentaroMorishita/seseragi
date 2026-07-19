@@ -1,13 +1,45 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
-echo "🔍 Checking (format + lint)..."
-bunx biome check --write src tests playground/src
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
 
-echo "🏷️ Type checking..."
-bunx tsc --noEmit --project tsconfig.test.json
+echo "Checking Rust formatting..."
+cargo fmt --all -- --check
 
-echo "🧪 Running tests..."
-bun test
+echo "Linting active TypeScript and HTML sources..."
+bunx biome lint \
+  apps/playground/index.html \
+  apps/playground/vite.config.ts \
+  apps/playground/src/*.ts \
+  apps/playground/src/compiler \
+  apps/playground/src/diagnostics \
+  apps/playground/src/editor \
+  apps/playground/src/runtime \
+  apps/playground/src/ui \
+  apps/playground/tests \
+  runtime/ts/src
 
-echo "✅ All checks passed!"
+echo "Testing Rust workspace..."
+cargo test --workspace
+
+echo "Running canonical conformance fixtures..."
+cargo run -p seseragi-conformance -- .
+
+echo "Installing frozen Playground dependencies..."
+(
+  cd apps/playground
+  bun install --frozen-lockfile
+)
+
+echo "Checking committed WASM and Playground tests..."
+bun run test:playground:wasm
+
+echo "Type-checking and building Playground..."
+(
+  cd apps/playground
+  bun run typecheck
+  bun run build
+)
+
+echo "All checks passed."

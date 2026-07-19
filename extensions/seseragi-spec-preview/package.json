@@ -1,7 +1,7 @@
 {
   "name": "seseragi-spec-preview",
   "displayName": "Seseragi Spec Preview",
-  "description": "Syntax-only highlighting for the draft Seseragi language specification",
+  "description": "Syntax-only highlighting for the canonical Seseragi language specification",
   "version": "0.1.0",
   "publisher": "seseragi-dev",
   "license": "Apache-2.0",

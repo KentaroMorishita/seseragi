@@ -2,68 +2,33 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Run Seseragi File",
+      "label": "Seseragi: check workspace",
       "type": "shell",
-      "command": "bun",
-      "args": [
-        "run",
-        "${workspaceFolder}/src/cli.ts",
-        "run",
-        "${file}"
-      ],
+      "command": "bun run check",
       "group": {
-        "kind": "build",
+        "kind": "test",
         "isDefault": true
       },
+      "problemMatcher": []
+    },
+    {
+      "label": "Seseragi: build Rust workspace",
+      "type": "shell",
+      "command": "cargo build --workspace",
+      "group": "build",
+      "problemMatcher": ["$rustc"]
+    },
+    {
+      "label": "Seseragi: run current file",
+      "type": "shell",
+      "command": "cargo run -p seseragi-cli -- run \"${file}\"",
+      "group": "build",
       "presentation": {
-        "echo": true,
         "reveal": "always",
-        "focus": false,
         "panel": "shared",
-        "showReuseMessage": false,
         "clear": true
       },
       "problemMatcher": []
-    },
-    {
-      "label": "Compile Seseragi File",
-      "type": "shell",
-      "command": "bun",
-      "args": [
-        "run",
-        "${workspaceFolder}/src/cli.ts",
-        "${file}"
-      ],
-      "group": "build",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared",
-        "showReuseMessage": false
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "Watch Seseragi File",
-      "type": "shell",
-      "command": "bun",
-      "args": [
-        "run",
-        "${workspaceFolder}/src/cli.ts",
-        "${file}",
-        "--watch"
-      ],
-      "group": "build",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated",
-        "showReuseMessage": false
-      },
-      "problemMatcher": [],
-      "isBackground": true
     }
   ]
 }

@@ -1,7 +1,7 @@
 # Seseragi Playground
 
-新Rust compilerのsingle-file driverをWASMから呼び出すmobile-first Playgroundです。旧`playground/`の
-React / Monaco UIや旧TypeScript compilerは利用しません。
+Rust compilerのshared driverをWASMから呼び出すmobile-first Playgroundです。
+compiler semanticsをUIへ複製せず、CLI / LSPと同じpipelineを利用します。
 
 ## 境界
 

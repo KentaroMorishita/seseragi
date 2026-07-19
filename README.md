@@ -1,104 +1,78 @@
 # Seseragi
 
-A programming language that compiles to TypeScript
+Seseragiは、独自の型・Effect semanticsを持ち、TypeScript / JavaScriptを
+実行targetの一つとして生成するプログラミング言語です。言語の意味と構文の正本は
+[Seseragi言語仕様](./docs/README.md)です。
 
-言語の意味と構文の正本は [Seseragi 言語仕様](./docs/README.md) を参照してください。
+現在のcompilerはRust実装です。旧TypeScript compilerは移行完了に伴って削除し、
+parser、型検査、lowering、CLI、LSP、WASMはすべて `crates/` の同じdriver境界を
+共有します。
 
-## 特徴
+## Quick start
 
-- **静的型付け** - 型推論による型安全性
-- **不変変数** - `let`による再代入不可な変数
-- **モナド型** - `Maybe`、`Either`による安全なエラーハンドリング
-- **VS Code統合** - 構文ハイライト、LSP、リアルタイム型チェック
+必要なtoolchainはRust、Bun、PlaygroundのWASMを再生成する場合は
+`wasm-pack`です。
 
-## クイックスタート
-
-```bash
-# 新しいRust実装をbuild
+```sh
+# Rust CLIをbuild
 cargo build -p seseragi-cli
 
-# single-file programをcompileして実行（Bun target adapterが必要）
-./target/debug/seseragi run examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg
+# single-file programをcompileして実行
+cargo run -p seseragi-cli -- run examples/spec/lessons/01-hello-world.ssrg
+
+# formatter
+cargo run -p seseragi-cli -- format --check \
+  examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg
 ```
 
-現在のRust CLIは一つの`.ssrg`を受け取ります。package directoryを実行する`seseragi run .`はmanifest / filesystem
-discoveryとともにPhase 2で追加します。実装順は[roadmap](./docs/ROADMAP.md)を参照してください。
+`run`はsingle fileだけでなく、`seseragi.json`を持つlocal packageも受け取れます。
+生成TypeScriptの実行にはBunを使います。
 
-## 現在のRust CLI
+## Playground
 
-```bash
-seseragi run example.ssrg
+```sh
+# compiler / runtime contract変更時にWASMを再生成
+bun run build:playground:wasm
+
+# local development
+bun run dev:playground
 ```
 
-このcommandはsingle-file sourceをRust driverの通常pipelineでcompileし、生成TypeScriptと埋め込みruntimeを
-Bunで実行します。formatter、watch、package executionは新実装の公開commandにはまだ接続していません。
+production相当のtest、typecheck、bundleは `bun run check:playground` で確認できます。
+公開版は <https://seseragi.vercel.app/> です。
 
-## サンプルコード
+## Repository boundary
 
-```seseragi
-// Hello World
-print "Hello world"
+| Path | Role |
+|---|---|
+| `crates/` | 現行Rust compiler、driver、CLI、LSP、WASM、conformance |
+| `runtime/ts/` | 生成コードが使う現行TypeScript runtimeとbrowser host |
+| `apps/playground/` | 現行CodeMirror / WASM Playground |
+| `examples/spec/` | canonical lesson、fixture、execution artifact |
+| `docs/spec/` | normative language specification |
+| `extensions/seseragi-spec-preview/` | syntax-only VS Code support |
 
-// 基本的な変数・関数定義
-let name = "Alice"
-fn greet name: String -> String = "Hello " + name
-print $ greet name
+`runtime/ts`と`apps/playground`のTypeScriptは旧compilerではありません。前者は
+Rust backendが生成コードへ接続するruntime、後者は同じRust driverをWASM経由で
+呼ぶUIです。compiler実装をroot `src/`へ追加しないでください。
 
-// 関数の自動カリー化・部分適用
-fn add x: Int -> y: Int -> Int = x + y
-let addTen = add 10
-print $ addTen 20  // 30
+## Development
 
-// 構造体定義と演算子オーバーロード
-struct Point {
-  x: Int,
-  y: Int
-}
+```sh
+# CI-equivalent workspace gate
+bun run check
 
-impl Point {
-  fn square self -> Point {
-    let Point { x, y } = self
-    Point { x: x * x, y: y * y }
-  }
+# Rustとactive TypeScript sourcesをformat
+bun run format
 
-  operator + self -> other -> Point {
-    Point { x: self.x + other.x, y: self.y + other.y }
-  }
-  operator * self -> scalar: Int -> Point {
-    Point { x: self.x * scalar, y: self.y * scalar }
-  }
-}
-
-let p1 = Point { x: 3, y: 4 }
-let p2 = Point { x: 1, y: 2 }
-show $ p1 square() // Point { x: 9, y: 16 }
-show $ p1 + p2 * 3  // Point { x: 6, y: 10 }
-
-// 配列とリストの使い分け
-let array = [1, 2, 3, 4, 5]     // Array - インデックスアクセス
-let list = `[1, 2, 3, 4, 5]     // List - head/tail操作
-
-show $ [x * x | x <- 1..=5]     // 配列内包表記: [1, 4, 9, 16, 25]
-show $ ^list                    // リストhead: Just 1
-show $ >>list                   // リストtail: `[2, 3, 4, 5]
+# native workspaceとPlayground bundleをbuild
+bun run build
 ```
 
-## VS Code拡張
+詳しい現在地と実装方針は
+[STATUS](./docs/STATUS.md)、[ROADMAP](./docs/ROADMAP.md)、
+[IMPLEMENTATION](./docs/IMPLEMENTATION.md)を参照してください。
 
-1. プロジェクトをVS Codeで開く
-2. 拡張機能が自動でインストールされる
-3. `.ssrg`ファイルで構文ハイライト、型チェックが有効になる
-
-## 開発・ドキュメント
-
-- **開発者向けガイド**: [CLAUDE.md](./CLAUDE.md)
-- **サンプルコード**: [examples/](./examples/)
-
-## ライセンス
+## License
 
 Apache-2.0
-
-## 技術スタック
-
-- **Runtime**: [Bun](https://bun.sh)
-- **Target**: TypeScript/JavaScript

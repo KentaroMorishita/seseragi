@@ -1,13 +1,17 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
-echo "🧹 Cleaning..."
-rm -rf dist
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
 
-echo "🔧 Building LSP server..."
-bun build src/lsp/main.ts --outdir dist/lsp --target node
+echo "Building Rust workspace..."
+cargo build --workspace
 
-echo "🔨 Building VS Code extension..."
-./scripts/vscode.sh
+echo "Building Playground..."
+(
+  cd apps/playground
+  bun install --frozen-lockfile
+  bun run build
+)
 
-echo "✅ All builds complete!"
+echo "Build complete."

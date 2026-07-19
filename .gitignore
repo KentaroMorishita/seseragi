@@ -1,13 +1,13 @@
 # Dependencies
 node_modules/
 bun.lock
+!/bun.lock
 !apps/playground/bun.lock
 !examples/spec/fixtures/projects/**/host/bun.lock
 
 # Build outputs
 dist/
 target/
-playground/src/wasm/pkg/
 *.tsbuildinfo
 
 # Environment
@@ -17,8 +17,6 @@ playground/src/wasm/pkg/
 
 # IDE
 !.vscode
-!.vscode/extension
-!.vscode/launch.json
 !.vscode/tasks.json
 .vscode/settings.json
 .vscode/*.code-workspace
