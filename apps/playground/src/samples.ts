@@ -27,6 +27,7 @@ import userAddOperator from "../../../examples/spec/artifacts/schema-1/user-add-
 import userEqOperator from "../../../examples/spec/artifacts/schema-1/user-eq-operator/main.ssrg?raw"
 import userIterableComprehension from "../../../examples/spec/artifacts/schema-1/user-iterable-comprehension/main.ssrg?raw"
 import webHtmlSsr from "../../../examples/spec/artifacts/schema-1/web-html-ssr/main.ssrg?raw"
+import webHtmlComponentsStyle from "../../../examples/spec/artifacts/schema-1/web-html-components-style/main.ssrg?raw"
 import helloWorld from "../../../examples/spec/lessons/01-hello-world.ssrg?raw"
 import miniAdventure from "../../../examples/spec/playground/01-mini-adventure.ssrg?raw"
 import shippingAdvisor from "../../../examples/spec/playground/02-shipping-advisor.ssrg?raw"
@@ -81,6 +82,7 @@ const sourceById: Readonly<Record<string, string>> = {
   "effect-monad": effectMonad,
   "type-class-operator-section": typeClassOperatorSection,
   "web-html-ssr": webHtmlSsr,
+  "web-html-components-style": webHtmlComponentsStyle,
   "signal-transaction": signalTransaction,
   "signal-subscription": signalSubscription,
   "signal-applicative": signalApplicative,

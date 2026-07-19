@@ -62,6 +62,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "Html",
     },
     RuntimeTypeImport {
+        canonical: "std/web/html::Style",
+        runtime_feature: "web.html.style-type",
+        module: "@seseragi/runtime/html",
+        export_name: "Style",
+    },
+    RuntimeTypeImport {
         canonical: "std/signal::Signal",
         runtime_feature: "signal.type",
         module: "@seseragi/runtime/signal",

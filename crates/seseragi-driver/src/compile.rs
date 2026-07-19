@@ -329,6 +329,25 @@ pub fn invalid -> html.Html<Msg> =
     }
 
     #[test]
+    fn rejects_non_string_html_style_values_before_lowering() {
+        let source = r#"import * as html from "std/web/html"
+
+pub fn invalid -> html.Style =
+  html.style { padding: 12 }
+"#;
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-html-invalid-style",
+            source,
+        ))
+        .expect_err("invalid style records must reject compilation");
+
+        assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+            diagnostic.code == "SES-T0201" && diagnostic.message_key == "instance.missing"
+        }));
+    }
+
+    #[test]
     fn lowers_parameterless_pure_functions_with_an_implicit_unit() {
         let source = "fn answer -> Int = 42\npub fn run -> Int = answer ()\n";
         let compiled = compile_module(CompileInput::new(

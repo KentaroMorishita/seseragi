@@ -160,9 +160,6 @@ impl<'a> PureExpressionContext<'a> {
     }
 
     pub(super) fn hydrate_semantic_value(&self, value: SemanticValueType) -> SemanticValueType {
-        if value.key != SemanticTypeKey::Other {
-            return value;
-        }
         let hydrated = self.semantic_value_from_typed_type(&value.type_ref);
         if hydrated.key != SemanticTypeKey::Other {
             hydrated

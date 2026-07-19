@@ -1,0 +1,45 @@
+import * as html from "std/web/html"
+
+type Msg =
+  | Confirm
+
+fn card title: String -> detail: String -> html.Html<Msg> =
+  html.section {
+    className: "card",
+    style: html.style {
+      variables: { cardShadow: "0 4px 16px #0002" },
+      backgroundColor: "#fff",
+      boxShadow: "var(--card-shadow)",
+      borderRadius: "16px",
+      padding: "24px"
+    },
+    children: [
+      html.h2 {
+        style: html.style { color: "#185f50", marginTop: "0" },
+        children: title
+      },
+      html.p {
+        style: html.style { color: "#315c53", marginBottom: "0" },
+        children: detail
+      }
+    ]
+  }
+
+fn page -> html.Html<Msg> =
+  html.main {
+    id: "app",
+    style: html.style { backgroundColor: "#eef6f3", padding: "32px" },
+    children: [
+      html.h1 {
+        onClick: Confirm,
+        style: html.style { color: "#123b32", marginTop: "0" },
+        children: "Seseragi components"
+      },
+      card "Reusable card" "Function component from children"
+    ]
+  }
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ html.renderToString (page ())

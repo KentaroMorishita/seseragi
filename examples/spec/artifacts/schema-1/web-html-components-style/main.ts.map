@@ -1,0 +1,33 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/web-html-components-style"
+  ],
+  "sourcesContent": [
+    "import * as html from \"std/web/html\"\n\ntype Msg =\n  | Confirm\n\nfn card title: String -> detail: String -> html.Html<Msg> =\n  html.section {\n    className: \"card\",\n    style: html.style {\n      variables: { cardShadow: \"0 4px 16px #0002\" },\n      backgroundColor: \"#fff\",\n      boxShadow: \"var(--card-shadow)\",\n      borderRadius: \"16px\",\n      padding: \"24px\"\n    },\n    children: [\n      html.h2 {\n        style: html.style { color: \"#185f50\", marginTop: \"0\" },\n        children: title\n      },\n      html.p {\n        style: html.style { color: \"#315c53\", marginBottom: \"0\" },\n        children: detail\n      }\n    ]\n  }\n\nfn page -> html.Html<Msg> =\n  html.main {\n    id: \"app\",\n    style: html.style { backgroundColor: \"#eef6f3\", padding: \"32px\" },\n    children: [\n      html.h1 {\n        onClick: Confirm,\n        style: html.style { color: \"#123b32\", marginTop: \"0\" },\n        children: \"Seseragi components\"\n      },\n      card \"Reusable card\" \"Function component from children\"\n    ]\n  }\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  println $ html.renderToString (page ())\n"
+  ],
+  "names": [
+    "Msg",
+    "Confirm",
+    "card",
+    "section",
+    "style",
+    "h2",
+    "style",
+    "p",
+    "style",
+    "page",
+    "main",
+    "style",
+    "h1",
+    "style",
+    "card",
+    "main",
+    "println",
+    "renderToString",
+    "page"
+  ],
+  "mappings": ";;;AAEAA;;AACIC;AAEJC;AAsBAO;AAcAM"
+}

@@ -1,0 +1,1668 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/web-html-components-style",
+  "dependencies": [
+    {
+      "specifier": "std/web/html",
+      "module": "artifact/web-html-components-style/std/web/html",
+      "origin": {
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/web-html-components-style/std/web/html::*",
+          "localName": "html"
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "private",
+      "name": "Msg",
+      "nameSpan": {
+        "start": 43,
+        "end": 46
+      },
+      "variants": [
+        {
+          "name": "Confirm",
+          "nameSpan": {
+            "start": 53,
+            "end": 60
+          },
+          "span": {
+            "start": 51,
+            "end": 60
+          }
+        }
+      ],
+      "span": {
+        "start": 38,
+        "end": 60
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "card",
+      "nameSpan": {
+        "start": 65,
+        "end": 69
+      },
+      "parameters": [
+        {
+          "name": "title",
+          "nameSpan": {
+            "start": 70,
+            "end": 75
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 77,
+              "end": 83
+            }
+          }
+        },
+        {
+          "name": "detail",
+          "nameSpan": {
+            "start": 87,
+            "end": 93
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 95,
+              "end": 101
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "html.Html",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Msg",
+            "span": {
+              "start": 115,
+              "end": 118
+            }
+          }
+        ],
+        "span": {
+          "start": 105,
+          "end": 119
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "html",
+            "span": {
+              "start": 124,
+              "end": 128
+            }
+          },
+          "field": "section",
+          "fieldSpan": {
+            "start": 129,
+            "end": 136
+          },
+          "span": {
+            "start": 124,
+            "end": 136
+          }
+        },
+        "argument": {
+          "kind": "record",
+          "items": [
+            {
+              "kind": "field",
+              "name": "className",
+              "nameSpan": {
+                "start": 143,
+                "end": 152
+              },
+              "value": {
+                "kind": "string",
+                "raw": "\"card\"",
+                "span": {
+                  "start": 154,
+                  "end": 160
+                }
+              },
+              "span": {
+                "start": 143,
+                "end": 160
+              }
+            },
+            {
+              "kind": "field",
+              "name": "style",
+              "nameSpan": {
+                "start": 166,
+                "end": 171
+              },
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "html",
+                    "span": {
+                      "start": 173,
+                      "end": 177
+                    }
+                  },
+                  "field": "style",
+                  "fieldSpan": {
+                    "start": 178,
+                    "end": 183
+                  },
+                  "span": {
+                    "start": 173,
+                    "end": 183
+                  }
+                },
+                "argument": {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "variables",
+                      "nameSpan": {
+                        "start": 192,
+                        "end": 201
+                      },
+                      "value": {
+                        "kind": "record",
+                        "items": [
+                          {
+                            "kind": "field",
+                            "name": "cardShadow",
+                            "nameSpan": {
+                              "start": 205,
+                              "end": 215
+                            },
+                            "value": {
+                              "kind": "string",
+                              "raw": "\"0 4px 16px #0002\"",
+                              "span": {
+                                "start": 217,
+                                "end": 235
+                              }
+                            },
+                            "span": {
+                              "start": 205,
+                              "end": 235
+                            }
+                          }
+                        ],
+                        "span": {
+                          "start": 203,
+                          "end": 237
+                        }
+                      },
+                      "span": {
+                        "start": 192,
+                        "end": 237
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "backgroundColor",
+                      "nameSpan": {
+                        "start": 245,
+                        "end": 260
+                      },
+                      "value": {
+                        "kind": "string",
+                        "raw": "\"#fff\"",
+                        "span": {
+                          "start": 262,
+                          "end": 268
+                        }
+                      },
+                      "span": {
+                        "start": 245,
+                        "end": 268
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "boxShadow",
+                      "nameSpan": {
+                        "start": 276,
+                        "end": 285
+                      },
+                      "value": {
+                        "kind": "string",
+                        "raw": "\"var(--card-shadow)\"",
+                        "span": {
+                          "start": 287,
+                          "end": 307
+                        }
+                      },
+                      "span": {
+                        "start": 276,
+                        "end": 307
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "borderRadius",
+                      "nameSpan": {
+                        "start": 315,
+                        "end": 327
+                      },
+                      "value": {
+                        "kind": "string",
+                        "raw": "\"16px\"",
+                        "span": {
+                          "start": 329,
+                          "end": 335
+                        }
+                      },
+                      "span": {
+                        "start": 315,
+                        "end": 335
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "padding",
+                      "nameSpan": {
+                        "start": 343,
+                        "end": 350
+                      },
+                      "value": {
+                        "kind": "string",
+                        "raw": "\"24px\"",
+                        "span": {
+                          "start": 352,
+                          "end": 358
+                        }
+                      },
+                      "span": {
+                        "start": 343,
+                        "end": 358
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 184,
+                    "end": 364
+                  }
+                },
+                "span": {
+                  "start": 173,
+                  "end": 364
+                }
+              },
+              "span": {
+                "start": 166,
+                "end": 364
+              }
+            },
+            {
+              "kind": "field",
+              "name": "children",
+              "nameSpan": {
+                "start": 370,
+                "end": 378
+              },
+              "value": {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "application",
+                    "function": {
+                      "kind": "member",
+                      "receiver": {
+                        "kind": "name",
+                        "name": "html",
+                        "span": {
+                          "start": 388,
+                          "end": 392
+                        }
+                      },
+                      "field": "h2",
+                      "fieldSpan": {
+                        "start": 393,
+                        "end": 395
+                      },
+                      "span": {
+                        "start": 388,
+                        "end": 395
+                      }
+                    },
+                    "argument": {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "style",
+                          "nameSpan": {
+                            "start": 406,
+                            "end": 411
+                          },
+                          "value": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "html",
+                                "span": {
+                                  "start": 413,
+                                  "end": 417
+                                }
+                              },
+                              "field": "style",
+                              "fieldSpan": {
+                                "start": 418,
+                                "end": 423
+                              },
+                              "span": {
+                                "start": 413,
+                                "end": 423
+                              }
+                            },
+                            "argument": {
+                              "kind": "record",
+                              "items": [
+                                {
+                                  "kind": "field",
+                                  "name": "color",
+                                  "nameSpan": {
+                                    "start": 426,
+                                    "end": 431
+                                  },
+                                  "value": {
+                                    "kind": "string",
+                                    "raw": "\"#185f50\"",
+                                    "span": {
+                                      "start": 433,
+                                      "end": 442
+                                    }
+                                  },
+                                  "span": {
+                                    "start": 426,
+                                    "end": 442
+                                  }
+                                },
+                                {
+                                  "kind": "field",
+                                  "name": "marginTop",
+                                  "nameSpan": {
+                                    "start": 444,
+                                    "end": 453
+                                  },
+                                  "value": {
+                                    "kind": "string",
+                                    "raw": "\"0\"",
+                                    "span": {
+                                      "start": 455,
+                                      "end": 458
+                                    }
+                                  },
+                                  "span": {
+                                    "start": 444,
+                                    "end": 458
+                                  }
+                                }
+                              ],
+                              "span": {
+                                "start": 424,
+                                "end": 460
+                              }
+                            },
+                            "span": {
+                              "start": 413,
+                              "end": 460
+                            }
+                          },
+                          "span": {
+                            "start": 406,
+                            "end": 460
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "children",
+                          "nameSpan": {
+                            "start": 470,
+                            "end": 478
+                          },
+                          "value": {
+                            "kind": "name",
+                            "name": "title",
+                            "span": {
+                              "start": 480,
+                              "end": 485
+                            }
+                          },
+                          "span": {
+                            "start": 470,
+                            "end": 485
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 396,
+                        "end": 493
+                      }
+                    },
+                    "span": {
+                      "start": 388,
+                      "end": 493
+                    }
+                  },
+                  {
+                    "kind": "application",
+                    "function": {
+                      "kind": "member",
+                      "receiver": {
+                        "kind": "name",
+                        "name": "html",
+                        "span": {
+                          "start": 501,
+                          "end": 505
+                        }
+                      },
+                      "field": "p",
+                      "fieldSpan": {
+                        "start": 506,
+                        "end": 507
+                      },
+                      "span": {
+                        "start": 501,
+                        "end": 507
+                      }
+                    },
+                    "argument": {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "style",
+                          "nameSpan": {
+                            "start": 518,
+                            "end": 523
+                          },
+                          "value": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "html",
+                                "span": {
+                                  "start": 525,
+                                  "end": 529
+                                }
+                              },
+                              "field": "style",
+                              "fieldSpan": {
+                                "start": 530,
+                                "end": 535
+                              },
+                              "span": {
+                                "start": 525,
+                                "end": 535
+                              }
+                            },
+                            "argument": {
+                              "kind": "record",
+                              "items": [
+                                {
+                                  "kind": "field",
+                                  "name": "color",
+                                  "nameSpan": {
+                                    "start": 538,
+                                    "end": 543
+                                  },
+                                  "value": {
+                                    "kind": "string",
+                                    "raw": "\"#315c53\"",
+                                    "span": {
+                                      "start": 545,
+                                      "end": 554
+                                    }
+                                  },
+                                  "span": {
+                                    "start": 538,
+                                    "end": 554
+                                  }
+                                },
+                                {
+                                  "kind": "field",
+                                  "name": "marginBottom",
+                                  "nameSpan": {
+                                    "start": 556,
+                                    "end": 568
+                                  },
+                                  "value": {
+                                    "kind": "string",
+                                    "raw": "\"0\"",
+                                    "span": {
+                                      "start": 570,
+                                      "end": 573
+                                    }
+                                  },
+                                  "span": {
+                                    "start": 556,
+                                    "end": 573
+                                  }
+                                }
+                              ],
+                              "span": {
+                                "start": 536,
+                                "end": 575
+                              }
+                            },
+                            "span": {
+                              "start": 525,
+                              "end": 575
+                            }
+                          },
+                          "span": {
+                            "start": 518,
+                            "end": 575
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "children",
+                          "nameSpan": {
+                            "start": 585,
+                            "end": 593
+                          },
+                          "value": {
+                            "kind": "name",
+                            "name": "detail",
+                            "span": {
+                              "start": 595,
+                              "end": 601
+                            }
+                          },
+                          "span": {
+                            "start": 585,
+                            "end": 601
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 508,
+                        "end": 609
+                      }
+                    },
+                    "span": {
+                      "start": 501,
+                      "end": 609
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 380,
+                  "end": 615
+                }
+              },
+              "span": {
+                "start": 370,
+                "end": 615
+              }
+            }
+          ],
+          "span": {
+            "start": 137,
+            "end": 619
+          }
+        },
+        "span": {
+          "start": 124,
+          "end": 619
+        }
+      },
+      "span": {
+        "start": 62,
+        "end": 619
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "page",
+      "nameSpan": {
+        "start": 624,
+        "end": 628
+      },
+      "parameters": [],
+      "returnType": {
+        "kind": "named",
+        "name": "html.Html",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Msg",
+            "span": {
+              "start": 642,
+              "end": 645
+            }
+          }
+        ],
+        "span": {
+          "start": 632,
+          "end": 646
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "html",
+            "span": {
+              "start": 651,
+              "end": 655
+            }
+          },
+          "field": "main",
+          "fieldSpan": {
+            "start": 656,
+            "end": 660
+          },
+          "span": {
+            "start": 651,
+            "end": 660
+          }
+        },
+        "argument": {
+          "kind": "record",
+          "items": [
+            {
+              "kind": "field",
+              "name": "id",
+              "nameSpan": {
+                "start": 667,
+                "end": 669
+              },
+              "value": {
+                "kind": "string",
+                "raw": "\"app\"",
+                "span": {
+                  "start": 671,
+                  "end": 676
+                }
+              },
+              "span": {
+                "start": 667,
+                "end": 676
+              }
+            },
+            {
+              "kind": "field",
+              "name": "style",
+              "nameSpan": {
+                "start": 682,
+                "end": 687
+              },
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "html",
+                    "span": {
+                      "start": 689,
+                      "end": 693
+                    }
+                  },
+                  "field": "style",
+                  "fieldSpan": {
+                    "start": 694,
+                    "end": 699
+                  },
+                  "span": {
+                    "start": 689,
+                    "end": 699
+                  }
+                },
+                "argument": {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "backgroundColor",
+                      "nameSpan": {
+                        "start": 702,
+                        "end": 717
+                      },
+                      "value": {
+                        "kind": "string",
+                        "raw": "\"#eef6f3\"",
+                        "span": {
+                          "start": 719,
+                          "end": 728
+                        }
+                      },
+                      "span": {
+                        "start": 702,
+                        "end": 728
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "padding",
+                      "nameSpan": {
+                        "start": 730,
+                        "end": 737
+                      },
+                      "value": {
+                        "kind": "string",
+                        "raw": "\"32px\"",
+                        "span": {
+                          "start": 739,
+                          "end": 745
+                        }
+                      },
+                      "span": {
+                        "start": 730,
+                        "end": 745
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 700,
+                    "end": 747
+                  }
+                },
+                "span": {
+                  "start": 689,
+                  "end": 747
+                }
+              },
+              "span": {
+                "start": 682,
+                "end": 747
+              }
+            },
+            {
+              "kind": "field",
+              "name": "children",
+              "nameSpan": {
+                "start": 753,
+                "end": 761
+              },
+              "value": {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "application",
+                    "function": {
+                      "kind": "member",
+                      "receiver": {
+                        "kind": "name",
+                        "name": "html",
+                        "span": {
+                          "start": 771,
+                          "end": 775
+                        }
+                      },
+                      "field": "h1",
+                      "fieldSpan": {
+                        "start": 776,
+                        "end": 778
+                      },
+                      "span": {
+                        "start": 771,
+                        "end": 778
+                      }
+                    },
+                    "argument": {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "onClick",
+                          "nameSpan": {
+                            "start": 789,
+                            "end": 796
+                          },
+                          "value": {
+                            "kind": "name",
+                            "name": "Confirm",
+                            "span": {
+                              "start": 798,
+                              "end": 805
+                            }
+                          },
+                          "span": {
+                            "start": 789,
+                            "end": 805
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "style",
+                          "nameSpan": {
+                            "start": 815,
+                            "end": 820
+                          },
+                          "value": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "html",
+                                "span": {
+                                  "start": 822,
+                                  "end": 826
+                                }
+                              },
+                              "field": "style",
+                              "fieldSpan": {
+                                "start": 827,
+                                "end": 832
+                              },
+                              "span": {
+                                "start": 822,
+                                "end": 832
+                              }
+                            },
+                            "argument": {
+                              "kind": "record",
+                              "items": [
+                                {
+                                  "kind": "field",
+                                  "name": "color",
+                                  "nameSpan": {
+                                    "start": 835,
+                                    "end": 840
+                                  },
+                                  "value": {
+                                    "kind": "string",
+                                    "raw": "\"#123b32\"",
+                                    "span": {
+                                      "start": 842,
+                                      "end": 851
+                                    }
+                                  },
+                                  "span": {
+                                    "start": 835,
+                                    "end": 851
+                                  }
+                                },
+                                {
+                                  "kind": "field",
+                                  "name": "marginTop",
+                                  "nameSpan": {
+                                    "start": 853,
+                                    "end": 862
+                                  },
+                                  "value": {
+                                    "kind": "string",
+                                    "raw": "\"0\"",
+                                    "span": {
+                                      "start": 864,
+                                      "end": 867
+                                    }
+                                  },
+                                  "span": {
+                                    "start": 853,
+                                    "end": 867
+                                  }
+                                }
+                              ],
+                              "span": {
+                                "start": 833,
+                                "end": 869
+                              }
+                            },
+                            "span": {
+                              "start": 822,
+                              "end": 869
+                            }
+                          },
+                          "span": {
+                            "start": 815,
+                            "end": 869
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "children",
+                          "nameSpan": {
+                            "start": 879,
+                            "end": 887
+                          },
+                          "value": {
+                            "kind": "string",
+                            "raw": "\"Seseragi components\"",
+                            "span": {
+                              "start": 889,
+                              "end": 910
+                            }
+                          },
+                          "span": {
+                            "start": 879,
+                            "end": 910
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 779,
+                        "end": 918
+                      }
+                    },
+                    "span": {
+                      "start": 771,
+                      "end": 918
+                    }
+                  },
+                  {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "card",
+                        "span": {
+                          "start": 926,
+                          "end": 930
+                        }
+                      },
+                      "argument": {
+                        "kind": "string",
+                        "raw": "\"Reusable card\"",
+                        "span": {
+                          "start": 931,
+                          "end": 946
+                        }
+                      },
+                      "span": {
+                        "start": 926,
+                        "end": 946
+                      }
+                    },
+                    "argument": {
+                      "kind": "string",
+                      "raw": "\"Function component from children\"",
+                      "span": {
+                        "start": 947,
+                        "end": 981
+                      }
+                    },
+                    "span": {
+                      "start": 926,
+                      "end": 981
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 763,
+                  "end": 987
+                }
+              },
+              "span": {
+                "start": 753,
+                "end": 987
+              }
+            }
+          ],
+          "span": {
+            "start": 661,
+            "end": 991
+          }
+        },
+        "span": {
+          "start": 651,
+          "end": 991
+        }
+      },
+      "span": {
+        "start": 621,
+        "end": 991
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 1007,
+        "end": 1011
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 1015,
+          "end": 1019
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 1025,
+            "end": 1032
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 1039,
+          "end": 1051
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 1056,
+            "end": 1063
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "member",
+            "receiver": {
+              "kind": "name",
+              "name": "html",
+              "span": {
+                "start": 1066,
+                "end": 1070
+              }
+            },
+            "field": "renderToString",
+            "fieldSpan": {
+              "start": 1071,
+              "end": 1085
+            },
+            "span": {
+              "start": 1066,
+              "end": 1085
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "page",
+                "span": {
+                  "start": 1087,
+                  "end": 1091
+                }
+              },
+              "argument": {
+                "kind": "unit",
+                "span": {
+                  "start": 1092,
+                  "end": 1094
+                }
+              },
+              "span": {
+                "start": 1087,
+                "end": 1094
+              }
+            },
+            "span": {
+              "start": 1086,
+              "end": 1095
+            }
+          },
+          "span": {
+            "start": 1066,
+            "end": 1095
+          }
+        },
+        "span": {
+          "start": 1056,
+          "end": 1095
+        }
+      },
+      "span": {
+        "start": 993,
+        "end": 1095
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 38,
+        "end": 1095
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 38,
+        "end": 60
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 62,
+        "end": 619
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 621,
+        "end": 991
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 993,
+        "end": 1095
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Msg",
+      "canonical": "artifact/web-html-components-style::Msg",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 43,
+        "end": 46
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Confirm",
+      "canonical": "artifact/web-html-components-style::Confirm",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 53,
+        "end": 60
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "card",
+      "canonical": "artifact/web-html-components-style::card",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 65,
+        "end": 69
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "page",
+      "canonical": "artifact/web-html-components-style::page",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 624,
+        "end": 628
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "main",
+      "canonical": "artifact/web-html-components-style::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 1007,
+        "end": 1011
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "html",
+      "canonical": "artifact/web-html-components-style/std/web/html::*",
+      "namespace": "module",
+      "kind": "module-import",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 36
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "title",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 70,
+        "end": 75
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "detail",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 87,
+        "end": 93
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 77,
+        "end": 83
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 95,
+        "end": 101
+      }
+    },
+    {
+      "spelling": "html.Html",
+      "namespace": "type",
+      "origin": {
+        "start": 105,
+        "end": 119
+      }
+    },
+    {
+      "spelling": "Msg",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 115,
+        "end": 118
+      }
+    },
+    {
+      "spelling": "html.section",
+      "namespace": "value",
+      "origin": {
+        "start": 124,
+        "end": 136
+      }
+    },
+    {
+      "spelling": "html.style",
+      "namespace": "value",
+      "origin": {
+        "start": 173,
+        "end": 183
+      }
+    },
+    {
+      "spelling": "html.h2",
+      "namespace": "value",
+      "origin": {
+        "start": 388,
+        "end": 395
+      }
+    },
+    {
+      "spelling": "html.style",
+      "namespace": "value",
+      "origin": {
+        "start": 413,
+        "end": 423
+      }
+    },
+    {
+      "spelling": "title",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 480,
+        "end": 485
+      }
+    },
+    {
+      "spelling": "html.p",
+      "namespace": "value",
+      "origin": {
+        "start": 501,
+        "end": 507
+      }
+    },
+    {
+      "spelling": "html.style",
+      "namespace": "value",
+      "origin": {
+        "start": 525,
+        "end": 535
+      }
+    },
+    {
+      "spelling": "detail",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 595,
+        "end": 601
+      }
+    },
+    {
+      "spelling": "html.Html",
+      "namespace": "type",
+      "origin": {
+        "start": 632,
+        "end": 646
+      }
+    },
+    {
+      "spelling": "Msg",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 642,
+        "end": 645
+      }
+    },
+    {
+      "spelling": "html.main",
+      "namespace": "value",
+      "origin": {
+        "start": 651,
+        "end": 660
+      }
+    },
+    {
+      "spelling": "html.style",
+      "namespace": "value",
+      "origin": {
+        "start": 689,
+        "end": 699
+      }
+    },
+    {
+      "spelling": "html.h1",
+      "namespace": "value",
+      "origin": {
+        "start": 771,
+        "end": 778
+      }
+    },
+    {
+      "spelling": "Confirm",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 798,
+        "end": 805
+      }
+    },
+    {
+      "spelling": "html.style",
+      "namespace": "value",
+      "origin": {
+        "start": 822,
+        "end": 832
+      }
+    },
+    {
+      "spelling": "card",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 926,
+        "end": 930
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 1015,
+        "end": 1019
+      }
+    },
+    {
+      "spelling": "ConsoleError",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 1039,
+        "end": 1051
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 11,
+      "origin": {
+        "start": 1056,
+        "end": 1063
+      }
+    },
+    {
+      "spelling": "html.renderToString",
+      "namespace": "value",
+      "origin": {
+        "start": 1066,
+        "end": 1085
+      }
+    },
+    {
+      "spelling": "page",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 1087,
+        "end": 1091
+      }
+    }
+  ],
+  "issues": [
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 105,
+        "end": 119
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 124,
+        "end": 136
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 173,
+        "end": 183
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 388,
+        "end": 395
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 413,
+        "end": 423
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 501,
+        "end": 507
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 525,
+        "end": 535
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 632,
+        "end": 646
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 651,
+        "end": 660
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 689,
+        "end": 699
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 771,
+        "end": 778
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 822,
+        "end": 832
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 1066,
+        "end": 1085
+      }
+    }
+  ]
+}

@@ -80,7 +80,7 @@ export {
   Nothing,
   Right,
 } from "./sum"
-export type { Html } from "./html"
+export type { Html, Style } from "./html"
 export {
   button,
   div,
@@ -94,6 +94,7 @@ export {
   renderToString,
   section,
   span,
+  style,
   text,
 } from "./html"
 export type {

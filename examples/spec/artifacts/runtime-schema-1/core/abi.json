@@ -728,6 +728,25 @@
       "import": null
     },
     {
+      "id": "web.html.style-type",
+      "kind": "value-representation",
+      "typescript": "type Style",
+      "boundary": "immutable inline style serialized from a checked record",
+      "typeIdentity": "std/web/html::Style",
+      "typeImport": {
+        "module": "@seseragi/runtime/html",
+        "export": "Style"
+      },
+      "import": null
+    },
+    {
+      "id": "web.html.style",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "StyleRecord<R> => R -> Style",
+      "import": { "module": "@seseragi/runtime/html", "export": "style" }
+    },
+    {
       "id": "web.html.text",
       "kind": "runtime-helper",
       "typescript": "function",

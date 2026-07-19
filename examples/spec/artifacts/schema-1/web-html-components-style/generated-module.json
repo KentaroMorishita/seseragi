@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "module": "artifact/web-html-components-style",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "web.html.type",
+      "web.html.style-type",
+      "core.adt",
+      "core.string",
+      "web.html.section",
+      "web.html.style",
+      "web.html.h2",
+      "web.html.p",
+      "core.unit",
+      "web.html.main",
+      "web.html.h1",
+      "effect.console.println",
+      "web.html.render-to-string"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

@@ -32,7 +32,7 @@ impl<'a> TypedResolution<'a> {
         let semantic_types = SemanticTypeCatalog::new(resolved);
         Self {
             resolved,
-            top_level_values: collect_top_level_value_types(resolved),
+            top_level_values: collect_top_level_value_types(resolved, &semantic_types),
             callables: collect_callables(resolved, &semantic_types),
             inherent_methods: inherent_methods::InherentMethodCatalog::new(
                 resolved,
@@ -166,7 +166,11 @@ impl<'a> TypedResolution<'a> {
 
     pub(crate) fn semantic_value_from_type_ref(&self, type_ref: &TypeRef) -> SemanticValueType {
         SemanticValueType {
-            type_ref: typed_type_from_type_ref(type_ref),
+            type_ref: semantic_typed_type_from_type_ref(
+                type_ref,
+                self.resolved,
+                &self.semantic_types,
+            ),
             key: self
                 .semantic_types
                 .key_from_type_ref(self.resolved, type_ref),
@@ -226,7 +230,10 @@ impl<'a> TypedResolution<'a> {
     }
 }
 
-fn collect_top_level_value_types(resolved: &ResolvedModule) -> BTreeMap<SymbolId, TypedType> {
+fn collect_top_level_value_types(
+    resolved: &ResolvedModule,
+    semantic_types: &SemanticTypeCatalog,
+) -> BTreeMap<SymbolId, TypedType> {
     resolved
         .declarations
         .iter()
@@ -246,7 +253,9 @@ fn collect_top_level_value_types(resolved: &ResolvedModule) -> BTreeMap<SymbolId
                 .find(|symbol| symbol.kind == SymbolKind::Let && symbol.origin == *name_span)?;
             let type_ref = type_ref
                 .as_ref()
-                .map(typed_type_from_type_ref)
+                .map(|type_ref| {
+                    semantic_typed_type_from_type_ref(type_ref, resolved, semantic_types)
+                })
                 .or_else(|| body.as_ref().and_then(surface_expression_type_hint))?;
             Some((symbol.id, type_ref))
         })
@@ -275,7 +284,8 @@ fn collect_callables(
                 };
                 let (parameters, semantic_parameters) =
                     callable_parameter_types(parameters, resolved, semantic_types);
-                let result = typed_type_from_type_ref(return_type);
+                let result =
+                    semantic_typed_type_from_type_ref(return_type, resolved, semantic_types);
                 let constraint_identities = constraints
                     .iter()
                     .map(|constraint| constraint_identity(resolved, constraint.name_span))
@@ -297,7 +307,13 @@ fn collect_callables(
                                 arguments: constraint
                                     .arguments
                                     .iter()
-                                    .map(typed_type_from_type_ref)
+                                    .map(|argument| {
+                                        semantic_typed_type_from_type_ref(
+                                            argument,
+                                            resolved,
+                                            semantic_types,
+                                        )
+                                    })
                                     .collect(),
                             })
                             .collect(),
@@ -339,7 +355,13 @@ fn collect_callables(
                                 arguments: constraint
                                     .arguments
                                     .iter()
-                                    .map(typed_type_from_type_ref)
+                                    .map(|argument| {
+                                        semantic_typed_type_from_type_ref(
+                                            argument,
+                                            resolved,
+                                            semantic_types,
+                                        )
+                                    })
                                     .collect(),
                             })
                             .collect(),
@@ -349,7 +371,13 @@ fn collect_callables(
                             .collect(),
                         parameters: parameters
                             .iter()
-                            .map(|parameter| typed_type_from_type_ref(&parameter.type_ref))
+                            .map(|parameter| {
+                                semantic_typed_type_from_type_ref(
+                                    &parameter.type_ref,
+                                    resolved,
+                                    semantic_types,
+                                )
+                            })
                             .collect(),
                         semantic_parameters: parameters
                             .iter()
@@ -357,7 +385,11 @@ fn collect_callables(
                                 semantic_types.key_from_type_ref(resolved, &parameter.type_ref)
                             })
                             .collect(),
-                        result: typed_type_from_type_ref(return_type),
+                        result: semantic_typed_type_from_type_ref(
+                            return_type,
+                            resolved,
+                            semantic_types,
+                        ),
                         semantic_result: semantic_types.key_from_type_ref(resolved, return_type),
                     },
                 );
@@ -444,13 +476,106 @@ fn callable_parameter_types(
     (
         parameters
             .iter()
-            .map(|parameter| typed_type_from_type_ref(&parameter.type_ref))
+            .map(|parameter| {
+                semantic_typed_type_from_type_ref(&parameter.type_ref, resolved, semantic_types)
+            })
             .collect(),
         parameters
             .iter()
             .map(|parameter| semantic_types.key_from_type_ref(resolved, &parameter.type_ref))
             .collect(),
     )
+}
+
+fn semantic_typed_type_from_type_ref(
+    type_ref: &TypeRef,
+    resolved: &ResolvedModule,
+    semantic_types: &SemanticTypeCatalog,
+) -> TypedType {
+    match type_ref {
+        TypeRef::Named {
+            name,
+            arguments,
+            span,
+        } => {
+            let arguments = arguments
+                .iter()
+                .map(|argument| {
+                    semantic_typed_type_from_type_ref(argument, resolved, semantic_types)
+                })
+                .collect();
+            match external_type_canonical(resolved, *span) {
+                Some(canonical) => TypedType::ExternalNamed {
+                    name: name.clone(),
+                    canonical,
+                    arguments,
+                },
+                _ => TypedType::Named {
+                    name: name.clone(),
+                    arguments,
+                },
+            }
+        }
+        TypeRef::Hole { .. } => TypedType::Hole,
+        TypeRef::Record { closed, fields, .. } => TypedType::Record {
+            closed: *closed,
+            fields: fields
+                .iter()
+                .map(|field| crate::TypedRecordField {
+                    name: field.name.clone(),
+                    optional: field.optional,
+                    type_ref: semantic_typed_type_from_type_ref(
+                        &field.type_ref,
+                        resolved,
+                        semantic_types,
+                    ),
+                })
+                .collect(),
+        },
+        TypeRef::Tuple { elements, .. } => TypedType::Tuple {
+            elements: elements
+                .iter()
+                .map(|element| semantic_typed_type_from_type_ref(element, resolved, semantic_types))
+                .collect(),
+        },
+        TypeRef::Function {
+            parameter, result, ..
+        } => TypedType::Function {
+            parameter: Box::new(semantic_typed_type_from_type_ref(
+                parameter,
+                resolved,
+                semantic_types,
+            )),
+            result: Box::new(semantic_typed_type_from_type_ref(
+                result,
+                resolved,
+                semantic_types,
+            )),
+        },
+    }
+}
+
+fn external_type_canonical(resolved: &ResolvedModule, origin: ByteSpan) -> Option<String> {
+    let target = resolved
+        .references
+        .iter()
+        .find(|reference| {
+            reference.namespace == SymbolNamespace::Type && reference.origin == origin
+        })?
+        .target?;
+    let symbol = resolved.symbols.iter().find(|symbol| symbol.id == target)?;
+    let canonical = symbol.canonical.as_ref()?;
+    resolved
+        .imports
+        .iter()
+        .any(|import| {
+            import.symbol == target
+                && matches!(
+                    import.export.declaration_kind.as_deref(),
+                    Some("opaque-type" | "opaque-struct")
+                )
+        })
+        .then(|| canonical.clone())
 }
 
 fn standard_trait_method_callable(

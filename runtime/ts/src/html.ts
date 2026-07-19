@@ -1,4 +1,5 @@
 const HTML_NODE = Symbol("seseragi.html")
+const STYLE = Symbol("seseragi.style")
 
 type PhantomMessage<Message> = {
   readonly __message?: Message
@@ -30,6 +31,33 @@ export type Html<Message> =
   | TextNode<Message>
   | FragmentNode<Message>
   | ElementNode<Message>
+
+/** Immutable serialized inline style created from a checked Seseragi record. */
+export type Style = Readonly<{
+  readonly [STYLE]: true
+  readonly cssText: string
+}>
+
+export function style(declarations: unknown): Style {
+  const record = expectRecord(declarations, "HTML style declarations")
+  const properties: string[] = []
+  for (const [name, value] of Object.entries(record)) {
+    if (name === "variables") {
+      const variables = expectRecord(value, "HTML style variables")
+      for (const [variable, variableValue] of Object.entries(variables)) {
+        properties.push(
+          `--${camelToKebab(variable)}: ${expectStyleValue(variable, variableValue)}`
+        )
+      }
+      continue
+    }
+    properties.push(`${camelToKebab(name)}: ${expectStyleValue(name, value)}`)
+  }
+  return Object.freeze({
+    [STYLE]: true as const,
+    cssText: properties.join("; "),
+  })
+}
 
 export function text<Message>(value: string): Html<Message> {
   return Object.freeze({ [HTML_NODE]: "text", value } as const)
@@ -134,6 +162,7 @@ function renderAttributes(
   stringAttribute(attributes, "class", props.className)
   stringAttribute(attributes, "title", props.title)
   booleanAttribute(attributes, "hidden", props.hidden)
+  styleAttribute(attributes, props.style)
 
   if (tagName === "button") {
     booleanAttribute(attributes, "disabled", props.disabled)
@@ -147,6 +176,14 @@ function renderAttributes(
     stringAttribute(attributes, "type", props.inputType ?? "text")
   }
   return attributes.length === 0 ? "" : ` ${attributes.join(" ")}`
+}
+
+function styleAttribute(output: string[], value: unknown): void {
+  if (value === undefined) return
+  if (!isStyle(value)) {
+    throw new TypeError("HTML style must be created with html.style")
+  }
+  output.push(`style="${escapeAttribute(value.cssText)}"`)
 }
 
 function stringAttribute(output: string[], name: string, value: unknown): void {
@@ -177,10 +214,35 @@ function escapeAttribute(value: string): string {
 }
 
 function expectProps(value: unknown): Readonly<Record<string, unknown>> {
+  return expectRecord(value, "HTML tag props")
+}
+
+function expectRecord(
+  value: unknown,
+  label: string
+): Readonly<Record<string, unknown>> {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    throw new TypeError("HTML tag props must be a record")
+    throw new TypeError(`${label} must be a record`)
   }
   return value as Readonly<Record<string, unknown>>
+}
+
+function expectStyleValue(name: string, value: unknown): string {
+  if (typeof value !== "string") {
+    throw new TypeError(`HTML style ${name} must be a string`)
+  }
+  return value
+}
+
+function camelToKebab(value: string): string {
+  return value.replaceAll(
+    /[A-Z]/g,
+    (character) => `-${character.toLowerCase()}`
+  )
+}
+
+function isStyle(value: unknown): value is Style {
+  return typeof value === "object" && value !== null && STYLE in value
 }
 
 function isHtml<Message>(value: unknown): value is Html<Message> {

@@ -9,6 +9,14 @@
       "canonical": "std/prelude::ConsoleError"
     },
     {
+      "spelling": "Style",
+      "canonical": "std/web/html::Style",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Style"
+      }
+    },
+    {
       "spelling": "html.Html",
       "canonical": "std/web/html::Html",
       "provider": {
@@ -635,8 +643,9 @@
                   }
                 ],
                 "type": {
-                  "kind": "named",
+                  "kind": "external-named",
                   "name": "html.Html",
+                  "canonical": "std/web/html::Html",
                   "arguments": [
                     {
                       "kind": "named",

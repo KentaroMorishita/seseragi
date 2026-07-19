@@ -24,6 +24,7 @@ macro_rules! operation {
 }
 
 const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
+    operation!("style", "web.html.style", "_ssrg_html_style"),
     operation!("text", "web.html.text", "_ssrg_html_text"),
     operation!("fragment", "web.html.fragment", "_ssrg_html_fragment"),
     operation!("div", "web.html.div", "_ssrg_html_div"),

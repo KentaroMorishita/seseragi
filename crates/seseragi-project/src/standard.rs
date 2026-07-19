@@ -43,7 +43,21 @@ pub fn is_standard_module(specifier: &str) -> bool {
 fn web_html_interface() -> ModuleInterface {
     let mut exports = vec![
         type_export("std/web/html", "Html", 1, "opaque-type"),
+        type_export("std/web/html", "Style", 0, "opaque-type"),
         trait_export("std/web/html", "IntoChildren", ["C", "Msg"]),
+        trait_export("std/web/html", "StyleRecord", ["R"]),
+        function_export(
+            "std/web/html",
+            "style",
+            ["R"],
+            vec![InterfaceConstraint {
+                name: "StyleRecord".to_owned(),
+                trait_identity: Some("std/web/html::trait(StyleRecord)".to_owned()),
+                arguments: vec![named("R")],
+            }],
+            vec![named("R")],
+            named("Style"),
+        ),
         function_export(
             "std/web/html",
             "text",
@@ -248,6 +262,7 @@ fn element_props() -> InterfaceType {
         optional("title", named("String")),
         optional("hidden", named("Bool")),
         optional("key", named("String")),
+        optional("style", named("Style")),
         optional("onClick", named("Msg")),
         required("children", named("C")),
     ])
@@ -260,6 +275,7 @@ fn button_props() -> InterfaceType {
         optional("title", named("String")),
         optional("hidden", named("Bool")),
         optional("key", named("String")),
+        optional("style", named("Style")),
         optional("disabled", named("Bool")),
         optional("onClick", named("Msg")),
         required("children", named("C")),
@@ -273,6 +289,7 @@ fn input_props() -> InterfaceType {
         optional("title", named("String")),
         optional("hidden", named("Bool")),
         optional("key", named("String")),
+        optional("style", named("Style")),
         optional("value", named("String")),
         optional("checked", named("Bool")),
         optional("disabled", named("Bool")),

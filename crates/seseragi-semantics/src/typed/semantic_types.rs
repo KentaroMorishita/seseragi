@@ -599,8 +599,15 @@ fn semantic_key_from_type_ref(
                             .collect(),
                     }
                 }
-                Some((_, SymbolKind::Type, Some(canonical)))
-                    if crate::prelude::is_external_nominal_type(canonical) =>
+                Some((target, SymbolKind::Type, Some(canonical)))
+                    if crate::prelude::is_external_nominal_type(canonical)
+                        || resolved.imports.iter().any(|import| {
+                            import.symbol == target
+                                && matches!(
+                                    import.export.declaration_kind.as_deref(),
+                                    Some("opaque-type" | "opaque-struct")
+                                )
+                        }) =>
                 {
                     SemanticTypeKey::ExternalNominal {
                         canonical: canonical.to_owned(),

@@ -1,6 +1,7 @@
 use crate::{TypedConstraint, TypedType};
 
 const INTO_CHILDREN: &str = "std/web/html::trait(IntoChildren)";
+const STYLE_RECORD: &str = "std/web/html::trait(StyleRecord)";
 const SIGNAL: &str = "std/signal::Signal";
 const MUTABLE_SIGNAL: &str = "std/signal::MutableSignal";
 const SIGNAL_READ: &str = "std/signal::read";
@@ -127,9 +128,14 @@ pub(crate) fn standard_module_instance(
     trait_identity: Option<&str>,
     constraint: &TypedConstraint,
 ) -> Option<&'static str> {
-    if trait_identity != Some(INTO_CHILDREN) || constraint.name != "IntoChildren" {
-        return None;
+    match (trait_identity, constraint.name.as_str()) {
+        (Some(INTO_CHILDREN), "IntoChildren") => into_children_instance(constraint),
+        (Some(STYLE_RECORD), "StyleRecord") => style_record_instance(constraint),
+        _ => None,
     }
+}
+
+fn into_children_instance(constraint: &TypedConstraint) -> Option<&'static str> {
     let [children, message] = constraint.arguments.as_slice() else {
         return None;
     };
@@ -153,6 +159,33 @@ pub(crate) fn standard_module_instance(
         return Some("std/web/html::IntoChildren<List>");
     }
     None
+}
+
+fn style_record_instance(constraint: &TypedConstraint) -> Option<&'static str> {
+    let [declarations] = constraint.arguments.as_slice() else {
+        return None;
+    };
+    let TypedType::Record { fields, .. } = declarations else {
+        return None;
+    };
+    fields
+        .iter()
+        .all(|field| {
+            if field.name == "variables" {
+                return style_variables_record(&field.type_ref);
+            }
+            named_leaf(&field.type_ref, "String")
+        })
+        .then_some("std/web/html::StyleRecord<Record>")
+}
+
+fn style_variables_record(type_ref: &TypedType) -> bool {
+    let TypedType::Record { fields, .. } = type_ref else {
+        return false;
+    };
+    fields
+        .iter()
+        .all(|field| named_leaf(&field.type_ref, "String"))
 }
 
 fn named_leaf(type_ref: &TypedType, expected: &str) -> bool {
@@ -204,6 +237,52 @@ mod tests {
             standard_module_instance(Some(INTO_CHILDREN), &invalid),
             None
         );
+    }
+
+    #[test]
+    fn selects_only_string_valued_style_records() {
+        let style = TypedConstraint {
+            name: "StyleRecord".to_owned(),
+            arguments: vec![TypedType::Record {
+                closed: true,
+                fields: vec![
+                    crate::TypedRecordField {
+                        name: "backgroundColor".to_owned(),
+                        optional: false,
+                        type_ref: named("String"),
+                    },
+                    crate::TypedRecordField {
+                        name: "variables".to_owned(),
+                        optional: false,
+                        type_ref: TypedType::Record {
+                            closed: true,
+                            fields: vec![crate::TypedRecordField {
+                                name: "cardShadow".to_owned(),
+                                optional: false,
+                                type_ref: named("String"),
+                            }],
+                        },
+                    },
+                ],
+            }],
+        };
+        assert_eq!(
+            standard_module_instance(Some(STYLE_RECORD), &style),
+            Some("std/web/html::StyleRecord<Record>")
+        );
+
+        let invalid = TypedConstraint {
+            name: "StyleRecord".to_owned(),
+            arguments: vec![TypedType::Record {
+                closed: true,
+                fields: vec![crate::TypedRecordField {
+                    name: "padding".to_owned(),
+                    optional: false,
+                    type_ref: named("Int"),
+                }],
+            }],
+        };
+        assert!(standard_module_instance(Some(STYLE_RECORD), &invalid).is_none());
     }
 
     #[test]

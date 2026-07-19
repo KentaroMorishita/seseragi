@@ -1,0 +1,267 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 105,
+        "end": 119
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 62,
+            "end": 619
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d2",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 124,
+        "end": 136
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 62,
+            "end": 619
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d3",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 173,
+        "end": 183
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 62,
+            "end": 619
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d4",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 388,
+        "end": 395
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 62,
+            "end": 619
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d5",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 413,
+        "end": 423
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 62,
+            "end": 619
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d6",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 501,
+        "end": 507
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 62,
+            "end": 619
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d7",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 525,
+        "end": 535
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 62,
+            "end": 619
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d8",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 632,
+        "end": 646
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 621,
+            "end": 991
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d9",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 651,
+        "end": 660
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 621,
+            "end": 991
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d10",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 689,
+        "end": 699
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 621,
+            "end": 991
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d11",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 771,
+        "end": 778
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 621,
+            "end": 991
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d12",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 822,
+        "end": 832
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 621,
+            "end": 991
+          }
+        }
+      ],
+      "fixes": []
+    },
+    {
+      "id": "d13",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 1066,
+        "end": 1085
+      },
+      "related": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 993,
+            "end": 1095
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}
