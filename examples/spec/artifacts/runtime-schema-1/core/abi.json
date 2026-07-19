@@ -574,6 +574,26 @@
       }
     },
     {
+      "id": "signal.functor",
+      "kind": "runtime-binding",
+      "typescript": "readonly Functor dictionary",
+      "boundary": "standard Functor<Signal> derived mapping dictionary",
+      "import": {
+        "module": "@seseragi/runtime/signal",
+        "export": "signalFunctor"
+      }
+    },
+    {
+      "id": "signal.applicative",
+      "kind": "runtime-binding",
+      "typescript": "readonly Applicative dictionary",
+      "boundary": "standard Applicative<Signal> glitch-free combining dictionary",
+      "import": {
+        "module": "@seseragi/runtime/signal",
+        "export": "signalApplicative"
+      }
+    },
+    {
       "id": "effect.core.succeed",
       "kind": "runtime-helper",
       "typescript": "function",

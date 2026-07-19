@@ -1,0 +1,20 @@
+import * as signals from "std/signal"
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    source <- signals.make 10
+    mirror <- signals.make 0
+    let values = signals.map (\value: Int -> value) source
+    let doubled = (\value: Int -> value * 2) <$> values
+    let functions = signals.constant (\value: Int -> value + 2)
+    let answer = functions <*> doubled
+
+    subscription <- signals.subscribe (\value: Int -> mirror := value) answer
+    source := 20
+    signals.unsubscribe subscription
+
+    current <- *mirror
+    println $ `Signal Functor / Applicative: ${current}`
+  }

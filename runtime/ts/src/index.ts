@@ -111,6 +111,8 @@ export {
   planUpdate as planSignalUpdate,
   read as readSignal,
   set as setSignal,
+  signalApplicative,
+  signalFunctor,
   subscribe as subscribeSignal,
   switchMap as switchMapSignal,
   transaction as transactSignals,

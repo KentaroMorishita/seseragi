@@ -8,6 +8,8 @@ import {
   planUpdate,
   read,
   set,
+  signalApplicative,
+  signalFunctor,
   subscribe,
   switchMap,
   transaction,
@@ -180,5 +182,14 @@ describe("Signal browser runtime", () => {
 
     expect(observed).toEqual([22, 40])
     await unsubscribe(subscription)({})
+  })
+
+  test("provides Functor and Applicative dictionaries", async () => {
+    const source = await make(20)({})
+    const doubled = signalFunctor.map((value: number) => value * 2)(source)
+    const functions = constant((value: number) => value + 2)
+    const answer = signalApplicative.apply(functions)(doubled)
+
+    expect(await read(answer)({})).toBe(42)
   })
 })

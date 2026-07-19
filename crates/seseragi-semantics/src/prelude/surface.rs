@@ -90,9 +90,11 @@ pub fn standard_prelude_surface() -> StandardModuleSurface {
                     trait_name: instance.trait_name,
                     trait_canonical: trait_spec.canonical,
                     type_constructor: instance.type_name,
-                    type_constructor_canonical: format!("std/prelude::{}", instance.type_name),
-                    type_constructor_arity: super::type_constructor_arity(instance.type_name)
-                        .expect("standard instance type constructor must have a registered arity"),
+                    type_constructor_canonical: instance
+                        .type_canonical
+                        .map(str::to_owned)
+                        .unwrap_or_else(|| format!("std/prelude::{}", instance.type_name)),
+                    type_constructor_arity: instance.type_arity,
                     identity: instance.identity,
                 }
             })
@@ -123,7 +125,7 @@ mod tests {
                 .count(),
             4
         );
-        assert_eq!(surface.instances.len(), 15);
+        assert_eq!(surface.instances.len(), 17);
         assert_eq!(surface.coherence.standard_heads, "sealed");
     }
 }

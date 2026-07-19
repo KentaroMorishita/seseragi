@@ -129,6 +129,22 @@ const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
         export_name: "effectMonad",
         source_map_name: "effectMonad",
     },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/signal::Functor",
+        runtime_feature: "signal.functor",
+        local_name: "_ssrg_signal_functor",
+        module: "@seseragi/runtime/signal",
+        export_name: "signalFunctor",
+        source_map_name: "signalFunctor",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/signal::Applicative",
+        runtime_feature: "signal.applicative",
+        local_name: "_ssrg_signal_applicative",
+        module: "@seseragi/runtime/signal",
+        export_name: "signalApplicative",
+        source_map_name: "signalApplicative",
+    },
 ];
 
 pub(crate) fn runtime_prelude_dictionary_for_feature(
@@ -245,6 +261,18 @@ mod tests {
                 "effect.core.monad",
                 "@seseragi/runtime/effect",
                 "effectMonad",
+            ),
+            (
+                "std/signal::Functor",
+                "signal.functor",
+                "@seseragi/runtime/signal",
+                "signalFunctor",
+            ),
+            (
+                "std/signal::Applicative",
+                "signal.applicative",
+                "@seseragi/runtime/signal",
+                "signalApplicative",
             ),
         ] {
             let dictionary = runtime_prelude_dictionary_for_feature(feature).unwrap();

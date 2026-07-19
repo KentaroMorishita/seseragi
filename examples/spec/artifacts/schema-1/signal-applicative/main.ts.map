@@ -1,0 +1,38 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/signal-applicative"
+  ],
+  "sourcesContent": [
+    "import * as signals from \"std/signal\"\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    source <- signals.make 10\n    mirror <- signals.make 0\n    let values = signals.map (\\value: Int -> value) source\n    let doubled = (\\value: Int -> value * 2) <$> values\n    let functions = signals.constant (\\value: Int -> value + 2)\n    let answer = functions <*> doubled\n\n    subscription <- signals.subscribe (\\value: Int -> mirror := value) answer\n    source := 20\n    signals.unsubscribe subscription\n\n    current <- *mirror\n    println $ `Signal Functor / Applicative: ${current}`\n  }\n"
+  ],
+  "names": [
+    "main",
+    "source",
+    "make",
+    "mirror",
+    "make",
+    "values",
+    "map",
+    "doubled",
+    "signalFunctor",
+    "multiply",
+    "functions",
+    "constant",
+    "add",
+    "answer",
+    "signalApplicative",
+    "subscription",
+    "subscribe",
+    "set",
+    "set",
+    "unsubscribe",
+    "current",
+    "read",
+    "println",
+    "intShow"
+  ],
+  "mappings": ";;;;;;AAEAA"
+}

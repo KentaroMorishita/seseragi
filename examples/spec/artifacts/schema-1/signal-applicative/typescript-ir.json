@@ -1,0 +1,472 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/signal-applicative",
+  "runtimeRequirements": [
+    "signal.mutable-type",
+    "signal.type",
+    "signal.subscription-type",
+    "core.unit",
+    "effect.core.flatMap",
+    "signal.make",
+    "effect.core.type",
+    "core.int64",
+    "signal.map",
+    "signal.functor",
+    "core.int64.multiply",
+    "signal.constant",
+    "core.int64.add",
+    "signal.applicative",
+    "signal.subscribe",
+    "signal.set",
+    "signal.unsubscribe",
+    "signal.read",
+    "effect.console.println",
+    "core.string",
+    "core.int64.show"
+  ],
+  "imports": [
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "signal.make",
+      "local": "_ssrg_signal_make"
+    },
+    {
+      "feature": "signal.map",
+      "local": "_ssrg_signal_map"
+    },
+    {
+      "feature": "signal.functor",
+      "local": "_ssrg_signal_functor"
+    },
+    {
+      "feature": "core.int64.multiply",
+      "local": "_ssrg_int64_multiply"
+    },
+    {
+      "feature": "signal.constant",
+      "local": "_ssrg_signal_constant"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "signal.applicative",
+      "local": "_ssrg_signal_applicative"
+    },
+    {
+      "feature": "signal.subscribe",
+      "local": "_ssrg_signal_subscribe"
+    },
+    {
+      "feature": "signal.set",
+      "local": "_ssrg_signal_set"
+    },
+    {
+      "feature": "signal.unsubscribe",
+      "local": "_ssrg_signal_unsubscribe"
+    },
+    {
+      "feature": "signal.read",
+      "local": "_ssrg_signal_read"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "signal.mutable-type",
+      "local": "MutableSignal"
+    },
+    {
+      "feature": "signal.type",
+      "local": "Signal"
+    },
+    {
+      "feature": "signal.subscription-type",
+      "local": "Subscription"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "const",
+            "name": "source",
+            "type": {
+              "kind": "reference",
+              "name": "MutableSignal",
+              "arguments": [
+                {
+                  "kind": "bigint"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_make",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "10"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 111,
+              "end": 136
+            }
+          },
+          {
+            "kind": "const",
+            "name": "mirror",
+            "type": {
+              "kind": "reference",
+              "name": "MutableSignal",
+              "arguments": [
+                {
+                  "kind": "bigint"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_make",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "0"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 141,
+              "end": 165
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "values",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "bigint"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_map",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "value: bigint",
+                  "body": {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "source"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 170,
+              "end": 224
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "doubled",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "bigint"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_signal_functor"
+              },
+              "method": "map",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "value: bigint",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_multiply",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "2"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "values"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 229,
+              "end": 280
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "functions",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "bigint"
+                  },
+                  "result": {
+                    "kind": "bigint"
+                  }
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_constant",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "value: bigint",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_add",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "2"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 285,
+              "end": 344
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "answer",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "bigint"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_signal_applicative"
+              },
+              "method": "apply",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "functions"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "doubled"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 349,
+              "end": 383
+            }
+          },
+          {
+            "kind": "const",
+            "name": "subscription",
+            "type": {
+              "kind": "reference",
+              "name": "Subscription",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_subscribe",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "value: bigint",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_signal_set",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "mirror"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "answer"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 389,
+              "end": 462
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_set",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "20"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "source"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_unsubscribe",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "subscription"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "const",
+            "name": "current",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_read",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "mirror"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 522,
+              "end": 540
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "Signal Functor / Applicative: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_intShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "current"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 39,
+        "end": 601
+      }
+    }
+  ]
+}

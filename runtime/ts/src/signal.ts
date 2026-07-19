@@ -406,6 +406,21 @@ export function constant<Value>(value: Value): Signal<Value> {
   return derived(() => value, [])
 }
 
+export const signalFunctor = Object.freeze({ map })
+
+export const signalApplicative = Object.freeze({
+  ...signalFunctor,
+  pure: constant,
+  apply:
+    <Value, Result>(functions: Signal<(value: Value) => Result>) =>
+    (values: Signal<Value>): Signal<Result> =>
+      combine(
+        (f: (value: Value) => Result) => (value: Value) => f(value),
+        functions,
+        values
+      ),
+})
+
 export function switchMap<Value, Result>(
   mapper: (value: Value) => Signal<Result>
 ): (source: Signal<Value>) => Signal<Result>

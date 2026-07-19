@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "module": "artifact/signal-applicative",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "signal.mutable-type",
+      "signal.type",
+      "signal.subscription-type",
+      "core.unit",
+      "effect.core.flatMap",
+      "signal.make",
+      "effect.core.type",
+      "core.int64",
+      "signal.map",
+      "signal.functor",
+      "core.int64.multiply",
+      "signal.constant",
+      "core.int64.add",
+      "signal.applicative",
+      "signal.subscribe",
+      "signal.set",
+      "signal.unsubscribe",
+      "signal.read",
+      "effect.console.println",
+      "core.string",
+      "core.int64.show"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

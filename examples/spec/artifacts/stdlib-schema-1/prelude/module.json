@@ -359,6 +359,22 @@
       "typeConstructorCanonical": "std/prelude::Effect",
       "typeConstructorArity": 3,
       "identity": "std/effect::Monad"
+    },
+    {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "Signal",
+      "typeConstructorCanonical": "std/signal::Signal",
+      "typeConstructorArity": 1,
+      "identity": "std/signal::Functor"
+    },
+    {
+      "trait": "Applicative",
+      "traitCanonical": "std/prelude::Applicative",
+      "typeConstructor": "Signal",
+      "typeConstructorCanonical": "std/signal::Signal",
+      "typeConstructorArity": 1,
+      "identity": "std/signal::Applicative"
     }
   ],
   "coherence": {

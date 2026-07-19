@@ -42,6 +42,8 @@ enum PreludeTraitMethodKind {
 pub(crate) struct PreludeStandardInstance {
     pub(crate) trait_name: &'static str,
     pub(crate) type_name: &'static str,
+    pub(crate) type_canonical: Option<&'static str>,
+    pub(crate) type_arity: u32,
     pub(crate) identity: &'static str,
 }
 
@@ -104,77 +106,121 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     PreludeStandardInstance {
         trait_name: "Functor",
         type_name: "Maybe",
+        type_canonical: None,
+        type_arity: 1,
         identity: "std/maybe::Functor",
     },
     PreludeStandardInstance {
         trait_name: "Applicative",
         type_name: "Maybe",
+        type_canonical: None,
+        type_arity: 1,
         identity: "std/maybe::Applicative",
     },
     PreludeStandardInstance {
         trait_name: "Monad",
         type_name: "Maybe",
+        type_canonical: None,
+        type_arity: 1,
         identity: "std/maybe::Monad",
     },
     PreludeStandardInstance {
         trait_name: "Functor",
         type_name: "Either",
+        type_canonical: None,
+        type_arity: 2,
         identity: "std/either::Functor",
     },
     PreludeStandardInstance {
         trait_name: "Applicative",
         type_name: "Either",
+        type_canonical: None,
+        type_arity: 2,
         identity: "std/either::Applicative",
     },
     PreludeStandardInstance {
         trait_name: "Monad",
         type_name: "Either",
+        type_canonical: None,
+        type_arity: 2,
         identity: "std/either::Monad",
     },
     PreludeStandardInstance {
         trait_name: "Functor",
         type_name: "Array",
+        type_canonical: None,
+        type_arity: 1,
         identity: "std/array::Functor",
     },
     PreludeStandardInstance {
         trait_name: "Applicative",
         type_name: "Array",
+        type_canonical: None,
+        type_arity: 1,
         identity: "std/array::Applicative",
     },
     PreludeStandardInstance {
         trait_name: "Monad",
         type_name: "Array",
+        type_canonical: None,
+        type_arity: 1,
         identity: "std/array::Monad",
     },
     PreludeStandardInstance {
         trait_name: "Functor",
         type_name: "List",
+        type_canonical: None,
+        type_arity: 1,
         identity: "std/list::Functor",
     },
     PreludeStandardInstance {
         trait_name: "Applicative",
         type_name: "List",
+        type_canonical: None,
+        type_arity: 1,
         identity: "std/list::Applicative",
     },
     PreludeStandardInstance {
         trait_name: "Monad",
         type_name: "List",
+        type_canonical: None,
+        type_arity: 1,
         identity: "std/list::Monad",
     },
     PreludeStandardInstance {
         trait_name: "Functor",
         type_name: "Effect",
+        type_canonical: None,
+        type_arity: 3,
         identity: "std/effect::Functor",
     },
     PreludeStandardInstance {
         trait_name: "Applicative",
         type_name: "Effect",
+        type_canonical: None,
+        type_arity: 3,
         identity: "std/effect::Applicative",
     },
     PreludeStandardInstance {
         trait_name: "Monad",
         type_name: "Effect",
+        type_canonical: None,
+        type_arity: 3,
         identity: "std/effect::Monad",
+    },
+    PreludeStandardInstance {
+        trait_name: "Functor",
+        type_name: "Signal",
+        type_canonical: Some("std/signal::Signal"),
+        type_arity: 1,
+        identity: "std/signal::Functor",
+    },
+    PreludeStandardInstance {
+        trait_name: "Applicative",
+        type_name: "Signal",
+        type_canonical: Some("std/signal::Signal"),
+        type_arity: 1,
+        identity: "std/signal::Applicative",
     },
 ];
 
@@ -441,16 +487,11 @@ pub(crate) fn standard_instance(
     trait_name: &str,
     type_ref: &TypedType,
 ) -> Option<&'static PreludeStandardInstance> {
-    let TypedType::Named { name, arguments } = type_ref else {
-        return None;
-    };
-    let remaining_arity = type_constructor_arity(name)?.checked_sub(arguments.len() as u32)?;
-    if remaining_arity != 1 {
-        return None;
-    }
-    STANDARD_INSTANCES
-        .iter()
-        .find(|instance| instance.trait_name == trait_name && instance.type_name == name)
+    STANDARD_INSTANCES.iter().find(|instance| {
+        instance.trait_name == trait_name
+            && standard_instance_head(instance, type_ref)
+                .is_some_and(|arguments| instance.type_arity.checked_sub(arguments) == Some(1))
+    })
 }
 
 pub(crate) fn standard_instance_by_identity(
@@ -485,21 +526,40 @@ pub(crate) fn overlapping_standard_instance(
     trait_identity: &str,
     type_ref: &TypedType,
 ) -> Option<&'static PreludeStandardInstance> {
-    let TypedType::Named { name, arguments } = type_ref else {
-        return None;
-    };
-    let constructor_arity = type_constructor_arity(name)? as usize;
-    let leaves_one_open_argument = arguments.len().checked_add(1) == Some(constructor_arity)
-        || (arguments.len() == constructor_arity
-            && matches!(arguments.last(), Some(TypedType::Hole)));
-    if !leaves_one_open_argument {
-        return None;
-    }
     STANDARD_INSTANCES.iter().find(|instance| {
-        instance.type_name == name
-            && trait_by_name(instance.trait_name)
-                .is_some_and(|trait_spec| trait_spec.canonical == trait_identity)
+        standard_instance_head(instance, type_ref).is_some_and(|arguments| {
+            arguments.checked_add(1) == Some(instance.type_arity)
+                || (arguments == instance.type_arity
+                    && matches!(last_type_argument(type_ref), Some(TypedType::Hole)))
+        }) && trait_by_name(instance.trait_name)
+            .is_some_and(|trait_spec| trait_spec.canonical == trait_identity)
     })
+}
+
+fn standard_instance_head(instance: &PreludeStandardInstance, type_ref: &TypedType) -> Option<u32> {
+    match type_ref {
+        TypedType::Named { name, arguments }
+            if instance.type_canonical.is_none() && instance.type_name == name =>
+        {
+            (type_constructor_arity(name) == Some(instance.type_arity))
+                .then_some(arguments.len() as u32)
+        }
+        TypedType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if instance.type_canonical == Some(canonical.as_str()) => Some(arguments.len() as u32),
+        _ => None,
+    }
+}
+
+fn last_type_argument(type_ref: &TypedType) -> Option<&TypedType> {
+    match type_ref {
+        TypedType::Named { arguments, .. } | TypedType::ExternalNamed { arguments, .. } => {
+            arguments.last()
+        }
+        _ => None,
+    }
 }
 
 fn named(name: &str) -> TypedType {
@@ -606,6 +666,21 @@ mod tests {
             Some("std/effect::Applicative")
         );
         assert!(standard_instance("Monad", &saturated_either).is_none());
+
+        let signal = TypedType::ExternalNamed {
+            name: "Signal".to_owned(),
+            canonical: "std/signal::Signal".to_owned(),
+            arguments: Vec::new(),
+        };
+        assert_eq!(
+            standard_instance("Functor", &signal).map(|instance| instance.identity),
+            Some("std/signal::Functor")
+        );
+        assert_eq!(
+            standard_instance("Applicative", &signal).map(|instance| instance.identity),
+            Some("std/signal::Applicative")
+        );
+        assert!(standard_instance("Monad", &signal).is_none());
     }
 
     #[test]

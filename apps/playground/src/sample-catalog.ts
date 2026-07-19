@@ -295,6 +295,14 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput: "subscription: 30",
   },
   {
+    id: "signal-applicative",
+    label: "Signalの<$> / <*>",
+    category: "型と抽象化",
+    sourcePath: "examples/spec/artifacts/schema-1/signal-applicative/main.ssrg",
+    stdin: "",
+    expectedOutput: "Signal Functor / Applicative: 42",
+  },
+  {
     id: "signal-switch-map",
     label: "SignalのswitchMap",
     category: "アプリ",
