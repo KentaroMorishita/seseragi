@@ -25,7 +25,7 @@ describe("mobile editing layout contract", () => {
     const styles = await Bun.file(new URL("src/styles.css", root)).text()
 
     expect(styles).toContain(
-      "@media (max-width: 760px), (max-width: 900px) and (max-height: 520px)"
+      "@media (max-width: 760px), (max-width: 960px) and (max-height: 520px)"
     )
     expect(styles).toContain("--cm-line-height: 1.35")
     expect(styles).toContain("--cm-line-inline-padding: 7px")
@@ -33,5 +33,18 @@ describe("mobile editing layout contract", () => {
     expect(styles).toMatch(
       /\.editor-host \.cm-gutters \.cm-gutter-lint \{\s*[^}]*display: none !important;/
     )
+  })
+
+  test("moves panel navigation out of the vertical stack in landscape", async () => {
+    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+
+    expect(styles).toContain(
+      "@media (orientation: landscape) and (max-width: 960px) and (max-height: 520px)"
+    )
+    expect(styles).toMatch(
+      /\.mobile-tabs \{[\s\S]*?position: absolute;[\s\S]*?width: 42px;/
+    )
+    expect(styles).toMatch(/\.workspace \{[\s\S]*?margin-left: 42px;/)
+    expect(styles).toContain("grid-template-rows: 42px 0 minmax(0, 1fr) 0")
   })
 })

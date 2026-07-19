@@ -24,9 +24,32 @@
             <span id="sample-picker-label">Sample</span>
             <select id="sample-select" aria-label="サンプルを選択"></select>
           </label>
+          <div class="toolbar" role="toolbar" aria-label="Playground tools">
+            <button
+              id="stdin-toggle-button"
+              class="toolbar-button"
+              type="button"
+              aria-controls="input-section"
+              aria-pressed="false"
+              title="標準入力パネルを表示"
+            >
+              <span aria-hidden="true">⌨</span>
+              <span class="toolbar-label">Stdin</span>
+            </button>
+            <button
+              id="reset-sample-button"
+              class="toolbar-button"
+              type="button"
+              title="選択中のサンプルを初期状態に戻す"
+            >
+              <span aria-hidden="true">↺</span>
+              <span class="toolbar-label">Reset</span>
+            </button>
+          </div>
           <button id="run-button" class="run-button" type="button">
             <span aria-hidden="true">▶</span>
-            Run
+            <span>Run</span>
+            <kbd>⌘↵</kbd>
           </button>
         </div>
       </header>
@@ -44,7 +67,11 @@
       </nav>
 
       <main class="workspace" data-mobile-panel="code">
-        <section class="editor-panel" aria-label="Seseragi editor">
+        <section
+          id="editor-panel"
+          class="editor-panel"
+          aria-label="Seseragi editor"
+        >
           <div class="panel-heading">
             <div>
               <span class="status-dot" id="status-dot"></span>
@@ -65,8 +92,24 @@
           <div id="editor" class="editor-host"></div>
         </section>
 
-        <aside class="io-panel" aria-label="Program input and output">
-          <section class="input-section">
+        <div
+          id="workspace-resizer"
+          class="panel-resizer panel-resizer--vertical"
+          role="separator"
+          aria-label="コードとI/Oの幅を変更"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-orientation="vertical"
+          aria-controls="editor-panel io-panel"
+          tabindex="0"
+        ></div>
+
+        <aside
+          id="io-panel"
+          class="io-panel"
+          aria-label="Program input and output"
+        >
+          <section id="input-section" class="input-section">
             <div class="panel-heading">
               <span>Stdin</span>
               <span class="hint">必要な場合のみ</span>
@@ -79,7 +122,18 @@
               placeholder="プログラムへ渡す標準入力"
             ></textarea>
           </section>
-          <section class="output-section">
+          <div
+            id="io-resizer"
+            class="panel-resizer panel-resizer--horizontal"
+            role="separator"
+            aria-label="標準入力と出力の高さを変更"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-orientation="horizontal"
+            aria-controls="input-section output-section"
+            tabindex="0"
+          ></div>
+          <section id="output-section" class="output-section">
             <div class="panel-heading">
               <span>Output</span>
               <div class="output-heading-actions">

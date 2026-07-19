@@ -14,10 +14,19 @@ import { samples } from "./samples"
 import "./styles.css"
 import { requiredElement } from "./ui/elements"
 import { connectMobilePanels } from "./ui/mobile-panels"
+import { connectPanelLayout } from "./ui/panel-layout"
 
 const editorHost = requiredElement("#editor", HTMLDivElement)
 const sampleSelect = requiredElement("#sample-select", HTMLSelectElement)
 const runButton = requiredElement("#run-button", HTMLButtonElement)
+const resetSampleButton = requiredElement(
+  "#reset-sample-button",
+  HTMLButtonElement
+)
+const stdinToggleButton = requiredElement(
+  "#stdin-toggle-button",
+  HTMLButtonElement
+)
 const clearSourceButton = requiredElement(
   "#clear-source-button",
   HTMLButtonElement
@@ -40,6 +49,9 @@ const showHtmlPreviewButton = requiredElement(
 const statusText = requiredElement("#status-text", HTMLSpanElement)
 const statusDot = requiredElement("#status-dot", HTMLSpanElement)
 const workspace = requiredElement(".workspace", HTMLElement)
+const workspaceResizer = requiredElement("#workspace-resizer", HTMLElement)
+const ioPanel = requiredElement("#io-panel", HTMLElement)
+const ioResizer = requiredElement("#io-resizer", HTMLElement)
 
 let source = samples[0]?.source ?? ""
 let outputMode: "text" | "html" = samples[0]?.outputMode ?? "text"
@@ -69,23 +81,33 @@ const editor = createEditor(editorHost, source, (nextSource) => {
 })
 
 const initialSample = samples[0]
-if (initialSample) stdinInput.value = initialSample.stdin
+if (initialSample) {
+  stdinInput.value = initialSample.stdin
+  setStdinVisible(initialSample.stdin !== "")
+}
 
 sampleSelect.addEventListener("change", () => {
-  cancelActiveExecution()
   const sample = samples.find(
     (candidate) => candidate.id === sampleSelect.value
   )
   if (!sample) return
-  source = sample.source
-  outputMode = sample.outputMode
-  stdinInput.value = sample.stdin
-  replaceEditorSource(editor, source)
-  showTextOutput("Runを押すと結果がここに表示されます。")
-  setStatus("ready", "Sample loaded")
+  loadSample(sample, "Sample loaded")
 })
 
 runButton.addEventListener("click", () => void run())
+resetSampleButton.addEventListener("click", () => {
+  const sample = samples.find(
+    (candidate) => candidate.id === sampleSelect.value
+  )
+  if (!sample) return
+  loadSample(sample, "Sample reset")
+  editor.focus()
+})
+stdinToggleButton.addEventListener("click", () => {
+  const visible = ioPanel.dataset.stdinCollapsed === "true"
+  setStdinVisible(visible)
+  if (visible) stdinInput.focus()
+})
 clearSourceButton.addEventListener("click", () => {
   cancelActiveExecution()
   source = ""
@@ -102,6 +124,32 @@ clearOutputButton.addEventListener("click", () => {
 showTextOutputButton.addEventListener("click", () => chooseOutputMode("text"))
 showHtmlPreviewButton.addEventListener("click", () => chooseOutputMode("html"))
 connectMobilePanels(workspace)
+connectPanelLayout({ workspace, workspaceResizer, ioPanel, ioResizer })
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" || (!event.metaKey && !event.ctrlKey)) return
+  event.preventDefault()
+  if (!runButton.disabled) void run()
+})
+
+function loadSample(sample: (typeof samples)[number], status: string): void {
+  cancelActiveExecution()
+  source = sample.source
+  outputMode = sample.outputMode
+  stdinInput.value = sample.stdin
+  setStdinVisible(sample.stdin !== "")
+  replaceEditorSource(editor, source)
+  editor.dispatch(setDiagnostics(editor.state, []))
+  showTextOutput("Runを押すと結果がここに表示されます。")
+  setStatus("ready", status)
+}
+
+function setStdinVisible(visible: boolean): void {
+  ioPanel.dataset.stdinCollapsed = String(!visible)
+  stdinToggleButton.setAttribute("aria-pressed", String(visible))
+  stdinToggleButton.title = visible
+    ? "標準入力パネルを隠す"
+    : "標準入力パネルを表示"
+}
 
 async function run(): Promise<void> {
   cancelActiveExecution()
