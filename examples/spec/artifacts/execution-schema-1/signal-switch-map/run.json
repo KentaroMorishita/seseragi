@@ -34,12 +34,12 @@
     "exit": { "kind": "success", "value": "Unit" },
     "runtimeRequirements": [
       "signal.mutable-type",
+      "effect.core.type",
       "signal.type",
       "signal.subscription-type",
       "core.unit",
       "effect.core.flatMap",
       "signal.make",
-      "effect.core.type",
       "core.int64",
       "signal.switch-map",
       "signal.constant",

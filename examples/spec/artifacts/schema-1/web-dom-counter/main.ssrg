@@ -1,9 +1,18 @@
 import * as dom from "std/web/dom"
 import * as html from "std/web/html"
 import * as signals from "std/signal"
+import { MutableSignal } from "std/signal"
 
 type Msg =
   | Increment
+
+effect fn update count: MutableSignal<Int>
+  -> message: Msg
+  -> Unit
+fails Never =
+  match message {
+    Increment -> signals.update (\value: Int -> value + 1) count
+  }
 
 fn view count: Int -> html.Html<Msg> =
   html.main {
@@ -43,6 +52,6 @@ fails String =
     target <-
       dom.query "#app"
         |> mapError (\error: dom.DomError -> "DOM target unavailable")
-    dom.run (dom.defaultOptions ()) target (\message: Msg -> signals.update (\value: Int -> value + 1) count) content
+    dom.run (dom.defaultOptions ()) target (update count) content
       |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
   }

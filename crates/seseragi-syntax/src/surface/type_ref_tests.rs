@@ -35,6 +35,20 @@ fn parses_nested_type_arguments_in_surface_ast() {
 }
 
 #[test]
+fn ignores_record_value_colons_after_an_unannotated_let_equals() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "let cardStyle = html.style { variables: { cardShadow: \"soft\" }, padding: \"24px\" }\n",
+    );
+
+    let SurfaceDecl::Let { type_ref, body, .. } = &module.declarations[0] else {
+        panic!("expected let declaration");
+    };
+    assert!(type_ref.is_none());
+    assert!(body.is_some());
+}
+
+#[test]
 fn parses_qualified_type_names_in_surface_ast() {
     let module = parse_surface_ast(
         "main.ssrg",

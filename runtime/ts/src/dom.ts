@@ -63,7 +63,7 @@ export function query(
 export function run<Failure, Message>(
   options: DomOptions,
   target: DomTarget,
-  dispatch: (message: Message) => Effect<unknown, Failure, Unit>,
+  dispatch: (message: Message) => Effect<{}, Failure, Unit>,
   content: Signal<Html<Message>>
 ): Effect<DomEnvironment, DomRuntimeError<Failure>, Unit> {
   return serviceEffect((environment: DomEnvironment) =>

@@ -4,6 +4,7 @@
   "module": "artifact/signal-transaction",
   "runtimeRequirements": [
     "signal.mutable-type",
+    "effect.core.type",
     "signal.type",
     "signal.change-type",
     "core.int64",
@@ -11,7 +12,6 @@
     "core.unit",
     "effect.core.flatMap",
     "signal.make",
-    "effect.core.type",
     "signal.map",
     "signal.combine",
     "signal.plan-set",
@@ -77,6 +77,10 @@
     {
       "feature": "signal.mutable-type",
       "local": "MutableSignal"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
     },
     {
       "feature": "signal.type",

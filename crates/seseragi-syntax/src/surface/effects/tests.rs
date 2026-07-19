@@ -45,3 +45,36 @@ fn preserves_explicit_effect_contract_clauses() {
     ));
     assert!(body.is_some());
 }
+
+#[test]
+fn parses_curried_effect_function_parameters() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "effect fn update count: MutableSignal<Int> -> message: Msg -> Unit\nfails Never =\n  dispatch message count\n",
+    );
+
+    let SurfaceDecl::EffectFn {
+        parameters,
+        return_type,
+        failure,
+        ..
+    } = &module.declarations[0]
+    else {
+        panic!("expected effect function declaration");
+    };
+    assert_eq!(
+        parameters
+            .iter()
+            .map(|parameter| parameter.name.as_str())
+            .collect::<Vec<_>>(),
+        vec!["count", "message"]
+    );
+    assert!(matches!(
+        return_type,
+        Some(TypeRef::Named { name, .. }) if name == "Unit"
+    ));
+    assert!(matches!(
+        failure,
+        Some(TypeRef::Named { name, .. }) if name == "Never"
+    ));
+}

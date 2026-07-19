@@ -34,6 +34,7 @@
     "exit": { "kind": "success", "value": "Unit" },
     "runtimeRequirements": [
       "signal.mutable-type",
+      "effect.core.type",
       "signal.type",
       "signal.subscription-type",
       "signal.change-type",
@@ -42,7 +43,6 @@
       "core.unit",
       "effect.core.flatMap",
       "signal.make",
-      "effect.core.type",
       "signal.combine",
       "signal.subscribe",
       "signal.set",

@@ -2,7 +2,7 @@ use crate::{
     ExternalTypeBinding, ResolvedModule, ResolvedSymbol, SymbolId, SymbolKind, SymbolNamespace,
     TypedModuleDependency, TypedParameter, TypedType,
 };
-use seseragi_syntax::{ByteSpan, SurfaceDecl, SurfaceImplMember, TypeRef};
+use seseragi_syntax::{ByteSpan, SurfaceDecl, SurfaceImplMember, SurfaceRequirement, TypeRef};
 use std::collections::{BTreeMap, BTreeSet};
 
 use super::functions::TopLevelPureFunction;
@@ -325,6 +325,68 @@ fn collect_callables(
                     },
                 );
             }
+            SurfaceDecl::EffectFn {
+                name_span,
+                type_parameters,
+                parameters,
+                return_type: Some(return_type),
+                requirements,
+                failure,
+                inferred_contract: false,
+                constraints,
+                ..
+            } => {
+                let Some(symbol) = resolved.symbols.iter().find(|symbol| {
+                    symbol.kind == SymbolKind::EffectFunction && symbol.origin == *name_span
+                }) else {
+                    continue;
+                };
+                let Some(canonical) = symbol.canonical.clone() else {
+                    continue;
+                };
+                let (parameters, semantic_parameters) =
+                    callable_parameter_types(parameters, resolved, semantic_types);
+                callables.insert(
+                    symbol.id,
+                    TopLevelPureFunction {
+                        symbol: canonical,
+                        trait_identity: None,
+                        trait_method: None,
+                        type_parameters: type_parameters.clone(),
+                        constraints: constraints
+                            .iter()
+                            .map(|constraint| crate::TypedConstraint {
+                                name: constraint.name.clone(),
+                                arguments: constraint
+                                    .arguments
+                                    .iter()
+                                    .map(|argument| {
+                                        semantic_typed_type_from_type_ref(
+                                            argument,
+                                            resolved,
+                                            semantic_types,
+                                        )
+                                    })
+                                    .collect(),
+                            })
+                            .collect(),
+                        constraint_identities: constraints
+                            .iter()
+                            .map(|constraint| constraint_identity(resolved, constraint.name_span))
+                            .collect(),
+                        parameters,
+                        semantic_parameters,
+                        result: explicit_effect_value_type(
+                            return_type,
+                            requirements,
+                            failure.as_ref(),
+                            resolved,
+                            semantic_types,
+                        ),
+                        semantic_result: SemanticTypeKey::Other,
+                    },
+                );
+            }
             SurfaceDecl::Operator {
                 spelling_span,
                 type_parameters,
@@ -485,6 +547,58 @@ fn callable_parameter_types(
             .map(|parameter| semantic_types.key_from_type_ref(resolved, &parameter.type_ref))
             .collect(),
     )
+}
+
+fn explicit_effect_value_type(
+    return_type: &TypeRef,
+    requirements: &[SurfaceRequirement],
+    failure: Option<&TypeRef>,
+    resolved: &ResolvedModule,
+    semantic_types: &SemanticTypeCatalog,
+) -> TypedType {
+    let fields = requirements
+        .iter()
+        .map(|requirement| match requirement {
+            SurfaceRequirement::Field { name, type_ref, .. } => crate::TypedRecordField {
+                name: name.clone(),
+                optional: false,
+                type_ref: semantic_typed_type_from_type_ref(type_ref, resolved, semantic_types),
+            },
+            SurfaceRequirement::Shorthand { name, .. } => crate::TypedRecordField {
+                name: lower_first(name),
+                optional: false,
+                type_ref: TypedType::Named {
+                    name: name.clone(),
+                    arguments: Vec::new(),
+                },
+            },
+        })
+        .collect();
+    TypedType::Named {
+        name: "Effect".to_owned(),
+        arguments: vec![
+            TypedType::Record {
+                closed: true,
+                fields,
+            },
+            failure.map_or_else(
+                || TypedType::Named {
+                    name: "Never".to_owned(),
+                    arguments: Vec::new(),
+                },
+                |failure| semantic_typed_type_from_type_ref(failure, resolved, semantic_types),
+            ),
+            semantic_typed_type_from_type_ref(return_type, resolved, semantic_types),
+        ],
+    }
+}
+
+fn lower_first(value: &str) -> String {
+    let mut chars = value.chars();
+    match chars.next() {
+        Some(first) => first.to_lowercase().chain(chars).collect(),
+        None => String::new(),
+    }
 }
 
 fn semantic_typed_type_from_type_ref(
@@ -956,6 +1070,18 @@ fn collect_semantic_value_types(
                         symbol.id,
                         semantic_types.key_from_type_ref(resolved, return_type),
                     );
+                }
+            }
+            SurfaceDecl::EffectFn { parameters, .. } => {
+                for parameter in parameters {
+                    if let Some(symbol) = resolved.symbols.iter().find(|symbol| {
+                        symbol.kind == SymbolKind::Parameter && symbol.origin == parameter.name_span
+                    }) {
+                        values.insert(
+                            symbol.id,
+                            semantic_types.key_from_type_ref(resolved, &parameter.type_ref),
+                        );
+                    }
                 }
             }
             SurfaceDecl::Trait { methods, .. } | SurfaceDecl::Instance { methods, .. } => {

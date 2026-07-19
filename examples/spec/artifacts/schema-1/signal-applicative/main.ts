@@ -1,4 +1,4 @@
-import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
+import { flatMap as _ssrg_effect_flatMap, type Effect as Effect } from "@seseragi/runtime/effect"
 import { make as _ssrg_signal_make, map as _ssrg_signal_map, signalFunctor as _ssrg_signal_functor, constant as _ssrg_signal_constant, signalApplicative as _ssrg_signal_applicative, subscribe as _ssrg_signal_subscribe, set as _ssrg_signal_set, unsubscribe as _ssrg_signal_unsubscribe, read as _ssrg_signal_read, type MutableSignal as MutableSignal, type Signal as Signal, type Subscription as Subscription } from "@seseragi/runtime/signal"
 import { multiply as _ssrg_int64_multiply, add as _ssrg_int64_add } from "@seseragi/runtime/int64"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"

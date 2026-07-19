@@ -3,16 +3,19 @@ import * as html from "std/web/html"
 type Msg =
   | Confirm
 
+let cardStyle =
+  html.style {
+    variables: { cardShadow: "0 4px 16px #0002" },
+    backgroundColor: "#fff",
+    boxShadow: "var(--card-shadow)",
+    borderRadius: "16px",
+    padding: "24px"
+  }
+
 fn card title: String -> detail: String -> html.Html<Msg> =
   html.section {
     className: "card",
-    style: html.style {
-      variables: { cardShadow: "0 4px 16px #0002" },
-      backgroundColor: "#fff",
-      boxShadow: "var(--card-shadow)",
-      borderRadius: "16px",
-      padding: "24px"
-    },
+    style: cardStyle,
     children: [
       html.h2 {
         style: html.style { color: "#185f50", marginTop: "0" },

@@ -192,10 +192,10 @@ impl SurfaceParser<'_> {
     ) -> Option<SurfaceDecl> {
         let name_index = self.next_significant_token(decl_start + 1, end)?;
         let name = self.identifier_name_at(name_index)?;
-        let type_ref = self.parse_type_after_colon(name_index + 1, end);
         let equals = self.find_significant_token(name_index + 1, end, |kind| {
             kind == TokenKind::OperatorEquals
         });
+        let type_ref = self.parse_type_after_colon(name_index + 1, equals.unwrap_or(end));
         let body = equals.and_then(|equals| self.parse_expression(equals + 1, end));
 
         Some(SurfaceDecl::Let {

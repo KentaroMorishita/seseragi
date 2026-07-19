@@ -1,4 +1,4 @@
-use crate::runtime_types::runtime_type_import;
+use crate::runtime_types::{runtime_type_import, runtime_type_imports};
 use crate::{CoreModule, CoreType};
 use seseragi_semantics::ExternalTypeBinding;
 
@@ -12,69 +12,35 @@ pub(super) fn collect_module_type_imports(
     requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptTypeImport>,
 ) {
+    let type_bindings = runtime_type_bindings(module);
     for adt in &module.adts {
         for variant in &adt.variants {
             if let Some(payload) = &variant.payload {
-                collect_type_imports(
-                    payload,
-                    &module.external_type_bindings,
-                    requirements,
-                    imports,
-                );
+                collect_type_imports(payload, &type_bindings, requirements, imports);
             }
         }
     }
     for structure in &module.structs {
         for field in &structure.fields {
-            collect_type_imports(
-                &field.type_ref,
-                &module.external_type_bindings,
-                requirements,
-                imports,
-            );
+            collect_type_imports(&field.type_ref, &type_bindings, requirements, imports);
         }
     }
     for binding in &module.bindings {
-        expr::collect_expr_type_imports(
-            &binding.value,
-            &module.external_type_bindings,
-            requirements,
-            imports,
-        );
+        expr::collect_expr_type_imports(&binding.value, &type_bindings, requirements, imports);
     }
     for function in &module.functions {
         for parameter in &function.parameters {
-            collect_type_imports(
-                &parameter.type_ref,
-                &module.external_type_bindings,
-                requirements,
-                imports,
-            );
+            collect_type_imports(&parameter.type_ref, &type_bindings, requirements, imports);
         }
-        expr::collect_expr_type_imports(
-            &function.body,
-            &module.external_type_bindings,
-            requirements,
-            imports,
-        );
+        expr::collect_expr_type_imports(&function.body, &type_bindings, requirements, imports);
     }
     for instance in &module.instances {
         for argument in &instance.arguments {
-            collect_type_imports(
-                argument,
-                &module.external_type_bindings,
-                requirements,
-                imports,
-            );
+            collect_type_imports(argument, &type_bindings, requirements, imports);
         }
         for constraint in &instance.constraints {
             for argument in &constraint.arguments {
-                collect_type_imports(
-                    argument,
-                    &module.external_type_bindings,
-                    requirements,
-                    imports,
-                );
+                collect_type_imports(argument, &type_bindings, requirements, imports);
             }
         }
         if let crate::CoreInstanceImplementation::UserDefined { methods } = &instance.implementation
@@ -83,20 +49,46 @@ pub(super) fn collect_module_type_imports(
                 for parameter in &method.parameters {
                     collect_type_imports(
                         &parameter.type_ref,
-                        &module.external_type_bindings,
+                        &type_bindings,
                         requirements,
                         imports,
                     );
                 }
                 expr::collect_expr_type_imports(
                     &method.body,
-                    &module.external_type_bindings,
+                    &type_bindings,
                     requirements,
                     imports,
                 );
             }
         }
     }
+}
+
+fn runtime_type_bindings(module: &CoreModule) -> Vec<ExternalTypeBinding> {
+    let mut bindings = module.external_type_bindings.clone();
+    for type_import in runtime_type_imports() {
+        let shadowed_by_local = module
+            .adts
+            .iter()
+            .any(|adt| adt.name == type_import.export_name)
+            || module
+                .structs
+                .iter()
+                .any(|structure| structure.name == type_import.export_name);
+        let already_bound = bindings
+            .iter()
+            .any(|binding| binding.spelling == type_import.export_name);
+        if shadowed_by_local || already_bound {
+            continue;
+        }
+        bindings.push(ExternalTypeBinding {
+            spelling: type_import.export_name.to_owned(),
+            canonical: type_import.canonical.to_owned(),
+            provider: None,
+        });
+    }
+    bindings
 }
 
 fn collect_type_imports(

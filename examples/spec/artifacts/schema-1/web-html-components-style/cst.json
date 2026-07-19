@@ -5,7 +5,7 @@
   "root": {
     "kind": "module",
     "startToken": 0,
-    "endToken": 374,
+    "endToken": 384,
     "children": [
       {
         "kind": "top-decl",
@@ -36,49 +36,62 @@
       {
         "kind": "top-decl",
         "startToken": 25,
-        "endToken": 215,
+        "endToken": 83,
         "children": [
           {
-            "kind": "fn-decl",
+            "kind": "let-decl",
             "startToken": 25,
-            "endToken": 215,
+            "endToken": 83,
             "children": []
           }
         ]
       },
       {
         "kind": "top-decl",
-        "startToken": 215,
-        "endToken": 336,
+        "startToken": 83,
+        "endToken": 225,
         "children": [
           {
             "kind": "fn-decl",
-            "startToken": 215,
-            "endToken": 336,
+            "startToken": 83,
+            "endToken": 225,
             "children": []
           }
         ]
       },
       {
         "kind": "top-decl",
-        "startToken": 336,
-        "endToken": 374,
+        "startToken": 225,
+        "endToken": 346,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 225,
+            "endToken": 346,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 346,
+        "endToken": 384,
         "children": [
           {
             "kind": "decl-modifiers",
-            "startToken": 336,
-            "endToken": 337,
+            "startToken": 346,
+            "endToken": 347,
             "children": []
           },
           {
             "kind": "effect-fn-decl",
-            "startToken": 338,
-            "endToken": 374,
+            "startToken": 348,
+            "endToken": 384,
             "children": [
               {
                 "kind": "effect-signature",
-                "startToken": 338,
-                "endToken": 348,
+                "startToken": 348,
+                "endToken": 358,
                 "children": []
               }
             ]

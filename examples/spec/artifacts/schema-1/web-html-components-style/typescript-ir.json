@@ -3,12 +3,12 @@
   "stage": "typescript-ir",
   "module": "artifact/web-html-components-style",
   "runtimeRequirements": [
-    "web.html.type",
     "web.html.style-type",
+    "web.html.type",
     "core.adt",
+    "web.html.style",
     "core.string",
     "web.html.section",
-    "web.html.style",
     "web.html.h2",
     "web.html.p",
     "core.unit",
@@ -19,12 +19,12 @@
   ],
   "imports": [
     {
-      "feature": "web.html.section",
-      "local": "_ssrg_html_section"
-    },
-    {
       "feature": "web.html.style",
       "local": "_ssrg_html_style"
+    },
+    {
+      "feature": "web.html.section",
+      "local": "_ssrg_html_section"
     },
     {
       "feature": "web.html.h2",
@@ -53,12 +53,12 @@
   ],
   "typeImports": [
     {
-      "feature": "web.html.type",
-      "local": "Html"
-    },
-    {
       "feature": "web.html.style-type",
       "local": "Style"
+    },
+    {
+      "feature": "web.html.type",
+      "local": "Html"
     }
   ],
   "adts": [
@@ -82,6 +82,83 @@
         "source": "main.ssrg",
         "start": 38,
         "end": 60
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "cardStyle",
+      "type": {
+        "kind": "reference",
+        "name": "Style",
+        "arguments": []
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_style",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "variables",
+                "value": {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "cardShadow",
+                      "value": {
+                        "kind": "string",
+                        "value": "0 4px 16px #0002"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "field",
+                "name": "backgroundColor",
+                "value": {
+                  "kind": "string",
+                  "value": "#fff"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "boxShadow",
+                "value": {
+                  "kind": "string",
+                  "value": "var(--card-shadow)"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "borderRadius",
+                "value": {
+                  "kind": "string",
+                  "value": "16px"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "padding",
+                "value": {
+                  "kind": "string",
+                  "value": "24px"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 62,
+        "end": 259
       }
     }
   ],
@@ -121,64 +198,8 @@
                 "kind": "field",
                 "name": "style",
                 "value": {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_html_style",
-                  "arguments": [
-                    {
-                      "kind": "record",
-                      "items": [
-                        {
-                          "kind": "field",
-                          "name": "variables",
-                          "value": {
-                            "kind": "record",
-                            "items": [
-                              {
-                                "kind": "field",
-                                "name": "cardShadow",
-                                "value": {
-                                  "kind": "string",
-                                  "value": "0 4px 16px #0002"
-                                }
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "kind": "field",
-                          "name": "backgroundColor",
-                          "value": {
-                            "kind": "string",
-                            "value": "#fff"
-                          }
-                        },
-                        {
-                          "kind": "field",
-                          "name": "boxShadow",
-                          "value": {
-                            "kind": "string",
-                            "value": "var(--card-shadow)"
-                          }
-                        },
-                        {
-                          "kind": "field",
-                          "name": "borderRadius",
-                          "value": {
-                            "kind": "string",
-                            "value": "16px"
-                          }
-                        },
-                        {
-                          "kind": "field",
-                          "name": "padding",
-                          "value": {
-                            "kind": "string",
-                            "value": "24px"
-                          }
-                        }
-                      ]
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "cardStyle"
                 }
               },
               {
@@ -307,8 +328,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 62,
-        "end": 619
+        "start": 261,
+        "end": 636
       }
     },
     {
@@ -466,8 +487,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 621,
-        "end": 991
+        "start": 638,
+        "end": 1008
       }
     },
     {
@@ -504,8 +525,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 993,
-        "end": 1095
+        "start": 1010,
+        "end": 1112
       }
     }
   ]

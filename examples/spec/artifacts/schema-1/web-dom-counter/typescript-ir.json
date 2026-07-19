@@ -3,9 +3,10 @@
   "stage": "typescript-ir",
   "module": "artifact/web-dom-counter",
   "runtimeRequirements": [
+    "signal.mutable-type",
+    "effect.core.type",
     "web.html.type",
     "web.html.style-type",
-    "signal.mutable-type",
     "signal.type",
     "web.dom.target",
     "web.dom.error",
@@ -14,6 +15,9 @@
     "web.dom.options",
     "core.adt",
     "core.int64",
+    "core.unit",
+    "signal.update",
+    "core.int64.add",
     "web.html.main",
     "web.html.style",
     "core.string",
@@ -21,19 +25,23 @@
     "web.html.p",
     "core.int64.show",
     "web.html.button",
-    "core.unit",
     "effect.core.flatMap",
     "signal.make",
-    "effect.core.type",
     "signal.map",
     "effect.core.mapError",
     "web.dom.query",
     "web.dom.run",
-    "web.dom.default-options",
-    "signal.update",
-    "core.int64.add"
+    "web.dom.default-options"
   ],
   "imports": [
+    {
+      "feature": "signal.update",
+      "local": "_ssrg_signal_update"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
     {
       "feature": "web.html.main",
       "local": "_ssrg_html_main"
@@ -85,17 +93,17 @@
     {
       "feature": "web.dom.default-options",
       "local": "_ssrg_dom_defaultOptions"
-    },
-    {
-      "feature": "signal.update",
-      "local": "_ssrg_signal_update"
-    },
-    {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
     }
   ],
   "typeImports": [
+    {
+      "feature": "signal.mutable-type",
+      "local": "MutableSignal"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
     {
       "feature": "web.html.type",
       "local": "Html"
@@ -103,10 +111,6 @@
     {
       "feature": "web.html.style-type",
       "local": "Style"
-    },
-    {
-      "feature": "signal.mutable-type",
-      "local": "MutableSignal"
     },
     {
       "feature": "signal.type",
@@ -145,19 +149,102 @@
           "tag": "Increment",
           "origin": {
             "source": "main.ssrg",
-            "start": 126,
-            "end": 135
+            "start": 169,
+            "end": 178
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
-        "start": 111,
-        "end": 135
+        "start": 154,
+        "end": 178
       }
     }
   ],
   "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "update",
+      "parameters": [
+        {
+          "name": "count",
+          "type": "MutableSignal<bigint>",
+          "implicit": false
+        },
+        {
+          "name": "message",
+          "type": "Msg",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "message"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Msg",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_update",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "value: bigint",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_add",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "value"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "count"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "fields": []
+            },
+            {
+              "kind": "never"
+            },
+            {
+              "kind": "undefined"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 180,
+        "end": 351
+      }
+    },
     {
       "kind": "const-function",
       "exported": false,
@@ -433,8 +520,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 137,
-        "end": 824
+        "start": 353,
+        "end": 1040
       }
     },
     {
@@ -475,8 +562,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 897,
-              "end": 920
+              "start": 1113,
+              "end": 1136
             }
           },
           {
@@ -515,8 +602,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 925,
-              "end": 961
+              "start": 1141,
+              "end": 1177
             }
           },
           {
@@ -553,8 +640,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 966,
-              "end": 1069
+              "start": 1182,
+              "end": 1285
             }
           }
         ],
@@ -588,36 +675,14 @@
                   "name": "target"
                 },
                 {
-                  "kind": "lambda",
-                  "parameter": "message: Msg",
-                  "body": {
-                    "kind": "runtime-call",
-                    "callee": "_ssrg_signal_update",
-                    "arguments": [
-                      {
-                        "kind": "lambda",
-                        "parameter": "value: bigint",
-                        "body": {
-                          "kind": "runtime-call",
-                          "callee": "_ssrg_int64_add",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "value"
-                            },
-                            {
-                              "kind": "bigint",
-                              "value": "1"
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "count"
-                      }
-                    ]
-                  }
+                  "kind": "call",
+                  "callee": "update",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "count"
+                    }
+                  ]
                 },
                 {
                   "kind": "identifier",
@@ -630,8 +695,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 826,
-        "end": 1270
+        "start": 1042,
+        "end": 1434
       }
     }
   ]

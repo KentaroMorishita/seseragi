@@ -35,20 +35,26 @@ impl SurfaceParser<'_> {
             kind == TokenKind::KeywordFails
         });
         let where_index = self.find_raw(after_type_parameters, header_end, "where");
-        let parameter_end = [arrow, with, fails, where_index]
-            .into_iter()
-            .flatten()
-            .min()
-            .unwrap_or(header_end);
-        let parameters = self.parse_effect_parameters(after_type_parameters, parameter_end);
-
         let return_end = [with, fails, where_index]
             .into_iter()
             .flatten()
             .filter(|index| arrow.is_none_or(|arrow| *index > arrow))
             .min()
             .unwrap_or(header_end);
-        let return_type = arrow.and_then(|arrow| self.parse_type_name(arrow + 1, return_end));
+        let curried_signature =
+            arrow.and_then(|_| self.parse_curried_signature(after_type_parameters, return_end));
+        let parameter_end = [arrow, with, fails, where_index]
+            .into_iter()
+            .flatten()
+            .min()
+            .unwrap_or(header_end);
+        let parameters = curried_signature
+            .as_ref()
+            .map(|(parameters, _)| parameters.clone())
+            .unwrap_or_else(|| self.parse_effect_parameters(after_type_parameters, parameter_end));
+        let return_type = curried_signature
+            .map(|(_, return_type)| return_type)
+            .or_else(|| arrow.and_then(|arrow| self.parse_type_name(arrow + 1, return_end)));
         let requirements = with
             .map(|with| {
                 let requirement_end = [fails, where_index]

@@ -51,6 +51,21 @@
           "localName": "signals"
         }
       ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 110,
+        "end": 152
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "MutableSignal",
+          "symbol": "std/signal::MutableSignal"
+        }
+      ]
     }
   ],
   "exports": [
@@ -61,8 +76,8 @@
       "visibility": "public",
       "declarationKind": "effect-function",
       "declaration": {
-        "start": 826,
-        "end": 1270
+        "start": 1042,
+        "end": 1434
       },
       "scheme": {
         "typeParameters": [],

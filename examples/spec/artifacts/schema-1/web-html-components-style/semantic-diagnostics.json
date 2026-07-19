@@ -9,15 +9,15 @@
       "severity": "Error",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 105,
-        "end": 119
+        "start": 80,
+        "end": 90
       },
       "related": [
         {
-          "message": "pure function body",
+          "message": "let declaration",
           "primary": {
             "start": 62,
-            "end": 619
+            "end": 259
           }
         }
       ],
@@ -29,15 +29,15 @@
       "severity": "Error",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 124,
-        "end": 136
+        "start": 304,
+        "end": 318
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 62,
-            "end": 619
+            "start": 261,
+            "end": 636
           }
         }
       ],
@@ -49,15 +49,15 @@
       "severity": "Error",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 173,
-        "end": 183
+        "start": 323,
+        "end": 335
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 62,
-            "end": 619
+            "start": 261,
+            "end": 636
           }
         }
       ],
@@ -69,15 +69,15 @@
       "severity": "Error",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 388,
-        "end": 395
+        "start": 405,
+        "end": 412
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 62,
-            "end": 619
+            "start": 261,
+            "end": 636
           }
         }
       ],
@@ -89,15 +89,15 @@
       "severity": "Error",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 413,
-        "end": 423
+        "start": 430,
+        "end": 440
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 62,
-            "end": 619
+            "start": 261,
+            "end": 636
           }
         }
       ],
@@ -109,15 +109,15 @@
       "severity": "Error",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 501,
-        "end": 507
+        "start": 518,
+        "end": 524
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 62,
-            "end": 619
+            "start": 261,
+            "end": 636
           }
         }
       ],
@@ -129,15 +129,15 @@
       "severity": "Error",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 525,
-        "end": 535
+        "start": 542,
+        "end": 552
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 62,
-            "end": 619
+            "start": 261,
+            "end": 636
           }
         }
       ],
@@ -149,15 +149,15 @@
       "severity": "Error",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 632,
-        "end": 646
+        "start": 649,
+        "end": 663
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 621,
-            "end": 991
+            "start": 638,
+            "end": 1008
           }
         }
       ],
@@ -169,15 +169,15 @@
       "severity": "Error",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 651,
-        "end": 660
+        "start": 668,
+        "end": 677
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 621,
-            "end": 991
+            "start": 638,
+            "end": 1008
           }
         }
       ],
@@ -189,15 +189,15 @@
       "severity": "Error",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 689,
-        "end": 699
+        "start": 706,
+        "end": 716
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 621,
-            "end": 991
+            "start": 638,
+            "end": 1008
           }
         }
       ],
@@ -209,15 +209,15 @@
       "severity": "Error",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 771,
-        "end": 778
+        "start": 788,
+        "end": 795
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 621,
-            "end": 991
+            "start": 638,
+            "end": 1008
           }
         }
       ],
@@ -229,15 +229,15 @@
       "severity": "Error",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 822,
-        "end": 832
+        "start": 839,
+        "end": 849
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 621,
-            "end": 991
+            "start": 638,
+            "end": 1008
           }
         }
       ],
@@ -249,15 +249,15 @@
       "severity": "Error",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 1066,
-        "end": 1085
+        "start": 1083,
+        "end": 1102
       },
       "related": [
         {
           "message": "effect function body",
           "primary": {
-            "start": 993,
-            "end": 1095
+            "start": 1010,
+            "end": 1112
           }
         }
       ],

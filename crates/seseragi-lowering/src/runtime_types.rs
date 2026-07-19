@@ -130,6 +130,10 @@ pub(crate) fn runtime_type_import(canonical: &str) -> Option<RuntimeTypeImport> 
         .find(|type_import| type_import.canonical == canonical)
 }
 
+pub(crate) fn runtime_type_imports() -> impl Iterator<Item = RuntimeTypeImport> {
+    RUNTIME_TYPE_IMPORTS.iter().copied()
+}
+
 pub(crate) fn runtime_type_import_for_feature(feature: &str) -> Option<RuntimeTypeImport> {
     RUNTIME_TYPE_IMPORTS
         .iter()

@@ -6,9 +6,10 @@
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
     "requirements": [
+      "signal.mutable-type",
+      "effect.core.type",
       "web.html.type",
       "web.html.style-type",
-      "signal.mutable-type",
       "signal.type",
       "web.dom.target",
       "web.dom.error",
@@ -17,6 +18,9 @@
       "web.dom.options",
       "core.adt",
       "core.int64",
+      "core.unit",
+      "signal.update",
+      "core.int64.add",
       "web.html.main",
       "web.html.style",
       "core.string",
@@ -24,17 +28,13 @@
       "web.html.p",
       "core.int64.show",
       "web.html.button",
-      "core.unit",
       "effect.core.flatMap",
       "signal.make",
-      "effect.core.type",
       "signal.map",
       "effect.core.mapError",
       "web.dom.query",
       "web.dom.run",
-      "web.dom.default-options",
-      "signal.update",
-      "core.int64.add"
+      "web.dom.default-options"
     ]
   },
   "exports": [

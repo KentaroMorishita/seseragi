@@ -27,8 +27,8 @@
       "name": "main",
       "visibility": "public",
       "declaration": {
-        "start": 993,
-        "end": 1095
+        "start": 1010,
+        "end": 1112
       },
       "scheme": {
         "typeParameters": [],

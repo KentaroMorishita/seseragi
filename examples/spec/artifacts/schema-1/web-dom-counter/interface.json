@@ -50,6 +50,21 @@
           "localName": "signals"
         }
       ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "artifact/web-dom-counter/std/signal",
+      "origin": {
+        "start": 110,
+        "end": 152
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "MutableSignal",
+          "symbol": "artifact/web-dom-counter/std/signal::MutableSignal"
+        }
+      ]
     }
   ],
   "exports": [
@@ -59,8 +74,8 @@
       "name": "main",
       "visibility": "public",
       "declaration": {
-        "start": 826,
-        "end": 1270
+        "start": 1042,
+        "end": 1434
       },
       "scheme": {
         "typeParameters": [],
