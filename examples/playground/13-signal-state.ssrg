@@ -1,0 +1,19 @@
+import * as signals from "std/signal"
+
+fn add left: Int -> right: Int -> Int = left + right
+
+pub effect fn main =
+  do {
+    tasks <- signals.make 2
+    points <- signals.make 10
+    let total = signals.combine add tasks points
+
+    // transactionは途中状態を公開せず、安定した結果を一度だけ通知します。
+    signals.transaction [
+      signals.planSet 12 tasks,
+      signals.planUpdate (\value: Int -> value + 30) points
+    ]
+
+    current <- *total
+    println $ `Dashboard total: ${current}`
+  }

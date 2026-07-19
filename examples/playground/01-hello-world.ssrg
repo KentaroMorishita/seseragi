@@ -1,0 +1,1 @@
+pub effect fn main = println "Hello, Seseragi!"

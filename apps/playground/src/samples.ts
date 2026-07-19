@@ -1,22 +1,18 @@
-import applicativeValidation from "../../../examples/spec/artifacts/schema-1/applicative-validation/main.ssrg?raw"
-import comprehensionPatternFilter from "../../../examples/spec/artifacts/schema-1/comprehension-pattern-filter/main.ssrg?raw"
-import genericStruct from "../../../examples/spec/artifacts/schema-1/generic-struct/main.ssrg?raw"
-import monadEither from "../../../examples/spec/artifacts/schema-1/monad-either/main.ssrg?raw"
-import monadMaybe from "../../../examples/spec/artifacts/schema-1/monad-maybe/main.ssrg?raw"
-import newtypeUserId from "../../../examples/spec/artifacts/schema-1/newtype-user-id/main.ssrg?raw"
-import pipelineApplication from "../../../examples/spec/artifacts/schema-1/pipeline-application/main.ssrg?raw"
-import rangeComprehension from "../../../examples/spec/artifacts/schema-1/range-comprehension/main.ssrg?raw"
-import rockPaperScissors from "../../../examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg?raw"
-import signalApplicative from "../../../examples/spec/artifacts/schema-1/signal-applicative/main.ssrg?raw"
-import signalSwitchMap from "../../../examples/spec/artifacts/schema-1/signal-switch-map/main.ssrg?raw"
-import signalTransaction from "../../../examples/spec/artifacts/schema-1/signal-transaction/main.ssrg?raw"
-import templateInterpolation from "../../../examples/spec/artifacts/schema-1/template-interpolation/main.ssrg?raw"
-import userAddOperator from "../../../examples/spec/artifacts/schema-1/user-add-operator/main.ssrg?raw"
-import webDomCounter from "../../../examples/spec/artifacts/schema-1/web-dom-counter/main.ssrg?raw"
-import webHtmlComponentsStyle from "../../../examples/spec/artifacts/schema-1/web-html-components-style/main.ssrg?raw"
-import webHtmlSsr from "../../../examples/spec/artifacts/schema-1/web-html-ssr/main.ssrg?raw"
-import helloWorld from "../../../examples/spec/lessons/01-hello-world.ssrg?raw"
-import miniAdventure from "../../../examples/spec/playground/01-mini-adventure.ssrg?raw"
+import collections from "../../../examples/playground/04-collections.ssrg?raw"
+import dataAndPatterns from "../../../examples/playground/03-data-and-patterns.ssrg?raw"
+import effectsAndDo from "../../../examples/playground/08-effects-and-do.ssrg?raw"
+import eitherAndMonad from "../../../examples/playground/09-either-and-monad.ssrg?raw"
+import functionsAndPipelines from "../../../examples/playground/02-functions-and-pipelines.ssrg?raw"
+import genericStructs from "../../../examples/playground/06-generic-structs.ssrg?raw"
+import helloWorld from "../../../examples/playground/01-hello-world.ssrg?raw"
+import htmlComponents from "../../../examples/playground/14-html-components.ssrg?raw"
+import implAndOperators from "../../../examples/playground/11-impl-and-operators.ssrg?raw"
+import interactiveApp from "../../../examples/playground/15-interactive-app.ssrg?raw"
+import newtypes from "../../../examples/playground/07-newtypes.ssrg?raw"
+import records from "../../../examples/playground/05-records.ssrg?raw"
+import signalComposition from "../../../examples/playground/12-signal-composition.ssrg?raw"
+import signalState from "../../../examples/playground/13-signal-state.ssrg?raw"
+import traitsAndInstances from "../../../examples/playground/10-traits-and-instances.ssrg?raw"
 import {
   type PlaygroundSampleDefinition,
   sampleCatalog,
@@ -25,7 +21,8 @@ import {
 export type PlaygroundSample = {
   readonly id: string
   readonly label: string
-  readonly category: PlaygroundSampleDefinition["category"]
+  readonly level: PlaygroundSampleDefinition["level"]
+  readonly sequence: number
   readonly summary: string
   readonly concepts: readonly string[]
   readonly sourcePath: string
@@ -36,24 +33,20 @@ export type PlaygroundSample = {
 
 const sourceById: Readonly<Record<string, string>> = {
   "hello-world": helloWorld,
-  "pipeline-application": pipelineApplication,
-  "template-interpolation": templateInterpolation,
-  "range-comprehension": rangeComprehension,
-  "comprehension-pattern-filter": comprehensionPatternFilter,
-  "rock-paper-scissors": rockPaperScissors,
-  "mini-adventure": miniAdventure,
-  "signal-transaction": signalTransaction,
-  "signal-switch-map": signalSwitchMap,
-  "newtype-user-id": newtypeUserId,
-  "generic-struct": genericStruct,
-  "user-add-operator": userAddOperator,
-  "applicative-validation": applicativeValidation,
-  "monad-maybe": monadMaybe,
-  "monad-either": monadEither,
-  "signal-applicative": signalApplicative,
-  "web-html-ssr": webHtmlSsr,
-  "web-html-components-style": webHtmlComponentsStyle,
-  "web-dom-counter": webDomCounter,
+  "functions-and-pipelines": functionsAndPipelines,
+  "data-and-patterns": dataAndPatterns,
+  collections,
+  records,
+  "generic-structs": genericStructs,
+  newtypes,
+  "effects-and-do": effectsAndDo,
+  "either-and-monad": eitherAndMonad,
+  "traits-and-instances": traitsAndInstances,
+  "impl-and-operators": implAndOperators,
+  "signal-composition": signalComposition,
+  "signal-state": signalState,
+  "html-components": htmlComponents,
+  "interactive-app": interactiveApp,
 }
 
 export const samples: readonly PlaygroundSample[] = sampleCatalog.map(
@@ -65,7 +58,8 @@ export const samples: readonly PlaygroundSample[] = sampleCatalog.map(
     return {
       id: definition.id,
       label: definition.label,
-      category: definition.category,
+      level: definition.level,
+      sequence: definition.sequence,
       summary: definition.summary,
       concepts: definition.concepts,
       sourcePath: definition.sourcePath,

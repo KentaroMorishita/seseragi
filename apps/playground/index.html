@@ -20,10 +20,18 @@
           </div>
         </div>
         <div class="topbar-actions">
-          <label class="sample-picker">
-            <span id="sample-picker-label">Sample</span>
-            <select id="sample-select" aria-label="サンプルを選択"></select>
-          </label>
+          <button
+            id="sample-browser-button"
+            class="sample-browser-button"
+            type="button"
+            aria-haspopup="dialog"
+            aria-controls="sample-browser-dialog"
+            aria-expanded="false"
+          >
+            <span id="current-sample-level" class="sample-browser-level">初級 01</span>
+            <span id="current-sample-title" class="sample-browser-title">Hello world</span>
+            <span class="sample-browser-chevron" aria-hidden="true">⌄</span>
+          </button>
           <div class="toolbar" role="toolbar" aria-label="Playground tools">
             <button
               id="stdin-toggle-button"
@@ -53,6 +61,27 @@
           </button>
         </div>
       </header>
+
+      <dialog
+        id="sample-browser-dialog"
+        class="sample-browser-dialog"
+        aria-labelledby="sample-browser-title"
+      >
+        <div class="sample-browser-dialog-header">
+          <div>
+            <span class="sample-browser-kicker">LEARNING PATH</span>
+            <h2 id="sample-browser-title">Seseragiを学ぶ</h2>
+            <p>上から順に進めても、知りたいtopicから始めても大丈夫です。</p>
+          </div>
+          <button
+            id="sample-browser-close"
+            class="sample-browser-close"
+            type="button"
+            aria-label="サンプル一覧を閉じる"
+          >×</button>
+        </div>
+        <div id="sample-browser-groups" class="sample-browser-groups"></div>
+      </dialog>
 
       <nav class="mobile-tabs" aria-label="Playground panels">
         <button type="button" data-panel-target="code" aria-pressed="true">Code</button>

@@ -15,8 +15,10 @@
 html,
 body {
   margin: 0;
+  width: 100%;
+  height: 100%;
   min-width: 320px;
-  min-height: 100%;
+  overflow: hidden;
   background: #08100e;
   -webkit-text-size-adjust: 100%;
 }
@@ -36,9 +38,12 @@ textarea {
 }
 
 .app-shell {
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr) auto;
+  overflow: hidden;
   padding: env(safe-area-inset-top) env(safe-area-inset-right)
     env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
@@ -107,21 +112,183 @@ textarea {
   color: #dce9e4;
   background: #192923;
 }
-.sample-picker {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #82968e;
-  font-size: 13px;
-}
-.sample-picker select {
+.sample-browser-button {
   width: clamp(150px, 22vw, 220px);
   max-width: 220px;
-  color: #dce9e4;
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
   border: 1px solid #294139;
   border-radius: 10px;
+  padding: 5px 10px;
+  color: #dce9e4;
   background: #101c18;
-  padding: 0 34px 0 12px;
+  cursor: pointer;
+  text-align: left;
+}
+.sample-browser-button:hover,
+.sample-browser-button[aria-expanded="true"] {
+  border-color: #4d7669;
+  background: #15251f;
+}
+.sample-browser-level {
+  color: #7ed6ad;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.sample-browser-title {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sample-browser-chevron {
+  color: #82968e;
+  font-size: 16px;
+}
+
+.sample-browser-dialog {
+  width: min(960px, calc(100vw - 40px));
+  max-width: none;
+  max-height: min(780px, calc(100dvh - 40px));
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #315047;
+  border-radius: 20px;
+  color: #dce9e4;
+  background: #0d1714;
+  box-shadow: 0 28px 90px #000c;
+}
+.sample-browser-dialog::backdrop {
+  background: #020504c9;
+  backdrop-filter: blur(8px);
+}
+.sample-browser-dialog[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.sample-browser-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 24px 26px 20px;
+  border-bottom: 1px solid #20332c;
+  background: linear-gradient(135deg, #14251f, #0d1714 58%);
+}
+.sample-browser-kicker {
+  color: #7ed6ad;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.15em;
+}
+.sample-browser-dialog h2 {
+  margin: 5px 0 4px;
+  color: #f3faf7;
+  font-size: 24px;
+}
+.sample-browser-dialog-header p {
+  margin: 0;
+  color: #91a79e;
+  font-size: 13px;
+}
+.sample-browser-close {
+  width: 38px;
+  min-height: 38px;
+  flex: 0 0 auto;
+  border: 1px solid #30483f;
+  border-radius: 10px;
+  color: #a9bdb5;
+  background: #17241f;
+  cursor: pointer;
+  font-size: 21px;
+}
+.sample-browser-groups {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 22px 26px 30px;
+}
+.sample-level + .sample-level {
+  margin-top: 30px;
+}
+.sample-level-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 11px;
+}
+.sample-level-heading h3 {
+  margin: 0;
+  color: #e9f5f0;
+  font-size: 15px;
+}
+.sample-level-heading p {
+  margin: 0;
+  color: #71877e;
+  font-size: 11px;
+}
+.sample-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.sample-card {
+  min-height: 128px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  align-content: start;
+  gap: 5px 10px;
+  padding: 15px;
+  border: 1px solid #20372f;
+  border-radius: 13px;
+  color: #dce9e4;
+  background: #101c18;
+  cursor: pointer;
+  text-align: left;
+}
+.sample-card:hover,
+.sample-card:focus-visible {
+  border-color: #568373;
+  background: #162720;
+  outline: none;
+}
+.sample-card[aria-current="true"] {
+  border-color: #7ed6ad;
+  box-shadow: inset 0 0 0 1px #7ed6ad55;
+}
+.sample-card-sequence {
+  grid-row: 1 / -1;
+  color: #7ed6ad;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+  font-weight: 800;
+}
+.sample-card strong {
+  color: #edf7f3;
+  font-size: 14px;
+}
+.sample-card-summary,
+.sample-card-concepts {
+  grid-column: 2;
+}
+.sample-card-summary {
+  color: #9db1a9;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.sample-card-concepts {
+  margin-top: 3px;
+  color: #688078;
+  font-size: 10px;
 }
 
 .run-button {
@@ -165,12 +332,14 @@ textarea {
     minmax(360px, var(--editor-panel-ratio)) 9px
     minmax(300px, 1fr);
   min-height: 0;
+  overflow: hidden;
 }
 .editor-panel,
 .io-panel,
 .input-section,
 .output-section {
   min-height: 0;
+  overflow: hidden;
 }
 .editor-panel {
   position: relative;
@@ -349,6 +518,7 @@ pre {
 .output-content {
   display: grid;
   min-height: 0;
+  overflow: hidden;
   background: #09110f;
 }
 .output-content > * {
@@ -496,9 +666,6 @@ footer a {
     display: block;
     margin-top: 4px;
   }
-  #sample-picker-label {
-    display: none;
-  }
   .topbar-actions {
     display: contents;
   }
@@ -516,19 +683,46 @@ footer a {
   #reset-sample-button {
     display: none;
   }
-  .sample-picker {
+  .sample-browser-button {
     min-width: 0;
-    width: 100%;
-  }
-  .sample-picker select {
     width: 100%;
     max-width: none;
-    min-width: 0;
-    padding: 0 28px 0 10px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    padding: 4px 8px;
     color: #dce9e4;
-    /* iPhone Safari zooms focused form controls below 16px. */
+  }
+  .sample-browser-level {
+    display: none;
+  }
+  .sample-browser-title {
     font-size: 16px;
-    text-overflow: ellipsis;
+  }
+  .sample-browser-dialog {
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+    border-radius: 16px;
+  }
+  .sample-browser-dialog-header {
+    padding: 18px 18px 15px;
+  }
+  .sample-browser-dialog h2 {
+    font-size: 20px;
+  }
+  .sample-browser-dialog-header p {
+    max-width: 32rem;
+    font-size: 12px;
+  }
+  .sample-browser-groups {
+    padding: 17px 18px 24px;
+  }
+  .sample-level-heading {
+    display: block;
+  }
+  .sample-level-heading p {
+    margin-top: 3px;
+  }
+  .sample-card-grid {
+    grid-template-columns: 1fr;
   }
   .run-button {
     padding: 0 14px;

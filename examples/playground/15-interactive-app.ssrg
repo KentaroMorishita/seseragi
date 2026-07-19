@@ -1,0 +1,124 @@
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+
+type Mode =
+  | Ready
+  | Focusing
+  | Resting
+
+type Msg =
+  | StartFocus
+  | TakeBreak
+  | Reset
+
+fn update message: Msg -> mode: Mode -> Mode =
+  match message {
+    StartFocus -> Focusing
+    TakeBreak -> Resting
+    Reset -> Ready
+  }
+
+fn title mode: Mode -> String =
+  match mode {
+    Ready -> "Choose your rhythm"
+    Focusing -> "Deep work in progress"
+    Resting -> "Pause with purpose"
+  }
+
+fn guidance mode: Mode -> String =
+  match mode {
+    Ready -> "Pick a mode and let a typed message update the Signal."
+    Focusing -> "One task. No tab hopping. You have got this."
+    Resting -> "Look away from the screen and take a slow breath."
+  }
+
+fn accent mode: Mode -> String =
+  match mode {
+    Ready -> "#475569"
+    Focusing -> "#059669"
+    Resting -> "#2563eb"
+  }
+
+fn progress mode: Mode -> String =
+  match mode {
+    Ready -> "18%"
+    Focusing -> "82%"
+    Resting -> "46%"
+  }
+
+fn progressStyle mode: Mode -> html.Style =
+  html.style {
+    backgroundColor: accent mode,
+    borderRadius: "999px",
+    height: "100%",
+    transition: "all 240ms ease",
+    width: progress mode
+  }
+
+fn actionStyle message: Msg -> html.Style =
+  match message {
+    StartFocus -> html.style { backgroundColor: "#059669", color: "#ffffff" }
+    TakeBreak -> html.style { backgroundColor: "#2563eb", color: "#ffffff" }
+    Reset -> html.style { backgroundColor: "#f1f5f9", color: "#334155" }
+  }
+
+fn action label: String -> message: Msg -> html.Html<Msg> =
+  html.button {
+    onClick: message,
+    className: "w-full rounded-xl border-0 px-4 py-3 font-semibold transition hover:shadow-lg",
+    style: actionStyle message,
+    children: label
+  }
+
+fn view mode: Mode -> html.Html<Msg> =
+  html.main {
+    className: "min-h-screen bg-emerald-50 p-8 sm:p-12",
+    children: [
+      html.section {
+        className: "mx-auto max-w-lg rounded-2xl bg-white p-8 shadow-lg",
+        children: [
+          html.span {
+            style: html.style { color: accent mode, fontWeight: "700" },
+            children: "SESERAGI FLOW"
+          },
+          html.h1 {
+            className: "mb-2 mt-4 text-3xl font-bold text-slate-900 sm:text-4xl",
+            children: title mode
+          },
+          html.p {
+            className: "mb-6 text-lg text-slate-700",
+            children: guidance mode
+          },
+          html.div {
+            style: html.style {
+              backgroundColor: "#e2e8f0",
+              borderRadius: "999px",
+              height: "10px",
+              overflow: "hidden"
+            },
+            children: html.div {
+              style: progressStyle mode,
+              children: ""
+            }
+          },
+          html.div {
+            className: "mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3",
+            children: [
+              action "Start focus" StartFocus,
+              action "Take a break" TakeBreak,
+              action "Reset the flow" Reset
+            ]
+          }
+        ]
+      }
+    ]
+  }
+
+// dom.appがSignalの準備、mount、cleanup、失敗変換を引き受けます。
+pub effect fn main =
+  dom.app {
+    target: "#app",
+    initial: Ready,
+    update,
+    view
+  }

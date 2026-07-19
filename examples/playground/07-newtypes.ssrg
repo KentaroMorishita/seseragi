@@ -1,0 +1,14 @@
+newtype UserId = Int
+
+fn raw id: UserId -> Int =
+  match id {
+    UserId value -> value
+  }
+
+fn requestPath id: UserId -> String = `/users/${raw id}`
+
+// UserIdはIntと同じ実行時表現ですが、型としては混ざりません。
+pub effect fn main =
+  UserId 42
+  |> requestPath
+  |> println

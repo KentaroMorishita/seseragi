@@ -1,0 +1,13 @@
+fn add offset: Int -> value: Int -> Int = offset + value
+
+fn double value: Int -> Int = value * 2
+
+fn describe value: Int -> String = `Answer: ${value}`
+
+// curryされた関数は、pipelineの値を最後の引数として受け取ります。
+pub effect fn main =
+  16
+  |> add 5
+  |> double
+  |> describe
+  |> println

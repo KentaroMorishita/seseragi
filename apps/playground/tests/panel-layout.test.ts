@@ -34,4 +34,22 @@ describe("desktop panel layout", () => {
     expect(styles).toMatch(/\.workspace \{[\s\S]*?grid-row: 3;/)
     expect(styles).toMatch(/footer \{[\s\S]*?grid-row: 4;/)
   })
+
+  test("locks the shell and scrolls only inside editor and output surfaces", async () => {
+    const styles = await Bun.file(
+      new URL("../src/styles.css", import.meta.url)
+    ).text()
+
+    expect(styles).toMatch(
+      /html,\s*body \{[\s\S]*?height: 100%;[\s\S]*?overflow: hidden;/
+    )
+    expect(styles).toMatch(
+      /\.app-shell \{[\s\S]*?height: 100dvh;[\s\S]*?overflow: hidden;/
+    )
+    expect(styles).toMatch(/\.workspace \{[\s\S]*?overflow: hidden;/)
+    expect(styles).toMatch(
+      /\.editor-host \.cm-scroller \{[\s\S]*?overflow: auto;/
+    )
+    expect(styles).toMatch(/pre \{[\s\S]*?overflow: auto;/)
+  })
 })

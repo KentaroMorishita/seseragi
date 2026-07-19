@@ -1,0 +1,24 @@
+struct Box<A> {
+  value: A,
+}
+
+impl<A> Box<A> {
+  fn map<B> self: Box<A> -> transform: (A -> B) -> Box<B> =
+    Box { value: transform self.value }
+
+  fn get self: Box<A> -> A = self.value
+}
+
+fn double value: Int -> Int = value * 2
+
+fn transform box: Box<Int> -> Int =
+  (box.map double).get
+
+fn render value: Int -> String = `Box result: ${value}`
+
+// valueからBox<Int>を推論し、methodを通してgenericな型を保ちます。
+pub effect fn main =
+  Box { value: 21 }
+  |> transform
+  |> render
+  |> println

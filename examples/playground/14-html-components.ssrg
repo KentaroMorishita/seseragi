@@ -1,0 +1,47 @@
+import * as html from "std/web/html"
+
+type Msg =
+  | OpenProfile
+
+// Styleは値として再利用でき、variablesはCSS custom propertyになります。
+let cardStyle =
+  html.style {
+    variables: { cardShadow: "0 4px 16px #0002" },
+    backgroundColor: "#fff",
+    boxShadow: "var(--card-shadow)",
+    borderRadius: "16px",
+    padding: "24px"
+  }
+
+// 通常のpure関数を、そのままHTML componentとして使えます。
+fn card title: String -> detail: String -> html.Html<Msg> =
+  html.section {
+    className: "mx-auto max-w-xl",
+    style: cardStyle,
+    children: [
+      html.h2 {
+        style: html.style { color: "#185f50", marginTop: "0" },
+        children: title
+      },
+      html.p {
+        style: html.style { color: "#315c53", marginBottom: "0" },
+        children: detail
+      }
+    ]
+  }
+
+fn page -> html.Html<Msg> =
+  html.main {
+    id: "app",
+    className: "min-h-screen bg-emerald-50 p-8 sm:p-12",
+    children: [
+      html.h1 {
+        onClick: OpenProfile,
+        className: "mx-auto mb-6 max-w-xl text-3xl font-bold text-emerald-950",
+        children: "Seseragi components"
+      },
+      card "Reusable card" "Function component from children"
+    ]
+  }
+
+pub effect fn main = println $ html.renderToString (page ())

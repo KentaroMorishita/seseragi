@@ -1,6 +1,6 @@
 export type SampleGuideValue = {
   readonly label: string
-  readonly category: string
+  readonly level: string
   readonly summary: string
   readonly concepts: readonly string[]
   readonly sourcePath: string
@@ -52,7 +52,7 @@ export function connectSampleGuide(elements: SampleGuideElements): {
 
   return {
     setSample: (sample) => {
-      elements.category.textContent = sample.category
+      elements.category.textContent = sample.level
       elements.title.textContent = sample.label
       elements.summary.textContent = sample.summary
       elements.source.textContent = sample.sourcePath

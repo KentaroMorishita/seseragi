@@ -1,0 +1,11 @@
+fn evenSquares limit: Int -> Array<Int> =
+  [value * value | value <- 1..=limit, value % 2 == 0]
+
+fn render total: Int -> String = `Even squares: ${total}`
+
+// 内包表記でRangeを絞り込み、変換した後にreduceで畳み込みます。
+pub effect fn main =
+  evenSquares 8
+  |> reduce 0 (+)
+  |> render
+  |> println

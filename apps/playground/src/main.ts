@@ -15,10 +15,28 @@ import "./styles.css"
 import { requiredElement } from "./ui/elements"
 import { connectMobilePanels } from "./ui/mobile-panels"
 import { connectPanelLayout } from "./ui/panel-layout"
+import { connectSampleBrowser } from "./ui/sample-browser"
 import { connectSampleGuide } from "./ui/sample-guide"
 
 const editorHost = requiredElement("#editor", HTMLDivElement)
-const sampleSelect = requiredElement("#sample-select", HTMLSelectElement)
+const sampleBrowserButton = requiredElement(
+  "#sample-browser-button",
+  HTMLButtonElement
+)
+const sampleBrowserDialog = requiredElement(
+  "#sample-browser-dialog",
+  HTMLDialogElement
+)
+const sampleBrowserClose = requiredElement(
+  "#sample-browser-close",
+  HTMLButtonElement
+)
+const sampleBrowserGroups = requiredElement(
+  "#sample-browser-groups",
+  HTMLElement
+)
+const currentSampleLevel = requiredElement("#current-sample-level", HTMLElement)
+const currentSampleTitle = requiredElement("#current-sample-title", HTMLElement)
 const runButton = requiredElement("#run-button", HTMLButtonElement)
 const resetSampleButton = requiredElement(
   "#reset-sample-button",
@@ -89,21 +107,20 @@ let outputMode: "text" | "html" = samples[0]?.outputMode ?? "text"
 let htmlPreviewUrl: string | undefined
 let activeExecution: BrowserExecution | undefined
 let runRevision = 0
+let currentSample = samples[0]
 
-const sampleGroups = new Map<string, HTMLOptGroupElement>()
-for (const sample of samples) {
-  let group = sampleGroups.get(sample.category)
-  if (!group) {
-    group = document.createElement("optgroup")
-    group.label = sample.category
-    sampleGroups.set(sample.category, group)
-    sampleSelect.append(group)
-  }
-  const option = document.createElement("option")
-  option.value = sample.id
-  option.textContent = sample.label
-  group.append(option)
-}
+const sampleBrowser = connectSampleBrowser(
+  {
+    button: sampleBrowserButton,
+    dialog: sampleBrowserDialog,
+    closeButton: sampleBrowserClose,
+    groups: sampleBrowserGroups,
+    currentLevel: currentSampleLevel,
+    currentTitle: currentSampleTitle,
+  },
+  samples,
+  (sample) => loadSample(sample, "Sample loaded")
+)
 
 const editor = createEditor(editorHost, source, (nextSource) => {
   source = nextSource
@@ -115,24 +132,14 @@ const initialSample = samples[0]
 if (initialSample) {
   stdinInput.value = initialSample.stdin
   setStdinVisible(initialSample.stdin !== "")
+  sampleBrowser.setCurrent(initialSample)
   sampleGuide.setSample(initialSample)
 }
 
-sampleSelect.addEventListener("change", () => {
-  const sample = samples.find(
-    (candidate) => candidate.id === sampleSelect.value
-  )
-  if (!sample) return
-  loadSample(sample, "Sample loaded")
-})
-
 runButton.addEventListener("click", () => void run())
 resetSampleButton.addEventListener("click", () => {
-  const sample = samples.find(
-    (candidate) => candidate.id === sampleSelect.value
-  )
-  if (!sample) return
-  loadSample(sample, "Sample reset")
+  if (!currentSample) return
+  loadSample(currentSample, "Sample reset")
   editor.focus()
 })
 stdinToggleButton.addEventListener("click", () => {
@@ -165,10 +172,12 @@ document.addEventListener("keydown", (event) => {
 
 function loadSample(sample: (typeof samples)[number], status: string): void {
   cancelActiveExecution()
+  currentSample = sample
   source = sample.source
   outputMode = sample.outputMode
   stdinInput.value = sample.stdin
   setStdinVisible(sample.stdin !== "")
+  sampleBrowser.setCurrent(sample)
   sampleGuide.setSample(sample)
   replaceEditorSource(editor, source)
   editor.dispatch(setDiagnostics(editor.state, []))

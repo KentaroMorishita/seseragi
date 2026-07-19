@@ -8,9 +8,7 @@ describe("mobile editing layout contract", () => {
     const styles = await Bun.file(new URL("src/styles.css", root)).text()
 
     expect(theme).toContain('fontSize: "16px"')
-    expect(styles).toMatch(
-      /\.sample-picker select \{[\s\S]*?font-size: 16px;[\s\S]*?\}/
-    )
+    expect(styles).toMatch(/\.sample-browser-title \{[\s\S]*?font-size: 16px;/)
     expect(styles).toMatch(/textarea \{[\s\S]*?font-size: 16px;/)
   })
 

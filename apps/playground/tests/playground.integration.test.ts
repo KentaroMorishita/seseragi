@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import type { CompileResponse } from "../src/compiler/types"
 import { executeGeneratedModule } from "../src/runtime/browser-execution"
-import { sampleCatalog } from "../src/sample-catalog"
+import { sampleCatalog, sampleLevels } from "../src/sample-catalog"
 
 type WasmBindings = {
   readonly default: (input: {
@@ -65,25 +65,69 @@ describe("new Playground product gate", () => {
     expect(main).toContain('clearOutputButton.addEventListener("click"')
   })
 
-  test("keeps the catalog curated and grouped by learning purpose", () => {
+  test("orders a curriculum by learning level and outcome", () => {
     expect(new Set(sampleCatalog.map((sample) => sample.id)).size).toBe(
       sampleCatalog.length
     )
-    expect(new Set(sampleCatalog.map((sample) => sample.category))).toEqual(
-      new Set(["基本", "アプリ", "型と抽象化", "Web"])
+    expect([...new Set(sampleCatalog.map((sample) => sample.level))]).toEqual(
+      [...sampleLevels]
+    )
+    expect(sampleCatalog.map((sample) => sample.sequence)).toEqual(
+      sampleCatalog.map((_, index) => index + 1)
     )
     expect(new Set(sampleCatalog.map((sample) => sample.sourcePath)).size).toBe(
       sampleCatalog.length
     )
-    expect(sampleCatalog.length).toBeLessThanOrEqual(20)
     expect(
       sampleCatalog.every(
         (sample) =>
+          sample.sourcePath.startsWith("examples/playground/") &&
           sample.summary.trim() !== "" &&
           sample.concepts.length > 0 &&
           sample.concepts.every((concept) => concept.trim() !== "")
       )
     ).toBe(true)
+    expect(sampleCatalog.map((sample) => sample.id)).not.toContain(
+      "rock-paper-scissors"
+    )
+    expect(sampleCatalog.map((sample) => sample.id)).not.toContain(
+      "mini-adventure"
+    )
+  })
+
+  test("starts minimal and keeps comments focused on the code", async () => {
+    const sources = await Promise.all(
+      sampleCatalog.map((sample) =>
+        Bun.file(
+          new URL(`../../../${sample.sourcePath}`, import.meta.url)
+        ).text()
+      )
+    )
+
+    expect(sources[0]?.trim()).toBe(
+      'pub effect fn main = println "Hello, Seseragi!"'
+    )
+    for (const source of sources) {
+      expect(source).not.toContain("Lesson ")
+      expect(source).not.toContain("Expected stdout")
+      expect(source).not.toContain("前提:")
+    }
+  })
+
+  test("opens the curriculum from a level-based sample browser", async () => {
+    const html = await Bun.file(
+      new URL("../index.html", import.meta.url)
+    ).text()
+    const main = await Bun.file(
+      new URL("../src/main.ts", import.meta.url)
+    ).text()
+
+    expect(html).toContain('id="sample-browser-button"')
+    expect(html).toContain('aria-haspopup="dialog"')
+    expect(html).toContain('id="sample-browser-dialog"')
+    expect(html).toContain('id="sample-browser-groups"')
+    expect(html).not.toContain('id="sample-select"')
+    expect(main).toContain("connectSampleBrowser(")
   })
 
   test("keeps sample guidance available without growing the workspace rows", async () => {
@@ -111,7 +155,7 @@ describe("new Playground product gate", () => {
       new URL("../src/preview-document.ts", import.meta.url)
     ).text()
     const sample = sampleCatalog.find(
-      (candidate) => candidate.id === "web-html-ssr"
+      (candidate) => candidate.id === "html-components"
     )
 
     expect(sample?.outputMode).toBe("html")
@@ -160,7 +204,7 @@ describe("new Playground product gate", () => {
       new URL("../src/main.ts", import.meta.url)
     ).text()
     const sample = sampleCatalog.find(
-      (candidate) => candidate.id === "web-dom-counter"
+      (candidate) => candidate.id === "interactive-app"
     )
 
     expect(sample?.interactive).toBe(true)

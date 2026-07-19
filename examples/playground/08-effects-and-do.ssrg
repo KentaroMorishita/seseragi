@@ -1,0 +1,7 @@
+// doはEffectを順番に合成し、通常のletはpureな値を束縛します。
+pub effect fn main =
+  do {
+    let project = "Seseragi"
+    println $ `Building ${project}...`
+    println "Done."
+  }

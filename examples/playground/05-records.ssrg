@@ -1,0 +1,14 @@
+fn displayName profile: { first: String, last: String } -> String =
+  `${profile.first} ${profile.last}`
+
+let profile = {
+  first: "Mio",
+  last: "Tanaka",
+  role: "Engineer"
+}
+
+// spreadは新しいRecordを作り、width typingは余分なrole fieldを許容します。
+pub effect fn main =
+  { ...profile, first: "Aoi" }
+  |> displayName
+  |> println

@@ -1,0 +1,21 @@
+type Badge =
+  | Active
+  | Paused
+
+trait Label<A> {
+  fn label value: A -> String
+}
+
+// label Activeに必要なdictionaryは、このinstanceから選択されます。
+instance Label<Badge> {
+  fn label value: Badge -> String =
+    match value {
+      Active -> "active"
+      Paused -> "paused"
+    }
+}
+
+pub effect fn main =
+  Active
+  |> label
+  |> println
