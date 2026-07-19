@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/signal-subscription",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 0,
+        "end": 37
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/signal::*",
+          "localName": "signals"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/signal-subscription::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 93,
+        "end": 586
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

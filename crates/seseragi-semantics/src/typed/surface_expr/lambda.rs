@@ -31,7 +31,8 @@ pub(super) fn type_lambda(
         .map(|type_ref| context.semantic_value_from_type_ref(type_ref));
     let mut issue = match (&expected_parts, &annotated) {
         (Some((expected, _)), Some(actual))
-            if !semantic_values_are_compatible(expected, actual) =>
+            if !typed_type_contains_hole(&expected.type_ref)
+                && !semantic_values_are_compatible(expected, actual) =>
         {
             Some(PureCallIssue::LambdaParameterTypeMismatch {
                 parameter: parameter.name_span,
@@ -78,7 +79,8 @@ pub(super) fn type_lambda(
         key: body_analysis.semantic_type.clone(),
     };
     if let Some(expected) = expected_result {
-        if !typed_type_contains_hole(&actual_result.type_ref)
+        if !typed_type_contains_hole(&expected.type_ref)
+            && !typed_type_contains_hole(&actual_result.type_ref)
             && !semantic_values_are_compatible(&expected, &actual_result)
         {
             issue.get_or_insert(PureCallIssue::LambdaBodyTypeMismatch {

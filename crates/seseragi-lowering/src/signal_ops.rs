@@ -34,6 +34,8 @@ const OPERATIONS: &[RuntimeSignalOperation] = &[
     operation!("map", "signal.map"),
     operation!("combine", "signal.combine"),
     operation!("constant", "signal.constant"),
+    operation!("subscribe", "signal.subscribe"),
+    operation!("unsubscribe", "signal.unsubscribe"),
 ];
 
 pub(crate) fn runtime_signal_operation(canonical: &str) -> Option<RuntimeSignalOperation> {

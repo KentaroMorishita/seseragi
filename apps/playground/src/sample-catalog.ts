@@ -285,4 +285,13 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     stdin: "",
     expectedOutput: "signal: 63",
   },
+  {
+    id: "signal-subscription",
+    label: "Signalのsubscribe",
+    category: "アプリ",
+    sourcePath:
+      "examples/spec/artifacts/schema-1/signal-subscription/main.ssrg",
+    stdin: "",
+    expectedOutput: "subscription: 30",
+  },
 ]

@@ -1,0 +1,24 @@
+import * as signals from "std/signal"
+
+fn add left: Int -> right: Int -> Int = left + right
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    left <- signals.make 1
+    right <- signals.make 2
+    mirror <- signals.make 0
+    let total = signals.combine add left right
+
+    subscription <- signals.subscribe (\value: Int -> mirror := value) total
+    signals.transaction [
+      signals.planSet 10 left,
+      signals.planSet 20 right,
+    ]
+    signals.unsubscribe subscription
+    left := 100
+
+    current <- *mirror
+    println $ `subscription: ${current}`
+  }

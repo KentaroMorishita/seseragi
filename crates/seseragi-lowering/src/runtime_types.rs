@@ -79,6 +79,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         module: "@seseragi/runtime/signal",
         export_name: "SignalChange",
     },
+    RuntimeTypeImport {
+        canonical: "std/signal::Subscription",
+        runtime_feature: "signal.subscription-type",
+        module: "@seseragi/runtime/signal",
+        export_name: "Subscription",
+    },
 ];
 
 pub(crate) fn runtime_type_import(canonical: &str) -> Option<RuntimeTypeImport> {

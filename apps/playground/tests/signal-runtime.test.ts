@@ -6,7 +6,10 @@ import {
   planSet,
   planUpdate,
   read,
+  set,
+  subscribe,
   transaction,
+  unsubscribe,
 } from "../../../runtime/ts/src/signal"
 
 describe("Signal browser runtime", () => {
@@ -39,5 +42,87 @@ describe("Signal browser runtime", () => {
     )
     expect(await read(left)({})).toBe(1)
     expect(await read(right)({})).toBe(2)
+  })
+
+  test("notifies derived subscribers once after an atomic transaction", async () => {
+    const left = await make(1)({})
+    const right = await make(2)({})
+    const total = combine(
+      (left: number) => (right: number) => left + right,
+      left,
+      right
+    )
+    const observed: string[] = []
+    const first = await subscribe(
+      (value: number) => () => {
+        observed.push(`first:${value}`)
+        return undefined
+      },
+      total
+    )({})
+    const second = await subscribe(
+      (value: number) => () => {
+        observed.push(`second:${value}`)
+        return undefined
+      },
+      total
+    )({})
+
+    await transaction([planSet(10, left), planSet(20, right)])({})
+
+    expect(observed).toEqual(["first:3", "second:3", "first:30", "second:30"])
+    await unsubscribe(first)({})
+    await unsubscribe(second)({})
+  })
+
+  test("queues observer updates and unsubscribes idempotently", async () => {
+    const source = await make(0)({})
+    const observed: number[] = []
+    const subscription = await subscribe(
+      (value: number) => (environment) => {
+        observed.push(value)
+        return value === 1 ? set(2, source)(environment) : undefined
+      },
+      source
+    )({})
+
+    await set(1, source)({})
+    expect(await read(source)({})).toBe(2)
+    expect(observed).toEqual([0, 1, 2])
+
+    await unsubscribe(subscription)({})
+    await unsubscribe(subscription)({})
+    await set(3, source)({})
+    expect(observed).toEqual([0, 1, 2])
+  })
+
+  test("stops a defective observer after notifying the others", async () => {
+    const source = await make(0)({})
+    let defects = 0
+    const healthyValues: number[] = []
+    await subscribe(
+      (value: number) => () => {
+        if (value > 0) {
+          defects += 1
+          throw new Error("observer defect")
+        }
+        return undefined
+      },
+      source
+    )({})
+    const healthy = await subscribe(
+      (value: number) => () => {
+        healthyValues.push(value)
+        return undefined
+      },
+      source
+    )({})
+
+    await expect(set(1, source)({})).rejects.toThrow("observer defect")
+    await set(2, source)({})
+
+    expect(defects).toBe(1)
+    expect(healthyValues).toEqual([0, 1, 2])
+    await unsubscribe(healthy)({})
   })
 })

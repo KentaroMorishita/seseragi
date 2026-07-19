@@ -279,6 +279,35 @@ fails ConsoleError =
     }
 
     #[test]
+    fn infers_generic_effect_environment_from_signal_observer_lambda() {
+        let source = r#"import * as signals from "std/signal"
+
+pub effect fn main -> Unit =
+  do {
+    source <- signals.make 0
+    mirror <- signals.make 0
+    subscription <- signals.subscribe (\value: Int -> mirror := value) source
+    signals.unsubscribe subscription
+  }
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/signal-subscription-lambda",
+            source,
+        ))
+        .expect("observer lambda body should infer the unresolved effect environment");
+
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("_ssrg_signal_subscribe"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("_ssrg_signal_unsubscribe"));
+    }
+
+    #[test]
     fn rejects_unsupported_html_children_before_lowering() {
         let source = r#"import * as html from "std/web/html"
 

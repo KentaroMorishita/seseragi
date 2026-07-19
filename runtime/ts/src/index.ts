@@ -96,7 +96,12 @@ export {
   span,
   text,
 } from "./html"
-export type { MutableSignal, Signal, SignalChange } from "./signal"
+export type {
+  MutableSignal,
+  Signal,
+  SignalChange,
+  Subscription,
+} from "./signal"
 export {
   combine as combineSignal,
   constant as constantSignal,
@@ -106,6 +111,8 @@ export {
   planUpdate as planSignalUpdate,
   read as readSignal,
   set as setSignal,
+  subscribe as subscribeSignal,
   transaction as transactSignals,
+  unsubscribe as unsubscribeSignal,
   update as updateSignal,
 } from "./signal"

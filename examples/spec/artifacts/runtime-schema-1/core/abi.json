@@ -841,6 +841,18 @@
       "import": null
     },
     {
+      "id": "signal.subscription-type",
+      "kind": "value-representation",
+      "typescript": "type Subscription",
+      "boundary": "opaque idempotent Signal subscription handle",
+      "typeIdentity": "std/signal::Subscription",
+      "typeImport": {
+        "module": "@seseragi/runtime/signal",
+        "export": "Subscription"
+      },
+      "import": null
+    },
+    {
       "id": "signal.make",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -912,6 +924,26 @@
       "typescript": "function",
       "boundary": "A -> Signal<A>",
       "import": { "module": "@seseragi/runtime/signal", "export": "constant" }
+    },
+    {
+      "id": "signal.subscribe",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> Effect<R, Never, Unit>) -> Signal<A> -> Effect<R, Never, Subscription>",
+      "import": {
+        "module": "@seseragi/runtime/signal",
+        "export": "subscribe"
+      }
+    },
+    {
+      "id": "signal.unsubscribe",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Subscription -> Effect<{}, Never, Unit> with idempotent cleanup",
+      "import": {
+        "module": "@seseragi/runtime/signal",
+        "export": "unsubscribe"
+      }
     }
   ]
 }

@@ -1,0 +1,37 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/signal-subscription"
+  ],
+  "sourcesContent": [
+    "import * as signals from \"std/signal\"\n\nfn add left: Int -> right: Int -> Int = left + right\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    left <- signals.make 1\n    right <- signals.make 2\n    mirror <- signals.make 0\n    let total = signals.combine add left right\n\n    subscription <- signals.subscribe (\\value: Int -> mirror := value) total\n    signals.transaction [\n      signals.planSet 10 left,\n      signals.planSet 20 right,\n    ]\n    signals.unsubscribe subscription\n    left := 100\n\n    current <- *mirror\n    println $ `subscription: ${current}`\n  }\n"
+  ],
+  "names": [
+    "add",
+    "add",
+    "main",
+    "left",
+    "make",
+    "right",
+    "make",
+    "mirror",
+    "make",
+    "total",
+    "combine",
+    "subscription",
+    "subscribe",
+    "set",
+    "transaction",
+    "planSet",
+    "planSet",
+    "unsubscribe",
+    "set",
+    "current",
+    "read",
+    "println",
+    "intShow"
+  ],
+  "mappings": ";;;;;;AAEAA;AAEAE"
+}

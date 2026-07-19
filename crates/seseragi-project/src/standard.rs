@@ -93,6 +93,7 @@ fn signal_interface() -> ModuleInterface {
         type_export("std/signal", "Signal", 1, "opaque-type"),
         type_export("std/signal", "MutableSignal", 1, "opaque-type"),
         type_export("std/signal", "SignalChange", 0, "opaque-type"),
+        type_export("std/signal", "Subscription", 0, "opaque-type"),
         signal_function(
             "make",
             ["A"],
@@ -165,6 +166,24 @@ fn signal_interface() -> ModuleInterface {
             ["A"],
             vec![named("A")],
             signal_type("Signal", named("A")),
+        ),
+        signal_function(
+            "subscribe",
+            ["R", "A"],
+            vec![
+                function_type(
+                    vec![named("A")],
+                    effect(named("R"), named("Never"), named("Unit")),
+                ),
+                signal_type("Signal", named("A")),
+            ],
+            effect(named("R"), named("Never"), named("Subscription")),
+        ),
+        signal_function(
+            "unsubscribe",
+            [],
+            vec![named("Subscription")],
+            task(named("Unit")),
         ),
     ];
     ModuleInterface {
@@ -351,7 +370,15 @@ fn signal_type(name: &str, value: InterfaceType) -> InterfaceType {
 }
 
 fn task(success: InterfaceType) -> InterfaceType {
-    named_with("Effect", vec![record([]), named("Never"), success])
+    effect(record([]), named("Never"), success)
+}
+
+fn effect(
+    environment: InterfaceType,
+    failure: InterfaceType,
+    success: InterfaceType,
+) -> InterfaceType {
+    named_with("Effect", vec![environment, failure, success])
 }
 
 fn function_type(parameters: Vec<InterfaceType>, result: InterfaceType) -> InterfaceType {
