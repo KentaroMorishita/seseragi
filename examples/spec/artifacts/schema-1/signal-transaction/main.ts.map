@@ -6,7 +6,7 @@
     "seseragi://artifact/signal-transaction"
   ],
   "sourcesContent": [
-    "import * as signals from \"std/signal\"\n\nfn twice value: Int -> Int = value + value\nfn add left: Int -> right: Int -> Int = left + right\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    left <- signals.make 20\n    right <- signals.make 1\n    let doubled = signals.map twice left\n    let total = signals.combine add doubled right\n    let setLeft = signals.planSet 21\n    let updateRight = signals.planUpdate (\\value: Int -> value + 20)\n\n    signals.transaction [\n      setLeft left,\n      updateRight right,\n    ]\n\n    current <- signals.read total\n    println $ `signal: ${current}`\n  }\n"
+    "import * as signals from \"std/signal\"\n\nfn twice value: Int -> Int = value + value\nfn add left: Int -> right: Int -> Int = left + right\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    left <- signals.make 20\n    right <- signals.make 1\n    let doubled = signals.map twice left\n    let total = signals.combine add doubled right\n    let setLeft = signals.planSet 21\n    let updateRight = signals.planUpdate (\\value: Int -> value + 20)\n\n    left := 10\n    signals.transaction [\n      setLeft left,\n      updateRight right,\n    ]\n\n    current <- *total\n    println $ `signal: ${current}`\n  }\n"
   ],
   "names": [
     "twice",
@@ -27,6 +27,7 @@
     "updateRight",
     "planUpdate",
     "add",
+    "set",
     "transaction",
     "setLeft",
     "updateRight",

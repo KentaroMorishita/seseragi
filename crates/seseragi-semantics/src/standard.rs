@@ -3,6 +3,94 @@ use crate::{TypedConstraint, TypedType};
 const INTO_CHILDREN: &str = "std/web/html::trait(IntoChildren)";
 const SIGNAL: &str = "std/signal::Signal";
 const MUTABLE_SIGNAL: &str = "std/signal::MutableSignal";
+const SIGNAL_READ: &str = "std/signal::read";
+const SIGNAL_SET: &str = "std/signal::set";
+
+pub(crate) struct StandardSignalCall {
+    pub(crate) canonical: &'static str,
+    pub(crate) result: TypedType,
+}
+
+pub(crate) fn standard_signal_read_call(source: &TypedType) -> Option<StandardSignalCall> {
+    let value = signal_value_type(source, false)?.clone();
+    Some(StandardSignalCall {
+        canonical: SIGNAL_READ,
+        result: signal_task(value),
+    })
+}
+
+pub(crate) fn standard_signal_set_call(
+    target: &TypedType,
+) -> Option<(TypedType, StandardSignalCall)> {
+    let value = signal_value_type(target, true)?.clone();
+    Some((
+        value,
+        StandardSignalCall {
+            canonical: SIGNAL_SET,
+            result: signal_task(named("Unit")),
+        },
+    ))
+}
+
+pub(crate) fn standard_signal_read_recovery_call() -> StandardSignalCall {
+    StandardSignalCall {
+        canonical: SIGNAL_READ,
+        result: signal_task(TypedType::Hole),
+    }
+}
+
+pub(crate) fn standard_signal_set_recovery_call() -> StandardSignalCall {
+    StandardSignalCall {
+        canonical: SIGNAL_SET,
+        result: signal_task(named("Unit")),
+    }
+}
+
+pub(crate) fn standard_signal_expected(mutable: bool) -> TypedType {
+    TypedType::ExternalNamed {
+        name: if mutable { "MutableSignal" } else { "Signal" }.to_owned(),
+        canonical: if mutable { MUTABLE_SIGNAL } else { SIGNAL }.to_owned(),
+        arguments: vec![TypedType::Hole],
+    }
+}
+
+fn signal_value_type(type_ref: &TypedType, mutable_only: bool) -> Option<&TypedType> {
+    let TypedType::ExternalNamed {
+        canonical,
+        arguments,
+        ..
+    } = type_ref
+    else {
+        return None;
+    };
+    let [value] = arguments.as_slice() else {
+        return None;
+    };
+    ((!mutable_only && matches!(canonical.as_str(), SIGNAL | MUTABLE_SIGNAL))
+        || (mutable_only && canonical == MUTABLE_SIGNAL))
+        .then_some(value)
+}
+
+fn signal_task(success: TypedType) -> TypedType {
+    TypedType::Named {
+        name: "Effect".to_owned(),
+        arguments: vec![
+            TypedType::Record {
+                closed: true,
+                fields: Vec::new(),
+            },
+            named("Never"),
+            success,
+        ],
+    }
+}
+
+fn named(name: &str) -> TypedType {
+    TypedType::Named {
+        name: name.to_owned(),
+        arguments: Vec::new(),
+    }
+}
 
 pub(crate) fn standard_type_coercion(expected: &TypedType, actual: &TypedType) -> bool {
     standard_type_coercion_arguments(expected, actual)

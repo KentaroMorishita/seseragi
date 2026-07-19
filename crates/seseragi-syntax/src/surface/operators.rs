@@ -72,6 +72,7 @@ pub(super) fn is_operator_spelling_token(kind: TokenKind) -> bool {
     matches!(
         kind,
         TokenKind::OperatorArithmetic
+            | TokenKind::OperatorAssignment
             | TokenKind::OperatorComparison
             | TokenKind::OperatorCustom
             | TokenKind::OperatorPipeline

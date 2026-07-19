@@ -14,11 +14,12 @@ fails ConsoleError =
     let setLeft = signals.planSet 21
     let updateRight = signals.planUpdate (\value: Int -> value + 20)
 
+    left := 10
     signals.transaction [
       setLeft left,
       updateRight right,
     ]
 
-    current <- signals.read total
+    current <- *total
     println $ `signal: ${current}`
   }

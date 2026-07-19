@@ -144,6 +144,12 @@ impl ExpressionParser<'_> {
                     argument: Box::new(left),
                     span,
                 },
+                ParsedOperator::Assignment => SurfaceExpr::Assignment {
+                    target: Box::new(left),
+                    value: Box::new(right),
+                    operator_span: token_span(operator),
+                    span,
+                },
                 ParsedOperator::TraitMethod {
                     method,
                     method_operand_sources,
@@ -267,6 +273,18 @@ impl ExpressionParser<'_> {
         self.cursor += 1;
 
         match token.kind {
+            TokenKind::OperatorArithmetic if token.raw == "*" => {
+                let operand = self.parse_expr_bp(70, stops)?;
+                Some(SurfaceExpr::Prefix {
+                    operator: token.raw.clone(),
+                    operator_span: token_span(token),
+                    span: ByteSpan {
+                        start: token.start,
+                        end: operand.span().end,
+                    },
+                    operand: Box::new(operand),
+                })
+            }
             TokenKind::LiteralInteger => Some(SurfaceExpr::Integer {
                 raw: token.raw.clone(),
                 span: token_span(token),
@@ -507,6 +525,7 @@ struct InfixOperatorOccurrence {
 enum ParsedOperator {
     Apply,
     Pipeline,
+    Assignment,
     TraitMethod {
         method: &'static str,
         method_operand_sources: [usize; 2],
@@ -516,6 +535,7 @@ enum ParsedOperator {
 
 fn binary_binding_power(token: &Token) -> Option<(u8, u8, ParsedOperator)> {
     let (precedence, right_associative, kind) = match (token.kind, token.raw.as_str()) {
+        (TokenKind::OperatorAssignment, ":=") => (1, true, ParsedOperator::Assignment),
         (TokenKind::OperatorApply, "$") => (5, true, ParsedOperator::Apply),
         (TokenKind::OperatorPipeline, "|>") => (10, false, ParsedOperator::Pipeline),
         (TokenKind::OperatorCustom, spelling)

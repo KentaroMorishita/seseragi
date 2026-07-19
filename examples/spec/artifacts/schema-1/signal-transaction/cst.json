@@ -5,7 +5,7 @@
   "root": {
     "kind": "module",
     "startToken": 0,
-    "endToken": 229,
+    "endToken": 233,
     "children": [
       {
         "kind": "top-decl",
@@ -42,7 +42,7 @@
       {
         "kind": "top-decl",
         "startToken": 63,
-        "endToken": 229,
+        "endToken": 233,
         "children": [
           {
             "kind": "decl-modifiers",
@@ -53,7 +53,7 @@
           {
             "kind": "effect-fn-decl",
             "startToken": 65,
-            "endToken": 229,
+            "endToken": 233,
             "children": [
               {
                 "kind": "effect-signature",
@@ -70,7 +70,7 @@
               {
                 "kind": "do-block",
                 "startToken": 86,
-                "endToken": 228,
+                "endToken": 232,
                 "children": [
                   {
                     "kind": "do-bind-item",
@@ -117,31 +117,37 @@
                   {
                     "kind": "do-expression-item",
                     "startToken": 193,
-                    "endToken": 197,
+                    "endToken": 198,
                     "children": []
                   },
                   {
                     "kind": "do-expression-item",
-                    "startToken": 199,
-                    "endToken": 203,
+                    "startToken": 200,
+                    "endToken": 204,
                     "children": []
                   },
                   {
                     "kind": "do-expression-item",
-                    "startToken": 205,
-                    "endToken": 206,
+                    "startToken": 206,
+                    "endToken": 210,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 212,
+                    "endToken": 213,
                     "children": []
                   },
                   {
                     "kind": "do-bind-item",
-                    "startToken": 209,
-                    "endToken": 218,
+                    "startToken": 216,
+                    "endToken": 222,
                     "children": []
                   },
                   {
                     "kind": "do-expression-item",
-                    "startToken": 220,
-                    "endToken": 225,
+                    "startToken": 224,
+                    "endToken": 229,
                     "children": []
                   }
                 ]

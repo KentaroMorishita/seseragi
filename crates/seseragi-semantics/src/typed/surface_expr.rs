@@ -24,6 +24,7 @@ mod lambda;
 mod match_expression;
 mod monad_do;
 mod record;
+mod signal;
 mod struct_value;
 mod tuple;
 
@@ -482,6 +483,7 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
             arguments: vec![surface_expression_type_hint(element)?],
         }),
         SurfaceExpr::Grouped { value, .. } => surface_expression_type_hint(value),
+        SurfaceExpr::Prefix { .. } | SurfaceExpr::Assignment { .. } => None,
         SurfaceExpr::Lambda {
             parameter, body, ..
         } => Some(TypedType::Function {
@@ -554,6 +556,27 @@ pub(super) fn type_surface_expression(
             span,
         } => lambda::type_lambda(parameter, body, *span, context),
         SurfaceExpr::Application { .. } => application::type_application(expression, context),
+        SurfaceExpr::Prefix {
+            operator,
+            operand,
+            span,
+            ..
+        } if operator == "*" => signal::type_read(operand, *span, context),
+        SurfaceExpr::Prefix { span, .. } => SurfaceExpressionAnalysis::valid_with_semantic_type(
+            TypedExpr::Variable {
+                name: String::new(),
+                evidence: Vec::new(),
+                type_ref: TypedType::Hole,
+                origin: *span,
+            },
+            SemanticTypeKey::Invalid,
+        ),
+        SurfaceExpr::Assignment {
+            target,
+            value,
+            span,
+            ..
+        } => signal::type_assignment(target, value, *span, context),
         SurfaceExpr::Tuple { elements, span } => tuple::type_tuple(elements, *span, context),
         SurfaceExpr::Array { elements, span } => array::type_array(elements, *span, context),
         SurfaceExpr::List { elements, span } => array::type_list(elements, *span, context),

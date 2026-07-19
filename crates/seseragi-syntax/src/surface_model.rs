@@ -424,6 +424,18 @@ pub enum SurfaceExpr {
         argument: Box<SurfaceExpr>,
         span: ByteSpan,
     },
+    Prefix {
+        operator: String,
+        operator_span: ByteSpan,
+        operand: Box<SurfaceExpr>,
+        span: ByteSpan,
+    },
+    Assignment {
+        target: Box<SurfaceExpr>,
+        value: Box<SurfaceExpr>,
+        operator_span: ByteSpan,
+        span: ByteSpan,
+    },
     Lambda {
         parameter: SurfaceLambdaParameter,
         body: Box<SurfaceExpr>,
@@ -512,6 +524,8 @@ impl SurfaceExpr {
             | Self::Name { span, .. }
             | Self::Member { span, .. }
             | Self::Application { span, .. }
+            | Self::Prefix { span, .. }
+            | Self::Assignment { span, .. }
             | Self::Lambda { span, .. }
             | Self::Tuple { span, .. }
             | Self::Array { span, .. }

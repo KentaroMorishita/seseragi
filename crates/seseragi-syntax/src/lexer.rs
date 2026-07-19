@@ -177,6 +177,7 @@ impl Lexer<'_> {
             "<-" => TokenKind::OperatorBind,
             "|>" => TokenKind::OperatorPipeline,
             "$" => TokenKind::OperatorApply,
+            ":=" => TokenKind::OperatorAssignment,
             ".." => TokenKind::OperatorRangeExclusive,
             "..=" => TokenKind::OperatorRangeInclusive,
             "..." => TokenKind::PunctuationEllipsis,

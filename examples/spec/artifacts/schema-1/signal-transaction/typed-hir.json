@@ -101,16 +101,6 @@
             "start": 12,
             "end": 19
           }
-        },
-        {
-          "namespace": "value",
-          "imported": "read",
-          "local": "signals.read",
-          "canonical": "std/signal::read",
-          "origin": {
-            "start": 12,
-            "end": 19
-          }
         }
       ]
     }
@@ -335,7 +325,7 @@
       "visibility": "public",
       "origin": {
         "start": 136,
-        "end": 608
+        "end": 611
       },
       "parameters": [
         {
@@ -949,99 +939,39 @@
             "kind": "effect",
             "value": {
               "kind": "call",
-              "callee": "std/signal::transaction",
+              "callee": "std/signal::set",
               "arguments": [
                 {
-                  "kind": "array",
-                  "elements": [
-                    {
-                      "kind": "call",
-                      "callee": "setLeft",
-                      "arguments": [
-                        {
-                          "kind": "variable",
-                          "name": "left",
-                          "type": {
-                            "kind": "external-named",
-                            "name": "MutableSignal",
-                            "canonical": "std/signal::MutableSignal",
-                            "arguments": [
-                              {
-                                "kind": "named",
-                                "name": "Int",
-                                "arguments": []
-                              }
-                            ]
-                          },
-                          "origin": {
-                            "start": 498,
-                            "end": 502
-                          }
-                        }
-                      ],
-                      "type": {
-                        "kind": "external-named",
-                        "name": "SignalChange",
-                        "canonical": "std/signal::SignalChange",
-                        "arguments": []
-                      },
-                      "origin": {
-                        "start": 490,
-                        "end": 502
-                      }
-                    },
-                    {
-                      "kind": "call",
-                      "callee": "updateRight",
-                      "arguments": [
-                        {
-                          "kind": "variable",
-                          "name": "right",
-                          "type": {
-                            "kind": "external-named",
-                            "name": "MutableSignal",
-                            "canonical": "std/signal::MutableSignal",
-                            "arguments": [
-                              {
-                                "kind": "named",
-                                "name": "Int",
-                                "arguments": []
-                              }
-                            ]
-                          },
-                          "origin": {
-                            "start": 522,
-                            "end": 527
-                          }
-                        }
-                      ],
-                      "type": {
-                        "kind": "external-named",
-                        "name": "SignalChange",
-                        "canonical": "std/signal::SignalChange",
-                        "arguments": []
-                      },
-                      "origin": {
-                        "start": 510,
-                        "end": 527
-                      }
-                    }
-                  ],
+                  "kind": "integer",
+                  "value": "10",
                   "type": {
                     "kind": "named",
-                    "name": "Array",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 470,
+                    "end": 472
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "left",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
                     "arguments": [
                       {
-                        "kind": "external-named",
-                        "name": "SignalChange",
-                        "canonical": "std/signal::SignalChange",
+                        "kind": "named",
+                        "name": "Int",
                         "arguments": []
                       }
                     ]
                   },
                   "origin": {
-                    "start": 482,
-                    "end": 534
+                    "start": 462,
+                    "end": 466
                   }
                 }
               ],
@@ -1068,7 +998,134 @@
               },
               "origin": {
                 "start": 462,
-                "end": 534
+                "end": 472
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::transaction",
+              "arguments": [
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "call",
+                      "callee": "setLeft",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "left",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "MutableSignal",
+                            "canonical": "std/signal::MutableSignal",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 513,
+                            "end": 517
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "SignalChange",
+                        "canonical": "std/signal::SignalChange",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 505,
+                        "end": 517
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "updateRight",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "right",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "MutableSignal",
+                            "canonical": "std/signal::MutableSignal",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 537,
+                            "end": 542
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "SignalChange",
+                        "canonical": "std/signal::SignalChange",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 525,
+                        "end": 542
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "SignalChange",
+                        "canonical": "std/signal::SignalChange",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 497,
+                    "end": 549
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 477,
+                "end": 549
               }
             }
           },
@@ -1100,8 +1157,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 564,
-                    "end": 569
+                    "start": 567,
+                    "end": 572
                   }
                 }
               ],
@@ -1127,13 +1184,13 @@
                 ]
               },
               "origin": {
-                "start": 551,
-                "end": 569
+                "start": 566,
+                "end": 572
               }
             },
             "origin": {
-              "start": 540,
-              "end": 569
+              "start": 555,
+              "end": 572
             }
           }
         ],
@@ -1174,8 +1231,8 @@
                   "kind": "text",
                   "value": "signal: ",
                   "origin": {
-                    "start": 585,
-                    "end": 593
+                    "start": 588,
+                    "end": 596
                   }
                 },
                 {
@@ -1189,8 +1246,8 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 595,
-                      "end": 602
+                      "start": 598,
+                      "end": 605
                     }
                   },
                   "evidence": {
@@ -1211,8 +1268,8 @@
                   },
                   "traitIdentity": "std/prelude::Show",
                   "origin": {
-                    "start": 593,
-                    "end": 603
+                    "start": 596,
+                    "end": 606
                   }
                 }
               ],
@@ -1222,19 +1279,19 @@
                 "arguments": []
               },
               "origin": {
-                "start": 584,
-                "end": 604
+                "start": 587,
+                "end": 607
               }
             }
           ],
           "origin": {
-            "start": 574,
-            "end": 604
+            "start": 577,
+            "end": 607
           }
         },
         "origin": {
           "start": 199,
-          "end": 608
+          "end": 611
         }
       }
     }

@@ -336,6 +336,30 @@ fn parses_tuple_values_without_losing_grouped_expressions() {
 }
 
 #[test]
+fn parses_signal_read_and_assignment_with_fixed_precedence() {
+    let read = first_body("pub fn snapshot source: Signal<Int> -> Task<Never, Int> = *source\n");
+    assert!(matches!(
+        read,
+        SurfaceExpr::Prefix {
+            operator,
+            operand,
+            ..
+        } if operator == "*"
+            && matches!(*operand, SurfaceExpr::Name { ref name, .. } if name == "source")
+    ));
+
+    let assignment = first_body(
+        "pub fn replace target: MutableSignal<Int> -> Task<Never, Unit> = target := 1 + 2\n",
+    );
+    assert!(matches!(
+        assignment,
+        SurfaceExpr::Assignment { target, value, .. }
+            if matches!(*target, SurfaceExpr::Name { ref name, .. } if name == "target")
+                && matches!(*value, SurfaceExpr::Binary { ref operator, .. } if operator == "+")
+    ));
+}
+
+#[test]
 fn parses_trait_operators_as_grouped_function_values() {
     for operator in ["<$>", "<*>", ">>="] {
         let source = format!("pub let operation = ({operator})\n");

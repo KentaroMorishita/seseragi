@@ -44,6 +44,11 @@ pub(super) fn resolve_expression(
             resolve_expression(resolver, scope, function);
             resolve_expression(resolver, scope, argument);
         }
+        SurfaceExpr::Prefix { operand, .. } => resolve_expression(resolver, scope, operand),
+        SurfaceExpr::Assignment { target, value, .. } => {
+            resolve_expression(resolver, scope, target);
+            resolve_expression(resolver, scope, value);
+        }
         SurfaceExpr::Lambda {
             parameter,
             body,

@@ -232,6 +232,53 @@ fails ConsoleError =
     }
 
     #[test]
+    fn compiles_signal_read_and_assignment_sugar_through_the_runtime_abi() {
+        let source = r#"import * as signals from "std/signal"
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    count <- signals.make 1
+    count := 42
+    current <- *count
+    println $ `signal: ${current}`
+  }
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/signal-sugar",
+            source,
+        ))
+        .expect("fixed Signal sugar should compile");
+
+        assert!(compiled.generated.typescript.contains("_ssrg_signal_set"));
+        assert!(compiled.generated.typescript.contains("_ssrg_signal_read"));
+        assert!(!compiled.generated.typescript.contains(":="));
+    }
+
+    #[test]
+    fn rejects_signal_sugar_on_non_signal_values_before_lowering() {
+        for (name, expression) in [("read", "value <- *42"), ("write", "42 := 1")] {
+            let source = format!(
+                "pub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {{\n    {expression}\n    println \"unreachable\"\n  }}\n"
+            );
+            let diagnostics = compile_module(CompileInput::new(
+                "main.ssrg",
+                &format!("artifact/signal-sugar-invalid-{name}"),
+                &source,
+            ))
+            .expect_err("invalid Signal sugar must stop before lowering");
+
+            assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:?}");
+            assert!(diagnostics
+                .diagnostics
+                .iter()
+                .any(|diagnostic| diagnostic.message_key == "call.argument-type-mismatch"));
+        }
+    }
+
+    #[test]
     fn rejects_unsupported_html_children_before_lowering() {
         let source = r#"import * as html from "std/web/html"
 

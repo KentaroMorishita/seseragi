@@ -99,6 +99,25 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
             validate_child(expression, "function", path)?;
             validate_child(expression, "argument", path)
         }
+        "prefix" => {
+            expression
+                .get("operator")
+                .and_then(Value::as_str)
+                .ok_or_else(|| format!("SurfaceAst {path}.operator must be a string"))?;
+            let operator_span = expression
+                .get("operatorSpan")
+                .ok_or_else(|| format!("SurfaceAst {path}.operatorSpan is required"))?;
+            require_span_value(operator_span, &format!("{path}.operatorSpan"))?;
+            validate_child(expression, "operand", path)
+        }
+        "assignment" => {
+            let operator_span = expression
+                .get("operatorSpan")
+                .ok_or_else(|| format!("SurfaceAst {path}.operatorSpan is required"))?;
+            require_span_value(operator_span, &format!("{path}.operatorSpan"))?;
+            validate_child(expression, "target", path)?;
+            validate_child(expression, "value", path)
+        }
         "binary" => {
             validate_child(expression, "left", path)?;
             validate_child(expression, "right", path)

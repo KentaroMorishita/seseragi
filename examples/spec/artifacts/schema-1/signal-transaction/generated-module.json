@@ -19,6 +19,7 @@
       "signal.combine",
       "signal.plan-set",
       "signal.plan-update",
+      "signal.set",
       "signal.transaction",
       "signal.read",
       "effect.console.println",

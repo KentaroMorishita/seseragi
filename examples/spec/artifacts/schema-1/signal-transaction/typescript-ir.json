@@ -16,6 +16,7 @@
     "signal.combine",
     "signal.plan-set",
     "signal.plan-update",
+    "signal.set",
     "signal.transaction",
     "signal.read",
     "effect.console.println",
@@ -50,6 +51,10 @@
     {
       "feature": "signal.plan-update",
       "local": "_ssrg_signal_planUpdate"
+    },
+    {
+      "feature": "signal.set",
+      "local": "_ssrg_signal_set"
     },
     {
       "feature": "signal.transaction",
@@ -378,6 +383,23 @@
             "kind": "effect",
             "value": {
               "kind": "runtime-call",
+              "callee": "_ssrg_signal_set",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "10"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "left"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
               "callee": "_ssrg_signal_transaction",
               "arguments": [
                 {
@@ -431,8 +453,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 540,
-              "end": 569
+              "start": 555,
+              "end": 572
             }
           }
         ],
@@ -468,7 +490,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 136,
-        "end": 608
+        "end": 611
       }
     }
   ]
