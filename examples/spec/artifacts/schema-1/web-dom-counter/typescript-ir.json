@@ -1,0 +1,638 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/web-dom-counter",
+  "runtimeRequirements": [
+    "web.html.type",
+    "web.html.style-type",
+    "signal.mutable-type",
+    "signal.type",
+    "web.dom.target",
+    "web.dom.error",
+    "web.dom.service",
+    "web.dom.runtime-error",
+    "web.dom.options",
+    "core.adt",
+    "core.int64",
+    "web.html.main",
+    "web.html.style",
+    "core.string",
+    "web.html.h1",
+    "web.html.p",
+    "core.int64.show",
+    "web.html.button",
+    "core.unit",
+    "effect.core.flatMap",
+    "signal.make",
+    "effect.core.type",
+    "signal.map",
+    "effect.core.mapError",
+    "web.dom.query",
+    "web.dom.run",
+    "web.dom.default-options",
+    "signal.update",
+    "core.int64.add"
+  ],
+  "imports": [
+    {
+      "feature": "web.html.main",
+      "local": "_ssrg_html_main"
+    },
+    {
+      "feature": "web.html.style",
+      "local": "_ssrg_html_style"
+    },
+    {
+      "feature": "web.html.h1",
+      "local": "_ssrg_html_h1"
+    },
+    {
+      "feature": "web.html.p",
+      "local": "_ssrg_html_p"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "web.html.button",
+      "local": "_ssrg_html_button"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "signal.make",
+      "local": "_ssrg_signal_make"
+    },
+    {
+      "feature": "signal.map",
+      "local": "_ssrg_signal_map"
+    },
+    {
+      "feature": "effect.core.mapError",
+      "local": "_ssrg_effect_mapError"
+    },
+    {
+      "feature": "web.dom.query",
+      "local": "_ssrg_dom_query"
+    },
+    {
+      "feature": "web.dom.run",
+      "local": "_ssrg_dom_run"
+    },
+    {
+      "feature": "web.dom.default-options",
+      "local": "_ssrg_dom_defaultOptions"
+    },
+    {
+      "feature": "signal.update",
+      "local": "_ssrg_signal_update"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "web.html.type",
+      "local": "Html"
+    },
+    {
+      "feature": "web.html.style-type",
+      "local": "Style"
+    },
+    {
+      "feature": "signal.mutable-type",
+      "local": "MutableSignal"
+    },
+    {
+      "feature": "signal.type",
+      "local": "Signal"
+    },
+    {
+      "feature": "web.dom.target",
+      "local": "DomTarget"
+    },
+    {
+      "feature": "web.dom.error",
+      "local": "DomError"
+    },
+    {
+      "feature": "web.dom.service",
+      "local": "Dom"
+    },
+    {
+      "feature": "web.dom.runtime-error",
+      "local": "DomRuntimeError"
+    },
+    {
+      "feature": "web.dom.options",
+      "local": "DomOptions"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "Msg",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Increment",
+          "tag": "Increment",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 126,
+            "end": 135
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 111,
+        "end": 135
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "view",
+      "parameters": [
+        {
+          "name": "count",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_main",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "style",
+                "value": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_html_style",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "backgroundColor",
+                          "value": {
+                            "kind": "string",
+                            "value": "#eef6f3"
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "padding",
+                          "value": {
+                            "kind": "string",
+                            "value": "32px"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_h1",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "style",
+                              "value": {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_html_style",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "items": [
+                                      {
+                                        "kind": "field",
+                                        "name": "color",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "#123b32"
+                                        }
+                                      },
+                                      {
+                                        "kind": "field",
+                                        "name": "marginTop",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "0"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Interactive Seseragi"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_p",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "id",
+                              "value": {
+                                "kind": "string",
+                                "value": "count"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "style",
+                              "value": {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_html_style",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "items": [
+                                      {
+                                        "kind": "field",
+                                        "name": "color",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "#185f50"
+                                        }
+                                      },
+                                      {
+                                        "kind": "field",
+                                        "name": "fontSize",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "24px"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "binary",
+                                "operator": "+",
+                                "left": {
+                                  "kind": "string",
+                                  "value": "Count: "
+                                },
+                                "right": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_show_intShow"
+                                  },
+                                  "method": "show",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "count"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "id",
+                              "value": {
+                                "kind": "string",
+                                "value": "increment"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "onClick",
+                              "value": {
+                                "kind": "identifier",
+                                "name": "Increment"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "style",
+                              "value": {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_html_style",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "items": [
+                                      {
+                                        "kind": "field",
+                                        "name": "backgroundColor",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "#8ce6c3"
+                                        }
+                                      },
+                                      {
+                                        "kind": "field",
+                                        "name": "borderRadius",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "999px"
+                                        }
+                                      },
+                                      {
+                                        "kind": "field",
+                                        "name": "padding",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "12px 20px"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "+1"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "reference",
+                    "name": "Html",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Msg",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 137,
+        "end": 824
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "const",
+            "name": "count",
+            "type": {
+              "kind": "reference",
+              "name": "MutableSignal",
+              "arguments": [
+                {
+                  "kind": "bigint"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_make",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "0"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 897,
+              "end": 920
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "content",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Html",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Msg",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_map",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "view"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "count"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 925,
+              "end": 961
+            }
+          },
+          {
+            "kind": "const",
+            "name": "target",
+            "type": {
+              "kind": "reference",
+              "name": "DomTarget",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "error: DomError",
+                  "body": {
+                    "kind": "string",
+                    "value": "DOM target unavailable"
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_dom_query",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "#app"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 966,
+              "end": 1069
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_effect_mapError",
+          "arguments": [
+            {
+              "kind": "lambda",
+              "parameter": "error: DomRuntimeError<never>",
+              "body": {
+                "kind": "string",
+                "value": "DOM runtime failed"
+              }
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_dom_run",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_dom_defaultOptions",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "target"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "message: Msg",
+                  "body": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_signal_update",
+                    "arguments": [
+                      {
+                        "kind": "lambda",
+                        "parameter": "value: bigint",
+                        "body": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_int64_add",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "value"
+                            },
+                            {
+                              "kind": "bigint",
+                              "value": "1"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "count"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "content"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 826,
+        "end": 1270
+      }
+    }
+  ]
+}

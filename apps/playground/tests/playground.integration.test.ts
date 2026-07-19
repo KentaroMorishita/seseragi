@@ -93,7 +93,8 @@ describe("new Playground product gate", () => {
     expect(html).toContain('id="show-text-output-button"')
     expect(html).toContain('id="show-html-preview-button"')
     expect(html).toContain('id="html-preview"')
-    expect(html).toMatch(/<iframe[\s\S]*?\ssandbox(?:\s|>)/)
+    expect(html).toMatch(/<iframe[\s\S]*?\ssandbox(?:=|\s|>)/)
+    expect(html).toContain('sandbox="allow-same-origin"')
     expect(html).not.toContain("allow-scripts")
     expect(main).toContain(
       'URL.createObjectURL(new Blob([html], { type: "text/html" }))'
@@ -112,6 +113,13 @@ describe("new Playground product gate", () => {
       expect(response.status).toBe("success")
       if (response.status !== "success" || !response.entry)
         throw new Error("missing entry")
+      if (sample.interactive) {
+        expect(response.entry.environment).toContainEqual({
+          field: "dom",
+          service: "dom",
+        })
+        return
+      }
       expect(
         await executeGeneratedModule(
           response.generated.typescript,
@@ -121,6 +129,21 @@ describe("new Playground product gate", () => {
       ).toEqual({ stdout: sample.expectedOutput })
     })
   }
+
+  test("connects DOM programs to cancellable interactive preview sessions", async () => {
+    const main = await Bun.file(
+      new URL("../src/main.ts", import.meta.url)
+    ).text()
+    const sample = sampleCatalog.find(
+      (candidate) => candidate.id === "web-dom-counter"
+    )
+
+    expect(sample?.interactive).toBe(true)
+    expect(main).toContain("prepareInteractivePreview()")
+    expect(main).toContain('binding.service === "dom"')
+    expect(main).toContain('setStatus("success", "Interactive")')
+    expect(main).toContain("execution.cancel()")
+  })
 
   test("returns structured diagnostics for invalid source", async () => {
     const response = await compile("broken.ssrg", "pub let broken: Int =\n")

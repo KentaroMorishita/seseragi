@@ -54,6 +54,7 @@ const FILES: &[(&str, &str)] = &[
         "src/html.ts",
         include_str!("../../../runtime/ts/src/html.ts"),
     ),
+    ("src/dom.ts", include_str!("../../../runtime/ts/src/dom.ts")),
     (
         "src/signal.ts",
         include_str!("../../../runtime/ts/src/signal.ts"),

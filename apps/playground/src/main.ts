@@ -5,7 +5,10 @@ import {
   toEditorDiagnostics,
 } from "./diagnostics/editor-diagnostics"
 import { createEditor, replaceEditorSource } from "./editor/create-editor"
-import { executeGeneratedModule } from "./runtime/browser-execution"
+import {
+  type BrowserExecution,
+  startGeneratedModule,
+} from "./runtime/browser-execution"
 import { samples } from "./samples"
 import "./styles.css"
 import { requiredElement } from "./ui/elements"
@@ -40,6 +43,8 @@ const workspace = requiredElement(".workspace", HTMLElement)
 let source = samples[0]?.source ?? ""
 let outputMode: "text" | "html" = samples[0]?.outputMode ?? "text"
 let htmlPreviewUrl: string | undefined
+let activeExecution: BrowserExecution | undefined
+let runRevision = 0
 
 const sampleGroups = new Map<string, HTMLOptGroupElement>()
 for (const sample of samples) {
@@ -66,6 +71,7 @@ const initialSample = samples[0]
 if (initialSample) stdinInput.value = initialSample.stdin
 
 sampleSelect.addEventListener("change", () => {
+  cancelActiveExecution()
   const sample = samples.find(
     (candidate) => candidate.id === sampleSelect.value
   )
@@ -80,6 +86,7 @@ sampleSelect.addEventListener("change", () => {
 
 runButton.addEventListener("click", () => void run())
 clearSourceButton.addEventListener("click", () => {
+  cancelActiveExecution()
   source = ""
   replaceEditorSource(editor, source)
   editor.dispatch(setDiagnostics(editor.state, []))
@@ -87,6 +94,7 @@ clearSourceButton.addEventListener("click", () => {
   setStatus("ready", "Source cleared")
 })
 clearOutputButton.addEventListener("click", () => {
+  cancelActiveExecution()
   output.textContent = ""
   clearHtmlPreview()
 })
@@ -95,12 +103,15 @@ showHtmlPreviewButton.addEventListener("click", () => chooseOutputMode("html"))
 connectMobilePanels(workspace)
 
 async function run(): Promise<void> {
+  cancelActiveExecution()
+  const revision = runRevision
   runButton.disabled = true
   showTextOutput("Compiling with the shared Rust driver…")
   setStatus("running", "Compiling…")
 
   try {
     const compiled = await compileSingleFile(source)
+    if (revision !== runRevision) return
     const diagnostics = compiled.diagnostics.diagnostics
     editor.dispatch(
       setDiagnostics(editor.state, [
@@ -123,21 +134,66 @@ async function run(): Promise<void> {
     }
 
     setStatus("running", "Running…")
-    const result = await executeGeneratedModule(
+    const needsDom = compiled.entry.environment.some(
+      (binding) => binding.service === "dom"
+    )
+    const domDocument = needsDom ? await prepareInteractivePreview() : undefined
+    if (revision !== runRevision) {
+      clearHtmlPreview()
+      setOutputMode("text")
+      return
+    }
+    const execution = await startGeneratedModule(
       compiled.generated.typescript,
       compiled.entry,
-      stdinInput.value
+      stdinInput.value,
+      {
+        ...(domDocument === undefined ? {} : { domDocument }),
+        onDomMounted: () => {
+          if (revision !== runRevision) return
+          output.textContent = "Interactive preview is running."
+          setOutputMode("html")
+          setStatus("success", "Interactive")
+          showIoOnSmallScreens()
+        },
+      }
     )
-    showExecutionOutput(result.stdout)
-    setStatus("success", "Completed")
-    showIoOnSmallScreens()
+    if (revision !== runRevision) {
+      await execution.cancel()
+      return
+    }
+    activeExecution = execution
+    void execution.completion.then(
+      (result) => {
+        if (revision !== runRevision || activeExecution !== execution) return
+        activeExecution = undefined
+        showExecutionOutput(result.stdout)
+        setStatus("success", "Completed")
+        showIoOnSmallScreens()
+      },
+      (error: unknown) => {
+        if (revision !== runRevision || activeExecution !== execution) return
+        activeExecution = undefined
+        showTextOutput(error instanceof Error ? error.message : String(error))
+        setStatus("error", "Execution failed")
+        showIoOnSmallScreens()
+      }
+    )
   } catch (error) {
+    if (revision !== runRevision) return
     showTextOutput(error instanceof Error ? error.message : String(error))
     setStatus("error", "Execution failed")
     showIoOnSmallScreens()
   } finally {
     runButton.disabled = false
   }
+}
+
+function cancelActiveExecution(): void {
+  runRevision += 1
+  const execution = activeExecution
+  activeExecution = undefined
+  if (execution !== undefined) void execution.cancel()
 }
 
 function showExecutionOutput(stdout: string): void {
@@ -168,6 +224,36 @@ function renderHtmlPreview(html: string): void {
     { once: true }
   )
   htmlPreview.src = url
+}
+
+async function prepareInteractivePreview(): Promise<Document> {
+  clearHtmlPreview()
+  const url = URL.createObjectURL(
+    new Blob(['<!doctype html><div id="app"></div>'], {
+      type: "text/html",
+    })
+  )
+  htmlPreviewUrl = url
+  const loaded = new Promise<void>((resolve, reject) => {
+    htmlPreview.addEventListener("load", () => resolve(), { once: true })
+    htmlPreview.addEventListener(
+      "error",
+      () => reject(new Error("interactive preview failed to load")),
+      { once: true }
+    )
+  })
+  htmlPreview.src = url
+  await loaded
+  if (htmlPreviewUrl === url) {
+    URL.revokeObjectURL(url)
+    htmlPreviewUrl = undefined
+  }
+  const document = htmlPreview.contentDocument
+  if (document === null) {
+    throw new Error("interactive preview document is unavailable")
+  }
+  setOutputMode("html")
+  return document
 }
 
 function clearHtmlPreview(): void {

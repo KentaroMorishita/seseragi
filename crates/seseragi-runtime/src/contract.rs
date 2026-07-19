@@ -1,6 +1,6 @@
 use serde::Serialize;
 use seseragi_driver::CompiledModule;
-use seseragi_semantics::{TypedDecl, TypedParameter, TypedType};
+use seseragi_semantics::{ExternalTypeBinding, TypedDecl, TypedParameter, TypedType};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -21,7 +21,32 @@ pub struct EnvironmentBinding {
 pub enum HostService {
     Console,
     Stdin,
+    Dom,
 }
+
+struct HostServiceSpec {
+    spelling: &'static str,
+    canonical: &'static str,
+    service: HostService,
+}
+
+const HOST_SERVICES: &[HostServiceSpec] = &[
+    HostServiceSpec {
+        spelling: "Console",
+        canonical: "std/prelude::Console",
+        service: HostService::Console,
+    },
+    HostServiceSpec {
+        spelling: "Stdin",
+        canonical: "std/prelude::Stdin",
+        service: HostService::Stdin,
+    },
+    HostServiceSpec {
+        spelling: "Dom",
+        canonical: "std/web/dom::Dom",
+        service: HostService::Dom,
+    },
+];
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(tag = "kind", rename_all = "camelCase")]
@@ -60,12 +85,18 @@ pub fn main_contract(compiled: &CompiledModule) -> Result<MainContract, String> 
     }
 
     Ok(MainContract {
-        environment: environment(&effect.environment)?,
+        environment: environment(
+            &effect.environment,
+            &compiled.typed_hir.external_type_bindings,
+        )?,
         failure_renderer: failure_renderer(compiled, &effect.failure)?,
     })
 }
 
-fn environment(type_ref: &TypedType) -> Result<Vec<EnvironmentBinding>, String> {
+fn environment(
+    type_ref: &TypedType,
+    external_types: &[ExternalTypeBinding],
+) -> Result<Vec<EnvironmentBinding>, String> {
     let TypedType::Record {
         closed: true,
         fields,
@@ -82,26 +113,43 @@ fn environment(type_ref: &TypedType) -> Result<Vec<EnvironmentBinding>, String> 
                     field.name
                 ));
             }
-            let service = match &field.type_ref {
-                TypedType::Named { name, arguments } if arguments.is_empty() && name == "Console" => {
-                    HostService::Console
-                }
-                TypedType::Named { name, arguments } if arguments.is_empty() && name == "Stdin" => {
-                    HostService::Stdin
-                }
-                other => {
-                    return Err(format!(
-                        "no command-line host adapter for `main` environment field `{}` with type {other:?}",
-                        field.name
-                    ))
-                }
-            };
+            let service = host_service(&field.type_ref, external_types).ok_or_else(|| {
+                format!(
+                    "no command-line host adapter for `main` environment field `{}` with type {:?}",
+                    field.name, field.type_ref
+                )
+            })?;
             Ok(EnvironmentBinding {
                 field: field.name.clone(),
                 service,
             })
         })
         .collect()
+}
+
+fn host_service(
+    type_ref: &TypedType,
+    external_types: &[ExternalTypeBinding],
+) -> Option<HostService> {
+    let (spelling, canonical) = match type_ref {
+        TypedType::Named { name, arguments } if arguments.is_empty() => (
+            name.as_str(),
+            external_types
+                .iter()
+                .find(|binding| binding.spelling == *name)
+                .map(|binding| binding.canonical.as_str()),
+        ),
+        TypedType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        } if arguments.is_empty() => (name.as_str(), Some(canonical.as_str())),
+        _ => return None,
+    };
+    HOST_SERVICES
+        .iter()
+        .find(|spec| spelling == spec.spelling || canonical == Some(spec.canonical))
+        .map(|spec| spec.service)
 }
 
 fn failure_renderer(
@@ -188,6 +236,28 @@ mod tests {
             contract.failure_renderer,
             FailureRenderer::Show { ref module, ref export }
                 if module == "@seseragi/runtime/show" && export == "intShow"
+        ));
+    }
+
+    #[test]
+    fn exposes_the_browser_dom_service_in_the_shared_main_contract() {
+        let source =
+            include_str!("../../../examples/spec/artifacts/schema-1/web-dom-counter/main.ssrg");
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-dom-counter",
+            source,
+        ))
+        .unwrap();
+        let contract = main_contract(&compiled).unwrap();
+
+        assert_eq!(contract.environment.len(), 1);
+        assert_eq!(contract.environment[0].field, "dom");
+        assert_eq!(contract.environment[0].service, HostService::Dom);
+        assert!(matches!(
+            contract.failure_renderer,
+            FailureRenderer::Show { ref module, ref export }
+                if module == "@seseragi/runtime/show" && export == "stringShow"
         ));
     }
 }

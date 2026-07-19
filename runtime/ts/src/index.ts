@@ -98,6 +98,19 @@ export {
   text,
 } from "./html"
 export type {
+  Dom,
+  DomEnvironment,
+  DomError,
+  DomOptions,
+  DomRuntimeError,
+  DomTarget,
+} from "./dom"
+export {
+  defaultOptions as defaultDomOptions,
+  query as queryDom,
+  run as runDom,
+} from "./dom"
+export type {
   MutableSignal,
   Signal,
   SignalChange,

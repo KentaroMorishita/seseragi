@@ -1,6 +1,7 @@
 import { createBrowserEnvironment } from "../../../../runtime/ts/src/browser/host"
 import * as effectRuntime from "../../../../runtime/ts/src/effect"
 import type { EntryContract } from "../compiler/types"
+import { createBrowserDom, type BrowserDom } from "./browser-dom"
 import { runtimeModules } from "./runtime-modules"
 
 type ModuleExports = Record<string, unknown>
@@ -9,18 +10,55 @@ export type ExecutionResult = {
   readonly stdout: string
 }
 
+export type BrowserExecution = Readonly<{
+  readonly completion: Promise<ExecutionResult>
+  readonly cancel: () => Promise<void>
+}>
+
+export type BrowserExecutionOptions = Readonly<{
+  readonly domDocument?: Document
+  readonly onDomMounted?: () => void
+}>
+
 export async function executeGeneratedModule(
   typescript: string,
   entry: EntryContract,
-  input = ""
+  input = "",
+  options: BrowserExecutionOptions = {}
 ): Promise<ExecutionResult> {
+  const execution = await startGeneratedModule(
+    typescript,
+    entry,
+    input,
+    options
+  )
+  return execution.completion
+}
+
+export async function startGeneratedModule(
+  typescript: string,
+  entry: EntryContract,
+  input = "",
+  options: BrowserExecutionOptions = {}
+): Promise<BrowserExecution> {
   let stdout = ""
+  let browserDom: BrowserDom | undefined
+  if (entry.environment.some((binding) => binding.service === "dom")) {
+    if (options.domDocument === undefined) {
+      throw new Error("program requires an interactive HTML preview")
+    }
+    browserDom = createBrowserDom(
+      options.domDocument,
+      options.onDomMounted ?? (() => {})
+    )
+  }
   const environment = createBrowserEnvironment(
     entry.environment,
     input,
     (value) => {
       stdout += value
-    }
+    },
+    browserDom?.service
   )
   const generated = await evaluate(typescript)
   const main = generated.main
@@ -28,14 +66,22 @@ export async function executeGeneratedModule(
     throw new Error("generated module does not export main")
   }
 
-  const result = await effectRuntime.run(
-    main(undefined) as effectRuntime.Effect<unknown, unknown, unknown>,
-    environment
-  )
-  if (result.kind === "failure") {
-    throw new Error(renderFailure(entry, generated, result.error))
-  }
-  return { stdout: stdout.trimEnd() }
+  const completion = effectRuntime
+    .run(
+      main(undefined) as effectRuntime.Effect<unknown, unknown, unknown>,
+      environment
+    )
+    .then((result) => {
+      if (result.kind === "failure") {
+        throw new Error(renderFailure(entry, generated, result.error))
+      }
+      return { stdout: stdout.trimEnd() }
+    })
+    .finally(() => browserDom?.dispose())
+  return Object.freeze({
+    completion,
+    cancel: () => browserDom?.dispose() ?? Promise.resolve(),
+  })
 }
 
 async function evaluate(source: string): Promise<ModuleExports> {

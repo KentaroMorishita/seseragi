@@ -17,6 +17,10 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         interface: web_html_interface,
     },
     StandardModuleDefinition {
+        specifier: "std/web/dom",
+        interface: web_dom_interface,
+    },
+    StandardModuleDefinition {
         specifier: "std/signal",
         interface: signal_interface,
     },
@@ -32,6 +36,77 @@ pub fn standard_module_target(specifier: &str) -> Option<ModuleLinkTarget> {
         .iter()
         .find(|module| module.specifier == specifier)
         .map(|module| ModuleLinkTarget::external((module.interface)()))
+}
+
+fn web_dom_interface() -> ModuleInterface {
+    let exports = vec![
+        type_export("std/web/dom", "Dom", 0, "opaque-type"),
+        type_export("std/web/dom", "DomOptions", 0, "opaque-type"),
+        type_export("std/web/dom", "DomTarget", 0, "opaque-type"),
+        type_export("std/web/dom", "DomError", 0, "opaque-type"),
+        type_export("std/web/dom", "DomRuntimeError", 1, "opaque-type"),
+        function_export(
+            "std/web/dom",
+            "defaultOptions",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            named("DomOptions"),
+        ),
+        function_export(
+            "std/web/dom",
+            "query",
+            [],
+            Vec::new(),
+            vec![named("String")],
+            effect(
+                record([required("dom", named("Dom"))]),
+                named("DomError"),
+                named("DomTarget"),
+            ),
+        ),
+        function_export(
+            "std/web/dom",
+            "run",
+            ["Msg"],
+            Vec::new(),
+            vec![
+                named("DomOptions"),
+                named("DomTarget"),
+                function_type(
+                    vec![named("Msg")],
+                    effect(record([]), named("Never"), named("Unit")),
+                ),
+                external_type(
+                    "Signal",
+                    "std/signal::Signal",
+                    "std/signal",
+                    "Signal",
+                    vec![external_type(
+                        "Html",
+                        "std/web/html::Html",
+                        "std/web/html",
+                        "Html",
+                        vec![named("Msg")],
+                    )],
+                ),
+            ],
+            effect(
+                record([required("dom", named("Dom"))]),
+                named_with("DomRuntimeError", vec![named("Never")]),
+                named("Unit"),
+            ),
+        ),
+    ];
+    ModuleInterface {
+        schema: 1,
+        module: "std/web/dom".to_owned(),
+        source: "std/web/dom.ssrg".to_owned(),
+        dependencies: Vec::new(),
+        exports,
+        operators: Vec::new(),
+        instances: Vec::new(),
+    }
 }
 
 pub fn is_standard_module(specifier: &str) -> bool {
@@ -391,6 +466,22 @@ fn named_with(name: &str, arguments: Vec<InterfaceType>) -> InterfaceType {
     }
 }
 
+fn external_type(
+    name: &str,
+    canonical: &str,
+    provider_module: &str,
+    provider_export: &str,
+    arguments: Vec<InterfaceType>,
+) -> InterfaceType {
+    InterfaceType::ExternalNamed {
+        name: name.to_owned(),
+        canonical: canonical.to_owned(),
+        provider_module: provider_module.to_owned(),
+        provider_export: provider_export.to_owned(),
+        arguments,
+    }
+}
+
 fn signal_type(name: &str, value: InterfaceType) -> InterfaceType {
     named_with(name, vec![value])
 }
@@ -461,5 +552,11 @@ mod tests {
             .any(|export| { export.namespace == "value" && export.name == "renderToString" }));
         assert!(standard_module_target("std/web/missing").is_none());
         assert!(standard_module_target("std/signal").is_some());
+        let dom = standard_module_target("std/web/dom").unwrap();
+        assert!(dom
+            .interface()
+            .exports
+            .iter()
+            .any(|export| export.namespace == "value" && export.name == "run"));
     }
 }

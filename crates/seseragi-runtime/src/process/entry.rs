@@ -32,6 +32,9 @@ pub(super) fn entry_source(contract: &MainContract, entry_module: &str) -> Strin
                 fields.push(format!("{field}: {local}"));
                 cleanup.push(format!("{local}.close();"));
             }
+            HostService::Dom => {
+                fields.push(format!("{field}: undefined"));
+            }
         }
     }
     let failure = match &contract.failure_renderer {

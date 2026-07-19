@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/web-dom-counter",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/web/dom",
+      "module": "std/web/dom",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/web/dom::*",
+          "localName": "dom"
+        }
+      ]
+    },
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "start": 35,
+        "end": 71
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/web/html::*",
+          "localName": "html"
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 72,
+        "end": 109
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/signal::*",
+          "localName": "signals"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/web-dom-counter::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 826,
+        "end": 1270
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "dom",
+                    "type": {
+                      "kind": "named",
+                      "name": "dom.Dom",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

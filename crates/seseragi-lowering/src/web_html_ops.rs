@@ -9,6 +9,7 @@ pub(crate) struct RuntimeWebHtmlOperation {
 }
 
 const MODULE: &str = "@seseragi/runtime/html";
+const DOM_MODULE: &str = "@seseragi/runtime/dom";
 
 macro_rules! operation {
     ($name:literal, $feature:literal, $local:literal) => {
@@ -17,6 +18,19 @@ macro_rules! operation {
             runtime_feature: $feature,
             local_name: $local,
             module: MODULE,
+            export_name: $name,
+            source_map_name: $name,
+        }
+    };
+}
+
+macro_rules! dom_operation {
+    ($name:literal, $feature:literal, $local:literal) => {
+        RuntimeWebHtmlOperation {
+            canonical: concat!("std/web/dom::", $name),
+            runtime_feature: $feature,
+            local_name: $local,
+            module: DOM_MODULE,
             export_name: $name,
             source_map_name: $name,
         }
@@ -46,6 +60,13 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
         "web.html.render-document",
         "_ssrg_html_renderDocument"
     ),
+    dom_operation!(
+        "defaultOptions",
+        "web.dom.default-options",
+        "_ssrg_dom_defaultOptions"
+    ),
+    dom_operation!("query", "web.dom.query", "_ssrg_dom_query"),
+    dom_operation!("run", "web.dom.run", "_ssrg_dom_run"),
 ];
 
 pub(crate) fn runtime_web_html_operation(canonical: &str) -> Option<RuntimeWebHtmlOperation> {
@@ -78,5 +99,9 @@ mod tests {
             runtime_web_html_operation_for_feature(operation.runtime_feature),
             Some(operation)
         );
+
+        let dom = runtime_web_html_operation("std/web/dom::run").unwrap();
+        assert_eq!(dom.runtime_feature, "web.dom.run");
+        assert_eq!(dom.module, "@seseragi/runtime/dom");
     }
 }

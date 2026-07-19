@@ -1,0 +1,48 @@
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+type Msg =
+  | Increment
+
+fn view count: Int -> html.Html<Msg> =
+  html.main {
+    style: html.style {
+      backgroundColor: "#eef6f3",
+      padding: "32px"
+    },
+    children: [
+      html.h1 {
+        style: html.style { color: "#123b32", marginTop: "0" },
+        children: "Interactive Seseragi"
+      },
+      html.p {
+        id: "count",
+        style: html.style { color: "#185f50", fontSize: "24px" },
+        children: `Count: ${count}`
+      },
+      html.button {
+        id: "increment",
+        onClick: Increment,
+        style: html.style {
+          backgroundColor: "#8ce6c3",
+          borderRadius: "999px",
+          padding: "12px 20px"
+        },
+        children: "+1"
+      }
+    ]
+  }
+
+pub effect fn main -> Unit
+with dom: dom.Dom
+fails String =
+  do {
+    count <- signals.make 0
+    let content = signals.map view count
+    target <-
+      dom.query "#app"
+        |> mapError (\error: dom.DomError -> "DOM target unavailable")
+    dom.run (dom.defaultOptions ()) target (\message: Msg -> signals.update (\value: Int -> value + 1) count) content
+      |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
+  }

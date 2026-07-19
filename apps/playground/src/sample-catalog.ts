@@ -6,6 +6,7 @@ export type PlaygroundSampleDefinition = {
   readonly stdin: string
   readonly expectedOutput: string
   readonly outputMode?: "text" | "html"
+  readonly interactive?: boolean
 }
 
 export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
@@ -287,6 +288,16 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     expectedOutput:
       '<main id="app" style="background-color: #eef6f3; padding: 32px"><h1 style="color: #123b32; margin-top: 0">Seseragi components</h1><section class="card" style="--card-shadow: 0 4px 16px #0002; background-color: #fff; box-shadow: var(--card-shadow); border-radius: 16px; padding: 24px"><h2 style="color: #185f50; margin-top: 0">Reusable card</h2><p style="color: #315c53; margin-bottom: 0">Function component from children</p></section></main>',
     outputMode: "html",
+  },
+  {
+    id: "web-dom-counter",
+    label: "Signalで動くカウンター",
+    category: "Web",
+    sourcePath: "examples/spec/artifacts/schema-1/web-dom-counter/main.ssrg",
+    stdin: "",
+    expectedOutput: "",
+    outputMode: "html",
+    interactive: true,
   },
   {
     id: "signal-transaction",

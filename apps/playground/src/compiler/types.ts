@@ -13,7 +13,7 @@ export type Diagnostic = {
 export type EntryContract = {
   readonly environment: readonly {
     readonly field: string
-    readonly service: "console" | "stdin"
+    readonly service: "console" | "stdin" | "dom"
   }[]
   readonly failureRenderer:
     | { readonly kind: "never" }

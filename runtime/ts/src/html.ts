@@ -32,6 +32,11 @@ export type Html<Message> =
   | FragmentNode<Message>
   | ElementNode<Message>
 
+export type DomRender<Message> = Readonly<{
+  readonly html: string
+  readonly clickMessages: ReadonlyMap<string, Message>
+}>
+
 /** Immutable serialized inline style created from a checked Seseragi record. */
 export type Style = Readonly<{
   readonly [STYLE]: true
@@ -59,18 +64,26 @@ export function style(declarations: unknown): Style {
   })
 }
 
-export function text<Message>(value: string): Html<Message> {
+export function text<Message = never>(value: string): Html<Message> {
   return Object.freeze({ [HTML_NODE]: "text", value } as const)
 }
 
-export function fragment<Message>(children: unknown): Html<Message> {
+export function fragment<Message = never>(children: unknown): Html<Message> {
   return Object.freeze({
     [HTML_NODE]: "fragment",
     children: normalizeChildren<Message>(children),
   } as const)
 }
 
-type TagFunction = <Message>(props: unknown) => Html<Message>
+// Seseragi has already checked the message type before lowering. When a
+// constructor call has no TypeScript inference site, `never` keeps the pure
+// tree safely usable at any checked Html<Message> boundary.
+type TagFunction = {
+  <Message>(
+    props: Readonly<{ onClick: Message }> & Readonly<Record<string, unknown>>
+  ): Html<Message>
+  <Message = never>(props: unknown): Html<Message>
+}
 
 function tag(name: string): TagFunction {
   return <Message>(props: unknown): Html<Message> => element(name, props, false)
@@ -85,7 +98,7 @@ export const h1 = tag("h1")
 export const h2 = tag("h2")
 export const button = tag("button")
 
-export function input<Message>(props: unknown): Html<Message> {
+export function input<Message = never>(props: unknown): Html<Message> {
   return element("input", props, true)
 }
 
@@ -106,6 +119,44 @@ export function renderToString<Message>(value: Html<Message>): string {
 
 export function renderDocument<Message>(value: Html<Message>): string {
   return `<!doctype html>${renderToString(value)}`
+}
+
+/** Runtime-internal DOM adapter snapshot. SSR output never includes markers. */
+export function renderForDom<Message>(
+  value: Html<Message>
+): DomRender<Message> {
+  const clickMessages = new Map<string, Message>()
+  return Object.freeze({
+    html: renderDomNode(value, clickMessages),
+    clickMessages,
+  })
+}
+
+function renderDomNode<Message>(
+  value: Html<Message>,
+  clickMessages: Map<string, Message>
+): string {
+  switch (value[HTML_NODE]) {
+    case "text":
+      return escapeText(value.value)
+    case "fragment":
+      return value.children
+        .map((child) => renderDomNode(child, clickMessages))
+        .join("")
+    case "element": {
+      let clickId: string | undefined
+      if (Object.hasOwn(value.props, "onClick")) {
+        clickId = String(clickMessages.size)
+        clickMessages.set(clickId, value.props.onClick as Message)
+      }
+      const attributes = renderAttributes(value.tag, value.props, clickId)
+      const opening = `<${value.tag}${attributes}>`
+      if (value.voidElement) return opening
+      return `${opening}${value.children
+        .map((child) => renderDomNode(child, clickMessages))
+        .join("")}</${value.tag}>`
+    }
+  }
 }
 
 function element<Message>(
@@ -155,7 +206,8 @@ function normalizeChildren<Message>(
 
 function renderAttributes(
   tagName: string,
-  props: Readonly<Record<string, unknown>>
+  props: Readonly<Record<string, unknown>>,
+  clickId?: string
 ): string {
   const attributes: string[] = []
   stringAttribute(attributes, "id", props.id)
@@ -163,6 +215,9 @@ function renderAttributes(
   stringAttribute(attributes, "title", props.title)
   booleanAttribute(attributes, "hidden", props.hidden)
   styleAttribute(attributes, props.style)
+  if (clickId !== undefined) {
+    attributes.push(`data-ssrg-click="${clickId}"`)
+  }
 
   if (tagName === "button") {
     booleanAttribute(attributes, "disabled", props.disabled)

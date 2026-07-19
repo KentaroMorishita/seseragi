@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "module": "artifact/web-dom-counter",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "web.html.type",
+      "web.html.style-type",
+      "signal.mutable-type",
+      "signal.type",
+      "web.dom.target",
+      "web.dom.error",
+      "web.dom.service",
+      "web.dom.runtime-error",
+      "web.dom.options",
+      "core.adt",
+      "core.int64",
+      "web.html.main",
+      "web.html.style",
+      "core.string",
+      "web.html.h1",
+      "web.html.p",
+      "core.int64.show",
+      "web.html.button",
+      "core.unit",
+      "effect.core.flatMap",
+      "signal.make",
+      "effect.core.type",
+      "signal.map",
+      "effect.core.mapError",
+      "web.dom.query",
+      "web.dom.run",
+      "web.dom.default-options",
+      "signal.update",
+      "core.int64.add"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

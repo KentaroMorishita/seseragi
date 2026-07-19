@@ -1,0 +1,2263 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/web-dom-counter",
+  "externalTypeBindings": [
+    {
+      "spelling": "Style",
+      "canonical": "std/web/html::Style",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Style"
+      }
+    },
+    {
+      "spelling": "html.Html",
+      "canonical": "std/web/html::Html",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Html"
+      }
+    },
+    {
+      "spelling": "MutableSignal",
+      "canonical": "std/signal::MutableSignal",
+      "provider": {
+        "module": "std/signal",
+        "export": "MutableSignal"
+      }
+    },
+    {
+      "spelling": "Signal",
+      "canonical": "std/signal::Signal",
+      "provider": {
+        "module": "std/signal",
+        "export": "Signal"
+      }
+    },
+    {
+      "spelling": "dom.Dom",
+      "canonical": "std/web/dom::Dom",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "Dom"
+      }
+    },
+    {
+      "spelling": "dom.DomError",
+      "canonical": "std/web/dom::DomError",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomError"
+      }
+    },
+    {
+      "spelling": "DomTarget",
+      "canonical": "std/web/dom::DomTarget",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomTarget"
+      }
+    },
+    {
+      "spelling": "DomOptions",
+      "canonical": "std/web/dom::DomOptions",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomOptions"
+      }
+    },
+    {
+      "spelling": "dom.DomRuntimeError",
+      "canonical": "std/web/dom::DomRuntimeError",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomRuntimeError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/web/dom",
+      "module": "std/web/dom",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Dom",
+          "local": "dom.Dom",
+          "canonical": "std/web/dom::Dom",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "DomError",
+          "local": "dom.DomError",
+          "canonical": "std/web/dom::DomError",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "DomRuntimeError",
+          "local": "dom.DomRuntimeError",
+          "canonical": "std/web/dom::DomRuntimeError",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "query",
+          "local": "dom.query",
+          "canonical": "std/web/dom::query",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "run",
+          "local": "dom.run",
+          "canonical": "std/web/dom::run",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "defaultOptions",
+          "local": "dom.defaultOptions",
+          "canonical": "std/web/dom::defaultOptions",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "start": 35,
+        "end": 71
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Html",
+          "local": "html.Html",
+          "canonical": "std/web/html::Html",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "main",
+          "local": "html.main",
+          "canonical": "std/web/html::main",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "style",
+          "local": "html.style",
+          "canonical": "std/web/html::style",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "h1",
+          "local": "html.h1",
+          "canonical": "std/web/html::h1",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "p",
+          "local": "html.p",
+          "canonical": "std/web/html::p",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "button",
+          "local": "html.button",
+          "canonical": "std/web/html::button",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 72,
+        "end": 109
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "make",
+          "local": "signals.make",
+          "canonical": "std/signal::make",
+          "origin": {
+            "start": 84,
+            "end": 91
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "map",
+          "local": "signals.map",
+          "canonical": "std/signal::map",
+          "origin": {
+            "start": 84,
+            "end": 91
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "update",
+          "local": "signals.update",
+          "canonical": "std/signal::update",
+          "origin": {
+            "start": 84,
+            "end": 91
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/web-dom-counter::Msg",
+      "name": "Msg",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/web-dom-counter::Increment",
+          "name": "Increment",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Msg",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 126,
+            "end": 135
+          }
+        }
+      ],
+      "origin": {
+        "start": 111,
+        "end": 135
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/web-dom-counter::view",
+      "visibility": "private",
+      "origin": {
+        "start": 137,
+        "end": 824
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "html.Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Msg",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "count",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 145,
+            "end": 150
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::main",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "style",
+                "value": {
+                  "kind": "call",
+                  "callee": "std/web/html::style",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "backgroundColor",
+                          "value": {
+                            "kind": "string",
+                            "value": "#eef6f3",
+                            "type": {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 237,
+                              "end": 246
+                            }
+                          },
+                          "origin": {
+                            "start": 220,
+                            "end": 246
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "padding",
+                          "value": {
+                            "kind": "string",
+                            "value": "32px",
+                            "type": {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 263,
+                              "end": 269
+                            }
+                          },
+                          "origin": {
+                            "start": 254,
+                            "end": 269
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "backgroundColor",
+                            "type": {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          },
+                          {
+                            "name": "padding",
+                            "type": {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 212,
+                        "end": 275
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "StyleRecord",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "backgroundColor",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "padding",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/web/html::StyleRecord<Record>"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Style",
+                    "canonical": "std/web/html::Style",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 201,
+                    "end": 275
+                  }
+                },
+                "origin": {
+                  "start": 194,
+                  "end": 275
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::h1",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "style",
+                              "value": {
+                                "kind": "call",
+                                "callee": "std/web/html::style",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "items": [
+                                      {
+                                        "kind": "field",
+                                        "name": "color",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "#123b32",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          },
+                                          "origin": {
+                                            "start": 344,
+                                            "end": 353
+                                          }
+                                        },
+                                        "origin": {
+                                          "start": 337,
+                                          "end": 353
+                                        }
+                                      },
+                                      {
+                                        "kind": "field",
+                                        "name": "marginTop",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "0",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          },
+                                          "origin": {
+                                            "start": 366,
+                                            "end": 369
+                                          }
+                                        },
+                                        "origin": {
+                                          "start": 355,
+                                          "end": 369
+                                        }
+                                      }
+                                    ],
+                                    "type": {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": [
+                                        {
+                                          "name": "color",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        },
+                                        {
+                                          "name": "marginTop",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "origin": {
+                                      "start": 335,
+                                      "end": 371
+                                    }
+                                  }
+                                ],
+                                "evidence": [
+                                  {
+                                    "constraint": {
+                                      "name": "StyleRecord",
+                                      "arguments": [
+                                        {
+                                          "kind": "record",
+                                          "closed": true,
+                                          "fields": [
+                                            {
+                                              "name": "color",
+                                              "type": {
+                                                "kind": "named",
+                                                "name": "String",
+                                                "arguments": []
+                                              }
+                                            },
+                                            {
+                                              "name": "marginTop",
+                                              "type": {
+                                                "kind": "named",
+                                                "name": "String",
+                                                "arguments": []
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/web/html::StyleRecord<Record>"
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Style",
+                                  "canonical": "std/web/html::Style",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 324,
+                                  "end": 371
+                                }
+                              },
+                              "origin": {
+                                "start": 317,
+                                "end": 371
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Interactive Seseragi",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 391,
+                                  "end": 413
+                                }
+                              },
+                              "origin": {
+                                "start": 381,
+                                "end": 413
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "style",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Style",
+                                  "canonical": "std/web/html::Style",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 307,
+                            "end": 421
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Msg",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<String>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 299,
+                        "end": 421
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::p",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "id",
+                              "value": {
+                                "kind": "string",
+                                "value": "count",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 450,
+                                  "end": 457
+                                }
+                              },
+                              "origin": {
+                                "start": 446,
+                                "end": 457
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "style",
+                              "value": {
+                                "kind": "call",
+                                "callee": "std/web/html::style",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "items": [
+                                      {
+                                        "kind": "field",
+                                        "name": "color",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "#185f50",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          },
+                                          "origin": {
+                                            "start": 494,
+                                            "end": 503
+                                          }
+                                        },
+                                        "origin": {
+                                          "start": 487,
+                                          "end": 503
+                                        }
+                                      },
+                                      {
+                                        "kind": "field",
+                                        "name": "fontSize",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "24px",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          },
+                                          "origin": {
+                                            "start": 515,
+                                            "end": 521
+                                          }
+                                        },
+                                        "origin": {
+                                          "start": 505,
+                                          "end": 521
+                                        }
+                                      }
+                                    ],
+                                    "type": {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": [
+                                        {
+                                          "name": "color",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        },
+                                        {
+                                          "name": "fontSize",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "origin": {
+                                      "start": 485,
+                                      "end": 523
+                                    }
+                                  }
+                                ],
+                                "evidence": [
+                                  {
+                                    "constraint": {
+                                      "name": "StyleRecord",
+                                      "arguments": [
+                                        {
+                                          "kind": "record",
+                                          "closed": true,
+                                          "fields": [
+                                            {
+                                              "name": "color",
+                                              "type": {
+                                                "kind": "named",
+                                                "name": "String",
+                                                "arguments": []
+                                              }
+                                            },
+                                            {
+                                              "name": "fontSize",
+                                              "type": {
+                                                "kind": "named",
+                                                "name": "String",
+                                                "arguments": []
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/web/html::StyleRecord<Record>"
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Style",
+                                  "canonical": "std/web/html::Style",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 474,
+                                  "end": 523
+                                }
+                              },
+                              "origin": {
+                                "start": 467,
+                                "end": 523
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "template",
+                                "parts": [
+                                  {
+                                    "kind": "text",
+                                    "value": "Count: ",
+                                    "origin": {
+                                      "start": 544,
+                                      "end": 551
+                                    }
+                                  },
+                                  {
+                                    "kind": "interpolation",
+                                    "value": {
+                                      "kind": "variable",
+                                      "name": "count",
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      "origin": {
+                                        "start": 553,
+                                        "end": 558
+                                      }
+                                    },
+                                    "evidence": {
+                                      "constraint": {
+                                        "name": "Show",
+                                        "arguments": [
+                                          {
+                                            "kind": "named",
+                                            "name": "Int",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      },
+                                      "evidence": {
+                                        "kind": "standard",
+                                        "identity": "Show<std/prelude::Int>"
+                                      }
+                                    },
+                                    "traitIdentity": "std/prelude::Show",
+                                    "origin": {
+                                      "start": 551,
+                                      "end": 559
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 543,
+                                  "end": 560
+                                }
+                              },
+                              "origin": {
+                                "start": 533,
+                                "end": 560
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "id",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "style",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Style",
+                                  "canonical": "std/web/html::Style",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 436,
+                            "end": 568
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Msg",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<String>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 429,
+                        "end": 568
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "id",
+                              "value": {
+                                "kind": "string",
+                                "value": "increment",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 602,
+                                  "end": 613
+                                }
+                              },
+                              "origin": {
+                                "start": 598,
+                                "end": 613
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "onClick",
+                              "value": {
+                                "kind": "variable",
+                                "name": "artifact/web-dom-counter::Increment",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Msg",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 632,
+                                  "end": 641
+                                }
+                              },
+                              "origin": {
+                                "start": 623,
+                                "end": 641
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "style",
+                              "value": {
+                                "kind": "call",
+                                "callee": "std/web/html::style",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "items": [
+                                      {
+                                        "kind": "field",
+                                        "name": "backgroundColor",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "#8ce6c3",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          },
+                                          "origin": {
+                                            "start": 698,
+                                            "end": 707
+                                          }
+                                        },
+                                        "origin": {
+                                          "start": 681,
+                                          "end": 707
+                                        }
+                                      },
+                                      {
+                                        "kind": "field",
+                                        "name": "borderRadius",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "999px",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          },
+                                          "origin": {
+                                            "start": 733,
+                                            "end": 740
+                                          }
+                                        },
+                                        "origin": {
+                                          "start": 719,
+                                          "end": 740
+                                        }
+                                      },
+                                      {
+                                        "kind": "field",
+                                        "name": "padding",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "12px 20px",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          },
+                                          "origin": {
+                                            "start": 761,
+                                            "end": 772
+                                          }
+                                        },
+                                        "origin": {
+                                          "start": 752,
+                                          "end": 772
+                                        }
+                                      }
+                                    ],
+                                    "type": {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": [
+                                        {
+                                          "name": "backgroundColor",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        },
+                                        {
+                                          "name": "borderRadius",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        },
+                                        {
+                                          "name": "padding",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "origin": {
+                                      "start": 669,
+                                      "end": 782
+                                    }
+                                  }
+                                ],
+                                "evidence": [
+                                  {
+                                    "constraint": {
+                                      "name": "StyleRecord",
+                                      "arguments": [
+                                        {
+                                          "kind": "record",
+                                          "closed": true,
+                                          "fields": [
+                                            {
+                                              "name": "backgroundColor",
+                                              "type": {
+                                                "kind": "named",
+                                                "name": "String",
+                                                "arguments": []
+                                              }
+                                            },
+                                            {
+                                              "name": "borderRadius",
+                                              "type": {
+                                                "kind": "named",
+                                                "name": "String",
+                                                "arguments": []
+                                              }
+                                            },
+                                            {
+                                              "name": "padding",
+                                              "type": {
+                                                "kind": "named",
+                                                "name": "String",
+                                                "arguments": []
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/web/html::StyleRecord<Record>"
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Style",
+                                  "canonical": "std/web/html::Style",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 658,
+                                  "end": 782
+                                }
+                              },
+                              "origin": {
+                                "start": 651,
+                                "end": 782
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "+1",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 802,
+                                  "end": 806
+                                }
+                              },
+                              "origin": {
+                                "start": 792,
+                                "end": 806
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "id",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onClick",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Msg",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "style",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "Style",
+                                  "canonical": "std/web/html::Style",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 588,
+                            "end": 814
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Msg",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<String>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 576,
+                        "end": 814
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 291,
+                    "end": 820
+                  }
+                },
+                "origin": {
+                  "start": 281,
+                  "end": 820
+                }
+              }
+            ],
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "style",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Style",
+                    "canonical": "std/web/html::Style",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "start": 188,
+              "end": 824
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "IntoChildren",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Msg",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Msg",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/web/html::IntoChildren<Array>"
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Msg",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 178,
+          "end": 824
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/web-dom-counter::main",
+      "visibility": "public",
+      "origin": {
+        "start": 826,
+        "end": 1270
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "dom",
+              "type": {
+                "kind": "named",
+                "name": "dom.Dom",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "count",
+            "type": {
+              "kind": "external-named",
+              "name": "MutableSignal",
+              "canonical": "std/signal::MutableSignal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::make",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "0",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 919,
+                    "end": 920
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 906,
+                "end": 920
+              }
+            },
+            "origin": {
+              "start": 897,
+              "end": 920
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "content",
+            "type": {
+              "kind": "external-named",
+              "name": "Signal",
+              "canonical": "std/signal::Signal",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.Html",
+                  "canonical": "std/web/html::Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Msg",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::map",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/web-dom-counter::view",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Msg",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "start": 951,
+                    "end": 955
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "count",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 956,
+                    "end": 961
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Msg",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 939,
+                "end": 961
+              }
+            },
+            "origin": {
+              "start": 925,
+              "end": 961
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "target",
+            "type": {
+              "kind": "external-named",
+              "name": "DomTarget",
+              "canonical": "std/web/dom::DomTarget",
+              "arguments": []
+            },
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/effect::mapError",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "dom",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "dom.Dom",
+                        "canonical": "std/web/dom::Dom",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "external-named",
+                  "name": "DomTarget",
+                  "canonical": "std/web/dom::DomTarget",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "error",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "dom.DomError",
+                      "canonical": "std/web/dom::DomError",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1021,
+                      "end": 1026
+                    }
+                  },
+                  "body": {
+                    "kind": "string",
+                    "value": "DOM target unavailable",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1044,
+                      "end": 1068
+                    }
+                  },
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "dom.DomError",
+                      "canonical": "std/web/dom::DomError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "start": 1020,
+                    "end": 1068
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "std/web/dom::query",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "#app",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 992,
+                        "end": 998
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "dom",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "dom.Dom",
+                              "canonical": "std/web/dom::Dom",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "dom.DomError",
+                        "canonical": "std/web/dom::DomError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "DomTarget",
+                        "canonical": "std/web/dom::DomTarget",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 982,
+                    "end": 998
+                  }
+                }
+              ],
+              "origin": {
+                "start": 982,
+                "end": 1069
+              }
+            },
+            "origin": {
+              "start": 966,
+              "end": 1069
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/effect::mapError",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "dom",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "dom.Dom",
+                    "canonical": "std/web/dom::Dom",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "lambda",
+              "parameter": {
+                "kind": "named",
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "dom.DomRuntimeError",
+                  "canonical": "std/web/dom::DomRuntimeError",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1208,
+                  "end": 1213
+                }
+              },
+              "body": {
+                "kind": "string",
+                "value": "DOM runtime failed",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1245,
+                  "end": 1265
+                }
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "dom.DomRuntimeError",
+                  "canonical": "std/web/dom::DomRuntimeError",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "start": 1207,
+                "end": 1265
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "std/web/dom::run",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/web/dom::defaultOptions",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1102,
+                        "end": 1104
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "external-named",
+                    "name": "DomOptions",
+                    "canonical": "std/web/dom::DomOptions",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1083,
+                    "end": 1104
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "target",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "DomTarget",
+                    "canonical": "std/web/dom::DomTarget",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1106,
+                    "end": 1112
+                  }
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "message",
+                    "type": {
+                      "kind": "named",
+                      "name": "Msg",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1115,
+                      "end": 1122
+                    }
+                  },
+                  "body": {
+                    "kind": "call",
+                    "callee": "std/signal::update",
+                    "arguments": [
+                      {
+                        "kind": "lambda",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "value",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 1148,
+                            "end": 1153
+                          }
+                        },
+                        "body": {
+                          "kind": "binary",
+                          "operator": "+",
+                          "left": {
+                            "kind": "variable",
+                            "name": "value",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 1162,
+                              "end": 1167
+                            }
+                          },
+                          "right": {
+                            "kind": "integer",
+                            "value": "1",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 1170,
+                              "end": 1171
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Add",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/int::Add"
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 1162,
+                            "end": 1171
+                          }
+                        },
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        },
+                        "origin": {
+                          "start": 1147,
+                          "end": 1171
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "count",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "MutableSignal",
+                          "canonical": "std/signal::MutableSignal",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 1173,
+                          "end": 1178
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1131,
+                      "end": 1178
+                    }
+                  },
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Msg",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "start": 1114,
+                    "end": 1178
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "content",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1180,
+                    "end": 1187
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "dom",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "dom.Dom",
+                          "canonical": "std/web/dom::Dom",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "dom.DomRuntimeError",
+                    "canonical": "std/web/dom::DomRuntimeError",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1074,
+                "end": 1187
+              }
+            }
+          ],
+          "origin": {
+            "start": 1074,
+            "end": 1266
+          }
+        },
+        "origin": {
+          "start": 888,
+          "end": 1270
+        }
+      }
+    }
+  ]
+}

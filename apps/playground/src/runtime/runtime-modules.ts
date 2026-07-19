@@ -10,6 +10,7 @@ import * as service from "../../../../runtime/ts/src/service"
 import * as show from "../../../../runtime/ts/src/show"
 import * as sum from "../../../../runtime/ts/src/sum"
 import * as html from "../../../../runtime/ts/src/html"
+import * as dom from "../../../../runtime/ts/src/dom"
 import * as signal from "../../../../runtime/ts/src/signal"
 
 export const runtimeModules: Readonly<Record<string, unknown>> = {
@@ -23,6 +24,7 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/show": show,
   "@seseragi/runtime/sum": sum,
   "@seseragi/runtime/html": html,
+  "@seseragi/runtime/dom": dom,
   "@seseragi/runtime/signal": signal,
   "@seseragi/runtime/console": browserConsole,
   "@seseragi/runtime/stdin": browserStdin,

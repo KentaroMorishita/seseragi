@@ -68,6 +68,36 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "Style",
     },
     RuntimeTypeImport {
+        canonical: "std/web/dom::Dom",
+        runtime_feature: "web.dom.service",
+        module: "@seseragi/runtime/dom",
+        export_name: "Dom",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/dom::DomOptions",
+        runtime_feature: "web.dom.options",
+        module: "@seseragi/runtime/dom",
+        export_name: "DomOptions",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/dom::DomTarget",
+        runtime_feature: "web.dom.target",
+        module: "@seseragi/runtime/dom",
+        export_name: "DomTarget",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/dom::DomError",
+        runtime_feature: "web.dom.error",
+        module: "@seseragi/runtime/dom",
+        export_name: "DomError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/dom::DomRuntimeError",
+        runtime_feature: "web.dom.runtime-error",
+        module: "@seseragi/runtime/dom",
+        export_name: "DomRuntimeError",
+    },
+    RuntimeTypeImport {
         canonical: "std/signal::Signal",
         runtime_feature: "signal.type",
         module: "@seseragi/runtime/signal",

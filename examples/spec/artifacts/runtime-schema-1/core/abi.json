@@ -844,6 +844,87 @@
       }
     },
     {
+      "id": "web.dom.service",
+      "kind": "value-representation",
+      "typescript": "type Dom",
+      "boundary": "browser DOM host service supplied only by DOM-capable targets",
+      "typeIdentity": "std/web/dom::Dom",
+      "typeImport": { "module": "@seseragi/runtime/dom", "export": "Dom" },
+      "import": null
+    },
+    {
+      "id": "web.dom.options",
+      "kind": "value-representation",
+      "typescript": "type DomOptions",
+      "boundary": "immutable DOM mount configuration",
+      "typeIdentity": "std/web/dom::DomOptions",
+      "typeImport": {
+        "module": "@seseragi/runtime/dom",
+        "export": "DomOptions"
+      },
+      "import": null
+    },
+    {
+      "id": "web.dom.target",
+      "kind": "value-representation",
+      "typescript": "type DomTarget",
+      "boundary": "opaque host element identity returned by query",
+      "typeIdentity": "std/web/dom::DomTarget",
+      "typeImport": {
+        "module": "@seseragi/runtime/dom",
+        "export": "DomTarget"
+      },
+      "import": null
+    },
+    {
+      "id": "web.dom.error",
+      "kind": "value-representation",
+      "typescript": "type DomError",
+      "boundary": "typed DOM query and mount failure",
+      "typeIdentity": "std/web/dom::DomError",
+      "typeImport": {
+        "module": "@seseragi/runtime/dom",
+        "export": "DomError"
+      },
+      "import": null
+    },
+    {
+      "id": "web.dom.runtime-error",
+      "kind": "value-representation",
+      "typescript": "type DomRuntimeError<E>",
+      "boundary": "typed DOM or message dispatch failure",
+      "typeIdentity": "std/web/dom::DomRuntimeError",
+      "typeImport": {
+        "module": "@seseragi/runtime/dom",
+        "export": "DomRuntimeError"
+      },
+      "import": null
+    },
+    {
+      "id": "web.dom.default-options",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Unit -> DomOptions with bounded FIFO capacity",
+      "import": {
+        "module": "@seseragi/runtime/dom",
+        "export": "defaultOptions"
+      }
+    },
+    {
+      "id": "web.dom.query",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> Effect<{ dom: Dom }, DomError, DomTarget>",
+      "import": { "module": "@seseragi/runtime/dom", "export": "query" }
+    },
+    {
+      "id": "web.dom.run",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "DomOptions -> DomTarget -> (Msg -> Task<Never, Unit>) -> Signal<Html<Msg>> -> Effect<{ dom: Dom }, DomRuntimeError<Never>, Unit>",
+      "import": { "module": "@seseragi/runtime/dom", "export": "run" }
+    },
+    {
       "id": "signal.type",
       "kind": "value-representation",
       "typescript": "type Signal<A>",
