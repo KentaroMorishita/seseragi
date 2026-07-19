@@ -76,6 +76,29 @@ describe("new Playground product gate", () => {
     expect(new Set(sampleCatalog.map((sample) => sample.sourcePath)).size).toBe(
       sampleCatalog.length
     )
+    expect(sampleCatalog.length).toBeLessThanOrEqual(20)
+    expect(
+      sampleCatalog.every(
+        (sample) =>
+          sample.summary.trim() !== "" &&
+          sample.concepts.length > 0 &&
+          sample.concepts.every((concept) => concept.trim() !== "")
+      )
+    ).toBe(true)
+  })
+
+  test("keeps sample guidance available without growing the workspace rows", async () => {
+    const html = await Bun.file(
+      new URL("../index.html", import.meta.url)
+    ).text()
+    const styles = await Bun.file(
+      new URL("../src/styles.css", import.meta.url)
+    ).text()
+
+    expect(html).toContain('id="sample-guide-button"')
+    expect(html).toContain('aria-controls="sample-guide"')
+    expect(html).toContain('id="sample-guide-summary"')
+    expect(styles).toMatch(/\.sample-guide \{[\s\S]*?position: absolute;/)
   })
 
   test("renders HTML output in an isolated preview", async () => {

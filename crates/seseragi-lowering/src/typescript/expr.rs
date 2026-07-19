@@ -20,8 +20,8 @@ use super::decision::lower_core_decision;
 use super::dictionaries::local_dictionary_expression;
 use super::names::{local_name, safe_identifier};
 use super::types::{
-    lower_core_parameter_to_typescript, render_typescript_type, type_ref_from_core_type,
-    type_ref_from_core_type_with_erasure,
+    lower_core_parameter_to_typescript, render_typescript_type, type_ref_from_core_expr,
+    type_ref_from_core_type, type_ref_from_core_type_with_erasure,
 };
 use super::{TypeScriptExpr, TypeScriptRecordValueItem, TypeScriptStatement};
 
@@ -126,6 +126,19 @@ pub(super) fn lower_core_expr_to_typescript(
             trait_dispatch,
             ..
         } => {
+            let signal_operation = runtime_signal_operation(&callee);
+            let signal_type_arguments = signal_operation
+                .iter()
+                .flat_map(|operation| operation.type_argument_sources)
+                .map(|index| {
+                    type_ref_from_core_expr(
+                        arguments
+                            .get(*index)
+                            .expect("runtime Signal type argument source must exist"),
+                        imported_types,
+                    )
+                })
+                .collect::<Vec<_>>();
             let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
             if let Some(operator) = standard_trait_operator(&callee) {
                 let dispatch = trait_dispatch
@@ -206,10 +219,18 @@ pub(super) fn lower_core_expr_to_typescript(
                     callee: operation.local_name.to_owned(),
                     arguments,
                 }
-            } else if let Some(operation) = runtime_signal_operation(&callee) {
-                TypeScriptExpr::RuntimeCall {
-                    callee: operation.local_name.to_owned(),
-                    arguments,
+            } else if let Some(operation) = signal_operation {
+                if signal_type_arguments.is_empty() {
+                    TypeScriptExpr::RuntimeCall {
+                        callee: operation.local_name.to_owned(),
+                        arguments,
+                    }
+                } else {
+                    TypeScriptExpr::TypeApplicationCall {
+                        callee: operation.local_name.to_owned(),
+                        type_arguments: signal_type_arguments,
+                        arguments,
+                    }
                 }
             } else {
                 let evidence = evidence

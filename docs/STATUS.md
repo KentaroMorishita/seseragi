@@ -433,6 +433,9 @@ Playground-1は`apps/playground`へCodeMirror 6、専用Seseragi highlight、mob
 driver diagnosticsのsource range表示を実装しました。Vercel buildはreview済みWASM artifactを静的bundleするため
 Rust installを要求しません。Rust移行完了後に旧React / Monaco Playgroundは削除し、
 `apps/playground`とdeployment configを唯一のbrowser surfaceにしました。
+sample catalogは代表的な19本へ整理し、各sampleの目的とconceptをworkspaceの行数を増やさないGuide overlayで
+確認できます。`Signalで動くFlow UI`は`Ready` / `Focusing` / `Resting`のtyped state machine、再利用する
+`html.Style`、関数component、Signal-driven DOM updateを一つのinteractive browser sampleで固定します。
 2026-07-14にVercel Git buildの成功、`application/wasm` asset配信、本番UIからのlesson 01実行を
 <https://seseragi.vercel.app/>で確認しました。
 local custom traitのvertical sliceは`Traitバッジ`としてsample catalogにも追加し、同じWASM driverとbrowser runtimeで

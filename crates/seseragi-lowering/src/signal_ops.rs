@@ -6,12 +6,16 @@ pub(crate) struct RuntimeSignalOperation {
     pub(crate) module: &'static str,
     pub(crate) export_name: &'static str,
     pub(crate) source_map_name: &'static str,
+    pub(crate) type_argument_sources: &'static [usize],
 }
 
 const MODULE: &str = "@seseragi/runtime/signal";
 
 macro_rules! operation {
     ($name:literal, $feature:literal) => {
+        operation!($name, $feature, &[])
+    };
+    ($name:literal, $feature:literal, $type_argument_sources:expr) => {
         RuntimeSignalOperation {
             canonical: concat!("std/signal::", $name),
             runtime_feature: $feature,
@@ -19,12 +23,13 @@ macro_rules! operation {
             module: MODULE,
             export_name: $name,
             source_map_name: $name,
+            type_argument_sources: $type_argument_sources,
         }
     };
 }
 
 const OPERATIONS: &[RuntimeSignalOperation] = &[
-    operation!("make", "signal.make"),
+    operation!("make", "signal.make", &[0]),
     operation!("read", "signal.read"),
     operation!("set", "signal.set"),
     operation!("update", "signal.update"),
@@ -68,6 +73,12 @@ mod tests {
         assert_eq!(
             runtime_signal_operation_for_feature(operation.runtime_feature),
             Some(operation)
+        );
+        assert_eq!(
+            runtime_signal_operation("std/signal::make")
+                .unwrap()
+                .type_argument_sources,
+            [0]
         );
     }
 }

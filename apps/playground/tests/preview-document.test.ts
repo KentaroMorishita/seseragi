@@ -19,6 +19,7 @@ describe("Playground preview document", () => {
 
   test("keeps the utility vocabulary bounded and host-owned", () => {
     expect(previewUtilityCss).toContain(".grid-cols-2")
+    expect(previewUtilityCss).toContain(".sm\\:grid-cols-3")
     expect(previewUtilityCss).toContain(".hover\\:bg-emerald-600:hover")
     expect(previewUtilityCss).not.toContain("@import")
   })

@@ -80,6 +80,17 @@
             <div class="panel-heading-actions">
               <span class="file-name">main.ssrg</span>
               <button
+                id="sample-guide-button"
+                class="text-button guide-button"
+                type="button"
+                aria-expanded="false"
+                aria-controls="sample-guide"
+                title="このサンプルの説明"
+              >
+                <span aria-hidden="true">?</span>
+                <span class="guide-button-label">Guide</span>
+              </button>
+              <button
                 id="clear-source-button"
                 class="text-button"
                 type="button"
@@ -89,6 +100,26 @@
               </button>
             </div>
           </div>
+          <aside
+            id="sample-guide"
+            class="sample-guide"
+            role="dialog"
+            aria-labelledby="sample-guide-title"
+            hidden
+          >
+            <div class="sample-guide-heading">
+              <span id="sample-guide-category"></span>
+              <button
+                id="sample-guide-close"
+                type="button"
+                aria-label="サンプルガイドを閉じる"
+              >×</button>
+            </div>
+            <h2 id="sample-guide-title"></h2>
+            <p id="sample-guide-summary"></p>
+            <ul id="sample-guide-concepts" aria-label="学べる要素"></ul>
+            <code id="sample-guide-source"></code>
+          </aside>
           <div id="editor" class="editor-host"></div>
         </section>
 

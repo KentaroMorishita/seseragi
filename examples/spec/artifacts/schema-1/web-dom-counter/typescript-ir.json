@@ -3,10 +3,10 @@
   "stage": "typescript-ir",
   "module": "artifact/web-dom-counter",
   "runtimeRequirements": [
+    "web.html.style-type",
+    "web.html.type",
     "signal.mutable-type",
     "effect.core.type",
-    "web.html.type",
-    "web.html.style-type",
     "signal.type",
     "web.dom.target",
     "web.dom.error",
@@ -14,17 +14,17 @@
     "web.dom.runtime-error",
     "web.dom.options",
     "core.adt",
-    "core.int64",
-    "core.unit",
-    "signal.update",
-    "core.int64.add",
-    "web.html.main",
     "web.html.style",
     "core.string",
+    "web.html.button",
+    "web.html.main",
+    "web.html.section",
+    "web.html.div",
+    "web.html.span",
     "web.html.h1",
     "web.html.p",
-    "core.int64.show",
-    "web.html.button",
+    "core.unit",
+    "signal.update",
     "effect.core.flatMap",
     "signal.make",
     "signal.map",
@@ -35,20 +35,28 @@
   ],
   "imports": [
     {
-      "feature": "signal.update",
-      "local": "_ssrg_signal_update"
+      "feature": "web.html.style",
+      "local": "_ssrg_html_style"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "web.html.button",
+      "local": "_ssrg_html_button"
     },
     {
       "feature": "web.html.main",
       "local": "_ssrg_html_main"
     },
     {
-      "feature": "web.html.style",
-      "local": "_ssrg_html_style"
+      "feature": "web.html.section",
+      "local": "_ssrg_html_section"
+    },
+    {
+      "feature": "web.html.div",
+      "local": "_ssrg_html_div"
+    },
+    {
+      "feature": "web.html.span",
+      "local": "_ssrg_html_span"
     },
     {
       "feature": "web.html.h1",
@@ -59,12 +67,8 @@
       "local": "_ssrg_html_p"
     },
     {
-      "feature": "core.int64.show",
-      "local": "_ssrg_show_intShow"
-    },
-    {
-      "feature": "web.html.button",
-      "local": "_ssrg_html_button"
+      "feature": "signal.update",
+      "local": "_ssrg_signal_update"
     },
     {
       "feature": "effect.core.flatMap",
@@ -97,20 +101,20 @@
   ],
   "typeImports": [
     {
-      "feature": "signal.mutable-type",
-      "local": "MutableSignal"
-    },
-    {
-      "feature": "effect.core.type",
-      "local": "Effect"
+      "feature": "web.html.style-type",
+      "local": "Style"
     },
     {
       "feature": "web.html.type",
       "local": "Html"
     },
     {
-      "feature": "web.html.style-type",
-      "local": "Style"
+      "feature": "signal.mutable-type",
+      "local": "MutableSignal"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
     },
     {
       "feature": "signal.type",
@@ -140,24 +144,298 @@
   "adts": [
     {
       "exported": false,
-      "name": "Msg",
+      "name": "Mode",
       "typeParameters": [],
       "variants": [
         {
           "exported": false,
-          "name": "Increment",
-          "tag": "Increment",
+          "name": "Ready",
+          "tag": "Ready",
           "origin": {
             "source": "main.ssrg",
-            "start": 169,
-            "end": 178
+            "start": 170,
+            "end": 175
+          }
+        },
+        {
+          "exported": false,
+          "name": "Focusing",
+          "tag": "Focusing",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 180,
+            "end": 188
+          }
+        },
+        {
+          "exported": false,
+          "name": "Resting",
+          "tag": "Resting",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 193,
+            "end": 200
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 154,
-        "end": 178
+        "end": 200
+      }
+    },
+    {
+      "exported": false,
+      "name": "Msg",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "StartFocus",
+          "tag": "StartFocus",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 217,
+            "end": 227
+          }
+        },
+        {
+          "exported": false,
+          "name": "TakeBreak",
+          "tag": "TakeBreak",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 232,
+            "end": 241
+          }
+        },
+        {
+          "exported": false,
+          "name": "Reset",
+          "tag": "Reset",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 246,
+            "end": 251
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 202,
+        "end": 251
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "initialMode",
+      "type": {
+        "kind": "reference",
+        "name": "Mode",
+        "arguments": []
+      },
+      "initializer": {
+        "kind": "identifier",
+        "name": "Ready"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 253,
+        "end": 282
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "pageStyle",
+      "type": {
+        "kind": "reference",
+        "name": "Style",
+        "arguments": []
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_style",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "background",
+                "value": {
+                  "kind": "string",
+                  "value": "linear-gradient(135deg, #d1fae5 0%, #f8fafc 48%, #dbeafe 100%)"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "minHeight",
+                "value": {
+                  "kind": "string",
+                  "value": "100vh"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "padding",
+                "value": {
+                  "kind": "string",
+                  "value": "32px"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 284,
+        "end": 444
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "cardStyle",
+      "type": {
+        "kind": "reference",
+        "name": "Style",
+        "arguments": []
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_style",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "variables",
+                "value": {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "cardShadow",
+                      "value": {
+                        "kind": "string",
+                        "value": "0 24px 64px #0f172a24"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "field",
+                "name": "backgroundColor",
+                "value": {
+                  "kind": "string",
+                  "value": "#ffffff"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "border",
+                "value": {
+                  "kind": "string",
+                  "value": "1px solid #ffffffcc"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "borderRadius",
+                "value": {
+                  "kind": "string",
+                  "value": "28px"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "boxShadow",
+                "value": {
+                  "kind": "string",
+                  "value": "var(--card-shadow)"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "padding",
+                "value": {
+                  "kind": "string",
+                  "value": "32px"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 446,
+        "end": 686
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "trackStyle",
+      "type": {
+        "kind": "reference",
+        "name": "Style",
+        "arguments": []
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_style",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "backgroundColor",
+                "value": {
+                  "kind": "string",
+                  "value": "#e2e8f0"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "borderRadius",
+                "value": {
+                  "kind": "string",
+                  "value": "999px"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "height",
+                "value": {
+                  "kind": "string",
+                  "value": "10px"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "overflow",
+                "value": {
+                  "kind": "string",
+                  "value": "hidden"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 688,
+        "end": 825
       }
     }
   ],
@@ -165,13 +443,513 @@
     {
       "kind": "const-function",
       "exported": false,
-      "name": "update",
+      "name": "label",
       "parameters": [
         {
-          "name": "count",
-          "type": "MutableSignal<bigint>",
+          "name": "mode",
+          "type": "Mode",
           "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "mode"
         },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Mode",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Ready"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "READY"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Focusing"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "FOCUS"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "BREAK"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 827,
+        "end": 945
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "title",
+      "parameters": [
+        {
+          "name": "mode",
+          "type": "Mode",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "mode"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Mode",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Ready"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Choose your rhythm"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Focusing"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Deep work in progress"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Pause with purpose"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 947,
+        "end": 1107
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "guidance",
+      "parameters": [
+        {
+          "name": "mode",
+          "type": "Mode",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "mode"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Mode",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Ready"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Pick a mode and let a typed message update the Signal."
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Focusing"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "One task. No tab hopping. You have got this."
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Look away from the screen and take a slow breath."
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1109,
+        "end": 1362
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "accent",
+      "parameters": [
+        {
+          "name": "mode",
+          "type": "Mode",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "mode"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Mode",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Ready"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "#475569"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Focusing"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "#059669"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "#2563eb"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1364,
+        "end": 1489
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "progress",
+      "parameters": [
+        {
+          "name": "mode",
+          "type": "Mode",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "mode"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Mode",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Ready"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "18%"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Focusing"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "82%"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "46%"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1491,
+        "end": 1606
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "progressStyle",
+      "parameters": [
+        {
+          "name": "mode",
+          "type": "Mode",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_style",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "backgroundColor",
+                "value": {
+                  "kind": "call",
+                  "callee": "accent",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "mode"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "field",
+                "name": "borderRadius",
+                "value": {
+                  "kind": "string",
+                  "value": "999px"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "height",
+                "value": {
+                  "kind": "string",
+                  "value": "100%"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "transition",
+                "value": {
+                  "kind": "string",
+                  "value": "all 240ms ease"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "width",
+                "value": {
+                  "kind": "call",
+                  "callee": "progress",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "mode"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1608,
+        "end": 1810
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "badgeStyle",
+      "parameters": [
+        {
+          "name": "mode",
+          "type": "Mode",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_style",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "backgroundColor",
+                "value": {
+                  "kind": "call",
+                  "callee": "accent",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "mode"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "field",
+                "name": "borderRadius",
+                "value": {
+                  "kind": "string",
+                  "value": "999px"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "color",
+                "value": {
+                  "kind": "string",
+                  "value": "#ffffff"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "fontSize",
+                "value": {
+                  "kind": "string",
+                  "value": "12px"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "fontWeight",
+                "value": {
+                  "kind": "string",
+                  "value": "700"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "letterSpacing",
+                "value": {
+                  "kind": "string",
+                  "value": "0.12em"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "padding",
+                "value": {
+                  "kind": "string",
+                  "value": "6px 12px"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1812,
+        "end": 2052
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "actionStyle",
+      "parameters": [
         {
           "name": "message",
           "type": "Msg",
@@ -191,32 +969,103 @@
         },
         "branches": [
           {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "StartFocus"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_style",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "backgroundColor",
+                      "value": {
+                        "kind": "string",
+                        "value": "#059669"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "color",
+                      "value": {
+                        "kind": "string",
+                        "value": "#ffffff"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "TakeBreak"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_style",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "backgroundColor",
+                      "value": {
+                        "kind": "string",
+                        "value": "#2563eb"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "color",
+                      "value": {
+                        "kind": "string",
+                        "value": "#ffffff"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
             "tests": [],
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_signal_update",
+              "callee": "_ssrg_html_style",
               "arguments": [
                 {
-                  "kind": "lambda",
-                  "parameter": "value: bigint",
-                  "body": {
-                    "kind": "runtime-call",
-                    "callee": "_ssrg_int64_add",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "value"
-                      },
-                      {
-                        "kind": "bigint",
-                        "value": "1"
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "backgroundColor",
+                      "value": {
+                        "kind": "string",
+                        "value": "#f1f5f9"
                       }
-                    ]
-                  }
-                },
-                {
-                  "kind": "identifier",
-                  "name": "count"
+                    },
+                    {
+                      "kind": "field",
+                      "name": "color",
+                      "value": {
+                        "kind": "string",
+                        "value": "#334155"
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -224,25 +1073,98 @@
         ],
         "type": {
           "kind": "reference",
-          "name": "Effect",
-          "arguments": [
-            {
-              "kind": "record",
-              "fields": []
-            },
-            {
-              "kind": "never"
-            },
-            {
-              "kind": "undefined"
-            }
-          ]
+          "name": "Style",
+          "arguments": []
         }
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 180,
-        "end": 351
+        "start": 2054,
+        "end": 2365
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "action",
+      "parameters": [
+        {
+          "name": "id",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "message",
+          "type": "Msg",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_button",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "id",
+                "value": {
+                  "kind": "identifier",
+                  "name": "id"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onClick",
+                "value": {
+                  "kind": "identifier",
+                  "name": "message"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "className",
+                "value": {
+                  "kind": "string",
+                  "value": "w-full rounded-xl border-0 px-4 py-3 font-semibold transition hover:shadow-lg"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "style",
+                "value": {
+                  "kind": "call",
+                  "callee": "actionStyle",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "message"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "identifier",
+                  "name": "text"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 2367,
+        "end": 2642
       }
     },
     {
@@ -251,8 +1173,8 @@
       "name": "view",
       "parameters": [
         {
-          "name": "count",
-          "type": "bigint",
+          "name": "mode",
+          "type": "Mode",
           "implicit": false
         }
       ],
@@ -267,31 +1189,8 @@
                 "kind": "field",
                 "name": "style",
                 "value": {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_html_style",
-                  "arguments": [
-                    {
-                      "kind": "record",
-                      "items": [
-                        {
-                          "kind": "field",
-                          "name": "backgroundColor",
-                          "value": {
-                            "kind": "string",
-                            "value": "#eef6f3"
-                          }
-                        },
-                        {
-                          "kind": "field",
-                          "name": "padding",
-                          "value": {
-                            "kind": "string",
-                            "value": "32px"
-                          }
-                        }
-                      ]
-                    }
-                  ]
+                  "kind": "identifier",
+                  "name": "pageStyle"
                 }
               },
               {
@@ -302,198 +1201,365 @@
                   "elements": [
                     {
                       "kind": "runtime-call",
-                      "callee": "_ssrg_html_h1",
+                      "callee": "_ssrg_html_section",
                       "arguments": [
                         {
                           "kind": "record",
                           "items": [
                             {
                               "kind": "field",
-                              "name": "style",
-                              "value": {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_html_style",
-                                "arguments": [
-                                  {
-                                    "kind": "record",
-                                    "items": [
-                                      {
-                                        "kind": "field",
-                                        "name": "color",
-                                        "value": {
-                                          "kind": "string",
-                                          "value": "#123b32"
-                                        }
-                                      },
-                                      {
-                                        "kind": "field",
-                                        "name": "marginTop",
-                                        "value": {
-                                          "kind": "string",
-                                          "value": "0"
-                                        }
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "children",
+                              "name": "className",
                               "value": {
                                 "kind": "string",
-                                "value": "Interactive Seseragi"
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_p",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "id",
-                              "value": {
-                                "kind": "string",
-                                "value": "count"
+                                "value": "mx-auto max-w-lg"
                               }
                             },
                             {
                               "kind": "field",
                               "name": "style",
                               "value": {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_html_style",
-                                "arguments": [
-                                  {
-                                    "kind": "record",
-                                    "items": [
-                                      {
-                                        "kind": "field",
-                                        "name": "color",
-                                        "value": {
-                                          "kind": "string",
-                                          "value": "#185f50"
-                                        }
-                                      },
-                                      {
-                                        "kind": "field",
-                                        "name": "fontSize",
-                                        "value": {
-                                          "kind": "string",
-                                          "value": "24px"
-                                        }
-                                      }
-                                    ]
-                                  }
-                                ]
+                                "kind": "identifier",
+                                "name": "cardStyle"
                               }
                             },
                             {
                               "kind": "field",
                               "name": "children",
                               "value": {
-                                "kind": "binary",
-                                "operator": "+",
-                                "left": {
-                                  "kind": "string",
-                                  "value": "Count: "
-                                },
-                                "right": {
-                                  "kind": "dictionary-call",
-                                  "dictionary": {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_show_intShow"
+                                "kind": "array",
+                                "elements": [
+                                  {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_html_div",
+                                    "arguments": [
+                                      {
+                                        "kind": "record",
+                                        "items": [
+                                          {
+                                            "kind": "field",
+                                            "name": "className",
+                                            "value": {
+                                              "kind": "string",
+                                              "value": "mb-6 flex items-center justify-between"
+                                            }
+                                          },
+                                          {
+                                            "kind": "field",
+                                            "name": "children",
+                                            "value": {
+                                              "kind": "array",
+                                              "elements": [
+                                                {
+                                                  "kind": "runtime-call",
+                                                  "callee": "_ssrg_html_span",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "record",
+                                                      "items": [
+                                                        {
+                                                          "kind": "field",
+                                                          "name": "style",
+                                                          "value": {
+                                                            "kind": "call",
+                                                            "callee": "badgeStyle",
+                                                            "arguments": [
+                                                              {
+                                                                "kind": "identifier",
+                                                                "name": "mode"
+                                                              }
+                                                            ]
+                                                          }
+                                                        },
+                                                        {
+                                                          "kind": "field",
+                                                          "name": "children",
+                                                          "value": {
+                                                            "kind": "call",
+                                                            "callee": "label",
+                                                            "arguments": [
+                                                              {
+                                                                "kind": "identifier",
+                                                                "name": "mode"
+                                                              }
+                                                            ]
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "kind": "runtime-call",
+                                                  "callee": "_ssrg_html_span",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "record",
+                                                      "items": [
+                                                        {
+                                                          "kind": "field",
+                                                          "name": "className",
+                                                          "value": {
+                                                            "kind": "string",
+                                                            "value": "text-sm font-semibold text-slate-500"
+                                                          }
+                                                        },
+                                                        {
+                                                          "kind": "field",
+                                                          "name": "children",
+                                                          "value": {
+                                                            "kind": "string",
+                                                            "value": "SESERAGI FLOW"
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ],
+                                              "elementType": {
+                                                "kind": "reference",
+                                                "name": "Html",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "reference",
+                                                    "name": "Msg",
+                                                    "arguments": []
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
                                   },
-                                  "method": "show",
+                                  {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_html_h1",
+                                    "arguments": [
+                                      {
+                                        "kind": "record",
+                                        "items": [
+                                          {
+                                            "kind": "field",
+                                            "name": "className",
+                                            "value": {
+                                              "kind": "string",
+                                              "value": "m-0 text-3xl font-bold text-slate-900 sm:text-4xl"
+                                            }
+                                          },
+                                          {
+                                            "kind": "field",
+                                            "name": "children",
+                                            "value": {
+                                              "kind": "call",
+                                              "callee": "title",
+                                              "arguments": [
+                                                {
+                                                  "kind": "identifier",
+                                                  "name": "mode"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_html_p",
+                                    "arguments": [
+                                      {
+                                        "kind": "record",
+                                        "items": [
+                                          {
+                                            "kind": "field",
+                                            "name": "className",
+                                            "value": {
+                                              "kind": "string",
+                                              "value": "mb-6 mt-4 text-lg text-slate-700"
+                                            }
+                                          },
+                                          {
+                                            "kind": "field",
+                                            "name": "children",
+                                            "value": {
+                                              "kind": "call",
+                                              "callee": "guidance",
+                                              "arguments": [
+                                                {
+                                                  "kind": "identifier",
+                                                  "name": "mode"
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_html_div",
+                                    "arguments": [
+                                      {
+                                        "kind": "record",
+                                        "items": [
+                                          {
+                                            "kind": "field",
+                                            "name": "style",
+                                            "value": {
+                                              "kind": "identifier",
+                                              "name": "trackStyle"
+                                            }
+                                          },
+                                          {
+                                            "kind": "field",
+                                            "name": "children",
+                                            "value": {
+                                              "kind": "runtime-call",
+                                              "callee": "_ssrg_html_div",
+                                              "arguments": [
+                                                {
+                                                  "kind": "record",
+                                                  "items": [
+                                                    {
+                                                      "kind": "field",
+                                                      "name": "style",
+                                                      "value": {
+                                                        "kind": "call",
+                                                        "callee": "progressStyle",
+                                                        "arguments": [
+                                                          {
+                                                            "kind": "identifier",
+                                                            "name": "mode"
+                                                          }
+                                                        ]
+                                                      }
+                                                    },
+                                                    {
+                                                      "kind": "field",
+                                                      "name": "children",
+                                                      "value": {
+                                                        "kind": "string",
+                                                        "value": ""
+                                                      }
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_html_div",
+                                    "arguments": [
+                                      {
+                                        "kind": "record",
+                                        "items": [
+                                          {
+                                            "kind": "field",
+                                            "name": "className",
+                                            "value": {
+                                              "kind": "string",
+                                              "value": "mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3"
+                                            }
+                                          },
+                                          {
+                                            "kind": "field",
+                                            "name": "children",
+                                            "value": {
+                                              "kind": "array",
+                                              "elements": [
+                                                {
+                                                  "kind": "call",
+                                                  "callee": "action",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "string",
+                                                      "value": "focus"
+                                                    },
+                                                    {
+                                                      "kind": "string",
+                                                      "value": "Start focus"
+                                                    },
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "StartFocus"
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "kind": "call",
+                                                  "callee": "action",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "string",
+                                                      "value": "break"
+                                                    },
+                                                    {
+                                                      "kind": "string",
+                                                      "value": "Take a break"
+                                                    },
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "TakeBreak"
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "kind": "call",
+                                                  "callee": "action",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "string",
+                                                      "value": "reset"
+                                                    },
+                                                    {
+                                                      "kind": "string",
+                                                      "value": "Reset the flow"
+                                                    },
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "Reset"
+                                                    }
+                                                  ]
+                                                }
+                                              ],
+                                              "elementType": {
+                                                "kind": "reference",
+                                                "name": "Html",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "reference",
+                                                    "name": "Msg",
+                                                    "arguments": []
+                                                  }
+                                                ]
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "elementType": {
+                                  "kind": "reference",
+                                  "name": "Html",
                                   "arguments": [
                                     {
-                                      "kind": "identifier",
-                                      "name": "count"
+                                      "kind": "reference",
+                                      "name": "Msg",
+                                      "arguments": []
                                     }
                                   ]
                                 }
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "runtime-call",
-                      "callee": "_ssrg_html_button",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "id",
-                              "value": {
-                                "kind": "string",
-                                "value": "increment"
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "onClick",
-                              "value": {
-                                "kind": "identifier",
-                                "name": "Increment"
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "style",
-                              "value": {
-                                "kind": "runtime-call",
-                                "callee": "_ssrg_html_style",
-                                "arguments": [
-                                  {
-                                    "kind": "record",
-                                    "items": [
-                                      {
-                                        "kind": "field",
-                                        "name": "backgroundColor",
-                                        "value": {
-                                          "kind": "string",
-                                          "value": "#8ce6c3"
-                                        }
-                                      },
-                                      {
-                                        "kind": "field",
-                                        "name": "borderRadius",
-                                        "value": {
-                                          "kind": "string",
-                                          "value": "999px"
-                                        }
-                                      },
-                                      {
-                                        "kind": "field",
-                                        "name": "padding",
-                                        "value": {
-                                          "kind": "string",
-                                          "value": "12px 20px"
-                                        }
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "string",
-                                "value": "+1"
                               }
                             }
                           ]
@@ -520,8 +1586,135 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 353,
-        "end": 1040
+        "start": 2644,
+        "end": 4027
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "update",
+      "parameters": [
+        {
+          "name": "mode",
+          "type": "MutableSignal<Mode>",
+          "implicit": false
+        },
+        {
+          "name": "message",
+          "type": "Msg",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "message"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Msg",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "StartFocus"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_update",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "current: Mode",
+                  "body": {
+                    "kind": "identifier",
+                    "name": "Focusing"
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "mode"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "TakeBreak"
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_update",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "current: Mode",
+                  "body": {
+                    "kind": "identifier",
+                    "name": "Resting"
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "mode"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_update",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "current: Mode",
+                  "body": {
+                    "kind": "identifier",
+                    "name": "Ready"
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "mode"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "fields": []
+            },
+            {
+              "kind": "never"
+            },
+            {
+              "kind": "undefined"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 4029,
+        "end": 4326
       }
     },
     {
@@ -540,30 +1733,39 @@
         "statements": [
           {
             "kind": "const",
-            "name": "count",
+            "name": "mode",
             "type": {
               "kind": "reference",
               "name": "MutableSignal",
               "arguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "reference",
+                  "name": "Mode",
+                  "arguments": []
                 }
               ]
             },
             "initializer": {
-              "kind": "runtime-call",
+              "kind": "type-application-call",
               "callee": "_ssrg_signal_make",
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "Mode",
+                  "arguments": []
+                }
+              ],
               "arguments": [
                 {
-                  "kind": "bigint",
-                  "value": "0"
+                  "kind": "identifier",
+                  "name": "initialMode"
                 }
               ]
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1113,
-              "end": 1136
+              "start": 4399,
+              "end": 4431
             }
           },
           {
@@ -596,14 +1798,14 @@
                 },
                 {
                   "kind": "identifier",
-                  "name": "count"
+                  "name": "mode"
                 }
               ]
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1141,
-              "end": 1177
+              "start": 4436,
+              "end": 4471
             }
           },
           {
@@ -640,8 +1842,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1182,
-              "end": 1285
+              "start": 4476,
+              "end": 4579
             }
           }
         ],
@@ -680,7 +1882,7 @@
                   "arguments": [
                     {
                       "kind": "identifier",
-                      "name": "count"
+                      "name": "mode"
                     }
                   ]
                 },
@@ -695,8 +1897,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1042,
-        "end": 1434
+        "start": 4328,
+        "end": 4727
       }
     }
   ]

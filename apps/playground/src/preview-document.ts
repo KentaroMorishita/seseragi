@@ -32,6 +32,7 @@ img, svg { display: block; max-width: 100%; }
 .justify-between { justify-content: space-between; }
 .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
 .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .gap-2 { gap: 0.5rem; }
 .gap-4 { gap: 1rem; }
 .gap-6 { gap: 1.5rem; }
@@ -113,6 +114,7 @@ img, svg { display: block; max-width: 100%; }
 @media (min-width: 640px) {
   .sm\:p-12 { padding: 3rem; }
   .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .sm\:text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
 }
 `

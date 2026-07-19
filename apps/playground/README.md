@@ -15,6 +15,11 @@ structured diagnostics、runtime entry contractを利用します。
 
 sampleは`examples/spec`のcanonical sourceを直接bundleし、WASM compileとbrowser executionをtestします。
 
+公開catalogはcompilerの内部fixtureを網羅する一覧ではなく、言語を段階的に試せる代表sampleへ絞ります。
+各sampleの目的と主要conceptはeditor上の`Guide` overlayから確認でき、説明のためにworkspaceの表示行を
+増やしません。interactive sampleはtyped messageとSignalで状態を更新し、同じpreview iframeで
+browser DOMまで実行します。
+
 ## HTML preview
 
 SSRとinteractive DOMは、script実行を許可しない同じsandbox iframeへ表示します。preview documentには

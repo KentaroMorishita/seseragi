@@ -160,8 +160,13 @@
               ]
             },
             "initializer": {
-              "kind": "runtime-call",
+              "kind": "type-application-call",
               "callee": "_ssrg_signal_make",
+              "typeArguments": [
+                {
+                  "kind": "bigint"
+                }
+              ],
               "arguments": [
                 {
                   "kind": "bigint",
@@ -188,8 +193,13 @@
               ]
             },
             "initializer": {
-              "kind": "runtime-call",
+              "kind": "type-application-call",
               "callee": "_ssrg_signal_make",
+              "typeArguments": [
+                {
+                  "kind": "bigint"
+                }
+              ],
               "arguments": [
                 {
                   "kind": "bigint",
@@ -216,8 +226,13 @@
               ]
             },
             "initializer": {
-              "kind": "runtime-call",
+              "kind": "type-application-call",
               "callee": "_ssrg_signal_make",
+              "typeArguments": [
+                {
+                  "kind": "bigint"
+                }
+              ],
               "arguments": [
                 {
                   "kind": "bigint",

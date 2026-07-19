@@ -3,55 +3,188 @@ import * as html from "std/web/html"
 import * as signals from "std/signal"
 import { MutableSignal } from "std/signal"
 
-type Msg =
-  | Increment
+type Mode =
+  | Ready
+  | Focusing
+  | Resting
 
-effect fn update count: MutableSignal<Int>
+type Msg =
+  | StartFocus
+  | TakeBreak
+  | Reset
+
+let initialMode: Mode = Ready
+
+let pageStyle =
+  html.style {
+    background: "linear-gradient(135deg, #d1fae5 0%, #f8fafc 48%, #dbeafe 100%)",
+    minHeight: "100vh",
+    padding: "32px"
+  }
+
+let cardStyle =
+  html.style {
+    variables: { cardShadow: "0 24px 64px #0f172a24" },
+    backgroundColor: "#ffffff",
+    border: "1px solid #ffffffcc",
+    borderRadius: "28px",
+    boxShadow: "var(--card-shadow)",
+    padding: "32px"
+  }
+
+let trackStyle =
+  html.style {
+    backgroundColor: "#e2e8f0",
+    borderRadius: "999px",
+    height: "10px",
+    overflow: "hidden"
+  }
+
+fn label mode: Mode -> String =
+  match mode {
+    Ready -> "READY"
+    Focusing -> "FOCUS"
+    Resting -> "BREAK"
+  }
+
+fn title mode: Mode -> String =
+  match mode {
+    Ready -> "Choose your rhythm"
+    Focusing -> "Deep work in progress"
+    Resting -> "Pause with purpose"
+  }
+
+fn guidance mode: Mode -> String =
+  match mode {
+    Ready -> "Pick a mode and let a typed message update the Signal."
+    Focusing -> "One task. No tab hopping. You have got this."
+    Resting -> "Look away from the screen and take a slow breath."
+  }
+
+fn accent mode: Mode -> String =
+  match mode {
+    Ready -> "#475569"
+    Focusing -> "#059669"
+    Resting -> "#2563eb"
+  }
+
+fn progress mode: Mode -> String =
+  match mode {
+    Ready -> "18%"
+    Focusing -> "82%"
+    Resting -> "46%"
+  }
+
+fn progressStyle mode: Mode -> html.Style =
+  html.style {
+    backgroundColor: accent mode,
+    borderRadius: "999px",
+    height: "100%",
+    transition: "all 240ms ease",
+    width: progress mode
+  }
+
+fn badgeStyle mode: Mode -> html.Style =
+  html.style {
+    backgroundColor: accent mode,
+    borderRadius: "999px",
+    color: "#ffffff",
+    fontSize: "12px",
+    fontWeight: "700",
+    letterSpacing: "0.12em",
+    padding: "6px 12px"
+  }
+
+fn actionStyle message: Msg -> html.Style =
+  match message {
+    StartFocus ->
+      html.style { backgroundColor: "#059669", color: "#ffffff" }
+    TakeBreak ->
+      html.style { backgroundColor: "#2563eb", color: "#ffffff" }
+    Reset ->
+      html.style { backgroundColor: "#f1f5f9", color: "#334155" }
+  }
+
+fn action id: String
+  -> text: String
+  -> message: Msg
+  -> html.Html<Msg> =
+  html.button {
+    id,
+    onClick: message,
+    className: "w-full rounded-xl border-0 px-4 py-3 font-semibold transition hover:shadow-lg",
+    style: actionStyle message,
+    children: text
+  }
+
+fn view mode: Mode -> html.Html<Msg> =
+  html.main {
+    style: pageStyle,
+    children: [
+      html.section {
+        className: "mx-auto max-w-lg",
+        style: cardStyle,
+        children: [
+          html.div {
+            className: "mb-6 flex items-center justify-between",
+            children: [
+              html.span {
+                style: badgeStyle mode,
+                children: label mode
+              },
+              html.span {
+                className: "text-sm font-semibold text-slate-500",
+                children: "SESERAGI FLOW"
+              }
+            ]
+          },
+          html.h1 {
+            className: "m-0 text-3xl font-bold text-slate-900 sm:text-4xl",
+            children: title mode
+          },
+          html.p {
+            className: "mb-6 mt-4 text-lg text-slate-700",
+            children: guidance mode
+          },
+          html.div {
+            style: trackStyle,
+            children: html.div {
+              style: progressStyle mode,
+              children: ""
+            }
+          },
+          html.div {
+            className: "mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3",
+            children: [
+              action "focus" "Start focus" StartFocus,
+              action "break" "Take a break" TakeBreak,
+              action "reset" "Reset the flow" Reset
+            ]
+          }
+        ]
+      }
+    ]
+  }
+
+effect fn update mode: MutableSignal<Mode>
   -> message: Msg
   -> Unit
 fails Never =
   match message {
-    Increment -> signals.update (\value: Int -> value + 1) count
-  }
-
-fn view count: Int -> html.Html<Msg> =
-  html.main {
-    style: html.style {
-      backgroundColor: "#eef6f3",
-      padding: "32px"
-    },
-    children: [
-      html.h1 {
-        style: html.style { color: "#123b32", marginTop: "0" },
-        children: "Interactive Seseragi"
-      },
-      html.p {
-        id: "count",
-        style: html.style { color: "#185f50", fontSize: "24px" },
-        children: `Count: ${count}`
-      },
-      html.button {
-        id: "increment",
-        onClick: Increment,
-        style: html.style {
-          backgroundColor: "#8ce6c3",
-          borderRadius: "999px",
-          padding: "12px 20px"
-        },
-        children: "+1"
-      }
-    ]
+    StartFocus -> signals.update (\current: Mode -> Focusing) mode
+    TakeBreak -> signals.update (\current: Mode -> Resting) mode
+    Reset -> signals.update (\current: Mode -> Ready) mode
   }
 
 pub effect fn main -> Unit
 with dom: dom.Dom
 fails String =
   do {
-    count <- signals.make 0
-    let content = signals.map view count
+    mode <- signals.make initialMode
+    let content = signals.map view mode
     target <-
       dom.query "#app"
         |> mapError (\error: dom.DomError -> "DOM target unavailable")
-    dom.run (dom.defaultOptions ()) target (update count) content
+    dom.run (dom.defaultOptions ()) target (update mode) content
       |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
   }

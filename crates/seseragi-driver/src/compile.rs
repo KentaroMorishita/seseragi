@@ -258,6 +258,35 @@ fails ConsoleError =
     }
 
     #[test]
+    fn preserves_the_seseragi_value_type_when_creating_a_mutable_signal() {
+        let source = r#"import * as signals from "std/signal"
+
+type Mode =
+  | Ready
+  | Running
+
+let initialMode: Mode = Ready
+
+pub effect fn main -> Unit =
+  do {
+    mode <- signals.make initialMode
+    signals.update (\current: Mode -> Running) mode
+  }
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/signal-adt",
+            source,
+        ))
+        .expect("Signal creation should preserve the typed ADT instead of its constructor");
+
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("_ssrg_signal_make<Mode>(initialMode)"));
+    }
+
+    #[test]
     fn rejects_signal_sugar_on_non_signal_values_before_lowering() {
         for (name, expression) in [("read", "value <- *42"), ("write", "42 := 1")] {
             let source = format!(

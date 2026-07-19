@@ -15,6 +15,7 @@ import "./styles.css"
 import { requiredElement } from "./ui/elements"
 import { connectMobilePanels } from "./ui/mobile-panels"
 import { connectPanelLayout } from "./ui/panel-layout"
+import { connectSampleGuide } from "./ui/sample-guide"
 
 const editorHost = requiredElement("#editor", HTMLDivElement)
 const sampleSelect = requiredElement("#sample-select", HTMLSelectElement)
@@ -35,6 +36,26 @@ const clearOutputButton = requiredElement(
   "#clear-output-button",
   HTMLButtonElement
 )
+const sampleGuideButton = requiredElement(
+  "#sample-guide-button",
+  HTMLButtonElement
+)
+const sampleGuidePanel = requiredElement("#sample-guide", HTMLElement)
+const sampleGuideClose = requiredElement(
+  "#sample-guide-close",
+  HTMLButtonElement
+)
+const sampleGuideCategory = requiredElement(
+  "#sample-guide-category",
+  HTMLElement
+)
+const sampleGuideTitle = requiredElement("#sample-guide-title", HTMLElement)
+const sampleGuideSummary = requiredElement("#sample-guide-summary", HTMLElement)
+const sampleGuideConcepts = requiredElement(
+  "#sample-guide-concepts",
+  HTMLUListElement
+)
+const sampleGuideSource = requiredElement("#sample-guide-source", HTMLElement)
 const stdinInput = requiredElement("#stdin-input", HTMLTextAreaElement)
 const output = requiredElement("#output", HTMLPreElement)
 const htmlPreview = requiredElement("#html-preview", HTMLIFrameElement)
@@ -52,6 +73,16 @@ const workspace = requiredElement(".workspace", HTMLElement)
 const workspaceResizer = requiredElement("#workspace-resizer", HTMLElement)
 const ioPanel = requiredElement("#io-panel", HTMLElement)
 const ioResizer = requiredElement("#io-resizer", HTMLElement)
+const sampleGuide = connectSampleGuide({
+  button: sampleGuideButton,
+  panel: sampleGuidePanel,
+  closeButton: sampleGuideClose,
+  category: sampleGuideCategory,
+  title: sampleGuideTitle,
+  summary: sampleGuideSummary,
+  concepts: sampleGuideConcepts,
+  source: sampleGuideSource,
+})
 
 let source = samples[0]?.source ?? ""
 let outputMode: "text" | "html" = samples[0]?.outputMode ?? "text"
@@ -84,6 +115,7 @@ const initialSample = samples[0]
 if (initialSample) {
   stdinInput.value = initialSample.stdin
   setStdinVisible(initialSample.stdin !== "")
+  sampleGuide.setSample(initialSample)
 }
 
 sampleSelect.addEventListener("change", () => {
@@ -137,6 +169,7 @@ function loadSample(sample: (typeof samples)[number], status: string): void {
   outputMode = sample.outputMode
   stdinInput.value = sample.stdin
   setStdinVisible(sample.stdin !== "")
+  sampleGuide.setSample(sample)
   replaceEditorSource(editor, source)
   editor.dispatch(setDiagnostics(editor.state, []))
   showTextOutput("Runを押すと結果がここに表示されます。")
