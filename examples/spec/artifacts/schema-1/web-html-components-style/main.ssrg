@@ -14,7 +14,7 @@ let cardStyle =
 
 fn card title: String -> detail: String -> html.Html<Msg> =
   html.section {
-    className: "card",
+    className: "mx-auto max-w-xl",
     style: cardStyle,
     children: [
       html.h2 {
@@ -31,11 +31,11 @@ fn card title: String -> detail: String -> html.Html<Msg> =
 fn page -> html.Html<Msg> =
   html.main {
     id: "app",
-    style: html.style { backgroundColor: "#eef6f3", padding: "32px" },
+    className: "min-h-screen bg-emerald-50 p-8 sm:p-12",
     children: [
       html.h1 {
         onClick: Confirm,
-        style: html.style { color: "#123b32", marginTop: "0" },
+        className: "mx-auto mb-6 max-w-xl text-3xl font-bold text-emerald-950",
         children: "Seseragi components"
       },
       card "Reusable card" "Function component from children"

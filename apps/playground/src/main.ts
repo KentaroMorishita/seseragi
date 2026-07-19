@@ -5,6 +5,7 @@ import {
   toEditorDiagnostics,
 } from "./diagnostics/editor-diagnostics"
 import { createEditor, replaceEditorSource } from "./editor/create-editor"
+import { createPreviewDocument } from "./preview-document"
 import {
   type BrowserExecution,
   startGeneratedModule,
@@ -212,7 +213,9 @@ function renderHtmlPreview(html: string): void {
   clearHtmlPreview()
   if (html === "") return
 
-  const url = URL.createObjectURL(new Blob([html], { type: "text/html" }))
+  const url = URL.createObjectURL(
+    new Blob([createPreviewDocument(html)], { type: "text/html" })
+  )
   htmlPreviewUrl = url
   htmlPreview.addEventListener(
     "load",
@@ -229,7 +232,7 @@ function renderHtmlPreview(html: string): void {
 async function prepareInteractivePreview(): Promise<Document> {
   clearHtmlPreview()
   const url = URL.createObjectURL(
-    new Blob(['<!doctype html><div id="app"></div>'], {
+    new Blob([createPreviewDocument('<div id="app"></div>')], {
       type: "text/html",
     })
   )

@@ -96,9 +96,8 @@ describe("new Playground product gate", () => {
     expect(html).toMatch(/<iframe[\s\S]*?\ssandbox(?:=|\s|>)/)
     expect(html).toContain('sandbox="allow-same-origin"')
     expect(html).not.toContain("allow-scripts")
-    expect(main).toContain(
-      'URL.createObjectURL(new Blob([html], { type: "text/html" }))'
-    )
+    expect(main).toContain("createPreviewDocument(html)")
+    expect(main).toContain(`createPreviewDocument('<div id="app"></div>')`)
     expect(main).toContain('htmlPreview.addEventListener(\n    "load"')
     expect(main).toContain('htmlPreview.removeAttribute("src")')
   })

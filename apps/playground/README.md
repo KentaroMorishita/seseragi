@@ -13,8 +13,14 @@ React / Monaco UIや旧TypeScript compilerは利用しません。
 UIはparser、resolver、type checker、Effect semanticsを所有しません。CLI / LSP / Playgroundは同じdriver、
 structured diagnostics、runtime entry contractを利用します。
 
-現在はHello world、型付きじゃんけん、ミニ冒険、送料アドバイザー、Seseragiクイズの5 sampleを収録しています。
-いずれも`examples/spec`のcanonical sourceを直接bundleし、WASM compileとbrowser executionをtestします。
+sampleは`examples/spec`のcanonical sourceを直接bundleし、WASM compileとbrowser executionをtestします。
+
+## HTML preview
+
+SSRとinteractive DOMは、script実行を許可しない同じsandbox iframeへ表示します。preview documentには
+Playgroundが所有するTailwind風utility CSSの小さなsubsetを注入するため、Seseragi側は`className`へ
+`flex`、`grid`、spacing、typography、color、border、shadow、`sm:` responsiveなどを指定できます。
+inline styleとCSS variablesは`html.style`で併用できます。外部CDNとiframe内scriptには依存しません。
 
 ## mobile layout contract
 

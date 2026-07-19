@@ -286,7 +286,7 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
       "examples/spec/artifacts/schema-1/web-html-components-style/main.ssrg",
     stdin: "",
     expectedOutput:
-      '<main id="app" style="background-color: #eef6f3; padding: 32px"><h1 style="color: #123b32; margin-top: 0">Seseragi components</h1><section class="card" style="--card-shadow: 0 4px 16px #0002; background-color: #fff; box-shadow: var(--card-shadow); border-radius: 16px; padding: 24px"><h2 style="color: #185f50; margin-top: 0">Reusable card</h2><p style="color: #315c53; margin-bottom: 0">Function component from children</p></section></main>',
+      '<main id="app" class="min-h-screen bg-emerald-50 p-8 sm:p-12"><h1 class="mx-auto mb-6 max-w-xl text-3xl font-bold text-emerald-950">Seseragi components</h1><section class="mx-auto max-w-xl" style="--card-shadow: 0 4px 16px #0002; background-color: #fff; box-shadow: var(--card-shadow); border-radius: 16px; padding: 24px"><h2 style="color: #185f50; margin-top: 0">Reusable card</h2><p style="color: #315c53; margin-bottom: 0">Function component from children</p></section></main>',
     outputMode: "html",
   },
   {

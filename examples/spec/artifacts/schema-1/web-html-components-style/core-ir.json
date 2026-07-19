@@ -441,7 +441,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 261,
-        "end": 636
+        "end": 648
       },
       "parameters": [
         {
@@ -475,17 +475,17 @@
                 "name": "className",
                 "value": {
                   "kind": "string",
-                  "value": "card",
+                  "value": "mx-auto max-w-xl",
                   "origin": {
                     "source": "main.ssrg",
                     "start": 353,
-                    "end": 359
+                    "end": 371
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
                   "start": 342,
-                  "end": 359
+                  "end": 371
                 }
               },
               {
@@ -499,14 +499,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 372,
-                    "end": 381
+                    "start": 384,
+                    "end": 393
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 365,
-                  "end": 381
+                  "start": 377,
+                  "end": 393
                 }
               },
               {
@@ -540,14 +540,14 @@
                                           "value": "#185f50",
                                           "origin": {
                                             "source": "main.ssrg",
-                                            "start": 450,
-                                            "end": 459
+                                            "start": 462,
+                                            "end": 471
                                           }
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 443,
-                                          "end": 459
+                                          "start": 455,
+                                          "end": 471
                                         }
                                       },
                                       {
@@ -558,14 +558,14 @@
                                           "value": "0",
                                           "origin": {
                                             "source": "main.ssrg",
-                                            "start": 472,
-                                            "end": 475
+                                            "start": 484,
+                                            "end": 487
                                           }
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 461,
-                                          "end": 475
+                                          "start": 473,
+                                          "end": 487
                                         }
                                       }
                                     ],
@@ -593,8 +593,8 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 441,
-                                      "end": 477
+                                      "start": 453,
+                                      "end": 489
                                     }
                                   }
                                 ],
@@ -641,14 +641,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 430,
-                                  "end": 477
+                                  "start": 442,
+                                  "end": 489
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 423,
-                                "end": 477
+                                "start": 435,
+                                "end": 489
                               }
                             },
                             {
@@ -664,14 +664,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 497,
-                                  "end": 502
+                                  "start": 509,
+                                  "end": 514
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 487,
-                                "end": 502
+                                "start": 499,
+                                "end": 514
                               }
                             }
                           ],
@@ -700,8 +700,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 413,
-                            "end": 510
+                            "start": 425,
+                            "end": 522
                           }
                         }
                       ],
@@ -742,8 +742,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 405,
-                        "end": 510
+                        "start": 417,
+                        "end": 522
                       }
                     },
                     {
@@ -771,14 +771,14 @@
                                           "value": "#315c53",
                                           "origin": {
                                             "source": "main.ssrg",
-                                            "start": 562,
-                                            "end": 571
+                                            "start": 574,
+                                            "end": 583
                                           }
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 555,
-                                          "end": 571
+                                          "start": 567,
+                                          "end": 583
                                         }
                                       },
                                       {
@@ -789,14 +789,14 @@
                                           "value": "0",
                                           "origin": {
                                             "source": "main.ssrg",
-                                            "start": 587,
-                                            "end": 590
+                                            "start": 599,
+                                            "end": 602
                                           }
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 573,
-                                          "end": 590
+                                          "start": 585,
+                                          "end": 602
                                         }
                                       }
                                     ],
@@ -824,8 +824,8 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 553,
-                                      "end": 592
+                                      "start": 565,
+                                      "end": 604
                                     }
                                   }
                                 ],
@@ -872,14 +872,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 542,
-                                  "end": 592
+                                  "start": 554,
+                                  "end": 604
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 535,
-                                "end": 592
+                                "start": 547,
+                                "end": 604
                               }
                             },
                             {
@@ -895,14 +895,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 612,
-                                  "end": 618
+                                  "start": 624,
+                                  "end": 630
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 602,
-                                "end": 618
+                                "start": 614,
+                                "end": 630
                               }
                             }
                           ],
@@ -931,8 +931,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 525,
-                            "end": 626
+                            "start": 537,
+                            "end": 638
                           }
                         }
                       ],
@@ -973,8 +973,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 518,
-                        "end": 626
+                        "start": 530,
+                        "end": 638
                       }
                     }
                   ],
@@ -998,14 +998,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 397,
-                    "end": 632
+                    "start": 409,
+                    "end": 644
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 387,
-                  "end": 632
+                  "start": 399,
+                  "end": 644
                 }
               }
             ],
@@ -1053,7 +1053,7 @@
             "origin": {
               "source": "main.ssrg",
               "start": 336,
-              "end": 636
+              "end": 648
             }
           }
         ],
@@ -1108,7 +1108,7 @@
         "origin": {
           "source": "main.ssrg",
           "start": 323,
-          "end": 636
+          "end": 648
         }
       }
     },
@@ -1117,8 +1117,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 638,
-        "end": 1008
+        "start": 650,
+        "end": 1022
       },
       "parameters": [
         {
@@ -1146,143 +1146,32 @@
                   "value": "app",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 688,
-                    "end": 693
+                    "start": 700,
+                    "end": 705
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 684,
-                  "end": 693
+                  "start": 696,
+                  "end": 705
                 }
               },
               {
                 "kind": "field",
-                "name": "style",
+                "name": "className",
                 "value": {
-                  "kind": "call",
-                  "callee": "std/web/html::style",
-                  "arguments": [
-                    {
-                      "kind": "record",
-                      "items": [
-                        {
-                          "kind": "field",
-                          "name": "backgroundColor",
-                          "value": {
-                            "kind": "string",
-                            "value": "#eef6f3",
-                            "origin": {
-                              "source": "main.ssrg",
-                              "start": 736,
-                              "end": 745
-                            }
-                          },
-                          "origin": {
-                            "source": "main.ssrg",
-                            "start": 719,
-                            "end": 745
-                          }
-                        },
-                        {
-                          "kind": "field",
-                          "name": "padding",
-                          "value": {
-                            "kind": "string",
-                            "value": "32px",
-                            "origin": {
-                              "source": "main.ssrg",
-                              "start": 756,
-                              "end": 762
-                            }
-                          },
-                          "origin": {
-                            "source": "main.ssrg",
-                            "start": 747,
-                            "end": 762
-                          }
-                        }
-                      ],
-                      "type": {
-                        "kind": "record",
-                        "closed": true,
-                        "fields": [
-                          {
-                            "name": "backgroundColor",
-                            "type": {
-                              "kind": "named",
-                              "name": "String",
-                              "arguments": []
-                            }
-                          },
-                          {
-                            "name": "padding",
-                            "type": {
-                              "kind": "named",
-                              "name": "String",
-                              "arguments": []
-                            }
-                          }
-                        ]
-                      },
-                      "origin": {
-                        "source": "main.ssrg",
-                        "start": 717,
-                        "end": 764
-                      }
-                    }
-                  ],
-                  "evidence": [
-                    {
-                      "constraint": {
-                        "name": "StyleRecord",
-                        "arguments": [
-                          {
-                            "kind": "record",
-                            "closed": true,
-                            "fields": [
-                              {
-                                "name": "backgroundColor",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "String",
-                                  "arguments": []
-                                }
-                              },
-                              {
-                                "name": "padding",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "String",
-                                  "arguments": []
-                                }
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "evidence": {
-                        "kind": "standard",
-                        "identity": "std/web/html::StyleRecord<Record>"
-                      }
-                    }
-                  ],
-                  "type": {
-                    "kind": "external-named",
-                    "name": "Style",
-                    "canonical": "std/web/html::Style",
-                    "arguments": []
-                  },
+                  "kind": "string",
+                  "value": "min-h-screen bg-emerald-50 p-8 sm:p-12",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 706,
-                    "end": 764
+                    "start": 722,
+                    "end": 762
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 699,
-                  "end": 764
+                  "start": 711,
+                  "end": 762
                 }
               },
               {
@@ -1311,143 +1200,32 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 815,
-                                  "end": 822
+                                  "start": 813,
+                                  "end": 820
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 806,
-                                "end": 822
+                                "start": 804,
+                                "end": 820
                               }
                             },
                             {
                               "kind": "field",
-                              "name": "style",
+                              "name": "className",
                               "value": {
-                                "kind": "call",
-                                "callee": "std/web/html::style",
-                                "arguments": [
-                                  {
-                                    "kind": "record",
-                                    "items": [
-                                      {
-                                        "kind": "field",
-                                        "name": "color",
-                                        "value": {
-                                          "kind": "string",
-                                          "value": "#123b32",
-                                          "origin": {
-                                            "source": "main.ssrg",
-                                            "start": 859,
-                                            "end": 868
-                                          }
-                                        },
-                                        "origin": {
-                                          "source": "main.ssrg",
-                                          "start": 852,
-                                          "end": 868
-                                        }
-                                      },
-                                      {
-                                        "kind": "field",
-                                        "name": "marginTop",
-                                        "value": {
-                                          "kind": "string",
-                                          "value": "0",
-                                          "origin": {
-                                            "source": "main.ssrg",
-                                            "start": 881,
-                                            "end": 884
-                                          }
-                                        },
-                                        "origin": {
-                                          "source": "main.ssrg",
-                                          "start": 870,
-                                          "end": 884
-                                        }
-                                      }
-                                    ],
-                                    "type": {
-                                      "kind": "record",
-                                      "closed": true,
-                                      "fields": [
-                                        {
-                                          "name": "color",
-                                          "type": {
-                                            "kind": "named",
-                                            "name": "String",
-                                            "arguments": []
-                                          }
-                                        },
-                                        {
-                                          "name": "marginTop",
-                                          "type": {
-                                            "kind": "named",
-                                            "name": "String",
-                                            "arguments": []
-                                          }
-                                        }
-                                      ]
-                                    },
-                                    "origin": {
-                                      "source": "main.ssrg",
-                                      "start": 850,
-                                      "end": 886
-                                    }
-                                  }
-                                ],
-                                "evidence": [
-                                  {
-                                    "constraint": {
-                                      "name": "StyleRecord",
-                                      "arguments": [
-                                        {
-                                          "kind": "record",
-                                          "closed": true,
-                                          "fields": [
-                                            {
-                                              "name": "color",
-                                              "type": {
-                                                "kind": "named",
-                                                "name": "String",
-                                                "arguments": []
-                                              }
-                                            },
-                                            {
-                                              "name": "marginTop",
-                                              "type": {
-                                                "kind": "named",
-                                                "name": "String",
-                                                "arguments": []
-                                              }
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    "evidence": {
-                                      "kind": "standard",
-                                      "identity": "std/web/html::StyleRecord<Record>"
-                                    }
-                                  }
-                                ],
-                                "type": {
-                                  "kind": "external-named",
-                                  "name": "Style",
-                                  "canonical": "std/web/html::Style",
-                                  "arguments": []
-                                },
+                                "kind": "string",
+                                "value": "mx-auto mb-6 max-w-xl text-3xl font-bold text-emerald-950",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 839,
-                                  "end": 886
+                                  "start": 841,
+                                  "end": 900
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 832,
-                                "end": 886
+                                "start": 830,
+                                "end": 900
                               }
                             },
                             {
@@ -1458,14 +1236,14 @@
                                 "value": "Seseragi components",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 906,
-                                  "end": 927
+                                  "start": 920,
+                                  "end": 941
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 896,
-                                "end": 927
+                                "start": 910,
+                                "end": 941
                               }
                             }
                           ],
@@ -1482,19 +1260,18 @@
                                 }
                               },
                               {
-                                "name": "onClick",
+                                "name": "className",
                                 "type": {
                                   "kind": "named",
-                                  "name": "Msg",
+                                  "name": "String",
                                   "arguments": []
                                 }
                               },
                               {
-                                "name": "style",
+                                "name": "onClick",
                                 "type": {
-                                  "kind": "external-named",
-                                  "name": "Style",
-                                  "canonical": "std/web/html::Style",
+                                  "kind": "named",
+                                  "name": "Msg",
                                   "arguments": []
                                 }
                               }
@@ -1502,8 +1279,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 796,
-                            "end": 935
+                            "start": 794,
+                            "end": 949
                           }
                         }
                       ],
@@ -1544,8 +1321,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 788,
-                        "end": 935
+                        "start": 786,
+                        "end": 949
                       }
                     },
                     {
@@ -1557,8 +1334,8 @@
                           "value": "Reusable card",
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 948,
-                            "end": 963
+                            "start": 962,
+                            "end": 977
                           }
                         },
                         {
@@ -1566,8 +1343,8 @@
                           "value": "Function component from children",
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 964,
-                            "end": 998
+                            "start": 978,
+                            "end": 1012
                           }
                         }
                       ],
@@ -1585,8 +1362,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 943,
-                        "end": 998
+                        "start": 957,
+                        "end": 1012
                       }
                     }
                   ],
@@ -1610,14 +1387,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 780,
-                    "end": 1004
+                    "start": 778,
+                    "end": 1018
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 770,
-                  "end": 1004
+                  "start": 768,
+                  "end": 1018
                 }
               }
             ],
@@ -1647,7 +1424,7 @@
                   }
                 },
                 {
-                  "name": "id",
+                  "name": "className",
                   "type": {
                     "kind": "named",
                     "name": "String",
@@ -1655,11 +1432,10 @@
                   }
                 },
                 {
-                  "name": "style",
+                  "name": "id",
                   "type": {
-                    "kind": "external-named",
-                    "name": "Style",
-                    "canonical": "std/web/html::Style",
+                    "kind": "named",
+                    "name": "String",
                     "arguments": []
                   }
                 }
@@ -1667,8 +1443,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 678,
-              "end": 1008
+              "start": 690,
+              "end": 1022
             }
           }
         ],
@@ -1722,8 +1498,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 668,
-          "end": 1008
+          "start": 680,
+          "end": 1022
         }
       }
     },
@@ -1732,8 +1508,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 1010,
-        "end": 1112
+        "start": 1024,
+        "end": 1126
       },
       "parameters": [
         {
@@ -1786,8 +1562,8 @@
                     "kind": "unit",
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 1109,
-                      "end": 1111
+                      "start": 1123,
+                      "end": 1125
                     }
                   }
                 ],
@@ -1805,8 +1581,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1104,
-                  "end": 1111
+                  "start": 1118,
+                  "end": 1125
                 }
               }
             ],
@@ -1817,15 +1593,15 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1083,
-              "end": 1112
+              "start": 1097,
+              "end": 1126
             }
           }
         ],
         "origin": {
           "source": "main.ssrg",
-          "start": 1073,
-          "end": 1112
+          "start": 1087,
+          "end": 1126
         }
       }
     }

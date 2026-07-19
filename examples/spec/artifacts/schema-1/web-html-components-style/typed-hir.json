@@ -458,7 +458,7 @@
       "visibility": "private",
       "origin": {
         "start": 261,
-        "end": 636
+        "end": 648
       },
       "scheme": {
         "typeParameters": [],
@@ -515,7 +515,7 @@
                 "name": "className",
                 "value": {
                   "kind": "string",
-                  "value": "card",
+                  "value": "mx-auto max-w-xl",
                   "type": {
                     "kind": "named",
                     "name": "String",
@@ -523,12 +523,12 @@
                   },
                   "origin": {
                     "start": 353,
-                    "end": 359
+                    "end": 371
                   }
                 },
                 "origin": {
                   "start": 342,
-                  "end": 359
+                  "end": 371
                 }
               },
               {
@@ -541,13 +541,13 @@
                     "kind": "hole"
                   },
                   "origin": {
-                    "start": 372,
-                    "end": 381
+                    "start": 384,
+                    "end": 393
                   }
                 },
                 "origin": {
-                  "start": 365,
-                  "end": 381
+                  "start": 377,
+                  "end": 393
                 }
               },
               {
@@ -585,13 +585,13 @@
                                             "arguments": []
                                           },
                                           "origin": {
-                                            "start": 450,
-                                            "end": 459
+                                            "start": 462,
+                                            "end": 471
                                           }
                                         },
                                         "origin": {
-                                          "start": 443,
-                                          "end": 459
+                                          "start": 455,
+                                          "end": 471
                                         }
                                       },
                                       {
@@ -606,13 +606,13 @@
                                             "arguments": []
                                           },
                                           "origin": {
-                                            "start": 472,
-                                            "end": 475
+                                            "start": 484,
+                                            "end": 487
                                           }
                                         },
                                         "origin": {
-                                          "start": 461,
-                                          "end": 475
+                                          "start": 473,
+                                          "end": 487
                                         }
                                       }
                                     ],
@@ -639,8 +639,8 @@
                                       ]
                                     },
                                     "origin": {
-                                      "start": 441,
-                                      "end": 477
+                                      "start": 453,
+                                      "end": 489
                                     }
                                   }
                                 ],
@@ -686,13 +686,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 430,
-                                  "end": 477
+                                  "start": 442,
+                                  "end": 489
                                 }
                               },
                               "origin": {
-                                "start": 423,
-                                "end": 477
+                                "start": 435,
+                                "end": 489
                               }
                             },
                             {
@@ -707,13 +707,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 497,
-                                  "end": 502
+                                  "start": 509,
+                                  "end": 514
                                 }
                               },
                               "origin": {
-                                "start": 487,
-                                "end": 502
+                                "start": 499,
+                                "end": 514
                               }
                             }
                           ],
@@ -741,8 +741,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 413,
-                            "end": 510
+                            "start": 425,
+                            "end": 522
                           }
                         }
                       ],
@@ -782,8 +782,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 405,
-                        "end": 510
+                        "start": 417,
+                        "end": 522
                       }
                     },
                     {
@@ -815,13 +815,13 @@
                                             "arguments": []
                                           },
                                           "origin": {
-                                            "start": 562,
-                                            "end": 571
+                                            "start": 574,
+                                            "end": 583
                                           }
                                         },
                                         "origin": {
-                                          "start": 555,
-                                          "end": 571
+                                          "start": 567,
+                                          "end": 583
                                         }
                                       },
                                       {
@@ -836,13 +836,13 @@
                                             "arguments": []
                                           },
                                           "origin": {
-                                            "start": 587,
-                                            "end": 590
+                                            "start": 599,
+                                            "end": 602
                                           }
                                         },
                                         "origin": {
-                                          "start": 573,
-                                          "end": 590
+                                          "start": 585,
+                                          "end": 602
                                         }
                                       }
                                     ],
@@ -869,8 +869,8 @@
                                       ]
                                     },
                                     "origin": {
-                                      "start": 553,
-                                      "end": 592
+                                      "start": 565,
+                                      "end": 604
                                     }
                                   }
                                 ],
@@ -916,13 +916,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 542,
-                                  "end": 592
+                                  "start": 554,
+                                  "end": 604
                                 }
                               },
                               "origin": {
-                                "start": 535,
-                                "end": 592
+                                "start": 547,
+                                "end": 604
                               }
                             },
                             {
@@ -937,13 +937,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 612,
-                                  "end": 618
+                                  "start": 624,
+                                  "end": 630
                                 }
                               },
                               "origin": {
-                                "start": 602,
-                                "end": 618
+                                "start": 614,
+                                "end": 630
                               }
                             }
                           ],
@@ -971,8 +971,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 525,
-                            "end": 626
+                            "start": 537,
+                            "end": 638
                           }
                         }
                       ],
@@ -1012,8 +1012,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 518,
-                        "end": 626
+                        "start": 530,
+                        "end": 638
                       }
                     }
                   ],
@@ -1036,13 +1036,13 @@
                     ]
                   },
                   "origin": {
-                    "start": 397,
-                    "end": 632
+                    "start": 409,
+                    "end": 644
                   }
                 },
                 "origin": {
-                  "start": 387,
-                  "end": 632
+                  "start": 399,
+                  "end": 644
                 }
               }
             ],
@@ -1089,7 +1089,7 @@
             },
             "origin": {
               "start": 336,
-              "end": 636
+              "end": 648
             }
           }
         ],
@@ -1143,7 +1143,7 @@
         },
         "origin": {
           "start": 323,
-          "end": 636
+          "end": 648
         }
       }
     },
@@ -1152,8 +1152,8 @@
       "symbol": "artifact/web-html-components-style::page",
       "visibility": "private",
       "origin": {
-        "start": 638,
-        "end": 1008
+        "start": 650,
+        "end": 1022
       },
       "scheme": {
         "typeParameters": [],
@@ -1199,145 +1199,34 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 688,
-                    "end": 693
+                    "start": 700,
+                    "end": 705
                   }
                 },
                 "origin": {
-                  "start": 684,
-                  "end": 693
+                  "start": 696,
+                  "end": 705
                 }
               },
               {
                 "kind": "field",
-                "name": "style",
+                "name": "className",
                 "value": {
-                  "kind": "call",
-                  "callee": "std/web/html::style",
-                  "arguments": [
-                    {
-                      "kind": "record",
-                      "items": [
-                        {
-                          "kind": "field",
-                          "name": "backgroundColor",
-                          "value": {
-                            "kind": "string",
-                            "value": "#eef6f3",
-                            "type": {
-                              "kind": "named",
-                              "name": "String",
-                              "arguments": []
-                            },
-                            "origin": {
-                              "start": 736,
-                              "end": 745
-                            }
-                          },
-                          "origin": {
-                            "start": 719,
-                            "end": 745
-                          }
-                        },
-                        {
-                          "kind": "field",
-                          "name": "padding",
-                          "value": {
-                            "kind": "string",
-                            "value": "32px",
-                            "type": {
-                              "kind": "named",
-                              "name": "String",
-                              "arguments": []
-                            },
-                            "origin": {
-                              "start": 756,
-                              "end": 762
-                            }
-                          },
-                          "origin": {
-                            "start": 747,
-                            "end": 762
-                          }
-                        }
-                      ],
-                      "type": {
-                        "kind": "record",
-                        "closed": true,
-                        "fields": [
-                          {
-                            "name": "backgroundColor",
-                            "type": {
-                              "kind": "named",
-                              "name": "String",
-                              "arguments": []
-                            }
-                          },
-                          {
-                            "name": "padding",
-                            "type": {
-                              "kind": "named",
-                              "name": "String",
-                              "arguments": []
-                            }
-                          }
-                        ]
-                      },
-                      "origin": {
-                        "start": 717,
-                        "end": 764
-                      }
-                    }
-                  ],
-                  "evidence": [
-                    {
-                      "constraint": {
-                        "name": "StyleRecord",
-                        "arguments": [
-                          {
-                            "kind": "record",
-                            "closed": true,
-                            "fields": [
-                              {
-                                "name": "backgroundColor",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "String",
-                                  "arguments": []
-                                }
-                              },
-                              {
-                                "name": "padding",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "String",
-                                  "arguments": []
-                                }
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "evidence": {
-                        "kind": "standard",
-                        "identity": "std/web/html::StyleRecord<Record>"
-                      }
-                    }
-                  ],
+                  "kind": "string",
+                  "value": "min-h-screen bg-emerald-50 p-8 sm:p-12",
                   "type": {
-                    "kind": "external-named",
-                    "name": "Style",
-                    "canonical": "std/web/html::Style",
+                    "kind": "named",
+                    "name": "String",
                     "arguments": []
                   },
                   "origin": {
-                    "start": 706,
-                    "end": 764
+                    "start": 722,
+                    "end": 762
                   }
                 },
                 "origin": {
-                  "start": 699,
-                  "end": 764
+                  "start": 711,
+                  "end": 762
                 }
               },
               {
@@ -1365,145 +1254,34 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 815,
-                                  "end": 822
+                                  "start": 813,
+                                  "end": 820
                                 }
                               },
                               "origin": {
-                                "start": 806,
-                                "end": 822
+                                "start": 804,
+                                "end": 820
                               }
                             },
                             {
                               "kind": "field",
-                              "name": "style",
+                              "name": "className",
                               "value": {
-                                "kind": "call",
-                                "callee": "std/web/html::style",
-                                "arguments": [
-                                  {
-                                    "kind": "record",
-                                    "items": [
-                                      {
-                                        "kind": "field",
-                                        "name": "color",
-                                        "value": {
-                                          "kind": "string",
-                                          "value": "#123b32",
-                                          "type": {
-                                            "kind": "named",
-                                            "name": "String",
-                                            "arguments": []
-                                          },
-                                          "origin": {
-                                            "start": 859,
-                                            "end": 868
-                                          }
-                                        },
-                                        "origin": {
-                                          "start": 852,
-                                          "end": 868
-                                        }
-                                      },
-                                      {
-                                        "kind": "field",
-                                        "name": "marginTop",
-                                        "value": {
-                                          "kind": "string",
-                                          "value": "0",
-                                          "type": {
-                                            "kind": "named",
-                                            "name": "String",
-                                            "arguments": []
-                                          },
-                                          "origin": {
-                                            "start": 881,
-                                            "end": 884
-                                          }
-                                        },
-                                        "origin": {
-                                          "start": 870,
-                                          "end": 884
-                                        }
-                                      }
-                                    ],
-                                    "type": {
-                                      "kind": "record",
-                                      "closed": true,
-                                      "fields": [
-                                        {
-                                          "name": "color",
-                                          "type": {
-                                            "kind": "named",
-                                            "name": "String",
-                                            "arguments": []
-                                          }
-                                        },
-                                        {
-                                          "name": "marginTop",
-                                          "type": {
-                                            "kind": "named",
-                                            "name": "String",
-                                            "arguments": []
-                                          }
-                                        }
-                                      ]
-                                    },
-                                    "origin": {
-                                      "start": 850,
-                                      "end": 886
-                                    }
-                                  }
-                                ],
-                                "evidence": [
-                                  {
-                                    "constraint": {
-                                      "name": "StyleRecord",
-                                      "arguments": [
-                                        {
-                                          "kind": "record",
-                                          "closed": true,
-                                          "fields": [
-                                            {
-                                              "name": "color",
-                                              "type": {
-                                                "kind": "named",
-                                                "name": "String",
-                                                "arguments": []
-                                              }
-                                            },
-                                            {
-                                              "name": "marginTop",
-                                              "type": {
-                                                "kind": "named",
-                                                "name": "String",
-                                                "arguments": []
-                                              }
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    "evidence": {
-                                      "kind": "standard",
-                                      "identity": "std/web/html::StyleRecord<Record>"
-                                    }
-                                  }
-                                ],
+                                "kind": "string",
+                                "value": "mx-auto mb-6 max-w-xl text-3xl font-bold text-emerald-950",
                                 "type": {
-                                  "kind": "external-named",
-                                  "name": "Style",
-                                  "canonical": "std/web/html::Style",
+                                  "kind": "named",
+                                  "name": "String",
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 839,
-                                  "end": 886
+                                  "start": 841,
+                                  "end": 900
                                 }
                               },
                               "origin": {
-                                "start": 832,
-                                "end": 886
+                                "start": 830,
+                                "end": 900
                               }
                             },
                             {
@@ -1518,13 +1296,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 906,
-                                  "end": 927
+                                  "start": 920,
+                                  "end": 941
                                 }
                               },
                               "origin": {
-                                "start": 896,
-                                "end": 927
+                                "start": 910,
+                                "end": 941
                               }
                             }
                           ],
@@ -1541,27 +1319,26 @@
                                 }
                               },
                               {
+                                "name": "className",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
                                 "name": "onClick",
                                 "type": {
                                   "kind": "named",
                                   "name": "Msg",
                                   "arguments": []
                                 }
-                              },
-                              {
-                                "name": "style",
-                                "type": {
-                                  "kind": "external-named",
-                                  "name": "Style",
-                                  "canonical": "std/web/html::Style",
-                                  "arguments": []
-                                }
                               }
                             ]
                           },
                           "origin": {
-                            "start": 796,
-                            "end": 935
+                            "start": 794,
+                            "end": 949
                           }
                         }
                       ],
@@ -1601,8 +1378,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 788,
-                        "end": 935
+                        "start": 786,
+                        "end": 949
                       }
                     },
                     {
@@ -1618,8 +1395,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 948,
-                            "end": 963
+                            "start": 962,
+                            "end": 977
                           }
                         },
                         {
@@ -1631,8 +1408,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 964,
-                            "end": 998
+                            "start": 978,
+                            "end": 1012
                           }
                         }
                       ],
@@ -1649,8 +1426,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 943,
-                        "end": 998
+                        "start": 957,
+                        "end": 1012
                       }
                     }
                   ],
@@ -1673,13 +1450,13 @@
                     ]
                   },
                   "origin": {
-                    "start": 780,
-                    "end": 1004
+                    "start": 778,
+                    "end": 1018
                   }
                 },
                 "origin": {
-                  "start": 770,
-                  "end": 1004
+                  "start": 768,
+                  "end": 1018
                 }
               }
             ],
@@ -1709,7 +1486,7 @@
                   }
                 },
                 {
-                  "name": "id",
+                  "name": "className",
                   "type": {
                     "kind": "named",
                     "name": "String",
@@ -1717,19 +1494,18 @@
                   }
                 },
                 {
-                  "name": "style",
+                  "name": "id",
                   "type": {
-                    "kind": "external-named",
-                    "name": "Style",
-                    "canonical": "std/web/html::Style",
+                    "kind": "named",
+                    "name": "String",
                     "arguments": []
                   }
                 }
               ]
             },
             "origin": {
-              "start": 678,
-              "end": 1008
+              "start": 690,
+              "end": 1022
             }
           }
         ],
@@ -1782,8 +1558,8 @@
           ]
         },
         "origin": {
-          "start": 668,
-          "end": 1008
+          "start": 680,
+          "end": 1022
         }
       }
     },
@@ -1792,8 +1568,8 @@
       "symbol": "artifact/web-html-components-style::main",
       "visibility": "public",
       "origin": {
-        "start": 1010,
-        "end": 1112
+        "start": 1024,
+        "end": 1126
       },
       "parameters": [
         {
@@ -1877,8 +1653,8 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 1109,
-                      "end": 1111
+                      "start": 1123,
+                      "end": 1125
                     }
                   }
                 ],
@@ -1895,8 +1671,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 1104,
-                  "end": 1111
+                  "start": 1118,
+                  "end": 1125
                 }
               }
             ],
@@ -1906,14 +1682,14 @@
               "arguments": []
             },
             "origin": {
-              "start": 1083,
-              "end": 1112
+              "start": 1097,
+              "end": 1126
             }
           }
         ],
         "origin": {
-          "start": 1073,
-          "end": 1112
+          "start": 1087,
+          "end": 1126
         }
       }
     }
