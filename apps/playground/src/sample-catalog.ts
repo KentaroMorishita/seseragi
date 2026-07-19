@@ -215,8 +215,8 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     label: "Signalで動くFlow UI",
     category: "Web",
     summary:
-      "typed state machineをSignalで駆動し、browser DOMをinteractiveに更新します。",
-    concepts: ["typed Msg", "Signal", "interactive DOM"],
+      "pure reducerとdom.appでtyped state machineをinteractiveに動かします。",
+    concepts: ["typed Msg", "pure reducer", "dom.app"],
     sourcePath: "examples/spec/artifacts/schema-1/web-dom-counter/main.ssrg",
     stdin: "",
     expectedOutput: "",

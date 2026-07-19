@@ -232,6 +232,47 @@ fails ConsoleError =
     }
 
     #[test]
+    fn compiles_the_standard_dom_app_without_manual_signal_plumbing() {
+        let source = r##"import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+
+type Mode = | Ready | Active
+type Msg = | Activate
+
+let initialMode: Mode = Ready
+
+fn update message: Msg -> mode: Mode -> Mode =
+  match message {
+    Activate -> Active
+  }
+
+fn view mode: Mode -> html.Html<Msg> =
+  match mode {
+    Ready -> html.button { onClick: Activate, children: "Start" }
+    Active -> html.p { children: "Active" }
+  }
+
+pub effect fn main =
+  dom.app {
+    target: "#app",
+    initial: initialMode,
+    update,
+    view
+  }
+"##;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-dom-app",
+            source,
+        ))
+        .expect("standard DOM app should infer the complete executable Effect type");
+
+        assert!(compiled.generated.typescript.contains("_ssrg_dom_app"));
+        assert!(!compiled.generated.typescript.contains("_ssrg_dom_query"));
+        assert!(!compiled.generated.typescript.contains("_ssrg_signal_make"));
+    }
+
+    #[test]
     fn compiles_signal_read_and_assignment_sugar_through_the_runtime_abi() {
         let source = r#"import * as signals from "std/signal"
 

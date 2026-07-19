@@ -67,6 +67,7 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
     ),
     dom_operation!("query", "web.dom.query", "_ssrg_dom_query"),
     dom_operation!("run", "web.dom.run", "_ssrg_dom_run"),
+    dom_operation!("app", "web.dom.app", "_ssrg_dom_app"),
 ];
 
 pub(crate) fn runtime_web_html_operation(canonical: &str) -> Option<RuntimeWebHtmlOperation> {
@@ -103,5 +104,9 @@ mod tests {
         let dom = runtime_web_html_operation("std/web/dom::run").unwrap();
         assert_eq!(dom.runtime_feature, "web.dom.run");
         assert_eq!(dom.module, "@seseragi/runtime/dom");
+
+        let app = runtime_web_html_operation("std/web/dom::app").unwrap();
+        assert_eq!(app.runtime_feature, "web.dom.app");
+        assert_eq!(app.module, "@seseragi/runtime/dom");
     }
 }

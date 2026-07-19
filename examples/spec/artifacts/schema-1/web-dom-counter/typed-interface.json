@@ -35,37 +35,6 @@
           "localName": "html"
         }
       ]
-    },
-    {
-      "specifier": "std/signal",
-      "module": "std/signal",
-      "origin": {
-        "start": 72,
-        "end": 109
-      },
-      "imports": [
-        {
-          "namespace": "namespace",
-          "name": "*",
-          "symbol": "std/signal::*",
-          "localName": "signals"
-        }
-      ]
-    },
-    {
-      "specifier": "std/signal",
-      "module": "std/signal",
-      "origin": {
-        "start": 110,
-        "end": 152
-      },
-      "imports": [
-        {
-          "namespace": "type",
-          "name": "MutableSignal",
-          "symbol": "std/signal::MutableSignal"
-        }
-      ]
     }
   ],
   "exports": [
@@ -76,8 +45,8 @@
       "visibility": "public",
       "declarationKind": "effect-function",
       "declaration": {
-        "start": 4328,
-        "end": 4727
+        "start": 4089,
+        "end": 4192
       },
       "scheme": {
         "typeParameters": [],
@@ -100,8 +69,11 @@
                   {
                     "name": "dom",
                     "type": {
-                      "kind": "named",
-                      "name": "dom.Dom",
+                      "kind": "external-named",
+                      "name": "Dom",
+                      "canonical": "std/web/dom::Dom",
+                      "providerModule": "std/web/dom",
+                      "providerExport": "Dom",
                       "arguments": []
                     }
                   }

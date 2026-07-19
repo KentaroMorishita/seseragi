@@ -11,6 +11,8 @@ describe("Playground preview document", () => {
     )
 
     expect(document).toContain("<style>")
+    expect(document).toContain("script-src 'none'")
+    expect(document).toContain("default-src 'none'")
     expect(document).toContain(".min-h-screen")
     expect(document).toContain(".sm\\:p-12")
     expect(document).toContain('class="min-h-screen bg-emerald-50 p-8 sm:p-12"')

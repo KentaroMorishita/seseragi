@@ -5,14 +5,8 @@
   "runtimeRequirements": [
     "web.html.style-type",
     "web.html.type",
-    "signal.mutable-type",
     "effect.core.type",
-    "signal.type",
-    "web.dom.target",
-    "web.dom.error",
     "web.dom.service",
-    "web.dom.runtime-error",
-    "web.dom.options",
     "core.adt",
     "web.html.style",
     "core.string",
@@ -24,14 +18,7 @@
     "web.html.h1",
     "web.html.p",
     "core.unit",
-    "signal.update",
-    "effect.core.flatMap",
-    "signal.make",
-    "signal.map",
-    "effect.core.mapError",
-    "web.dom.query",
-    "web.dom.run",
-    "web.dom.default-options"
+    "web.dom.app"
   ],
   "imports": [
     {
@@ -67,36 +54,8 @@
       "local": "_ssrg_html_p"
     },
     {
-      "feature": "signal.update",
-      "local": "_ssrg_signal_update"
-    },
-    {
-      "feature": "effect.core.flatMap",
-      "local": "_ssrg_effect_flatMap"
-    },
-    {
-      "feature": "signal.make",
-      "local": "_ssrg_signal_make"
-    },
-    {
-      "feature": "signal.map",
-      "local": "_ssrg_signal_map"
-    },
-    {
-      "feature": "effect.core.mapError",
-      "local": "_ssrg_effect_mapError"
-    },
-    {
-      "feature": "web.dom.query",
-      "local": "_ssrg_dom_query"
-    },
-    {
-      "feature": "web.dom.run",
-      "local": "_ssrg_dom_run"
-    },
-    {
-      "feature": "web.dom.default-options",
-      "local": "_ssrg_dom_defaultOptions"
+      "feature": "web.dom.app",
+      "local": "_ssrg_dom_app"
     }
   ],
   "typeImports": [
@@ -109,36 +68,12 @@
       "local": "Html"
     },
     {
-      "feature": "signal.mutable-type",
-      "local": "MutableSignal"
-    },
-    {
       "feature": "effect.core.type",
       "local": "Effect"
     },
     {
-      "feature": "signal.type",
-      "local": "Signal"
-    },
-    {
-      "feature": "web.dom.target",
-      "local": "DomTarget"
-    },
-    {
-      "feature": "web.dom.error",
-      "local": "DomError"
-    },
-    {
       "feature": "web.dom.service",
       "local": "Dom"
-    },
-    {
-      "feature": "web.dom.runtime-error",
-      "local": "DomRuntimeError"
-    },
-    {
-      "feature": "web.dom.options",
-      "local": "DomOptions"
     }
   ],
   "adts": [
@@ -153,8 +88,8 @@
           "tag": "Ready",
           "origin": {
             "source": "main.ssrg",
-            "start": 170,
-            "end": 175
+            "start": 89,
+            "end": 94
           }
         },
         {
@@ -163,8 +98,8 @@
           "tag": "Focusing",
           "origin": {
             "source": "main.ssrg",
-            "start": 180,
-            "end": 188
+            "start": 99,
+            "end": 107
           }
         },
         {
@@ -173,15 +108,15 @@
           "tag": "Resting",
           "origin": {
             "source": "main.ssrg",
-            "start": 193,
-            "end": 200
+            "start": 112,
+            "end": 119
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
-        "start": 154,
-        "end": 200
+        "start": 73,
+        "end": 119
       }
     },
     {
@@ -195,8 +130,8 @@
           "tag": "StartFocus",
           "origin": {
             "source": "main.ssrg",
-            "start": 217,
-            "end": 227
+            "start": 136,
+            "end": 146
           }
         },
         {
@@ -205,8 +140,8 @@
           "tag": "TakeBreak",
           "origin": {
             "source": "main.ssrg",
-            "start": 232,
-            "end": 241
+            "start": 151,
+            "end": 160
           }
         },
         {
@@ -215,15 +150,15 @@
           "tag": "Reset",
           "origin": {
             "source": "main.ssrg",
-            "start": 246,
-            "end": 251
+            "start": 165,
+            "end": 170
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
-        "start": 202,
-        "end": 251
+        "start": 121,
+        "end": 170
       }
     }
   ],
@@ -243,8 +178,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 253,
-        "end": 282
+        "start": 172,
+        "end": 201
       }
     },
     {
@@ -293,8 +228,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 284,
-        "end": 444
+        "start": 203,
+        "end": 363
       }
     },
     {
@@ -376,8 +311,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 446,
-        "end": 686
+        "start": 365,
+        "end": 605
       }
     },
     {
@@ -434,8 +369,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 688,
-        "end": 825
+        "start": 607,
+        "end": 744
       }
     }
   ],
@@ -503,8 +438,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 827,
-        "end": 945
+        "start": 746,
+        "end": 864
       }
     },
     {
@@ -570,8 +505,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 947,
-        "end": 1107
+        "start": 866,
+        "end": 1026
       }
     },
     {
@@ -637,8 +572,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1109,
-        "end": 1362
+        "start": 1028,
+        "end": 1281
       }
     },
     {
@@ -704,8 +639,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1364,
-        "end": 1489
+        "start": 1283,
+        "end": 1408
       }
     },
     {
@@ -771,8 +706,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1491,
-        "end": 1606
+        "start": 1410,
+        "end": 1525
       }
     },
     {
@@ -851,8 +786,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1608,
-        "end": 1810
+        "start": 1527,
+        "end": 1729
       }
     },
     {
@@ -941,8 +876,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1812,
-        "end": 2052
+        "start": 1731,
+        "end": 1971
       }
     },
     {
@@ -1079,8 +1014,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 2054,
-        "end": 2365
+        "start": 1973,
+        "end": 2284
       }
     },
     {
@@ -1163,8 +1098,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 2367,
-        "end": 2642
+        "start": 2286,
+        "end": 2561
       }
     },
     {
@@ -1586,8 +1521,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 2644,
-        "end": 4027
+        "start": 2563,
+        "end": 3946
       }
     },
     {
@@ -1596,13 +1531,13 @@
       "name": "update",
       "parameters": [
         {
-          "name": "mode",
-          "type": "MutableSignal<Mode>",
+          "name": "message",
+          "type": "Msg",
           "implicit": false
         },
         {
-          "name": "message",
-          "type": "Msg",
+          "name": "mode",
+          "type": "Mode",
           "implicit": false
         }
       ],
@@ -1627,22 +1562,8 @@
               }
             ],
             "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_signal_update",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": "current: Mode",
-                  "body": {
-                    "kind": "identifier",
-                    "name": "Focusing"
-                  }
-                },
-                {
-                  "kind": "identifier",
-                  "name": "mode"
-                }
-              ]
+              "kind": "identifier",
+              "name": "Focusing"
             }
           },
           {
@@ -1654,67 +1575,28 @@
               }
             ],
             "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_signal_update",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": "current: Mode",
-                  "body": {
-                    "kind": "identifier",
-                    "name": "Resting"
-                  }
-                },
-                {
-                  "kind": "identifier",
-                  "name": "mode"
-                }
-              ]
+              "kind": "identifier",
+              "name": "Resting"
             }
           },
           {
             "tests": [],
             "value": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_signal_update",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": "current: Mode",
-                  "body": {
-                    "kind": "identifier",
-                    "name": "Ready"
-                  }
-                },
-                {
-                  "kind": "identifier",
-                  "name": "mode"
-                }
-              ]
+              "kind": "identifier",
+              "name": "Ready"
             }
           }
         ],
         "type": {
           "kind": "reference",
-          "name": "Effect",
-          "arguments": [
-            {
-              "kind": "record",
-              "fields": []
-            },
-            {
-              "kind": "never"
-            },
-            {
-              "kind": "undefined"
-            }
-          ]
+          "name": "Mode",
+          "arguments": []
         }
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 4029,
-        "end": 4326
+        "start": 3948,
+        "end": 4087
       }
     },
     {
@@ -1729,176 +1611,52 @@
         }
       ],
       "body": {
-        "kind": "sequence",
-        "statements": [
+        "kind": "runtime-call",
+        "callee": "_ssrg_dom_app",
+        "arguments": [
           {
-            "kind": "const",
-            "name": "mode",
-            "type": {
-              "kind": "reference",
-              "name": "MutableSignal",
-              "arguments": [
-                {
-                  "kind": "reference",
-                  "name": "Mode",
-                  "arguments": []
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "target",
+                "value": {
+                  "kind": "string",
+                  "value": "#app"
                 }
-              ]
-            },
-            "initializer": {
-              "kind": "type-application-call",
-              "callee": "_ssrg_signal_make",
-              "typeArguments": [
-                {
-                  "kind": "reference",
-                  "name": "Mode",
-                  "arguments": []
-                }
-              ],
-              "arguments": [
-                {
+              },
+              {
+                "kind": "field",
+                "name": "initial",
+                "value": {
                   "kind": "identifier",
                   "name": "initialMode"
                 }
-              ]
-            },
-            "origin": {
-              "source": "main.ssrg",
-              "start": 4399,
-              "end": 4431
-            }
-          },
-          {
-            "kind": "pure-let",
-            "name": "content",
-            "type": {
-              "kind": "reference",
-              "name": "Signal",
-              "arguments": [
-                {
-                  "kind": "reference",
-                  "name": "Html",
-                  "arguments": [
-                    {
-                      "kind": "reference",
-                      "name": "Msg",
-                      "arguments": []
-                    }
-                  ]
+              },
+              {
+                "kind": "field",
+                "name": "update",
+                "value": {
+                  "kind": "identifier",
+                  "name": "update"
                 }
-              ]
-            },
-            "initializer": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_signal_map",
-              "arguments": [
-                {
+              },
+              {
+                "kind": "field",
+                "name": "view",
+                "value": {
                   "kind": "identifier",
                   "name": "view"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "mode"
                 }
-              ]
-            },
-            "origin": {
-              "source": "main.ssrg",
-              "start": 4436,
-              "end": 4471
-            }
-          },
-          {
-            "kind": "const",
-            "name": "target",
-            "type": {
-              "kind": "reference",
-              "name": "DomTarget",
-              "arguments": []
-            },
-            "initializer": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_effect_mapError",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": "error: DomError",
-                  "body": {
-                    "kind": "string",
-                    "value": "DOM target unavailable"
-                  }
-                },
-                {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_dom_query",
-                  "arguments": [
-                    {
-                      "kind": "string",
-                      "value": "#app"
-                    }
-                  ]
-                }
-              ]
-            },
-            "origin": {
-              "source": "main.ssrg",
-              "start": 4476,
-              "end": 4579
-            }
-          }
-        ],
-        "result": {
-          "kind": "runtime-call",
-          "callee": "_ssrg_effect_mapError",
-          "arguments": [
-            {
-              "kind": "lambda",
-              "parameter": "error: DomRuntimeError<never>",
-              "body": {
-                "kind": "string",
-                "value": "DOM runtime failed"
               }
-            },
-            {
-              "kind": "runtime-call",
-              "callee": "_ssrg_dom_run",
-              "arguments": [
-                {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_dom_defaultOptions",
-                  "arguments": [
-                    {
-                      "kind": "undefined"
-                    }
-                  ]
-                },
-                {
-                  "kind": "identifier",
-                  "name": "target"
-                },
-                {
-                  "kind": "call",
-                  "callee": "update",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "mode"
-                    }
-                  ]
-                },
-                {
-                  "kind": "identifier",
-                  "name": "content"
-                }
-              ]
-            }
-          ]
-        }
+            ]
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 4328,
-        "end": 4727
+        "start": 4089,
+        "end": 4192
       }
     }
   ]

@@ -435,7 +435,9 @@ Rust installを要求しません。Rust移行完了後に旧React / Monaco Play
 `apps/playground`とdeployment configを唯一のbrowser surfaceにしました。
 sample catalogは代表的な19本へ整理し、各sampleの目的とconceptをworkspaceの行数を増やさないGuide overlayで
 確認できます。`Signalで動くFlow UI`は`Ready` / `Focusing` / `Resting`のtyped state machine、再利用する
-`html.Style`、関数component、Signal-driven DOM updateを一つのinteractive browser sampleで固定します。
+`html.Style`、関数component、pure reducerを受け取る`dom.app`を一つのinteractive browser sampleで固定します。
+interactive previewはWebKitでも親pageが登録したbutton listenerを配送できるsandbox tokenを使い、同時に
+preview documentのCSPを`script-src 'none'`としてiframe-owned scriptを拒否します。
 2026-07-14にVercel Git buildの成功、`application/wasm` asset配信、本番UIからのlesson 01実行を
 <https://seseragi.vercel.app/>で確認しました。
 local custom traitのvertical sliceは`Traitバッジ`としてsample catalogにも追加し、同じWASM driverとbrowser runtimeで

@@ -57,7 +57,6 @@ describe("new Playground product gate", () => {
     const main = await Bun.file(
       new URL("../src/main.ts", import.meta.url)
     ).text()
-
     expect(html).toContain('id="clear-source-button"')
     expect(html).toContain('aria-label="本文をクリア"')
     expect(html).toContain('id="clear-output-button"')
@@ -108,6 +107,9 @@ describe("new Playground product gate", () => {
     const main = await Bun.file(
       new URL("../src/main.ts", import.meta.url)
     ).text()
+    const previewDocument = await Bun.file(
+      new URL("../src/preview-document.ts", import.meta.url)
+    ).text()
     const sample = sampleCatalog.find(
       (candidate) => candidate.id === "web-html-ssr"
     )
@@ -117,9 +119,10 @@ describe("new Playground product gate", () => {
     expect(html).toContain('id="show-html-preview-button"')
     expect(html).toContain('id="html-preview"')
     expect(html).toMatch(/<iframe[\s\S]*?\ssandbox(?:=|\s|>)/)
-    expect(html).toContain('sandbox="allow-same-origin"')
-    expect(html).not.toContain("allow-scripts")
+    expect(html).toContain('sandbox="allow-same-origin allow-scripts"')
     expect(main).toContain("createPreviewDocument(html)")
+    expect(main).toContain("prepareInteractivePreview()")
+    expect(previewDocument).toContain("script-src 'none'")
     expect(main).toContain(`createPreviewDocument('<div id="app"></div>')`)
     expect(main).toContain('htmlPreview.addEventListener(\n    "load"')
     expect(main).toContain('htmlPreview.removeAttribute("src")')
@@ -161,6 +164,12 @@ describe("new Playground product gate", () => {
     )
 
     expect(sample?.interactive).toBe(true)
+    const source = await Bun.file(
+      new URL(`../../../${sample!.sourcePath}`, import.meta.url)
+    ).text()
+    expect(source).toContain("dom.app {")
+    expect(source).not.toContain("dom.run (dom.defaultOptions ())")
+    expect(source).not.toContain("signals.make")
     expect(main).toContain("prepareInteractivePreview()")
     expect(main).toContain('binding.service === "dom"')
     expect(main).toContain('setStatus("success", "Interactive")')

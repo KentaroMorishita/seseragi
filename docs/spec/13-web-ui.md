@@ -350,6 +350,14 @@ fn run<R, E, Msg>
   -> dispatch: (Msg -> Effect<R, E, Unit>)
   -> content: Signal<Html<Msg>>
   -> Effect<R & { dom: Dom }, DomRuntimeError<E>, Unit>
+fn app<State, Msg>
+  config: {
+    target: String,
+    initial: State,
+    update: Msg -> State -> State,
+    view: State -> Html<Msg>
+  }
+  -> Effect<{ dom: Dom }, String, Unit>
 ```
 
 Dom serviceのcanonical requirement名は`dom`で、`with Dom`は`with dom: Dom`へ展開します。queryは現在documentの
@@ -362,6 +370,12 @@ defaultOptionsはeventCapacity 1024、FreshMount、ClearRenderedDomです。moun
 runはmount後にawaitMountし、終了時にunmountするconvenienceです。
 initial treeのkey・prop・void-element invariantは既存DOMを変更する前に検査し、validation failureでpartial mountを
 残しません。
+
+appはpure reducerで完結する通常のapplication向けconvenienceです。内部でMutableSignalを一つ作り、viewをmapし、
+targetのquery、defaultOptionsによるrun、messageごとのSignal更新を所有します。query / runtime failureは実行可能な
+compact mainがそのまま推論できるString failureへ正規化します。effectful dispatch、custom options、mount後の値や
+終了理由が必要なprogramはquery / runまたはmount / awaitMount / unmountを直接使います。appはcompiler構文ではなく
+`std/web/dom`の通常関数であり、StateやMsgごとのcompiler hardcodeを持ちません。
 
 ## 13.9 event dispatchとresource lifetime
 

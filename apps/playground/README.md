@@ -20,9 +20,15 @@ sampleは`examples/spec`のcanonical sourceを直接bundleし、WASM compileとb
 増やしません。interactive sampleはtyped messageとSignalで状態を更新し、同じpreview iframeで
 browser DOMまで実行します。
 
+通常のinteractive sampleは`dom.app { target, initial, update, view }`を使います。Signal生成、query、default options、
+mount lifecycle、portableなerror変換は標準helperが所有し、effectful dispatchやcustom lifecycleが必要な場合だけ
+低レベルの`dom.query` / `dom.run`へ降ります。
+
 ## HTML preview
 
-SSRとinteractive DOMは、script実行を許可しない同じsandbox iframeへ表示します。preview documentには
+SSRとinteractive DOMは、iframe-owned scriptをCSPの`script-src 'none'`で拒否する同じsandbox iframeへ表示します。
+WebKitが親pageから登録したevent listenerも`allow-scripts`なしでは停止するため、sandbox tokenは
+`allow-same-origin allow-scripts`とし、実行可否はpreview documentのCSPで固定します。preview documentには
 Playgroundが所有するTailwind風utility CSSの小さなsubsetを注入するため、Seseragi側は`className`へ
 `flex`、`grid`、spacing、typography、color、border、shadow、`sm:` responsiveなどを指定できます。
 inline styleとCSS variablesは`html.style`で併用できます。外部CDNとiframe内scriptには依存しません。

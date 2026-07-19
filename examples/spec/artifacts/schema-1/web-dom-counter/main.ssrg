@@ -1,7 +1,5 @@
 import * as dom from "std/web/dom"
 import * as html from "std/web/html"
-import * as signals from "std/signal"
-import { MutableSignal } from "std/signal"
 
 type Mode =
   | Ready
@@ -166,25 +164,17 @@ fn view mode: Mode -> html.Html<Msg> =
     ]
   }
 
-effect fn update mode: MutableSignal<Mode>
-  -> message: Msg
-  -> Unit
-fails Never =
+fn update message: Msg -> mode: Mode -> Mode =
   match message {
-    StartFocus -> signals.update (\current: Mode -> Focusing) mode
-    TakeBreak -> signals.update (\current: Mode -> Resting) mode
-    Reset -> signals.update (\current: Mode -> Ready) mode
+    StartFocus -> Focusing
+    TakeBreak -> Resting
+    Reset -> Ready
   }
 
-pub effect fn main -> Unit
-with dom: dom.Dom
-fails String =
-  do {
-    mode <- signals.make initialMode
-    let content = signals.map view mode
-    target <-
-      dom.query "#app"
-        |> mapError (\error: dom.DomError -> "DOM target unavailable")
-    dom.run (dom.defaultOptions ()) target (update mode) content
-      |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
+pub effect fn main =
+  dom.app {
+    target: "#app",
+    initial: initialMode,
+    update,
+    view
   }

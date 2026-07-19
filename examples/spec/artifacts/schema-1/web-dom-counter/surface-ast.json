@@ -45,45 +45,6 @@
         "start": 35,
         "end": 71
       }
-    },
-    {
-      "specifier": "std/signal",
-      "items": [
-        {
-          "namespace": "namespace",
-          "name": "*",
-          "nameSpan": {
-            "start": 79,
-            "end": 80
-          },
-          "alias": "signals",
-          "aliasSpan": {
-            "start": 84,
-            "end": 91
-          }
-        }
-      ],
-      "span": {
-        "start": 72,
-        "end": 109
-      }
-    },
-    {
-      "specifier": "std/signal",
-      "items": [
-        {
-          "namespace": "value",
-          "name": "MutableSignal",
-          "nameSpan": {
-            "start": 119,
-            "end": 132
-          }
-        }
-      ],
-      "span": {
-        "start": 110,
-        "end": 152
-      }
     }
   ],
   "declarations": [
@@ -92,47 +53,47 @@
       "visibility": "private",
       "name": "Mode",
       "nameSpan": {
-        "start": 159,
-        "end": 163
+        "start": 78,
+        "end": 82
       },
       "variants": [
         {
           "name": "Ready",
           "nameSpan": {
-            "start": 170,
-            "end": 175
+            "start": 89,
+            "end": 94
           },
           "span": {
-            "start": 168,
-            "end": 175
+            "start": 87,
+            "end": 94
           }
         },
         {
           "name": "Focusing",
           "nameSpan": {
-            "start": 180,
-            "end": 188
+            "start": 99,
+            "end": 107
           },
           "span": {
-            "start": 178,
-            "end": 188
+            "start": 97,
+            "end": 107
           }
         },
         {
           "name": "Resting",
           "nameSpan": {
-            "start": 193,
-            "end": 200
+            "start": 112,
+            "end": 119
           },
           "span": {
-            "start": 191,
-            "end": 200
+            "start": 110,
+            "end": 119
           }
         }
       ],
       "span": {
-        "start": 154,
-        "end": 200
+        "start": 73,
+        "end": 119
       }
     },
     {
@@ -140,47 +101,47 @@
       "visibility": "private",
       "name": "Msg",
       "nameSpan": {
-        "start": 207,
-        "end": 210
+        "start": 126,
+        "end": 129
       },
       "variants": [
         {
           "name": "StartFocus",
           "nameSpan": {
-            "start": 217,
-            "end": 227
+            "start": 136,
+            "end": 146
           },
           "span": {
-            "start": 215,
-            "end": 227
+            "start": 134,
+            "end": 146
           }
         },
         {
           "name": "TakeBreak",
           "nameSpan": {
-            "start": 232,
-            "end": 241
+            "start": 151,
+            "end": 160
           },
           "span": {
-            "start": 230,
-            "end": 241
+            "start": 149,
+            "end": 160
           }
         },
         {
           "name": "Reset",
           "nameSpan": {
-            "start": 246,
-            "end": 251
+            "start": 165,
+            "end": 170
           },
           "span": {
-            "start": 244,
-            "end": 251
+            "start": 163,
+            "end": 170
           }
         }
       ],
       "span": {
-        "start": 202,
-        "end": 251
+        "start": 121,
+        "end": 170
       }
     },
     {
@@ -188,28 +149,28 @@
       "visibility": "private",
       "name": "initialMode",
       "nameSpan": {
-        "start": 257,
-        "end": 268
+        "start": 176,
+        "end": 187
       },
       "typeRef": {
         "kind": "named",
         "name": "Mode",
         "span": {
-          "start": 270,
-          "end": 274
+          "start": 189,
+          "end": 193
         }
       },
       "body": {
         "kind": "name",
         "name": "Ready",
         "span": {
-          "start": 277,
-          "end": 282
+          "start": 196,
+          "end": 201
         }
       },
       "span": {
-        "start": 253,
-        "end": 282
+        "start": 172,
+        "end": 201
       }
     },
     {
@@ -217,8 +178,8 @@
       "visibility": "private",
       "name": "pageStyle",
       "nameSpan": {
-        "start": 288,
-        "end": 297
+        "start": 207,
+        "end": 216
       },
       "typeRef": null,
       "body": {
@@ -229,18 +190,18 @@
             "kind": "name",
             "name": "html",
             "span": {
-              "start": 302,
-              "end": 306
+              "start": 221,
+              "end": 225
             }
           },
           "field": "style",
           "fieldSpan": {
-            "start": 307,
-            "end": 312
+            "start": 226,
+            "end": 231
           },
           "span": {
-            "start": 302,
-            "end": 312
+            "start": 221,
+            "end": 231
           }
         },
         "argument": {
@@ -250,76 +211,76 @@
               "kind": "field",
               "name": "background",
               "nameSpan": {
-                "start": 319,
-                "end": 329
+                "start": 238,
+                "end": 248
               },
               "value": {
                 "kind": "string",
                 "raw": "\"linear-gradient(135deg, #d1fae5 0%, #f8fafc 48%, #dbeafe 100%)\"",
                 "span": {
-                  "start": 331,
-                  "end": 395
+                  "start": 250,
+                  "end": 314
                 }
               },
               "span": {
-                "start": 319,
-                "end": 395
+                "start": 238,
+                "end": 314
               }
             },
             {
               "kind": "field",
               "name": "minHeight",
               "nameSpan": {
-                "start": 401,
-                "end": 410
+                "start": 320,
+                "end": 329
               },
               "value": {
                 "kind": "string",
                 "raw": "\"100vh\"",
                 "span": {
-                  "start": 412,
-                  "end": 419
+                  "start": 331,
+                  "end": 338
                 }
               },
               "span": {
-                "start": 401,
-                "end": 419
+                "start": 320,
+                "end": 338
               }
             },
             {
               "kind": "field",
               "name": "padding",
               "nameSpan": {
-                "start": 425,
-                "end": 432
+                "start": 344,
+                "end": 351
               },
               "value": {
                 "kind": "string",
                 "raw": "\"32px\"",
                 "span": {
-                  "start": 434,
-                  "end": 440
+                  "start": 353,
+                  "end": 359
                 }
               },
               "span": {
-                "start": 425,
-                "end": 440
+                "start": 344,
+                "end": 359
               }
             }
           ],
           "span": {
-            "start": 313,
-            "end": 444
+            "start": 232,
+            "end": 363
           }
         },
         "span": {
-          "start": 302,
-          "end": 444
+          "start": 221,
+          "end": 363
         }
       },
       "span": {
-        "start": 284,
-        "end": 444
+        "start": 203,
+        "end": 363
       }
     },
     {
@@ -327,8 +288,8 @@
       "visibility": "private",
       "name": "cardStyle",
       "nameSpan": {
-        "start": 450,
-        "end": 459
+        "start": 369,
+        "end": 378
       },
       "typeRef": null,
       "body": {
@@ -339,18 +300,18 @@
             "kind": "name",
             "name": "html",
             "span": {
-              "start": 464,
-              "end": 468
+              "start": 383,
+              "end": 387
             }
           },
           "field": "style",
           "fieldSpan": {
-            "start": 469,
-            "end": 474
+            "start": 388,
+            "end": 393
           },
           "span": {
-            "start": 464,
-            "end": 474
+            "start": 383,
+            "end": 393
           }
         },
         "argument": {
@@ -360,8 +321,8 @@
               "kind": "field",
               "name": "variables",
               "nameSpan": {
-                "start": 481,
-                "end": 490
+                "start": 400,
+                "end": 409
               },
               "value": {
                 "kind": "record",
@@ -370,147 +331,147 @@
                     "kind": "field",
                     "name": "cardShadow",
                     "nameSpan": {
-                      "start": 494,
-                      "end": 504
+                      "start": 413,
+                      "end": 423
                     },
                     "value": {
                       "kind": "string",
                       "raw": "\"0 24px 64px #0f172a24\"",
                       "span": {
-                        "start": 506,
-                        "end": 529
+                        "start": 425,
+                        "end": 448
                       }
                     },
                     "span": {
-                      "start": 494,
-                      "end": 529
+                      "start": 413,
+                      "end": 448
                     }
                   }
                 ],
                 "span": {
-                  "start": 492,
-                  "end": 531
+                  "start": 411,
+                  "end": 450
                 }
               },
               "span": {
-                "start": 481,
-                "end": 531
+                "start": 400,
+                "end": 450
               }
             },
             {
               "kind": "field",
               "name": "backgroundColor",
               "nameSpan": {
-                "start": 537,
-                "end": 552
+                "start": 456,
+                "end": 471
               },
               "value": {
                 "kind": "string",
                 "raw": "\"#ffffff\"",
                 "span": {
-                  "start": 554,
-                  "end": 563
+                  "start": 473,
+                  "end": 482
                 }
               },
               "span": {
-                "start": 537,
-                "end": 563
+                "start": 456,
+                "end": 482
               }
             },
             {
               "kind": "field",
               "name": "border",
               "nameSpan": {
-                "start": 569,
-                "end": 575
+                "start": 488,
+                "end": 494
               },
               "value": {
                 "kind": "string",
                 "raw": "\"1px solid #ffffffcc\"",
                 "span": {
-                  "start": 577,
-                  "end": 598
+                  "start": 496,
+                  "end": 517
                 }
               },
               "span": {
-                "start": 569,
-                "end": 598
+                "start": 488,
+                "end": 517
               }
             },
             {
               "kind": "field",
               "name": "borderRadius",
               "nameSpan": {
-                "start": 604,
-                "end": 616
+                "start": 523,
+                "end": 535
               },
               "value": {
                 "kind": "string",
                 "raw": "\"28px\"",
                 "span": {
-                  "start": 618,
-                  "end": 624
+                  "start": 537,
+                  "end": 543
                 }
               },
               "span": {
-                "start": 604,
-                "end": 624
+                "start": 523,
+                "end": 543
               }
             },
             {
               "kind": "field",
               "name": "boxShadow",
               "nameSpan": {
-                "start": 630,
-                "end": 639
+                "start": 549,
+                "end": 558
               },
               "value": {
                 "kind": "string",
                 "raw": "\"var(--card-shadow)\"",
                 "span": {
-                  "start": 641,
-                  "end": 661
+                  "start": 560,
+                  "end": 580
                 }
               },
               "span": {
-                "start": 630,
-                "end": 661
+                "start": 549,
+                "end": 580
               }
             },
             {
               "kind": "field",
               "name": "padding",
               "nameSpan": {
-                "start": 667,
-                "end": 674
+                "start": 586,
+                "end": 593
               },
               "value": {
                 "kind": "string",
                 "raw": "\"32px\"",
                 "span": {
-                  "start": 676,
-                  "end": 682
+                  "start": 595,
+                  "end": 601
                 }
               },
               "span": {
-                "start": 667,
-                "end": 682
+                "start": 586,
+                "end": 601
               }
             }
           ],
           "span": {
-            "start": 475,
-            "end": 686
+            "start": 394,
+            "end": 605
           }
         },
         "span": {
-          "start": 464,
-          "end": 686
+          "start": 383,
+          "end": 605
         }
       },
       "span": {
-        "start": 446,
-        "end": 686
+        "start": 365,
+        "end": 605
       }
     },
     {
@@ -518,8 +479,8 @@
       "visibility": "private",
       "name": "trackStyle",
       "nameSpan": {
-        "start": 692,
-        "end": 702
+        "start": 611,
+        "end": 621
       },
       "typeRef": null,
       "body": {
@@ -530,18 +491,18 @@
             "kind": "name",
             "name": "html",
             "span": {
-              "start": 707,
-              "end": 711
+              "start": 626,
+              "end": 630
             }
           },
           "field": "style",
           "fieldSpan": {
-            "start": 712,
-            "end": 717
+            "start": 631,
+            "end": 636
           },
           "span": {
-            "start": 707,
-            "end": 717
+            "start": 626,
+            "end": 636
           }
         },
         "argument": {
@@ -551,96 +512,96 @@
               "kind": "field",
               "name": "backgroundColor",
               "nameSpan": {
-                "start": 724,
-                "end": 739
+                "start": 643,
+                "end": 658
               },
               "value": {
                 "kind": "string",
                 "raw": "\"#e2e8f0\"",
                 "span": {
-                  "start": 741,
-                  "end": 750
+                  "start": 660,
+                  "end": 669
                 }
               },
               "span": {
-                "start": 724,
-                "end": 750
+                "start": 643,
+                "end": 669
               }
             },
             {
               "kind": "field",
               "name": "borderRadius",
               "nameSpan": {
-                "start": 756,
-                "end": 768
+                "start": 675,
+                "end": 687
               },
               "value": {
                 "kind": "string",
                 "raw": "\"999px\"",
                 "span": {
-                  "start": 770,
-                  "end": 777
+                  "start": 689,
+                  "end": 696
                 }
               },
               "span": {
-                "start": 756,
-                "end": 777
+                "start": 675,
+                "end": 696
               }
             },
             {
               "kind": "field",
               "name": "height",
               "nameSpan": {
-                "start": 783,
-                "end": 789
+                "start": 702,
+                "end": 708
               },
               "value": {
                 "kind": "string",
                 "raw": "\"10px\"",
                 "span": {
-                  "start": 791,
-                  "end": 797
+                  "start": 710,
+                  "end": 716
                 }
               },
               "span": {
-                "start": 783,
-                "end": 797
+                "start": 702,
+                "end": 716
               }
             },
             {
               "kind": "field",
               "name": "overflow",
               "nameSpan": {
-                "start": 803,
-                "end": 811
+                "start": 722,
+                "end": 730
               },
               "value": {
                 "kind": "string",
                 "raw": "\"hidden\"",
                 "span": {
-                  "start": 813,
-                  "end": 821
+                  "start": 732,
+                  "end": 740
                 }
               },
               "span": {
-                "start": 803,
-                "end": 821
+                "start": 722,
+                "end": 740
               }
             }
           ],
           "span": {
-            "start": 718,
-            "end": 825
+            "start": 637,
+            "end": 744
           }
         },
         "span": {
-          "start": 707,
-          "end": 825
+          "start": 626,
+          "end": 744
         }
       },
       "span": {
-        "start": 688,
-        "end": 825
+        "start": 607,
+        "end": 744
       }
     },
     {
@@ -648,22 +609,22 @@
       "visibility": "private",
       "name": "label",
       "nameSpan": {
-        "start": 830,
-        "end": 835
+        "start": 749,
+        "end": 754
       },
       "parameters": [
         {
           "name": "mode",
           "nameSpan": {
-            "start": 836,
-            "end": 840
+            "start": 755,
+            "end": 759
           },
           "type": {
             "kind": "named",
             "name": "Mode",
             "span": {
-              "start": 842,
-              "end": 846
+              "start": 761,
+              "end": 765
             }
           }
         }
@@ -672,8 +633,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 850,
-          "end": 856
+          "start": 769,
+          "end": 775
         }
       },
       "body": {
@@ -682,8 +643,8 @@
           "kind": "name",
           "name": "mode",
           "span": {
-            "start": 867,
-            "end": 871
+            "start": 786,
+            "end": 790
           }
         },
         "arms": [
@@ -692,25 +653,25 @@
               "kind": "constructor",
               "name": "Ready",
               "nameSpan": {
-                "start": 878,
-                "end": 883
+                "start": 797,
+                "end": 802
               },
               "span": {
-                "start": 878,
-                "end": 883
+                "start": 797,
+                "end": 802
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"READY\"",
               "span": {
-                "start": 887,
-                "end": 894
+                "start": 806,
+                "end": 813
               }
             },
             "span": {
-              "start": 878,
-              "end": 894
+              "start": 797,
+              "end": 813
             }
           },
           {
@@ -718,25 +679,25 @@
               "kind": "constructor",
               "name": "Focusing",
               "nameSpan": {
-                "start": 899,
-                "end": 907
+                "start": 818,
+                "end": 826
               },
               "span": {
-                "start": 899,
-                "end": 907
+                "start": 818,
+                "end": 826
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"FOCUS\"",
               "span": {
-                "start": 911,
-                "end": 918
+                "start": 830,
+                "end": 837
               }
             },
             "span": {
-              "start": 899,
-              "end": 918
+              "start": 818,
+              "end": 837
             }
           },
           {
@@ -744,36 +705,36 @@
               "kind": "constructor",
               "name": "Resting",
               "nameSpan": {
-                "start": 923,
-                "end": 930
+                "start": 842,
+                "end": 849
               },
               "span": {
-                "start": 923,
-                "end": 930
+                "start": 842,
+                "end": 849
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"BREAK\"",
               "span": {
-                "start": 934,
-                "end": 941
+                "start": 853,
+                "end": 860
               }
             },
             "span": {
-              "start": 923,
-              "end": 941
+              "start": 842,
+              "end": 860
             }
           }
         ],
         "span": {
-          "start": 861,
-          "end": 945
+          "start": 780,
+          "end": 864
         }
       },
       "span": {
-        "start": 827,
-        "end": 945
+        "start": 746,
+        "end": 864
       }
     },
     {
@@ -781,22 +742,22 @@
       "visibility": "private",
       "name": "title",
       "nameSpan": {
-        "start": 950,
-        "end": 955
+        "start": 869,
+        "end": 874
       },
       "parameters": [
         {
           "name": "mode",
           "nameSpan": {
-            "start": 956,
-            "end": 960
+            "start": 875,
+            "end": 879
           },
           "type": {
             "kind": "named",
             "name": "Mode",
             "span": {
-              "start": 962,
-              "end": 966
+              "start": 881,
+              "end": 885
             }
           }
         }
@@ -805,8 +766,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 970,
-          "end": 976
+          "start": 889,
+          "end": 895
         }
       },
       "body": {
@@ -815,8 +776,8 @@
           "kind": "name",
           "name": "mode",
           "span": {
-            "start": 987,
-            "end": 991
+            "start": 906,
+            "end": 910
           }
         },
         "arms": [
@@ -825,25 +786,25 @@
               "kind": "constructor",
               "name": "Ready",
               "nameSpan": {
-                "start": 998,
-                "end": 1003
+                "start": 917,
+                "end": 922
               },
               "span": {
-                "start": 998,
-                "end": 1003
+                "start": 917,
+                "end": 922
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"Choose your rhythm\"",
               "span": {
-                "start": 1007,
-                "end": 1027
+                "start": 926,
+                "end": 946
               }
             },
             "span": {
-              "start": 998,
-              "end": 1027
+              "start": 917,
+              "end": 946
             }
           },
           {
@@ -851,25 +812,25 @@
               "kind": "constructor",
               "name": "Focusing",
               "nameSpan": {
-                "start": 1032,
-                "end": 1040
+                "start": 951,
+                "end": 959
               },
               "span": {
-                "start": 1032,
-                "end": 1040
+                "start": 951,
+                "end": 959
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"Deep work in progress\"",
               "span": {
-                "start": 1044,
-                "end": 1067
+                "start": 963,
+                "end": 986
               }
             },
             "span": {
-              "start": 1032,
-              "end": 1067
+              "start": 951,
+              "end": 986
             }
           },
           {
@@ -877,36 +838,36 @@
               "kind": "constructor",
               "name": "Resting",
               "nameSpan": {
-                "start": 1072,
-                "end": 1079
+                "start": 991,
+                "end": 998
               },
               "span": {
-                "start": 1072,
-                "end": 1079
+                "start": 991,
+                "end": 998
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"Pause with purpose\"",
               "span": {
-                "start": 1083,
-                "end": 1103
+                "start": 1002,
+                "end": 1022
               }
             },
             "span": {
-              "start": 1072,
-              "end": 1103
+              "start": 991,
+              "end": 1022
             }
           }
         ],
         "span": {
-          "start": 981,
-          "end": 1107
+          "start": 900,
+          "end": 1026
         }
       },
       "span": {
-        "start": 947,
-        "end": 1107
+        "start": 866,
+        "end": 1026
       }
     },
     {
@@ -914,22 +875,22 @@
       "visibility": "private",
       "name": "guidance",
       "nameSpan": {
-        "start": 1112,
-        "end": 1120
+        "start": 1031,
+        "end": 1039
       },
       "parameters": [
         {
           "name": "mode",
           "nameSpan": {
-            "start": 1121,
-            "end": 1125
+            "start": 1040,
+            "end": 1044
           },
           "type": {
             "kind": "named",
             "name": "Mode",
             "span": {
-              "start": 1127,
-              "end": 1131
+              "start": 1046,
+              "end": 1050
             }
           }
         }
@@ -938,8 +899,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 1135,
-          "end": 1141
+          "start": 1054,
+          "end": 1060
         }
       },
       "body": {
@@ -948,8 +909,8 @@
           "kind": "name",
           "name": "mode",
           "span": {
-            "start": 1152,
-            "end": 1156
+            "start": 1071,
+            "end": 1075
           }
         },
         "arms": [
@@ -958,25 +919,25 @@
               "kind": "constructor",
               "name": "Ready",
               "nameSpan": {
-                "start": 1163,
-                "end": 1168
+                "start": 1082,
+                "end": 1087
               },
               "span": {
-                "start": 1163,
-                "end": 1168
+                "start": 1082,
+                "end": 1087
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"Pick a mode and let a typed message update the Signal.\"",
               "span": {
-                "start": 1172,
-                "end": 1228
+                "start": 1091,
+                "end": 1147
               }
             },
             "span": {
-              "start": 1163,
-              "end": 1228
+              "start": 1082,
+              "end": 1147
             }
           },
           {
@@ -984,25 +945,25 @@
               "kind": "constructor",
               "name": "Focusing",
               "nameSpan": {
-                "start": 1233,
-                "end": 1241
+                "start": 1152,
+                "end": 1160
               },
               "span": {
-                "start": 1233,
-                "end": 1241
+                "start": 1152,
+                "end": 1160
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"One task. No tab hopping. You have got this.\"",
               "span": {
-                "start": 1245,
-                "end": 1291
+                "start": 1164,
+                "end": 1210
               }
             },
             "span": {
-              "start": 1233,
-              "end": 1291
+              "start": 1152,
+              "end": 1210
             }
           },
           {
@@ -1010,36 +971,36 @@
               "kind": "constructor",
               "name": "Resting",
               "nameSpan": {
-                "start": 1296,
-                "end": 1303
+                "start": 1215,
+                "end": 1222
               },
               "span": {
-                "start": 1296,
-                "end": 1303
+                "start": 1215,
+                "end": 1222
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"Look away from the screen and take a slow breath.\"",
               "span": {
-                "start": 1307,
-                "end": 1358
+                "start": 1226,
+                "end": 1277
               }
             },
             "span": {
-              "start": 1296,
-              "end": 1358
+              "start": 1215,
+              "end": 1277
             }
           }
         ],
         "span": {
-          "start": 1146,
-          "end": 1362
+          "start": 1065,
+          "end": 1281
         }
       },
       "span": {
-        "start": 1109,
-        "end": 1362
+        "start": 1028,
+        "end": 1281
       }
     },
     {
@@ -1047,22 +1008,22 @@
       "visibility": "private",
       "name": "accent",
       "nameSpan": {
-        "start": 1367,
-        "end": 1373
+        "start": 1286,
+        "end": 1292
       },
       "parameters": [
         {
           "name": "mode",
           "nameSpan": {
-            "start": 1374,
-            "end": 1378
+            "start": 1293,
+            "end": 1297
           },
           "type": {
             "kind": "named",
             "name": "Mode",
             "span": {
-              "start": 1380,
-              "end": 1384
+              "start": 1299,
+              "end": 1303
             }
           }
         }
@@ -1071,8 +1032,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 1388,
-          "end": 1394
+          "start": 1307,
+          "end": 1313
         }
       },
       "body": {
@@ -1081,8 +1042,8 @@
           "kind": "name",
           "name": "mode",
           "span": {
-            "start": 1405,
-            "end": 1409
+            "start": 1324,
+            "end": 1328
           }
         },
         "arms": [
@@ -1091,25 +1052,25 @@
               "kind": "constructor",
               "name": "Ready",
               "nameSpan": {
-                "start": 1416,
-                "end": 1421
+                "start": 1335,
+                "end": 1340
               },
               "span": {
-                "start": 1416,
-                "end": 1421
+                "start": 1335,
+                "end": 1340
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"#475569\"",
               "span": {
-                "start": 1425,
-                "end": 1434
+                "start": 1344,
+                "end": 1353
               }
             },
             "span": {
-              "start": 1416,
-              "end": 1434
+              "start": 1335,
+              "end": 1353
             }
           },
           {
@@ -1117,25 +1078,25 @@
               "kind": "constructor",
               "name": "Focusing",
               "nameSpan": {
-                "start": 1439,
-                "end": 1447
+                "start": 1358,
+                "end": 1366
               },
               "span": {
-                "start": 1439,
-                "end": 1447
+                "start": 1358,
+                "end": 1366
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"#059669\"",
               "span": {
-                "start": 1451,
-                "end": 1460
+                "start": 1370,
+                "end": 1379
               }
             },
             "span": {
-              "start": 1439,
-              "end": 1460
+              "start": 1358,
+              "end": 1379
             }
           },
           {
@@ -1143,36 +1104,36 @@
               "kind": "constructor",
               "name": "Resting",
               "nameSpan": {
-                "start": 1465,
-                "end": 1472
+                "start": 1384,
+                "end": 1391
               },
               "span": {
-                "start": 1465,
-                "end": 1472
+                "start": 1384,
+                "end": 1391
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"#2563eb\"",
               "span": {
-                "start": 1476,
-                "end": 1485
+                "start": 1395,
+                "end": 1404
               }
             },
             "span": {
-              "start": 1465,
-              "end": 1485
+              "start": 1384,
+              "end": 1404
             }
           }
         ],
         "span": {
-          "start": 1399,
-          "end": 1489
+          "start": 1318,
+          "end": 1408
         }
       },
       "span": {
-        "start": 1364,
-        "end": 1489
+        "start": 1283,
+        "end": 1408
       }
     },
     {
@@ -1180,22 +1141,22 @@
       "visibility": "private",
       "name": "progress",
       "nameSpan": {
-        "start": 1494,
-        "end": 1502
+        "start": 1413,
+        "end": 1421
       },
       "parameters": [
         {
           "name": "mode",
           "nameSpan": {
-            "start": 1503,
-            "end": 1507
+            "start": 1422,
+            "end": 1426
           },
           "type": {
             "kind": "named",
             "name": "Mode",
             "span": {
-              "start": 1509,
-              "end": 1513
+              "start": 1428,
+              "end": 1432
             }
           }
         }
@@ -1204,8 +1165,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 1517,
-          "end": 1523
+          "start": 1436,
+          "end": 1442
         }
       },
       "body": {
@@ -1214,8 +1175,8 @@
           "kind": "name",
           "name": "mode",
           "span": {
-            "start": 1534,
-            "end": 1538
+            "start": 1453,
+            "end": 1457
           }
         },
         "arms": [
@@ -1224,25 +1185,25 @@
               "kind": "constructor",
               "name": "Ready",
               "nameSpan": {
-                "start": 1545,
-                "end": 1550
+                "start": 1464,
+                "end": 1469
               },
               "span": {
-                "start": 1545,
-                "end": 1550
+                "start": 1464,
+                "end": 1469
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"18%\"",
               "span": {
-                "start": 1554,
-                "end": 1559
+                "start": 1473,
+                "end": 1478
               }
             },
             "span": {
-              "start": 1545,
-              "end": 1559
+              "start": 1464,
+              "end": 1478
             }
           },
           {
@@ -1250,25 +1211,25 @@
               "kind": "constructor",
               "name": "Focusing",
               "nameSpan": {
-                "start": 1564,
-                "end": 1572
+                "start": 1483,
+                "end": 1491
               },
               "span": {
-                "start": 1564,
-                "end": 1572
+                "start": 1483,
+                "end": 1491
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"82%\"",
               "span": {
-                "start": 1576,
-                "end": 1581
+                "start": 1495,
+                "end": 1500
               }
             },
             "span": {
-              "start": 1564,
-              "end": 1581
+              "start": 1483,
+              "end": 1500
             }
           },
           {
@@ -1276,36 +1237,36 @@
               "kind": "constructor",
               "name": "Resting",
               "nameSpan": {
-                "start": 1586,
-                "end": 1593
+                "start": 1505,
+                "end": 1512
               },
               "span": {
-                "start": 1586,
-                "end": 1593
+                "start": 1505,
+                "end": 1512
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"46%\"",
               "span": {
-                "start": 1597,
-                "end": 1602
+                "start": 1516,
+                "end": 1521
               }
             },
             "span": {
-              "start": 1586,
-              "end": 1602
+              "start": 1505,
+              "end": 1521
             }
           }
         ],
         "span": {
-          "start": 1528,
-          "end": 1606
+          "start": 1447,
+          "end": 1525
         }
       },
       "span": {
-        "start": 1491,
-        "end": 1606
+        "start": 1410,
+        "end": 1525
       }
     },
     {
@@ -1313,22 +1274,22 @@
       "visibility": "private",
       "name": "progressStyle",
       "nameSpan": {
-        "start": 1611,
-        "end": 1624
+        "start": 1530,
+        "end": 1543
       },
       "parameters": [
         {
           "name": "mode",
           "nameSpan": {
-            "start": 1625,
-            "end": 1629
+            "start": 1544,
+            "end": 1548
           },
           "type": {
             "kind": "named",
             "name": "Mode",
             "span": {
-              "start": 1631,
-              "end": 1635
+              "start": 1550,
+              "end": 1554
             }
           }
         }
@@ -1337,8 +1298,8 @@
         "kind": "named",
         "name": "html.Style",
         "span": {
-          "start": 1639,
-          "end": 1649
+          "start": 1558,
+          "end": 1568
         }
       },
       "body": {
@@ -1349,18 +1310,18 @@
             "kind": "name",
             "name": "html",
             "span": {
-              "start": 1654,
-              "end": 1658
+              "start": 1573,
+              "end": 1577
             }
           },
           "field": "style",
           "fieldSpan": {
-            "start": 1659,
-            "end": 1664
+            "start": 1578,
+            "end": 1583
           },
           "span": {
-            "start": 1654,
-            "end": 1664
+            "start": 1573,
+            "end": 1583
           }
         },
         "argument": {
@@ -1370,8 +1331,8 @@
               "kind": "field",
               "name": "backgroundColor",
               "nameSpan": {
-                "start": 1671,
-                "end": 1686
+                "start": 1590,
+                "end": 1605
               },
               "value": {
                 "kind": "application",
@@ -1379,20 +1340,80 @@
                   "kind": "name",
                   "name": "accent",
                   "span": {
-                    "start": 1688,
-                    "end": 1694
+                    "start": 1607,
+                    "end": 1613
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "mode",
                   "span": {
-                    "start": 1695,
-                    "end": 1699
+                    "start": 1614,
+                    "end": 1618
                   }
                 },
                 "span": {
-                  "start": 1688,
+                  "start": 1607,
+                  "end": 1618
+                }
+              },
+              "span": {
+                "start": 1590,
+                "end": 1618
+              }
+            },
+            {
+              "kind": "field",
+              "name": "borderRadius",
+              "nameSpan": {
+                "start": 1624,
+                "end": 1636
+              },
+              "value": {
+                "kind": "string",
+                "raw": "\"999px\"",
+                "span": {
+                  "start": 1638,
+                  "end": 1645
+                }
+              },
+              "span": {
+                "start": 1624,
+                "end": 1645
+              }
+            },
+            {
+              "kind": "field",
+              "name": "height",
+              "nameSpan": {
+                "start": 1651,
+                "end": 1657
+              },
+              "value": {
+                "kind": "string",
+                "raw": "\"100%\"",
+                "span": {
+                  "start": 1659,
+                  "end": 1665
+                }
+              },
+              "span": {
+                "start": 1651,
+                "end": 1665
+              }
+            },
+            {
+              "kind": "field",
+              "name": "transition",
+              "nameSpan": {
+                "start": 1671,
+                "end": 1681
+              },
+              "value": {
+                "kind": "string",
+                "raw": "\"all 240ms ease\"",
+                "span": {
+                  "start": 1683,
                   "end": 1699
                 }
               },
@@ -1403,70 +1424,10 @@
             },
             {
               "kind": "field",
-              "name": "borderRadius",
-              "nameSpan": {
-                "start": 1705,
-                "end": 1717
-              },
-              "value": {
-                "kind": "string",
-                "raw": "\"999px\"",
-                "span": {
-                  "start": 1719,
-                  "end": 1726
-                }
-              },
-              "span": {
-                "start": 1705,
-                "end": 1726
-              }
-            },
-            {
-              "kind": "field",
-              "name": "height",
-              "nameSpan": {
-                "start": 1732,
-                "end": 1738
-              },
-              "value": {
-                "kind": "string",
-                "raw": "\"100%\"",
-                "span": {
-                  "start": 1740,
-                  "end": 1746
-                }
-              },
-              "span": {
-                "start": 1732,
-                "end": 1746
-              }
-            },
-            {
-              "kind": "field",
-              "name": "transition",
-              "nameSpan": {
-                "start": 1752,
-                "end": 1762
-              },
-              "value": {
-                "kind": "string",
-                "raw": "\"all 240ms ease\"",
-                "span": {
-                  "start": 1764,
-                  "end": 1780
-                }
-              },
-              "span": {
-                "start": 1752,
-                "end": 1780
-              }
-            },
-            {
-              "kind": "field",
               "name": "width",
               "nameSpan": {
-                "start": 1786,
-                "end": 1791
+                "start": 1705,
+                "end": 1710
               },
               "value": {
                 "kind": "application",
@@ -1474,42 +1435,42 @@
                   "kind": "name",
                   "name": "progress",
                   "span": {
-                    "start": 1793,
-                    "end": 1801
+                    "start": 1712,
+                    "end": 1720
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "mode",
                   "span": {
-                    "start": 1802,
-                    "end": 1806
+                    "start": 1721,
+                    "end": 1725
                   }
                 },
                 "span": {
-                  "start": 1793,
-                  "end": 1806
+                  "start": 1712,
+                  "end": 1725
                 }
               },
               "span": {
-                "start": 1786,
-                "end": 1806
+                "start": 1705,
+                "end": 1725
               }
             }
           ],
           "span": {
-            "start": 1665,
-            "end": 1810
+            "start": 1584,
+            "end": 1729
           }
         },
         "span": {
-          "start": 1654,
-          "end": 1810
+          "start": 1573,
+          "end": 1729
         }
       },
       "span": {
-        "start": 1608,
-        "end": 1810
+        "start": 1527,
+        "end": 1729
       }
     },
     {
@@ -1517,22 +1478,22 @@
       "visibility": "private",
       "name": "badgeStyle",
       "nameSpan": {
-        "start": 1815,
-        "end": 1825
+        "start": 1734,
+        "end": 1744
       },
       "parameters": [
         {
           "name": "mode",
           "nameSpan": {
-            "start": 1826,
-            "end": 1830
+            "start": 1745,
+            "end": 1749
           },
           "type": {
             "kind": "named",
             "name": "Mode",
             "span": {
-              "start": 1832,
-              "end": 1836
+              "start": 1751,
+              "end": 1755
             }
           }
         }
@@ -1541,8 +1502,8 @@
         "kind": "named",
         "name": "html.Style",
         "span": {
-          "start": 1840,
-          "end": 1850
+          "start": 1759,
+          "end": 1769
         }
       },
       "body": {
@@ -1553,18 +1514,18 @@
             "kind": "name",
             "name": "html",
             "span": {
-              "start": 1855,
-              "end": 1859
+              "start": 1774,
+              "end": 1778
             }
           },
           "field": "style",
           "fieldSpan": {
-            "start": 1860,
-            "end": 1865
+            "start": 1779,
+            "end": 1784
           },
           "span": {
-            "start": 1855,
-            "end": 1865
+            "start": 1774,
+            "end": 1784
           }
         },
         "argument": {
@@ -1574,8 +1535,8 @@
               "kind": "field",
               "name": "backgroundColor",
               "nameSpan": {
-                "start": 1872,
-                "end": 1887
+                "start": 1791,
+                "end": 1806
               },
               "value": {
                 "kind": "application",
@@ -1583,162 +1544,162 @@
                   "kind": "name",
                   "name": "accent",
                   "span": {
-                    "start": 1889,
-                    "end": 1895
+                    "start": 1808,
+                    "end": 1814
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "mode",
                   "span": {
-                    "start": 1896,
-                    "end": 1900
+                    "start": 1815,
+                    "end": 1819
                   }
                 },
                 "span": {
-                  "start": 1889,
-                  "end": 1900
+                  "start": 1808,
+                  "end": 1819
                 }
               },
               "span": {
-                "start": 1872,
-                "end": 1900
+                "start": 1791,
+                "end": 1819
               }
             },
             {
               "kind": "field",
               "name": "borderRadius",
               "nameSpan": {
-                "start": 1906,
-                "end": 1918
+                "start": 1825,
+                "end": 1837
               },
               "value": {
                 "kind": "string",
                 "raw": "\"999px\"",
                 "span": {
-                  "start": 1920,
-                  "end": 1927
+                  "start": 1839,
+                  "end": 1846
                 }
               },
               "span": {
-                "start": 1906,
-                "end": 1927
+                "start": 1825,
+                "end": 1846
               }
             },
             {
               "kind": "field",
               "name": "color",
               "nameSpan": {
-                "start": 1933,
-                "end": 1938
+                "start": 1852,
+                "end": 1857
               },
               "value": {
                 "kind": "string",
                 "raw": "\"#ffffff\"",
                 "span": {
-                  "start": 1940,
-                  "end": 1949
+                  "start": 1859,
+                  "end": 1868
                 }
               },
               "span": {
-                "start": 1933,
-                "end": 1949
+                "start": 1852,
+                "end": 1868
               }
             },
             {
               "kind": "field",
               "name": "fontSize",
               "nameSpan": {
-                "start": 1955,
-                "end": 1963
+                "start": 1874,
+                "end": 1882
               },
               "value": {
                 "kind": "string",
                 "raw": "\"12px\"",
                 "span": {
-                  "start": 1965,
-                  "end": 1971
+                  "start": 1884,
+                  "end": 1890
                 }
               },
               "span": {
-                "start": 1955,
-                "end": 1971
+                "start": 1874,
+                "end": 1890
               }
             },
             {
               "kind": "field",
               "name": "fontWeight",
               "nameSpan": {
-                "start": 1977,
-                "end": 1987
+                "start": 1896,
+                "end": 1906
               },
               "value": {
                 "kind": "string",
                 "raw": "\"700\"",
                 "span": {
-                  "start": 1989,
-                  "end": 1994
+                  "start": 1908,
+                  "end": 1913
                 }
               },
               "span": {
-                "start": 1977,
-                "end": 1994
+                "start": 1896,
+                "end": 1913
               }
             },
             {
               "kind": "field",
               "name": "letterSpacing",
               "nameSpan": {
-                "start": 2000,
-                "end": 2013
+                "start": 1919,
+                "end": 1932
               },
               "value": {
                 "kind": "string",
                 "raw": "\"0.12em\"",
                 "span": {
-                  "start": 2015,
-                  "end": 2023
+                  "start": 1934,
+                  "end": 1942
                 }
               },
               "span": {
-                "start": 2000,
-                "end": 2023
+                "start": 1919,
+                "end": 1942
               }
             },
             {
               "kind": "field",
               "name": "padding",
               "nameSpan": {
-                "start": 2029,
-                "end": 2036
+                "start": 1948,
+                "end": 1955
               },
               "value": {
                 "kind": "string",
                 "raw": "\"6px 12px\"",
                 "span": {
-                  "start": 2038,
-                  "end": 2048
+                  "start": 1957,
+                  "end": 1967
                 }
               },
               "span": {
-                "start": 2029,
-                "end": 2048
+                "start": 1948,
+                "end": 1967
               }
             }
           ],
           "span": {
-            "start": 1866,
-            "end": 2052
+            "start": 1785,
+            "end": 1971
           }
         },
         "span": {
-          "start": 1855,
-          "end": 2052
+          "start": 1774,
+          "end": 1971
         }
       },
       "span": {
-        "start": 1812,
-        "end": 2052
+        "start": 1731,
+        "end": 1971
       }
     },
     {
@@ -1746,22 +1707,22 @@
       "visibility": "private",
       "name": "actionStyle",
       "nameSpan": {
-        "start": 2057,
-        "end": 2068
+        "start": 1976,
+        "end": 1987
       },
       "parameters": [
         {
           "name": "message",
           "nameSpan": {
-            "start": 2069,
-            "end": 2076
+            "start": 1988,
+            "end": 1995
           },
           "type": {
             "kind": "named",
             "name": "Msg",
             "span": {
-              "start": 2078,
-              "end": 2081
+              "start": 1997,
+              "end": 2000
             }
           }
         }
@@ -1770,8 +1731,8 @@
         "kind": "named",
         "name": "html.Style",
         "span": {
-          "start": 2085,
-          "end": 2095
+          "start": 2004,
+          "end": 2014
         }
       },
       "body": {
@@ -1780,8 +1741,8 @@
           "kind": "name",
           "name": "message",
           "span": {
-            "start": 2106,
-            "end": 2113
+            "start": 2025,
+            "end": 2032
           }
         },
         "arms": [
@@ -1790,12 +1751,12 @@
               "kind": "constructor",
               "name": "StartFocus",
               "nameSpan": {
-                "start": 2120,
-                "end": 2130
+                "start": 2039,
+                "end": 2049
               },
               "span": {
-                "start": 2120,
-                "end": 2130
+                "start": 2039,
+                "end": 2049
               }
             },
             "body": {
@@ -1806,18 +1767,18 @@
                   "kind": "name",
                   "name": "html",
                   "span": {
-                    "start": 2140,
-                    "end": 2144
+                    "start": 2059,
+                    "end": 2063
                   }
                 },
                 "field": "style",
                 "fieldSpan": {
-                  "start": 2145,
-                  "end": 2150
+                  "start": 2064,
+                  "end": 2069
                 },
                 "span": {
-                  "start": 2140,
-                  "end": 2150
+                  "start": 2059,
+                  "end": 2069
                 }
               },
               "argument": {
@@ -1827,56 +1788,56 @@
                     "kind": "field",
                     "name": "backgroundColor",
                     "nameSpan": {
-                      "start": 2153,
-                      "end": 2168
+                      "start": 2072,
+                      "end": 2087
                     },
                     "value": {
                       "kind": "string",
                       "raw": "\"#059669\"",
                       "span": {
-                        "start": 2170,
-                        "end": 2179
+                        "start": 2089,
+                        "end": 2098
                       }
                     },
                     "span": {
-                      "start": 2153,
-                      "end": 2179
+                      "start": 2072,
+                      "end": 2098
                     }
                   },
                   {
                     "kind": "field",
                     "name": "color",
                     "nameSpan": {
-                      "start": 2181,
-                      "end": 2186
+                      "start": 2100,
+                      "end": 2105
                     },
                     "value": {
                       "kind": "string",
                       "raw": "\"#ffffff\"",
                       "span": {
-                        "start": 2188,
-                        "end": 2197
+                        "start": 2107,
+                        "end": 2116
                       }
                     },
                     "span": {
-                      "start": 2181,
-                      "end": 2197
+                      "start": 2100,
+                      "end": 2116
                     }
                   }
                 ],
                 "span": {
-                  "start": 2151,
-                  "end": 2199
+                  "start": 2070,
+                  "end": 2118
                 }
               },
               "span": {
-                "start": 2140,
-                "end": 2199
+                "start": 2059,
+                "end": 2118
               }
             },
             "span": {
-              "start": 2120,
-              "end": 2199
+              "start": 2039,
+              "end": 2118
             }
           },
           {
@@ -1884,12 +1845,12 @@
               "kind": "constructor",
               "name": "TakeBreak",
               "nameSpan": {
-                "start": 2204,
-                "end": 2213
+                "start": 2123,
+                "end": 2132
               },
               "span": {
-                "start": 2204,
-                "end": 2213
+                "start": 2123,
+                "end": 2132
               }
             },
             "body": {
@@ -1900,18 +1861,18 @@
                   "kind": "name",
                   "name": "html",
                   "span": {
-                    "start": 2223,
-                    "end": 2227
+                    "start": 2142,
+                    "end": 2146
                   }
                 },
                 "field": "style",
                 "fieldSpan": {
-                  "start": 2228,
-                  "end": 2233
+                  "start": 2147,
+                  "end": 2152
                 },
                 "span": {
-                  "start": 2223,
-                  "end": 2233
+                  "start": 2142,
+                  "end": 2152
                 }
               },
               "argument": {
@@ -1921,56 +1882,56 @@
                     "kind": "field",
                     "name": "backgroundColor",
                     "nameSpan": {
-                      "start": 2236,
-                      "end": 2251
+                      "start": 2155,
+                      "end": 2170
                     },
                     "value": {
                       "kind": "string",
                       "raw": "\"#2563eb\"",
                       "span": {
-                        "start": 2253,
-                        "end": 2262
+                        "start": 2172,
+                        "end": 2181
                       }
                     },
                     "span": {
-                      "start": 2236,
-                      "end": 2262
+                      "start": 2155,
+                      "end": 2181
                     }
                   },
                   {
                     "kind": "field",
                     "name": "color",
                     "nameSpan": {
-                      "start": 2264,
-                      "end": 2269
+                      "start": 2183,
+                      "end": 2188
                     },
                     "value": {
                       "kind": "string",
                       "raw": "\"#ffffff\"",
                       "span": {
-                        "start": 2271,
-                        "end": 2280
+                        "start": 2190,
+                        "end": 2199
                       }
                     },
                     "span": {
-                      "start": 2264,
-                      "end": 2280
+                      "start": 2183,
+                      "end": 2199
                     }
                   }
                 ],
                 "span": {
-                  "start": 2234,
-                  "end": 2282
+                  "start": 2153,
+                  "end": 2201
                 }
               },
               "span": {
-                "start": 2223,
-                "end": 2282
+                "start": 2142,
+                "end": 2201
               }
             },
             "span": {
-              "start": 2204,
-              "end": 2282
+              "start": 2123,
+              "end": 2201
             }
           },
           {
@@ -1978,12 +1939,12 @@
               "kind": "constructor",
               "name": "Reset",
               "nameSpan": {
-                "start": 2287,
-                "end": 2292
+                "start": 2206,
+                "end": 2211
               },
               "span": {
-                "start": 2287,
-                "end": 2292
+                "start": 2206,
+                "end": 2211
               }
             },
             "body": {
@@ -1994,18 +1955,18 @@
                   "kind": "name",
                   "name": "html",
                   "span": {
-                    "start": 2302,
-                    "end": 2306
+                    "start": 2221,
+                    "end": 2225
                   }
                 },
                 "field": "style",
                 "fieldSpan": {
-                  "start": 2307,
-                  "end": 2312
+                  "start": 2226,
+                  "end": 2231
                 },
                 "span": {
-                  "start": 2302,
-                  "end": 2312
+                  "start": 2221,
+                  "end": 2231
                 }
               },
               "argument": {
@@ -2015,67 +1976,67 @@
                     "kind": "field",
                     "name": "backgroundColor",
                     "nameSpan": {
-                      "start": 2315,
-                      "end": 2330
+                      "start": 2234,
+                      "end": 2249
                     },
                     "value": {
                       "kind": "string",
                       "raw": "\"#f1f5f9\"",
                       "span": {
-                        "start": 2332,
-                        "end": 2341
+                        "start": 2251,
+                        "end": 2260
                       }
                     },
                     "span": {
-                      "start": 2315,
-                      "end": 2341
+                      "start": 2234,
+                      "end": 2260
                     }
                   },
                   {
                     "kind": "field",
                     "name": "color",
                     "nameSpan": {
-                      "start": 2343,
-                      "end": 2348
+                      "start": 2262,
+                      "end": 2267
                     },
                     "value": {
                       "kind": "string",
                       "raw": "\"#334155\"",
                       "span": {
-                        "start": 2350,
-                        "end": 2359
+                        "start": 2269,
+                        "end": 2278
                       }
                     },
                     "span": {
-                      "start": 2343,
-                      "end": 2359
+                      "start": 2262,
+                      "end": 2278
                     }
                   }
                 ],
                 "span": {
-                  "start": 2313,
-                  "end": 2361
+                  "start": 2232,
+                  "end": 2280
                 }
               },
               "span": {
-                "start": 2302,
-                "end": 2361
+                "start": 2221,
+                "end": 2280
               }
             },
             "span": {
-              "start": 2287,
-              "end": 2361
+              "start": 2206,
+              "end": 2280
             }
           }
         ],
         "span": {
-          "start": 2100,
-          "end": 2365
+          "start": 2019,
+          "end": 2284
         }
       },
       "span": {
-        "start": 2054,
-        "end": 2365
+        "start": 1973,
+        "end": 2284
       }
     },
     {
@@ -2083,52 +2044,52 @@
       "visibility": "private",
       "name": "action",
       "nameSpan": {
-        "start": 2370,
-        "end": 2376
+        "start": 2289,
+        "end": 2295
       },
       "parameters": [
         {
           "name": "id",
           "nameSpan": {
-            "start": 2377,
-            "end": 2379
+            "start": 2296,
+            "end": 2298
           },
           "type": {
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 2381,
-              "end": 2387
+              "start": 2300,
+              "end": 2306
             }
           }
         },
         {
           "name": "text",
           "nameSpan": {
-            "start": 2393,
-            "end": 2397
+            "start": 2312,
+            "end": 2316
           },
           "type": {
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 2399,
-              "end": 2405
+              "start": 2318,
+              "end": 2324
             }
           }
         },
         {
           "name": "message",
           "nameSpan": {
-            "start": 2411,
-            "end": 2418
+            "start": 2330,
+            "end": 2337
           },
           "type": {
             "kind": "named",
             "name": "Msg",
             "span": {
-              "start": 2420,
-              "end": 2423
+              "start": 2339,
+              "end": 2342
             }
           }
         }
@@ -2141,14 +2102,14 @@
             "kind": "named",
             "name": "Msg",
             "span": {
-              "start": 2439,
-              "end": 2442
+              "start": 2358,
+              "end": 2361
             }
           }
         ],
         "span": {
-          "start": 2429,
-          "end": 2443
+          "start": 2348,
+          "end": 2362
         }
       },
       "body": {
@@ -2159,18 +2120,18 @@
             "kind": "name",
             "name": "html",
             "span": {
-              "start": 2448,
-              "end": 2452
+              "start": 2367,
+              "end": 2371
             }
           },
           "field": "button",
           "fieldSpan": {
-            "start": 2453,
-            "end": 2459
+            "start": 2372,
+            "end": 2378
           },
           "span": {
-            "start": 2448,
-            "end": 2459
+            "start": 2367,
+            "end": 2378
           }
         },
         "argument": {
@@ -2180,68 +2141,68 @@
               "kind": "field",
               "name": "id",
               "nameSpan": {
-                "start": 2466,
-                "end": 2468
+                "start": 2385,
+                "end": 2387
               },
               "value": {
                 "kind": "name",
                 "name": "id",
                 "span": {
-                  "start": 2466,
-                  "end": 2468
+                  "start": 2385,
+                  "end": 2387
                 }
               },
               "span": {
-                "start": 2466,
-                "end": 2468
+                "start": 2385,
+                "end": 2387
               }
             },
             {
               "kind": "field",
               "name": "onClick",
               "nameSpan": {
-                "start": 2474,
-                "end": 2481
+                "start": 2393,
+                "end": 2400
               },
               "value": {
                 "kind": "name",
                 "name": "message",
                 "span": {
-                  "start": 2483,
-                  "end": 2490
+                  "start": 2402,
+                  "end": 2409
                 }
               },
               "span": {
-                "start": 2474,
-                "end": 2490
+                "start": 2393,
+                "end": 2409
               }
             },
             {
               "kind": "field",
               "name": "className",
               "nameSpan": {
-                "start": 2496,
-                "end": 2505
+                "start": 2415,
+                "end": 2424
               },
               "value": {
                 "kind": "string",
                 "raw": "\"w-full rounded-xl border-0 px-4 py-3 font-semibold transition hover:shadow-lg\"",
                 "span": {
-                  "start": 2507,
-                  "end": 2586
+                  "start": 2426,
+                  "end": 2505
                 }
               },
               "span": {
-                "start": 2496,
-                "end": 2586
+                "start": 2415,
+                "end": 2505
               }
             },
             {
               "kind": "field",
               "name": "style",
               "nameSpan": {
-                "start": 2592,
-                "end": 2597
+                "start": 2511,
+                "end": 2516
               },
               "value": {
                 "kind": "application",
@@ -2249,62 +2210,62 @@
                   "kind": "name",
                   "name": "actionStyle",
                   "span": {
-                    "start": 2599,
-                    "end": 2610
+                    "start": 2518,
+                    "end": 2529
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "message",
                   "span": {
-                    "start": 2611,
-                    "end": 2618
+                    "start": 2530,
+                    "end": 2537
                   }
                 },
                 "span": {
-                  "start": 2599,
-                  "end": 2618
+                  "start": 2518,
+                  "end": 2537
                 }
               },
               "span": {
-                "start": 2592,
-                "end": 2618
+                "start": 2511,
+                "end": 2537
               }
             },
             {
               "kind": "field",
               "name": "children",
               "nameSpan": {
-                "start": 2624,
-                "end": 2632
+                "start": 2543,
+                "end": 2551
               },
               "value": {
                 "kind": "name",
                 "name": "text",
                 "span": {
-                  "start": 2634,
-                  "end": 2638
+                  "start": 2553,
+                  "end": 2557
                 }
               },
               "span": {
-                "start": 2624,
-                "end": 2638
+                "start": 2543,
+                "end": 2557
               }
             }
           ],
           "span": {
-            "start": 2460,
-            "end": 2642
+            "start": 2379,
+            "end": 2561
           }
         },
         "span": {
-          "start": 2448,
-          "end": 2642
+          "start": 2367,
+          "end": 2561
         }
       },
       "span": {
-        "start": 2367,
-        "end": 2642
+        "start": 2286,
+        "end": 2561
       }
     },
     {
@@ -2312,22 +2273,22 @@
       "visibility": "private",
       "name": "view",
       "nameSpan": {
-        "start": 2647,
-        "end": 2651
+        "start": 2566,
+        "end": 2570
       },
       "parameters": [
         {
           "name": "mode",
           "nameSpan": {
-            "start": 2652,
-            "end": 2656
+            "start": 2571,
+            "end": 2575
           },
           "type": {
             "kind": "named",
             "name": "Mode",
             "span": {
-              "start": 2658,
-              "end": 2662
+              "start": 2577,
+              "end": 2581
             }
           }
         }
@@ -2340,14 +2301,14 @@
             "kind": "named",
             "name": "Msg",
             "span": {
-              "start": 2676,
-              "end": 2679
+              "start": 2595,
+              "end": 2598
             }
           }
         ],
         "span": {
-          "start": 2666,
-          "end": 2680
+          "start": 2585,
+          "end": 2599
         }
       },
       "body": {
@@ -2358,18 +2319,18 @@
             "kind": "name",
             "name": "html",
             "span": {
-              "start": 2685,
-              "end": 2689
+              "start": 2604,
+              "end": 2608
             }
           },
           "field": "main",
           "fieldSpan": {
-            "start": 2690,
-            "end": 2694
+            "start": 2609,
+            "end": 2613
           },
           "span": {
-            "start": 2685,
-            "end": 2694
+            "start": 2604,
+            "end": 2613
           }
         },
         "argument": {
@@ -2379,28 +2340,28 @@
               "kind": "field",
               "name": "style",
               "nameSpan": {
-                "start": 2701,
-                "end": 2706
+                "start": 2620,
+                "end": 2625
               },
               "value": {
                 "kind": "name",
                 "name": "pageStyle",
                 "span": {
-                  "start": 2708,
-                  "end": 2717
+                  "start": 2627,
+                  "end": 2636
                 }
               },
               "span": {
-                "start": 2701,
-                "end": 2717
+                "start": 2620,
+                "end": 2636
               }
             },
             {
               "kind": "field",
               "name": "children",
               "nameSpan": {
-                "start": 2723,
-                "end": 2731
+                "start": 2642,
+                "end": 2650
               },
               "value": {
                 "kind": "array",
@@ -2413,18 +2374,18 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 2741,
-                          "end": 2745
+                          "start": 2660,
+                          "end": 2664
                         }
                       },
                       "field": "section",
                       "fieldSpan": {
-                        "start": 2746,
-                        "end": 2753
+                        "start": 2665,
+                        "end": 2672
                       },
                       "span": {
-                        "start": 2741,
-                        "end": 2753
+                        "start": 2660,
+                        "end": 2672
                       }
                     },
                     "argument": {
@@ -2434,48 +2395,48 @@
                           "kind": "field",
                           "name": "className",
                           "nameSpan": {
-                            "start": 2764,
-                            "end": 2773
+                            "start": 2683,
+                            "end": 2692
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"mx-auto max-w-lg\"",
                             "span": {
-                              "start": 2775,
-                              "end": 2793
+                              "start": 2694,
+                              "end": 2712
                             }
                           },
                           "span": {
-                            "start": 2764,
-                            "end": 2793
+                            "start": 2683,
+                            "end": 2712
                           }
                         },
                         {
                           "kind": "field",
                           "name": "style",
                           "nameSpan": {
-                            "start": 2803,
-                            "end": 2808
+                            "start": 2722,
+                            "end": 2727
                           },
                           "value": {
                             "kind": "name",
                             "name": "cardStyle",
                             "span": {
-                              "start": 2810,
-                              "end": 2819
+                              "start": 2729,
+                              "end": 2738
                             }
                           },
                           "span": {
-                            "start": 2803,
-                            "end": 2819
+                            "start": 2722,
+                            "end": 2738
                           }
                         },
                         {
                           "kind": "field",
                           "name": "children",
                           "nameSpan": {
-                            "start": 2829,
-                            "end": 2837
+                            "start": 2748,
+                            "end": 2756
                           },
                           "value": {
                             "kind": "array",
@@ -2488,18 +2449,18 @@
                                     "kind": "name",
                                     "name": "html",
                                     "span": {
-                                      "start": 2851,
-                                      "end": 2855
+                                      "start": 2770,
+                                      "end": 2774
                                     }
                                   },
                                   "field": "div",
                                   "fieldSpan": {
-                                    "start": 2856,
-                                    "end": 2859
+                                    "start": 2775,
+                                    "end": 2778
                                   },
                                   "span": {
-                                    "start": 2851,
-                                    "end": 2859
+                                    "start": 2770,
+                                    "end": 2778
                                   }
                                 },
                                 "argument": {
@@ -2509,28 +2470,28 @@
                                       "kind": "field",
                                       "name": "className",
                                       "nameSpan": {
-                                        "start": 2874,
-                                        "end": 2883
+                                        "start": 2793,
+                                        "end": 2802
                                       },
                                       "value": {
                                         "kind": "string",
                                         "raw": "\"mb-6 flex items-center justify-between\"",
                                         "span": {
-                                          "start": 2885,
-                                          "end": 2925
+                                          "start": 2804,
+                                          "end": 2844
                                         }
                                       },
                                       "span": {
-                                        "start": 2874,
-                                        "end": 2925
+                                        "start": 2793,
+                                        "end": 2844
                                       }
                                     },
                                     {
                                       "kind": "field",
                                       "name": "children",
                                       "nameSpan": {
-                                        "start": 2939,
-                                        "end": 2947
+                                        "start": 2858,
+                                        "end": 2866
                                       },
                                       "value": {
                                         "kind": "array",
@@ -2543,18 +2504,18 @@
                                                 "kind": "name",
                                                 "name": "html",
                                                 "span": {
-                                                  "start": 2965,
-                                                  "end": 2969
+                                                  "start": 2884,
+                                                  "end": 2888
                                                 }
                                               },
                                               "field": "span",
                                               "fieldSpan": {
-                                                "start": 2970,
-                                                "end": 2974
+                                                "start": 2889,
+                                                "end": 2893
                                               },
                                               "span": {
-                                                "start": 2965,
-                                                "end": 2974
+                                                "start": 2884,
+                                                "end": 2893
                                               }
                                             },
                                             "argument": {
@@ -2564,8 +2525,8 @@
                                                   "kind": "field",
                                                   "name": "style",
                                                   "nameSpan": {
-                                                    "start": 2993,
-                                                    "end": 2998
+                                                    "start": 2912,
+                                                    "end": 2917
                                                   },
                                                   "value": {
                                                     "kind": "application",
@@ -2573,34 +2534,34 @@
                                                       "kind": "name",
                                                       "name": "badgeStyle",
                                                       "span": {
-                                                        "start": 3000,
-                                                        "end": 3010
+                                                        "start": 2919,
+                                                        "end": 2929
                                                       }
                                                     },
                                                     "argument": {
                                                       "kind": "name",
                                                       "name": "mode",
                                                       "span": {
-                                                        "start": 3011,
-                                                        "end": 3015
+                                                        "start": 2930,
+                                                        "end": 2934
                                                       }
                                                     },
                                                     "span": {
-                                                      "start": 3000,
-                                                      "end": 3015
+                                                      "start": 2919,
+                                                      "end": 2934
                                                     }
                                                   },
                                                   "span": {
-                                                    "start": 2993,
-                                                    "end": 3015
+                                                    "start": 2912,
+                                                    "end": 2934
                                                   }
                                                 },
                                                 {
                                                   "kind": "field",
                                                   "name": "children",
                                                   "nameSpan": {
-                                                    "start": 3033,
-                                                    "end": 3041
+                                                    "start": 2952,
+                                                    "end": 2960
                                                   },
                                                   "value": {
                                                     "kind": "application",
@@ -2608,37 +2569,37 @@
                                                       "kind": "name",
                                                       "name": "label",
                                                       "span": {
-                                                        "start": 3043,
-                                                        "end": 3048
+                                                        "start": 2962,
+                                                        "end": 2967
                                                       }
                                                     },
                                                     "argument": {
                                                       "kind": "name",
                                                       "name": "mode",
                                                       "span": {
-                                                        "start": 3049,
-                                                        "end": 3053
+                                                        "start": 2968,
+                                                        "end": 2972
                                                       }
                                                     },
                                                     "span": {
-                                                      "start": 3043,
-                                                      "end": 3053
+                                                      "start": 2962,
+                                                      "end": 2972
                                                     }
                                                   },
                                                   "span": {
-                                                    "start": 3033,
-                                                    "end": 3053
+                                                    "start": 2952,
+                                                    "end": 2972
                                                   }
                                                 }
                                               ],
                                               "span": {
-                                                "start": 2975,
-                                                "end": 3069
+                                                "start": 2894,
+                                                "end": 2988
                                               }
                                             },
                                             "span": {
-                                              "start": 2965,
-                                              "end": 3069
+                                              "start": 2884,
+                                              "end": 2988
                                             }
                                           },
                                           {
@@ -2649,18 +2610,18 @@
                                                 "kind": "name",
                                                 "name": "html",
                                                 "span": {
-                                                  "start": 3085,
-                                                  "end": 3089
+                                                  "start": 3004,
+                                                  "end": 3008
                                                 }
                                               },
                                               "field": "span",
                                               "fieldSpan": {
-                                                "start": 3090,
-                                                "end": 3094
+                                                "start": 3009,
+                                                "end": 3013
                                               },
                                               "span": {
-                                                "start": 3085,
-                                                "end": 3094
+                                                "start": 3004,
+                                                "end": 3013
                                               }
                                             },
                                             "argument": {
@@ -2670,73 +2631,73 @@
                                                   "kind": "field",
                                                   "name": "className",
                                                   "nameSpan": {
-                                                    "start": 3113,
-                                                    "end": 3122
+                                                    "start": 3032,
+                                                    "end": 3041
                                                   },
                                                   "value": {
                                                     "kind": "string",
                                                     "raw": "\"text-sm font-semibold text-slate-500\"",
                                                     "span": {
-                                                      "start": 3124,
-                                                      "end": 3162
+                                                      "start": 3043,
+                                                      "end": 3081
                                                     }
                                                   },
                                                   "span": {
-                                                    "start": 3113,
-                                                    "end": 3162
+                                                    "start": 3032,
+                                                    "end": 3081
                                                   }
                                                 },
                                                 {
                                                   "kind": "field",
                                                   "name": "children",
                                                   "nameSpan": {
-                                                    "start": 3180,
-                                                    "end": 3188
+                                                    "start": 3099,
+                                                    "end": 3107
                                                   },
                                                   "value": {
                                                     "kind": "string",
                                                     "raw": "\"SESERAGI FLOW\"",
                                                     "span": {
-                                                      "start": 3190,
-                                                      "end": 3205
+                                                      "start": 3109,
+                                                      "end": 3124
                                                     }
                                                   },
                                                   "span": {
-                                                    "start": 3180,
-                                                    "end": 3205
+                                                    "start": 3099,
+                                                    "end": 3124
                                                   }
                                                 }
                                               ],
                                               "span": {
-                                                "start": 3095,
-                                                "end": 3221
+                                                "start": 3014,
+                                                "end": 3140
                                               }
                                             },
                                             "span": {
-                                              "start": 3085,
-                                              "end": 3221
+                                              "start": 3004,
+                                              "end": 3140
                                             }
                                           }
                                         ],
                                         "span": {
-                                          "start": 2949,
-                                          "end": 3235
+                                          "start": 2868,
+                                          "end": 3154
                                         }
                                       },
                                       "span": {
-                                        "start": 2939,
-                                        "end": 3235
+                                        "start": 2858,
+                                        "end": 3154
                                       }
                                     }
                                   ],
                                   "span": {
-                                    "start": 2860,
-                                    "end": 3247
+                                    "start": 2779,
+                                    "end": 3166
                                   }
                                 },
                                 "span": {
-                                  "start": 2851,
-                                  "end": 3247
+                                  "start": 2770,
+                                  "end": 3166
                                 }
                               },
                               {
@@ -2747,18 +2708,18 @@
                                     "kind": "name",
                                     "name": "html",
                                     "span": {
-                                      "start": 3259,
-                                      "end": 3263
+                                      "start": 3178,
+                                      "end": 3182
                                     }
                                   },
                                   "field": "h1",
                                   "fieldSpan": {
-                                    "start": 3264,
-                                    "end": 3266
+                                    "start": 3183,
+                                    "end": 3185
                                   },
                                   "span": {
-                                    "start": 3259,
-                                    "end": 3266
+                                    "start": 3178,
+                                    "end": 3185
                                   }
                                 },
                                 "argument": {
@@ -2768,28 +2729,28 @@
                                       "kind": "field",
                                       "name": "className",
                                       "nameSpan": {
-                                        "start": 3281,
-                                        "end": 3290
+                                        "start": 3200,
+                                        "end": 3209
                                       },
                                       "value": {
                                         "kind": "string",
                                         "raw": "\"m-0 text-3xl font-bold text-slate-900 sm:text-4xl\"",
                                         "span": {
-                                          "start": 3292,
-                                          "end": 3343
+                                          "start": 3211,
+                                          "end": 3262
                                         }
                                       },
                                       "span": {
-                                        "start": 3281,
-                                        "end": 3343
+                                        "start": 3200,
+                                        "end": 3262
                                       }
                                     },
                                     {
                                       "kind": "field",
                                       "name": "children",
                                       "nameSpan": {
-                                        "start": 3357,
-                                        "end": 3365
+                                        "start": 3276,
+                                        "end": 3284
                                       },
                                       "value": {
                                         "kind": "application",
@@ -2797,37 +2758,37 @@
                                           "kind": "name",
                                           "name": "title",
                                           "span": {
-                                            "start": 3367,
-                                            "end": 3372
+                                            "start": 3286,
+                                            "end": 3291
                                           }
                                         },
                                         "argument": {
                                           "kind": "name",
                                           "name": "mode",
                                           "span": {
-                                            "start": 3373,
-                                            "end": 3377
+                                            "start": 3292,
+                                            "end": 3296
                                           }
                                         },
                                         "span": {
-                                          "start": 3367,
-                                          "end": 3377
+                                          "start": 3286,
+                                          "end": 3296
                                         }
                                       },
                                       "span": {
-                                        "start": 3357,
-                                        "end": 3377
+                                        "start": 3276,
+                                        "end": 3296
                                       }
                                     }
                                   ],
                                   "span": {
-                                    "start": 3267,
-                                    "end": 3389
+                                    "start": 3186,
+                                    "end": 3308
                                   }
                                 },
                                 "span": {
-                                  "start": 3259,
-                                  "end": 3389
+                                  "start": 3178,
+                                  "end": 3308
                                 }
                               },
                               {
@@ -2838,18 +2799,18 @@
                                     "kind": "name",
                                     "name": "html",
                                     "span": {
-                                      "start": 3401,
-                                      "end": 3405
+                                      "start": 3320,
+                                      "end": 3324
                                     }
                                   },
                                   "field": "p",
                                   "fieldSpan": {
-                                    "start": 3406,
-                                    "end": 3407
+                                    "start": 3325,
+                                    "end": 3326
                                   },
                                   "span": {
-                                    "start": 3401,
-                                    "end": 3407
+                                    "start": 3320,
+                                    "end": 3326
                                   }
                                 },
                                 "argument": {
@@ -2859,28 +2820,28 @@
                                       "kind": "field",
                                       "name": "className",
                                       "nameSpan": {
-                                        "start": 3422,
-                                        "end": 3431
+                                        "start": 3341,
+                                        "end": 3350
                                       },
                                       "value": {
                                         "kind": "string",
                                         "raw": "\"mb-6 mt-4 text-lg text-slate-700\"",
                                         "span": {
-                                          "start": 3433,
-                                          "end": 3467
+                                          "start": 3352,
+                                          "end": 3386
                                         }
                                       },
                                       "span": {
-                                        "start": 3422,
-                                        "end": 3467
+                                        "start": 3341,
+                                        "end": 3386
                                       }
                                     },
                                     {
                                       "kind": "field",
                                       "name": "children",
                                       "nameSpan": {
-                                        "start": 3481,
-                                        "end": 3489
+                                        "start": 3400,
+                                        "end": 3408
                                       },
                                       "value": {
                                         "kind": "application",
@@ -2888,37 +2849,37 @@
                                           "kind": "name",
                                           "name": "guidance",
                                           "span": {
-                                            "start": 3491,
-                                            "end": 3499
+                                            "start": 3410,
+                                            "end": 3418
                                           }
                                         },
                                         "argument": {
                                           "kind": "name",
                                           "name": "mode",
                                           "span": {
-                                            "start": 3500,
-                                            "end": 3504
+                                            "start": 3419,
+                                            "end": 3423
                                           }
                                         },
                                         "span": {
-                                          "start": 3491,
-                                          "end": 3504
+                                          "start": 3410,
+                                          "end": 3423
                                         }
                                       },
                                       "span": {
-                                        "start": 3481,
-                                        "end": 3504
+                                        "start": 3400,
+                                        "end": 3423
                                       }
                                     }
                                   ],
                                   "span": {
-                                    "start": 3408,
-                                    "end": 3516
+                                    "start": 3327,
+                                    "end": 3435
                                   }
                                 },
                                 "span": {
-                                  "start": 3401,
-                                  "end": 3516
+                                  "start": 3320,
+                                  "end": 3435
                                 }
                               },
                               {
@@ -2929,18 +2890,18 @@
                                     "kind": "name",
                                     "name": "html",
                                     "span": {
-                                      "start": 3528,
-                                      "end": 3532
+                                      "start": 3447,
+                                      "end": 3451
                                     }
                                   },
                                   "field": "div",
                                   "fieldSpan": {
-                                    "start": 3533,
-                                    "end": 3536
+                                    "start": 3452,
+                                    "end": 3455
                                   },
                                   "span": {
-                                    "start": 3528,
-                                    "end": 3536
+                                    "start": 3447,
+                                    "end": 3455
                                   }
                                 },
                                 "argument": {
@@ -2950,28 +2911,28 @@
                                       "kind": "field",
                                       "name": "style",
                                       "nameSpan": {
-                                        "start": 3551,
-                                        "end": 3556
+                                        "start": 3470,
+                                        "end": 3475
                                       },
                                       "value": {
                                         "kind": "name",
                                         "name": "trackStyle",
                                         "span": {
-                                          "start": 3558,
-                                          "end": 3568
+                                          "start": 3477,
+                                          "end": 3487
                                         }
                                       },
                                       "span": {
-                                        "start": 3551,
-                                        "end": 3568
+                                        "start": 3470,
+                                        "end": 3487
                                       }
                                     },
                                     {
                                       "kind": "field",
                                       "name": "children",
                                       "nameSpan": {
-                                        "start": 3582,
-                                        "end": 3590
+                                        "start": 3501,
+                                        "end": 3509
                                       },
                                       "value": {
                                         "kind": "application",
@@ -2981,18 +2942,18 @@
                                             "kind": "name",
                                             "name": "html",
                                             "span": {
-                                              "start": 3592,
-                                              "end": 3596
+                                              "start": 3511,
+                                              "end": 3515
                                             }
                                           },
                                           "field": "div",
                                           "fieldSpan": {
-                                            "start": 3597,
-                                            "end": 3600
+                                            "start": 3516,
+                                            "end": 3519
                                           },
                                           "span": {
-                                            "start": 3592,
-                                            "end": 3600
+                                            "start": 3511,
+                                            "end": 3519
                                           }
                                         },
                                         "argument": {
@@ -3002,8 +2963,8 @@
                                               "kind": "field",
                                               "name": "style",
                                               "nameSpan": {
-                                                "start": 3617,
-                                                "end": 3622
+                                                "start": 3536,
+                                                "end": 3541
                                               },
                                               "value": {
                                                 "kind": "application",
@@ -3011,73 +2972,73 @@
                                                   "kind": "name",
                                                   "name": "progressStyle",
                                                   "span": {
-                                                    "start": 3624,
-                                                    "end": 3637
+                                                    "start": 3543,
+                                                    "end": 3556
                                                   }
                                                 },
                                                 "argument": {
                                                   "kind": "name",
                                                   "name": "mode",
                                                   "span": {
-                                                    "start": 3638,
-                                                    "end": 3642
+                                                    "start": 3557,
+                                                    "end": 3561
                                                   }
                                                 },
                                                 "span": {
-                                                  "start": 3624,
-                                                  "end": 3642
+                                                  "start": 3543,
+                                                  "end": 3561
                                                 }
                                               },
                                               "span": {
-                                                "start": 3617,
-                                                "end": 3642
+                                                "start": 3536,
+                                                "end": 3561
                                               }
                                             },
                                             {
                                               "kind": "field",
                                               "name": "children",
                                               "nameSpan": {
-                                                "start": 3658,
-                                                "end": 3666
+                                                "start": 3577,
+                                                "end": 3585
                                               },
                                               "value": {
                                                 "kind": "string",
                                                 "raw": "\"\"",
                                                 "span": {
-                                                  "start": 3668,
-                                                  "end": 3670
+                                                  "start": 3587,
+                                                  "end": 3589
                                                 }
                                               },
                                               "span": {
-                                                "start": 3658,
-                                                "end": 3670
+                                                "start": 3577,
+                                                "end": 3589
                                               }
                                             }
                                           ],
                                           "span": {
-                                            "start": 3601,
-                                            "end": 3684
+                                            "start": 3520,
+                                            "end": 3603
                                           }
                                         },
                                         "span": {
-                                          "start": 3592,
-                                          "end": 3684
+                                          "start": 3511,
+                                          "end": 3603
                                         }
                                       },
                                       "span": {
-                                        "start": 3582,
-                                        "end": 3684
+                                        "start": 3501,
+                                        "end": 3603
                                       }
                                     }
                                   ],
                                   "span": {
-                                    "start": 3537,
-                                    "end": 3696
+                                    "start": 3456,
+                                    "end": 3615
                                   }
                                 },
                                 "span": {
-                                  "start": 3528,
-                                  "end": 3696
+                                  "start": 3447,
+                                  "end": 3615
                                 }
                               },
                               {
@@ -3088,18 +3049,18 @@
                                     "kind": "name",
                                     "name": "html",
                                     "span": {
-                                      "start": 3708,
-                                      "end": 3712
+                                      "start": 3627,
+                                      "end": 3631
                                     }
                                   },
                                   "field": "div",
                                   "fieldSpan": {
-                                    "start": 3713,
-                                    "end": 3716
+                                    "start": 3632,
+                                    "end": 3635
                                   },
                                   "span": {
-                                    "start": 3708,
-                                    "end": 3716
+                                    "start": 3627,
+                                    "end": 3635
                                   }
                                 },
                                 "argument": {
@@ -3109,28 +3070,28 @@
                                       "kind": "field",
                                       "name": "className",
                                       "nameSpan": {
-                                        "start": 3731,
-                                        "end": 3740
+                                        "start": 3650,
+                                        "end": 3659
                                       },
                                       "value": {
                                         "kind": "string",
                                         "raw": "\"mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3\"",
                                         "span": {
-                                          "start": 3742,
-                                          "end": 3786
+                                          "start": 3661,
+                                          "end": 3705
                                         }
                                       },
                                       "span": {
-                                        "start": 3731,
-                                        "end": 3786
+                                        "start": 3650,
+                                        "end": 3705
                                       }
                                     },
                                     {
                                       "kind": "field",
                                       "name": "children",
                                       "nameSpan": {
-                                        "start": 3800,
-                                        "end": 3808
+                                        "start": 3719,
+                                        "end": 3727
                                       },
                                       "value": {
                                         "kind": "array",
@@ -3145,47 +3106,47 @@
                                                   "kind": "name",
                                                   "name": "action",
                                                   "span": {
-                                                    "start": 3826,
-                                                    "end": 3832
+                                                    "start": 3745,
+                                                    "end": 3751
                                                   }
                                                 },
                                                 "argument": {
                                                   "kind": "string",
                                                   "raw": "\"focus\"",
                                                   "span": {
-                                                    "start": 3833,
-                                                    "end": 3840
+                                                    "start": 3752,
+                                                    "end": 3759
                                                   }
                                                 },
                                                 "span": {
-                                                  "start": 3826,
-                                                  "end": 3840
+                                                  "start": 3745,
+                                                  "end": 3759
                                                 }
                                               },
                                               "argument": {
                                                 "kind": "string",
                                                 "raw": "\"Start focus\"",
                                                 "span": {
-                                                  "start": 3841,
-                                                  "end": 3854
+                                                  "start": 3760,
+                                                  "end": 3773
                                                 }
                                               },
                                               "span": {
-                                                "start": 3826,
-                                                "end": 3854
+                                                "start": 3745,
+                                                "end": 3773
                                               }
                                             },
                                             "argument": {
                                               "kind": "name",
                                               "name": "StartFocus",
                                               "span": {
-                                                "start": 3855,
-                                                "end": 3865
+                                                "start": 3774,
+                                                "end": 3784
                                               }
                                             },
                                             "span": {
-                                              "start": 3826,
-                                              "end": 3865
+                                              "start": 3745,
+                                              "end": 3784
                                             }
                                           },
                                           {
@@ -3198,47 +3159,47 @@
                                                   "kind": "name",
                                                   "name": "action",
                                                   "span": {
-                                                    "start": 3881,
-                                                    "end": 3887
+                                                    "start": 3800,
+                                                    "end": 3806
                                                   }
                                                 },
                                                 "argument": {
                                                   "kind": "string",
                                                   "raw": "\"break\"",
                                                   "span": {
-                                                    "start": 3888,
-                                                    "end": 3895
+                                                    "start": 3807,
+                                                    "end": 3814
                                                   }
                                                 },
                                                 "span": {
-                                                  "start": 3881,
-                                                  "end": 3895
+                                                  "start": 3800,
+                                                  "end": 3814
                                                 }
                                               },
                                               "argument": {
                                                 "kind": "string",
                                                 "raw": "\"Take a break\"",
                                                 "span": {
-                                                  "start": 3896,
-                                                  "end": 3910
+                                                  "start": 3815,
+                                                  "end": 3829
                                                 }
                                               },
                                               "span": {
-                                                "start": 3881,
-                                                "end": 3910
+                                                "start": 3800,
+                                                "end": 3829
                                               }
                                             },
                                             "argument": {
                                               "kind": "name",
                                               "name": "TakeBreak",
                                               "span": {
-                                                "start": 3911,
-                                                "end": 3920
+                                                "start": 3830,
+                                                "end": 3839
                                               }
                                             },
                                             "span": {
-                                              "start": 3881,
-                                              "end": 3920
+                                              "start": 3800,
+                                              "end": 3839
                                             }
                                           },
                                           {
@@ -3251,184 +3212,166 @@
                                                   "kind": "name",
                                                   "name": "action",
                                                   "span": {
-                                                    "start": 3936,
-                                                    "end": 3942
+                                                    "start": 3855,
+                                                    "end": 3861
                                                   }
                                                 },
                                                 "argument": {
                                                   "kind": "string",
                                                   "raw": "\"reset\"",
                                                   "span": {
-                                                    "start": 3943,
-                                                    "end": 3950
+                                                    "start": 3862,
+                                                    "end": 3869
                                                   }
                                                 },
                                                 "span": {
-                                                  "start": 3936,
-                                                  "end": 3950
+                                                  "start": 3855,
+                                                  "end": 3869
                                                 }
                                               },
                                               "argument": {
                                                 "kind": "string",
                                                 "raw": "\"Reset the flow\"",
                                                 "span": {
-                                                  "start": 3951,
-                                                  "end": 3967
+                                                  "start": 3870,
+                                                  "end": 3886
                                                 }
                                               },
                                               "span": {
-                                                "start": 3936,
-                                                "end": 3967
+                                                "start": 3855,
+                                                "end": 3886
                                               }
                                             },
                                             "argument": {
                                               "kind": "name",
                                               "name": "Reset",
                                               "span": {
-                                                "start": 3968,
-                                                "end": 3973
+                                                "start": 3887,
+                                                "end": 3892
                                               }
                                             },
                                             "span": {
-                                              "start": 3936,
-                                              "end": 3973
+                                              "start": 3855,
+                                              "end": 3892
                                             }
                                           }
                                         ],
                                         "span": {
-                                          "start": 3810,
-                                          "end": 3987
+                                          "start": 3729,
+                                          "end": 3906
                                         }
                                       },
                                       "span": {
-                                        "start": 3800,
-                                        "end": 3987
+                                        "start": 3719,
+                                        "end": 3906
                                       }
                                     }
                                   ],
                                   "span": {
-                                    "start": 3717,
-                                    "end": 3999
+                                    "start": 3636,
+                                    "end": 3918
                                   }
                                 },
                                 "span": {
-                                  "start": 3708,
-                                  "end": 3999
+                                  "start": 3627,
+                                  "end": 3918
                                 }
                               }
                             ],
                             "span": {
-                              "start": 2839,
-                              "end": 4009
+                              "start": 2758,
+                              "end": 3928
                             }
                           },
                           "span": {
-                            "start": 2829,
-                            "end": 4009
+                            "start": 2748,
+                            "end": 3928
                           }
                         }
                       ],
                       "span": {
-                        "start": 2754,
-                        "end": 4017
+                        "start": 2673,
+                        "end": 3936
                       }
                     },
                     "span": {
-                      "start": 2741,
-                      "end": 4017
+                      "start": 2660,
+                      "end": 3936
                     }
                   }
                 ],
                 "span": {
-                  "start": 2733,
-                  "end": 4023
+                  "start": 2652,
+                  "end": 3942
                 }
               },
               "span": {
-                "start": 2723,
-                "end": 4023
+                "start": 2642,
+                "end": 3942
               }
             }
           ],
           "span": {
-            "start": 2695,
-            "end": 4027
+            "start": 2614,
+            "end": 3946
           }
         },
         "span": {
-          "start": 2685,
-          "end": 4027
+          "start": 2604,
+          "end": 3946
         }
       },
       "span": {
-        "start": 2644,
-        "end": 4027
+        "start": 2563,
+        "end": 3946
       }
     },
     {
-      "kind": "effectFn",
+      "kind": "fn",
       "visibility": "private",
       "name": "update",
       "nameSpan": {
-        "start": 4039,
-        "end": 4045
+        "start": 3951,
+        "end": 3957
       },
       "parameters": [
         {
-          "name": "mode",
-          "nameSpan": {
-            "start": 4046,
-            "end": 4050
-          },
-          "type": {
-            "kind": "named",
-            "name": "MutableSignal",
-            "arguments": [
-              {
-                "kind": "named",
-                "name": "Mode",
-                "span": {
-                  "start": 4066,
-                  "end": 4070
-                }
-              }
-            ],
-            "span": {
-              "start": 4052,
-              "end": 4071
-            }
-          }
-        },
-        {
           "name": "message",
           "nameSpan": {
-            "start": 4077,
-            "end": 4084
+            "start": 3958,
+            "end": 3965
           },
           "type": {
             "kind": "named",
             "name": "Msg",
             "span": {
-              "start": 4086,
-              "end": 4089
+              "start": 3967,
+              "end": 3970
+            }
+          }
+        },
+        {
+          "name": "mode",
+          "nameSpan": {
+            "start": 3974,
+            "end": 3978
+          },
+          "type": {
+            "kind": "named",
+            "name": "Mode",
+            "span": {
+              "start": 3980,
+              "end": 3984
             }
           }
         }
       ],
       "returnType": {
         "kind": "named",
-        "name": "Unit",
+        "name": "Mode",
         "span": {
-          "start": 4095,
-          "end": 4099
-        }
-      },
-      "failure": {
-        "kind": "named",
-        "name": "Never",
-        "span": {
-          "start": 4106,
-          "end": 4111
+          "start": 3988,
+          "end": 3992
         }
       },
       "body": {
@@ -3437,8 +3380,8 @@
           "kind": "name",
           "name": "message",
           "span": {
-            "start": 4122,
-            "end": 4129
+            "start": 4003,
+            "end": 4010
           }
         },
         "arms": [
@@ -3447,96 +3390,25 @@
               "kind": "constructor",
               "name": "StartFocus",
               "nameSpan": {
-                "start": 4136,
-                "end": 4146
+                "start": 4017,
+                "end": 4027
               },
               "span": {
-                "start": 4136,
-                "end": 4146
+                "start": 4017,
+                "end": 4027
               }
             },
             "body": {
-              "kind": "application",
-              "function": {
-                "kind": "application",
-                "function": {
-                  "kind": "member",
-                  "receiver": {
-                    "kind": "name",
-                    "name": "signals",
-                    "span": {
-                      "start": 4150,
-                      "end": 4157
-                    }
-                  },
-                  "field": "update",
-                  "fieldSpan": {
-                    "start": 4158,
-                    "end": 4164
-                  },
-                  "span": {
-                    "start": 4150,
-                    "end": 4164
-                  }
-                },
-                "argument": {
-                  "kind": "grouped",
-                  "value": {
-                    "kind": "lambda",
-                    "parameter": {
-                      "name": "current",
-                      "nameSpan": {
-                        "start": 4167,
-                        "end": 4174
-                      },
-                      "type": {
-                        "kind": "named",
-                        "name": "Mode",
-                        "span": {
-                          "start": 4176,
-                          "end": 4180
-                        }
-                      }
-                    },
-                    "body": {
-                      "kind": "name",
-                      "name": "Focusing",
-                      "span": {
-                        "start": 4184,
-                        "end": 4192
-                      }
-                    },
-                    "span": {
-                      "start": 4166,
-                      "end": 4192
-                    }
-                  },
-                  "span": {
-                    "start": 4165,
-                    "end": 4193
-                  }
-                },
-                "span": {
-                  "start": 4150,
-                  "end": 4193
-                }
-              },
-              "argument": {
-                "kind": "name",
-                "name": "mode",
-                "span": {
-                  "start": 4194,
-                  "end": 4198
-                }
-              },
+              "kind": "name",
+              "name": "Focusing",
               "span": {
-                "start": 4150,
-                "end": 4198
+                "start": 4031,
+                "end": 4039
               }
             },
             "span": {
-              "start": 4136,
-              "end": 4198
+              "start": 4017,
+              "end": 4039
             }
           },
           {
@@ -3544,96 +3416,25 @@
               "kind": "constructor",
               "name": "TakeBreak",
               "nameSpan": {
-                "start": 4203,
-                "end": 4212
+                "start": 4044,
+                "end": 4053
               },
               "span": {
-                "start": 4203,
-                "end": 4212
+                "start": 4044,
+                "end": 4053
               }
             },
             "body": {
-              "kind": "application",
-              "function": {
-                "kind": "application",
-                "function": {
-                  "kind": "member",
-                  "receiver": {
-                    "kind": "name",
-                    "name": "signals",
-                    "span": {
-                      "start": 4216,
-                      "end": 4223
-                    }
-                  },
-                  "field": "update",
-                  "fieldSpan": {
-                    "start": 4224,
-                    "end": 4230
-                  },
-                  "span": {
-                    "start": 4216,
-                    "end": 4230
-                  }
-                },
-                "argument": {
-                  "kind": "grouped",
-                  "value": {
-                    "kind": "lambda",
-                    "parameter": {
-                      "name": "current",
-                      "nameSpan": {
-                        "start": 4233,
-                        "end": 4240
-                      },
-                      "type": {
-                        "kind": "named",
-                        "name": "Mode",
-                        "span": {
-                          "start": 4242,
-                          "end": 4246
-                        }
-                      }
-                    },
-                    "body": {
-                      "kind": "name",
-                      "name": "Resting",
-                      "span": {
-                        "start": 4250,
-                        "end": 4257
-                      }
-                    },
-                    "span": {
-                      "start": 4232,
-                      "end": 4257
-                    }
-                  },
-                  "span": {
-                    "start": 4231,
-                    "end": 4258
-                  }
-                },
-                "span": {
-                  "start": 4216,
-                  "end": 4258
-                }
-              },
-              "argument": {
-                "kind": "name",
-                "name": "mode",
-                "span": {
-                  "start": 4259,
-                  "end": 4263
-                }
-              },
+              "kind": "name",
+              "name": "Resting",
               "span": {
-                "start": 4216,
-                "end": 4263
+                "start": 4057,
+                "end": 4064
               }
             },
             "span": {
-              "start": 4203,
-              "end": 4263
+              "start": 4044,
+              "end": 4064
             }
           },
           {
@@ -3641,107 +3442,36 @@
               "kind": "constructor",
               "name": "Reset",
               "nameSpan": {
-                "start": 4268,
-                "end": 4273
+                "start": 4069,
+                "end": 4074
               },
               "span": {
-                "start": 4268,
-                "end": 4273
+                "start": 4069,
+                "end": 4074
               }
             },
             "body": {
-              "kind": "application",
-              "function": {
-                "kind": "application",
-                "function": {
-                  "kind": "member",
-                  "receiver": {
-                    "kind": "name",
-                    "name": "signals",
-                    "span": {
-                      "start": 4277,
-                      "end": 4284
-                    }
-                  },
-                  "field": "update",
-                  "fieldSpan": {
-                    "start": 4285,
-                    "end": 4291
-                  },
-                  "span": {
-                    "start": 4277,
-                    "end": 4291
-                  }
-                },
-                "argument": {
-                  "kind": "grouped",
-                  "value": {
-                    "kind": "lambda",
-                    "parameter": {
-                      "name": "current",
-                      "nameSpan": {
-                        "start": 4294,
-                        "end": 4301
-                      },
-                      "type": {
-                        "kind": "named",
-                        "name": "Mode",
-                        "span": {
-                          "start": 4303,
-                          "end": 4307
-                        }
-                      }
-                    },
-                    "body": {
-                      "kind": "name",
-                      "name": "Ready",
-                      "span": {
-                        "start": 4311,
-                        "end": 4316
-                      }
-                    },
-                    "span": {
-                      "start": 4293,
-                      "end": 4316
-                    }
-                  },
-                  "span": {
-                    "start": 4292,
-                    "end": 4317
-                  }
-                },
-                "span": {
-                  "start": 4277,
-                  "end": 4317
-                }
-              },
-              "argument": {
-                "kind": "name",
-                "name": "mode",
-                "span": {
-                  "start": 4318,
-                  "end": 4322
-                }
-              },
+              "kind": "name",
+              "name": "Ready",
               "span": {
-                "start": 4277,
-                "end": 4322
+                "start": 4078,
+                "end": 4083
               }
             },
             "span": {
-              "start": 4268,
-              "end": 4322
+              "start": 4069,
+              "end": 4083
             }
           }
         ],
         "span": {
-          "start": 4116,
-          "end": 4326
+          "start": 3997,
+          "end": 4087
         }
       },
       "span": {
-        "start": 4029,
-        "end": 4326
+        "start": 3948,
+        "end": 4087
       }
     },
     {
@@ -3749,499 +3479,130 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 4342,
-        "end": 4346
+        "start": 4103,
+        "end": 4107
       },
-      "returnType": {
-        "kind": "named",
-        "name": "Unit",
-        "span": {
-          "start": 4350,
-          "end": 4354
-        }
-      },
-      "requirements": [
-        {
-          "kind": "field",
-          "name": "dom",
-          "nameSpan": {
-            "start": 4360,
-            "end": 4363
-          },
-          "type": {
-            "kind": "named",
-            "name": "dom.Dom",
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "dom",
             "span": {
-              "start": 4365,
-              "end": 4372
+              "start": 4112,
+              "end": 4115
             }
           },
+          "field": "app",
+          "fieldSpan": {
+            "start": 4116,
+            "end": 4119
+          },
           "span": {
-            "start": 4360,
-            "end": 4372
+            "start": 4112,
+            "end": 4119
           }
-        }
-      ],
-      "failure": {
-        "kind": "named",
-        "name": "String",
-        "span": {
-          "start": 4379,
-          "end": 4385
-        }
-      },
-      "body": {
-        "kind": "do",
-        "items": [
-          {
-            "kind": "bind",
-            "pattern": {
-              "kind": "name",
-              "name": "mode",
+        },
+        "argument": {
+          "kind": "record",
+          "items": [
+            {
+              "kind": "field",
+              "name": "target",
               "nameSpan": {
-                "start": 4399,
-                "end": 4403
+                "start": 4126,
+                "end": 4132
               },
-              "span": {
-                "start": 4399,
-                "end": 4403
-              }
-            },
-            "value": {
-              "kind": "application",
-              "function": {
-                "kind": "member",
-                "receiver": {
-                  "kind": "name",
-                  "name": "signals",
-                  "span": {
-                    "start": 4407,
-                    "end": 4414
-                  }
-                },
-                "field": "make",
-                "fieldSpan": {
-                  "start": 4415,
-                  "end": 4419
-                },
+              "value": {
+                "kind": "string",
+                "raw": "\"#app\"",
                 "span": {
-                  "start": 4407,
-                  "end": 4419
+                  "start": 4134,
+                  "end": 4140
                 }
               },
-              "argument": {
+              "span": {
+                "start": 4126,
+                "end": 4140
+              }
+            },
+            {
+              "kind": "field",
+              "name": "initial",
+              "nameSpan": {
+                "start": 4146,
+                "end": 4153
+              },
+              "value": {
                 "kind": "name",
                 "name": "initialMode",
                 "span": {
-                  "start": 4420,
-                  "end": 4431
+                  "start": 4155,
+                  "end": 4166
                 }
               },
               "span": {
-                "start": 4407,
-                "end": 4431
+                "start": 4146,
+                "end": 4166
               }
             },
-            "span": {
-              "start": 4399,
-              "end": 4431
-            }
-          },
-          {
-            "kind": "let",
-            "pattern": {
-              "kind": "name",
-              "name": "content",
+            {
+              "kind": "field",
+              "name": "update",
               "nameSpan": {
-                "start": 4440,
-                "end": 4447
+                "start": 4172,
+                "end": 4178
               },
-              "span": {
-                "start": 4440,
-                "end": 4447
-              }
-            },
-            "value": {
-              "kind": "application",
-              "function": {
-                "kind": "application",
-                "function": {
-                  "kind": "member",
-                  "receiver": {
-                    "kind": "name",
-                    "name": "signals",
-                    "span": {
-                      "start": 4450,
-                      "end": 4457
-                    }
-                  },
-                  "field": "map",
-                  "fieldSpan": {
-                    "start": 4458,
-                    "end": 4461
-                  },
-                  "span": {
-                    "start": 4450,
-                    "end": 4461
-                  }
-                },
-                "argument": {
-                  "kind": "name",
-                  "name": "view",
-                  "span": {
-                    "start": 4462,
-                    "end": 4466
-                  }
-                },
-                "span": {
-                  "start": 4450,
-                  "end": 4466
-                }
-              },
-              "argument": {
-                "kind": "name",
-                "name": "mode",
-                "span": {
-                  "start": 4467,
-                  "end": 4471
-                }
-              },
-              "span": {
-                "start": 4450,
-                "end": 4471
-              }
-            },
-            "span": {
-              "start": 4436,
-              "end": 4471
-            }
-          },
-          {
-            "kind": "bind",
-            "pattern": {
-              "kind": "name",
-              "name": "target",
-              "nameSpan": {
-                "start": 4476,
-                "end": 4482
-              },
-              "span": {
-                "start": 4476,
-                "end": 4482
-              }
-            },
-            "value": {
-              "kind": "application",
-              "function": {
-                "kind": "application",
-                "function": {
-                  "kind": "name",
-                  "name": "mapError",
-                  "span": {
-                    "start": 4520,
-                    "end": 4528
-                  }
-                },
-                "argument": {
-                  "kind": "grouped",
-                  "value": {
-                    "kind": "lambda",
-                    "parameter": {
-                      "name": "error",
-                      "nameSpan": {
-                        "start": 4531,
-                        "end": 4536
-                      },
-                      "type": {
-                        "kind": "named",
-                        "name": "dom.DomError",
-                        "span": {
-                          "start": 4538,
-                          "end": 4550
-                        }
-                      }
-                    },
-                    "body": {
-                      "kind": "string",
-                      "raw": "\"DOM target unavailable\"",
-                      "span": {
-                        "start": 4554,
-                        "end": 4578
-                      }
-                    },
-                    "span": {
-                      "start": 4530,
-                      "end": 4578
-                    }
-                  },
-                  "span": {
-                    "start": 4529,
-                    "end": 4579
-                  }
-                },
-                "span": {
-                  "start": 4520,
-                  "end": 4579
-                }
-              },
-              "argument": {
-                "kind": "application",
-                "function": {
-                  "kind": "member",
-                  "receiver": {
-                    "kind": "name",
-                    "name": "dom",
-                    "span": {
-                      "start": 4492,
-                      "end": 4495
-                    }
-                  },
-                  "field": "query",
-                  "fieldSpan": {
-                    "start": 4496,
-                    "end": 4501
-                  },
-                  "span": {
-                    "start": 4492,
-                    "end": 4501
-                  }
-                },
-                "argument": {
-                  "kind": "string",
-                  "raw": "\"#app\"",
-                  "span": {
-                    "start": 4502,
-                    "end": 4508
-                  }
-                },
-                "span": {
-                  "start": 4492,
-                  "end": 4508
-                }
-              },
-              "span": {
-                "start": 4492,
-                "end": 4579
-              }
-            },
-            "span": {
-              "start": 4476,
-              "end": 4579
-            }
-          }
-        ],
-        "result": {
-          "kind": "application",
-          "function": {
-            "kind": "application",
-            "function": {
-              "kind": "name",
-              "name": "mapError",
-              "span": {
-                "start": 4654,
-                "end": 4662
-              }
-            },
-            "argument": {
-              "kind": "grouped",
               "value": {
-                "kind": "lambda",
-                "parameter": {
-                  "name": "error",
-                  "nameSpan": {
-                    "start": 4665,
-                    "end": 4670
-                  },
-                  "type": {
-                    "kind": "named",
-                    "name": "dom.DomRuntimeError",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Never",
-                        "span": {
-                          "start": 4692,
-                          "end": 4697
-                        }
-                      }
-                    ],
-                    "span": {
-                      "start": 4672,
-                      "end": 4698
-                    }
-                  }
-                },
-                "body": {
-                  "kind": "string",
-                  "raw": "\"DOM runtime failed\"",
-                  "span": {
-                    "start": 4702,
-                    "end": 4722
-                  }
-                },
+                "kind": "name",
+                "name": "update",
                 "span": {
-                  "start": 4664,
-                  "end": 4722
+                  "start": 4172,
+                  "end": 4178
                 }
               },
               "span": {
-                "start": 4663,
-                "end": 4723
+                "start": 4172,
+                "end": 4178
               }
             },
-            "span": {
-              "start": 4654,
-              "end": 4723
+            {
+              "kind": "field",
+              "name": "view",
+              "nameSpan": {
+                "start": 4184,
+                "end": 4188
+              },
+              "value": {
+                "kind": "name",
+                "name": "view",
+                "span": {
+                  "start": 4184,
+                  "end": 4188
+                }
+              },
+              "span": {
+                "start": 4184,
+                "end": 4188
+              }
             }
-          },
-          "argument": {
-            "kind": "application",
-            "function": {
-              "kind": "application",
-              "function": {
-                "kind": "application",
-                "function": {
-                  "kind": "application",
-                  "function": {
-                    "kind": "member",
-                    "receiver": {
-                      "kind": "name",
-                      "name": "dom",
-                      "span": {
-                        "start": 4584,
-                        "end": 4587
-                      }
-                    },
-                    "field": "run",
-                    "fieldSpan": {
-                      "start": 4588,
-                      "end": 4591
-                    },
-                    "span": {
-                      "start": 4584,
-                      "end": 4591
-                    }
-                  },
-                  "argument": {
-                    "kind": "grouped",
-                    "value": {
-                      "kind": "application",
-                      "function": {
-                        "kind": "member",
-                        "receiver": {
-                          "kind": "name",
-                          "name": "dom",
-                          "span": {
-                            "start": 4593,
-                            "end": 4596
-                          }
-                        },
-                        "field": "defaultOptions",
-                        "fieldSpan": {
-                          "start": 4597,
-                          "end": 4611
-                        },
-                        "span": {
-                          "start": 4593,
-                          "end": 4611
-                        }
-                      },
-                      "argument": {
-                        "kind": "unit",
-                        "span": {
-                          "start": 4612,
-                          "end": 4614
-                        }
-                      },
-                      "span": {
-                        "start": 4593,
-                        "end": 4614
-                      }
-                    },
-                    "span": {
-                      "start": 4592,
-                      "end": 4615
-                    }
-                  },
-                  "span": {
-                    "start": 4584,
-                    "end": 4615
-                  }
-                },
-                "argument": {
-                  "kind": "name",
-                  "name": "target",
-                  "span": {
-                    "start": 4616,
-                    "end": 4622
-                  }
-                },
-                "span": {
-                  "start": 4584,
-                  "end": 4622
-                }
-              },
-              "argument": {
-                "kind": "grouped",
-                "value": {
-                  "kind": "application",
-                  "function": {
-                    "kind": "name",
-                    "name": "update",
-                    "span": {
-                      "start": 4624,
-                      "end": 4630
-                    }
-                  },
-                  "argument": {
-                    "kind": "name",
-                    "name": "mode",
-                    "span": {
-                      "start": 4631,
-                      "end": 4635
-                    }
-                  },
-                  "span": {
-                    "start": 4624,
-                    "end": 4635
-                  }
-                },
-                "span": {
-                  "start": 4623,
-                  "end": 4636
-                }
-              },
-              "span": {
-                "start": 4584,
-                "end": 4636
-              }
-            },
-            "argument": {
-              "kind": "name",
-              "name": "content",
-              "span": {
-                "start": 4637,
-                "end": 4644
-              }
-            },
-            "span": {
-              "start": 4584,
-              "end": 4644
-            }
-          },
+          ],
           "span": {
-            "start": 4584,
-            "end": 4723
+            "start": 4120,
+            "end": 4192
           }
         },
         "span": {
-          "start": 4390,
-          "end": 4727
+          "start": 4112,
+          "end": 4192
         }
       },
       "span": {
-        "start": 4328,
-        "end": 4727
+        "start": 4089,
+        "end": 4192
       }
     }
   ]

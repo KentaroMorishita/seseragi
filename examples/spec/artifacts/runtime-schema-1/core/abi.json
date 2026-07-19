@@ -925,6 +925,13 @@
       "import": { "module": "@seseragi/runtime/dom", "export": "run" }
     },
     {
+      "id": "web.dom.app",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "{ target: String, initial: State, update: Msg -> State -> State, view: State -> Html<Msg> } -> Effect<{ dom: Dom }, String, Unit>",
+      "import": { "module": "@seseragi/runtime/dom", "export": "app" }
+    },
+    {
       "id": "signal.type",
       "kind": "value-representation",
       "typescript": "type Signal<A>",

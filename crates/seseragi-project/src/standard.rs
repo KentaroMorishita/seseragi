@@ -97,6 +97,38 @@ fn web_dom_interface() -> ModuleInterface {
                 named("Unit"),
             ),
         ),
+        function_export(
+            "std/web/dom",
+            "app",
+            ["State", "Msg"],
+            Vec::new(),
+            vec![record([
+                required("target", named("String")),
+                required("initial", named("State")),
+                required(
+                    "update",
+                    function_type(vec![named("Msg"), named("State")], named("State")),
+                ),
+                required(
+                    "view",
+                    function_type(
+                        vec![named("State")],
+                        external_type(
+                            "Html",
+                            "std/web/html::Html",
+                            "std/web/html",
+                            "Html",
+                            vec![named("Msg")],
+                        ),
+                    ),
+                ),
+            ])],
+            effect(
+                record([required("dom", named("Dom"))]),
+                named("String"),
+                named("Unit"),
+            ),
+        ),
     ];
     ModuleInterface {
         schema: 1,
@@ -558,5 +590,10 @@ mod tests {
             .exports
             .iter()
             .any(|export| export.namespace == "value" && export.name == "run"));
+        assert!(dom
+            .interface()
+            .exports
+            .iter()
+            .any(|export| export.namespace == "value" && export.name == "app"));
     }
 }

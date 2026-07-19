@@ -21,59 +21,11 @@
       }
     },
     {
-      "spelling": "MutableSignal",
-      "canonical": "std/signal::MutableSignal",
-      "provider": {
-        "module": "std/signal",
-        "export": "MutableSignal"
-      }
-    },
-    {
-      "spelling": "Signal",
-      "canonical": "std/signal::Signal",
-      "provider": {
-        "module": "std/signal",
-        "export": "Signal"
-      }
-    },
-    {
-      "spelling": "dom.Dom",
+      "spelling": "Dom",
       "canonical": "std/web/dom::Dom",
       "provider": {
         "module": "std/web/dom",
         "export": "Dom"
-      }
-    },
-    {
-      "spelling": "dom.DomError",
-      "canonical": "std/web/dom::DomError",
-      "provider": {
-        "module": "std/web/dom",
-        "export": "DomError"
-      }
-    },
-    {
-      "spelling": "DomTarget",
-      "canonical": "std/web/dom::DomTarget",
-      "provider": {
-        "module": "std/web/dom",
-        "export": "DomTarget"
-      }
-    },
-    {
-      "spelling": "DomOptions",
-      "canonical": "std/web/dom::DomOptions",
-      "provider": {
-        "module": "std/web/dom",
-        "export": "DomOptions"
-      }
-    },
-    {
-      "spelling": "dom.DomRuntimeError",
-      "canonical": "std/web/dom::DomRuntimeError",
-      "provider": {
-        "module": "std/web/dom",
-        "export": "DomRuntimeError"
       }
     }
   ],
@@ -87,60 +39,10 @@
       },
       "imports": [
         {
-          "namespace": "type",
-          "imported": "Dom",
-          "local": "dom.Dom",
-          "canonical": "std/web/dom::Dom",
-          "origin": {
-            "start": 12,
-            "end": 15
-          }
-        },
-        {
-          "namespace": "type",
-          "imported": "DomError",
-          "local": "dom.DomError",
-          "canonical": "std/web/dom::DomError",
-          "origin": {
-            "start": 12,
-            "end": 15
-          }
-        },
-        {
-          "namespace": "type",
-          "imported": "DomRuntimeError",
-          "local": "dom.DomRuntimeError",
-          "canonical": "std/web/dom::DomRuntimeError",
-          "origin": {
-            "start": 12,
-            "end": 15
-          }
-        },
-        {
           "namespace": "value",
-          "imported": "query",
-          "local": "dom.query",
-          "canonical": "std/web/dom::query",
-          "origin": {
-            "start": 12,
-            "end": 15
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "run",
-          "local": "dom.run",
-          "canonical": "std/web/dom::run",
-          "origin": {
-            "start": 12,
-            "end": 15
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "defaultOptions",
-          "local": "dom.defaultOptions",
-          "canonical": "std/web/dom::defaultOptions",
+          "imported": "app",
+          "local": "dom.app",
+          "canonical": "std/web/dom::app",
           "origin": {
             "start": 12,
             "end": 15
@@ -257,106 +159,6 @@
           }
         }
       ]
-    },
-    {
-      "specifier": "std/signal",
-      "module": "std/signal",
-      "origin": {
-        "start": 72,
-        "end": 109
-      },
-      "imports": [
-        {
-          "namespace": "type",
-          "imported": "MutableSignal",
-          "local": "MutableSignal",
-          "canonical": "std/signal::MutableSignal",
-          "origin": {
-            "start": 119,
-            "end": 132
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "update",
-          "local": "signals.update",
-          "canonical": "std/signal::update",
-          "origin": {
-            "start": 84,
-            "end": 91
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "make",
-          "local": "signals.make",
-          "canonical": "std/signal::make",
-          "origin": {
-            "start": 84,
-            "end": 91
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "map",
-          "local": "signals.map",
-          "canonical": "std/signal::map",
-          "origin": {
-            "start": 84,
-            "end": 91
-          }
-        }
-      ]
-    },
-    {
-      "specifier": "std/signal",
-      "module": "std/signal",
-      "origin": {
-        "start": 110,
-        "end": 152
-      },
-      "imports": [
-        {
-          "namespace": "type",
-          "imported": "MutableSignal",
-          "local": "MutableSignal",
-          "canonical": "std/signal::MutableSignal",
-          "origin": {
-            "start": 119,
-            "end": 132
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "update",
-          "local": "signals.update",
-          "canonical": "std/signal::update",
-          "origin": {
-            "start": 84,
-            "end": 91
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "make",
-          "local": "signals.make",
-          "canonical": "std/signal::make",
-          "origin": {
-            "start": 84,
-            "end": 91
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "map",
-          "local": "signals.map",
-          "canonical": "std/signal::map",
-          "origin": {
-            "start": 84,
-            "end": 91
-          }
-        }
-      ]
     }
   ],
   "declarations": [
@@ -381,8 +183,8 @@
             }
           },
           "origin": {
-            "start": 170,
-            "end": 175
+            "start": 89,
+            "end": 94
           }
         },
         {
@@ -398,8 +200,8 @@
             }
           },
           "origin": {
-            "start": 180,
-            "end": 188
+            "start": 99,
+            "end": 107
           }
         },
         {
@@ -415,14 +217,14 @@
             }
           },
           "origin": {
-            "start": 193,
-            "end": 200
+            "start": 112,
+            "end": 119
           }
         }
       ],
       "origin": {
-        "start": 154,
-        "end": 200
+        "start": 73,
+        "end": 119
       }
     },
     {
@@ -446,8 +248,8 @@
             }
           },
           "origin": {
-            "start": 217,
-            "end": 227
+            "start": 136,
+            "end": 146
           }
         },
         {
@@ -463,8 +265,8 @@
             }
           },
           "origin": {
-            "start": 232,
-            "end": 241
+            "start": 151,
+            "end": 160
           }
         },
         {
@@ -480,14 +282,14 @@
             }
           },
           "origin": {
-            "start": 246,
-            "end": 251
+            "start": 165,
+            "end": 170
           }
         }
       ],
       "origin": {
-        "start": 202,
-        "end": 251
+        "start": 121,
+        "end": 170
       }
     },
     {
@@ -495,8 +297,8 @@
       "symbol": "artifact/web-dom-counter::initialMode",
       "visibility": "private",
       "origin": {
-        "start": 253,
-        "end": 282
+        "start": 172,
+        "end": 201
       },
       "scheme": {
         "typeParameters": [],
@@ -516,8 +318,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 277,
-          "end": 282
+          "start": 196,
+          "end": 201
         }
       }
     },
@@ -526,8 +328,8 @@
       "symbol": "artifact/web-dom-counter::pageStyle",
       "visibility": "private",
       "origin": {
-        "start": 284,
-        "end": 444
+        "start": 203,
+        "end": 363
       },
       "scheme": {
         "typeParameters": [],
@@ -558,13 +360,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 331,
-                    "end": 395
+                    "start": 250,
+                    "end": 314
                   }
                 },
                 "origin": {
-                  "start": 319,
-                  "end": 395
+                  "start": 238,
+                  "end": 314
                 }
               },
               {
@@ -579,13 +381,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 412,
-                    "end": 419
+                    "start": 331,
+                    "end": 338
                   }
                 },
                 "origin": {
-                  "start": 401,
-                  "end": 419
+                  "start": 320,
+                  "end": 338
                 }
               },
               {
@@ -600,13 +402,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 434,
-                    "end": 440
+                    "start": 353,
+                    "end": 359
                   }
                 },
                 "origin": {
-                  "start": 425,
-                  "end": 440
+                  "start": 344,
+                  "end": 359
                 }
               }
             ],
@@ -641,8 +443,8 @@
               ]
             },
             "origin": {
-              "start": 313,
-              "end": 444
+              "start": 232,
+              "end": 363
             }
           }
         ],
@@ -696,8 +498,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 302,
-          "end": 444
+          "start": 221,
+          "end": 363
         }
       }
     },
@@ -706,8 +508,8 @@
       "symbol": "artifact/web-dom-counter::cardStyle",
       "visibility": "private",
       "origin": {
-        "start": 446,
-        "end": 686
+        "start": 365,
+        "end": 605
       },
       "scheme": {
         "typeParameters": [],
@@ -744,13 +546,13 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 506,
-                          "end": 529
+                          "start": 425,
+                          "end": 448
                         }
                       },
                       "origin": {
-                        "start": 494,
-                        "end": 529
+                        "start": 413,
+                        "end": 448
                       }
                     }
                   ],
@@ -769,13 +571,13 @@
                     ]
                   },
                   "origin": {
-                    "start": 492,
-                    "end": 531
+                    "start": 411,
+                    "end": 450
                   }
                 },
                 "origin": {
-                  "start": 481,
-                  "end": 531
+                  "start": 400,
+                  "end": 450
                 }
               },
               {
@@ -790,13 +592,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 554,
-                    "end": 563
+                    "start": 473,
+                    "end": 482
                   }
                 },
                 "origin": {
-                  "start": 537,
-                  "end": 563
+                  "start": 456,
+                  "end": 482
                 }
               },
               {
@@ -811,13 +613,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 577,
-                    "end": 598
+                    "start": 496,
+                    "end": 517
                   }
                 },
                 "origin": {
-                  "start": 569,
-                  "end": 598
+                  "start": 488,
+                  "end": 517
                 }
               },
               {
@@ -832,13 +634,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 618,
-                    "end": 624
+                    "start": 537,
+                    "end": 543
                   }
                 },
                 "origin": {
-                  "start": 604,
-                  "end": 624
+                  "start": 523,
+                  "end": 543
                 }
               },
               {
@@ -853,13 +655,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 641,
-                    "end": 661
+                    "start": 560,
+                    "end": 580
                   }
                 },
                 "origin": {
-                  "start": 630,
-                  "end": 661
+                  "start": 549,
+                  "end": 580
                 }
               },
               {
@@ -874,13 +676,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 676,
-                    "end": 682
+                    "start": 595,
+                    "end": 601
                   }
                 },
                 "origin": {
-                  "start": 667,
-                  "end": 682
+                  "start": 586,
+                  "end": 601
                 }
               }
             ],
@@ -948,8 +750,8 @@
               ]
             },
             "origin": {
-              "start": 475,
-              "end": 686
+              "start": 394,
+              "end": 605
             }
           }
         ],
@@ -1036,8 +838,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 464,
-          "end": 686
+          "start": 383,
+          "end": 605
         }
       }
     },
@@ -1046,8 +848,8 @@
       "symbol": "artifact/web-dom-counter::trackStyle",
       "visibility": "private",
       "origin": {
-        "start": 688,
-        "end": 825
+        "start": 607,
+        "end": 744
       },
       "scheme": {
         "typeParameters": [],
@@ -1078,13 +880,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 741,
-                    "end": 750
+                    "start": 660,
+                    "end": 669
                   }
                 },
                 "origin": {
-                  "start": 724,
-                  "end": 750
+                  "start": 643,
+                  "end": 669
                 }
               },
               {
@@ -1099,13 +901,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 770,
-                    "end": 777
+                    "start": 689,
+                    "end": 696
                   }
                 },
                 "origin": {
-                  "start": 756,
-                  "end": 777
+                  "start": 675,
+                  "end": 696
                 }
               },
               {
@@ -1120,13 +922,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 791,
-                    "end": 797
+                    "start": 710,
+                    "end": 716
                   }
                 },
                 "origin": {
-                  "start": 783,
-                  "end": 797
+                  "start": 702,
+                  "end": 716
                 }
               },
               {
@@ -1141,13 +943,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 813,
-                    "end": 821
+                    "start": 732,
+                    "end": 740
                   }
                 },
                 "origin": {
-                  "start": 803,
-                  "end": 821
+                  "start": 722,
+                  "end": 740
                 }
               }
             ],
@@ -1190,8 +992,8 @@
               ]
             },
             "origin": {
-              "start": 718,
-              "end": 825
+              "start": 637,
+              "end": 744
             }
           }
         ],
@@ -1253,8 +1055,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 707,
-          "end": 825
+          "start": 626,
+          "end": 744
         }
       }
     },
@@ -1263,8 +1065,8 @@
       "symbol": "artifact/web-dom-counter::label",
       "visibility": "private",
       "origin": {
-        "start": 827,
-        "end": 945
+        "start": 746,
+        "end": 864
       },
       "scheme": {
         "typeParameters": [],
@@ -1285,8 +1087,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 836,
-            "end": 840
+            "start": 755,
+            "end": 759
           }
         }
       ],
@@ -1301,8 +1103,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 867,
-            "end": 871
+            "start": 786,
+            "end": 790
           }
         },
         "arms": [
@@ -1316,8 +1118,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 878,
-                "end": 883
+                "start": 797,
+                "end": 802
               }
             },
             "body": {
@@ -1329,13 +1131,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 887,
-                "end": 894
+                "start": 806,
+                "end": 813
               }
             },
             "origin": {
-              "start": 878,
-              "end": 894
+              "start": 797,
+              "end": 813
             }
           },
           {
@@ -1348,8 +1150,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 899,
-                "end": 907
+                "start": 818,
+                "end": 826
               }
             },
             "body": {
@@ -1361,13 +1163,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 911,
-                "end": 918
+                "start": 830,
+                "end": 837
               }
             },
             "origin": {
-              "start": 899,
-              "end": 918
+              "start": 818,
+              "end": 837
             }
           },
           {
@@ -1380,8 +1182,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 923,
-                "end": 930
+                "start": 842,
+                "end": 849
               }
             },
             "body": {
@@ -1393,13 +1195,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 934,
-                "end": 941
+                "start": 853,
+                "end": 860
               }
             },
             "origin": {
-              "start": 923,
-              "end": 941
+              "start": 842,
+              "end": 860
             }
           }
         ],
@@ -1410,8 +1212,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 861,
-          "end": 945
+          "start": 780,
+          "end": 864
         }
       }
     },
@@ -1420,8 +1222,8 @@
       "symbol": "artifact/web-dom-counter::title",
       "visibility": "private",
       "origin": {
-        "start": 947,
-        "end": 1107
+        "start": 866,
+        "end": 1026
       },
       "scheme": {
         "typeParameters": [],
@@ -1442,8 +1244,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 956,
-            "end": 960
+            "start": 875,
+            "end": 879
           }
         }
       ],
@@ -1458,8 +1260,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 987,
-            "end": 991
+            "start": 906,
+            "end": 910
           }
         },
         "arms": [
@@ -1473,8 +1275,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 998,
-                "end": 1003
+                "start": 917,
+                "end": 922
               }
             },
             "body": {
@@ -1486,13 +1288,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1007,
-                "end": 1027
+                "start": 926,
+                "end": 946
               }
             },
             "origin": {
-              "start": 998,
-              "end": 1027
+              "start": 917,
+              "end": 946
             }
           },
           {
@@ -1505,8 +1307,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1032,
-                "end": 1040
+                "start": 951,
+                "end": 959
               }
             },
             "body": {
@@ -1518,13 +1320,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1044,
-                "end": 1067
+                "start": 963,
+                "end": 986
               }
             },
             "origin": {
-              "start": 1032,
-              "end": 1067
+              "start": 951,
+              "end": 986
             }
           },
           {
@@ -1537,8 +1339,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1072,
-                "end": 1079
+                "start": 991,
+                "end": 998
               }
             },
             "body": {
@@ -1550,13 +1352,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1083,
-                "end": 1103
+                "start": 1002,
+                "end": 1022
               }
             },
             "origin": {
-              "start": 1072,
-              "end": 1103
+              "start": 991,
+              "end": 1022
             }
           }
         ],
@@ -1567,8 +1369,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 981,
-          "end": 1107
+          "start": 900,
+          "end": 1026
         }
       }
     },
@@ -1577,8 +1379,8 @@
       "symbol": "artifact/web-dom-counter::guidance",
       "visibility": "private",
       "origin": {
-        "start": 1109,
-        "end": 1362
+        "start": 1028,
+        "end": 1281
       },
       "scheme": {
         "typeParameters": [],
@@ -1599,8 +1401,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 1121,
-            "end": 1125
+            "start": 1040,
+            "end": 1044
           }
         }
       ],
@@ -1615,8 +1417,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 1152,
-            "end": 1156
+            "start": 1071,
+            "end": 1075
           }
         },
         "arms": [
@@ -1630,8 +1432,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1163,
-                "end": 1168
+                "start": 1082,
+                "end": 1087
               }
             },
             "body": {
@@ -1643,13 +1445,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1172,
-                "end": 1228
+                "start": 1091,
+                "end": 1147
               }
             },
             "origin": {
-              "start": 1163,
-              "end": 1228
+              "start": 1082,
+              "end": 1147
             }
           },
           {
@@ -1662,8 +1464,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1233,
-                "end": 1241
+                "start": 1152,
+                "end": 1160
               }
             },
             "body": {
@@ -1675,13 +1477,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1245,
-                "end": 1291
+                "start": 1164,
+                "end": 1210
               }
             },
             "origin": {
-              "start": 1233,
-              "end": 1291
+              "start": 1152,
+              "end": 1210
             }
           },
           {
@@ -1694,8 +1496,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1296,
-                "end": 1303
+                "start": 1215,
+                "end": 1222
               }
             },
             "body": {
@@ -1707,13 +1509,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1307,
-                "end": 1358
+                "start": 1226,
+                "end": 1277
               }
             },
             "origin": {
-              "start": 1296,
-              "end": 1358
+              "start": 1215,
+              "end": 1277
             }
           }
         ],
@@ -1724,8 +1526,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 1146,
-          "end": 1362
+          "start": 1065,
+          "end": 1281
         }
       }
     },
@@ -1734,8 +1536,8 @@
       "symbol": "artifact/web-dom-counter::accent",
       "visibility": "private",
       "origin": {
-        "start": 1364,
-        "end": 1489
+        "start": 1283,
+        "end": 1408
       },
       "scheme": {
         "typeParameters": [],
@@ -1756,8 +1558,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 1374,
-            "end": 1378
+            "start": 1293,
+            "end": 1297
           }
         }
       ],
@@ -1772,8 +1574,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 1405,
-            "end": 1409
+            "start": 1324,
+            "end": 1328
           }
         },
         "arms": [
@@ -1787,8 +1589,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1416,
-                "end": 1421
+                "start": 1335,
+                "end": 1340
               }
             },
             "body": {
@@ -1800,13 +1602,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1425,
-                "end": 1434
+                "start": 1344,
+                "end": 1353
               }
             },
             "origin": {
-              "start": 1416,
-              "end": 1434
+              "start": 1335,
+              "end": 1353
             }
           },
           {
@@ -1819,8 +1621,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1439,
-                "end": 1447
+                "start": 1358,
+                "end": 1366
               }
             },
             "body": {
@@ -1832,13 +1634,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1451,
-                "end": 1460
+                "start": 1370,
+                "end": 1379
               }
             },
             "origin": {
-              "start": 1439,
-              "end": 1460
+              "start": 1358,
+              "end": 1379
             }
           },
           {
@@ -1851,8 +1653,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1465,
-                "end": 1472
+                "start": 1384,
+                "end": 1391
               }
             },
             "body": {
@@ -1864,13 +1666,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1476,
-                "end": 1485
+                "start": 1395,
+                "end": 1404
               }
             },
             "origin": {
-              "start": 1465,
-              "end": 1485
+              "start": 1384,
+              "end": 1404
             }
           }
         ],
@@ -1881,8 +1683,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 1399,
-          "end": 1489
+          "start": 1318,
+          "end": 1408
         }
       }
     },
@@ -1891,8 +1693,8 @@
       "symbol": "artifact/web-dom-counter::progress",
       "visibility": "private",
       "origin": {
-        "start": 1491,
-        "end": 1606
+        "start": 1410,
+        "end": 1525
       },
       "scheme": {
         "typeParameters": [],
@@ -1913,8 +1715,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 1503,
-            "end": 1507
+            "start": 1422,
+            "end": 1426
           }
         }
       ],
@@ -1929,8 +1731,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 1534,
-            "end": 1538
+            "start": 1453,
+            "end": 1457
           }
         },
         "arms": [
@@ -1944,8 +1746,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1545,
-                "end": 1550
+                "start": 1464,
+                "end": 1469
               }
             },
             "body": {
@@ -1957,13 +1759,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1554,
-                "end": 1559
+                "start": 1473,
+                "end": 1478
               }
             },
             "origin": {
-              "start": 1545,
-              "end": 1559
+              "start": 1464,
+              "end": 1478
             }
           },
           {
@@ -1976,8 +1778,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1564,
-                "end": 1572
+                "start": 1483,
+                "end": 1491
               }
             },
             "body": {
@@ -1989,13 +1791,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1576,
-                "end": 1581
+                "start": 1495,
+                "end": 1500
               }
             },
             "origin": {
-              "start": 1564,
-              "end": 1581
+              "start": 1483,
+              "end": 1500
             }
           },
           {
@@ -2008,8 +1810,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1586,
-                "end": 1593
+                "start": 1505,
+                "end": 1512
               }
             },
             "body": {
@@ -2021,13 +1823,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1597,
-                "end": 1602
+                "start": 1516,
+                "end": 1521
               }
             },
             "origin": {
-              "start": 1586,
-              "end": 1602
+              "start": 1505,
+              "end": 1521
             }
           }
         ],
@@ -2038,8 +1840,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 1528,
-          "end": 1606
+          "start": 1447,
+          "end": 1525
         }
       }
     },
@@ -2048,8 +1850,8 @@
       "symbol": "artifact/web-dom-counter::progressStyle",
       "visibility": "private",
       "origin": {
-        "start": 1608,
-        "end": 1810
+        "start": 1527,
+        "end": 1729
       },
       "scheme": {
         "typeParameters": [],
@@ -2070,8 +1872,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 1625,
-            "end": 1629
+            "start": 1544,
+            "end": 1548
           }
         }
       ],
@@ -2098,8 +1900,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 1695,
-                        "end": 1699
+                        "start": 1614,
+                        "end": 1618
                       }
                     }
                   ],
@@ -2109,13 +1911,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1688,
-                    "end": 1699
+                    "start": 1607,
+                    "end": 1618
                   }
                 },
                 "origin": {
-                  "start": 1671,
-                  "end": 1699
+                  "start": 1590,
+                  "end": 1618
                 }
               },
               {
@@ -2130,13 +1932,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1719,
-                    "end": 1726
+                    "start": 1638,
+                    "end": 1645
                   }
                 },
                 "origin": {
-                  "start": 1705,
-                  "end": 1726
+                  "start": 1624,
+                  "end": 1645
                 }
               },
               {
@@ -2151,13 +1953,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1740,
-                    "end": 1746
+                    "start": 1659,
+                    "end": 1665
                   }
                 },
                 "origin": {
-                  "start": 1732,
-                  "end": 1746
+                  "start": 1651,
+                  "end": 1665
                 }
               },
               {
@@ -2172,13 +1974,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1764,
-                    "end": 1780
+                    "start": 1683,
+                    "end": 1699
                   }
                 },
                 "origin": {
-                  "start": 1752,
-                  "end": 1780
+                  "start": 1671,
+                  "end": 1699
                 }
               },
               {
@@ -2197,8 +1999,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 1802,
-                        "end": 1806
+                        "start": 1721,
+                        "end": 1725
                       }
                     }
                   ],
@@ -2208,13 +2010,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1793,
-                    "end": 1806
+                    "start": 1712,
+                    "end": 1725
                   }
                 },
                 "origin": {
-                  "start": 1786,
-                  "end": 1806
+                  "start": 1705,
+                  "end": 1725
                 }
               }
             ],
@@ -2265,8 +2067,8 @@
               ]
             },
             "origin": {
-              "start": 1665,
-              "end": 1810
+              "start": 1584,
+              "end": 1729
             }
           }
         ],
@@ -2336,8 +2138,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 1654,
-          "end": 1810
+          "start": 1573,
+          "end": 1729
         }
       }
     },
@@ -2346,8 +2148,8 @@
       "symbol": "artifact/web-dom-counter::badgeStyle",
       "visibility": "private",
       "origin": {
-        "start": 1812,
-        "end": 2052
+        "start": 1731,
+        "end": 1971
       },
       "scheme": {
         "typeParameters": [],
@@ -2368,8 +2170,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 1826,
-            "end": 1830
+            "start": 1745,
+            "end": 1749
           }
         }
       ],
@@ -2396,8 +2198,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 1896,
-                        "end": 1900
+                        "start": 1815,
+                        "end": 1819
                       }
                     }
                   ],
@@ -2407,13 +2209,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1889,
-                    "end": 1900
+                    "start": 1808,
+                    "end": 1819
                   }
                 },
                 "origin": {
-                  "start": 1872,
-                  "end": 1900
+                  "start": 1791,
+                  "end": 1819
                 }
               },
               {
@@ -2428,13 +2230,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1920,
-                    "end": 1927
+                    "start": 1839,
+                    "end": 1846
                   }
                 },
                 "origin": {
-                  "start": 1906,
-                  "end": 1927
+                  "start": 1825,
+                  "end": 1846
                 }
               },
               {
@@ -2449,13 +2251,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1940,
-                    "end": 1949
+                    "start": 1859,
+                    "end": 1868
                   }
                 },
                 "origin": {
-                  "start": 1933,
-                  "end": 1949
+                  "start": 1852,
+                  "end": 1868
                 }
               },
               {
@@ -2470,13 +2272,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1965,
-                    "end": 1971
+                    "start": 1884,
+                    "end": 1890
                   }
                 },
                 "origin": {
-                  "start": 1955,
-                  "end": 1971
+                  "start": 1874,
+                  "end": 1890
                 }
               },
               {
@@ -2491,13 +2293,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1989,
-                    "end": 1994
+                    "start": 1908,
+                    "end": 1913
                   }
                 },
                 "origin": {
-                  "start": 1977,
-                  "end": 1994
+                  "start": 1896,
+                  "end": 1913
                 }
               },
               {
@@ -2512,13 +2314,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 2015,
-                    "end": 2023
+                    "start": 1934,
+                    "end": 1942
                   }
                 },
                 "origin": {
-                  "start": 2000,
-                  "end": 2023
+                  "start": 1919,
+                  "end": 1942
                 }
               },
               {
@@ -2533,13 +2335,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 2038,
-                    "end": 2048
+                    "start": 1957,
+                    "end": 1967
                   }
                 },
                 "origin": {
-                  "start": 2029,
-                  "end": 2048
+                  "start": 1948,
+                  "end": 1967
                 }
               }
             ],
@@ -2606,8 +2408,8 @@
               ]
             },
             "origin": {
-              "start": 1866,
-              "end": 2052
+              "start": 1785,
+              "end": 1971
             }
           }
         ],
@@ -2693,8 +2495,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 1855,
-          "end": 2052
+          "start": 1774,
+          "end": 1971
         }
       }
     },
@@ -2703,8 +2505,8 @@
       "symbol": "artifact/web-dom-counter::actionStyle",
       "visibility": "private",
       "origin": {
-        "start": 2054,
-        "end": 2365
+        "start": 1973,
+        "end": 2284
       },
       "scheme": {
         "typeParameters": [],
@@ -2725,8 +2527,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 2069,
-            "end": 2076
+            "start": 1988,
+            "end": 1995
           }
         }
       ],
@@ -2741,8 +2543,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 2106,
-            "end": 2113
+            "start": 2025,
+            "end": 2032
           }
         },
         "arms": [
@@ -2756,8 +2558,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 2120,
-                "end": 2130
+                "start": 2039,
+                "end": 2049
               }
             },
             "body": {
@@ -2779,13 +2581,13 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 2170,
-                          "end": 2179
+                          "start": 2089,
+                          "end": 2098
                         }
                       },
                       "origin": {
-                        "start": 2153,
-                        "end": 2179
+                        "start": 2072,
+                        "end": 2098
                       }
                     },
                     {
@@ -2800,13 +2602,13 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 2188,
-                          "end": 2197
+                          "start": 2107,
+                          "end": 2116
                         }
                       },
                       "origin": {
-                        "start": 2181,
-                        "end": 2197
+                        "start": 2100,
+                        "end": 2116
                       }
                     }
                   ],
@@ -2833,8 +2635,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 2151,
-                    "end": 2199
+                    "start": 2070,
+                    "end": 2118
                   }
                 }
               ],
@@ -2880,13 +2682,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 2140,
-                "end": 2199
+                "start": 2059,
+                "end": 2118
               }
             },
             "origin": {
-              "start": 2120,
-              "end": 2199
+              "start": 2039,
+              "end": 2118
             }
           },
           {
@@ -2899,8 +2701,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 2204,
-                "end": 2213
+                "start": 2123,
+                "end": 2132
               }
             },
             "body": {
@@ -2922,13 +2724,13 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 2253,
-                          "end": 2262
+                          "start": 2172,
+                          "end": 2181
                         }
                       },
                       "origin": {
-                        "start": 2236,
-                        "end": 2262
+                        "start": 2155,
+                        "end": 2181
                       }
                     },
                     {
@@ -2943,13 +2745,13 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 2271,
-                          "end": 2280
+                          "start": 2190,
+                          "end": 2199
                         }
                       },
                       "origin": {
-                        "start": 2264,
-                        "end": 2280
+                        "start": 2183,
+                        "end": 2199
                       }
                     }
                   ],
@@ -2976,8 +2778,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 2234,
-                    "end": 2282
+                    "start": 2153,
+                    "end": 2201
                   }
                 }
               ],
@@ -3023,13 +2825,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 2223,
-                "end": 2282
+                "start": 2142,
+                "end": 2201
               }
             },
             "origin": {
-              "start": 2204,
-              "end": 2282
+              "start": 2123,
+              "end": 2201
             }
           },
           {
@@ -3042,8 +2844,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 2287,
-                "end": 2292
+                "start": 2206,
+                "end": 2211
               }
             },
             "body": {
@@ -3065,13 +2867,13 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 2332,
-                          "end": 2341
+                          "start": 2251,
+                          "end": 2260
                         }
                       },
                       "origin": {
-                        "start": 2315,
-                        "end": 2341
+                        "start": 2234,
+                        "end": 2260
                       }
                     },
                     {
@@ -3086,13 +2888,13 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 2350,
-                          "end": 2359
+                          "start": 2269,
+                          "end": 2278
                         }
                       },
                       "origin": {
-                        "start": 2343,
-                        "end": 2359
+                        "start": 2262,
+                        "end": 2278
                       }
                     }
                   ],
@@ -3119,8 +2921,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 2313,
-                    "end": 2361
+                    "start": 2232,
+                    "end": 2280
                   }
                 }
               ],
@@ -3166,13 +2968,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 2302,
-                "end": 2361
+                "start": 2221,
+                "end": 2280
               }
             },
             "origin": {
-              "start": 2287,
-              "end": 2361
+              "start": 2206,
+              "end": 2280
             }
           }
         ],
@@ -3184,8 +2986,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 2100,
-          "end": 2365
+          "start": 2019,
+          "end": 2284
         }
       }
     },
@@ -3194,8 +2996,8 @@
       "symbol": "artifact/web-dom-counter::action",
       "visibility": "private",
       "origin": {
-        "start": 2367,
-        "end": 2642
+        "start": 2286,
+        "end": 2561
       },
       "scheme": {
         "typeParameters": [],
@@ -3222,8 +3024,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 2377,
-            "end": 2379
+            "start": 2296,
+            "end": 2298
           }
         },
         {
@@ -3235,8 +3037,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 2393,
-            "end": 2397
+            "start": 2312,
+            "end": 2316
           }
         },
         {
@@ -3248,8 +3050,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 2411,
-            "end": 2418
+            "start": 2330,
+            "end": 2337
           }
         }
       ],
@@ -3272,13 +3074,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 2466,
-                    "end": 2468
+                    "start": 2385,
+                    "end": 2387
                   }
                 },
                 "origin": {
-                  "start": 2466,
-                  "end": 2468
+                  "start": 2385,
+                  "end": 2387
                 }
               },
               {
@@ -3293,13 +3095,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 2483,
-                    "end": 2490
+                    "start": 2402,
+                    "end": 2409
                   }
                 },
                 "origin": {
-                  "start": 2474,
-                  "end": 2490
+                  "start": 2393,
+                  "end": 2409
                 }
               },
               {
@@ -3314,13 +3116,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 2507,
-                    "end": 2586
+                    "start": 2426,
+                    "end": 2505
                   }
                 },
                 "origin": {
-                  "start": 2496,
-                  "end": 2586
+                  "start": 2415,
+                  "end": 2505
                 }
               },
               {
@@ -3339,8 +3141,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 2611,
-                        "end": 2618
+                        "start": 2530,
+                        "end": 2537
                       }
                     }
                   ],
@@ -3351,13 +3153,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 2599,
-                    "end": 2618
+                    "start": 2518,
+                    "end": 2537
                   }
                 },
                 "origin": {
-                  "start": 2592,
-                  "end": 2618
+                  "start": 2511,
+                  "end": 2537
                 }
               },
               {
@@ -3372,13 +3174,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 2634,
-                    "end": 2638
+                    "start": 2553,
+                    "end": 2557
                   }
                 },
                 "origin": {
-                  "start": 2624,
-                  "end": 2638
+                  "start": 2543,
+                  "end": 2557
                 }
               }
             ],
@@ -3430,8 +3232,8 @@
               ]
             },
             "origin": {
-              "start": 2460,
-              "end": 2642
+              "start": 2379,
+              "end": 2561
             }
           }
         ],
@@ -3471,8 +3273,8 @@
           ]
         },
         "origin": {
-          "start": 2448,
-          "end": 2642
+          "start": 2367,
+          "end": 2561
         }
       }
     },
@@ -3481,8 +3283,8 @@
       "symbol": "artifact/web-dom-counter::view",
       "visibility": "private",
       "origin": {
-        "start": 2644,
-        "end": 4027
+        "start": 2563,
+        "end": 3946
       },
       "scheme": {
         "typeParameters": [],
@@ -3509,8 +3311,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 2652,
-            "end": 2656
+            "start": 2571,
+            "end": 2575
           }
         }
       ],
@@ -3531,13 +3333,13 @@
                     "kind": "hole"
                   },
                   "origin": {
-                    "start": 2708,
-                    "end": 2717
+                    "start": 2627,
+                    "end": 2636
                   }
                 },
                 "origin": {
-                  "start": 2701,
-                  "end": 2717
+                  "start": 2620,
+                  "end": 2636
                 }
               },
               {
@@ -3565,13 +3367,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 2775,
-                                  "end": 2793
+                                  "start": 2694,
+                                  "end": 2712
                                 }
                               },
                               "origin": {
-                                "start": 2764,
-                                "end": 2793
+                                "start": 2683,
+                                "end": 2712
                               }
                             },
                             {
@@ -3584,13 +3386,13 @@
                                   "kind": "hole"
                                 },
                                 "origin": {
-                                  "start": 2810,
-                                  "end": 2819
+                                  "start": 2729,
+                                  "end": 2738
                                 }
                               },
                               "origin": {
-                                "start": 2803,
-                                "end": 2819
+                                "start": 2722,
+                                "end": 2738
                               }
                             },
                             {
@@ -3618,13 +3420,13 @@
                                                 "arguments": []
                                               },
                                               "origin": {
-                                                "start": 2885,
-                                                "end": 2925
+                                                "start": 2804,
+                                                "end": 2844
                                               }
                                             },
                                             "origin": {
-                                              "start": 2874,
-                                              "end": 2925
+                                              "start": 2793,
+                                              "end": 2844
                                             }
                                           },
                                           {
@@ -3656,8 +3458,8 @@
                                                                   "arguments": []
                                                                 },
                                                                 "origin": {
-                                                                  "start": 3011,
-                                                                  "end": 3015
+                                                                  "start": 2930,
+                                                                  "end": 2934
                                                                 }
                                                               }
                                                             ],
@@ -3668,13 +3470,13 @@
                                                               "arguments": []
                                                             },
                                                             "origin": {
-                                                              "start": 3000,
-                                                              "end": 3015
+                                                              "start": 2919,
+                                                              "end": 2934
                                                             }
                                                           },
                                                           "origin": {
-                                                            "start": 2993,
-                                                            "end": 3015
+                                                            "start": 2912,
+                                                            "end": 2934
                                                           }
                                                         },
                                                         {
@@ -3693,8 +3495,8 @@
                                                                   "arguments": []
                                                                 },
                                                                 "origin": {
-                                                                  "start": 3049,
-                                                                  "end": 3053
+                                                                  "start": 2968,
+                                                                  "end": 2972
                                                                 }
                                                               }
                                                             ],
@@ -3704,13 +3506,13 @@
                                                               "arguments": []
                                                             },
                                                             "origin": {
-                                                              "start": 3043,
-                                                              "end": 3053
+                                                              "start": 2962,
+                                                              "end": 2972
                                                             }
                                                           },
                                                           "origin": {
-                                                            "start": 3033,
-                                                            "end": 3053
+                                                            "start": 2952,
+                                                            "end": 2972
                                                           }
                                                         }
                                                       ],
@@ -3738,8 +3540,8 @@
                                                         ]
                                                       },
                                                       "origin": {
-                                                        "start": 2975,
-                                                        "end": 3069
+                                                        "start": 2894,
+                                                        "end": 2988
                                                       }
                                                     }
                                                   ],
@@ -3779,8 +3581,8 @@
                                                     ]
                                                   },
                                                   "origin": {
-                                                    "start": 2965,
-                                                    "end": 3069
+                                                    "start": 2884,
+                                                    "end": 2988
                                                   }
                                                 },
                                                 {
@@ -3802,13 +3604,13 @@
                                                               "arguments": []
                                                             },
                                                             "origin": {
-                                                              "start": 3124,
-                                                              "end": 3162
+                                                              "start": 3043,
+                                                              "end": 3081
                                                             }
                                                           },
                                                           "origin": {
-                                                            "start": 3113,
-                                                            "end": 3162
+                                                            "start": 3032,
+                                                            "end": 3081
                                                           }
                                                         },
                                                         {
@@ -3823,13 +3625,13 @@
                                                               "arguments": []
                                                             },
                                                             "origin": {
-                                                              "start": 3190,
-                                                              "end": 3205
+                                                              "start": 3109,
+                                                              "end": 3124
                                                             }
                                                           },
                                                           "origin": {
-                                                            "start": 3180,
-                                                            "end": 3205
+                                                            "start": 3099,
+                                                            "end": 3124
                                                           }
                                                         }
                                                       ],
@@ -3856,8 +3658,8 @@
                                                         ]
                                                       },
                                                       "origin": {
-                                                        "start": 3095,
-                                                        "end": 3221
+                                                        "start": 3014,
+                                                        "end": 3140
                                                       }
                                                     }
                                                   ],
@@ -3897,8 +3699,8 @@
                                                     ]
                                                   },
                                                   "origin": {
-                                                    "start": 3085,
-                                                    "end": 3221
+                                                    "start": 3004,
+                                                    "end": 3140
                                                   }
                                                 }
                                               ],
@@ -3921,13 +3723,13 @@
                                                 ]
                                               },
                                               "origin": {
-                                                "start": 2949,
-                                                "end": 3235
+                                                "start": 2868,
+                                                "end": 3154
                                               }
                                             },
                                             "origin": {
-                                              "start": 2939,
-                                              "end": 3235
+                                              "start": 2858,
+                                              "end": 3154
                                             }
                                           }
                                         ],
@@ -3967,8 +3769,8 @@
                                           ]
                                         },
                                         "origin": {
-                                          "start": 2860,
-                                          "end": 3247
+                                          "start": 2779,
+                                          "end": 3166
                                         }
                                       }
                                     ],
@@ -4021,8 +3823,8 @@
                                       ]
                                     },
                                     "origin": {
-                                      "start": 2851,
-                                      "end": 3247
+                                      "start": 2770,
+                                      "end": 3166
                                     }
                                   },
                                   {
@@ -4044,13 +3846,13 @@
                                                 "arguments": []
                                               },
                                               "origin": {
-                                                "start": 3292,
-                                                "end": 3343
+                                                "start": 3211,
+                                                "end": 3262
                                               }
                                             },
                                             "origin": {
-                                              "start": 3281,
-                                              "end": 3343
+                                              "start": 3200,
+                                              "end": 3262
                                             }
                                           },
                                           {
@@ -4069,8 +3871,8 @@
                                                     "arguments": []
                                                   },
                                                   "origin": {
-                                                    "start": 3373,
-                                                    "end": 3377
+                                                    "start": 3292,
+                                                    "end": 3296
                                                   }
                                                 }
                                               ],
@@ -4080,13 +3882,13 @@
                                                 "arguments": []
                                               },
                                               "origin": {
-                                                "start": 3367,
-                                                "end": 3377
+                                                "start": 3286,
+                                                "end": 3296
                                               }
                                             },
                                             "origin": {
-                                              "start": 3357,
-                                              "end": 3377
+                                              "start": 3276,
+                                              "end": 3296
                                             }
                                           }
                                         ],
@@ -4113,8 +3915,8 @@
                                           ]
                                         },
                                         "origin": {
-                                          "start": 3267,
-                                          "end": 3389
+                                          "start": 3186,
+                                          "end": 3308
                                         }
                                       }
                                     ],
@@ -4154,8 +3956,8 @@
                                       ]
                                     },
                                     "origin": {
-                                      "start": 3259,
-                                      "end": 3389
+                                      "start": 3178,
+                                      "end": 3308
                                     }
                                   },
                                   {
@@ -4177,13 +3979,13 @@
                                                 "arguments": []
                                               },
                                               "origin": {
-                                                "start": 3433,
-                                                "end": 3467
+                                                "start": 3352,
+                                                "end": 3386
                                               }
                                             },
                                             "origin": {
-                                              "start": 3422,
-                                              "end": 3467
+                                              "start": 3341,
+                                              "end": 3386
                                             }
                                           },
                                           {
@@ -4202,8 +4004,8 @@
                                                     "arguments": []
                                                   },
                                                   "origin": {
-                                                    "start": 3500,
-                                                    "end": 3504
+                                                    "start": 3419,
+                                                    "end": 3423
                                                   }
                                                 }
                                               ],
@@ -4213,13 +4015,13 @@
                                                 "arguments": []
                                               },
                                               "origin": {
-                                                "start": 3491,
-                                                "end": 3504
+                                                "start": 3410,
+                                                "end": 3423
                                               }
                                             },
                                             "origin": {
-                                              "start": 3481,
-                                              "end": 3504
+                                              "start": 3400,
+                                              "end": 3423
                                             }
                                           }
                                         ],
@@ -4246,8 +4048,8 @@
                                           ]
                                         },
                                         "origin": {
-                                          "start": 3408,
-                                          "end": 3516
+                                          "start": 3327,
+                                          "end": 3435
                                         }
                                       }
                                     ],
@@ -4287,8 +4089,8 @@
                                       ]
                                     },
                                     "origin": {
-                                      "start": 3401,
-                                      "end": 3516
+                                      "start": 3320,
+                                      "end": 3435
                                     }
                                   },
                                   {
@@ -4308,13 +4110,13 @@
                                                 "kind": "hole"
                                               },
                                               "origin": {
-                                                "start": 3558,
-                                                "end": 3568
+                                                "start": 3477,
+                                                "end": 3487
                                               }
                                             },
                                             "origin": {
-                                              "start": 3551,
-                                              "end": 3568
+                                              "start": 3470,
+                                              "end": 3487
                                             }
                                           },
                                           {
@@ -4343,8 +4145,8 @@
                                                               "arguments": []
                                                             },
                                                             "origin": {
-                                                              "start": 3638,
-                                                              "end": 3642
+                                                              "start": 3557,
+                                                              "end": 3561
                                                             }
                                                           }
                                                         ],
@@ -4355,13 +4157,13 @@
                                                           "arguments": []
                                                         },
                                                         "origin": {
-                                                          "start": 3624,
-                                                          "end": 3642
+                                                          "start": 3543,
+                                                          "end": 3561
                                                         }
                                                       },
                                                       "origin": {
-                                                        "start": 3617,
-                                                        "end": 3642
+                                                        "start": 3536,
+                                                        "end": 3561
                                                       }
                                                     },
                                                     {
@@ -4376,13 +4178,13 @@
                                                           "arguments": []
                                                         },
                                                         "origin": {
-                                                          "start": 3668,
-                                                          "end": 3670
+                                                          "start": 3587,
+                                                          "end": 3589
                                                         }
                                                       },
                                                       "origin": {
-                                                        "start": 3658,
-                                                        "end": 3670
+                                                        "start": 3577,
+                                                        "end": 3589
                                                       }
                                                     }
                                                   ],
@@ -4410,8 +4212,8 @@
                                                     ]
                                                   },
                                                   "origin": {
-                                                    "start": 3601,
-                                                    "end": 3684
+                                                    "start": 3520,
+                                                    "end": 3603
                                                   }
                                                 }
                                               ],
@@ -4451,13 +4253,13 @@
                                                 ]
                                               },
                                               "origin": {
-                                                "start": 3592,
-                                                "end": 3684
+                                                "start": 3511,
+                                                "end": 3603
                                               }
                                             },
                                             "origin": {
-                                              "start": 3582,
-                                              "end": 3684
+                                              "start": 3501,
+                                              "end": 3603
                                             }
                                           }
                                         ],
@@ -4489,8 +4291,8 @@
                                           ]
                                         },
                                         "origin": {
-                                          "start": 3537,
-                                          "end": 3696
+                                          "start": 3456,
+                                          "end": 3615
                                         }
                                       }
                                     ],
@@ -4537,8 +4339,8 @@
                                       ]
                                     },
                                     "origin": {
-                                      "start": 3528,
-                                      "end": 3696
+                                      "start": 3447,
+                                      "end": 3615
                                     }
                                   },
                                   {
@@ -4560,13 +4362,13 @@
                                                 "arguments": []
                                               },
                                               "origin": {
-                                                "start": 3742,
-                                                "end": 3786
+                                                "start": 3661,
+                                                "end": 3705
                                               }
                                             },
                                             "origin": {
-                                              "start": 3731,
-                                              "end": 3786
+                                              "start": 3650,
+                                              "end": 3705
                                             }
                                           },
                                           {
@@ -4588,8 +4390,8 @@
                                                         "arguments": []
                                                       },
                                                       "origin": {
-                                                        "start": 3833,
-                                                        "end": 3840
+                                                        "start": 3752,
+                                                        "end": 3759
                                                       }
                                                     },
                                                     {
@@ -4601,8 +4403,8 @@
                                                         "arguments": []
                                                       },
                                                       "origin": {
-                                                        "start": 3841,
-                                                        "end": 3854
+                                                        "start": 3760,
+                                                        "end": 3773
                                                       }
                                                     },
                                                     {
@@ -4614,8 +4416,8 @@
                                                         "arguments": []
                                                       },
                                                       "origin": {
-                                                        "start": 3855,
-                                                        "end": 3865
+                                                        "start": 3774,
+                                                        "end": 3784
                                                       }
                                                     }
                                                   ],
@@ -4632,8 +4434,8 @@
                                                     ]
                                                   },
                                                   "origin": {
-                                                    "start": 3826,
-                                                    "end": 3865
+                                                    "start": 3745,
+                                                    "end": 3784
                                                   }
                                                 },
                                                 {
@@ -4649,8 +4451,8 @@
                                                         "arguments": []
                                                       },
                                                       "origin": {
-                                                        "start": 3888,
-                                                        "end": 3895
+                                                        "start": 3807,
+                                                        "end": 3814
                                                       }
                                                     },
                                                     {
@@ -4662,8 +4464,8 @@
                                                         "arguments": []
                                                       },
                                                       "origin": {
-                                                        "start": 3896,
-                                                        "end": 3910
+                                                        "start": 3815,
+                                                        "end": 3829
                                                       }
                                                     },
                                                     {
@@ -4675,8 +4477,8 @@
                                                         "arguments": []
                                                       },
                                                       "origin": {
-                                                        "start": 3911,
-                                                        "end": 3920
+                                                        "start": 3830,
+                                                        "end": 3839
                                                       }
                                                     }
                                                   ],
@@ -4693,8 +4495,8 @@
                                                     ]
                                                   },
                                                   "origin": {
-                                                    "start": 3881,
-                                                    "end": 3920
+                                                    "start": 3800,
+                                                    "end": 3839
                                                   }
                                                 },
                                                 {
@@ -4710,8 +4512,8 @@
                                                         "arguments": []
                                                       },
                                                       "origin": {
-                                                        "start": 3943,
-                                                        "end": 3950
+                                                        "start": 3862,
+                                                        "end": 3869
                                                       }
                                                     },
                                                     {
@@ -4723,8 +4525,8 @@
                                                         "arguments": []
                                                       },
                                                       "origin": {
-                                                        "start": 3951,
-                                                        "end": 3967
+                                                        "start": 3870,
+                                                        "end": 3886
                                                       }
                                                     },
                                                     {
@@ -4736,8 +4538,8 @@
                                                         "arguments": []
                                                       },
                                                       "origin": {
-                                                        "start": 3968,
-                                                        "end": 3973
+                                                        "start": 3887,
+                                                        "end": 3892
                                                       }
                                                     }
                                                   ],
@@ -4754,8 +4556,8 @@
                                                     ]
                                                   },
                                                   "origin": {
-                                                    "start": 3936,
-                                                    "end": 3973
+                                                    "start": 3855,
+                                                    "end": 3892
                                                   }
                                                 }
                                               ],
@@ -4778,13 +4580,13 @@
                                                 ]
                                               },
                                               "origin": {
-                                                "start": 3810,
-                                                "end": 3987
+                                                "start": 3729,
+                                                "end": 3906
                                               }
                                             },
                                             "origin": {
-                                              "start": 3800,
-                                              "end": 3987
+                                              "start": 3719,
+                                              "end": 3906
                                             }
                                           }
                                         ],
@@ -4824,8 +4626,8 @@
                                           ]
                                         },
                                         "origin": {
-                                          "start": 3717,
-                                          "end": 3999
+                                          "start": 3636,
+                                          "end": 3918
                                         }
                                       }
                                     ],
@@ -4878,8 +4680,8 @@
                                       ]
                                     },
                                     "origin": {
-                                      "start": 3708,
-                                      "end": 3999
+                                      "start": 3627,
+                                      "end": 3918
                                     }
                                   }
                                 ],
@@ -4902,13 +4704,13 @@
                                   ]
                                 },
                                 "origin": {
-                                  "start": 2839,
-                                  "end": 4009
+                                  "start": 2758,
+                                  "end": 3928
                                 }
                               },
                               "origin": {
-                                "start": 2829,
-                                "end": 4009
+                                "start": 2748,
+                                "end": 3928
                               }
                             }
                           ],
@@ -4954,8 +4756,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 2754,
-                            "end": 4017
+                            "start": 2673,
+                            "end": 3936
                           }
                         }
                       ],
@@ -5008,8 +4810,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 2741,
-                        "end": 4017
+                        "start": 2660,
+                        "end": 3936
                       }
                     }
                   ],
@@ -5032,13 +4834,13 @@
                     ]
                   },
                   "origin": {
-                    "start": 2733,
-                    "end": 4023
+                    "start": 2652,
+                    "end": 3942
                   }
                 },
                 "origin": {
-                  "start": 2723,
-                  "end": 4023
+                  "start": 2642,
+                  "end": 3942
                 }
               }
             ],
@@ -5076,8 +4878,8 @@
               ]
             },
             "origin": {
-              "start": 2695,
-              "end": 4027
+              "start": 2614,
+              "end": 3946
             }
           }
         ],
@@ -5130,39 +4932,29 @@
           ]
         },
         "origin": {
-          "start": 2685,
-          "end": 4027
+          "start": 2604,
+          "end": 3946
         }
       }
     },
     {
-      "kind": "effect-fn",
+      "kind": "fn",
       "symbol": "artifact/web-dom-counter::update",
       "visibility": "private",
       "origin": {
-        "start": 4029,
-        "end": 4326
+        "start": 3948,
+        "end": 4087
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Mode",
+          "arguments": []
+        }
       },
       "parameters": [
-        {
-          "kind": "named",
-          "name": "mode",
-          "type": {
-            "kind": "named",
-            "name": "MutableSignal",
-            "arguments": [
-              {
-                "kind": "named",
-                "name": "Mode",
-                "arguments": []
-              }
-            ]
-          },
-          "origin": {
-            "start": 4046,
-            "end": 4050
-          }
-        },
         {
           "kind": "named",
           "name": "message",
@@ -5172,28 +4964,24 @@
             "arguments": []
           },
           "origin": {
-            "start": 4077,
-            "end": 4084
+            "start": 3958,
+            "end": 3965
+          }
+        },
+        {
+          "kind": "named",
+          "name": "mode",
+          "type": {
+            "kind": "named",
+            "name": "Mode",
+            "arguments": []
+          },
+          "origin": {
+            "start": 3974,
+            "end": 3978
           }
         }
       ],
-      "effect": {
-        "environment": {
-          "kind": "record",
-          "closed": true,
-          "fields": []
-        },
-        "failure": {
-          "kind": "named",
-          "name": "Never",
-          "arguments": []
-        },
-        "success": {
-          "kind": "named",
-          "name": "Unit",
-          "arguments": []
-        }
-      },
       "body": {
         "kind": "match",
         "scrutinee": {
@@ -5205,8 +4993,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 4122,
-            "end": 4129
+            "start": 4003,
+            "end": 4010
           }
         },
         "arms": [
@@ -5220,109 +5008,26 @@
                 "arguments": []
               },
               "origin": {
-                "start": 4136,
-                "end": 4146
+                "start": 4017,
+                "end": 4027
               }
             },
             "body": {
-              "kind": "call",
-              "callee": "std/signal::update",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": {
-                    "kind": "named",
-                    "name": "current",
-                    "type": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 4167,
-                      "end": 4174
-                    }
-                  },
-                  "body": {
-                    "kind": "variable",
-                    "name": "artifact/web-dom-counter::Focusing",
-                    "type": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 4184,
-                      "end": 4192
-                    }
-                  },
-                  "type": {
-                    "kind": "function",
-                    "parameter": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "result": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    }
-                  },
-                  "origin": {
-                    "start": 4166,
-                    "end": 4192
-                  }
-                },
-                {
-                  "kind": "variable",
-                  "name": "mode",
-                  "type": {
-                    "kind": "named",
-                    "name": "MutableSignal",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Mode",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  "origin": {
-                    "start": 4194,
-                    "end": 4198
-                  }
-                }
-              ],
+              "kind": "variable",
+              "name": "artifact/web-dom-counter::Focusing",
               "type": {
                 "kind": "named",
-                "name": "Effect",
-                "arguments": [
-                  {
-                    "kind": "record",
-                    "closed": true,
-                    "fields": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Never",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Unit",
-                    "arguments": []
-                  }
-                ]
+                "name": "Mode",
+                "arguments": []
               },
               "origin": {
-                "start": 4150,
-                "end": 4198
+                "start": 4031,
+                "end": 4039
               }
             },
             "origin": {
-              "start": 4136,
-              "end": 4198
+              "start": 4017,
+              "end": 4039
             }
           },
           {
@@ -5335,109 +5040,26 @@
                 "arguments": []
               },
               "origin": {
-                "start": 4203,
-                "end": 4212
+                "start": 4044,
+                "end": 4053
               }
             },
             "body": {
-              "kind": "call",
-              "callee": "std/signal::update",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": {
-                    "kind": "named",
-                    "name": "current",
-                    "type": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 4233,
-                      "end": 4240
-                    }
-                  },
-                  "body": {
-                    "kind": "variable",
-                    "name": "artifact/web-dom-counter::Resting",
-                    "type": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 4250,
-                      "end": 4257
-                    }
-                  },
-                  "type": {
-                    "kind": "function",
-                    "parameter": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "result": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    }
-                  },
-                  "origin": {
-                    "start": 4232,
-                    "end": 4257
-                  }
-                },
-                {
-                  "kind": "variable",
-                  "name": "mode",
-                  "type": {
-                    "kind": "named",
-                    "name": "MutableSignal",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Mode",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  "origin": {
-                    "start": 4259,
-                    "end": 4263
-                  }
-                }
-              ],
+              "kind": "variable",
+              "name": "artifact/web-dom-counter::Resting",
               "type": {
                 "kind": "named",
-                "name": "Effect",
-                "arguments": [
-                  {
-                    "kind": "record",
-                    "closed": true,
-                    "fields": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Never",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Unit",
-                    "arguments": []
-                  }
-                ]
+                "name": "Mode",
+                "arguments": []
               },
               "origin": {
-                "start": 4216,
-                "end": 4263
+                "start": 4057,
+                "end": 4064
               }
             },
             "origin": {
-              "start": 4203,
-              "end": 4263
+              "start": 4044,
+              "end": 4064
             }
           },
           {
@@ -5450,137 +5072,38 @@
                 "arguments": []
               },
               "origin": {
-                "start": 4268,
-                "end": 4273
+                "start": 4069,
+                "end": 4074
               }
             },
             "body": {
-              "kind": "call",
-              "callee": "std/signal::update",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": {
-                    "kind": "named",
-                    "name": "current",
-                    "type": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 4294,
-                      "end": 4301
-                    }
-                  },
-                  "body": {
-                    "kind": "variable",
-                    "name": "artifact/web-dom-counter::Ready",
-                    "type": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 4311,
-                      "end": 4316
-                    }
-                  },
-                  "type": {
-                    "kind": "function",
-                    "parameter": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "result": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    }
-                  },
-                  "origin": {
-                    "start": 4293,
-                    "end": 4316
-                  }
-                },
-                {
-                  "kind": "variable",
-                  "name": "mode",
-                  "type": {
-                    "kind": "named",
-                    "name": "MutableSignal",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Mode",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  "origin": {
-                    "start": 4318,
-                    "end": 4322
-                  }
-                }
-              ],
+              "kind": "variable",
+              "name": "artifact/web-dom-counter::Ready",
               "type": {
                 "kind": "named",
-                "name": "Effect",
-                "arguments": [
-                  {
-                    "kind": "record",
-                    "closed": true,
-                    "fields": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Never",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Unit",
-                    "arguments": []
-                  }
-                ]
+                "name": "Mode",
+                "arguments": []
               },
               "origin": {
-                "start": 4277,
-                "end": 4322
+                "start": 4078,
+                "end": 4083
               }
             },
             "origin": {
-              "start": 4268,
-              "end": 4322
+              "start": 4069,
+              "end": 4083
             }
           }
         ],
         "exhaustive": true,
         "type": {
           "kind": "named",
-          "name": "Effect",
-          "arguments": [
-            {
-              "kind": "record",
-              "closed": true,
-              "fields": []
-            },
-            {
-              "kind": "named",
-              "name": "Never",
-              "arguments": []
-            },
-            {
-              "kind": "named",
-              "name": "Unit",
-              "arguments": []
-            }
-          ]
+          "name": "Mode",
+          "arguments": []
         },
         "origin": {
-          "start": 4116,
-          "end": 4326
+          "start": 3997,
+          "end": 4087
         }
       }
     },
@@ -5589,9 +5112,10 @@
       "symbol": "artifact/web-dom-counter::main",
       "visibility": "public",
       "origin": {
-        "start": 4328,
-        "end": 4727
+        "start": 4089,
+        "end": 4192
       },
+      "inferredContract": true,
       "parameters": [
         {
           "kind": "implicit-unit",
@@ -5610,8 +5134,9 @@
             {
               "name": "dom",
               "type": {
-                "kind": "named",
-                "name": "dom.Dom",
+                "kind": "external-named",
+                "name": "Dom",
+                "canonical": "std/web/dom::Dom",
                 "arguments": []
               }
             }
@@ -5629,28 +5154,37 @@
         }
       },
       "body": {
-        "kind": "do-block",
-        "statements": [
+        "kind": "call",
+        "callee": "std/web/dom::app",
+        "arguments": [
           {
-            "kind": "bind",
-            "name": "mode",
-            "type": {
-              "kind": "external-named",
-              "name": "MutableSignal",
-              "canonical": "std/signal::MutableSignal",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Mode",
-                  "arguments": []
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "target",
+                "value": {
+                  "kind": "string",
+                  "value": "#app",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 4134,
+                    "end": 4140
+                  }
+                },
+                "origin": {
+                  "start": 4126,
+                  "end": 4140
                 }
-              ]
-            },
-            "value": {
-              "kind": "call",
-              "callee": "std/signal::make",
-              "arguments": [
-                {
+              },
+              {
+                "kind": "field",
+                "name": "initial",
+                "value": {
                   "kind": "variable",
                   "name": "initialMode",
                   "type": {
@@ -5659,76 +5193,56 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 4420,
-                    "end": 4431
+                    "start": 4155,
+                    "end": 4166
                   }
+                },
+                "origin": {
+                  "start": 4146,
+                  "end": 4166
                 }
-              ],
-              "type": {
-                "kind": "named",
-                "name": "Effect",
-                "arguments": [
-                  {
-                    "kind": "record",
-                    "closed": true,
-                    "fields": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Never",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "external-named",
-                    "name": "MutableSignal",
-                    "canonical": "std/signal::MutableSignal",
-                    "arguments": [
-                      {
+              },
+              {
+                "kind": "field",
+                "name": "update",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-dom-counter::update",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Msg",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Mode",
+                        "arguments": []
+                      },
+                      "result": {
                         "kind": "named",
                         "name": "Mode",
                         "arguments": []
                       }
-                    ]
-                  }
-                ]
-              },
-              "origin": {
-                "start": 4407,
-                "end": 4431
-              }
-            },
-            "origin": {
-              "start": 4399,
-              "end": 4431
-            }
-          },
-          {
-            "kind": "pure-let",
-            "name": "content",
-            "type": {
-              "kind": "external-named",
-              "name": "Signal",
-              "canonical": "std/signal::Signal",
-              "arguments": [
-                {
-                  "kind": "external-named",
-                  "name": "html.Html",
-                  "canonical": "std/web/html::Html",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Msg",
-                      "arguments": []
                     }
-                  ]
+                  },
+                  "origin": {
+                    "start": 4172,
+                    "end": 4178
+                  }
+                },
+                "origin": {
+                  "start": 4172,
+                  "end": 4178
                 }
-              ]
-            },
-            "value": {
-              "kind": "call",
-              "callee": "std/signal::map",
-              "arguments": [
-                {
+              },
+              {
+                "kind": "field",
+                "name": "view",
+                "value": {
                   "kind": "variable",
                   "name": "artifact/web-dom-counter::view",
                   "type": {
@@ -5752,379 +5266,38 @@
                     }
                   },
                   "origin": {
-                    "start": 4462,
-                    "end": 4466
+                    "start": 4184,
+                    "end": 4188
                   }
                 },
-                {
-                  "kind": "variable",
-                  "name": "mode",
-                  "type": {
-                    "kind": "external-named",
-                    "name": "MutableSignal",
-                    "canonical": "std/signal::MutableSignal",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Mode",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  "origin": {
-                    "start": 4467,
-                    "end": 4471
-                  }
+                "origin": {
+                  "start": 4184,
+                  "end": 4188
                 }
-              ],
-              "type": {
-                "kind": "external-named",
-                "name": "Signal",
-                "canonical": "std/signal::Signal",
-                "arguments": [
-                  {
-                    "kind": "external-named",
-                    "name": "html.Html",
-                    "canonical": "std/web/html::Html",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Msg",
-                        "arguments": []
-                      }
-                    ]
-                  }
-                ]
-              },
-              "origin": {
-                "start": 4450,
-                "end": 4471
               }
-            },
-            "origin": {
-              "start": 4436,
-              "end": 4471
-            }
-          },
-          {
-            "kind": "bind",
-            "name": "target",
+            ],
             "type": {
-              "kind": "external-named",
-              "name": "DomTarget",
-              "canonical": "std/web/dom::DomTarget",
-              "arguments": []
-            },
-            "value": {
-              "kind": "effect-call",
-              "operation": "std/effect::mapError",
-              "effect": {
-                "environment": {
-                  "kind": "record",
-                  "closed": true,
-                  "fields": [
-                    {
-                      "name": "dom",
-                      "type": {
-                        "kind": "external-named",
-                        "name": "dom.Dom",
-                        "canonical": "std/web/dom::Dom",
-                        "arguments": []
-                      }
-                    }
-                  ]
-                },
-                "failure": {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                },
-                "success": {
-                  "kind": "external-named",
-                  "name": "DomTarget",
-                  "canonical": "std/web/dom::DomTarget",
-                  "arguments": []
-                }
-              },
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": {
-                    "kind": "named",
-                    "name": "error",
-                    "type": {
-                      "kind": "external-named",
-                      "name": "dom.DomError",
-                      "canonical": "std/web/dom::DomError",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 4531,
-                      "end": 4536
-                    }
-                  },
-                  "body": {
-                    "kind": "string",
-                    "value": "DOM target unavailable",
-                    "type": {
-                      "kind": "named",
-                      "name": "String",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 4554,
-                      "end": 4578
-                    }
-                  },
-                  "type": {
-                    "kind": "function",
-                    "parameter": {
-                      "kind": "external-named",
-                      "name": "dom.DomError",
-                      "canonical": "std/web/dom::DomError",
-                      "arguments": []
-                    },
-                    "result": {
-                      "kind": "named",
-                      "name": "String",
-                      "arguments": []
-                    }
-                  },
-                  "origin": {
-                    "start": 4530,
-                    "end": 4578
-                  }
-                },
-                {
-                  "kind": "call",
-                  "callee": "std/web/dom::query",
-                  "arguments": [
-                    {
-                      "kind": "string",
-                      "value": "#app",
-                      "type": {
-                        "kind": "named",
-                        "name": "String",
-                        "arguments": []
-                      },
-                      "origin": {
-                        "start": 4502,
-                        "end": 4508
-                      }
-                    }
-                  ],
-                  "type": {
-                    "kind": "named",
-                    "name": "Effect",
-                    "arguments": [
-                      {
-                        "kind": "record",
-                        "closed": true,
-                        "fields": [
-                          {
-                            "name": "dom",
-                            "type": {
-                              "kind": "external-named",
-                              "name": "dom.Dom",
-                              "canonical": "std/web/dom::Dom",
-                              "arguments": []
-                            }
-                          }
-                        ]
-                      },
-                      {
-                        "kind": "external-named",
-                        "name": "dom.DomError",
-                        "canonical": "std/web/dom::DomError",
-                        "arguments": []
-                      },
-                      {
-                        "kind": "external-named",
-                        "name": "DomTarget",
-                        "canonical": "std/web/dom::DomTarget",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  "origin": {
-                    "start": 4492,
-                    "end": 4508
-                  }
-                }
-              ],
-              "origin": {
-                "start": 4492,
-                "end": 4579
-              }
-            },
-            "origin": {
-              "start": 4476,
-              "end": 4579
-            }
-          }
-        ],
-        "result": {
-          "kind": "effect-call",
-          "operation": "std/effect::mapError",
-          "effect": {
-            "environment": {
               "kind": "record",
               "closed": true,
               "fields": [
                 {
-                  "name": "dom",
+                  "name": "initial",
                   "type": {
-                    "kind": "external-named",
-                    "name": "dom.Dom",
-                    "canonical": "std/web/dom::Dom",
+                    "kind": "named",
+                    "name": "Mode",
                     "arguments": []
-                  }
-                }
-              ]
-            },
-            "failure": {
-              "kind": "named",
-              "name": "String",
-              "arguments": []
-            },
-            "success": {
-              "kind": "named",
-              "name": "Unit",
-              "arguments": []
-            }
-          },
-          "arguments": [
-            {
-              "kind": "lambda",
-              "parameter": {
-                "kind": "named",
-                "name": "error",
-                "type": {
-                  "kind": "external-named",
-                  "name": "dom.DomRuntimeError",
-                  "canonical": "std/web/dom::DomRuntimeError",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Never",
-                      "arguments": []
-                    }
-                  ]
-                },
-                "origin": {
-                  "start": 4665,
-                  "end": 4670
-                }
-              },
-              "body": {
-                "kind": "string",
-                "value": "DOM runtime failed",
-                "type": {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                },
-                "origin": {
-                  "start": 4702,
-                  "end": 4722
-                }
-              },
-              "type": {
-                "kind": "function",
-                "parameter": {
-                  "kind": "external-named",
-                  "name": "dom.DomRuntimeError",
-                  "canonical": "std/web/dom::DomRuntimeError",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Never",
-                      "arguments": []
-                    }
-                  ]
-                },
-                "result": {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                }
-              },
-              "origin": {
-                "start": 4664,
-                "end": 4722
-              }
-            },
-            {
-              "kind": "call",
-              "callee": "std/web/dom::run",
-              "arguments": [
-                {
-                  "kind": "call",
-                  "callee": "std/web/dom::defaultOptions",
-                  "arguments": [
-                    {
-                      "kind": "unit",
-                      "type": {
-                        "kind": "named",
-                        "name": "Unit",
-                        "arguments": []
-                      },
-                      "origin": {
-                        "start": 4612,
-                        "end": 4614
-                      }
-                    }
-                  ],
-                  "type": {
-                    "kind": "external-named",
-                    "name": "DomOptions",
-                    "canonical": "std/web/dom::DomOptions",
-                    "arguments": []
-                  },
-                  "origin": {
-                    "start": 4593,
-                    "end": 4614
                   }
                 },
                 {
-                  "kind": "variable",
                   "name": "target",
                   "type": {
-                    "kind": "external-named",
-                    "name": "DomTarget",
-                    "canonical": "std/web/dom::DomTarget",
+                    "kind": "named",
+                    "name": "String",
                     "arguments": []
-                  },
-                  "origin": {
-                    "start": 4616,
-                    "end": 4622
                   }
                 },
                 {
-                  "kind": "call",
-                  "callee": "artifact/web-dom-counter::update",
-                  "arguments": [
-                    {
-                      "kind": "variable",
-                      "name": "mode",
-                      "type": {
-                        "kind": "external-named",
-                        "name": "MutableSignal",
-                        "canonical": "std/signal::MutableSignal",
-                        "arguments": [
-                          {
-                            "kind": "named",
-                            "name": "Mode",
-                            "arguments": []
-                          }
-                        ]
-                      },
-                      "origin": {
-                        "start": 4631,
-                        "end": 4635
-                      }
-                    }
-                  ],
+                  "name": "update",
                   "type": {
                     "kind": "function",
                     "parameter": {
@@ -6133,112 +5306,85 @@
                       "arguments": []
                     },
                     "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Mode",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Mode",
+                        "arguments": []
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "view",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
                       "kind": "named",
-                      "name": "Effect",
+                      "name": "Mode",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
                       "arguments": [
                         {
-                          "kind": "record",
-                          "closed": true,
-                          "fields": []
-                        },
-                        {
                           "kind": "named",
-                          "name": "Never",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Unit",
+                          "name": "Msg",
                           "arguments": []
                         }
                       ]
                     }
-                  },
-                  "origin": {
-                    "start": 4624,
-                    "end": 4635
-                  }
-                },
-                {
-                  "kind": "variable",
-                  "name": "content",
-                  "type": {
-                    "kind": "external-named",
-                    "name": "Signal",
-                    "canonical": "std/signal::Signal",
-                    "arguments": [
-                      {
-                        "kind": "external-named",
-                        "name": "html.Html",
-                        "canonical": "std/web/html::Html",
-                        "arguments": [
-                          {
-                            "kind": "named",
-                            "name": "Msg",
-                            "arguments": []
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "origin": {
-                    "start": 4637,
-                    "end": 4644
                   }
                 }
-              ],
-              "type": {
-                "kind": "named",
-                "name": "Effect",
-                "arguments": [
-                  {
-                    "kind": "record",
-                    "closed": true,
-                    "fields": [
-                      {
-                        "name": "dom",
-                        "type": {
-                          "kind": "external-named",
-                          "name": "dom.Dom",
-                          "canonical": "std/web/dom::Dom",
-                          "arguments": []
-                        }
-                      }
-                    ]
-                  },
-                  {
+              ]
+            },
+            "origin": {
+              "start": 4120,
+              "end": 4192
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "dom",
+                  "type": {
                     "kind": "external-named",
-                    "name": "dom.DomRuntimeError",
-                    "canonical": "std/web/dom::DomRuntimeError",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Never",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Unit",
+                    "name": "Dom",
+                    "canonical": "std/web/dom::Dom",
                     "arguments": []
                   }
-                ]
-              },
-              "origin": {
-                "start": 4584,
-                "end": 4644
-              }
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
             }
-          ],
-          "origin": {
-            "start": 4584,
-            "end": 4723
-          }
+          ]
         },
         "origin": {
-          "start": 4390,
-          "end": 4727
+          "start": 4112,
+          "end": 4192
         }
       }
     }

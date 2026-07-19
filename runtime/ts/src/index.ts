@@ -99,6 +99,7 @@ export {
 } from "./html"
 export type {
   Dom,
+  DomApp,
   DomEnvironment,
   DomError,
   DomOptions,
@@ -106,6 +107,7 @@ export type {
   DomTarget,
 } from "./dom"
 export {
+  app as runDomApp,
   defaultOptions as defaultDomOptions,
   query as queryDom,
   run as runDom,

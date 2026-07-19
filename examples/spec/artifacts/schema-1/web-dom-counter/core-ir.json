@@ -20,59 +20,11 @@
       }
     },
     {
-      "spelling": "MutableSignal",
-      "canonical": "std/signal::MutableSignal",
-      "provider": {
-        "module": "std/signal",
-        "export": "MutableSignal"
-      }
-    },
-    {
-      "spelling": "Signal",
-      "canonical": "std/signal::Signal",
-      "provider": {
-        "module": "std/signal",
-        "export": "Signal"
-      }
-    },
-    {
-      "spelling": "dom.Dom",
+      "spelling": "Dom",
       "canonical": "std/web/dom::Dom",
       "provider": {
         "module": "std/web/dom",
         "export": "Dom"
-      }
-    },
-    {
-      "spelling": "dom.DomError",
-      "canonical": "std/web/dom::DomError",
-      "provider": {
-        "module": "std/web/dom",
-        "export": "DomError"
-      }
-    },
-    {
-      "spelling": "DomTarget",
-      "canonical": "std/web/dom::DomTarget",
-      "provider": {
-        "module": "std/web/dom",
-        "export": "DomTarget"
-      }
-    },
-    {
-      "spelling": "DomOptions",
-      "canonical": "std/web/dom::DomOptions",
-      "provider": {
-        "module": "std/web/dom",
-        "export": "DomOptions"
-      }
-    },
-    {
-      "spelling": "dom.DomRuntimeError",
-      "canonical": "std/web/dom::DomRuntimeError",
-      "provider": {
-        "module": "std/web/dom",
-        "export": "DomRuntimeError"
       }
     }
   ],
@@ -87,65 +39,10 @@
       },
       "imports": [
         {
-          "namespace": "type",
-          "imported": "Dom",
-          "local": "dom.Dom",
-          "canonical": "std/web/dom::Dom",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 12,
-            "end": 15
-          }
-        },
-        {
-          "namespace": "type",
-          "imported": "DomError",
-          "local": "dom.DomError",
-          "canonical": "std/web/dom::DomError",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 12,
-            "end": 15
-          }
-        },
-        {
-          "namespace": "type",
-          "imported": "DomRuntimeError",
-          "local": "dom.DomRuntimeError",
-          "canonical": "std/web/dom::DomRuntimeError",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 12,
-            "end": 15
-          }
-        },
-        {
           "namespace": "value",
-          "imported": "query",
-          "local": "dom.query",
-          "canonical": "std/web/dom::query",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 12,
-            "end": 15
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "run",
-          "local": "dom.run",
-          "canonical": "std/web/dom::run",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 12,
-            "end": 15
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "defaultOptions",
-          "local": "dom.defaultOptions",
-          "canonical": "std/web/dom::defaultOptions",
+          "imported": "app",
+          "local": "dom.app",
+          "canonical": "std/web/dom::app",
           "origin": {
             "source": "main.ssrg",
             "start": 12,
@@ -274,116 +171,6 @@
           }
         }
       ]
-    },
-    {
-      "specifier": "std/signal",
-      "module": "std/signal",
-      "origin": {
-        "source": "main.ssrg",
-        "start": 72,
-        "end": 109
-      },
-      "imports": [
-        {
-          "namespace": "type",
-          "imported": "MutableSignal",
-          "local": "MutableSignal",
-          "canonical": "std/signal::MutableSignal",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 119,
-            "end": 132
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "update",
-          "local": "signals.update",
-          "canonical": "std/signal::update",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 84,
-            "end": 91
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "make",
-          "local": "signals.make",
-          "canonical": "std/signal::make",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 84,
-            "end": 91
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "map",
-          "local": "signals.map",
-          "canonical": "std/signal::map",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 84,
-            "end": 91
-          }
-        }
-      ]
-    },
-    {
-      "specifier": "std/signal",
-      "module": "std/signal",
-      "origin": {
-        "source": "main.ssrg",
-        "start": 110,
-        "end": 152
-      },
-      "imports": [
-        {
-          "namespace": "type",
-          "imported": "MutableSignal",
-          "local": "MutableSignal",
-          "canonical": "std/signal::MutableSignal",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 119,
-            "end": 132
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "update",
-          "local": "signals.update",
-          "canonical": "std/signal::update",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 84,
-            "end": 91
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "make",
-          "local": "signals.make",
-          "canonical": "std/signal::make",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 84,
-            "end": 91
-          }
-        },
-        {
-          "namespace": "value",
-          "imported": "map",
-          "local": "signals.map",
-          "canonical": "std/signal::map",
-          "origin": {
-            "source": "main.ssrg",
-            "start": 84,
-            "end": 91
-          }
-        }
-      ]
     }
   ],
   "adts": [
@@ -399,8 +186,8 @@
           "name": "Ready",
           "origin": {
             "source": "main.ssrg",
-            "start": 170,
-            "end": 175
+            "start": 89,
+            "end": 94
           }
         },
         {
@@ -408,8 +195,8 @@
           "name": "Focusing",
           "origin": {
             "source": "main.ssrg",
-            "start": 180,
-            "end": 188
+            "start": 99,
+            "end": 107
           }
         },
         {
@@ -417,15 +204,15 @@
           "name": "Resting",
           "origin": {
             "source": "main.ssrg",
-            "start": 193,
-            "end": 200
+            "start": 112,
+            "end": 119
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
-        "start": 154,
-        "end": 200
+        "start": 73,
+        "end": 119
       }
     },
     {
@@ -440,8 +227,8 @@
           "name": "StartFocus",
           "origin": {
             "source": "main.ssrg",
-            "start": 217,
-            "end": 227
+            "start": 136,
+            "end": 146
           }
         },
         {
@@ -449,8 +236,8 @@
           "name": "TakeBreak",
           "origin": {
             "source": "main.ssrg",
-            "start": 232,
-            "end": 241
+            "start": 151,
+            "end": 160
           }
         },
         {
@@ -458,15 +245,15 @@
           "name": "Reset",
           "origin": {
             "source": "main.ssrg",
-            "start": 246,
-            "end": 251
+            "start": 165,
+            "end": 170
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
-        "start": 202,
-        "end": 251
+        "start": 121,
+        "end": 170
       }
     }
   ],
@@ -476,8 +263,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 253,
-        "end": 282
+        "start": 172,
+        "end": 201
       },
       "value": {
         "kind": "variable",
@@ -489,8 +276,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 277,
-          "end": 282
+          "start": 196,
+          "end": 201
         }
       }
     },
@@ -499,8 +286,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 284,
-        "end": 444
+        "start": 203,
+        "end": 363
       },
       "value": {
         "kind": "call",
@@ -517,14 +304,14 @@
                   "value": "linear-gradient(135deg, #d1fae5 0%, #f8fafc 48%, #dbeafe 100%)",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 331,
-                    "end": 395
+                    "start": 250,
+                    "end": 314
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 319,
-                  "end": 395
+                  "start": 238,
+                  "end": 314
                 }
               },
               {
@@ -535,14 +322,14 @@
                   "value": "100vh",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 412,
-                    "end": 419
+                    "start": 331,
+                    "end": 338
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 401,
-                  "end": 419
+                  "start": 320,
+                  "end": 338
                 }
               },
               {
@@ -553,14 +340,14 @@
                   "value": "32px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 434,
-                    "end": 440
+                    "start": 353,
+                    "end": 359
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 425,
-                  "end": 440
+                  "start": 344,
+                  "end": 359
                 }
               }
             ],
@@ -596,8 +383,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 313,
-              "end": 444
+              "start": 232,
+              "end": 363
             }
           }
         ],
@@ -652,8 +439,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 302,
-          "end": 444
+          "start": 221,
+          "end": 363
         }
       }
     },
@@ -662,8 +449,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 446,
-        "end": 686
+        "start": 365,
+        "end": 605
       },
       "value": {
         "kind": "call",
@@ -686,14 +473,14 @@
                         "value": "0 24px 64px #0f172a24",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 506,
-                          "end": 529
+                          "start": 425,
+                          "end": 448
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 494,
-                        "end": 529
+                        "start": 413,
+                        "end": 448
                       }
                     }
                   ],
@@ -713,14 +500,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 492,
-                    "end": 531
+                    "start": 411,
+                    "end": 450
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 481,
-                  "end": 531
+                  "start": 400,
+                  "end": 450
                 }
               },
               {
@@ -731,14 +518,14 @@
                   "value": "#ffffff",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 554,
-                    "end": 563
+                    "start": 473,
+                    "end": 482
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 537,
-                  "end": 563
+                  "start": 456,
+                  "end": 482
                 }
               },
               {
@@ -749,14 +536,14 @@
                   "value": "1px solid #ffffffcc",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 577,
-                    "end": 598
+                    "start": 496,
+                    "end": 517
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 569,
-                  "end": 598
+                  "start": 488,
+                  "end": 517
                 }
               },
               {
@@ -767,14 +554,14 @@
                   "value": "28px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 618,
-                    "end": 624
+                    "start": 537,
+                    "end": 543
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 604,
-                  "end": 624
+                  "start": 523,
+                  "end": 543
                 }
               },
               {
@@ -785,14 +572,14 @@
                   "value": "var(--card-shadow)",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 641,
-                    "end": 661
+                    "start": 560,
+                    "end": 580
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 630,
-                  "end": 661
+                  "start": 549,
+                  "end": 580
                 }
               },
               {
@@ -803,14 +590,14 @@
                   "value": "32px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 676,
-                    "end": 682
+                    "start": 595,
+                    "end": 601
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 667,
-                  "end": 682
+                  "start": 586,
+                  "end": 601
                 }
               }
             ],
@@ -879,8 +666,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 475,
-              "end": 686
+              "start": 394,
+              "end": 605
             }
           }
         ],
@@ -968,8 +755,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 464,
-          "end": 686
+          "start": 383,
+          "end": 605
         }
       }
     },
@@ -978,8 +765,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 688,
-        "end": 825
+        "start": 607,
+        "end": 744
       },
       "value": {
         "kind": "call",
@@ -996,14 +783,14 @@
                   "value": "#e2e8f0",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 741,
-                    "end": 750
+                    "start": 660,
+                    "end": 669
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 724,
-                  "end": 750
+                  "start": 643,
+                  "end": 669
                 }
               },
               {
@@ -1014,14 +801,14 @@
                   "value": "999px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 770,
-                    "end": 777
+                    "start": 689,
+                    "end": 696
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 756,
-                  "end": 777
+                  "start": 675,
+                  "end": 696
                 }
               },
               {
@@ -1032,14 +819,14 @@
                   "value": "10px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 791,
-                    "end": 797
+                    "start": 710,
+                    "end": 716
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 783,
-                  "end": 797
+                  "start": 702,
+                  "end": 716
                 }
               },
               {
@@ -1050,14 +837,14 @@
                   "value": "hidden",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 813,
-                    "end": 821
+                    "start": 732,
+                    "end": 740
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 803,
-                  "end": 821
+                  "start": 722,
+                  "end": 740
                 }
               }
             ],
@@ -1101,8 +888,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 718,
-              "end": 825
+              "start": 637,
+              "end": 744
             }
           }
         ],
@@ -1165,8 +952,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 707,
-          "end": 825
+          "start": 626,
+          "end": 744
         }
       }
     }
@@ -1177,8 +964,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 827,
-        "end": 945
+        "start": 746,
+        "end": 864
       },
       "parameters": [
         {
@@ -1203,8 +990,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 867,
-            "end": 871
+            "start": 786,
+            "end": 790
           }
         },
         "scrutineeType": {
@@ -1221,8 +1008,8 @@
                 "constructor": "artifact/web-dom-counter::Ready",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 878,
-                  "end": 883
+                  "start": 797,
+                  "end": 802
                 }
               }
             ],
@@ -1231,14 +1018,14 @@
               "value": "READY",
               "origin": {
                 "source": "main.ssrg",
-                "start": 887,
-                "end": 894
+                "start": 806,
+                "end": 813
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 878,
-              "end": 894
+              "start": 797,
+              "end": 813
             }
           },
           {
@@ -1249,8 +1036,8 @@
                 "constructor": "artifact/web-dom-counter::Focusing",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 899,
-                  "end": 907
+                  "start": 818,
+                  "end": 826
                 }
               }
             ],
@@ -1259,14 +1046,14 @@
               "value": "FOCUS",
               "origin": {
                 "source": "main.ssrg",
-                "start": 911,
-                "end": 918
+                "start": 830,
+                "end": 837
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 899,
-              "end": 918
+              "start": 818,
+              "end": 837
             }
           },
           {
@@ -1276,14 +1063,14 @@
               "value": "BREAK",
               "origin": {
                 "source": "main.ssrg",
-                "start": 934,
-                "end": 941
+                "start": 853,
+                "end": 860
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 923,
-              "end": 941
+              "start": 842,
+              "end": 860
             }
           }
         ],
@@ -1295,8 +1082,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 861,
-          "end": 945
+          "start": 780,
+          "end": 864
         }
       }
     },
@@ -1305,8 +1092,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 947,
-        "end": 1107
+        "start": 866,
+        "end": 1026
       },
       "parameters": [
         {
@@ -1331,8 +1118,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 987,
-            "end": 991
+            "start": 906,
+            "end": 910
           }
         },
         "scrutineeType": {
@@ -1349,8 +1136,8 @@
                 "constructor": "artifact/web-dom-counter::Ready",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 998,
-                  "end": 1003
+                  "start": 917,
+                  "end": 922
                 }
               }
             ],
@@ -1359,14 +1146,14 @@
               "value": "Choose your rhythm",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1007,
-                "end": 1027
+                "start": 926,
+                "end": 946
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 998,
-              "end": 1027
+              "start": 917,
+              "end": 946
             }
           },
           {
@@ -1377,8 +1164,8 @@
                 "constructor": "artifact/web-dom-counter::Focusing",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1032,
-                  "end": 1040
+                  "start": 951,
+                  "end": 959
                 }
               }
             ],
@@ -1387,14 +1174,14 @@
               "value": "Deep work in progress",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1044,
-                "end": 1067
+                "start": 963,
+                "end": 986
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1032,
-              "end": 1067
+              "start": 951,
+              "end": 986
             }
           },
           {
@@ -1404,14 +1191,14 @@
               "value": "Pause with purpose",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1083,
-                "end": 1103
+                "start": 1002,
+                "end": 1022
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1072,
-              "end": 1103
+              "start": 991,
+              "end": 1022
             }
           }
         ],
@@ -1423,8 +1210,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 981,
-          "end": 1107
+          "start": 900,
+          "end": 1026
         }
       }
     },
@@ -1433,8 +1220,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 1109,
-        "end": 1362
+        "start": 1028,
+        "end": 1281
       },
       "parameters": [
         {
@@ -1459,8 +1246,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 1152,
-            "end": 1156
+            "start": 1071,
+            "end": 1075
           }
         },
         "scrutineeType": {
@@ -1477,8 +1264,8 @@
                 "constructor": "artifact/web-dom-counter::Ready",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1163,
-                  "end": 1168
+                  "start": 1082,
+                  "end": 1087
                 }
               }
             ],
@@ -1487,14 +1274,14 @@
               "value": "Pick a mode and let a typed message update the Signal.",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1172,
-                "end": 1228
+                "start": 1091,
+                "end": 1147
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1163,
-              "end": 1228
+              "start": 1082,
+              "end": 1147
             }
           },
           {
@@ -1505,8 +1292,8 @@
                 "constructor": "artifact/web-dom-counter::Focusing",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1233,
-                  "end": 1241
+                  "start": 1152,
+                  "end": 1160
                 }
               }
             ],
@@ -1515,14 +1302,14 @@
               "value": "One task. No tab hopping. You have got this.",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1245,
-                "end": 1291
+                "start": 1164,
+                "end": 1210
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1233,
-              "end": 1291
+              "start": 1152,
+              "end": 1210
             }
           },
           {
@@ -1532,14 +1319,14 @@
               "value": "Look away from the screen and take a slow breath.",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1307,
-                "end": 1358
+                "start": 1226,
+                "end": 1277
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1296,
-              "end": 1358
+              "start": 1215,
+              "end": 1277
             }
           }
         ],
@@ -1551,8 +1338,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 1146,
-          "end": 1362
+          "start": 1065,
+          "end": 1281
         }
       }
     },
@@ -1561,8 +1348,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 1364,
-        "end": 1489
+        "start": 1283,
+        "end": 1408
       },
       "parameters": [
         {
@@ -1587,8 +1374,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 1405,
-            "end": 1409
+            "start": 1324,
+            "end": 1328
           }
         },
         "scrutineeType": {
@@ -1605,8 +1392,8 @@
                 "constructor": "artifact/web-dom-counter::Ready",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1416,
-                  "end": 1421
+                  "start": 1335,
+                  "end": 1340
                 }
               }
             ],
@@ -1615,14 +1402,14 @@
               "value": "#475569",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1425,
-                "end": 1434
+                "start": 1344,
+                "end": 1353
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1416,
-              "end": 1434
+              "start": 1335,
+              "end": 1353
             }
           },
           {
@@ -1633,8 +1420,8 @@
                 "constructor": "artifact/web-dom-counter::Focusing",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1439,
-                  "end": 1447
+                  "start": 1358,
+                  "end": 1366
                 }
               }
             ],
@@ -1643,14 +1430,14 @@
               "value": "#059669",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1451,
-                "end": 1460
+                "start": 1370,
+                "end": 1379
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1439,
-              "end": 1460
+              "start": 1358,
+              "end": 1379
             }
           },
           {
@@ -1660,14 +1447,14 @@
               "value": "#2563eb",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1476,
-                "end": 1485
+                "start": 1395,
+                "end": 1404
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1465,
-              "end": 1485
+              "start": 1384,
+              "end": 1404
             }
           }
         ],
@@ -1679,8 +1466,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 1399,
-          "end": 1489
+          "start": 1318,
+          "end": 1408
         }
       }
     },
@@ -1689,8 +1476,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 1491,
-        "end": 1606
+        "start": 1410,
+        "end": 1525
       },
       "parameters": [
         {
@@ -1715,8 +1502,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 1534,
-            "end": 1538
+            "start": 1453,
+            "end": 1457
           }
         },
         "scrutineeType": {
@@ -1733,8 +1520,8 @@
                 "constructor": "artifact/web-dom-counter::Ready",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1545,
-                  "end": 1550
+                  "start": 1464,
+                  "end": 1469
                 }
               }
             ],
@@ -1743,14 +1530,14 @@
               "value": "18%",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1554,
-                "end": 1559
+                "start": 1473,
+                "end": 1478
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1545,
-              "end": 1559
+              "start": 1464,
+              "end": 1478
             }
           },
           {
@@ -1761,8 +1548,8 @@
                 "constructor": "artifact/web-dom-counter::Focusing",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1564,
-                  "end": 1572
+                  "start": 1483,
+                  "end": 1491
                 }
               }
             ],
@@ -1771,14 +1558,14 @@
               "value": "82%",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1576,
-                "end": 1581
+                "start": 1495,
+                "end": 1500
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1564,
-              "end": 1581
+              "start": 1483,
+              "end": 1500
             }
           },
           {
@@ -1788,14 +1575,14 @@
               "value": "46%",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1597,
-                "end": 1602
+                "start": 1516,
+                "end": 1521
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1586,
-              "end": 1602
+              "start": 1505,
+              "end": 1521
             }
           }
         ],
@@ -1807,8 +1594,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 1528,
-          "end": 1606
+          "start": 1447,
+          "end": 1525
         }
       }
     },
@@ -1817,8 +1604,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 1608,
-        "end": 1810
+        "start": 1527,
+        "end": 1729
       },
       "parameters": [
         {
@@ -1855,8 +1642,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1695,
-                        "end": 1699
+                        "start": 1614,
+                        "end": 1618
                       }
                     }
                   ],
@@ -1867,14 +1654,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1688,
-                    "end": 1699
+                    "start": 1607,
+                    "end": 1618
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1671,
-                  "end": 1699
+                  "start": 1590,
+                  "end": 1618
                 }
               },
               {
@@ -1885,14 +1672,14 @@
                   "value": "999px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1719,
-                    "end": 1726
+                    "start": 1638,
+                    "end": 1645
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1705,
-                  "end": 1726
+                  "start": 1624,
+                  "end": 1645
                 }
               },
               {
@@ -1903,14 +1690,14 @@
                   "value": "100%",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1740,
-                    "end": 1746
+                    "start": 1659,
+                    "end": 1665
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1732,
-                  "end": 1746
+                  "start": 1651,
+                  "end": 1665
                 }
               },
               {
@@ -1921,14 +1708,14 @@
                   "value": "all 240ms ease",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1764,
-                    "end": 1780
+                    "start": 1683,
+                    "end": 1699
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1752,
-                  "end": 1780
+                  "start": 1671,
+                  "end": 1699
                 }
               },
               {
@@ -1948,8 +1735,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1802,
-                        "end": 1806
+                        "start": 1721,
+                        "end": 1725
                       }
                     }
                   ],
@@ -1960,14 +1747,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1793,
-                    "end": 1806
+                    "start": 1712,
+                    "end": 1725
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1786,
-                  "end": 1806
+                  "start": 1705,
+                  "end": 1725
                 }
               }
             ],
@@ -2019,8 +1806,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1665,
-              "end": 1810
+              "start": 1584,
+              "end": 1729
             }
           }
         ],
@@ -2091,8 +1878,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 1654,
-          "end": 1810
+          "start": 1573,
+          "end": 1729
         }
       }
     },
@@ -2101,8 +1888,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 1812,
-        "end": 2052
+        "start": 1731,
+        "end": 1971
       },
       "parameters": [
         {
@@ -2139,8 +1926,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1896,
-                        "end": 1900
+                        "start": 1815,
+                        "end": 1819
                       }
                     }
                   ],
@@ -2151,14 +1938,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1889,
-                    "end": 1900
+                    "start": 1808,
+                    "end": 1819
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1872,
-                  "end": 1900
+                  "start": 1791,
+                  "end": 1819
                 }
               },
               {
@@ -2169,14 +1956,14 @@
                   "value": "999px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1920,
-                    "end": 1927
+                    "start": 1839,
+                    "end": 1846
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1906,
-                  "end": 1927
+                  "start": 1825,
+                  "end": 1846
                 }
               },
               {
@@ -2187,14 +1974,14 @@
                   "value": "#ffffff",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1940,
-                    "end": 1949
+                    "start": 1859,
+                    "end": 1868
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1933,
-                  "end": 1949
+                  "start": 1852,
+                  "end": 1868
                 }
               },
               {
@@ -2205,14 +1992,14 @@
                   "value": "12px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1965,
-                    "end": 1971
+                    "start": 1884,
+                    "end": 1890
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1955,
-                  "end": 1971
+                  "start": 1874,
+                  "end": 1890
                 }
               },
               {
@@ -2223,14 +2010,14 @@
                   "value": "700",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1989,
-                    "end": 1994
+                    "start": 1908,
+                    "end": 1913
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1977,
-                  "end": 1994
+                  "start": 1896,
+                  "end": 1913
                 }
               },
               {
@@ -2241,14 +2028,14 @@
                   "value": "0.12em",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2015,
-                    "end": 2023
+                    "start": 1934,
+                    "end": 1942
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2000,
-                  "end": 2023
+                  "start": 1919,
+                  "end": 1942
                 }
               },
               {
@@ -2259,14 +2046,14 @@
                   "value": "6px 12px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2038,
-                    "end": 2048
+                    "start": 1957,
+                    "end": 1967
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2029,
-                  "end": 2048
+                  "start": 1948,
+                  "end": 1967
                 }
               }
             ],
@@ -2334,8 +2121,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1866,
-              "end": 2052
+              "start": 1785,
+              "end": 1971
             }
           }
         ],
@@ -2422,8 +2209,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 1855,
-          "end": 2052
+          "start": 1774,
+          "end": 1971
         }
       }
     },
@@ -2432,8 +2219,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 2054,
-        "end": 2365
+        "start": 1973,
+        "end": 2284
       },
       "parameters": [
         {
@@ -2458,8 +2245,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 2106,
-            "end": 2113
+            "start": 2025,
+            "end": 2032
           }
         },
         "scrutineeType": {
@@ -2476,8 +2263,8 @@
                 "constructor": "artifact/web-dom-counter::StartFocus",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2120,
-                  "end": 2130
+                  "start": 2039,
+                  "end": 2049
                 }
               }
             ],
@@ -2496,14 +2283,14 @@
                         "value": "#059669",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 2170,
-                          "end": 2179
+                          "start": 2089,
+                          "end": 2098
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2153,
-                        "end": 2179
+                        "start": 2072,
+                        "end": 2098
                       }
                     },
                     {
@@ -2514,14 +2301,14 @@
                         "value": "#ffffff",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 2188,
-                          "end": 2197
+                          "start": 2107,
+                          "end": 2116
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2181,
-                        "end": 2197
+                        "start": 2100,
+                        "end": 2116
                       }
                     }
                   ],
@@ -2549,8 +2336,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2151,
-                    "end": 2199
+                    "start": 2070,
+                    "end": 2118
                   }
                 }
               ],
@@ -2597,14 +2384,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 2140,
-                "end": 2199
+                "start": 2059,
+                "end": 2118
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 2120,
-              "end": 2199
+              "start": 2039,
+              "end": 2118
             }
           },
           {
@@ -2615,8 +2402,8 @@
                 "constructor": "artifact/web-dom-counter::TakeBreak",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2204,
-                  "end": 2213
+                  "start": 2123,
+                  "end": 2132
                 }
               }
             ],
@@ -2635,14 +2422,14 @@
                         "value": "#2563eb",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 2253,
-                          "end": 2262
+                          "start": 2172,
+                          "end": 2181
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2236,
-                        "end": 2262
+                        "start": 2155,
+                        "end": 2181
                       }
                     },
                     {
@@ -2653,14 +2440,14 @@
                         "value": "#ffffff",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 2271,
-                          "end": 2280
+                          "start": 2190,
+                          "end": 2199
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2264,
-                        "end": 2280
+                        "start": 2183,
+                        "end": 2199
                       }
                     }
                   ],
@@ -2688,8 +2475,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2234,
-                    "end": 2282
+                    "start": 2153,
+                    "end": 2201
                   }
                 }
               ],
@@ -2736,14 +2523,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 2223,
-                "end": 2282
+                "start": 2142,
+                "end": 2201
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 2204,
-              "end": 2282
+              "start": 2123,
+              "end": 2201
             }
           },
           {
@@ -2763,14 +2550,14 @@
                         "value": "#f1f5f9",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 2332,
-                          "end": 2341
+                          "start": 2251,
+                          "end": 2260
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2315,
-                        "end": 2341
+                        "start": 2234,
+                        "end": 2260
                       }
                     },
                     {
@@ -2781,14 +2568,14 @@
                         "value": "#334155",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 2350,
-                          "end": 2359
+                          "start": 2269,
+                          "end": 2278
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2343,
-                        "end": 2359
+                        "start": 2262,
+                        "end": 2278
                       }
                     }
                   ],
@@ -2816,8 +2603,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2313,
-                    "end": 2361
+                    "start": 2232,
+                    "end": 2280
                   }
                 }
               ],
@@ -2864,14 +2651,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 2302,
-                "end": 2361
+                "start": 2221,
+                "end": 2280
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 2287,
-              "end": 2361
+              "start": 2206,
+              "end": 2280
             }
           }
         ],
@@ -2884,8 +2671,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 2100,
-          "end": 2365
+          "start": 2019,
+          "end": 2284
         }
       }
     },
@@ -2894,8 +2681,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 2367,
-        "end": 2642
+        "start": 2286,
+        "end": 2561
       },
       "parameters": [
         {
@@ -2946,14 +2733,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2466,
-                    "end": 2468
+                    "start": 2385,
+                    "end": 2387
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2466,
-                  "end": 2468
+                  "start": 2385,
+                  "end": 2387
                 }
               },
               {
@@ -2969,14 +2756,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2483,
-                    "end": 2490
+                    "start": 2402,
+                    "end": 2409
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2474,
-                  "end": 2490
+                  "start": 2393,
+                  "end": 2409
                 }
               },
               {
@@ -2987,14 +2774,14 @@
                   "value": "w-full rounded-xl border-0 px-4 py-3 font-semibold transition hover:shadow-lg",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2507,
-                    "end": 2586
+                    "start": 2426,
+                    "end": 2505
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2496,
-                  "end": 2586
+                  "start": 2415,
+                  "end": 2505
                 }
               },
               {
@@ -3014,8 +2801,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2611,
-                        "end": 2618
+                        "start": 2530,
+                        "end": 2537
                       }
                     }
                   ],
@@ -3027,14 +2814,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2599,
-                    "end": 2618
+                    "start": 2518,
+                    "end": 2537
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2592,
-                  "end": 2618
+                  "start": 2511,
+                  "end": 2537
                 }
               },
               {
@@ -3050,14 +2837,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2634,
-                    "end": 2638
+                    "start": 2553,
+                    "end": 2557
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2624,
-                  "end": 2638
+                  "start": 2543,
+                  "end": 2557
                 }
               }
             ],
@@ -3110,8 +2897,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 2460,
-              "end": 2642
+              "start": 2379,
+              "end": 2561
             }
           }
         ],
@@ -3152,8 +2939,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 2448,
-          "end": 2642
+          "start": 2367,
+          "end": 2561
         }
       }
     },
@@ -3162,8 +2949,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 2644,
-        "end": 4027
+        "start": 2563,
+        "end": 3946
       },
       "parameters": [
         {
@@ -3194,14 +2981,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2708,
-                    "end": 2717
+                    "start": 2627,
+                    "end": 2636
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2701,
-                  "end": 2717
+                  "start": 2620,
+                  "end": 2636
                 }
               },
               {
@@ -3225,14 +3012,14 @@
                                 "value": "mx-auto max-w-lg",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 2775,
-                                  "end": 2793
+                                  "start": 2694,
+                                  "end": 2712
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 2764,
-                                "end": 2793
+                                "start": 2683,
+                                "end": 2712
                               }
                             },
                             {
@@ -3246,14 +3033,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 2810,
-                                  "end": 2819
+                                  "start": 2729,
+                                  "end": 2738
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 2803,
-                                "end": 2819
+                                "start": 2722,
+                                "end": 2738
                               }
                             },
                             {
@@ -3277,14 +3064,14 @@
                                               "value": "mb-6 flex items-center justify-between",
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 2885,
-                                                "end": 2925
+                                                "start": 2804,
+                                                "end": 2844
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 2874,
-                                              "end": 2925
+                                              "start": 2793,
+                                              "end": 2844
                                             }
                                           },
                                           {
@@ -3317,8 +3104,8 @@
                                                                 },
                                                                 "origin": {
                                                                   "source": "main.ssrg",
-                                                                  "start": 3011,
-                                                                  "end": 3015
+                                                                  "start": 2930,
+                                                                  "end": 2934
                                                                 }
                                                               }
                                                             ],
@@ -3330,14 +3117,14 @@
                                                             },
                                                             "origin": {
                                                               "source": "main.ssrg",
-                                                              "start": 3000,
-                                                              "end": 3015
+                                                              "start": 2919,
+                                                              "end": 2934
                                                             }
                                                           },
                                                           "origin": {
                                                             "source": "main.ssrg",
-                                                            "start": 2993,
-                                                            "end": 3015
+                                                            "start": 2912,
+                                                            "end": 2934
                                                           }
                                                         },
                                                         {
@@ -3357,8 +3144,8 @@
                                                                 },
                                                                 "origin": {
                                                                   "source": "main.ssrg",
-                                                                  "start": 3049,
-                                                                  "end": 3053
+                                                                  "start": 2968,
+                                                                  "end": 2972
                                                                 }
                                                               }
                                                             ],
@@ -3369,14 +3156,14 @@
                                                             },
                                                             "origin": {
                                                               "source": "main.ssrg",
-                                                              "start": 3043,
-                                                              "end": 3053
+                                                              "start": 2962,
+                                                              "end": 2972
                                                             }
                                                           },
                                                           "origin": {
                                                             "source": "main.ssrg",
-                                                            "start": 3033,
-                                                            "end": 3053
+                                                            "start": 2952,
+                                                            "end": 2972
                                                           }
                                                         }
                                                       ],
@@ -3405,8 +3192,8 @@
                                                       },
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 2975,
-                                                        "end": 3069
+                                                        "start": 2894,
+                                                        "end": 2988
                                                       }
                                                     }
                                                   ],
@@ -3447,8 +3234,8 @@
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 2965,
-                                                    "end": 3069
+                                                    "start": 2884,
+                                                    "end": 2988
                                                   }
                                                 },
                                                 {
@@ -3466,14 +3253,14 @@
                                                             "value": "text-sm font-semibold text-slate-500",
                                                             "origin": {
                                                               "source": "main.ssrg",
-                                                              "start": 3124,
-                                                              "end": 3162
+                                                              "start": 3043,
+                                                              "end": 3081
                                                             }
                                                           },
                                                           "origin": {
                                                             "source": "main.ssrg",
-                                                            "start": 3113,
-                                                            "end": 3162
+                                                            "start": 3032,
+                                                            "end": 3081
                                                           }
                                                         },
                                                         {
@@ -3484,14 +3271,14 @@
                                                             "value": "SESERAGI FLOW",
                                                             "origin": {
                                                               "source": "main.ssrg",
-                                                              "start": 3190,
-                                                              "end": 3205
+                                                              "start": 3109,
+                                                              "end": 3124
                                                             }
                                                           },
                                                           "origin": {
                                                             "source": "main.ssrg",
-                                                            "start": 3180,
-                                                            "end": 3205
+                                                            "start": 3099,
+                                                            "end": 3124
                                                           }
                                                         }
                                                       ],
@@ -3519,8 +3306,8 @@
                                                       },
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3095,
-                                                        "end": 3221
+                                                        "start": 3014,
+                                                        "end": 3140
                                                       }
                                                     }
                                                   ],
@@ -3561,8 +3348,8 @@
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 3085,
-                                                    "end": 3221
+                                                    "start": 3004,
+                                                    "end": 3140
                                                   }
                                                 }
                                               ],
@@ -3586,14 +3373,14 @@
                                               },
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 2949,
-                                                "end": 3235
+                                                "start": 2868,
+                                                "end": 3154
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 2939,
-                                              "end": 3235
+                                              "start": 2858,
+                                              "end": 3154
                                             }
                                           }
                                         ],
@@ -3634,8 +3421,8 @@
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 2860,
-                                          "end": 3247
+                                          "start": 2779,
+                                          "end": 3166
                                         }
                                       }
                                     ],
@@ -3689,8 +3476,8 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 2851,
-                                      "end": 3247
+                                      "start": 2770,
+                                      "end": 3166
                                     }
                                   },
                                   {
@@ -3708,14 +3495,14 @@
                                               "value": "m-0 text-3xl font-bold text-slate-900 sm:text-4xl",
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3292,
-                                                "end": 3343
+                                                "start": 3211,
+                                                "end": 3262
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3281,
-                                              "end": 3343
+                                              "start": 3200,
+                                              "end": 3262
                                             }
                                           },
                                           {
@@ -3735,8 +3522,8 @@
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 3373,
-                                                    "end": 3377
+                                                    "start": 3292,
+                                                    "end": 3296
                                                   }
                                                 }
                                               ],
@@ -3747,14 +3534,14 @@
                                               },
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3367,
-                                                "end": 3377
+                                                "start": 3286,
+                                                "end": 3296
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3357,
-                                              "end": 3377
+                                              "start": 3276,
+                                              "end": 3296
                                             }
                                           }
                                         ],
@@ -3782,8 +3569,8 @@
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 3267,
-                                          "end": 3389
+                                          "start": 3186,
+                                          "end": 3308
                                         }
                                       }
                                     ],
@@ -3824,8 +3611,8 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 3259,
-                                      "end": 3389
+                                      "start": 3178,
+                                      "end": 3308
                                     }
                                   },
                                   {
@@ -3843,14 +3630,14 @@
                                               "value": "mb-6 mt-4 text-lg text-slate-700",
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3433,
-                                                "end": 3467
+                                                "start": 3352,
+                                                "end": 3386
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3422,
-                                              "end": 3467
+                                              "start": 3341,
+                                              "end": 3386
                                             }
                                           },
                                           {
@@ -3870,8 +3657,8 @@
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 3500,
-                                                    "end": 3504
+                                                    "start": 3419,
+                                                    "end": 3423
                                                   }
                                                 }
                                               ],
@@ -3882,14 +3669,14 @@
                                               },
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3491,
-                                                "end": 3504
+                                                "start": 3410,
+                                                "end": 3423
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3481,
-                                              "end": 3504
+                                              "start": 3400,
+                                              "end": 3423
                                             }
                                           }
                                         ],
@@ -3917,8 +3704,8 @@
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 3408,
-                                          "end": 3516
+                                          "start": 3327,
+                                          "end": 3435
                                         }
                                       }
                                     ],
@@ -3959,8 +3746,8 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 3401,
-                                      "end": 3516
+                                      "start": 3320,
+                                      "end": 3435
                                     }
                                   },
                                   {
@@ -3981,14 +3768,14 @@
                                               },
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3558,
-                                                "end": 3568
+                                                "start": 3477,
+                                                "end": 3487
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3551,
-                                              "end": 3568
+                                              "start": 3470,
+                                              "end": 3487
                                             }
                                           },
                                           {
@@ -4018,8 +3805,8 @@
                                                             },
                                                             "origin": {
                                                               "source": "main.ssrg",
-                                                              "start": 3638,
-                                                              "end": 3642
+                                                              "start": 3557,
+                                                              "end": 3561
                                                             }
                                                           }
                                                         ],
@@ -4031,14 +3818,14 @@
                                                         },
                                                         "origin": {
                                                           "source": "main.ssrg",
-                                                          "start": 3624,
-                                                          "end": 3642
+                                                          "start": 3543,
+                                                          "end": 3561
                                                         }
                                                       },
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3617,
-                                                        "end": 3642
+                                                        "start": 3536,
+                                                        "end": 3561
                                                       }
                                                     },
                                                     {
@@ -4049,14 +3836,14 @@
                                                         "value": "",
                                                         "origin": {
                                                           "source": "main.ssrg",
-                                                          "start": 3668,
-                                                          "end": 3670
+                                                          "start": 3587,
+                                                          "end": 3589
                                                         }
                                                       },
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3658,
-                                                        "end": 3670
+                                                        "start": 3577,
+                                                        "end": 3589
                                                       }
                                                     }
                                                   ],
@@ -4085,8 +3872,8 @@
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 3601,
-                                                    "end": 3684
+                                                    "start": 3520,
+                                                    "end": 3603
                                                   }
                                                 }
                                               ],
@@ -4127,14 +3914,14 @@
                                               },
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3592,
-                                                "end": 3684
+                                                "start": 3511,
+                                                "end": 3603
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3582,
-                                              "end": 3684
+                                              "start": 3501,
+                                              "end": 3603
                                             }
                                           }
                                         ],
@@ -4167,8 +3954,8 @@
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 3537,
-                                          "end": 3696
+                                          "start": 3456,
+                                          "end": 3615
                                         }
                                       }
                                     ],
@@ -4216,8 +4003,8 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 3528,
-                                      "end": 3696
+                                      "start": 3447,
+                                      "end": 3615
                                     }
                                   },
                                   {
@@ -4235,14 +4022,14 @@
                                               "value": "mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3",
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3742,
-                                                "end": 3786
+                                                "start": 3661,
+                                                "end": 3705
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3731,
-                                              "end": 3786
+                                              "start": 3650,
+                                              "end": 3705
                                             }
                                           },
                                           {
@@ -4260,8 +4047,8 @@
                                                       "value": "focus",
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3833,
-                                                        "end": 3840
+                                                        "start": 3752,
+                                                        "end": 3759
                                                       }
                                                     },
                                                     {
@@ -4269,8 +4056,8 @@
                                                       "value": "Start focus",
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3841,
-                                                        "end": 3854
+                                                        "start": 3760,
+                                                        "end": 3773
                                                       }
                                                     },
                                                     {
@@ -4283,8 +4070,8 @@
                                                       },
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3855,
-                                                        "end": 3865
+                                                        "start": 3774,
+                                                        "end": 3784
                                                       }
                                                     }
                                                   ],
@@ -4302,8 +4089,8 @@
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 3826,
-                                                    "end": 3865
+                                                    "start": 3745,
+                                                    "end": 3784
                                                   }
                                                 },
                                                 {
@@ -4315,8 +4102,8 @@
                                                       "value": "break",
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3888,
-                                                        "end": 3895
+                                                        "start": 3807,
+                                                        "end": 3814
                                                       }
                                                     },
                                                     {
@@ -4324,8 +4111,8 @@
                                                       "value": "Take a break",
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3896,
-                                                        "end": 3910
+                                                        "start": 3815,
+                                                        "end": 3829
                                                       }
                                                     },
                                                     {
@@ -4338,8 +4125,8 @@
                                                       },
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3911,
-                                                        "end": 3920
+                                                        "start": 3830,
+                                                        "end": 3839
                                                       }
                                                     }
                                                   ],
@@ -4357,8 +4144,8 @@
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 3881,
-                                                    "end": 3920
+                                                    "start": 3800,
+                                                    "end": 3839
                                                   }
                                                 },
                                                 {
@@ -4370,8 +4157,8 @@
                                                       "value": "reset",
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3943,
-                                                        "end": 3950
+                                                        "start": 3862,
+                                                        "end": 3869
                                                       }
                                                     },
                                                     {
@@ -4379,8 +4166,8 @@
                                                       "value": "Reset the flow",
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3951,
-                                                        "end": 3967
+                                                        "start": 3870,
+                                                        "end": 3886
                                                       }
                                                     },
                                                     {
@@ -4393,8 +4180,8 @@
                                                       },
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3968,
-                                                        "end": 3973
+                                                        "start": 3887,
+                                                        "end": 3892
                                                       }
                                                     }
                                                   ],
@@ -4412,8 +4199,8 @@
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 3936,
-                                                    "end": 3973
+                                                    "start": 3855,
+                                                    "end": 3892
                                                   }
                                                 }
                                               ],
@@ -4437,14 +4224,14 @@
                                               },
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3810,
-                                                "end": 3987
+                                                "start": 3729,
+                                                "end": 3906
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3800,
-                                              "end": 3987
+                                              "start": 3719,
+                                              "end": 3906
                                             }
                                           }
                                         ],
@@ -4485,8 +4272,8 @@
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 3717,
-                                          "end": 3999
+                                          "start": 3636,
+                                          "end": 3918
                                         }
                                       }
                                     ],
@@ -4540,8 +4327,8 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 3708,
-                                      "end": 3999
+                                      "start": 3627,
+                                      "end": 3918
                                     }
                                   }
                                 ],
@@ -4565,14 +4352,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 2839,
-                                  "end": 4009
+                                  "start": 2758,
+                                  "end": 3928
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 2829,
-                                "end": 4009
+                                "start": 2748,
+                                "end": 3928
                               }
                             }
                           ],
@@ -4619,8 +4406,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 2754,
-                            "end": 4017
+                            "start": 2673,
+                            "end": 3936
                           }
                         }
                       ],
@@ -4674,8 +4461,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2741,
-                        "end": 4017
+                        "start": 2660,
+                        "end": 3936
                       }
                     }
                   ],
@@ -4699,14 +4486,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2733,
-                    "end": 4023
+                    "start": 2652,
+                    "end": 3942
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2723,
-                  "end": 4023
+                  "start": 2642,
+                  "end": 3942
                 }
               }
             ],
@@ -4745,8 +4532,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 2695,
-              "end": 4027
+              "start": 2614,
+              "end": 3946
             }
           }
         ],
@@ -4800,8 +4587,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 2685,
-          "end": 4027
+          "start": 2604,
+          "end": 3946
         }
       }
     },
@@ -4810,31 +4597,25 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 4029,
-        "end": 4326
+        "start": 3948,
+        "end": 4087
       },
       "parameters": [
-        {
-          "id": "mode",
-          "kind": "named",
-          "type": {
-            "kind": "named",
-            "name": "MutableSignal",
-            "arguments": [
-              {
-                "kind": "named",
-                "name": "Mode",
-                "arguments": []
-              }
-            ]
-          }
-        },
         {
           "id": "message",
           "kind": "named",
           "type": {
             "kind": "named",
             "name": "Msg",
+            "arguments": []
+          }
+        },
+        {
+          "id": "mode",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Mode",
             "arguments": []
           }
         }
@@ -4851,8 +4632,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 4122,
-            "end": 4129
+            "start": 4003,
+            "end": 4010
           }
         },
         "scrutineeType": {
@@ -4869,111 +4650,29 @@
                 "constructor": "artifact/web-dom-counter::StartFocus",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 4136,
-                  "end": 4146
+                  "start": 4017,
+                  "end": 4027
                 }
               }
             ],
             "value": {
-              "kind": "call",
-              "callee": "std/signal::update",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": {
-                    "id": "current",
-                    "kind": "named",
-                    "type": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    }
-                  },
-                  "body": {
-                    "kind": "variable",
-                    "name": "artifact/web-dom-counter::Focusing",
-                    "type": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "source": "main.ssrg",
-                      "start": 4184,
-                      "end": 4192
-                    }
-                  },
-                  "type": {
-                    "kind": "function",
-                    "parameter": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "result": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    }
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 4166,
-                    "end": 4192
-                  }
-                },
-                {
-                  "kind": "variable",
-                  "name": "mode",
-                  "type": {
-                    "kind": "named",
-                    "name": "MutableSignal",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Mode",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 4194,
-                    "end": 4198
-                  }
-                }
-              ],
+              "kind": "variable",
+              "name": "artifact/web-dom-counter::Focusing",
               "type": {
                 "kind": "named",
-                "name": "Effect",
-                "arguments": [
-                  {
-                    "kind": "record",
-                    "closed": true,
-                    "fields": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Never",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Unit",
-                    "arguments": []
-                  }
-                ]
+                "name": "Mode",
+                "arguments": []
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 4150,
-                "end": 4198
+                "start": 4031,
+                "end": 4039
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 4136,
-              "end": 4198
+              "start": 4017,
+              "end": 4039
             }
           },
           {
@@ -4984,244 +4683,64 @@
                 "constructor": "artifact/web-dom-counter::TakeBreak",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 4203,
-                  "end": 4212
+                  "start": 4044,
+                  "end": 4053
                 }
               }
             ],
             "value": {
-              "kind": "call",
-              "callee": "std/signal::update",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": {
-                    "id": "current",
-                    "kind": "named",
-                    "type": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    }
-                  },
-                  "body": {
-                    "kind": "variable",
-                    "name": "artifact/web-dom-counter::Resting",
-                    "type": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "source": "main.ssrg",
-                      "start": 4250,
-                      "end": 4257
-                    }
-                  },
-                  "type": {
-                    "kind": "function",
-                    "parameter": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "result": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    }
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 4232,
-                    "end": 4257
-                  }
-                },
-                {
-                  "kind": "variable",
-                  "name": "mode",
-                  "type": {
-                    "kind": "named",
-                    "name": "MutableSignal",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Mode",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 4259,
-                    "end": 4263
-                  }
-                }
-              ],
+              "kind": "variable",
+              "name": "artifact/web-dom-counter::Resting",
               "type": {
                 "kind": "named",
-                "name": "Effect",
-                "arguments": [
-                  {
-                    "kind": "record",
-                    "closed": true,
-                    "fields": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Never",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Unit",
-                    "arguments": []
-                  }
-                ]
+                "name": "Mode",
+                "arguments": []
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 4216,
-                "end": 4263
+                "start": 4057,
+                "end": 4064
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 4203,
-              "end": 4263
+              "start": 4044,
+              "end": 4064
             }
           },
           {
             "tests": [],
             "value": {
-              "kind": "call",
-              "callee": "std/signal::update",
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": {
-                    "id": "current",
-                    "kind": "named",
-                    "type": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    }
-                  },
-                  "body": {
-                    "kind": "variable",
-                    "name": "artifact/web-dom-counter::Ready",
-                    "type": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "source": "main.ssrg",
-                      "start": 4311,
-                      "end": 4316
-                    }
-                  },
-                  "type": {
-                    "kind": "function",
-                    "parameter": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    },
-                    "result": {
-                      "kind": "named",
-                      "name": "Mode",
-                      "arguments": []
-                    }
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 4293,
-                    "end": 4316
-                  }
-                },
-                {
-                  "kind": "variable",
-                  "name": "mode",
-                  "type": {
-                    "kind": "named",
-                    "name": "MutableSignal",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Mode",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 4318,
-                    "end": 4322
-                  }
-                }
-              ],
+              "kind": "variable",
+              "name": "artifact/web-dom-counter::Ready",
               "type": {
                 "kind": "named",
-                "name": "Effect",
-                "arguments": [
-                  {
-                    "kind": "record",
-                    "closed": true,
-                    "fields": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Never",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Unit",
-                    "arguments": []
-                  }
-                ]
+                "name": "Mode",
+                "arguments": []
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 4277,
-                "end": 4322
+                "start": 4078,
+                "end": 4083
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 4268,
-              "end": 4322
+              "start": 4069,
+              "end": 4083
             }
           }
         ],
         "exhaustive": true,
         "type": {
           "kind": "named",
-          "name": "Effect",
-          "arguments": [
-            {
-              "kind": "record",
-              "closed": true,
-              "fields": []
-            },
-            {
-              "kind": "named",
-              "name": "Never",
-              "arguments": []
-            },
-            {
-              "kind": "named",
-              "name": "Unit",
-              "arguments": []
-            }
-          ]
+          "name": "Mode",
+          "arguments": []
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 4116,
-          "end": 4326
+          "start": 3997,
+          "end": 4087
         }
       }
     },
@@ -5230,8 +4749,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 4328,
-        "end": 4727
+        "start": 4089,
+        "end": 4192
       },
       "parameters": [
         {
@@ -5245,28 +4764,34 @@
         }
       ],
       "body": {
-        "kind": "sequence",
-        "statements": [
+        "kind": "call",
+        "callee": "std/web/dom::app",
+        "arguments": [
           {
-            "kind": "bind",
-            "name": "mode",
-            "type": {
-              "kind": "external-named",
-              "name": "MutableSignal",
-              "canonical": "std/signal::MutableSignal",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Mode",
-                  "arguments": []
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "target",
+                "value": {
+                  "kind": "string",
+                  "value": "#app",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 4134,
+                    "end": 4140
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 4126,
+                  "end": 4140
                 }
-              ]
-            },
-            "value": {
-              "kind": "call",
-              "callee": "std/signal::make",
-              "arguments": [
-                {
+              },
+              {
+                "kind": "field",
+                "name": "initial",
+                "value": {
                   "kind": "variable",
                   "name": "initialMode",
                   "type": {
@@ -5276,78 +4801,59 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 4420,
-                    "end": 4431
+                    "start": 4155,
+                    "end": 4166
                   }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 4146,
+                  "end": 4166
                 }
-              ],
-              "type": {
-                "kind": "named",
-                "name": "Effect",
-                "arguments": [
-                  {
-                    "kind": "record",
-                    "closed": true,
-                    "fields": []
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Never",
-                    "arguments": []
-                  },
-                  {
-                    "kind": "external-named",
-                    "name": "MutableSignal",
-                    "canonical": "std/signal::MutableSignal",
-                    "arguments": [
-                      {
+              },
+              {
+                "kind": "field",
+                "name": "update",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-dom-counter::update",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Msg",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Mode",
+                        "arguments": []
+                      },
+                      "result": {
                         "kind": "named",
                         "name": "Mode",
                         "arguments": []
                       }
-                    ]
-                  }
-                ]
-              },
-              "origin": {
-                "source": "main.ssrg",
-                "start": 4407,
-                "end": 4431
-              }
-            },
-            "origin": {
-              "source": "main.ssrg",
-              "start": 4399,
-              "end": 4431
-            }
-          },
-          {
-            "kind": "pure-let",
-            "name": "content",
-            "type": {
-              "kind": "external-named",
-              "name": "Signal",
-              "canonical": "std/signal::Signal",
-              "arguments": [
-                {
-                  "kind": "external-named",
-                  "name": "html.Html",
-                  "canonical": "std/web/html::Html",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Msg",
-                      "arguments": []
                     }
-                  ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 4172,
+                    "end": 4178
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 4172,
+                  "end": 4178
                 }
-              ]
-            },
-            "value": {
-              "kind": "call",
-              "callee": "std/signal::map",
-              "arguments": [
-                {
+              },
+              {
+                "kind": "field",
+                "name": "view",
+                "value": {
                   "kind": "variable",
                   "name": "artifact/web-dom-counter::view",
                   "type": {
@@ -5372,362 +4878,39 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 4462,
-                    "end": 4466
+                    "start": 4184,
+                    "end": 4188
                   }
                 },
-                {
-                  "kind": "variable",
-                  "name": "mode",
-                  "type": {
-                    "kind": "external-named",
-                    "name": "MutableSignal",
-                    "canonical": "std/signal::MutableSignal",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Mode",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 4467,
-                    "end": 4471
-                  }
-                }
-              ],
-              "type": {
-                "kind": "external-named",
-                "name": "Signal",
-                "canonical": "std/signal::Signal",
-                "arguments": [
-                  {
-                    "kind": "external-named",
-                    "name": "html.Html",
-                    "canonical": "std/web/html::Html",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Msg",
-                        "arguments": []
-                      }
-                    ]
-                  }
-                ]
-              },
-              "origin": {
-                "source": "main.ssrg",
-                "start": 4450,
-                "end": 4471
-              }
-            },
-            "origin": {
-              "source": "main.ssrg",
-              "start": 4436,
-              "end": 4471
-            }
-          },
-          {
-            "kind": "bind",
-            "name": "target",
-            "type": {
-              "kind": "external-named",
-              "name": "DomTarget",
-              "canonical": "std/web/dom::DomTarget",
-              "arguments": []
-            },
-            "value": {
-              "kind": "effect-operation",
-              "operation": "effect.mapError",
-              "requirements": {
-                "kind": "record",
-                "closed": true,
-                "fields": [
-                  {
-                    "name": "dom",
-                    "type": {
-                      "kind": "external-named",
-                      "name": "dom.Dom",
-                      "canonical": "std/web/dom::Dom",
-                      "arguments": []
-                    }
-                  }
-                ]
-              },
-              "failure": {
-                "kind": "named",
-                "name": "String",
-                "arguments": []
-              },
-              "success": {
-                "kind": "external-named",
-                "name": "DomTarget",
-                "canonical": "std/web/dom::DomTarget",
-                "arguments": []
-              },
-              "arguments": [
-                {
-                  "kind": "lambda",
-                  "parameter": {
-                    "id": "error",
-                    "kind": "named",
-                    "type": {
-                      "kind": "external-named",
-                      "name": "dom.DomError",
-                      "canonical": "std/web/dom::DomError",
-                      "arguments": []
-                    }
-                  },
-                  "body": {
-                    "kind": "string",
-                    "value": "DOM target unavailable",
-                    "origin": {
-                      "source": "main.ssrg",
-                      "start": 4554,
-                      "end": 4578
-                    }
-                  },
-                  "type": {
-                    "kind": "function",
-                    "parameter": {
-                      "kind": "external-named",
-                      "name": "dom.DomError",
-                      "canonical": "std/web/dom::DomError",
-                      "arguments": []
-                    },
-                    "result": {
-                      "kind": "named",
-                      "name": "String",
-                      "arguments": []
-                    }
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 4530,
-                    "end": 4578
-                  }
-                },
-                {
-                  "kind": "call",
-                  "callee": "std/web/dom::query",
-                  "arguments": [
-                    {
-                      "kind": "string",
-                      "value": "#app",
-                      "origin": {
-                        "source": "main.ssrg",
-                        "start": 4502,
-                        "end": 4508
-                      }
-                    }
-                  ],
-                  "type": {
-                    "kind": "named",
-                    "name": "Effect",
-                    "arguments": [
-                      {
-                        "kind": "record",
-                        "closed": true,
-                        "fields": [
-                          {
-                            "name": "dom",
-                            "type": {
-                              "kind": "external-named",
-                              "name": "dom.Dom",
-                              "canonical": "std/web/dom::Dom",
-                              "arguments": []
-                            }
-                          }
-                        ]
-                      },
-                      {
-                        "kind": "external-named",
-                        "name": "dom.DomError",
-                        "canonical": "std/web/dom::DomError",
-                        "arguments": []
-                      },
-                      {
-                        "kind": "external-named",
-                        "name": "DomTarget",
-                        "canonical": "std/web/dom::DomTarget",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 4492,
-                    "end": 4508
-                  }
-                }
-              ],
-              "origin": {
-                "source": "main.ssrg",
-                "start": 4492,
-                "end": 4579
-              }
-            },
-            "origin": {
-              "source": "main.ssrg",
-              "start": 4476,
-              "end": 4579
-            }
-          }
-        ],
-        "result": {
-          "kind": "effect-operation",
-          "operation": "effect.mapError",
-          "requirements": {
-            "kind": "record",
-            "closed": true,
-            "fields": [
-              {
-                "name": "dom",
-                "type": {
-                  "kind": "external-named",
-                  "name": "dom.Dom",
-                  "canonical": "std/web/dom::Dom",
-                  "arguments": []
-                }
-              }
-            ]
-          },
-          "failure": {
-            "kind": "named",
-            "name": "String",
-            "arguments": []
-          },
-          "success": {
-            "kind": "named",
-            "name": "Unit",
-            "arguments": []
-          },
-          "arguments": [
-            {
-              "kind": "lambda",
-              "parameter": {
-                "id": "error",
-                "kind": "named",
-                "type": {
-                  "kind": "external-named",
-                  "name": "dom.DomRuntimeError",
-                  "canonical": "std/web/dom::DomRuntimeError",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Never",
-                      "arguments": []
-                    }
-                  ]
-                }
-              },
-              "body": {
-                "kind": "string",
-                "value": "DOM runtime failed",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 4702,
-                  "end": 4722
+                  "start": 4184,
+                  "end": 4188
                 }
-              },
-              "type": {
-                "kind": "function",
-                "parameter": {
-                  "kind": "external-named",
-                  "name": "dom.DomRuntimeError",
-                  "canonical": "std/web/dom::DomRuntimeError",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Never",
-                      "arguments": []
-                    }
-                  ]
-                },
-                "result": {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                }
-              },
-              "origin": {
-                "source": "main.ssrg",
-                "start": 4664,
-                "end": 4722
               }
-            },
-            {
-              "kind": "call",
-              "callee": "std/web/dom::run",
-              "arguments": [
+            ],
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
                 {
-                  "kind": "call",
-                  "callee": "std/web/dom::defaultOptions",
-                  "arguments": [
-                    {
-                      "kind": "unit",
-                      "origin": {
-                        "source": "main.ssrg",
-                        "start": 4612,
-                        "end": 4614
-                      }
-                    }
-                  ],
+                  "name": "initial",
                   "type": {
-                    "kind": "external-named",
-                    "name": "DomOptions",
-                    "canonical": "std/web/dom::DomOptions",
+                    "kind": "named",
+                    "name": "Mode",
                     "arguments": []
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 4593,
-                    "end": 4614
                   }
                 },
                 {
-                  "kind": "variable",
                   "name": "target",
                   "type": {
-                    "kind": "external-named",
-                    "name": "DomTarget",
-                    "canonical": "std/web/dom::DomTarget",
+                    "kind": "named",
+                    "name": "String",
                     "arguments": []
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 4616,
-                    "end": 4622
                   }
                 },
                 {
-                  "kind": "call",
-                  "callee": "artifact/web-dom-counter::update",
-                  "arguments": [
-                    {
-                      "kind": "variable",
-                      "name": "mode",
-                      "type": {
-                        "kind": "external-named",
-                        "name": "MutableSignal",
-                        "canonical": "std/signal::MutableSignal",
-                        "arguments": [
-                          {
-                            "kind": "named",
-                            "name": "Mode",
-                            "arguments": []
-                          }
-                        ]
-                      },
-                      "origin": {
-                        "source": "main.ssrg",
-                        "start": 4631,
-                        "end": 4635
-                      }
-                    }
-                  ],
+                  "name": "update",
                   "type": {
                     "kind": "function",
                     "parameter": {
@@ -5736,117 +4919,87 @@
                       "arguments": []
                     },
                     "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Mode",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Mode",
+                        "arguments": []
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "view",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
                       "kind": "named",
-                      "name": "Effect",
+                      "name": "Mode",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
                       "arguments": [
                         {
-                          "kind": "record",
-                          "closed": true,
-                          "fields": []
-                        },
-                        {
                           "kind": "named",
-                          "name": "Never",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Unit",
+                          "name": "Msg",
                           "arguments": []
                         }
                       ]
                     }
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 4624,
-                    "end": 4635
-                  }
-                },
-                {
-                  "kind": "variable",
-                  "name": "content",
-                  "type": {
-                    "kind": "external-named",
-                    "name": "Signal",
-                    "canonical": "std/signal::Signal",
-                    "arguments": [
-                      {
-                        "kind": "external-named",
-                        "name": "html.Html",
-                        "canonical": "std/web/html::Html",
-                        "arguments": [
-                          {
-                            "kind": "named",
-                            "name": "Msg",
-                            "arguments": []
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "origin": {
-                    "source": "main.ssrg",
-                    "start": 4637,
-                    "end": 4644
                   }
                 }
-              ],
-              "type": {
-                "kind": "named",
-                "name": "Effect",
-                "arguments": [
-                  {
-                    "kind": "record",
-                    "closed": true,
-                    "fields": [
-                      {
-                        "name": "dom",
-                        "type": {
-                          "kind": "external-named",
-                          "name": "dom.Dom",
-                          "canonical": "std/web/dom::Dom",
-                          "arguments": []
-                        }
-                      }
-                    ]
-                  },
-                  {
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 4120,
+              "end": 4192
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "dom",
+                  "type": {
                     "kind": "external-named",
-                    "name": "dom.DomRuntimeError",
-                    "canonical": "std/web/dom::DomRuntimeError",
-                    "arguments": [
-                      {
-                        "kind": "named",
-                        "name": "Never",
-                        "arguments": []
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "named",
-                    "name": "Unit",
+                    "name": "Dom",
+                    "canonical": "std/web/dom::Dom",
                     "arguments": []
                   }
-                ]
-              },
-              "origin": {
-                "source": "main.ssrg",
-                "start": 4584,
-                "end": 4644
-              }
+                }
+              ]
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
             }
-          ],
-          "origin": {
-            "source": "main.ssrg",
-            "start": 4584,
-            "end": 4723
-          }
+          ]
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 4390,
-          "end": 4727
+          "start": 4112,
+          "end": 4192
         }
       }
     }

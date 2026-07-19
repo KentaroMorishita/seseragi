@@ -34,60 +34,9 @@
           "localName": "html"
         }
       ]
-    },
-    {
-      "specifier": "std/signal",
-      "module": "artifact/web-dom-counter/std/signal",
-      "origin": {
-        "start": 72,
-        "end": 109
-      },
-      "imports": [
-        {
-          "namespace": "namespace",
-          "name": "*",
-          "symbol": "artifact/web-dom-counter/std/signal::*",
-          "localName": "signals"
-        }
-      ]
-    },
-    {
-      "specifier": "std/signal",
-      "module": "artifact/web-dom-counter/std/signal",
-      "origin": {
-        "start": 110,
-        "end": 152
-      },
-      "imports": [
-        {
-          "namespace": "value",
-          "name": "MutableSignal",
-          "symbol": "artifact/web-dom-counter/std/signal::MutableSignal"
-        }
-      ]
     }
   ],
-  "exports": [
-    {
-      "symbol": "artifact/web-dom-counter::main",
-      "namespace": "value",
-      "name": "main",
-      "visibility": "public",
-      "declaration": {
-        "start": 4328,
-        "end": 4727
-      },
-      "scheme": {
-        "typeParameters": [],
-        "constraints": [],
-        "type": {
-          "kind": "named",
-          "name": "Unit",
-          "arguments": []
-        }
-      }
-    }
-  ],
+  "exports": [],
   "operators": [],
   "instances": []
 }

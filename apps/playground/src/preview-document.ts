@@ -120,5 +120,5 @@ img, svg { display: block; max-width: 100%; }
 `
 
 export function createPreviewDocument(body: string): string {
-  return `<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>${previewUtilityCss}</style></head><body>${body}</body></html>`
+  return `<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; script-src 'none'; style-src 'unsafe-inline'"><meta name="viewport" content="width=device-width, initial-scale=1"><style>${previewUtilityCss}</style></head><body>${body}</body></html>`
 }

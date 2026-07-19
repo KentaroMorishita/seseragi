@@ -8,14 +8,8 @@
     "requirements": [
       "web.html.style-type",
       "web.html.type",
-      "signal.mutable-type",
       "effect.core.type",
-      "signal.type",
-      "web.dom.target",
-      "web.dom.error",
       "web.dom.service",
-      "web.dom.runtime-error",
-      "web.dom.options",
       "core.adt",
       "web.html.style",
       "core.string",
@@ -27,14 +21,7 @@
       "web.html.h1",
       "web.html.p",
       "core.unit",
-      "signal.update",
-      "effect.core.flatMap",
-      "signal.make",
-      "signal.map",
-      "effect.core.mapError",
-      "web.dom.query",
-      "web.dom.run",
-      "web.dom.default-options"
+      "web.dom.app"
     ]
   },
   "exports": [

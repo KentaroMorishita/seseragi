@@ -2,11 +2,19 @@ import {
   type Effect,
   type EffectResult,
   type Unit,
+  flatMap,
+  mapError,
   run as runEffect,
+  unit,
 } from "./effect"
 import type { Html } from "./html"
 import { serviceEffect, type ServiceOperation } from "./service"
-import type { Signal } from "./signal"
+import {
+  make as makeSignal,
+  map as mapSignal,
+  type Signal,
+  update as updateSignal,
+} from "./signal"
 
 const DOM_TARGET = Symbol("seseragi.dom-target")
 
@@ -48,6 +56,13 @@ export type DomEnvironment = {
   readonly dom: Dom
 }
 
+export type DomApp<State, Message> = Readonly<{
+  readonly target: string
+  readonly initial: NoInfer<State>
+  readonly update: (message: Message) => (state: State) => State
+  readonly view: (state: State) => Html<Message>
+}>
+
 export function defaultOptions(_unit: Unit): DomOptions {
   return Object.freeze({ eventCapacity: 1024 })
 }
@@ -74,6 +89,37 @@ export function run<Failure, Message>(
       content
     )
   )
+}
+
+/**
+ * Mounts the common pure reducer + Signal application shape.
+ *
+ * Lower-level query/run remain available for custom lifecycles and dispatch
+ * failures. This helper owns the standard setup and presents portable String
+ * failures so a compact executable main can infer its complete Effect type.
+ */
+export function app<State, Message>(
+  config: DomApp<State, Message>
+): Effect<DomEnvironment, string, Unit> {
+  return flatMap(makeSignal(config.initial), (state) => {
+    const content = mapSignal(config.view, state)
+    return flatMap(
+      mapError(
+        () => `DOM target unavailable: ${config.target}`,
+        query(config.target)
+      ),
+      (target) =>
+        mapError(
+          () => "DOM runtime failed",
+          run(
+            defaultOptions(unit),
+            target,
+            (message) => updateSignal(config.update(message), state),
+            content
+          )
+        )
+    )
+  })
 }
 
 /** Host-adapter boundary; never exposed as a Seseragi value constructor. */
