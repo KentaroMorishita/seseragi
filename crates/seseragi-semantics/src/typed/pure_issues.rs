@@ -99,6 +99,7 @@ pub(crate) enum RecordIssue {
     MissingField {
         field: ByteSpan,
         name: String,
+        suggestion: Option<String>,
     },
     AccessOnNonRecord {
         receiver: ByteSpan,
@@ -112,6 +113,7 @@ pub(crate) enum RecordIssue {
         field: ByteSpan,
         name: String,
         structure: String,
+        suggestion: Option<String>,
     },
     MissingStructField {
         structure: ByteSpan,

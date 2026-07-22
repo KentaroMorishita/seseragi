@@ -8,6 +8,7 @@
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "struct.field-missing",
+      "message": "Struct field missing",
       "primary": {
         "start": 129,
         "end": 133
@@ -21,33 +22,76 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "struct construction is missing required field `score`",
+          "primary": {
+            "start": 102,
+            "end": 149
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d2",
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "struct.field-unresolved",
+      "message": "This struct has no such field",
       "primary": {
         "start": 209,
         "end": 212
       },
       "related": [
         {
-          "message": "struct `User` has no field `age`",
+          "message": "struct `User` has no field `age`; did you mean `name`?",
           "primary": {
             "start": 151,
             "end": 218
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "struct `User` has no field `age`; did you mean `name`?",
+          "primary": {
+            "start": 151,
+            "end": 218
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the field spelling and the type of the value being accessed."
+      ],
+      "fixes": [
+        {
+          "title": "Replace with `name`",
+          "edits": [
+            {
+              "range": {
+                "start": 209,
+                "end": 212
+              },
+              "replacement": "name"
+            }
+          ]
+        }
+      ],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d3",
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "struct.field-type-mismatch",
+      "message": "Expression type does not match the expected type",
       "primary": {
         "start": 262,
         "end": 264
@@ -61,13 +105,31 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "struct field `name` requires String, received Int",
+          "primary": {
+            "start": 220,
+            "end": 277
+          }
+        }
+      ],
+      "notes": [
+        "Seseragi does not insert an implicit conversion between these types."
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": [],
+      "expectedType": "String",
+      "actualType": "Int"
     },
     {
       "id": "d4",
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "struct.spread-type-mismatch",
+      "message": "Struct spread type mismatch",
       "primary": {
         "start": 328,
         "end": 335
@@ -81,7 +143,20 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "struct update requires User, received Team",
+          "primary": {
+            "start": 279,
+            "end": 337
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": "User",
+      "actualType": "Team"
     }
   ]
 }

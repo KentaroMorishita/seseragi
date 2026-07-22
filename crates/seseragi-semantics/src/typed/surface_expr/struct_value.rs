@@ -215,6 +215,10 @@ pub(super) fn type_struct(
                         field: *name_span,
                         name: name.clone(),
                         structure: struct_type.name.clone(),
+                        suggestion: super::record::closest_field_name(
+                            name,
+                            fields.keys().map(String::as_str),
+                        ),
                     });
                 }
                 if let Some(expected) = expected {

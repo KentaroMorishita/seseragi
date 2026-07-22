@@ -174,6 +174,23 @@ describe("Playground sample catalog", () => {
     expect(styles).toMatch(/\.sample-guide \{[\s\S]*?position: absolute;/)
   })
 
+  test("renders navigable human-readable diagnostic cards", async () => {
+    const main = await Bun.file(
+      new URL("../src/main.ts", import.meta.url)
+    ).text()
+    const cards = await Bun.file(
+      new URL("../src/diagnostics/diagnostic-cards.ts", import.meta.url)
+    ).text()
+
+    expect(main).toContain("renderDiagnosticCards(output, diagnostics")
+    expect(main).toContain("utf8RangeToUtf16(source, byteRange)")
+    expect(cards).toContain("diagnostic.message")
+    expect(cards).not.toContain("diagnostic.messageKey")
+    expect(cards).toContain("Expected")
+    expect(cards).toContain("Help:")
+    expect(cards).toContain("Fix:")
+  })
+
   test("renders HTML output in an isolated preview", async () => {
     const html = await Bun.file(
       new URL("../index.html", import.meta.url)
@@ -241,6 +258,34 @@ describe("Playground sample catalog", () => {
     const response = await compile("broken.ssrg", "pub let broken: Int =\n")
     expect(response.status).toBe("failure")
     expect(response.diagnostics.diagnostics.length).toBeGreaterThan(0)
-    expect(response.diagnostics.diagnostics[0]?.primary).toBeDefined()
+    const diagnostic = response.diagnostics.diagnostics[0]
+    expect(diagnostic?.primary).toBeDefined()
+    expect(diagnostic?.message).not.toBe(diagnostic?.messageKey)
+    expect(diagnostic?.message).not.toContain("parser.")
+    expect(Array.isArray(diagnostic?.labels)).toBe(true)
+    expect(diagnostic?.helps.length).toBeGreaterThan(0)
+  })
+
+  test("exposes type differences and field spelling fixes", async () => {
+    const mismatch = await compile(
+      "mismatch.ssrg",
+      'fn one value: Int -> Int = value\npub fn main -> Int = one "no"\n'
+    )
+    expect(mismatch.status).toBe("failure")
+    expect(mismatch.diagnostics.diagnostics[0]).toMatchObject({
+      messageKey: "call.argument-type-mismatch",
+      expectedType: "Int",
+      actualType: "String",
+    })
+
+    const field = await compile(
+      "field.ssrg",
+      'pub struct User { name: String }\npub fn main -> User = User { nmae: "A" }\n'
+    )
+    expect(field.status).toBe("failure")
+    expect(field.diagnostics.diagnostics[0]?.fixes[0]).toMatchObject({
+      title: "Replace with `name`",
+      edits: [{ replacement: "name" }],
+    })
   })
 })

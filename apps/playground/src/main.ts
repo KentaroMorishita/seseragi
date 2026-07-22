@@ -1,9 +1,9 @@
 import { setDiagnostics } from "@codemirror/lint"
+import type { Diagnostic } from "./compiler/types"
 import { compileSingleFile } from "./compiler/wasm-driver"
-import {
-  renderDiagnostics,
-  toEditorDiagnostics,
-} from "./diagnostics/editor-diagnostics"
+import { renderDiagnosticCards } from "./diagnostics/diagnostic-cards"
+import { toEditorDiagnostics } from "./diagnostics/editor-diagnostics"
+import { utf8RangeToUtf16 } from "./diagnostics/source-range"
 import { createEditor, replaceEditorSource } from "./editor/create-editor"
 import { createPreviewDocument } from "./preview-document"
 import {
@@ -118,7 +118,7 @@ const sampleGuideConcepts = requiredElement(
 const sampleGuideBody = requiredElement("#sample-guide-body", HTMLElement)
 const sampleGuideSource = requiredElement("#sample-guide-source", HTMLElement)
 const stdinInput = requiredElement("#stdin-input", HTMLTextAreaElement)
-const output = requiredElement("#output", HTMLPreElement)
+const output = requiredElement("#output", HTMLElement)
 const htmlPreview = requiredElement("#html-preview", HTMLIFrameElement)
 const showTextOutputButton = requiredElement(
   "#show-text-output-button",
@@ -269,7 +269,7 @@ async function run(): Promise<void> {
       ])
     )
     if (compiled.status === "failure") {
-      showTextOutput(renderDiagnostics(diagnostics))
+      showDiagnostics(diagnostics)
       setStatus("error", `${diagnostics.length} diagnostic(s)`)
       showIoOnSmallScreens()
       return
@@ -301,6 +301,7 @@ async function run(): Promise<void> {
         ...(domDocument === undefined ? {} : { domDocument }),
         onDomMounted: () => {
           if (revision !== runRevision) return
+          output.className = "output-text"
           output.textContent = "Interactive preview is running."
           setOutputMode("html")
           setStatus("success", "Interactive")
@@ -347,15 +348,30 @@ function cancelActiveExecution(): void {
 }
 
 function showExecutionOutput(stdout: string): void {
+  output.className = "output-text"
   output.textContent = stdout || "Program completed with no output."
   setOutputMode(outputMode)
   renderHtmlPreview(stdout)
 }
 
 function showTextOutput(message: string): void {
+  output.className = "output-text"
   output.textContent = message
   clearHtmlPreview()
   setOutputMode("text")
+}
+
+function showDiagnostics(diagnostics: readonly Diagnostic[]): void {
+  clearHtmlPreview()
+  setOutputMode("text")
+  renderDiagnosticCards(output, diagnostics, (byteRange) => {
+    const range = utf8RangeToUtf16(source, byteRange)
+    editor.dispatch({
+      selection: { anchor: range.from, head: range.to },
+      scrollIntoView: true,
+    })
+    editor.focus()
+  })
 }
 
 function renderHtmlPreview(html: string): void {

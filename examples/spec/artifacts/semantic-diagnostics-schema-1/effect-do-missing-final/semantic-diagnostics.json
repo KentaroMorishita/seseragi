@@ -8,6 +8,7 @@
       "code": "SES-P0001",
       "severity": "Error",
       "messageKey": "effect.do-missing-final-expression",
+      "message": "Effect do missing final expression",
       "primary": {
         "start": 48,
         "end": 48
@@ -21,7 +22,20 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "do block requires a final monadic expression",
+          "primary": {
+            "start": 0,
+            "end": 49
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

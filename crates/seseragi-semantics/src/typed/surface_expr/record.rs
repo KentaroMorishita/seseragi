@@ -127,14 +127,13 @@ pub(super) fn type_member(
     let receiver_type = inferred_type_from_expr(&receiver_analysis.value);
     let (type_ref, optional, issue) = match &receiver_analysis.semantic_type {
         SemanticTypeKey::Struct { owner, arguments } => {
-            let found = context
+            let fields = context
                 .semantic_types()
                 .instantiate_struct_fields(*owner, arguments)
-                .unwrap_or_default()
-                .into_iter()
-                .find(|item| item.name == field);
+                .unwrap_or_default();
+            let found = fields.iter().find(|item| item.name == field);
             match found {
-                Some(found) => (found.type_ref.type_ref, false, None),
+                Some(found) => (found.type_ref.type_ref.clone(), false, None),
                 None => {
                     if let Some(method) = super::application::type_inherent_method_member(
                         receiver, field, field_span, span, context,
@@ -147,6 +146,10 @@ pub(super) fn type_member(
                         Some(RecordIssue::MissingField {
                             field: field_span,
                             name: field.to_owned(),
+                            suggestion: closest_field_name(
+                                field,
+                                fields.iter().map(|item| item.name.as_str()),
+                            ),
                         }),
                     )
                 }
@@ -185,6 +188,10 @@ pub(super) fn type_member(
                     Some(RecordIssue::MissingField {
                         field: field_span,
                         name: field.to_owned(),
+                        suggestion: closest_field_name(
+                            field,
+                            fields.iter().map(|item| item.name.as_str()),
+                        ),
                     }),
                 ),
             },
@@ -224,4 +231,50 @@ pub(super) fn type_member(
     result.record_issue = issue;
     result.merge_issues_from(receiver_analysis);
     result
+}
+
+pub(super) fn closest_field_name<'a>(
+    requested: &str,
+    candidates: impl Iterator<Item = &'a str>,
+) -> Option<String> {
+    let maximum_distance = if requested.chars().count() <= 2 { 1 } else { 2 };
+    candidates
+        .map(|candidate| (edit_distance(requested, candidate), candidate))
+        .filter(|(distance, _)| *distance <= maximum_distance)
+        .min_by(|left, right| left.cmp(right))
+        .map(|(_, candidate)| candidate.to_owned())
+}
+
+fn edit_distance(left: &str, right: &str) -> usize {
+    let right = right.chars().collect::<Vec<_>>();
+    let mut previous = (0..=right.len()).collect::<Vec<_>>();
+    for (left_index, left_char) in left.chars().enumerate() {
+        let mut current = Vec::with_capacity(right.len() + 1);
+        current.push(left_index + 1);
+        for (right_index, right_char) in right.iter().enumerate() {
+            let substitution = previous[right_index] + usize::from(left_char != *right_char);
+            current.push(
+                (previous[right_index + 1] + 1)
+                    .min(current[right_index] + 1)
+                    .min(substitution),
+            );
+        }
+        previous = current;
+    }
+    previous[right.len()]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::closest_field_name;
+
+    #[test]
+    fn suggests_only_close_field_names() {
+        let fields = ["name", "score", "displayName"];
+        assert_eq!(
+            closest_field_name("nmae", fields.into_iter()),
+            Some("name".to_owned())
+        );
+        assert_eq!(closest_field_name("unrelated", fields.into_iter()), None);
+    }
 }

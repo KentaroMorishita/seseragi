@@ -8,6 +8,7 @@
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
       "primary": {
         "start": 38,
         "end": 45
@@ -21,7 +22,22 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 0,
+            "end": 45
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

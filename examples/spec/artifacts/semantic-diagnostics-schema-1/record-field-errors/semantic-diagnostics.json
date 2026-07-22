@@ -8,6 +8,7 @@
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "record.duplicate-field",
+      "message": "Record duplicate field",
       "primary": {
         "start": 50,
         "end": 54
@@ -21,33 +22,76 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "record field `name` is declared more than once",
+          "primary": {
+            "start": 0,
+            "end": 61
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d2",
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "record.field-unresolved",
+      "message": "This record has no such field",
       "primary": {
         "start": 116,
         "end": 119
       },
       "related": [
         {
-          "message": "record type has no required field `age`",
+          "message": "record type has no field `age`; did you mean `name`?",
           "primary": {
             "start": 63,
             "end": 119
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "record type has no field `age`; did you mean `name`?",
+          "primary": {
+            "start": 63,
+            "end": 119
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the field spelling and the type of the value being accessed."
+      ],
+      "fixes": [
+        {
+          "title": "Replace with `name`",
+          "edits": [
+            {
+              "range": {
+                "start": 116,
+                "end": 119
+              },
+              "replacement": "name"
+            }
+          ]
+        }
+      ],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d3",
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "record.spread-on-non-record",
+      "message": "Record spread on non record",
       "primary": {
         "start": 160,
         "end": 165
@@ -61,13 +105,27 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "record spread requires a record, received Int",
+          "primary": {
+            "start": 121,
+            "end": 178
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d4",
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "match.pattern-type-mismatch",
+      "message": "Match pattern type mismatch",
       "primary": {
         "start": 250,
         "end": 257
@@ -81,7 +139,20 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "record pattern field missing does not exist",
+          "primary": {
+            "start": 250,
+            "end": 257
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

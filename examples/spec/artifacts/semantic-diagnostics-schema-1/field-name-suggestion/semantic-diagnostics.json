@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "struct.field-unresolved",
+      "message": "This struct has no such field",
+      "primary": {
+        "start": 65,
+        "end": 69
+      },
+      "related": [
+        {
+          "message": "struct `User` has no field `nmae`; did you mean `name`?",
+          "primary": {
+            "start": 34,
+            "end": 76
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "struct `User` has no field `nmae`; did you mean `name`?",
+          "primary": {
+            "start": 34,
+            "end": 76
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the field spelling and the type of the value being accessed."
+      ],
+      "fixes": [
+        {
+          "title": "Replace with `name`",
+          "edits": [
+            {
+              "range": {
+                "start": 65,
+                "end": 69
+              },
+              "replacement": "name"
+            }
+          ]
+        }
+      ],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

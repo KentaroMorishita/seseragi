@@ -8,6 +8,7 @@
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "do.refutable-bind-pattern",
+      "message": "Do refutable bind pattern",
       "primary": {
         "start": 734,
         "end": 743
@@ -21,13 +22,27 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "do bind patterns must be irrefutable; use an exhaustive match after binding",
+          "primary": {
+            "start": 676,
+            "end": 770
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d2",
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "do.monad-constructor-mismatch",
+      "message": "Do monad constructor mismatch",
       "primary": {
         "start": 836,
         "end": 844
@@ -41,13 +56,27 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "all do expressions must use Maybe<unknown>; received Either<E, Int>",
+          "primary": {
+            "start": 772,
+            "end": 848
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d3",
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "do.missing-final-expression",
+      "message": "Do missing final expression",
       "primary": {
         "start": 900,
         "end": 926
@@ -61,7 +90,20 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "do block requires a final monadic expression",
+          "primary": {
+            "start": 850,
+            "end": 926
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

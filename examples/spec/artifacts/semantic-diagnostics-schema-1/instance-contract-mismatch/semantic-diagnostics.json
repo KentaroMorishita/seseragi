@@ -8,6 +8,7 @@
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "trait.instance-method-signature-mismatch",
+      "message": "Trait instance method signature mismatch",
       "primary": {
         "start": 100,
         "end": 133
@@ -21,7 +22,20 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "instance method render must match this trait contract",
+          "primary": {
+            "start": 20,
+            "end": 48
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

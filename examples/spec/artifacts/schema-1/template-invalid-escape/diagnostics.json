@@ -8,12 +8,18 @@
       "code": "SES-P0201",
       "severity": "Error",
       "messageKey": "literal.invalid-escape",
+      "message": "Literal invalid escape",
       "primary": {
         "start": 30,
         "end": 32
       },
       "related": [],
-      "fixes": []
+      "labels": [],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

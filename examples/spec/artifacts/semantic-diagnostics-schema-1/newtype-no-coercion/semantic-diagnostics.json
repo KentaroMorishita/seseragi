@@ -8,6 +8,7 @@
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "function.return-type-mismatch",
+      "message": "Expression type does not match the expected type",
       "primary": {
         "start": 54,
         "end": 56
@@ -21,7 +22,24 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "declared Int, body produces UserId",
+          "primary": {
+            "start": 22,
+            "end": 56
+          }
+        }
+      ],
+      "notes": [
+        "Seseragi does not insert an implicit conversion between these types."
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": [],
+      "expectedType": "Int",
+      "actualType": "UserId"
     }
   ]
 }

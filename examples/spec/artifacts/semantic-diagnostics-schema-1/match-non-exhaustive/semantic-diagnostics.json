@@ -8,6 +8,7 @@
       "code": "SES-T0301",
       "severity": "Error",
       "messageKey": "match.non-exhaustive",
+      "message": "This match does not cover every possible value",
       "primary": {
         "start": 74,
         "end": 104
@@ -21,7 +22,22 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "missing patterns: Two",
+          "primary": {
+            "start": 74,
+            "end": 104
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Add the missing pattern arms, or add a final _ arm when a catch-all is intended."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

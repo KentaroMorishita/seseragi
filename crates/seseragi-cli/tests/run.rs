@@ -126,8 +126,8 @@ fn runs_a_local_path_dependency_package() {
 
 #[test]
 fn reports_compiler_diagnostics_with_source_ranges() {
-    let program =
-        repository_root().join("examples/spec/fixtures/diagnostics/invalid-numeric-literal.ssrg");
+    let program = repository_root()
+        .join("examples/spec/artifacts/semantic-diagnostics-schema-1/unknown-pure-name/main.ssrg");
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
         .arg(&program)
@@ -136,7 +136,10 @@ fn reports_compiler_diagnostics_with_source_ranges() {
     assert_eq!(output.status.code(), Some(2));
     let stderr = String::from_utf8_lossy(&output.stderr);
     assert!(stderr.contains(&format!("{}:1:", program.display())));
-    assert!(stderr.contains("error[SES-"));
+    assert!(stderr.contains("error[SES-N0001]: Name could not be resolved"));
+    assert!(stderr.contains("pub fn useMissing value: Int -> Int = missing"));
+    assert!(stderr.contains("= help:"));
+    assert!(!stderr.contains("name.unresolved"));
 }
 
 #[test]

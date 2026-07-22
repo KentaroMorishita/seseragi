@@ -8,6 +8,7 @@
       "code": "SES-P0101",
       "severity": "Error",
       "messageKey": "operator.unknown",
+      "message": "Operator unknown",
       "primary": {
         "start": 33,
         "end": 36
@@ -21,7 +22,20 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 0,
+            "end": 44
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

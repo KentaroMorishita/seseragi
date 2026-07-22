@@ -15,10 +15,12 @@ export function toEditorDiagnostics(
           ? Math.min(source.length, range.from + 1)
           : range.to,
       severity:
-        diagnostic.severity === "information"
+        diagnostic.severity?.toLowerCase() === "information"
           ? "info"
-          : (diagnostic.severity ?? "error"),
-      message: `${diagnostic.code}: ${diagnostic.messageKey}`,
+          : diagnostic.severity?.toLowerCase() === "warning"
+            ? "warning"
+            : "error",
+      message: `${diagnostic.code}: ${diagnostic.message}`,
     }
   })
 }
@@ -27,7 +29,7 @@ export function renderDiagnostics(diagnostics: readonly Diagnostic[]): string {
   return diagnostics
     .map(
       (diagnostic) =>
-        `${diagnostic.code}: ${diagnostic.messageKey} ` +
+        `${diagnostic.code}: ${diagnostic.message} ` +
         `[${diagnostic.primary.start}, ${diagnostic.primary.end})`
     )
     .join("\n")

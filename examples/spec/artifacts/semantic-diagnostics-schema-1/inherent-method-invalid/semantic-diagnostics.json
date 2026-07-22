@@ -8,6 +8,7 @@
       "code": "SES-T0503",
       "severity": "Error",
       "messageKey": "impl.target-not-local-nominal",
+      "message": "Impl target not local nominal",
       "primary": {
         "start": 68,
         "end": 71
@@ -21,13 +22,27 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "inherent impl target must be a nominal type defined in this module",
+          "primary": {
+            "start": 63,
+            "end": 118
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d2",
       "code": "SES-T0503",
       "severity": "Error",
       "messageKey": "impl.invalid-self-parameter",
+      "message": "Impl invalid self parameter",
       "primary": {
         "start": 154,
         "end": 159
@@ -41,13 +56,27 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "inherent method first parameter must be named self",
+          "primary": {
+            "start": 139,
+            "end": 179
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d3",
       "code": "SES-T0503",
       "severity": "Error",
       "messageKey": "impl.invalid-self-parameter",
+      "message": "Impl invalid self parameter",
       "primary": {
         "start": 202,
         "end": 207
@@ -61,13 +90,27 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "inherent method self type must match the impl target",
+          "primary": {
+            "start": 183,
+            "end": 218
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d4",
       "code": "SES-N0002",
       "severity": "Error",
       "messageKey": "name.duplicate-definition",
+      "message": "Name duplicate definition",
       "primary": {
         "start": 291,
         "end": 300
@@ -81,7 +124,20 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "inherent method duplicate was first defined here",
+          "primary": {
+            "start": 225,
+            "end": 234
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

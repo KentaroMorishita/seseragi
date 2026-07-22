@@ -93,6 +93,11 @@ UTF-8 byteのまま保持し、`seseragi-source::LineIndex`がnegotiated UTF-8 /
 structured artifactを利用できます。LSP-0はsingle-file diagnostics gateであり、module graph、hover、completionは
 対応する言語能力Phaseへ残します。
 
+human-readable diagnostic sliceでは`seseragi-syntax::Diagnostic`を唯一のpresentation sourceとし、共通の
+message、labels、notes、helps、fixes、expected / actual typeをJSONへ直列化します。terminal adapterはsnippetと
+caret、LSP adapterはrelated informationとdata、Playgroundはrange navigation付きcardへ変換するだけです。
+内部 `messageKey` は回帰fixtureと分類に残しますが、どのsurfaceも表示文字列としては使いません。
+
 同日にformatter-0も接続しました。`seseragi-formatter`は共有lossless token / CSTだけを入力にし、token順、literal、
 custom operator spellingを変更せずline ending、indent、trailing whitespace、末尾newlineをcanonical化します。
 `seseragi-driver::format_module`がparse diagnosticsとformatter coreを束ね、native CLIはfile I/O、write / check modeだけを

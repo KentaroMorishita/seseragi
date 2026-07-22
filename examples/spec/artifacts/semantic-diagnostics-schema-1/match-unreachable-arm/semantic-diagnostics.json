@@ -8,12 +8,18 @@
       "code": "SES-T0302",
       "severity": "Error",
       "messageKey": "match.unreachable-arm",
+      "message": "Match unreachable arm",
       "primary": {
         "start": 103,
         "end": 111
       },
       "related": [],
-      "fixes": []
+      "labels": [],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

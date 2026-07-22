@@ -8,108 +8,180 @@
       "code": "SES-P0001",
       "severity": "Error",
       "messageKey": "parser.expected-expression",
+      "message": "Expected an expression here",
       "primary": {
         "start": 22,
         "end": 24
       },
       "related": [],
-      "fixes": []
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Complete the expression at the highlighted location."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d2",
       "code": "SES-P0001",
       "severity": "Error",
       "messageKey": "parser.expected-expression",
+      "message": "Expected an expression here",
       "primary": {
         "start": 47,
         "end": 49
       },
       "related": [],
-      "fixes": []
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Complete the expression at the highlighted location."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d3",
       "code": "SES-P0001",
       "severity": "Error",
       "messageKey": "parser.expected-expression",
+      "message": "Expected an expression here",
       "primary": {
         "start": 71,
         "end": 73
       },
       "related": [],
-      "fixes": []
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Complete the expression at the highlighted location."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d4",
       "code": "SES-P0001",
       "severity": "Error",
       "messageKey": "parser.expected-expression",
+      "message": "Expected an expression here",
       "primary": {
         "start": 95,
         "end": 97
       },
       "related": [],
-      "fixes": []
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Complete the expression at the highlighted location."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d5",
       "code": "SES-P0001",
       "severity": "Error",
       "messageKey": "parser.expected-expression",
+      "message": "Expected an expression here",
       "primary": {
         "start": 122,
         "end": 123
       },
       "related": [],
-      "fixes": []
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Complete the expression at the highlighted location."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d6",
       "code": "SES-P0001",
       "severity": "Error",
       "messageKey": "parser.expected-expression",
+      "message": "Expected an expression here",
       "primary": {
         "start": 146,
         "end": 148
       },
       "related": [],
-      "fixes": []
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Complete the expression at the highlighted location."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d7",
       "code": "SES-P0001",
       "severity": "Error",
       "messageKey": "parser.expected-expression",
+      "message": "Expected an expression here",
       "primary": {
         "start": 171,
         "end": 172
       },
       "related": [],
-      "fixes": []
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Complete the expression at the highlighted location."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d8",
       "code": "SES-P0001",
       "severity": "Error",
       "messageKey": "parser.expected-expression",
+      "message": "Expected an expression here",
       "primary": {
         "start": 200,
         "end": 202
       },
       "related": [],
-      "fixes": []
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Complete the expression at the highlighted location."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d9",
       "code": "SES-P0001",
       "severity": "Error",
       "messageKey": "parser.expected-expression",
+      "message": "Expected an expression here",
       "primary": {
         "start": 230,
         "end": 233
       },
       "related": [],
-      "fixes": []
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Complete the expression at the highlighted location."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

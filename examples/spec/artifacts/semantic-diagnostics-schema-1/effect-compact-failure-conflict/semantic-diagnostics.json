@@ -8,6 +8,7 @@
       "code": "SES-E0001",
       "severity": "Error",
       "messageKey": "effect.compact-failure-conflict",
+      "message": "Effect compact failure conflict",
       "primary": {
         "start": 41,
         "end": 55
@@ -28,7 +29,27 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "operation can fail with StdinError",
+          "primary": {
+            "start": 28,
+            "end": 39
+          }
+        },
+        {
+          "message": "operation can fail with ConsoleError",
+          "primary": {
+            "start": 41,
+            "end": 55
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

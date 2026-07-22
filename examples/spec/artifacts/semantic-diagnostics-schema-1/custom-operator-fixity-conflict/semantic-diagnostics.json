@@ -8,6 +8,7 @@
       "code": "SES-P0102",
       "severity": "Error",
       "messageKey": "operator.fixity-conflict",
+      "message": "Operator fixity conflict",
       "primary": {
         "start": 115,
         "end": 118
@@ -21,7 +22,20 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 72,
+            "end": 120
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

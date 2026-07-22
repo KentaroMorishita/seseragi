@@ -50,6 +50,7 @@ describe("desktop panel layout", () => {
     expect(styles).toMatch(
       /\.editor-host \.cm-scroller \{[\s\S]*?overflow: auto;/
     )
-    expect(styles).toMatch(/pre \{[\s\S]*?overflow: auto;/)
+    expect(styles).toMatch(/\.output-text \{[\s\S]*?overflow: auto;/)
+    expect(styles).toMatch(/\.diagnostic-list \{[\s\S]*?overflow: auto;/)
   })
 })

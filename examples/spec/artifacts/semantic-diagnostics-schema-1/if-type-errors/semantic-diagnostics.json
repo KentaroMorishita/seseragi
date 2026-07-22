@@ -8,6 +8,7 @@
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "if.condition-not-bool",
+      "message": "If condition not bool",
       "primary": {
         "start": 47,
         "end": 48
@@ -21,13 +22,27 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "expected Bool, received Int",
+          "primary": {
+            "start": 0,
+            "end": 62
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": "Bool",
+      "actualType": "Int"
     },
     {
       "id": "d2",
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "if.branch-type-mismatch",
+      "message": "Expression type does not match the expected type",
       "primary": {
         "start": 126,
         "end": 130
@@ -48,7 +63,31 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "then branch has type Int",
+          "primary": {
+            "start": 119,
+            "end": 120
+          }
+        },
+        {
+          "message": "else branch has type String",
+          "primary": {
+            "start": 126,
+            "end": 130
+          }
+        }
+      ],
+      "notes": [
+        "Seseragi does not insert an implicit conversion between these types."
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

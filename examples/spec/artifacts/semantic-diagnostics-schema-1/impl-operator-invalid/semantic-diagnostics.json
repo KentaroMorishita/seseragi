@@ -8,6 +8,7 @@
       "code": "SES-T0202",
       "severity": "Error",
       "messageKey": "trait.instance-duplicate",
+      "message": "Trait instance duplicate",
       "primary": {
         "start": 135,
         "end": 180
@@ -21,13 +22,27 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "Add instance std/prelude::Add<main::Score,std/prelude::Int,main::Score> was first defined here",
+          "primary": {
+            "start": 32,
+            "end": 118
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d2",
       "code": "SES-T0505",
       "severity": "Error",
       "messageKey": "impl.invalid-operator-signature",
+      "message": "Impl invalid operator signature",
       "primary": {
         "start": 211,
         "end": 214
@@ -41,13 +56,27 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "equality operator right operand must match the impl target",
+          "primary": {
+            "start": 184,
+            "end": 225
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d3",
       "code": "SES-T0504",
       "severity": "Error",
       "messageKey": "impl.operator-not-overloadable",
+      "message": "Impl operator not overloadable",
       "primary": {
         "start": 238,
         "end": 240
@@ -61,7 +90,20 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "operator != cannot declare an individual overload",
+          "primary": {
+            "start": 229,
+            "end": 277
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

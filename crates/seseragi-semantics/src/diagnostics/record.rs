@@ -1,5 +1,8 @@
 use crate::typed::RecordIssue;
-use seseragi_syntax::{ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, RelatedDiagnostic};
+use seseragi_syntax::{
+    ByteRange, ByteSpan, Diagnostic, DiagnosticEdit, DiagnosticFix, DiagnosticSeverity,
+    RelatedDiagnostic,
+};
 
 use super::type_labels::type_label;
 
@@ -15,16 +18,22 @@ pub(super) fn collect_record_diagnostic(
 }
 
 pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> Diagnostic {
-    let (message_key, primary, message) = match issue {
+    let (message_key, primary, message, suggestion) = match issue {
         RecordIssue::DuplicateField { field, name } => (
             "record.duplicate-field",
             *field,
             format!("record field `{name}` is declared more than once"),
+            None,
         ),
-        RecordIssue::MissingField { field, name } => (
+        RecordIssue::MissingField {
+            field,
+            name,
+            suggestion,
+        } => (
             "record.field-unresolved",
             *field,
-            format!("record type has no required field `{name}`"),
+            unresolved_field_message("record type", name, suggestion.as_deref()),
+            suggestion.as_deref(),
         ),
         RecordIssue::AccessOnNonRecord { receiver, actual } => (
             "record.access-on-non-record",
@@ -33,6 +42,7 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
                 "field access requires a record, received {}",
                 type_label(actual)
             ),
+            None,
         ),
         RecordIssue::SpreadOnNonRecord { spread, actual } => (
             "record.spread-on-non-record",
@@ -41,25 +51,34 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
                 "record spread requires a record, received {}",
                 type_label(actual)
             ),
+            None,
         ),
         RecordIssue::UnknownStructField {
             field,
             name,
             structure,
+            suggestion,
         } => (
             "struct.field-unresolved",
             *field,
-            format!("struct `{structure}` has no field `{name}`"),
+            unresolved_field_message(
+                &format!("struct `{structure}`"),
+                name,
+                suggestion.as_deref(),
+            ),
+            suggestion.as_deref(),
         ),
         RecordIssue::MissingStructField { structure, name } => (
             "struct.field-missing",
             *structure,
             format!("struct construction is missing required field `{name}`"),
+            None,
         ),
         RecordIssue::StructRepresentationPrivate { structure, name } => (
             "struct.representation-private",
             *structure,
             format!("struct `{name}` representation is private to its defining module"),
+            None,
         ),
         RecordIssue::StructTypeArgumentArity {
             structure,
@@ -70,6 +89,7 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
             "struct.type-argument-arity-mismatch",
             *structure,
             format!("struct `{name}` requires {expected} type arguments, received {actual}"),
+            None,
         ),
         RecordIssue::StructTypeArgumentsUnresolved { structure, name } => (
             "struct.type-arguments-unresolved",
@@ -77,6 +97,7 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
             format!(
                 "struct `{name}` type arguments cannot be inferred from its fields or expected type"
             ),
+            None,
         ),
         RecordIssue::StructFieldType {
             field,
@@ -91,6 +112,7 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
                 type_label(expected),
                 type_label(actual)
             ),
+            None,
         ),
         RecordIssue::StructSpreadType {
             spread,
@@ -104,16 +126,19 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
                 type_label(expected),
                 type_label(actual)
             ),
+            None,
         ),
         RecordIssue::StructSpreadPosition { spread } => (
             "struct.spread-not-first",
             *spread,
             "struct spread must be the first item".to_owned(),
+            None,
         ),
         RecordIssue::MultipleStructSpreads { spread } => (
             "struct.multiple-spreads",
             *spread,
             "struct construction accepts at most one spread".to_owned(),
+            None,
         ),
     };
     Diagnostic {
@@ -126,7 +151,25 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
             message,
             primary: byte_range(declaration),
         }],
-        fixes: Vec::new(),
+        fixes: suggestion
+            .map(|suggestion| DiagnosticFix {
+                title: format!("Replace with `{suggestion}`"),
+                edits: vec![DiagnosticEdit {
+                    range: byte_range(primary),
+                    replacement: suggestion.to_owned(),
+                }],
+            })
+            .into_iter()
+            .collect(),
+    }
+}
+
+fn unresolved_field_message(owner: &str, name: &str, suggestion: Option<&str>) -> String {
+    match suggestion {
+        Some(suggestion) => {
+            format!("{owner} has no field `{name}`; did you mean `{suggestion}`?")
+        }
+        None => format!("{owner} has no field `{name}`"),
     }
 }
 
@@ -326,5 +369,25 @@ mod tests {
             assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
             assert_eq!(artifact.diagnostics[0].message_key, expected);
         }
+    }
+
+    #[test]
+    fn suggests_and_fixes_a_close_struct_field_spelling() {
+        let artifact = semantic_diagnostics(
+            "struct-field-suggestion.ssrg",
+            concat!(
+                "pub struct User { name: String }\n",
+                "pub fn bad -> User = User { nmae: \"A\" }\n",
+            ),
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1, "{artifact:#?}");
+        let diagnostic = &artifact.diagnostics[0];
+        assert_eq!(diagnostic.message_key, "struct.field-unresolved");
+        assert!(diagnostic.related[0]
+            .message
+            .contains("did you mean `name`"));
+        assert_eq!(diagnostic.fixes.len(), 1);
+        assert_eq!(diagnostic.fixes[0].edits[0].replacement, "name");
     }
 }

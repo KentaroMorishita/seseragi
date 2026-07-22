@@ -577,7 +577,7 @@ textarea {
   line-height: 1.6;
 }
 
-pre {
+.output-text {
   margin: 0;
   min-height: 0;
   overflow: auto;
@@ -589,6 +589,97 @@ pre {
   line-height: 1.65;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+.diagnostic-list {
+  min-height: 0;
+  overflow: auto;
+  padding: 14px;
+  color: #dce9e4;
+  background: #09110f;
+}
+.diagnostic-card {
+  padding: 14px;
+  border: 1px solid #4c2f35;
+  border-left: 3px solid #ff7e8c;
+  border-radius: 10px;
+  background: #151314;
+}
+.diagnostic-card + .diagnostic-card {
+  margin-top: 10px;
+}
+.diagnostic-card-location {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 9px;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+.diagnostic-card-location:hover strong,
+.diagnostic-card-location:focus-visible strong {
+  color: #fff;
+  text-decoration: underline;
+}
+.diagnostic-card-code {
+  color: #ff9aa5;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+  font-weight: 800;
+}
+.diagnostic-card-location strong {
+  font-size: 13px;
+}
+.diagnostic-card-range {
+  color: #6f817a;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 9px;
+}
+.diagnostic-card-types {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 4px 10px;
+  margin: 12px 0 0;
+  padding: 9px 10px;
+  border-radius: 7px;
+  background: #0c1713;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+}
+.diagnostic-card-types dt {
+  color: #81968d;
+}
+.diagnostic-card-types dd {
+  margin: 0;
+  color: #bde7d6;
+}
+.diagnostic-card-labels {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: #a9bdb5;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.diagnostic-card-help,
+.diagnostic-card-note,
+.diagnostic-card-fix {
+  margin: 9px 0 0;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.diagnostic-card-help {
+  color: #8ee1ba;
+}
+.diagnostic-card-note {
+  color: #849990;
+}
+
+.diagnostic-card-fix {
+  color: #7ed6ad;
 }
 .output-content {
   display: grid;
@@ -910,7 +1001,7 @@ footer a {
     padding: 10px 12px;
     line-height: 1.4;
   }
-  pre {
+  .output-text {
     padding: 12px;
     font-size: 14px;
     line-height: 1.5;

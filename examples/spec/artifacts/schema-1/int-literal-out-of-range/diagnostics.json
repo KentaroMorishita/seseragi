@@ -8,12 +8,18 @@
       "code": "SES-P0203",
       "severity": "Error",
       "messageKey": "literal.int-outside-range",
+      "message": "Literal int outside range",
       "primary": {
         "start": 24,
         "end": 43
       },
       "related": [],
-      "fixes": []
+      "labels": [],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

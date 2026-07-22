@@ -8,6 +8,7 @@
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "range.endpoint-not-int",
+      "message": "Range endpoint not int",
       "primary": {
         "start": 51,
         "end": 56
@@ -21,7 +22,20 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "range end must be Int, received String",
+          "primary": {
+            "start": 0,
+            "end": 56
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

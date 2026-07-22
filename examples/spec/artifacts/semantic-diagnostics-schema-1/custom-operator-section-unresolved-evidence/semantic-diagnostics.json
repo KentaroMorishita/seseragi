@@ -8,6 +8,7 @@
       "code": "SES-T0201",
       "severity": "Error",
       "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
       "primary": {
         "start": 180,
         "end": 183
@@ -21,7 +22,24 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "no Difference instance matches the inferred call arguments",
+          "primary": {
+            "start": 165,
+            "end": 184
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

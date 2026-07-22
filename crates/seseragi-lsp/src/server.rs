@@ -231,5 +231,24 @@ mod tests {
 
         assert_eq!(unresolved["params"]["diagnostics"][0]["code"], "SES-N0001");
         assert_eq!(mismatch["params"]["diagnostics"][0]["code"], "SES-T0101");
+        assert_eq!(
+            unresolved["params"]["diagnostics"][0]["message"],
+            "Name could not be resolved"
+        );
+        assert_ne!(
+            unresolved["params"]["diagnostics"][0]["message"],
+            unresolved["params"]["diagnostics"][0]["data"]["messageKey"]
+        );
+        assert!(unresolved["params"]["diagnostics"][0]["relatedInformation"]
+            .as_array()
+            .is_some_and(|items| !items.is_empty()));
+        assert_eq!(
+            mismatch["params"]["diagnostics"][0]["data"]["expectedType"],
+            "String"
+        );
+        assert_eq!(
+            mismatch["params"]["diagnostics"][0]["data"]["actualType"],
+            "Int"
+        );
     }
 }

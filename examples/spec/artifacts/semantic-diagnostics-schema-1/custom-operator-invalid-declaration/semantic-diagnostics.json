@@ -8,6 +8,7 @@
       "code": "SES-P0001",
       "severity": "Error",
       "messageKey": "operator.invalid-spelling",
+      "message": "Operator invalid spelling",
       "primary": {
         "start": 18,
         "end": 19
@@ -21,13 +22,27 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "operator declaration",
+          "primary": {
+            "start": 0,
+            "end": 61
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d2",
       "code": "SES-P0001",
       "severity": "Error",
       "messageKey": "operator.invalid-spelling",
+      "message": "Operator invalid spelling",
       "primary": {
         "start": 81,
         "end": 83
@@ -41,13 +56,27 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "operator declaration",
+          "primary": {
+            "start": 63,
+            "end": 125
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     },
     {
       "id": "d3",
       "code": "SES-P0001",
       "severity": "Error",
       "messageKey": "operator.invalid-arity",
+      "message": "Operator invalid arity",
       "primary": {
         "start": 145,
         "end": 148
@@ -61,7 +90,20 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "operator declaration",
+          "primary": {
+            "start": 127,
+            "end": 178
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

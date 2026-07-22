@@ -8,6 +8,7 @@
       "code": "SES-T0202",
       "severity": "Error",
       "messageKey": "trait.method-ambiguous",
+      "message": "Trait method ambiguous",
       "primary": {
         "start": 324,
         "end": 331
@@ -21,7 +22,20 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "multiple trait methods remain valid after type and instance selection",
+          "primary": {
+            "start": 290,
+            "end": 337
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

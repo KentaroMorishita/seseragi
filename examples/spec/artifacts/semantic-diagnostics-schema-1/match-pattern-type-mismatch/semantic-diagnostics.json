@@ -8,6 +8,7 @@
       "code": "SES-T0101",
       "severity": "Error",
       "messageKey": "match.pattern-type-mismatch",
+      "message": "Match pattern type mismatch",
       "primary": {
         "start": 92,
         "end": 100
@@ -21,7 +22,20 @@
           }
         }
       ],
-      "fixes": []
+      "labels": [
+        {
+          "message": "tuple pattern requires a tuple scrutinee",
+          "primary": {
+            "start": 92,
+            "end": 100
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
     }
   ]
 }

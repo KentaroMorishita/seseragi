@@ -19,6 +19,7 @@ pub struct DiagnosticArtifact {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(into = "DiagnosticWire")]
 #[serde(rename_all = "camelCase")]
 pub struct Diagnostic {
     pub id: String,
@@ -29,6 +30,198 @@ pub struct Diagnostic {
     pub primary: ByteRange,
     pub related: Vec<RelatedDiagnostic>,
     pub fixes: Vec<DiagnosticFix>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct DiagnosticWire {
+    id: String,
+    code: String,
+    severity: DiagnosticSeverity,
+    message_key: String,
+    message: String,
+    primary: ByteRange,
+    related: Vec<RelatedDiagnostic>,
+    labels: Vec<RelatedDiagnostic>,
+    notes: Vec<String>,
+    helps: Vec<String>,
+    fixes: Vec<DiagnosticFix>,
+    expected_type: Option<String>,
+    actual_type: Option<String>,
+}
+
+impl From<Diagnostic> for DiagnosticWire {
+    fn from(diagnostic: Diagnostic) -> Self {
+        let (expected_type, actual_type) = diagnostic.expected_actual_types();
+        Self {
+            message: diagnostic.message(),
+            labels: diagnostic.related.clone(),
+            notes: diagnostic.notes(),
+            helps: diagnostic.helps(),
+            expected_type,
+            actual_type,
+            id: diagnostic.id,
+            code: diagnostic.code,
+            severity: diagnostic.severity,
+            message_key: diagnostic.message_key,
+            primary: diagnostic.primary,
+            related: diagnostic.related,
+            fixes: diagnostic.fixes,
+        }
+    }
+}
+
+impl Diagnostic {
+    pub fn message(&self) -> String {
+        match self.message_key.as_str() {
+            "name.unresolved" => "Name could not be resolved".to_owned(),
+            "call.arity-mismatch" => {
+                "Function was called with the wrong number of arguments".to_owned()
+            }
+            "call.argument-type-mismatch" => {
+                "Argument type does not match the parameter type".to_owned()
+            }
+            "function.return-type-mismatch"
+            | "let.type-mismatch"
+            | "if.branch-type-mismatch"
+            | "match.branch-type-mismatch"
+            | "struct.field-type-mismatch" => {
+                "Expression type does not match the expected type".to_owned()
+            }
+            "instance.missing" => "A required trait instance is not available".to_owned(),
+            "record.field-unresolved" => "This record has no such field".to_owned(),
+            "struct.field-unresolved" => "This struct has no such field".to_owned(),
+            "effect.do-statement-not-effect"
+            | "effect.bind-value-not-effect"
+            | "effect.compact-body-not-effect"
+            | "effect.map-error-source-not-effect"
+            | "for.body-not-effect" => "This position requires an Effect value".to_owned(),
+            "match.non-exhaustive" => "This match does not cover every possible value".to_owned(),
+            "parser.expected-expression" => "Expected an expression here".to_owned(),
+            "parser.error" => "Could not parse this syntax".to_owned(),
+            _ => humanize_message_key(&self.message_key),
+        }
+    }
+
+    pub fn labels(&self) -> &[RelatedDiagnostic] {
+        &self.related
+    }
+
+    pub fn notes(&self) -> Vec<String> {
+        match self.message_key.as_str() {
+            "instance.missing" => vec![
+                "Trait instances are selected from the current lexical and import scope."
+                    .to_owned(),
+            ],
+            "call.argument-type-mismatch"
+            | "function.return-type-mismatch"
+            | "let.type-mismatch"
+            | "if.branch-type-mismatch"
+            | "match.branch-type-mismatch"
+            | "struct.field-type-mismatch" => vec![
+                "Seseragi does not insert an implicit conversion between these types.".to_owned(),
+            ],
+            _ => Vec::new(),
+        }
+    }
+
+    pub fn helps(&self) -> Vec<String> {
+        let help = match self.message_key.as_str() {
+            "name.unresolved" => {
+                "Check the spelling, or define or import the name before using it."
+            }
+            "call.arity-mismatch" => {
+                "Add or remove arguments so the call matches the function signature."
+            }
+            "call.argument-type-mismatch"
+            | "function.return-type-mismatch"
+            | "let.type-mismatch"
+            | "if.branch-type-mismatch"
+            | "match.branch-type-mismatch"
+            | "struct.field-type-mismatch" => {
+                "Change the expression or its annotation so the two types agree."
+            }
+            "instance.missing" => {
+                "Define or import a matching instance, or use a type with an available instance."
+            }
+            "record.field-unresolved" | "struct.field-unresolved" => {
+                "Check the field spelling and the type of the value being accessed."
+            }
+            "effect.do-statement-not-effect"
+            | "effect.bind-value-not-effect"
+            | "effect.compact-body-not-effect"
+            | "effect.map-error-source-not-effect"
+            | "for.body-not-effect" => {
+                "Use an Effect-producing operation here, or bind a pure value with let."
+            }
+            "match.non-exhaustive" => {
+                "Add the missing pattern arms, or add a final _ arm when a catch-all is intended."
+            }
+            "parser.expected-expression" | "parser.error" => {
+                "Complete the expression at the highlighted location."
+            }
+            _ => return Vec::new(),
+        };
+        vec![help.to_owned()]
+    }
+
+    pub fn expected_actual_types(&self) -> (Option<String>, Option<String>) {
+        if self.message_key == "match.branch-type-mismatch" && self.related.len() >= 2 {
+            return (
+                self.related[0]
+                    .message
+                    .strip_prefix("first branch has type ")
+                    .map(str::to_owned),
+                self.related[1]
+                    .message
+                    .strip_prefix("this branch has type ")
+                    .map(str::to_owned),
+            );
+        }
+        let carries_type_pair = self.message_key.contains("type-mismatch")
+            || self.message_key.contains("type-argument")
+            || self.message_key.ends_with("-not-bool")
+            || self.message_key == "range.endpoint-not-int"
+            || self.message_key == "call.argument-type-mismatch";
+        if !carries_type_pair {
+            return (None, None);
+        }
+        for label in &self.related {
+            for (left, separator) in [
+                (" expected ", ", received "),
+                ("expected ", ", received "),
+                (" requires ", ", received "),
+                ("declared ", ", body produces "),
+                ("context expects ", ", annotation declares "),
+                ("context expects ", ", body produces "),
+            ] {
+                if let Some((expected, actual)) = split_pair(&label.message, left, separator) {
+                    if expected.parse::<usize>().is_err() || actual.parse::<usize>().is_err() {
+                        return (Some(expected), Some(actual));
+                    }
+                }
+            }
+        }
+        (None, None)
+    }
+}
+
+fn split_pair(message: &str, left: &str, separator: &str) -> Option<(String, String)> {
+    let (_, tail) = message.split_once(left)?;
+    let (expected, actual) = tail.split_once(separator)?;
+    Some((expected.trim().to_owned(), actual.trim().to_owned()))
+}
+
+fn humanize_message_key(message_key: &str) -> String {
+    let mut words = message_key
+        .split(['.', '-', '_'])
+        .filter(|word| !word.is_empty())
+        .collect::<Vec<_>>()
+        .join(" ");
+    if let Some(first) = words.get_mut(0..1) {
+        first.make_ascii_uppercase();
+    }
+    words
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
