@@ -1,0 +1,557 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "joinValues",
+      "nameSpan": {
+        "start": 3,
+        "end": 13
+      },
+      "typeParameters": [
+        "C"
+      ],
+      "parameters": [
+        {
+          "name": "separator",
+          "nameSpan": {
+            "start": 17,
+            "end": 26
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 28,
+              "end": 34
+            }
+          }
+        },
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 38,
+            "end": 44
+          },
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "span": {
+              "start": 46,
+              "end": 47
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 51,
+          "end": 57
+        }
+      },
+      "constraints": [
+        {
+          "name": "Reducible",
+          "nameSpan": {
+            "start": 64,
+            "end": 73
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "C",
+              "span": {
+                "start": 74,
+                "end": 75
+              }
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "span": {
+                "start": 77,
+                "end": 83
+              }
+            }
+          ],
+          "span": {
+            "start": 64,
+            "end": 84
+          }
+        }
+      ],
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "join",
+            "span": {
+              "start": 89,
+              "end": 93
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "separator",
+            "span": {
+              "start": 94,
+              "end": 103
+            }
+          },
+          "span": {
+            "start": 89,
+            "end": 103
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "values",
+          "span": {
+            "start": 104,
+            "end": 110
+          }
+        },
+        "span": {
+          "start": 89,
+          "end": 110
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 110
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "arrayLabel",
+      "nameSpan": {
+        "start": 115,
+        "end": 125
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 126,
+            "end": 132
+          },
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 140,
+                  "end": 146
+                }
+              }
+            ],
+            "span": {
+              "start": 134,
+              "end": 147
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 151,
+          "end": 157
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "joinValues",
+            "span": {
+              "start": 162,
+              "end": 172
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\" / \"",
+            "span": {
+              "start": 173,
+              "end": 178
+            }
+          },
+          "span": {
+            "start": 162,
+            "end": 178
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "values",
+          "span": {
+            "start": 179,
+            "end": 185
+          }
+        },
+        "span": {
+          "start": 162,
+          "end": 185
+        }
+      },
+      "span": {
+        "start": 112,
+        "end": 185
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "listLabel",
+      "nameSpan": {
+        "start": 190,
+        "end": 199
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 200,
+            "end": 206
+          },
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 213,
+                  "end": 219
+                }
+              }
+            ],
+            "span": {
+              "start": 208,
+              "end": 220
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 224,
+          "end": 230
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "joinValues",
+            "span": {
+              "start": 235,
+              "end": 245
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\" + \"",
+            "span": {
+              "start": 246,
+              "end": 251
+            }
+          },
+          "span": {
+            "start": 235,
+            "end": 251
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "values",
+          "span": {
+            "start": 252,
+            "end": 258
+          }
+        },
+        "span": {
+          "start": 235,
+          "end": 258
+        }
+      },
+      "span": {
+        "start": 187,
+        "end": 258
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "emptyLabel",
+      "nameSpan": {
+        "start": 263,
+        "end": 273
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 274,
+            "end": 280
+          },
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 288,
+                  "end": 294
+                }
+              }
+            ],
+            "span": {
+              "start": 282,
+              "end": 295
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 299,
+          "end": 305
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "joinValues",
+            "span": {
+              "start": 310,
+              "end": 320
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\", \"",
+            "span": {
+              "start": 321,
+              "end": 325
+            }
+          },
+          "span": {
+            "start": 310,
+            "end": 325
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "values",
+          "span": {
+            "start": 326,
+            "end": 332
+          }
+        },
+        "span": {
+          "start": 310,
+          "end": 332
+        }
+      },
+      "span": {
+        "start": 260,
+        "end": 332
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "collectionJoinResults",
+      "nameSpan": {
+        "start": 341,
+        "end": 362
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 363,
+            "end": 367
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 369,
+              "end": 373
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 383,
+              "end": 389
+            }
+          }
+        ],
+        "span": {
+          "start": 377,
+          "end": 390
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "arrayLabel",
+              "span": {
+                "start": 401,
+                "end": 411
+              }
+            },
+            "argument": {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "string",
+                  "raw": "\"alpha\"",
+                  "span": {
+                    "start": 413,
+                    "end": 420
+                  }
+                },
+                {
+                  "kind": "string",
+                  "raw": "\"beta\"",
+                  "span": {
+                    "start": 422,
+                    "end": 428
+                  }
+                },
+                {
+                  "kind": "string",
+                  "raw": "\"gamma\"",
+                  "span": {
+                    "start": 430,
+                    "end": 437
+                  }
+                }
+              ],
+              "span": {
+                "start": 412,
+                "end": 438
+              }
+            },
+            "span": {
+              "start": 401,
+              "end": 438
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "listLabel",
+              "span": {
+                "start": 444,
+                "end": 453
+              }
+            },
+            "argument": {
+              "kind": "list",
+              "elements": [
+                {
+                  "kind": "string",
+                  "raw": "\"left\"",
+                  "span": {
+                    "start": 456,
+                    "end": 462
+                  }
+                },
+                {
+                  "kind": "string",
+                  "raw": "\"right\"",
+                  "span": {
+                    "start": 464,
+                    "end": 471
+                  }
+                }
+              ],
+              "span": {
+                "start": 454,
+                "end": 472
+              }
+            },
+            "span": {
+              "start": 444,
+              "end": 472
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "emptyLabel",
+              "span": {
+                "start": 478,
+                "end": 488
+              }
+            },
+            "argument": {
+              "kind": "array",
+              "elements": [],
+              "span": {
+                "start": 489,
+                "end": 491
+              }
+            },
+            "span": {
+              "start": 478,
+              "end": 491
+            }
+          }
+        ],
+        "span": {
+          "start": 395,
+          "end": 495
+        }
+      },
+      "span": {
+        "start": 334,
+        "end": 495
+      }
+    }
+  ]
+}

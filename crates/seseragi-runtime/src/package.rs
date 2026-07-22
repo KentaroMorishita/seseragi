@@ -31,6 +31,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/array.ts"),
     ),
     (
+        "src/collection.ts",
+        include_str!("../../../runtime/ts/src/collection.ts"),
+    ),
+    (
         "src/range.ts",
         include_str!("../../../runtime/ts/src/range.ts"),
     ),

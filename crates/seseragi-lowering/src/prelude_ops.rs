@@ -10,6 +10,30 @@ pub(crate) struct RuntimePreludeDictionary {
 
 const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
     RuntimePreludeDictionary {
+        semantic_identity: "std/array::Reducible",
+        runtime_feature: "core.array.reducible",
+        local_name: "_ssrg_array_reducible",
+        module: "@seseragi/runtime/array",
+        export_name: "arrayReducible",
+        source_map_name: "arrayReducible",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/list::Reducible",
+        runtime_feature: "core.list.reducible",
+        local_name: "_ssrg_list_reducible",
+        module: "@seseragi/runtime/list",
+        export_name: "listReducible",
+        source_map_name: "listReducible",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/range::Reducible",
+        runtime_feature: "core.range.reducible",
+        local_name: "_ssrg_range_reducible",
+        module: "@seseragi/runtime/range",
+        export_name: "rangeReducible",
+        source_map_name: "rangeReducible",
+    },
+    RuntimePreludeDictionary {
         semantic_identity: "std/maybe::Functor",
         runtime_feature: "core.maybe.functor",
         local_name: "_ssrg_maybe_functor",
@@ -172,6 +196,24 @@ mod tests {
     #[test]
     fn maps_the_standard_prelude_dictionary_families() {
         for (identity, feature, module, export_name) in [
+            (
+                "std/array::Reducible",
+                "core.array.reducible",
+                "@seseragi/runtime/array",
+                "arrayReducible",
+            ),
+            (
+                "std/list::Reducible",
+                "core.list.reducible",
+                "@seseragi/runtime/list",
+                "listReducible",
+            ),
+            (
+                "std/range::Reducible",
+                "core.range.reducible",
+                "@seseragi/runtime/range",
+                "rangeReducible",
+            ),
             (
                 "std/maybe::Functor",
                 "core.maybe.functor",

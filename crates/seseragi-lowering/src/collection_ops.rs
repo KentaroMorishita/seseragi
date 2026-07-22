@@ -29,6 +29,13 @@ const LIST_REDUCE: RuntimeCollectionOperation = RuntimeCollectionOperation {
     export_name: "reduce",
 };
 
+const COLLECTION_JOIN: RuntimeCollectionOperation = RuntimeCollectionOperation {
+    runtime_feature: "core.collection.join",
+    local_name: "_ssrg_collection_join",
+    module: "@seseragi/runtime/collection",
+    export_name: "join",
+};
+
 const ARRAY_COMPREHEND: RuntimeCollectionOperation = RuntimeCollectionOperation {
     runtime_feature: "core.array.comprehend",
     local_name: "_ssrg_array_comprehend",
@@ -92,6 +99,19 @@ pub(crate) fn runtime_collection_operation(
     }
 }
 
+pub(crate) fn runtime_collection_join_operation(
+    callee: &str,
+    evidence: &[CoreCallEvidence],
+) -> Option<&'static RuntimeCollectionOperation> {
+    matches!(
+        evidence,
+        [selected] if selected.constraint.name == "Reducible"
+    )
+    .then_some(())
+    .filter(|_| callee == "std/prelude::join")
+    .map(|_| &COLLECTION_JOIN)
+}
+
 pub(crate) fn runtime_collection_operation_for_feature(
     feature: &str,
 ) -> Option<RuntimeCollectionOperation> {
@@ -99,6 +119,7 @@ pub(crate) fn runtime_collection_operation_for_feature(
         ARRAY_REDUCE,
         RANGE_REDUCE,
         LIST_REDUCE,
+        COLLECTION_JOIN,
         ARRAY_COMPREHEND,
         ARRAY_COMPREHEND_FLAT,
         RANGE_COMPREHEND,
@@ -185,6 +206,33 @@ mod tests {
                 .map(|operation| operation.runtime_feature),
             Some("core.range.reduce")
         );
+    }
+
+    #[test]
+    fn resolves_generic_join_from_reducible_evidence() {
+        let evidence = [CoreCallEvidence {
+            constraint: CoreInstanceConstraint {
+                name: "Reducible".to_owned(),
+                arguments: vec![
+                    CoreType::Named {
+                        name: "C".to_owned(),
+                        arguments: Vec::new(),
+                    },
+                    CoreType::Named {
+                        name: "String".to_owned(),
+                        arguments: Vec::new(),
+                    },
+                ],
+            },
+            evidence: CoreInstanceEvidence::Parameter { index: 0 },
+        }];
+
+        assert_eq!(
+            runtime_collection_join_operation("std/prelude::join", &evidence)
+                .map(|operation| operation.runtime_feature),
+            Some("core.collection.join")
+        );
+        assert!(runtime_collection_join_operation("user::join", &evidence).is_none());
     }
 
     #[test]

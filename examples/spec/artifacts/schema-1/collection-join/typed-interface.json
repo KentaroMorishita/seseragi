@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/collection-join",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/collection-join::collectionJoinResults",
+      "namespace": "value",
+      "name": "collectionJoinResults",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 334,
+        "end": 495
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

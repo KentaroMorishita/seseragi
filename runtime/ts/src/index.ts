@@ -24,16 +24,20 @@ export {
   arrayApplicative,
   arrayFunctor,
   arrayMonad,
+  arrayReducible,
   collectFlatMap as collectFlatMapArray,
   collectMap as collectMapArray,
   reduce,
 } from "./array"
+export type { Reducible } from "./collection"
+export { join as joinCollection } from "./collection"
 export type { IntRange } from "./range"
 export {
   collectFlatMap as collectFlatMapRange,
   collectMap as collectMapRange,
   exclusive as exclusiveRange,
   inclusive as inclusiveRange,
+  rangeReducible,
   reduce as reduceRange,
 } from "./range"
 export type { Iterator } from "./iterator"
@@ -48,6 +52,7 @@ export {
   listApplicative,
   listFunctor,
   listMonad,
+  listReducible,
   reduce as reduceList,
 } from "./list"
 export type {

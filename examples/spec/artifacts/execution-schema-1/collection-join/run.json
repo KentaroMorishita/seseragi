@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "case": "collection-join",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/collection-join",
+    "export": "collectionJoinResults",
+    "compiledModule": "../../schema-1/collection-join/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.list",
+      "core.string",
+      "core.collection.join",
+      "core.array.reducible",
+      "core.list.reducible",
+      "core.unit",
+      "core.list.from-array"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

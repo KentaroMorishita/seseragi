@@ -93,6 +93,27 @@
       }
     },
     {
+      "id": "core.array.reducible",
+      "kind": "runtime-binding",
+      "typescript": "readonly Reducible dictionary",
+      "boundary": "standard Reducible<Array<A>, A> dictionary",
+      "instanceIdentity": "std/array::Reducible",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "arrayReducible"
+      }
+    },
+    {
+      "id": "core.collection.join",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Reducible<C, String> -> String -> C -> String",
+      "import": {
+        "module": "@seseragi/runtime/collection",
+        "export": "join"
+      }
+    },
+    {
       "id": "core.array.comprehend",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -150,6 +171,17 @@
       "import": {
         "module": "@seseragi/runtime/range",
         "export": "reduce"
+      }
+    },
+    {
+      "id": "core.range.reducible",
+      "kind": "runtime-binding",
+      "typescript": "readonly Reducible dictionary",
+      "boundary": "standard Reducible<Range<Int>, Int> dictionary",
+      "instanceIdentity": "std/range::Reducible",
+      "import": {
+        "module": "@seseragi/runtime/range",
+        "export": "rangeReducible"
       }
     },
     {
@@ -257,6 +289,17 @@
       "import": {
         "module": "@seseragi/runtime/list",
         "export": "reduce"
+      }
+    },
+    {
+      "id": "core.list.reducible",
+      "kind": "runtime-binding",
+      "typescript": "readonly Reducible dictionary",
+      "boundary": "standard Reducible<List<A>, A> dictionary",
+      "instanceIdentity": "std/list::Reducible",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "listReducible"
       }
     },
     {

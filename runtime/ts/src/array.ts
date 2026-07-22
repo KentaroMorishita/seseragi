@@ -11,6 +11,14 @@ export function reduce<A, B>(
   return accumulator
 }
 
+export const arrayReducible = Object.freeze({
+  reduce:
+    <A, B>(initial: B) =>
+    (step: (accumulator: B) => (value: A) => B) =>
+    (values: ReadonlyArray<A>): B =>
+      reduce(initial, step, values),
+})
+
 /** Pure comprehension lowering for the standard Array Iterable instance. */
 export function collectMap<A, B>(
   values: ReadonlyArray<A>,

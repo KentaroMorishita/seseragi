@@ -224,6 +224,32 @@ fn selects_array_reducible_evidence_for_standard_reduce() {
 }
 
 #[test]
+fn selects_array_reducible_evidence_for_standard_join() {
+    let typed = type_module(
+        "artifact/collection-join/main.ssrg",
+        "pub fn labels values: Array<String> -> String = join \", \" values\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+        panic!("expected labels function");
+    };
+    assert!(matches!(
+        body,
+        TypedExpr::Call {
+            callee,
+            evidence,
+            type_ref,
+            ..
+        } if callee == "std/prelude::join"
+            && type_ref == &named("String")
+            && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Standard { identity },
+                ..
+            }] if identity == "std/array::Reducible")
+    ));
+}
+
+#[test]
 fn selects_standard_power_evidence_for_an_operator_function_value() {
     let typed = type_module(
         "artifact/power-operator-reference/main.ssrg",

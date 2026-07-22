@@ -1,0 +1,625 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/collection-join",
+  "externalTypeBindings": [
+    {
+      "spelling": "List",
+      "canonical": "std/prelude::List"
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/collection-join::joinValues",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 110
+      },
+      "typeParameters": [
+        "C"
+      ],
+      "constraints": [
+        {
+          "name": "Reducible",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "separator",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        },
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::join",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "separator",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 94,
+              "end": 103
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 104,
+              "end": 110
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "C",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 89,
+          "end": 110
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-join::arrayLabel",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 112,
+        "end": 185
+      },
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-join::joinValues",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": " / ",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 173,
+              "end": 178
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 179,
+              "end": 185
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 162,
+          "end": 185
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-join::listLabel",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 187,
+        "end": 258
+      },
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-join::joinValues",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": " + ",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 246,
+              "end": 251
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 252,
+              "end": 258
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/list::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 235,
+          "end": 258
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-join::emptyLabel",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 260,
+        "end": 332
+      },
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-join::joinValues",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": ", ",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 321,
+              "end": 325
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 326,
+              "end": 332
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 310,
+          "end": 332
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-join::collectionJoinResults",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 334,
+        "end": 495
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-join::arrayLabel",
+            "arguments": [
+              {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "string",
+                    "value": "alpha",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 413,
+                      "end": 420
+                    }
+                  },
+                  {
+                    "kind": "string",
+                    "value": "beta",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 422,
+                      "end": 428
+                    }
+                  },
+                  {
+                    "kind": "string",
+                    "value": "gamma",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 430,
+                      "end": 437
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 412,
+                  "end": 438
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 401,
+              "end": 438
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-join::listLabel",
+            "arguments": [
+              {
+                "kind": "list",
+                "elements": [
+                  {
+                    "kind": "string",
+                    "value": "left",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 456,
+                      "end": 462
+                    }
+                  },
+                  {
+                    "kind": "string",
+                    "value": "right",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 464,
+                      "end": 471
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 454,
+                  "end": 472
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 444,
+              "end": 472
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-join::emptyLabel",
+            "arguments": [
+              {
+                "kind": "array",
+                "elements": [],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 489,
+                  "end": 491
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 478,
+              "end": 491
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 395,
+          "end": 495
+        }
+      }
+    }
+  ]
+}

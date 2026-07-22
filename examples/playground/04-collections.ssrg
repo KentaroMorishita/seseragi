@@ -1,11 +1,8 @@
-fn evenSquares limit: Int -> Array<Int> =
-  [value * value | value <- 1..=limit, value % 2 == 0]
+fn evenLabels limit: Int -> Array<String> =
+  [`#${value}` | value <- 1..=limit, value % 2 == 0]
 
-fn render total: Int -> String = `Even squares: ${total}`
-
-// 内包表記でRangeを絞り込み、変換した後にreduceで畳み込みます。
+// Rangeから選んだ値を文字列へ変換し、joinで区切って表示します。
 pub effect fn main =
-  evenSquares 8
-  |> reduce 0 (+)
-  |> render
+  evenLabels 8
+  |> join " / "
   |> println

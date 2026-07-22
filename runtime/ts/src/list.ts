@@ -41,6 +41,14 @@ export function reduce<A, B>(
   return accumulator
 }
 
+export const listReducible = Object.freeze({
+  reduce:
+    <A, B>(initial: B) =>
+    (step: (accumulator: B) => (value: A) => B) =>
+    (values: List<A>): B =>
+      reduce(initial, step, values),
+})
+
 /** Pure comprehension lowering for the standard List Iterable instance. */
 export function collectMap<A, B>(
   values: List<A>,

@@ -29,6 +29,10 @@
       "types": "./src/array.ts",
       "default": "./src/array.ts"
     },
+    "./collection": {
+      "types": "./src/collection.ts",
+      "default": "./src/collection.ts"
+    },
     "./range": {
       "types": "./src/range.ts",
       "default": "./src/range.ts"

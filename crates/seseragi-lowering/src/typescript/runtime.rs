@@ -1,4 +1,6 @@
-use crate::collection_ops::{runtime_collection_operation, runtime_iterable_operation};
+use crate::collection_ops::{
+    runtime_collection_join_operation, runtime_collection_operation, runtime_iterable_operation,
+};
 use crate::iterator_ops::runtime_iterator_comprehension_operation;
 use crate::iterator_ops::runtime_iterator_operation;
 use crate::list_ops::runtime_list_literal_operation;
@@ -68,8 +70,12 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             type_ref,
             ..
         } => {
-            collect_evidence_runtime_requirements(evidence, requirements);
-            if let Some(operation) = runtime_collection_operation(callee, evidence) {
+            if runtime_collection_operation(callee, evidence).is_none() {
+                collect_evidence_runtime_requirements(evidence, requirements);
+            }
+            if let Some(operation) = runtime_collection_join_operation(callee, evidence) {
+                push_unique(requirements, operation.runtime_feature);
+            } else if let Some(operation) = runtime_collection_operation(callee, evidence) {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_iterator_operation(callee) {
                 push_unique(requirements, operation.runtime_feature);
@@ -419,8 +425,18 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             evidence,
             ..
         } => {
-            collect_evidence_runtime_imports(evidence, imports);
-            if let Some(operation) = runtime_collection_operation(callee, evidence) {
+            if runtime_collection_operation(callee, evidence).is_none() {
+                collect_evidence_runtime_imports(evidence, imports);
+            }
+            if let Some(operation) = runtime_collection_join_operation(callee, evidence) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            } else if let Some(operation) = runtime_collection_operation(callee, evidence) {
                 push_import_unique(
                     imports,
                     TypeScriptImport {

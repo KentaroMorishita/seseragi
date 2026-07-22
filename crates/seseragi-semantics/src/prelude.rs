@@ -342,6 +342,7 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
                 | "mapError"
                 | "fromEither"
                 | "reduce"
+                | "join"
                 | "unfold"
                 | "next"
         ),

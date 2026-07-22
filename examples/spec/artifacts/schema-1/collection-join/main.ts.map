@@ -1,0 +1,30 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/collection-join"
+  ],
+  "sourcesContent": [
+    "fn joinValues<C> separator: String -> values: C -> String\nwhere Reducible<C, String> =\n  join separator values\n\nfn arrayLabel values: Array<String> -> String =\n  joinValues \" / \" values\n\nfn listLabel values: List<String> -> String =\n  joinValues \" + \" values\n\nfn emptyLabel values: Array<String> -> String =\n  joinValues \", \" values\n\npub fn collectionJoinResults unit: Unit -> Array<String> =\n  [\n    arrayLabel [\"alpha\", \"beta\", \"gamma\"],\n    listLabel `[\"left\", \"right\"],\n    emptyLabel []\n  ]\n"
+  ],
+  "names": [
+    "joinValues",
+    "_ssrg_collection_join",
+    "arrayLabel",
+    "joinValues",
+    "arrayReducible",
+    "listLabel",
+    "joinValues",
+    "listReducible",
+    "emptyLabel",
+    "joinValues",
+    "arrayReducible",
+    "collectionJoinResults",
+    "arrayLabel",
+    "listLabel",
+    "fromArray",
+    "emptyLabel"
+  ],
+  "mappings": ";;;;AAAAA;AAIAE;AAGAG;AAGAG;AAGAG"
+}

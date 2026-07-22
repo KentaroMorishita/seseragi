@@ -1,0 +1,19 @@
+fn joinValues<C> separator: String -> values: C -> String
+where Reducible<C, String> =
+  join separator values
+
+fn arrayLabel values: Array<String> -> String =
+  joinValues " / " values
+
+fn listLabel values: List<String> -> String =
+  joinValues " + " values
+
+fn emptyLabel values: Array<String> -> String =
+  joinValues ", " values
+
+pub fn collectionJoinResults unit: Unit -> Array<String> =
+  [
+    arrayLabel ["alpha", "beta", "gamma"],
+    listLabel `["left", "right"],
+    emptyLabel []
+  ]

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "module": "artifact/collection-join",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.list",
+      "core.string",
+      "core.collection.join",
+      "core.array.reducible",
+      "core.list.reducible",
+      "core.unit",
+      "core.list.from-array"
+    ]
+  },
+  "exports": [
+    "collectionJoinResults"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

@@ -5,6 +5,7 @@ import * as int64 from "../../../../runtime/ts/src/int64"
 import * as iterator from "../../../../runtime/ts/src/iterator"
 import * as list from "../../../../runtime/ts/src/list"
 import * as array from "../../../../runtime/ts/src/array"
+import * as collection from "../../../../runtime/ts/src/collection"
 import * as range from "../../../../runtime/ts/src/range"
 import * as service from "../../../../runtime/ts/src/service"
 import * as show from "../../../../runtime/ts/src/show"
@@ -15,6 +16,7 @@ import * as signal from "../../../../runtime/ts/src/signal"
 
 export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/array": array,
+  "@seseragi/runtime/collection": collection,
   "@seseragi/runtime/effect": effect,
   "@seseragi/runtime/int64": int64,
   "@seseragi/runtime/iterator": iterator,

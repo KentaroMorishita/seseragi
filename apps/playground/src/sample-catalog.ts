@@ -55,11 +55,12 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     label: "Collectionを組み立てる",
     level: "初級",
     sequence: 4,
-    summary: "Range、内包表記、reduceをつないでCollectionを処理します。",
-    concepts: ["Range", "内包表記", "reduce"],
+    summary:
+      "Range、内包表記、joinをつないでCollectionを読みやすく表示します。",
+    concepts: ["Range", "内包表記", "join"],
     sourcePath: "examples/playground/04-collections.ssrg",
     stdin: "",
-    expectedOutput: "Even squares: 120",
+    expectedOutput: "#2 / #4 / #6 / #8",
   },
   {
     id: "records",

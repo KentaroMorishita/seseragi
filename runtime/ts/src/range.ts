@@ -18,7 +18,7 @@ export function inclusive(start: bigint, end: bigint): IntRange {
 export function reduce<B>(
   initial: B,
   step: (accumulator: B) => (value: bigint) => B,
-  range: IntRange,
+  range: IntRange
 ): B {
   let accumulator = initial
   if (range.start > range.end) {
@@ -37,11 +37,19 @@ export function reduce<B>(
   return accumulator
 }
 
+export const rangeReducible = Object.freeze({
+  reduce:
+    <B>(initial: B) =>
+    (step: (accumulator: B) => (value: bigint) => B) =>
+    (range: IntRange): B =>
+      reduce(initial, step, range),
+})
+
 /** Pure comprehension lowering for the standard Range Iterable instance. */
 export function collectMap<B>(
   range: IntRange,
   predicate: (value: bigint) => boolean,
-  transform: (value: bigint) => B,
+  transform: (value: bigint) => B
 ): ReadonlyArray<B> {
   return collect(range, predicate, (result, value) => {
     result.push(transform(value))
@@ -52,7 +60,7 @@ export function collectMap<B>(
 export function collectFlatMap<B>(
   range: IntRange,
   predicate: (value: bigint) => boolean,
-  transform: (value: bigint) => ReadonlyArray<B>,
+  transform: (value: bigint) => ReadonlyArray<B>
 ): ReadonlyArray<B> {
   return collect(range, predicate, (result, value) => {
     result.push(...transform(value))
@@ -62,7 +70,7 @@ export function collectFlatMap<B>(
 function collect<B>(
   range: IntRange,
   predicate: (value: bigint) => boolean,
-  append: (result: B[], value: bigint) => void,
+  append: (result: B[], value: bigint) => void
 ): ReadonlyArray<B> {
   const result: B[] = []
   if (range.start > range.end) {

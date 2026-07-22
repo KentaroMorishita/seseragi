@@ -1,0 +1,295 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/collection-join",
+  "runtimeRequirements": [
+    "core.list",
+    "core.string",
+    "core.collection.join",
+    "core.array.reducible",
+    "core.list.reducible",
+    "core.unit",
+    "core.list.from-array"
+  ],
+  "imports": [
+    {
+      "feature": "core.collection.join",
+      "local": "_ssrg_collection_join"
+    },
+    {
+      "feature": "core.array.reducible",
+      "local": "_ssrg_array_reducible"
+    },
+    {
+      "feature": "core.list.reducible",
+      "local": "_ssrg_list_reducible"
+    },
+    {
+      "feature": "core.list.from-array",
+      "local": "_ssrg_list_from_array"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.list",
+      "local": "List"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "joinValues",
+      "typeParameters": [
+        "C"
+      ],
+      "constraints": [
+        {
+          "name": "Reducible",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "string"
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "separator",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "values",
+          "type": "C",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_join",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$0"
+          },
+          {
+            "kind": "identifier",
+            "name": "separator"
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 110
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "arrayLabel",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<string>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "joinValues",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": " / "
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 112,
+        "end": 185
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "listLabel",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "List<string>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "joinValues",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": " + "
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_list_reducible"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 187,
+        "end": 258
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "emptyLabel",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<string>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "joinValues",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": ", "
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 260,
+        "end": 332
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "collectionJoinResults",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "arrayLabel",
+            "arguments": [
+              {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "string",
+                    "value": "alpha"
+                  },
+                  {
+                    "kind": "string",
+                    "value": "beta"
+                  },
+                  {
+                    "kind": "string",
+                    "value": "gamma"
+                  }
+                ],
+                "elementType": {
+                  "kind": "string"
+                }
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "listLabel",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_from_array",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "string",
+                        "value": "left"
+                      },
+                      {
+                        "kind": "string",
+                        "value": "right"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "string"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "emptyLabel",
+            "arguments": [
+              {
+                "kind": "array",
+                "elements": [],
+                "elementType": {
+                  "kind": "string"
+                }
+              }
+            ]
+          }
+        ],
+        "elementType": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 334,
+        "end": 495
+      }
+    }
+  ]
+}

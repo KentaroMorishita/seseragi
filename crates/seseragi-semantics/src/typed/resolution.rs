@@ -509,6 +509,9 @@ fn collect_callables(
             Some("std/prelude::reduce") => {
                 callables.insert(symbol.id, standard_reduce_callable());
             }
+            Some("std/prelude::join") => {
+                callables.insert(symbol.id, standard_join_callable());
+            }
             Some("std/prelude::unfold") => {
                 callables.insert(symbol.id, standard_unfold_callable());
             }
@@ -789,6 +792,26 @@ fn standard_reduce_callable() -> TopLevelPureFunction {
         ],
         semantic_parameters: vec![SemanticTypeKey::Other; 3],
         result: accumulator,
+        semantic_result: SemanticTypeKey::Other,
+    }
+}
+
+fn standard_join_callable() -> TopLevelPureFunction {
+    let collection = named_type("C");
+    let string = named_type("String");
+    TopLevelPureFunction {
+        symbol: "std/prelude::join".to_owned(),
+        trait_identity: None,
+        trait_method: None,
+        type_parameters: vec![seseragi_syntax::TypeParameter::value("C")],
+        constraints: vec![crate::TypedConstraint {
+            name: "Reducible".to_owned(),
+            arguments: vec![collection.clone(), string.clone()],
+        }],
+        constraint_identities: vec![None],
+        parameters: vec![string.clone(), collection],
+        semantic_parameters: vec![SemanticTypeKey::Other; 2],
+        result: string,
         semantic_result: SemanticTypeKey::Other,
     }
 }

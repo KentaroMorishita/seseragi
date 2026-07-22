@@ -366,11 +366,11 @@ pub(super) fn select_standard_instance(
         return None;
     }
     let identity = standard_instance_identity(constraint)?;
-    // Arithmetic, equality, and collection instances currently lower through
-    // dedicated operation ABIs rather than first-class dictionary values.
-    // Only select a standard instance for dictionary passing when the runtime
-    // actually exports the corresponding dictionary object.
+    // Arithmetic, equality, and Iterable instances lower through dedicated
+    // operation ABIs. Reducible has a first-class standard dictionary so it
+    // can also cross a generic constrained function boundary.
     (identity.starts_with("Show<")
+        || constraint.name == "Reducible"
         || crate::prelude::standard_instance_by_identity(&identity).is_some())
     .then_some(TypedInstanceEvidence::Standard { identity })
 }
