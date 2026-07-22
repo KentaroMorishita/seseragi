@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test"
+import path from "node:path"
 import manifest from "../package.json"
 
 const {
@@ -139,7 +140,7 @@ function extensionHarness(
   const context = {
     subscriptions: [] as unknown[],
     asAbsolutePath(relative: string) {
-      return `/extension/${relative}`
+      return path.join("/extension", relative)
     },
   }
   return {
@@ -231,7 +232,12 @@ describe("official VS Code extension contract", () => {
     expect(harness.MockLanguageClient.instances).toHaveLength(1)
     const instance = harness.MockLanguageClient.instances[0]
     expect(instance.serverOptions).toEqual({
-      command: "/extension/server/darwin-arm64/seseragi-lsp",
+      command: path.join(
+        "/extension",
+        "server",
+        "darwin-arm64",
+        "seseragi-lsp"
+      ),
       args: [],
       transport: "stdio",
     })
