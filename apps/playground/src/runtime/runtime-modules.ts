@@ -13,6 +13,7 @@ import * as sum from "../../../../runtime/ts/src/sum"
 import * as html from "../../../../runtime/ts/src/html"
 import * as dom from "../../../../runtime/ts/src/dom"
 import * as signal from "../../../../runtime/ts/src/signal"
+import * as string from "../../../../runtime/ts/src/string"
 
 export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/array": array,
@@ -30,4 +31,5 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/signal": signal,
   "@seseragi/runtime/console": browserConsole,
   "@seseragi/runtime/stdin": browserStdin,
+  "@seseragi/runtime/string": string,
 }

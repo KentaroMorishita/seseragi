@@ -47,6 +47,20 @@ export function sum<Collection, Element>(
   return reducible.reduce(zero.zero(undefined))(add.add)(values)
 }
 
+/** Combine a reducible collection using only its selected Monoid dictionary. */
+export function combine<Collection, Element>(
+  reducibleDictionary: RuntimeDictionary,
+  monoidDictionary: RuntimeDictionary,
+  values: Collection
+): Element {
+  const reducible = reducibleDictionary as Reducible<Collection, Element>
+  const monoid = monoidDictionary as Readonly<{
+    append: (left: Element) => (right: Element) => Element
+    empty: (unit: Unit) => Element
+  }>
+  return reducible.reduce(monoid.empty(undefined))(monoid.append)(values)
+}
+
 /** Run one cold Effect at a time in the collection's declared iteration order. */
 export function forEach<Collection, Environment, Failure, Element>(
   dictionary: RuntimeDictionary,

@@ -1,4 +1,5 @@
 import type { Iterator as SeseragiIterator } from "./iterator"
+import type { Unit } from "./effect"
 import { Just, Nothing } from "./sum"
 
 /** Immutable persistent linked list used by the Seseragi `List<A>` ABI. */
@@ -28,6 +29,35 @@ export function fromArray<A>(values: ReadonlyArray<A>): List<A> {
   }
   return result
 }
+
+/** Append two persistent lists while preserving their source order. */
+export function append<A>(left: List<A>, right: List<A>): List<A> {
+  const values: A[] = []
+  let cursor = left
+  while (cursor.tag === "Cons") {
+    values.push(cursor.head)
+    cursor = cursor.tail
+  }
+  let result = right
+  for (let index = values.length - 1; index >= 0; index -= 1) {
+    result = Cons(values[index] as A, result)
+  }
+  return result
+}
+
+/** Runtime dictionary for the standard `Semigroup<List<A>>` instance. */
+export const listSemigroup = Object.freeze({
+  append:
+    <A>(left: List<A>) =>
+    (right: List<A>): List<A> =>
+      append(left, right),
+})
+
+/** Runtime dictionary for the standard `Monoid<List<A>>` instance. */
+export const listMonoid = Object.freeze({
+  ...listSemigroup,
+  empty: <A>(_unit: Unit): List<A> => Empty,
+})
 
 /** Runtime implementation of the standard `Reducible<List<A>, A>` instance. */
 export function reduce<A, B>(

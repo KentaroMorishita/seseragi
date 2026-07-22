@@ -25,6 +25,10 @@
       "types": "./src/int64.ts",
       "default": "./src/int64.ts"
     },
+    "./string": {
+      "types": "./src/string.ts",
+      "default": "./src/string.ts"
+    },
     "./array": {
       "types": "./src/array.ts",
       "default": "./src/array.ts"

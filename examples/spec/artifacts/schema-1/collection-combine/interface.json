@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "module": "artifact/collection-combine",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/collection-combine::collectionCombineResults",
+      "namespace": "value",
+      "name": "collectionCombineResults",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 1184,
+        "end": 1436
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

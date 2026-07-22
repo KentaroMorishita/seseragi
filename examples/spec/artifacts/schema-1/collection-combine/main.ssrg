@@ -1,0 +1,58 @@
+fn combineValues<C, A> values: C -> A
+where Reducible<C, A>, Monoid<A> =
+  combine values
+
+fn combinedString unit: Unit -> String =
+  combineValues ["Sese", "ragi"]
+
+fn combinedArrayValues unit: Unit -> Array<String> =
+  combineValues [["a", "b"], ["c"]]
+
+fn combinedArray unit: Unit -> String =
+  join "|" (combinedArrayValues ())
+
+fn combinedListValues unit: Unit -> List<String> =
+  combineValues [`["l1", "l2"], `["l3"]]
+
+fn combinedList unit: Unit -> String =
+  join "|" (combinedListValues ())
+
+fn emptyStrings unit: Unit -> Array<String> =
+  []
+
+fn combinedEmpty unit: Unit -> String =
+  combineValues (emptyStrings ())
+
+fn appendWithMonoid<A> left: A -> right: A -> A
+where Monoid<A> =
+  append left right
+
+fn combinedViaSupertrait unit: Unit -> String =
+  appendWithMonoid "super" "trait"
+
+fn appendedString unit: Unit -> String =
+  append "semi" "group"
+
+fn appendedArrayValues unit: Unit -> Array<String> =
+  append ["array"] ["append"]
+
+fn appendedArray unit: Unit -> String =
+  join "|" (appendedArrayValues ())
+
+fn appendedListValues unit: Unit -> List<String> =
+  append `["list"] `["append"]
+
+fn appendedList unit: Unit -> String =
+  join "|" (appendedListValues ())
+
+pub fn collectionCombineResults unit: Unit -> Array<String> =
+  [
+    combinedString (),
+    combinedArray (),
+    combinedList (),
+    combinedEmpty (),
+    combinedViaSupertrait (),
+    appendedString (),
+    appendedArray (),
+    appendedList ()
+  ]

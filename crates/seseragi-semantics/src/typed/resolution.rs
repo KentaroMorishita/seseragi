@@ -515,6 +515,9 @@ fn collect_callables(
             Some("std/prelude::sum") => {
                 callables.insert(symbol.id, standard_sum_callable());
             }
+            Some("std/prelude::combine") => {
+                callables.insert(symbol.id, standard_combine_callable());
+            }
             Some("std/prelude::forEach") => {
                 callables.insert(symbol.id, standard_for_each_callable());
             }
@@ -848,6 +851,35 @@ fn standard_sum_callable() -> TopLevelPureFunction {
             },
         ],
         constraint_identities: vec![None; 3],
+        parameters: vec![collection],
+        semantic_parameters: vec![SemanticTypeKey::Other],
+        result: element,
+        semantic_result: SemanticTypeKey::Other,
+    }
+}
+
+fn standard_combine_callable() -> TopLevelPureFunction {
+    let collection = named_type("C");
+    let element = named_type("A");
+    TopLevelPureFunction {
+        symbol: "std/prelude::combine".to_owned(),
+        trait_identity: None,
+        trait_method: None,
+        type_parameters: vec![
+            seseragi_syntax::TypeParameter::value("C"),
+            seseragi_syntax::TypeParameter::value("A"),
+        ],
+        constraints: vec![
+            crate::TypedConstraint {
+                name: "Reducible".to_owned(),
+                arguments: vec![collection.clone(), element.clone()],
+            },
+            crate::TypedConstraint {
+                name: "Monoid".to_owned(),
+                arguments: vec![element.clone()],
+            },
+        ],
+        constraint_identities: vec![None; 2],
         parameters: vec![collection],
         semantic_parameters: vec![SemanticTypeKey::Other],
         result: element,

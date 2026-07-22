@@ -1,0 +1,1 @@
+["Seseragi","a|b|c","l1|l2|l3","","supertrait","semigroup","array|append","list|append"]

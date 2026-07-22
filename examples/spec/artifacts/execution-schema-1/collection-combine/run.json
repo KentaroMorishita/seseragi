@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "case": "collection-combine",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/collection-combine",
+    "export": "collectionCombineResults",
+    "compiledModule": "../../schema-1/collection-combine/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.list",
+      "core.collection.combine",
+      "core.unit",
+      "core.array.reducible",
+      "core.string.monoid",
+      "core.string",
+      "core.array.monoid",
+      "core.collection.join",
+      "core.list.monoid",
+      "core.list.from-array",
+      "core.list.reducible",
+      "core.string.semigroup",
+      "core.array.semigroup",
+      "core.list.semigroup"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

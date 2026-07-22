@@ -1,8 +1,11 @@
 fn evenLabels limit: Int -> Array<String> =
   [`#${value}` | value <- 1..=limit, value % 2 == 0]
 
-// Rangeから選んだ値を文字列へ変換し、joinで区切って表示します。
+fn frame labels: Array<String> -> String =
+  combine ["[", join " / " labels, "]"]
+
+// Rangeから選んだ値をjoinし、StringのMonoidで枠を連結します。
 pub effect fn main =
   evenLabels 8
-  |> join " / "
+  |> frame
   |> println

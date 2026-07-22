@@ -288,6 +288,39 @@ fn selects_reducible_zero_and_add_evidence_for_standard_sum() {
 }
 
 #[test]
+fn selects_reducible_and_monoid_evidence_for_standard_combine() {
+    let typed = type_module(
+        "artifact/collection-combine/main.ssrg",
+        "pub fn combined values: Array<String> -> String = combine values\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+        panic!("expected combined function");
+    };
+    assert!(matches!(
+        body,
+        TypedExpr::Call {
+            callee,
+            evidence,
+            type_ref,
+            ..
+        } if callee == "std/prelude::combine"
+            && type_ref == &named("String")
+            && matches!(evidence.as_slice(), [
+                crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity: reducible },
+                    ..
+                },
+                crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity: monoid },
+                    ..
+                },
+            ] if reducible == "std/array::Reducible"
+                && monoid == "std/string::Monoid")
+    ));
+}
+
+#[test]
 fn selects_standard_power_evidence_for_an_operator_function_value() {
     let typed = type_module(
         "artifact/power-operator-reference/main.ssrg",

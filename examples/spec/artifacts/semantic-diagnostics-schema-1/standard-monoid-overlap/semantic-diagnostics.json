@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0202",
+      "severity": "Error",
+      "messageKey": "trait.instance-duplicate",
+      "primary": {
+        "start": 0,
+        "end": 64
+      },
+      "related": [
+        {
+          "message": "Monoid instance overlaps sealed standard instance std/string::Monoid",
+          "primary": {
+            "start": 0,
+            "end": 64
+          }
+        }
+      ],
+      "fixes": []
+    }
+  ]
+}

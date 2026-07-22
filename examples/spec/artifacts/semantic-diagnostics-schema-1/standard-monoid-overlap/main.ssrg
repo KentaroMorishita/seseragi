@@ -1,0 +1,3 @@
+instance Monoid<String> {
+  fn empty unit: Unit -> String = ""
+}

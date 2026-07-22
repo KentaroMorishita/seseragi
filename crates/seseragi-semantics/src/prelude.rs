@@ -11,6 +11,7 @@ pub(crate) struct PreludeTrait {
     pub(crate) name: &'static str,
     pub(crate) canonical: &'static str,
     pub(crate) type_parameter: &'static str,
+    pub(crate) type_parameter_arity: u32,
     pub(crate) supertrait: Option<&'static str>,
 }
 
@@ -32,6 +33,8 @@ pub(crate) struct PreludeTraitMethodSignature {
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 enum PreludeTraitMethodKind {
+    Append,
+    Empty,
     Map,
     Pure,
     Apply,
@@ -56,26 +59,55 @@ pub struct StandardEqualityInstance {
 
 pub(crate) const TRAITS: &[PreludeTrait] = &[
     PreludeTrait {
+        name: "Semigroup",
+        canonical: "std/prelude::Semigroup",
+        type_parameter: "A",
+        type_parameter_arity: 0,
+        supertrait: None,
+    },
+    PreludeTrait {
+        name: "Monoid",
+        canonical: "std/prelude::Monoid",
+        type_parameter: "A",
+        type_parameter_arity: 0,
+        supertrait: Some("Semigroup"),
+    },
+    PreludeTrait {
         name: "Functor",
         canonical: "std/prelude::Functor",
         type_parameter: "F",
+        type_parameter_arity: 1,
         supertrait: None,
     },
     PreludeTrait {
         name: "Applicative",
         canonical: "std/prelude::Applicative",
         type_parameter: "F",
+        type_parameter_arity: 1,
         supertrait: Some("Functor"),
     },
     PreludeTrait {
         name: "Monad",
         canonical: "std/prelude::Monad",
         type_parameter: "M",
+        type_parameter_arity: 1,
         supertrait: Some("Applicative"),
     },
 ];
 
 pub(crate) const TRAIT_METHODS: &[PreludeTraitMethod] = &[
+    PreludeTraitMethod {
+        trait_name: "Semigroup",
+        name: "append",
+        canonical: "std/prelude::Semigroup::append",
+        kind: PreludeTraitMethodKind::Append,
+    },
+    PreludeTraitMethod {
+        trait_name: "Monoid",
+        name: "empty",
+        canonical: "std/prelude::Monoid::empty",
+        kind: PreludeTraitMethodKind::Empty,
+    },
     PreludeTraitMethod {
         trait_name: "Functor",
         name: "map",
@@ -103,6 +135,48 @@ pub(crate) const TRAIT_METHODS: &[PreludeTraitMethod] = &[
 ];
 
 pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
+    PreludeStandardInstance {
+        trait_name: "Semigroup",
+        type_name: "String",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/string::Semigroup",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monoid",
+        type_name: "String",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/string::Monoid",
+    },
+    PreludeStandardInstance {
+        trait_name: "Semigroup",
+        type_name: "Array",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/array::Semigroup",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monoid",
+        type_name: "Array",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/array::Monoid",
+    },
+    PreludeStandardInstance {
+        trait_name: "Semigroup",
+        type_name: "List",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/list::Semigroup",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monoid",
+        type_name: "List",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/list::Monoid",
+    },
     PreludeStandardInstance {
         trait_name: "Functor",
         type_name: "Maybe",
@@ -344,6 +418,7 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
                 | "reduce"
                 | "join"
                 | "sum"
+                | "combine"
                 | "forEach"
                 | "unfold"
                 | "next"
@@ -448,6 +523,16 @@ pub(crate) fn trait_method_signature(method: &PreludeTraitMethod) -> PreludeTrai
     let applied_b = applied(constructor, b.clone());
     let mut type_parameters = vec![TypeParameter::constructor(constructor, 1)];
     match method.kind {
+        PreludeTraitMethodKind::Append => PreludeTraitMethodSignature {
+            type_parameters: vec![TypeParameter::value(constructor)],
+            parameters: vec![named(constructor), named(constructor)],
+            result: named(constructor),
+        },
+        PreludeTraitMethodKind::Empty => PreludeTraitMethodSignature {
+            type_parameters: vec![TypeParameter::value(constructor)],
+            parameters: vec![named("Unit")],
+            result: named(constructor),
+        },
         PreludeTraitMethodKind::Map => {
             type_parameters.extend([TypeParameter::value("A"), TypeParameter::value("B")]);
             PreludeTraitMethodSignature {
@@ -492,8 +577,12 @@ pub(crate) fn standard_instance(
 ) -> Option<&'static PreludeStandardInstance> {
     STANDARD_INSTANCES.iter().find(|instance| {
         instance.trait_name == trait_name
-            && standard_instance_head(instance, type_ref)
-                .is_some_and(|arguments| instance.type_arity.checked_sub(arguments) == Some(1))
+            && standard_instance_head(instance, type_ref).is_some_and(|arguments| {
+                trait_by_name(trait_name).is_some_and(|trait_spec| {
+                    instance.type_arity.checked_sub(arguments)
+                        == Some(trait_spec.type_parameter_arity)
+                })
+            })
     })
 }
 
@@ -531,9 +620,10 @@ pub(crate) fn overlapping_standard_instance(
 ) -> Option<&'static PreludeStandardInstance> {
     STANDARD_INSTANCES.iter().find(|instance| {
         standard_instance_head(instance, type_ref).is_some_and(|arguments| {
-            arguments.checked_add(1) == Some(instance.type_arity)
-                || (arguments == instance.type_arity
-                    && matches!(last_type_argument(type_ref), Some(TypedType::Hole)))
+            trait_by_name(instance.trait_name).is_some_and(|trait_spec| {
+                instance.type_arity.checked_sub(arguments) == Some(trait_spec.type_parameter_arity)
+            }) || (arguments == instance.type_arity
+                && matches!(last_type_argument(type_ref), Some(TypedType::Hole)))
         }) && trait_by_name(instance.trait_name)
             .is_some_and(|trait_spec| trait_spec.canonical == trait_identity)
     })
@@ -630,6 +720,19 @@ mod tests {
         );
         assert_eq!(signature.parameters.len(), 2);
         assert_eq!(signature.result, applied("M", named("B")));
+
+        assert_eq!(
+            trait_by_name("Monoid").unwrap().supertrait,
+            Some("Semigroup")
+        );
+        let empty = trait_method_by_canonical("std/prelude::Monoid::empty").unwrap();
+        let empty_signature = trait_method_signature(empty);
+        assert_eq!(
+            empty_signature.type_parameters,
+            vec![TypeParameter::value("A")]
+        );
+        assert_eq!(empty_signature.parameters, vec![named("Unit")]);
+        assert_eq!(empty_signature.result, named("A"));
     }
 
     #[test]
@@ -669,6 +772,20 @@ mod tests {
             Some("std/effect::Applicative")
         );
         assert!(standard_instance("Monad", &saturated_either).is_none());
+        assert_eq!(
+            standard_instance("Monoid", &named("String")).map(|instance| instance.identity),
+            Some("std/string::Monoid")
+        );
+        assert_eq!(
+            standard_instance("Semigroup", &applied("Array", named("Int")))
+                .map(|instance| instance.identity),
+            Some("std/array::Semigroup")
+        );
+        assert_eq!(
+            standard_instance("Monoid", &applied("List", named("String")))
+                .map(|instance| instance.identity),
+            Some("std/list::Monoid")
+        );
 
         let signal = TypedType::ExternalNamed {
             name: "Signal".to_owned(),

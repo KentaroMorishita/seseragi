@@ -157,6 +157,16 @@
       }
     },
     {
+      "id": "core.collection.combine",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Reducible<C, A> -> Monoid<A> -> C -> A",
+      "import": {
+        "module": "@seseragi/runtime/collection",
+        "export": "combine"
+      }
+    },
+    {
       "id": "effect.collection.for-each",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -436,6 +446,28 @@
       }
     },
     {
+      "id": "core.string.semigroup",
+      "kind": "runtime-binding",
+      "typescript": "readonly Semigroup<string> dictionary",
+      "boundary": "standard Semigroup<String> source-order concatenation dictionary",
+      "instanceIdentity": "std/string::Semigroup",
+      "import": {
+        "module": "@seseragi/runtime/string",
+        "export": "stringSemigroup"
+      }
+    },
+    {
+      "id": "core.string.monoid",
+      "kind": "runtime-binding",
+      "typescript": "readonly Monoid<string> dictionary",
+      "boundary": "standard Monoid<String> dictionary with empty string identity",
+      "instanceIdentity": "std/string::Monoid",
+      "import": {
+        "module": "@seseragi/runtime/string",
+        "export": "stringMonoid"
+      }
+    },
+    {
       "id": "core.bool",
       "kind": "value-representation",
       "typescript": "boolean",
@@ -642,6 +674,28 @@
       }
     },
     {
+      "id": "core.array.semigroup",
+      "kind": "runtime-binding",
+      "typescript": "readonly Semigroup<Array<A>> dictionary",
+      "boundary": "standard Semigroup<Array<A>> source-order concatenation dictionary",
+      "instanceIdentity": "std/array::Semigroup",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "arraySemigroup"
+      }
+    },
+    {
+      "id": "core.array.monoid",
+      "kind": "runtime-binding",
+      "typescript": "readonly Monoid<Array<A>> dictionary",
+      "boundary": "standard Monoid<Array<A>> dictionary with empty Array identity",
+      "instanceIdentity": "std/array::Monoid",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "arrayMonoid"
+      }
+    },
+    {
       "id": "core.array.applicative",
       "kind": "runtime-binding",
       "typescript": "readonly Applicative dictionary",
@@ -669,6 +723,28 @@
       "import": {
         "module": "@seseragi/runtime/list",
         "export": "listFunctor"
+      }
+    },
+    {
+      "id": "core.list.semigroup",
+      "kind": "runtime-binding",
+      "typescript": "readonly Semigroup<List<A>> dictionary",
+      "boundary": "standard Semigroup<List<A>> persistent source-order concatenation dictionary",
+      "instanceIdentity": "std/list::Semigroup",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "listSemigroup"
+      }
+    },
+    {
+      "id": "core.list.monoid",
+      "kind": "runtime-binding",
+      "typescript": "readonly Monoid<List<A>> dictionary",
+      "boundary": "standard Monoid<List<A>> dictionary with Empty identity",
+      "instanceIdentity": "std/list::Monoid",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "listMonoid"
       }
     },
     {

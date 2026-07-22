@@ -5,6 +5,72 @@
   "module": "std/prelude",
   "traits": [
     {
+      "name": "Semigroup",
+      "canonical": "std/prelude::Semigroup",
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "append",
+          "canonical": "std/prelude::Semigroup::append",
+          "signature": {
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Monoid",
+      "canonical": "std/prelude::Monoid",
+      "typeParameters": [
+        "A"
+      ],
+      "supertrait": "Semigroup",
+      "methods": [
+        {
+          "name": "empty",
+          "canonical": "std/prelude::Monoid::empty",
+          "signature": {
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "Functor",
       "canonical": "std/prelude::Functor",
       "typeParameters": [
@@ -240,6 +306,54 @@
     }
   ],
   "instances": [
+    {
+      "trait": "Semigroup",
+      "traitCanonical": "std/prelude::Semigroup",
+      "typeConstructor": "String",
+      "typeConstructorCanonical": "std/prelude::String",
+      "typeConstructorArity": 0,
+      "identity": "std/string::Semigroup"
+    },
+    {
+      "trait": "Monoid",
+      "traitCanonical": "std/prelude::Monoid",
+      "typeConstructor": "String",
+      "typeConstructorCanonical": "std/prelude::String",
+      "typeConstructorArity": 0,
+      "identity": "std/string::Monoid"
+    },
+    {
+      "trait": "Semigroup",
+      "traitCanonical": "std/prelude::Semigroup",
+      "typeConstructor": "Array",
+      "typeConstructorCanonical": "std/prelude::Array",
+      "typeConstructorArity": 1,
+      "identity": "std/array::Semigroup"
+    },
+    {
+      "trait": "Monoid",
+      "traitCanonical": "std/prelude::Monoid",
+      "typeConstructor": "Array",
+      "typeConstructorCanonical": "std/prelude::Array",
+      "typeConstructorArity": 1,
+      "identity": "std/array::Monoid"
+    },
+    {
+      "trait": "Semigroup",
+      "traitCanonical": "std/prelude::Semigroup",
+      "typeConstructor": "List",
+      "typeConstructorCanonical": "std/prelude::List",
+      "typeConstructorArity": 1,
+      "identity": "std/list::Semigroup"
+    },
+    {
+      "trait": "Monoid",
+      "traitCanonical": "std/prelude::Monoid",
+      "typeConstructor": "List",
+      "typeConstructorCanonical": "std/prelude::List",
+      "typeConstructorArity": 1,
+      "identity": "std/list::Monoid"
+    },
     {
       "trait": "Functor",
       "traitCanonical": "std/prelude::Functor",

@@ -1,0 +1,1665 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "combineValues",
+      "nameSpan": {
+        "start": 3,
+        "end": 16
+      },
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 23,
+            "end": 29
+          },
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "span": {
+              "start": 31,
+              "end": 32
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "A",
+        "span": {
+          "start": 36,
+          "end": 37
+        }
+      },
+      "constraints": [
+        {
+          "name": "Reducible",
+          "nameSpan": {
+            "start": 44,
+            "end": 53
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "C",
+              "span": {
+                "start": 54,
+                "end": 55
+              }
+            },
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 57,
+                "end": 58
+              }
+            }
+          ],
+          "span": {
+            "start": 44,
+            "end": 59
+          }
+        },
+        {
+          "name": "Monoid",
+          "nameSpan": {
+            "start": 61,
+            "end": 67
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 68,
+                "end": 69
+              }
+            }
+          ],
+          "span": {
+            "start": 61,
+            "end": 70
+          }
+        }
+      ],
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "combine",
+          "span": {
+            "start": 75,
+            "end": 82
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "values",
+          "span": {
+            "start": 83,
+            "end": 89
+          }
+        },
+        "span": {
+          "start": 75,
+          "end": 89
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 89
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "combinedString",
+      "nameSpan": {
+        "start": 94,
+        "end": 108
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 109,
+            "end": 113
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 115,
+              "end": 119
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 123,
+          "end": 129
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "combineValues",
+          "span": {
+            "start": 134,
+            "end": 147
+          }
+        },
+        "argument": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "string",
+              "raw": "\"Sese\"",
+              "span": {
+                "start": 149,
+                "end": 155
+              }
+            },
+            {
+              "kind": "string",
+              "raw": "\"ragi\"",
+              "span": {
+                "start": 157,
+                "end": 163
+              }
+            }
+          ],
+          "span": {
+            "start": 148,
+            "end": 164
+          }
+        },
+        "span": {
+          "start": 134,
+          "end": 164
+        }
+      },
+      "span": {
+        "start": 91,
+        "end": 164
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "combinedArrayValues",
+      "nameSpan": {
+        "start": 169,
+        "end": 188
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 189,
+            "end": 193
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 195,
+              "end": 199
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 209,
+              "end": 215
+            }
+          }
+        ],
+        "span": {
+          "start": 203,
+          "end": 216
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "combineValues",
+          "span": {
+            "start": 221,
+            "end": 234
+          }
+        },
+        "argument": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "string",
+                  "raw": "\"a\"",
+                  "span": {
+                    "start": 237,
+                    "end": 240
+                  }
+                },
+                {
+                  "kind": "string",
+                  "raw": "\"b\"",
+                  "span": {
+                    "start": 242,
+                    "end": 245
+                  }
+                }
+              ],
+              "span": {
+                "start": 236,
+                "end": 246
+              }
+            },
+            {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "string",
+                  "raw": "\"c\"",
+                  "span": {
+                    "start": 249,
+                    "end": 252
+                  }
+                }
+              ],
+              "span": {
+                "start": 248,
+                "end": 253
+              }
+            }
+          ],
+          "span": {
+            "start": 235,
+            "end": 254
+          }
+        },
+        "span": {
+          "start": 221,
+          "end": 254
+        }
+      },
+      "span": {
+        "start": 166,
+        "end": 254
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "combinedArray",
+      "nameSpan": {
+        "start": 259,
+        "end": 272
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 273,
+            "end": 277
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 279,
+              "end": 283
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 287,
+          "end": 293
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "join",
+            "span": {
+              "start": 298,
+              "end": 302
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\"|\"",
+            "span": {
+              "start": 303,
+              "end": 306
+            }
+          },
+          "span": {
+            "start": 298,
+            "end": 306
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "combinedArrayValues",
+              "span": {
+                "start": 308,
+                "end": 327
+              }
+            },
+            "argument": {
+              "kind": "unit",
+              "span": {
+                "start": 328,
+                "end": 330
+              }
+            },
+            "span": {
+              "start": 308,
+              "end": 330
+            }
+          },
+          "span": {
+            "start": 307,
+            "end": 331
+          }
+        },
+        "span": {
+          "start": 298,
+          "end": 331
+        }
+      },
+      "span": {
+        "start": 256,
+        "end": 331
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "combinedListValues",
+      "nameSpan": {
+        "start": 336,
+        "end": 354
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 355,
+            "end": 359
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 361,
+              "end": 365
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "List",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 374,
+              "end": 380
+            }
+          }
+        ],
+        "span": {
+          "start": 369,
+          "end": 381
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "combineValues",
+          "span": {
+            "start": 386,
+            "end": 399
+          }
+        },
+        "argument": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "list",
+              "elements": [
+                {
+                  "kind": "string",
+                  "raw": "\"l1\"",
+                  "span": {
+                    "start": 403,
+                    "end": 407
+                  }
+                },
+                {
+                  "kind": "string",
+                  "raw": "\"l2\"",
+                  "span": {
+                    "start": 409,
+                    "end": 413
+                  }
+                }
+              ],
+              "span": {
+                "start": 401,
+                "end": 414
+              }
+            },
+            {
+              "kind": "list",
+              "elements": [
+                {
+                  "kind": "string",
+                  "raw": "\"l3\"",
+                  "span": {
+                    "start": 418,
+                    "end": 422
+                  }
+                }
+              ],
+              "span": {
+                "start": 416,
+                "end": 423
+              }
+            }
+          ],
+          "span": {
+            "start": 400,
+            "end": 424
+          }
+        },
+        "span": {
+          "start": 386,
+          "end": 424
+        }
+      },
+      "span": {
+        "start": 333,
+        "end": 424
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "combinedList",
+      "nameSpan": {
+        "start": 429,
+        "end": 441
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 442,
+            "end": 446
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 448,
+              "end": 452
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 456,
+          "end": 462
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "join",
+            "span": {
+              "start": 467,
+              "end": 471
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\"|\"",
+            "span": {
+              "start": 472,
+              "end": 475
+            }
+          },
+          "span": {
+            "start": 467,
+            "end": 475
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "combinedListValues",
+              "span": {
+                "start": 477,
+                "end": 495
+              }
+            },
+            "argument": {
+              "kind": "unit",
+              "span": {
+                "start": 496,
+                "end": 498
+              }
+            },
+            "span": {
+              "start": 477,
+              "end": 498
+            }
+          },
+          "span": {
+            "start": 476,
+            "end": 499
+          }
+        },
+        "span": {
+          "start": 467,
+          "end": 499
+        }
+      },
+      "span": {
+        "start": 426,
+        "end": 499
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "emptyStrings",
+      "nameSpan": {
+        "start": 504,
+        "end": 516
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 517,
+            "end": 521
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 523,
+              "end": 527
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 537,
+              "end": 543
+            }
+          }
+        ],
+        "span": {
+          "start": 531,
+          "end": 544
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [],
+        "span": {
+          "start": 549,
+          "end": 551
+        }
+      },
+      "span": {
+        "start": 501,
+        "end": 551
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "combinedEmpty",
+      "nameSpan": {
+        "start": 556,
+        "end": 569
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 570,
+            "end": 574
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 576,
+              "end": 580
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 584,
+          "end": 590
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "combineValues",
+          "span": {
+            "start": 595,
+            "end": 608
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "emptyStrings",
+              "span": {
+                "start": 610,
+                "end": 622
+              }
+            },
+            "argument": {
+              "kind": "unit",
+              "span": {
+                "start": 623,
+                "end": 625
+              }
+            },
+            "span": {
+              "start": 610,
+              "end": 625
+            }
+          },
+          "span": {
+            "start": 609,
+            "end": 626
+          }
+        },
+        "span": {
+          "start": 595,
+          "end": 626
+        }
+      },
+      "span": {
+        "start": 553,
+        "end": 626
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "appendWithMonoid",
+      "nameSpan": {
+        "start": 631,
+        "end": 647
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 651,
+            "end": 655
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 657,
+              "end": 658
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 662,
+            "end": 667
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 669,
+              "end": 670
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "A",
+        "span": {
+          "start": 674,
+          "end": 675
+        }
+      },
+      "constraints": [
+        {
+          "name": "Monoid",
+          "nameSpan": {
+            "start": 682,
+            "end": 688
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 689,
+                "end": 690
+              }
+            }
+          ],
+          "span": {
+            "start": 682,
+            "end": 691
+          }
+        }
+      ],
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "append",
+            "span": {
+              "start": 696,
+              "end": 702
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "left",
+            "span": {
+              "start": 703,
+              "end": 707
+            }
+          },
+          "span": {
+            "start": 696,
+            "end": 707
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 708,
+            "end": 713
+          }
+        },
+        "span": {
+          "start": 696,
+          "end": 713
+        }
+      },
+      "span": {
+        "start": 628,
+        "end": 713
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "combinedViaSupertrait",
+      "nameSpan": {
+        "start": 718,
+        "end": 739
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 740,
+            "end": 744
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 746,
+              "end": 750
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 754,
+          "end": 760
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "appendWithMonoid",
+            "span": {
+              "start": 765,
+              "end": 781
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\"super\"",
+            "span": {
+              "start": 782,
+              "end": 789
+            }
+          },
+          "span": {
+            "start": 765,
+            "end": 789
+          }
+        },
+        "argument": {
+          "kind": "string",
+          "raw": "\"trait\"",
+          "span": {
+            "start": 790,
+            "end": 797
+          }
+        },
+        "span": {
+          "start": 765,
+          "end": 797
+        }
+      },
+      "span": {
+        "start": 715,
+        "end": 797
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "appendedString",
+      "nameSpan": {
+        "start": 802,
+        "end": 816
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 817,
+            "end": 821
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 823,
+              "end": 827
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 831,
+          "end": 837
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "append",
+            "span": {
+              "start": 842,
+              "end": 848
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\"semi\"",
+            "span": {
+              "start": 849,
+              "end": 855
+            }
+          },
+          "span": {
+            "start": 842,
+            "end": 855
+          }
+        },
+        "argument": {
+          "kind": "string",
+          "raw": "\"group\"",
+          "span": {
+            "start": 856,
+            "end": 863
+          }
+        },
+        "span": {
+          "start": 842,
+          "end": 863
+        }
+      },
+      "span": {
+        "start": 799,
+        "end": 863
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "appendedArrayValues",
+      "nameSpan": {
+        "start": 868,
+        "end": 887
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 888,
+            "end": 892
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 894,
+              "end": 898
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 908,
+              "end": 914
+            }
+          }
+        ],
+        "span": {
+          "start": 902,
+          "end": 915
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "append",
+            "span": {
+              "start": 920,
+              "end": 926
+            }
+          },
+          "argument": {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "string",
+                "raw": "\"array\"",
+                "span": {
+                  "start": 928,
+                  "end": 935
+                }
+              }
+            ],
+            "span": {
+              "start": 927,
+              "end": 936
+            }
+          },
+          "span": {
+            "start": 920,
+            "end": 936
+          }
+        },
+        "argument": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "string",
+              "raw": "\"append\"",
+              "span": {
+                "start": 938,
+                "end": 946
+              }
+            }
+          ],
+          "span": {
+            "start": 937,
+            "end": 947
+          }
+        },
+        "span": {
+          "start": 920,
+          "end": 947
+        }
+      },
+      "span": {
+        "start": 865,
+        "end": 947
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "appendedArray",
+      "nameSpan": {
+        "start": 952,
+        "end": 965
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 966,
+            "end": 970
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 972,
+              "end": 976
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 980,
+          "end": 986
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "join",
+            "span": {
+              "start": 991,
+              "end": 995
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\"|\"",
+            "span": {
+              "start": 996,
+              "end": 999
+            }
+          },
+          "span": {
+            "start": 991,
+            "end": 999
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "appendedArrayValues",
+              "span": {
+                "start": 1001,
+                "end": 1020
+              }
+            },
+            "argument": {
+              "kind": "unit",
+              "span": {
+                "start": 1021,
+                "end": 1023
+              }
+            },
+            "span": {
+              "start": 1001,
+              "end": 1023
+            }
+          },
+          "span": {
+            "start": 1000,
+            "end": 1024
+          }
+        },
+        "span": {
+          "start": 991,
+          "end": 1024
+        }
+      },
+      "span": {
+        "start": 949,
+        "end": 1024
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "appendedListValues",
+      "nameSpan": {
+        "start": 1029,
+        "end": 1047
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 1048,
+            "end": 1052
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 1054,
+              "end": 1058
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "List",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 1067,
+              "end": 1073
+            }
+          }
+        ],
+        "span": {
+          "start": 1062,
+          "end": 1074
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "append",
+            "span": {
+              "start": 1079,
+              "end": 1085
+            }
+          },
+          "argument": {
+            "kind": "list",
+            "elements": [
+              {
+                "kind": "string",
+                "raw": "\"list\"",
+                "span": {
+                  "start": 1088,
+                  "end": 1094
+                }
+              }
+            ],
+            "span": {
+              "start": 1086,
+              "end": 1095
+            }
+          },
+          "span": {
+            "start": 1079,
+            "end": 1095
+          }
+        },
+        "argument": {
+          "kind": "list",
+          "elements": [
+            {
+              "kind": "string",
+              "raw": "\"append\"",
+              "span": {
+                "start": 1098,
+                "end": 1106
+              }
+            }
+          ],
+          "span": {
+            "start": 1096,
+            "end": 1107
+          }
+        },
+        "span": {
+          "start": 1079,
+          "end": 1107
+        }
+      },
+      "span": {
+        "start": 1026,
+        "end": 1107
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "appendedList",
+      "nameSpan": {
+        "start": 1112,
+        "end": 1124
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 1125,
+            "end": 1129
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 1131,
+              "end": 1135
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 1139,
+          "end": 1145
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "join",
+            "span": {
+              "start": 1150,
+              "end": 1154
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\"|\"",
+            "span": {
+              "start": 1155,
+              "end": 1158
+            }
+          },
+          "span": {
+            "start": 1150,
+            "end": 1158
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "appendedListValues",
+              "span": {
+                "start": 1160,
+                "end": 1178
+              }
+            },
+            "argument": {
+              "kind": "unit",
+              "span": {
+                "start": 1179,
+                "end": 1181
+              }
+            },
+            "span": {
+              "start": 1160,
+              "end": 1181
+            }
+          },
+          "span": {
+            "start": 1159,
+            "end": 1182
+          }
+        },
+        "span": {
+          "start": 1150,
+          "end": 1182
+        }
+      },
+      "span": {
+        "start": 1109,
+        "end": 1182
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "collectionCombineResults",
+      "nameSpan": {
+        "start": 1191,
+        "end": 1215
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 1216,
+            "end": 1220
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 1222,
+              "end": 1226
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 1236,
+              "end": 1242
+            }
+          }
+        ],
+        "span": {
+          "start": 1230,
+          "end": 1243
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "combinedString",
+              "span": {
+                "start": 1254,
+                "end": 1268
+              }
+            },
+            "argument": {
+              "kind": "unit",
+              "span": {
+                "start": 1269,
+                "end": 1271
+              }
+            },
+            "span": {
+              "start": 1254,
+              "end": 1271
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "combinedArray",
+              "span": {
+                "start": 1277,
+                "end": 1290
+              }
+            },
+            "argument": {
+              "kind": "unit",
+              "span": {
+                "start": 1291,
+                "end": 1293
+              }
+            },
+            "span": {
+              "start": 1277,
+              "end": 1293
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "combinedList",
+              "span": {
+                "start": 1299,
+                "end": 1311
+              }
+            },
+            "argument": {
+              "kind": "unit",
+              "span": {
+                "start": 1312,
+                "end": 1314
+              }
+            },
+            "span": {
+              "start": 1299,
+              "end": 1314
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "combinedEmpty",
+              "span": {
+                "start": 1320,
+                "end": 1333
+              }
+            },
+            "argument": {
+              "kind": "unit",
+              "span": {
+                "start": 1334,
+                "end": 1336
+              }
+            },
+            "span": {
+              "start": 1320,
+              "end": 1336
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "combinedViaSupertrait",
+              "span": {
+                "start": 1342,
+                "end": 1363
+              }
+            },
+            "argument": {
+              "kind": "unit",
+              "span": {
+                "start": 1364,
+                "end": 1366
+              }
+            },
+            "span": {
+              "start": 1342,
+              "end": 1366
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "appendedString",
+              "span": {
+                "start": 1372,
+                "end": 1386
+              }
+            },
+            "argument": {
+              "kind": "unit",
+              "span": {
+                "start": 1387,
+                "end": 1389
+              }
+            },
+            "span": {
+              "start": 1372,
+              "end": 1389
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "appendedArray",
+              "span": {
+                "start": 1395,
+                "end": 1408
+              }
+            },
+            "argument": {
+              "kind": "unit",
+              "span": {
+                "start": 1409,
+                "end": 1411
+              }
+            },
+            "span": {
+              "start": 1395,
+              "end": 1411
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "appendedList",
+              "span": {
+                "start": 1417,
+                "end": 1429
+              }
+            },
+            "argument": {
+              "kind": "unit",
+              "span": {
+                "start": 1430,
+                "end": 1432
+              }
+            },
+            "span": {
+              "start": 1417,
+              "end": 1432
+            }
+          }
+        ],
+        "span": {
+          "start": 1248,
+          "end": 1436
+        }
+      },
+      "span": {
+        "start": 1184,
+        "end": 1436
+      }
+    }
+  ]
+}

@@ -1,5 +1,19 @@
 import type { Iterator as SeseragiIterator } from "./iterator"
+import type { Unit } from "./effect"
 import { Just, Nothing } from "./sum"
+
+/** Runtime dictionary for the standard `Semigroup<Array<A>>` instance. */
+export const arraySemigroup = Object.freeze({
+  append:
+    <A>(left: ReadonlyArray<A>) =>
+    (right: ReadonlyArray<A>): ReadonlyArray<A> => [...left, ...right],
+})
+
+/** Runtime dictionary for the standard `Monoid<Array<A>>` instance. */
+export const arrayMonoid = Object.freeze({
+  ...arraySemigroup,
+  empty: <A>(_unit: Unit): ReadonlyArray<A> => [],
+})
 
 /** Runtime implementation of the standard `Reducible<Array<A>, A>` instance. */
 export function reduce<A, B>(

@@ -68,7 +68,14 @@ pub fn standard_prelude_surface() -> StandardModuleSurface {
             .map(|trait_spec| StandardTraitSurface {
                 name: trait_spec.name,
                 canonical: trait_spec.canonical,
-                type_parameters: vec![TypeParameter::constructor(trait_spec.type_parameter, 1)],
+                type_parameters: vec![if trait_spec.type_parameter_arity == 0 {
+                    TypeParameter::value(trait_spec.type_parameter)
+                } else {
+                    TypeParameter::constructor(
+                        trait_spec.type_parameter,
+                        trait_spec.type_parameter_arity,
+                    )
+                }],
                 supertrait: trait_spec.supertrait,
                 methods: TRAIT_METHODS
                     .iter()
@@ -116,16 +123,24 @@ mod tests {
         let surface = standard_prelude_surface();
 
         assert_eq!(surface.language_version, "0.1.0");
-        assert_eq!(surface.traits.len(), 3);
+        assert_eq!(surface.traits.len(), 5);
         assert_eq!(
             surface
                 .traits
                 .iter()
                 .flat_map(|trait_spec| &trait_spec.methods)
                 .count(),
-            4
+            6
         );
-        assert_eq!(surface.instances.len(), 17);
+        assert_eq!(surface.instances.len(), 23);
         assert_eq!(surface.coherence.standard_heads, "sealed");
+
+        let monoid = surface
+            .traits
+            .iter()
+            .find(|trait_spec| trait_spec.name == "Monoid")
+            .expect("Monoid must be part of the standard Prelude surface");
+        assert_eq!(monoid.type_parameters, vec![TypeParameter::value("A")]);
+        assert_eq!(monoid.supertrait, Some("Semigroup"));
     }
 }

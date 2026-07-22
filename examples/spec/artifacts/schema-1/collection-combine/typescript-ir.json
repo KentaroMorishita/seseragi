@@ -1,0 +1,900 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/collection-combine",
+  "runtimeRequirements": [
+    "core.list",
+    "core.collection.combine",
+    "core.unit",
+    "core.array.reducible",
+    "core.string.monoid",
+    "core.string",
+    "core.array.monoid",
+    "core.collection.join",
+    "core.list.monoid",
+    "core.list.from-array",
+    "core.list.reducible",
+    "core.string.semigroup",
+    "core.array.semigroup",
+    "core.list.semigroup"
+  ],
+  "imports": [
+    {
+      "feature": "core.collection.combine",
+      "local": "_ssrg_collection_combine"
+    },
+    {
+      "feature": "core.array.reducible",
+      "local": "_ssrg_array_reducible"
+    },
+    {
+      "feature": "core.string.monoid",
+      "local": "_ssrg_string_monoid"
+    },
+    {
+      "feature": "core.array.monoid",
+      "local": "_ssrg_array_monoid"
+    },
+    {
+      "feature": "core.collection.join",
+      "local": "_ssrg_collection_join"
+    },
+    {
+      "feature": "core.list.monoid",
+      "local": "_ssrg_list_monoid"
+    },
+    {
+      "feature": "core.list.from-array",
+      "local": "_ssrg_list_from_array"
+    },
+    {
+      "feature": "core.list.reducible",
+      "local": "_ssrg_list_reducible"
+    },
+    {
+      "feature": "core.string.semigroup",
+      "local": "_ssrg_string_semigroup"
+    },
+    {
+      "feature": "core.array.semigroup",
+      "local": "_ssrg_array_semigroup"
+    },
+    {
+      "feature": "core.list.semigroup",
+      "local": "_ssrg_list_semigroup"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.list",
+      "local": "List"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "combineValues",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Reducible",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        },
+        {
+          "name": "Monoid",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "type": "C",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_combine",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$0"
+          },
+          {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$1"
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 89
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "combinedString",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "combineValues",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "string",
+                "value": "Sese"
+              },
+              {
+                "kind": "string",
+                "value": "ragi"
+              }
+            ],
+            "elementType": {
+              "kind": "string"
+            }
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_string_monoid"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 91,
+        "end": 164
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "combinedArrayValues",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "combineValues",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "string",
+                    "value": "a"
+                  },
+                  {
+                    "kind": "string",
+                    "value": "b"
+                  }
+                ],
+                "elementType": {
+                  "kind": "string"
+                }
+              },
+              {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "string",
+                    "value": "c"
+                  }
+                ],
+                "elementType": {
+                  "kind": "string"
+                }
+              }
+            ],
+            "elementType": {
+              "kind": "array",
+              "element": {
+                "kind": "string"
+              }
+            }
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_monoid"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 166,
+        "end": 254
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "combinedArray",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_join",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          },
+          {
+            "kind": "string",
+            "value": "|"
+          },
+          {
+            "kind": "call",
+            "callee": "combinedArrayValues",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 256,
+        "end": 331
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "combinedListValues",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "combineValues",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_from_array",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "string",
+                        "value": "l1"
+                      },
+                      {
+                        "kind": "string",
+                        "value": "l2"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "string"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_from_array",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "string",
+                        "value": "l3"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "string"
+                    }
+                  }
+                ]
+              }
+            ],
+            "elementType": {
+              "kind": "list",
+              "element": {
+                "kind": "string"
+              }
+            }
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_list_monoid"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 333,
+        "end": 424
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "combinedList",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_join",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_list_reducible"
+          },
+          {
+            "kind": "string",
+            "value": "|"
+          },
+          {
+            "kind": "call",
+            "callee": "combinedListValues",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 426,
+        "end": 499
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "emptyStrings",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [],
+        "elementType": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 501,
+        "end": 551
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "combinedEmpty",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "combineValues",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "emptyStrings",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_string_monoid"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 553,
+        "end": 626
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "appendWithMonoid",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Monoid",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "left",
+          "type": "A",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "append",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 628,
+        "end": 713
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "combinedViaSupertrait",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "appendWithMonoid",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "super"
+          },
+          {
+            "kind": "string",
+            "value": "trait"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_string_monoid"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 715,
+        "end": 797
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "appendedString",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_string_semigroup"
+        },
+        "method": "append",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "semi"
+          },
+          {
+            "kind": "string",
+            "value": "group"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 799,
+        "end": 863
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "appendedArrayValues",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_array_semigroup"
+        },
+        "method": "append",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "string",
+                "value": "array"
+              }
+            ],
+            "elementType": {
+              "kind": "string"
+            }
+          },
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "string",
+                "value": "append"
+              }
+            ],
+            "elementType": {
+              "kind": "string"
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 865,
+        "end": 947
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "appendedArray",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_join",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          },
+          {
+            "kind": "string",
+            "value": "|"
+          },
+          {
+            "kind": "call",
+            "callee": "appendedArrayValues",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 949,
+        "end": 1024
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "appendedListValues",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_list_semigroup"
+        },
+        "method": "append",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_list_from_array",
+            "arguments": [
+              {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "string",
+                    "value": "list"
+                  }
+                ],
+                "elementType": {
+                  "kind": "string"
+                }
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_list_from_array",
+            "arguments": [
+              {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "string",
+                    "value": "append"
+                  }
+                ],
+                "elementType": {
+                  "kind": "string"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1026,
+        "end": 1107
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "appendedList",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_join",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_list_reducible"
+          },
+          {
+            "kind": "string",
+            "value": "|"
+          },
+          {
+            "kind": "call",
+            "callee": "appendedListValues",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1109,
+        "end": 1182
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "collectionCombineResults",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "combinedString",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "combinedArray",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "combinedList",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "combinedEmpty",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "combinedViaSupertrait",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "appendedString",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "appendedArray",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "appendedList",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          }
+        ],
+        "elementType": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1184,
+        "end": 1436
+      }
+    }
+  ]
+}

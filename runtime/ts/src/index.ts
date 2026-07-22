@@ -30,17 +30,20 @@ export {
   subtract,
 } from "./int64"
 export {
+  arrayMonoid,
   arrayApplicative,
   arrayFunctor,
   arrayIterable,
   arrayMonad,
   arrayReducible,
+  arraySemigroup,
   collectFlatMap as collectFlatMapArray,
   collectMap as collectMapArray,
   reduce,
 } from "./array"
 export type { Iterable, Reducible } from "./collection"
 export {
+  combine as combineCollection,
   forEach as forEachCollection,
   join as joinCollection,
   sum as sumCollection,
@@ -59,6 +62,7 @@ export type { Iterator } from "./iterator"
 export { next as nextIterator, unfold as unfoldIterator } from "./iterator"
 export type { List } from "./list"
 export {
+  append as appendList,
   collectFlatMap as collectFlatMapList,
   collectMap as collectMapList,
   Cons,
@@ -67,10 +71,13 @@ export {
   listApplicative,
   listFunctor,
   listMonad,
+  listMonoid,
   listIterable,
   listReducible,
+  listSemigroup,
   reduce as reduceList,
 } from "./list"
+export { stringMonoid, stringSemigroup } from "./string"
 export type {
   Awaitable,
   ServiceFailure,

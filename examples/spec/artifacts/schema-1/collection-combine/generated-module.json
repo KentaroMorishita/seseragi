@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "module": "artifact/collection-combine",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.list",
+      "core.collection.combine",
+      "core.unit",
+      "core.array.reducible",
+      "core.string.monoid",
+      "core.string",
+      "core.array.monoid",
+      "core.collection.join",
+      "core.list.monoid",
+      "core.list.from-array",
+      "core.list.reducible",
+      "core.string.semigroup",
+      "core.array.semigroup",
+      "core.list.semigroup"
+    ]
+  },
+  "exports": [
+    "collectionCombineResults"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

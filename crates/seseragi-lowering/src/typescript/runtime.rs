@@ -1,6 +1,7 @@
 use crate::collection_ops::{
-    runtime_collection_for_each_operation, runtime_collection_join_operation,
-    runtime_collection_operation, runtime_collection_sum_operation, runtime_iterable_operation,
+    runtime_collection_combine_operation, runtime_collection_for_each_operation,
+    runtime_collection_join_operation, runtime_collection_operation,
+    runtime_collection_sum_operation, runtime_iterable_operation,
 };
 use crate::iterator_ops::runtime_iterator_comprehension_operation;
 use crate::iterator_ops::runtime_iterator_operation;
@@ -82,6 +83,8 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             } else if let Some(operation) = runtime_collection_join_operation(callee, evidence) {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_collection_sum_operation(callee, evidence) {
+                push_unique(requirements, operation.runtime_feature);
+            } else if let Some(operation) = runtime_collection_combine_operation(callee, evidence) {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_collection_operation(callee, evidence) {
                 push_unique(requirements, operation.runtime_feature);
@@ -461,6 +464,14 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                     },
                 );
             } else if let Some(operation) = runtime_collection_sum_operation(callee, evidence) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            } else if let Some(operation) = runtime_collection_combine_operation(callee, evidence) {
                 push_import_unique(
                     imports,
                     TypeScriptImport {

@@ -56,11 +56,11 @@ export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
     level: "初級",
     sequence: 4,
     summary:
-      "Range、内包表記、joinをつないでCollectionを読みやすく表示します。",
-    concepts: ["Range", "内包表記", "join"],
+      "Range、内包表記、joinとMonoidのcombineでCollectionを読みやすく表示します。",
+    concepts: ["Range", "内包表記", "join", "Monoid", "combine"],
     sourcePath: "examples/playground/04-collections.ssrg",
     stdin: "",
-    expectedOutput: "#2 / #4 / #6 / #8",
+    expectedOutput: "[#2 / #4 / #6 / #8]",
   },
   {
     id: "records",

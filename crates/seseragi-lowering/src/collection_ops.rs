@@ -43,6 +43,13 @@ const COLLECTION_SUM: RuntimeCollectionOperation = RuntimeCollectionOperation {
     export_name: "sum",
 };
 
+const COLLECTION_COMBINE: RuntimeCollectionOperation = RuntimeCollectionOperation {
+    runtime_feature: "core.collection.combine",
+    local_name: "_ssrg_collection_combine",
+    module: "@seseragi/runtime/collection",
+    export_name: "combine",
+};
+
 const COLLECTION_FOR_EACH: RuntimeCollectionOperation = RuntimeCollectionOperation {
     runtime_feature: "effect.collection.for-each",
     local_name: "_ssrg_collection_for_each",
@@ -142,6 +149,21 @@ pub(crate) fn runtime_collection_sum_operation(
     .map(|_| &COLLECTION_SUM)
 }
 
+pub(crate) fn runtime_collection_combine_operation(
+    callee: &str,
+    evidence: &[CoreCallEvidence],
+) -> Option<&'static RuntimeCollectionOperation> {
+    matches!(
+        evidence,
+        [reducible, monoid]
+            if reducible.constraint.name == "Reducible"
+                && monoid.constraint.name == "Monoid"
+    )
+    .then_some(())
+    .filter(|_| callee == "std/prelude::combine")
+    .map(|_| &COLLECTION_COMBINE)
+}
+
 pub(crate) fn runtime_collection_for_each_operation(
     callee: &str,
     evidence: &[CoreCallEvidence],
@@ -164,6 +186,7 @@ pub(crate) fn runtime_collection_operation_for_feature(
         LIST_REDUCE,
         COLLECTION_JOIN,
         COLLECTION_SUM,
+        COLLECTION_COMBINE,
         COLLECTION_FOR_EACH,
         ARRAY_COMPREHEND,
         ARRAY_COMPREHEND_FLAT,
@@ -312,6 +335,35 @@ mod tests {
             Some("core.collection.sum")
         );
         assert!(runtime_collection_sum_operation("user::sum", &evidence).is_none());
+    }
+
+    #[test]
+    fn resolves_generic_combine_from_reducible_and_monoid_evidence() {
+        let evidence = [
+            CoreCallEvidence {
+                constraint: CoreInstanceConstraint {
+                    name: "Reducible".to_owned(),
+                    arguments: vec![],
+                },
+                evidence: CoreInstanceEvidence::Parameter { index: 0 },
+            },
+            CoreCallEvidence {
+                constraint: CoreInstanceConstraint {
+                    name: "Monoid".to_owned(),
+                    arguments: vec![],
+                },
+                evidence: CoreInstanceEvidence::Standard {
+                    identity: "std/string::Monoid".to_owned(),
+                },
+            },
+        ];
+
+        assert_eq!(
+            runtime_collection_combine_operation("std/prelude::combine", &evidence)
+                .map(|operation| operation.runtime_feature),
+            Some("core.collection.combine")
+        );
+        assert!(runtime_collection_combine_operation("user::combine", &evidence).is_none());
     }
 
     #[test]
