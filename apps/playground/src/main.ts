@@ -580,7 +580,13 @@ function setStatus(
 }
 
 function showIoOnSmallScreens(): void {
-  if (!window.matchMedia("(max-width: 760px)").matches) return
+  if (
+    !window.matchMedia(
+      "(max-width: 760px), (max-width: 960px) and (max-height: 520px)"
+    ).matches
+  ) {
+    return
+  }
   const tab = document.querySelector<HTMLButtonElement>(
     '[data-panel-target="io"]'
   )

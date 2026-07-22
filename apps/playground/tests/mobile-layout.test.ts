@@ -61,6 +61,32 @@ describe("mobile editing layout contract", () => {
     )
     expect(styles).toMatch(/\.toolbar \{[\s\S]*?display: none;/)
     expect(styles).toContain(".mobile-tools-menu:not([hidden])")
+    expect(styles).toMatch(/\.topbar \{[\s\S]*?z-index: 30;/)
+    expect(styles).toMatch(
+      /\.mobile-tools-menu:not\(\[hidden\]\) \{[\s\S]*?top: calc\(100% \+ 4px\);/
+    )
+  })
+
+  test("switches to I/O after Run in portrait and compact landscape", async () => {
+    const main = await Bun.file(new URL("src/main.ts", root)).text()
+
+    expect(main).toContain(
+      '"(max-width: 760px), (max-width: 960px) and (max-height: 520px)"'
+    )
+    expect(main).toContain('mobilePanels.show("code")')
+    expect(main).toContain("tab?.click()")
+  })
+
+  test("syntax-highlights Reference signatures with the editor tokenizer", async () => {
+    const reference = await Bun.file(
+      new URL("src/ui/reference-browser.ts", root)
+    ).text()
+    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+
+    expect(reference).toContain("highlightSeseragi(item.signature)")
+    expect(reference).toContain('signature.className = "seseragi-highlight"')
+    expect(styles).toContain(".seseragi-highlight .tok-keyword")
+    expect(styles).toContain(".seseragi-highlight .tok-typeName")
   })
 
   test("moves Input beside Output and keeps its expanded state accessible", async () => {

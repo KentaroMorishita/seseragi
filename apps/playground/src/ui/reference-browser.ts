@@ -1,4 +1,5 @@
 import type { AnalysisReferenceItem } from "../compiler/types"
+import { highlightSeseragi } from "../editor/seseragi-language"
 
 type ReferenceBrowserElements = {
   readonly buttons: readonly HTMLButtonElement[]
@@ -54,7 +55,15 @@ export function connectReferenceBrowser(elements: ReferenceBrowserElements): {
     article.append(header)
     if (item.signature !== undefined) {
       const signature = elements.dialog.ownerDocument.createElement("pre")
-      signature.textContent = item.signature
+      signature.className = "seseragi-highlight"
+      signature.append(
+        ...highlightSeseragi(item.signature).map(({ text, classes }) => {
+          const part = elements.dialog.ownerDocument.createElement("span")
+          part.className = classes
+          part.textContent = text
+          return part
+        })
+      )
       article.append(signature)
     }
     const description = elements.dialog.ownerDocument.createElement("p")
