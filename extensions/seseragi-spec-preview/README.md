@@ -1,17 +1,20 @@
-# Seseragi Spec Preview
+# Seseragi for VS Code
 
-canonical仕様と `examples/spec/**/*.ssrg` 専用のsyntax-only VS Code extensionです。
-Rust compilerとLSPの実装は含まず、TextMate grammarだけを提供します。
+`.ssrg`のTextMate highlightingと、現行Rust compilerのnative language serverを提供します。
+hover、completion、signature help、definition、quick fix、semantic tokenはPlaygroundと
+同じshared Analysis APIから得られます。
 
-拡張自身のconfiguration defaultにより `examples/spec/**/*.ssrg` だけを
-`seseragi-spec-preview` language idへ割り当てます。
+extensionにcompilerロジックは複製せず、PATH上の`seseragi-lsp`をstdioで起動します。
+別のbinaryを使う場合は`seseragi.languageServer.path`を設定してください。
 
 ## Local install
 
 ```sh
+cargo install --path ../../crates/seseragi-lsp
 cd extensions/seseragi-spec-preview
-bunx vsce package --out /private/tmp/seseragi-spec-preview.vsix
-code --install-extension /private/tmp/seseragi-spec-preview.vsix --force
+bun install --frozen-lockfile
+bun run package
+code --install-extension ../../target/seseragi-vscode.vsix --force
 ```
 
 インストール後にVS Code windowをreloadしてください。

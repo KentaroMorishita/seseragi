@@ -25,6 +25,7 @@ pub struct EncodedPosition {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum LineIndexError {
     OffsetOutOfBounds { byte_offset: usize, text_len: usize },
+    PositionOutOfBounds { line: usize, character: usize },
     MidScalar { byte_offset: usize },
 }
 
@@ -37,6 +38,10 @@ impl fmt::Display for LineIndexError {
             } => write!(
                 formatter,
                 "byte offset {byte_offset} is outside source length {text_len}"
+            ),
+            Self::PositionOutOfBounds { line, character } => write!(
+                formatter,
+                "position {line}:{character} is outside the source line"
             ),
             Self::MidScalar { byte_offset } => write!(
                 formatter,
@@ -51,6 +56,7 @@ impl std::error::Error for LineIndexError {}
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct LineIndex {
     line_starts: Vec<usize>,
+    line_ends: Vec<usize>,
     continuation_offsets: Vec<usize>,
     wide_scalar_offsets: Vec<usize>,
     text_len: usize,
@@ -59,6 +65,7 @@ pub struct LineIndex {
 impl LineIndex {
     pub fn new(text: &str) -> Self {
         let mut line_starts = vec![0];
+        let mut line_ends = Vec::new();
         let mut continuation_offsets = Vec::new();
         let wide_scalar_offsets = text
             .char_indices()
@@ -67,6 +74,13 @@ impl LineIndex {
 
         for (byte_offset, byte) in text.bytes().enumerate() {
             if byte == b'\n' {
+                line_ends.push(
+                    if byte_offset > 0 && text.as_bytes()[byte_offset - 1] == b'\r' {
+                        byte_offset - 1
+                    } else {
+                        byte_offset
+                    },
+                );
                 line_starts.push(byte_offset + 1);
             } else if byte & 0b1100_0000 == 0b1000_0000 {
                 continuation_offsets.push(byte_offset);
@@ -75,6 +89,10 @@ impl LineIndex {
 
         Self {
             line_starts,
+            line_ends: {
+                line_ends.push(text.len());
+                line_ends
+            },
             continuation_offsets,
             wide_scalar_offsets,
             text_len: text.len(),
@@ -157,6 +175,79 @@ impl LineIndex {
         Ok(EncodedPosition {
             line: line_index,
             character,
+        })
+    }
+
+    /// Converts a zero-based protocol position back to a UTF-8 byte offset.
+    /// Positions between UTF-8 continuation bytes or UTF-16 surrogate code
+    /// units are rejected instead of being rounded to another scalar.
+    pub fn try_offset_encoded(
+        &self,
+        position: EncodedPosition,
+        encoding: PositionEncoding,
+    ) -> Result<usize, LineIndexError> {
+        let Some((&line_start, &line_end)) = self
+            .line_starts
+            .get(position.line)
+            .zip(self.line_ends.get(position.line))
+        else {
+            return Err(LineIndexError::PositionOutOfBounds {
+                line: position.line,
+                character: position.character,
+            });
+        };
+
+        if encoding == PositionEncoding::Utf8 {
+            let byte_offset = line_start.saturating_add(position.character);
+            if byte_offset > line_end {
+                return Err(LineIndexError::PositionOutOfBounds {
+                    line: position.line,
+                    character: position.character,
+                });
+            }
+            if self
+                .continuation_offsets
+                .binary_search(&byte_offset)
+                .is_ok()
+            {
+                return Err(LineIndexError::MidScalar { byte_offset });
+            }
+            return Ok(byte_offset);
+        }
+
+        let mut byte_offset = line_start;
+        let mut character = 0;
+        loop {
+            if character == position.character {
+                return Ok(byte_offset);
+            }
+            if byte_offset >= line_end {
+                break;
+            }
+            let mut scalar_bytes = 1;
+            while byte_offset + scalar_bytes < line_end
+                && self
+                    .continuation_offsets
+                    .binary_search(&(byte_offset + scalar_bytes))
+                    .is_ok()
+            {
+                scalar_bytes += 1;
+            }
+            let width = match encoding {
+                PositionEncoding::Utf16 if scalar_bytes == 4 => 2,
+                PositionEncoding::Utf16 | PositionEncoding::Utf32 => 1,
+                PositionEncoding::Utf8 => unreachable!("handled above"),
+            };
+            if character + width > position.character {
+                return Err(LineIndexError::MidScalar { byte_offset });
+            }
+            character += width;
+            byte_offset += scalar_bytes;
+        }
+
+        Err(LineIndexError::PositionOutOfBounds {
+            line: position.line,
+            character: position.character,
         })
     }
 
@@ -249,6 +340,66 @@ mod tests {
 
         assert_eq!(index.line_starts(), &[0]);
         assert_eq!(index.try_locate(0), Ok(LineColumn { line: 1, column: 1 }));
+    }
+
+    #[test]
+    fn protocol_positions_round_trip_for_every_supported_encoding() {
+        let index = LineIndex::new("aé🙂\nβ");
+        for encoding in [
+            PositionEncoding::Utf8,
+            PositionEncoding::Utf16,
+            PositionEncoding::Utf32,
+        ] {
+            for byte_offset in [0, 1, 3, 7, 8, 10] {
+                let position = index.try_locate_encoded(byte_offset, encoding).unwrap();
+                assert_eq!(
+                    index.try_offset_encoded(position, encoding),
+                    Ok(byte_offset)
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn protocol_positions_reject_mid_scalar_and_line_overflow() {
+        let index = LineIndex::new("🙂\r\nend");
+
+        assert_eq!(
+            index.try_offset_encoded(
+                EncodedPosition {
+                    line: 0,
+                    character: 1,
+                },
+                PositionEncoding::Utf16,
+            ),
+            Err(LineIndexError::MidScalar { byte_offset: 0 })
+        );
+        assert_eq!(
+            index.try_offset_encoded(
+                EncodedPosition {
+                    line: 0,
+                    character: 5,
+                },
+                PositionEncoding::Utf8,
+            ),
+            Err(LineIndexError::PositionOutOfBounds {
+                line: 0,
+                character: 5,
+            })
+        );
+        assert_eq!(
+            index.try_offset_encoded(
+                EncodedPosition {
+                    line: 9,
+                    character: 0,
+                },
+                PositionEncoding::Utf32,
+            ),
+            Err(LineIndexError::PositionOutOfBounds {
+                line: 9,
+                character: 0,
+            })
+        );
     }
 
     #[test]

@@ -14,4 +14,7 @@ echo "Building Playground..."
   bun run build
 )
 
+echo "Packaging the VS Code extension..."
+bun run build:extension
+
 echo "Build complete."

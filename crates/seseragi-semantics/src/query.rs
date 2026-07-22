@@ -192,6 +192,11 @@ pub fn analysis_document(
     let catalog_callables = catalog_callables(&catalog);
     let (symbol_types, local_callables) = collect_symbol_metadata(&resolved, typed);
     let import_callables = imported_callables(&resolved);
+    let import_definitions = resolved
+        .imports
+        .iter()
+        .map(|import| (import.symbol, import.origin))
+        .collect::<BTreeMap<_, _>>();
     let symbols = resolved
         .symbols
         .iter()
@@ -212,7 +217,14 @@ pub fn analysis_document(
                 module: module_from_identity(&identity, &resolved.module),
                 namespace: namespace_name(symbol.namespace).to_owned(),
                 kind: kind_name(symbol.kind).to_owned(),
-                definition: symbol.origin,
+                definition: if symbol.origin.end > symbol.origin.start {
+                    symbol.origin
+                } else {
+                    import_definitions
+                        .get(&symbol.id)
+                        .copied()
+                        .unwrap_or(symbol.origin)
+                },
                 type_name: symbol_types
                     .get(&symbol.id)
                     .map(render_type)

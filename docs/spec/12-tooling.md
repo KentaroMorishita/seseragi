@@ -103,6 +103,22 @@ dependency interfaceが一時的に取得できない場合、language serverは
 language serverはsource fileを実行せず、module interface metadataとsourceから情報を得ます。
 operator symbolの定義移動、hover、completion、semantic tokenはoperator namespaceを使います。
 
+open documentごとにshared Analysis APIのsnapshotを一つ保持し、diagnostic、hover、completion、
+signature help、definition、quick fix、semantic tokenを同じrevisionから返します。hoverはsymbol identity、
+推論型、完全signature、部分適用後の残parameterを表示し、completionはlexical scope内のvisible symbolと
+compiler-owned標準Referenceを使います。`alias.`のmember completionは、そのaliasが指すmoduleだけを
+候補にします。signature helpのactive parameterはcurried applicationで既に適用されたparameter数から求めます。
+
+definitionはresolverのsymbol identityとdefinition rangeを使い、source text検索で同名bindingを推測しません。
+single-file adapterでdependency fileを開けないimport memberは、そのdocument内のimport bindingへ移動して
+出所を示します。diagnosticにversioned fixがある場合だけquick fixを返し、一つのfix group内のeditを欠落させて
+部分適用してはなりません。semantic tokenはshared symbol occurrenceをLSPの標準token typeへ写像し、TextMate
+tokenの字句境界を越えてはなりません。
+
+clientがnegotiationしたUTF-8 / UTF-16 / UTF-32でrequest positionとresponse rangeを相互変換します。line外、
+UTF-8 scalar途中、UTF-16 surrogate pair途中のpositionは別の文字へ丸めず、そのrequestだけをnullまたは空結果に
+します。不完全・unknownなsourceでもserver processを停止せず、得られたAnalysis queryだけを返します。
+
 namespace aliasのmember completionはmodule interfaceの型・値・constructor・trait・公開namespaceを
 contextに応じて提示します。同じspellingが型namespaceと値namespaceにある場合もsymbol identityを
 混同せず、definition、rename、reference検索は参照位置のnamespaceに属するsymbolだけを更新します。

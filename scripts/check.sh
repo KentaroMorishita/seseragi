@@ -48,4 +48,7 @@ echo "Type-checking and building Playground..."
   bun run build
 )
 
+echo "Packaging the VS Code extension..."
+bun run build:extension
+
 echo "All checks passed."

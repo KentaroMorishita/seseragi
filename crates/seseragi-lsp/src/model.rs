@@ -60,3 +60,35 @@ pub struct DidCloseParams {
 pub struct TextDocumentIdentifier {
     pub uri: String,
 }
+
+#[derive(Clone, Copy, Debug, Deserialize)]
+pub struct Position {
+    pub line: usize,
+    pub character: usize,
+}
+
+#[derive(Clone, Copy, Debug, Deserialize)]
+pub struct Range {
+    pub start: Position,
+    pub end: Position,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TextDocumentPositionParams {
+    pub text_document: TextDocumentIdentifier,
+    pub position: Position,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CodeActionParams {
+    pub text_document: TextDocumentIdentifier,
+    pub range: Range,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SemanticTokensParams {
+    pub text_document: TextDocumentIdentifier,
+}

@@ -90,9 +90,16 @@ runtime crateはcompiler artifactから`main`のEffect contract、Console / Stdi
 同日にLSP-0も接続しました。`seseragi-lsp`はstdio framing、LSP request model、capability negotiation、diagnostic wire
 変換だけを所有し、open documentのcompileは`seseragi-driver::compile_module`を直接使います。compiler内部rangeは
 UTF-8 byteのまま保持し、`seseragi-source::LineIndex`がnegotiated UTF-8 / UTF-16 / UTF-32 positionへ厳密変換します。
-これによりLSP adapterはparser、resolver、type checker、diagnostic生成を複製せず、将来のWASM adapterも同じdriverの
-structured artifactを利用できます。LSP-0はsingle-file diagnostics gateであり、module graph、hover、completionは
-対応する言語能力Phaseへ残します。
+これによりLSP adapterはparser、resolver、type checker、diagnostic生成を複製せず、WASM adapterも同じdriverの
+structured artifactを利用できます。
+
+LSP-1ではopen documentの各revisionを`analyze_module`で一度だけAnalysis snapshotへ変換し、hover、completion、
+signature help、definition、diagnostic fix由来のquick fix、最小semantic tokenを接続しました。namespace completionは
+resolved importと標準module interfaceを使い、local symbolと標準ReferenceはPlaygroundと同じidentity、型、説明を
+返します。protocol positionの逆変換も`LineIndex`へ集約し、line外、mid-scalar、mid-surrogate requestはserver errorへ
+せずnull / empty responseにします。`extensions/seseragi-spec-preview`はcompilerを複製しない薄い
+`vscode-languageclient`になり、PATHまたは設定したpathからnative stdio serverを起動します。workspace references、
+rename、workspace symbol、高度なincremental cacheはこのsingle-file sliceに含めません。
 
 human-readable diagnostic sliceでは`seseragi-syntax::Diagnostic`を唯一のpresentation sourceとし、共通の
 message、labels、notes、helps、fixes、expected / actual typeをJSONへ直列化します。terminal adapterはsnippetと

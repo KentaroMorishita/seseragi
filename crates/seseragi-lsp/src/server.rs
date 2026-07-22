@@ -1,11 +1,15 @@
 use crate::capabilities::{negotiate_position_encoding, position_encoding_name};
 use crate::diagnostics;
-use crate::model::{DidChangeParams, DidCloseParams, DidOpenParams, InitializeParams};
+use crate::features::{self, DocumentState, SEMANTIC_TOKEN_TYPES};
+use crate::model::{
+    CodeActionParams, DidChangeParams, DidCloseParams, DidOpenParams, InitializeParams,
+    SemanticTokensParams, TextDocumentPositionParams,
+};
 use crate::protocol::{self, ProtocolError};
 use serde::Deserialize;
 use serde_json::{json, Value};
-use seseragi_driver::{compile_module, CompileInput};
 use seseragi_source::{LineIndexError, PositionEncoding};
+use std::collections::BTreeMap;
 use std::fmt;
 use std::io::{BufRead, Write};
 
@@ -46,6 +50,7 @@ impl From<LineIndexError> for ServerError {
 #[derive(Default)]
 struct State {
     encoding: Option<PositionEncoding>,
+    documents: BTreeMap<String, DocumentState>,
 }
 
 pub fn run(mut reader: impl BufRead, mut writer: impl Write) -> Result<(), ServerError> {
@@ -77,7 +82,25 @@ impl State {
                     json!({
                         "capabilities": {
                             "positionEncoding": position_encoding_name(encoding),
-                            "textDocumentSync": {"openClose": true, "change": 1}
+                            "textDocumentSync": {"openClose": true, "change": 1},
+                            "hoverProvider": true,
+                            "completionProvider": {
+                                "resolveProvider": false,
+                                "triggerCharacters": ["."]
+                            },
+                            "signatureHelpProvider": {
+                                "triggerCharacters": [" ", "(", ","]
+                            },
+                            "definitionProvider": true,
+                            "codeActionProvider": true,
+                            "semanticTokensProvider": {
+                                "legend": {
+                                    "tokenTypes": SEMANTIC_TOKEN_TYPES,
+                                    "tokenModifiers": []
+                                },
+                                "full": true,
+                                "range": false
+                            }
                         },
                         "serverInfo": {"name": "seseragi-lsp", "version": env!("CARGO_PKG_VERSION")}
                     }),
@@ -90,38 +113,102 @@ impl State {
                     Some(params) => params,
                     None => return Ok(Vec::new()),
                 };
-                Ok(vec![publish(
-                    &params.text_document.uri,
-                    Some(params.text_document.version),
-                    &params.text_document.text,
+                let uri = params.text_document.uri;
+                let document = DocumentState::analyze(
+                    &uri,
+                    params.text_document.version,
+                    params.text_document.text,
+                );
+                let published = publish(
+                    &uri,
+                    &document,
                     self.encoding.unwrap_or(PositionEncoding::Utf16),
-                )?])
+                )?;
+                self.documents.insert(uri, document);
+                Ok(vec![published])
             }
             Some("textDocument/didChange") => {
                 let params: DidChangeParams = match parse_params(&message) {
                     Some(params) => params,
                     None => return Ok(Vec::new()),
                 };
-                let Some(change) = params.content_changes.last() else {
+                let Some(change) = params.content_changes.into_iter().last() else {
                     return Ok(Vec::new());
                 };
-                Ok(vec![publish(
-                    &params.text_document.uri,
-                    Some(params.text_document.version),
-                    &change.text,
+                let uri = params.text_document.uri;
+                let document =
+                    DocumentState::analyze(&uri, params.text_document.version, change.text);
+                let published = publish(
+                    &uri,
+                    &document,
                     self.encoding.unwrap_or(PositionEncoding::Utf16),
-                )?])
+                )?;
+                self.documents.insert(uri, document);
+                Ok(vec![published])
             }
             Some("textDocument/didClose") => {
                 let params: DidCloseParams = match parse_params(&message) {
                     Some(params) => params,
                     None => return Ok(Vec::new()),
                 };
+                self.documents.remove(&params.text_document.uri);
                 Ok(vec![json!({
                     "jsonrpc": "2.0",
                     "method": "textDocument/publishDiagnostics",
                     "params": {"uri": params.text_document.uri, "diagnostics": []}
                 })])
+            }
+            Some("textDocument/hover") => Ok(vec![self.position_response(
+                id,
+                &message,
+                features::hover,
+                Value::Null,
+            )]),
+            Some("textDocument/completion") => Ok(vec![self.position_response(
+                id,
+                &message,
+                features::completion,
+                json!([]),
+            )]),
+            Some("textDocument/signatureHelp") => Ok(vec![self.position_response(
+                id,
+                &message,
+                features::signature_help,
+                Value::Null,
+            )]),
+            Some("textDocument/definition") => Ok(vec![self.position_response(
+                id,
+                &message,
+                features::definition,
+                Value::Null,
+            )]),
+            Some("textDocument/codeAction") => {
+                let result = parse_params::<CodeActionParams>(&message)
+                    .and_then(|params| {
+                        self.documents
+                            .get(&params.text_document.uri)
+                            .map(|document| {
+                                features::code_actions(
+                                    document,
+                                    &params,
+                                    self.encoding.unwrap_or(PositionEncoding::Utf16),
+                                )
+                            })
+                    })
+                    .unwrap_or_else(|| json!([]));
+                Ok(vec![response(id, result)])
+            }
+            Some("textDocument/semanticTokens/full") => {
+                let result = parse_params::<SemanticTokensParams>(&message)
+                    .and_then(|params| self.documents.get(&params.text_document.uri))
+                    .map(|document| {
+                        features::semantic_tokens(
+                            document,
+                            self.encoding.unwrap_or(PositionEncoding::Utf16),
+                        )
+                    })
+                    .unwrap_or_else(|| json!({"data": []}));
+                Ok(vec![response(id, result)])
             }
             Some(_) if id.is_some() => Ok(vec![json!({
                 "jsonrpc": "2.0",
@@ -131,24 +218,42 @@ impl State {
             _ => Ok(Vec::new()),
         }
     }
+
+    fn position_response(
+        &self,
+        id: Option<Value>,
+        message: &Value,
+        feature: fn(&DocumentState, &TextDocumentPositionParams, PositionEncoding) -> Value,
+        fallback: Value,
+    ) -> Value {
+        let result = parse_params::<TextDocumentPositionParams>(message)
+            .and_then(|params| {
+                self.documents
+                    .get(&params.text_document.uri)
+                    .map(|document| {
+                        feature(
+                            document,
+                            &params,
+                            self.encoding.unwrap_or(PositionEncoding::Utf16),
+                        )
+                    })
+            })
+            .unwrap_or(fallback);
+        response(id, result)
+    }
 }
 
 fn publish(
     uri: &str,
-    version: Option<i64>,
-    source: &str,
+    document: &DocumentState,
     encoding: PositionEncoding,
 ) -> Result<Value, LineIndexError> {
-    let input = CompileInput::new(uri, uri, source);
-    let artifact = match compile_module(input) {
-        Ok(compiled) => compiled.diagnostics,
-        Err(diagnostics) => diagnostics,
-    };
-    let diagnostics = diagnostics::convert(&artifact, source, encoding)?;
+    let diagnostics =
+        diagnostics::convert(&document.analysis.diagnostics, &document.source, encoding)?;
     Ok(json!({
         "jsonrpc": "2.0",
         "method": "textDocument/publishDiagnostics",
-        "params": {"uri": uri, "version": version, "diagnostics": diagnostics}
+        "params": {"uri": uri, "version": document.version, "diagnostics": diagnostics}
     }))
 }
 
@@ -216,15 +321,21 @@ mod tests {
     fn publishes_resolver_and_type_diagnostics_from_the_driver() {
         let unresolved = publish(
             "file:///unresolved.ssrg",
-            Some(1),
-            "pub fn useMissing value: Int -> Int = missing\n",
+            &DocumentState::analyze(
+                "file:///unresolved.ssrg",
+                1,
+                "pub fn useMissing value: Int -> Int = missing\n".to_owned(),
+            ),
             PositionEncoding::Utf16,
         )
         .unwrap();
         let mismatch = publish(
             "file:///mismatch.ssrg",
-            Some(1),
-            "pub fn bad value: Int -> String = value\n",
+            &DocumentState::analyze(
+                "file:///mismatch.ssrg",
+                1,
+                "pub fn bad value: Int -> String = value\n".to_owned(),
+            ),
             PositionEncoding::Utf16,
         )
         .unwrap();

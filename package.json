@@ -16,6 +16,7 @@
     "dev:playground": "cd apps/playground && bun run dev",
     "build:playground": "cd apps/playground && bun run build",
     "build:playground:wasm": "./scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg",
+    "build:extension": "cd extensions/seseragi-spec-preview && bun install --frozen-lockfile && bun run package",
     "check:playground": "cd apps/playground && bun install --frozen-lockfile && bun run test && bun run typecheck && bun run build"
   },
   "devDependencies": {

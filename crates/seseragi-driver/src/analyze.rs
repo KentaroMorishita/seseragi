@@ -123,4 +123,19 @@ mod tests {
             .iter()
             .any(|item| item.name == "join"));
     }
+
+    #[test]
+    fn imported_member_definition_points_to_its_source_import() {
+        let source = concat!(
+            "import * as html from \"std/web/html\"\n",
+            "let page = html.div { children: \"Hi\" }\n",
+        );
+        let analysis = analyze_module(CompileInput::new("main.ssrg", "analysis/import", source));
+        let member = source.rfind("div").unwrap();
+        let definition = analysis.definition_of(member).unwrap();
+
+        assert_eq!(analysis.symbol_at(member).unwrap().name, "div");
+        assert!(definition.start < member);
+        assert!(definition.end > definition.start);
+    }
 }

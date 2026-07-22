@@ -1,37 +1,67 @@
 {
   "name": "seseragi-spec-preview",
-  "displayName": "Seseragi Spec Preview",
-  "description": "Syntax-only highlighting for the canonical Seseragi language specification",
-  "version": "0.1.0",
+  "displayName": "Seseragi",
+  "description": "Syntax highlighting and native language-server support for Seseragi",
+  "version": "0.2.0",
   "publisher": "seseragi-dev",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KentaroMorishita/seseragi.git",
+    "directory": "extensions/seseragi-spec-preview"
+  },
+  "files": [
+    "dist",
+    "language-configuration.json",
+    "README.md",
+    "syntaxes"
+  ],
   "engines": {
-    "vscode": "^1.74.0"
+    "vscode": "^1.82.0"
   },
   "categories": [
-    "Programming Languages"
+    "Programming Languages",
+    "Linters"
   ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:seseragi"
+  ],
+  "scripts": {
+    "build": "esbuild extension.js --bundle --minify --platform=node --external:vscode --outfile=dist/extension.js",
+    "package": "bun run build && vsce package --out ../../target/seseragi-vscode.vsix"
+  },
   "contributes": {
     "languages": [
       {
-        "id": "seseragi-spec-preview",
+        "id": "seseragi",
         "aliases": [
-          "Seseragi Spec Preview"
+          "Seseragi"
+        ],
+        "extensions": [
+          ".ssrg"
         ],
         "configuration": "./language-configuration.json"
       }
     ],
     "grammars": [
       {
-        "language": "seseragi-spec-preview",
+        "language": "seseragi",
         "scopeName": "source.seseragi-spec-preview",
         "path": "./syntaxes/seseragi.tmLanguage.json"
       }
     ],
+    "configuration": {
+      "title": "Seseragi",
+      "properties": {
+        "seseragi.languageServer.path": {
+          "type": "string",
+          "default": "seseragi-lsp",
+          "description": "Path to the seseragi-lsp executable. Relative commands are resolved through PATH."
+        }
+      }
+    },
     "configurationDefaults": {
-      "files.associations": {
-        "**/examples/spec/**/*.ssrg": "seseragi-spec-preview"
-      },
       "editor.tokenColorCustomizations": {
         "textMateRules": [
           {
@@ -137,5 +167,12 @@
         ]
       }
     }
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.6.2",
+    "esbuild": "^0.25.0"
   }
 }

@@ -47,7 +47,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | filesystem、process、HTTP                  | 初稿あり      | cleanup・shutdown・body stream fixtureあり | 未着手             |
 | pure HTML、SSR、DOM、hydration             | 初稿あり      | SSR / component / style / interactive DOM fixtureあり | SSR、function component、inline style、browser DOM runtimeまで部分実装。hydrationは未着手 |
 | 性能モデル、最適化境界                     | 初稿あり      | shape・profile差分・stack fixtureあり      | 未着手             |
-| diagnostics、formatter、LSP                | 縦slice進行中 | diagnostic fixture + stdio / CLI integration | LSP-0とformatter-0を実装              |
+| diagnostics、formatter、LSP                | 縦slice進行中 | diagnostic fixture + stdio / CLI integration | LSP-1とformatter-0を実装              |
 | syntax highlight                           | token契約あり | spec preview拡張あり                       | 仮実装あり         |
 | playground                                 | 共有契約あり  | 16 sampleのWASM / native CLI execution      | Learn / Discover catalog、mobile / deploy surface実装済み |
 
@@ -86,7 +86,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
   TypeScriptまで一つのcompile結果として返すpublic Rust driver
 - fixture metadataなしでPhase 1 sourceをcompile / executeする`seseragi run path/to/app.ssrg`と、compiler outputから
   entry contractを検証して埋め込みTypeScript runtimeを実行するpublic Rust runtime boundary
-- 表示確認用syntax highlight: `extensions/seseragi-spec-preview/`
+- syntax highlightとnative LSP client: `extensions/seseragi-spec-preview/`
 
 数は進捗の目安にすぎません。lessonが存在しても、対応するpositive / negative / runtime fixtureが
 揃うまでは、その機能をconformance検証済みとは扱いません。
@@ -128,6 +128,9 @@ definition、scope内のvisible symbol、標準Referenceを一つの`AnalysisDoc
 残parameterを併記し、標準ReferenceはPrelude、Effect operation、operator、standard module interfaceの既存registryから
 生成します。Playgroundはdebounceとrevision照合を行い、Runなしのlive diagnostic、hover、検索可能なReferenceを
 WASM経由で表示します。analysis経路はlowering、code generation、Effect実行、DOM mountを呼びません。
+LSP-1は同じAnalysis snapshotからhover、scope / namespace completion、curried signature help、definition、diagnostic
+quick fix、semantic tokenを返します。stdio integrationで主要4機能、UTF-16、不正positionのnull responseを固定し、
+VS Code extensionはPATHまたは設定したpathの`seseragi-lsp`を起動します。
 Playground-0も`seseragi-wasm`から同じdriverとruntime entry contractを利用し、lesson sourceを手作業で複製せず
 WASM compile、generated TypeScript、browser host runtimeへ接続済みです。Phase 1累積じゃんけんもdeterministic Stdinで
 browser host実行しています。formatter-0はlossless token / CST、shared driver、native CLIを接続し、Phase 1
