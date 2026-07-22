@@ -2,10 +2,7 @@ import { describe, expect, test } from "bun:test"
 import { createHash } from "node:crypto"
 import { readdir } from "node:fs/promises"
 import { queryAnalysisAt } from "../src/analysis/document"
-import type {
-  AnalysisDocument,
-  CompileResponse,
-} from "../src/compiler/types"
+import type { AnalysisDocument, CompileResponse } from "../src/compiler/types"
 import { executeGeneratedModule } from "../src/runtime/browser-execution"
 import {
   sampleCapabilities,
@@ -158,7 +155,7 @@ describe("Playground sample catalog", () => {
     expect(browser).toContain("次:")
   })
 
-  test("keeps stdin and clear controls independent", async () => {
+  test("keeps Input and clear controls independent", async () => {
     const html = await Bun.file(
       new URL("../index.html", import.meta.url)
     ).text()
@@ -167,7 +164,8 @@ describe("Playground sample catalog", () => {
     ).text()
     const stdinSample = samples.find((sample) => sample.id === "stdin-greeting")
 
-    expect(html).toContain('placeholder="プログラムへ渡す標準入力"')
+    expect(html).toContain('placeholder="Input passed to the program"')
+    expect(html).toContain('aria-label="Program input"')
     expect(stdinSample?.capabilities).toContain("stdin")
     expect(stdinSample?.stdin).not.toBe("")
     expect(html).toContain('id="clear-source-button"')
@@ -200,8 +198,11 @@ describe("Playground sample catalog", () => {
 
     expect(main).toContain("renderDiagnosticCards(output, diagnostics")
     expect(main).toContain("utf8RangeToUtf16(analyzedSource, byteRange)")
+    expect(main).toContain('mobilePanels.show("code")')
     expect(cards).toContain("diagnostic.message")
     expect(cards).not.toContain("diagnostic.messageKey")
+    expect(cards).toContain('formatSourceLocation("main.ssrg"')
+    expect(cards).toContain("location.dataset.byteStart")
     expect(cards).toContain("Expected")
     expect(cards).toContain("Help:")
     expect(cards).toContain("Fix:")
@@ -248,7 +249,9 @@ describe("Playground sample catalog", () => {
     expect(html).toContain('id="reference-category"')
     expect(main).toContain("createLiveAnalysis({")
     expect(main).toContain("analysisHoverAt(latestAnalysis")
-    expect(main).toContain("referenceBrowser.setCatalog(analysis.standardLibrary)")
+    expect(main).toContain(
+      "referenceBrowser.setCatalog(analysis.standardLibrary)"
+    )
     expect(reference).not.toContain("const referenceItems")
   })
 

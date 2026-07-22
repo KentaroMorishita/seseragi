@@ -23,6 +23,7 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 button,
+input,
 select,
 textarea {
   font: inherit;
@@ -38,7 +39,6 @@ textarea {
 }
 
 .app-shell {
-  height: 100vh;
   height: 100dvh;
   min-height: 0;
   display: grid;
@@ -50,6 +50,7 @@ textarea {
 
 .topbar {
   grid-row: 1;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -111,6 +112,10 @@ textarea {
 .toolbar-button[aria-pressed="true"] {
   color: #dce9e4;
   background: #192923;
+}
+.mobile-tools-button,
+.mobile-tools-menu {
+  display: none;
 }
 .sample-browser-button {
   width: clamp(150px, 22vw, 220px);
@@ -319,7 +324,10 @@ textarea {
   padding: 10px;
   color: #b8f2d7;
   background: #08110e;
-  font: 12px/1.55 "SFMono-Regular", Consolas, monospace;
+  font:
+    12px / 1.55 "SFMono-Regular",
+    Consolas,
+    monospace;
   white-space: pre-wrap;
 }
 .reference-card p {
@@ -335,6 +343,7 @@ textarea {
 }
 .analysis-hover {
   max-width: min(520px, calc(100vw - 36px));
+  max-height: min(50svh, 320px);
   display: grid;
   gap: 6px;
   border: 1px solid #315047;
@@ -343,19 +352,55 @@ textarea {
   color: #dce9e4;
   background: #101b17;
   box-shadow: 0 12px 36px #000a;
+  overflow: auto;
+  overscroll-behavior: contain;
 }
-.analysis-hover code {
+.cm-tooltip:has(> .analysis-hover) {
+  max-width: calc(100vw - 16px) !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.analysis-hover-signature {
+  display: block;
   color: #b8f2d7;
-  font: 12px/1.5 "SFMono-Regular", Consolas, monospace;
+  font:
+    12px / 1.5 "SFMono-Regular",
+    Consolas,
+    monospace;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
-.analysis-hover span {
+.analysis-hover-detail {
   color: #d8b4fe;
   font-size: 11px;
 }
+.analysis-hover-signature .tok-keyword {
+  color: #c7a0f7;
+  font-weight: 600;
+}
+.analysis-hover-signature .tok-typeName {
+  color: #f1b37a;
+}
+.analysis-hover-signature .tok-variableName {
+  color: #dce9e4;
+}
+.analysis-hover-signature .tok-number,
+.analysis-hover-signature .tok-bool {
+  color: #f1b37a;
+}
+.analysis-hover-signature .tok-string {
+  color: #a9d989;
+}
+.analysis-hover-signature .tok-punctuation {
+  color: #9fb4ac;
+}
 .analysis-hover small {
   color: #6fa18e;
-  font: 10px/1.4 "SFMono-Regular", Consolas, monospace;
+  font:
+    10px / 1.4 "SFMono-Regular",
+    Consolas,
+    monospace;
 }
 .analysis-hover p {
   margin: 0;
@@ -628,6 +673,20 @@ textarea {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+.output-action-button {
+  min-height: 30px;
+  border: 1px solid #294139;
+  border-radius: 7px;
+  padding: 0 9px;
+  color: #83ad9c;
+  background: transparent;
+  cursor: pointer;
+  font-size: 11px;
+}
+.output-action-button[aria-expanded="true"] {
+  color: #dce9e4;
+  background: #1b3029;
 }
 .output-view-toggle {
   display: inline-flex;
@@ -950,6 +1009,10 @@ footer a {
     grid-template-columns: 1fr;
     padding: 12px 14px;
   }
+  .reference-browser-filters input,
+  .reference-browser-filters select {
+    font-size: 16px;
+  }
   .reference-results {
     grid-template-columns: 1fr;
     padding: 14px;
@@ -977,18 +1040,53 @@ footer a {
     display: contents;
   }
   .toolbar {
-    display: contents;
+    display: none;
   }
-  .toolbar-button {
+  .mobile-tools-button {
     min-width: 44px;
     min-height: 44px;
-    justify-content: center;
-    padding: 0 8px;
     border: 1px solid #243a33;
+    border-radius: 10px;
+    color: #a7bbb3;
+    background: #0b1512;
+    cursor: pointer;
   }
-  .toolbar-label,
-  #reset-sample-button {
-    display: none;
+  .mobile-tools-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mobile-tools-menu:not([hidden]) {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% - 4px);
+    right: 68px;
+    width: min(220px, calc(100vw - 20px));
+    display: grid;
+    gap: 3px;
+    padding: 6px;
+    border: 1px solid #315047;
+    border-radius: 12px;
+    background: #101b17;
+    box-shadow: 0 18px 48px #000b;
+  }
+  .mobile-tools-menu button {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    border: 0;
+    border-radius: 8px;
+    padding: 0 12px;
+    color: #c7d8d1;
+    background: transparent;
+    text-align: left;
+  }
+  .mobile-tools-menu button:hover,
+  .mobile-tools-menu button:focus-visible,
+  .mobile-tools-menu button[aria-checked="true"] {
+    color: #effaf6;
+    background: #1b3029;
   }
   .sample-browser-button {
     min-width: 0;
@@ -1126,8 +1224,11 @@ footer a {
     /* Diagnostics remain underlined and tappable in the editor. */
     display: none !important;
   }
-  .editor-host .cm-tooltip {
+  .cm-tooltip {
     max-width: calc(100vw - 16px);
+  }
+  .analysis-hover {
+    max-height: min(46svh, 280px);
   }
   textarea {
     padding: 10px 12px;

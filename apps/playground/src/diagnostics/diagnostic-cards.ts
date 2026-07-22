@@ -1,8 +1,14 @@
 import type { Diagnostic, SourceRange } from "../compiler/types"
+import {
+  describeSourceLocation,
+  formatSourceLocation,
+  utf8RangeToSourceLocation,
+} from "./source-range"
 
 export function renderDiagnosticCards(
   container: HTMLElement,
   diagnostics: readonly Diagnostic[],
+  source: string,
   onNavigate: (range: SourceRange) => void
 ): void {
   const document = container.ownerDocument
@@ -15,7 +21,18 @@ export function renderDiagnosticCards(
       const location = document.createElement("button")
       location.type = "button"
       location.className = "diagnostic-card-location"
-      location.title = "エディタの該当箇所へ移動"
+      const sourceLocation = utf8RangeToSourceLocation(
+        source,
+        diagnostic.primary
+      )
+      const locationLabel = formatSourceLocation("main.ssrg", sourceLocation)
+      location.title = `Go to ${describeSourceLocation(sourceLocation)}`
+      location.setAttribute(
+        "aria-label",
+        `${diagnostic.message}. ${describeSourceLocation(sourceLocation)}`
+      )
+      location.dataset.byteStart = String(diagnostic.primary.start)
+      location.dataset.byteEnd = String(diagnostic.primary.end)
       const code = document.createElement("span")
       code.className = "diagnostic-card-code"
       code.textContent = diagnostic.code
@@ -23,7 +40,7 @@ export function renderDiagnosticCards(
       title.textContent = diagnostic.message
       const range = document.createElement("span")
       range.className = "diagnostic-card-range"
-      range.textContent = `${diagnostic.primary.start}–${diagnostic.primary.end}`
+      range.textContent = locationLabel
       location.append(code, title, range)
       location.addEventListener("click", () => onNavigate(diagnostic.primary))
       card.append(location)

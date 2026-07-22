@@ -31,6 +31,9 @@ describe("desktop panel layout", () => {
     expect(html).toContain('role="toolbar"')
     expect(html).toContain('id="reset-sample-button"')
     expect(html).toContain('id="stdin-toggle-button"')
+    expect(html.indexOf('id="stdin-toggle-button"')).toBeGreaterThan(
+      html.indexOf('id="output-section"')
+    )
     expect(styles).toMatch(/\.workspace \{[\s\S]*?grid-row: 3;/)
     expect(styles).toMatch(/footer \{[\s\S]*?grid-row: 4;/)
   })

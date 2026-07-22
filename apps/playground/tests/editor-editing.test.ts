@@ -19,6 +19,8 @@ import {
   editorSelectionClassNames,
   selectionMarkField,
 } from "../src/editor/editing-extensions"
+import { editorWhitespaceExtensions } from "../src/editor/create-editor"
+import { indentationWhitespaceField } from "../src/editor/indent-whitespace"
 import { seseragiLanguage } from "../src/editor/seseragi-language"
 import { editorSelectionColors } from "../src/editor/theme"
 
@@ -175,5 +177,38 @@ describe("Playground editor operations", () => {
     expect(new Set(Object.values(editorSelectionColors)).size).toBe(
       Object.values(editorSelectionColors).length
     )
+  })
+
+  test("keeps whitespace decorations opt-in and includes trailing spaces", () => {
+    expect(editorWhitespaceExtensions(false)).toHaveLength(0)
+    expect(editorWhitespaceExtensions(true)).toHaveLength(2)
+  })
+
+  test("marks indentation without decorating spaces between tokens", () => {
+    const state = EditorState.create({
+      doc: "  let value = 1\n\tprintln value",
+      extensions: [indentationWhitespaceField],
+    })
+    const marks: Array<{ from: number; to: number; className: unknown }> = []
+    state
+      .field(indentationWhitespaceField)
+      .between(0, state.doc.length, (from, to, mark) => {
+        marks.push({ from, to, className: mark.spec.class })
+      })
+
+    expect(marks).toEqual([
+      { from: 0, to: 1, className: "cm-highlightSpace" },
+      { from: 1, to: 2, className: "cm-highlightSpace" },
+      { from: 16, to: 17, className: "cm-highlightTab" },
+    ])
+  })
+
+  test("renders primary and secondary selections without underline shadows", async () => {
+    const theme = await Bun.file(
+      new URL("../src/editor/theme.ts", import.meta.url)
+    ).text()
+    expect(theme).not.toContain('boxShadow: "inset 0 -2px')
+    expect(theme).toContain("editorSelectionColors.primary")
+    expect(theme).toContain("editorSelectionColors.secondary")
   })
 })

@@ -5,14 +5,15 @@ import {
   type LiveAnalysisController,
 } from "./analysis/live-analysis"
 import type { AnalysisDocument, Diagnostic } from "./compiler/types"
-import {
-  analyzeSingleFile,
-  compileSingleFile,
-} from "./compiler/wasm-driver"
+import { analyzeSingleFile, compileSingleFile } from "./compiler/wasm-driver"
 import { renderDiagnosticCards } from "./diagnostics/diagnostic-cards"
 import { toEditorDiagnostics } from "./diagnostics/editor-diagnostics"
 import { utf8RangeToUtf16 } from "./diagnostics/source-range"
-import { createEditor, replaceEditorSource } from "./editor/create-editor"
+import {
+  createEditor,
+  replaceEditorSource,
+  setEditorWhitespaceVisible,
+} from "./editor/create-editor"
 import { createPreviewDocument } from "./preview-document"
 import {
   type BrowserExecution,
@@ -22,6 +23,7 @@ import { learningPaths, samples } from "./samples"
 import "./styles.css"
 import { requiredElement } from "./ui/elements"
 import { connectMobilePanels } from "./ui/mobile-panels"
+import { connectOverflowMenu } from "./ui/overflow-menu"
 import { connectPanelLayout } from "./ui/panel-layout"
 import { connectReferenceBrowser } from "./ui/reference-browser"
 import { connectSampleBrowser } from "./ui/sample-browser"
@@ -44,6 +46,10 @@ const referenceBrowserButton = requiredElement(
   "#reference-browser-button",
   HTMLButtonElement
 )
+const mobileReferenceButton = requiredElement(
+  "#mobile-reference-button",
+  HTMLButtonElement
+)
 const referenceBrowserDialog = requiredElement(
   "#reference-browser-dialog",
   HTMLDialogElement
@@ -52,10 +58,7 @@ const referenceBrowserClose = requiredElement(
   "#reference-browser-close",
   HTMLButtonElement
 )
-const referenceSearch = requiredElement(
-  "#reference-search",
-  HTMLInputElement
-)
+const referenceSearch = requiredElement("#reference-search", HTMLInputElement)
 const referenceCategory = requiredElement(
   "#reference-category",
   HTMLSelectElement
@@ -118,6 +121,23 @@ const resetSampleButton = requiredElement(
   "#reset-sample-button",
   HTMLButtonElement
 )
+const mobileResetButton = requiredElement(
+  "#mobile-reset-button",
+  HTMLButtonElement
+)
+const whitespaceToggleButton = requiredElement(
+  "#whitespace-toggle-button",
+  HTMLButtonElement
+)
+const mobileWhitespaceButton = requiredElement(
+  "#mobile-whitespace-button",
+  HTMLButtonElement
+)
+const mobileToolsButton = requiredElement(
+  "#mobile-tools-button",
+  HTMLButtonElement
+)
+const mobileToolsMenu = requiredElement("#mobile-tools-menu", HTMLElement)
 const stdinToggleButton = requiredElement(
   "#stdin-toggle-button",
   HTMLButtonElement
@@ -180,7 +200,7 @@ const sampleGuide = connectSampleGuide({
   source: sampleGuideSource,
 })
 const referenceBrowser = connectReferenceBrowser({
-  button: referenceBrowserButton,
+  buttons: [referenceBrowserButton, mobileReferenceButton],
   dialog: referenceBrowserDialog,
   closeButton: referenceBrowserClose,
   search: referenceSearch,
@@ -237,6 +257,11 @@ const editor = createEditor(
   },
   (position) => analysisHoverAt(latestAnalysis, source, position)
 )
+const whitespaceStorageKey = "seseragi.playground.showWhitespace"
+let showWhitespace = localStorage.getItem(whitespaceStorageKey) === "true"
+setWhitespaceVisible(showWhitespace)
+
+connectOverflowMenu({ button: mobileToolsButton, menu: mobileToolsMenu })
 
 const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
   analyze: analyzeSingleFile,
@@ -245,7 +270,10 @@ const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
   },
   onError: (error) => {
     if (runButton.disabled) return
-    setStatus("error", error instanceof Error ? error.message : "Analysis failed")
+    setStatus(
+      "error",
+      error instanceof Error ? error.message : "Analysis failed"
+    )
   },
   apply: (analysis, analyzedSource) => {
     latestAnalysis = analysis
@@ -278,11 +306,16 @@ if (initialSample) {
 }
 
 runButton.addEventListener("click", () => void run())
-resetSampleButton.addEventListener("click", () => {
+const resetSample = (): void => {
   if (!currentSample) return
   loadSample(currentSample, "Sample reset")
   editor.focus()
-})
+}
+resetSampleButton.addEventListener("click", resetSample)
+mobileResetButton.addEventListener("click", resetSample)
+const toggleWhitespace = (): void => setWhitespaceVisible(!showWhitespace)
+whitespaceToggleButton.addEventListener("click", toggleWhitespace)
+mobileWhitespaceButton.addEventListener("click", toggleWhitespace)
 stdinToggleButton.addEventListener("click", () => {
   const visible = ioPanel.dataset.stdinCollapsed === "true"
   setStdinVisible(visible)
@@ -303,7 +336,7 @@ clearOutputButton.addEventListener("click", () => {
 })
 showTextOutputButton.addEventListener("click", () => chooseOutputMode("text"))
 showHtmlPreviewButton.addEventListener("click", () => chooseOutputMode("html"))
-connectMobilePanels(workspace)
+const mobilePanels = connectMobilePanels(workspace)
 connectPanelLayout({ workspace, workspaceResizer, ioPanel, ioResizer })
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" || (!event.metaKey && !event.ctrlKey)) return
@@ -328,10 +361,16 @@ function loadSample(sample: (typeof samples)[number], status: string): void {
 
 function setStdinVisible(visible: boolean): void {
   ioPanel.dataset.stdinCollapsed = String(!visible)
-  stdinToggleButton.setAttribute("aria-pressed", String(visible))
-  stdinToggleButton.title = visible
-    ? "標準入力パネルを隠す"
-    : "標準入力パネルを表示"
+  stdinToggleButton.setAttribute("aria-expanded", String(visible))
+  stdinToggleButton.title = visible ? "Hide Input" : "Show Input"
+}
+
+function setWhitespaceVisible(visible: boolean): void {
+  showWhitespace = visible
+  setEditorWhitespaceVisible(editor, visible)
+  whitespaceToggleButton.setAttribute("aria-pressed", String(visible))
+  mobileWhitespaceButton.setAttribute("aria-checked", String(visible))
+  localStorage.setItem(whitespaceStorageKey, String(visible))
 }
 
 async function run(): Promise<void> {
@@ -452,12 +491,13 @@ function showDiagnostics(
   clearHtmlPreview()
   setOutputMode("text")
   output.dataset.liveDiagnostics = "true"
-  renderDiagnosticCards(output, diagnostics, (byteRange) => {
+  renderDiagnosticCards(output, diagnostics, analyzedSource, (byteRange) => {
     const range = utf8RangeToUtf16(analyzedSource, byteRange)
     editor.dispatch({
       selection: { anchor: range.from, head: range.to },
       scrollIntoView: true,
     })
+    mobilePanels.show("code")
     editor.focus()
   })
 }

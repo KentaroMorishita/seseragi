@@ -46,11 +46,9 @@ export const seseragiEditorTheme = [
       },
       [`& .${editorSelectionClassNames.primary}`]: {
         backgroundColor: editorSelectionColors.primary,
-        boxShadow: "inset 0 -2px 0 #9af0c9",
       },
       [`& .${editorSelectionClassNames.secondary}`]: {
         backgroundColor: editorSelectionColors.secondary,
-        boxShadow: "inset 0 -2px 0 #91ccf8",
       },
       [`& .${editorSelectionClassNames.selectionMatch}`]: {
         backgroundColor: editorSelectionColors.selectionMatch,

@@ -126,6 +126,14 @@ UI boundaryでのみUTF-16へ変換し、
 compiler diagnosticを再生成しません。初期application chunkは約18 KB、editor chunkは約330 KBです。約3.6 MBのbrowser
 TypeScript transpilerはRun時だけlazy loadし、約900 KBのWASMもdriver初回利用時に初期化します。
 
+mobile surfaceはSample、overflow、Runを一行に固定し、Reference / Reset / whitespaceをfocus管理付きmenuへ移します。
+Input panelはOutput headingの`aria-expanded` controlから開きます。analysis tooltipはCodeMirrorのhover sourceを
+touch cursorからもactivateし、`visualViewport`のoffset / sizeをtooltip spaceへ渡します。signatureは同じstream
+languageのtoken分類を再利用します。diagnostic cardはbyte rangeをdataとして保持し、共通UTF-8 -> UTF-16変換から
+Unicode scalar基準の1-based行列を作り、navigation時にmobile Code panelへ戻します。
+whitespace設定は行頭space / tabだけをCodeMirror decorationへ載せ、trailing whitespaceは標準highlighterを
+再利用します。行中の通常spaceは装飾しません。
+
 Analysis sliceでは`seseragi-driver::analyze_module`を`compile_module`と同じparse / link / semantic frontendへ
 接続しました。`seseragi-semantics::AnalysisDocument`はresolverのsymbol / scope graphとTyped HIRを結合し、
 diagnostic、symbol、型、完全・部分適用callable、definition、visible symbolをUTF-8 byte rangeで返します。

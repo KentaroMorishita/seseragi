@@ -35,13 +35,18 @@ inline styleとCSS variablesは`html.style`で併用できます。外部CDNとi
 
 ## mobile layout contract
 
-iPhone Safariで編集時の自動zoomを避けるため、CodeMirrorのeditable surface、sample select、Stdinは
+iPhone Safariで編集時の自動zoomを避けるため、CodeMirrorのeditable surface、sample / Referenceの検索、Inputは
 16px未満にしません。狭い画面では文字を縮める代わりに、line height、line number gutter、inline padding、
 panel headingを圧縮します。lint diagnosticsは本文のunderlineとtooltipを維持し、空のgutter icon領域だけを
 非表示にします。
 
 portraitの小画面に加え、iPhone相当のlandscape viewportでもCode / I/Oのsingle-panel tabsを維持します。
-touch targetは44pxを下回らず、viewport metaでpinch zoomを禁止しません。
+SampleとRunは常時表示し、Reference、Reset、空白表示はkeyboard操作可能なoverflowへまとめます。Inputは
+Output headingから必要なときだけ開きます。型tooltipはtouch cursorでも開き、visual viewport内で反転・scrollし、
+editorと同じSeseragi分類でsignatureを表示します。空白表示は行中の通常spaceを汚さず、行頭indentとtrailing
+whitespaceだけを示します。diagnostic cardはUTF-8 byte rangeを内部に保持しながら、
+1始まりの行・列を表示し、選択箇所をCode panelへ戻します。touch targetは44pxを下回らず、viewport metaで
+pinch zoomを禁止しません。
 
 ## 開発
 

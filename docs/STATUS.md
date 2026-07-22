@@ -446,6 +446,10 @@ Playground-1は`apps/playground`へCodeMirror 6、専用Seseragi highlight、mob
 driver diagnosticsのsource range表示を実装しました。Vercel buildはreview済みWASM artifactを静的bundleするため
 Rust installを要求しません。Rust移行完了後に旧React / Monaco Playgroundは削除し、
 `apps/playground`とdeployment configを唯一のbrowser surfaceにしました。
+実機仕上げではmobile topbarをSample / Run / overflowへ整理し、InputをOutput側へ移動しました。analysis tooltipは
+touch cursor、visual viewport、既存Seseragi highlightを再利用し、diagnostic cardはbyte rangeを保持したまま
+Unicode対応の1-based行列を表示します。空白表示は初期OFFで、行頭indentだけを点・矢印、trailing whitespaceを
+より強い背景として切替表示します。
 sample catalogはstable slugのdirectoryを自動発見し、複数のlearning pathと検索・filterを分離しました。
 schema、欠落file、重複、prerequisite cycle、source hash、生成物stalenessをgateにし、同じsourceを
 Playground WASMとnative CLIで実行します。各sampleのguideはworkspaceの行数を増やさないoverlayで確認できます。

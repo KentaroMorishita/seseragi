@@ -46,17 +46,6 @@
               <span class="toolbar-label">Reference</span>
             </button>
             <button
-              id="stdin-toggle-button"
-              class="toolbar-button"
-              type="button"
-              aria-controls="input-section"
-              aria-pressed="false"
-              title="標準入力パネルを表示"
-            >
-              <span aria-hidden="true">⌨</span>
-              <span class="toolbar-label">Stdin</span>
-            </button>
-            <button
               id="reset-sample-button"
               class="toolbar-button"
               type="button"
@@ -64,6 +53,48 @@
             >
               <span aria-hidden="true">↺</span>
               <span class="toolbar-label">Reset</span>
+            </button>
+            <button
+              id="whitespace-toggle-button"
+              class="toolbar-button"
+              type="button"
+              aria-pressed="false"
+              title="Show indentation whitespace"
+            >
+              <span aria-hidden="true">·→</span>
+              <span class="toolbar-label">Indent</span>
+            </button>
+          </div>
+          <button
+            id="mobile-tools-button"
+            class="mobile-tools-button"
+            type="button"
+            aria-haspopup="menu"
+            aria-controls="mobile-tools-menu"
+            aria-expanded="false"
+            aria-label="More playground tools"
+          >•••</button>
+          <div id="mobile-tools-menu" class="mobile-tools-menu" role="menu" hidden>
+            <button
+              id="mobile-reference-button"
+              type="button"
+              role="menuitem"
+              aria-haspopup="dialog"
+              aria-controls="reference-browser-dialog"
+              aria-expanded="false"
+            >
+              <span aria-hidden="true">⌘</span> Reference
+            </button>
+            <button id="mobile-reset-button" type="button" role="menuitem">
+              <span aria-hidden="true">↺</span> Reset sample
+            </button>
+            <button
+              id="mobile-whitespace-button"
+              type="button"
+              role="menuitemcheckbox"
+              aria-checked="false"
+            >
+              <span aria-hidden="true">·→</span> Show indentation
             </button>
           </div>
           <button id="run-button" class="run-button" type="button">
@@ -147,7 +178,7 @@
                 <select id="sample-capability-filter">
                   <option value="">すべて</option>
                   <option value="console">Console</option>
-                  <option value="stdin">Stdin</option>
+                  <option value="stdin">Input</option>
                   <option value="dom">DOM</option>
                 </select>
               </label>
@@ -285,22 +316,22 @@
         >
           <section id="input-section" class="input-section">
             <div class="panel-heading">
-              <span>Stdin</span>
+              <span>Input</span>
               <span class="hint">必要な場合のみ</span>
             </div>
             <textarea
               id="stdin-input"
               rows="4"
               spellcheck="false"
-              aria-label="標準入力"
-              placeholder="プログラムへ渡す標準入力"
+              aria-label="Program input"
+              placeholder="Input passed to the program"
             ></textarea>
           </section>
           <div
             id="io-resizer"
             class="panel-resizer panel-resizer--horizontal"
             role="separator"
-            aria-label="標準入力と出力の高さを変更"
+            aria-label="InputとOutputの高さを変更"
             aria-valuemin="0"
             aria-valuemax="100"
             aria-orientation="horizontal"
@@ -311,6 +342,14 @@
             <div class="panel-heading">
               <span>Output</span>
               <div class="output-heading-actions">
+                <button
+                  id="stdin-toggle-button"
+                  class="output-action-button"
+                  type="button"
+                  aria-controls="input-section"
+                  aria-expanded="false"
+                  title="Show Input"
+                >Input</button>
                 <div class="output-view-toggle" aria-label="出力表示">
                   <button
                     id="show-text-output-button"

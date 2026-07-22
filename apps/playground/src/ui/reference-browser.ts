@@ -1,7 +1,7 @@
 import type { AnalysisReferenceItem } from "../compiler/types"
 
 type ReferenceBrowserElements = {
-  readonly button: HTMLButtonElement
+  readonly buttons: readonly HTMLButtonElement[]
   readonly dialog: HTMLDialogElement
   readonly closeButton: HTMLButtonElement
   readonly search: HTMLInputElement
@@ -14,6 +14,7 @@ export function connectReferenceBrowser(elements: ReferenceBrowserElements): {
   readonly setCatalog: (items: readonly AnalysisReferenceItem[]) => void
 } {
   let catalog: readonly AnalysisReferenceItem[] = []
+  let opener: HTMLButtonElement | undefined
 
   const render = (): void => {
     const query = elements.search.value.trim().toLocaleLowerCase()
@@ -90,18 +91,22 @@ export function connectReferenceBrowser(elements: ReferenceBrowserElements): {
 
   elements.search.addEventListener("input", render)
   elements.category.addEventListener("change", render)
-  elements.button.addEventListener("click", () => {
-    elements.dialog.showModal()
-    elements.button.setAttribute("aria-expanded", "true")
-    elements.search.focus()
-  })
+  for (const button of elements.buttons) {
+    button.addEventListener("click", () => {
+      opener = button
+      elements.dialog.showModal()
+      button.setAttribute("aria-expanded", "true")
+      elements.search.focus()
+    })
+  }
   elements.closeButton.addEventListener("click", () => elements.dialog.close())
   elements.dialog.addEventListener("click", (event) => {
     if (event.target === elements.dialog) elements.dialog.close()
   })
   elements.dialog.addEventListener("close", () => {
-    elements.button.setAttribute("aria-expanded", "false")
-    elements.button.focus()
+    opener?.setAttribute("aria-expanded", "false")
+    opener?.focus()
+    opener = undefined
   })
 
   return { setCatalog }

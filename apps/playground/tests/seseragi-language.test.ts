@@ -4,6 +4,7 @@ import { EditorState, type StateCommand } from "@codemirror/state"
 import { classHighlighter, highlightTree } from "@lezer/highlight"
 import {
   classifyIdentifier,
+  highlightSeseragi,
   seseragiLanguage,
 } from "../src/editor/seseragi-language"
 
@@ -61,6 +62,16 @@ describe("Seseragi syntax classification", () => {
     expect(classifyIdentifier("decide")).toBe("variable")
   })
 
+  test("reuses Seseragi classification for analysis signatures", () => {
+    expect(highlightSeseragi("map: (A -> B) -> Array<A> -> Array<B>")).toEqual(
+      expect.arrayContaining([
+        { text: "map", classes: "tok-variableName" },
+        { text: "->", classes: "tok-keyword" },
+        { text: "Array", classes: "tok-typeName" },
+      ])
+    )
+  })
+
   test("highlights List literals without swallowing them as templates", () => {
     expect(highlightedTokens("`[1, value + 2]")).toEqual([
       { text: "`[", classes: "tok-punctuation" },
@@ -100,11 +111,12 @@ describe("Seseragi syntax classification", () => {
     ])
 
     const nested = highlightedTokens("`outer ${render `inner ${name}`}`")
-    expect(nested.filter(({ text }) => text === "render" || text === "name"))
-      .toEqual([
-        { text: "render", classes: "tok-variableName" },
-        { text: "name", classes: "tok-variableName" },
-      ])
+    expect(
+      nested.filter(({ text }) => text === "render" || text === "name")
+    ).toEqual([
+      { text: "render", classes: "tok-variableName" },
+      { text: "name", classes: "tok-variableName" },
+    ])
   })
 
   test("toggles line comments through the CodeMirror comment command", () => {
