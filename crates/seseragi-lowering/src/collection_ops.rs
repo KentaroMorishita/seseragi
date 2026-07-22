@@ -36,6 +36,13 @@ const COLLECTION_JOIN: RuntimeCollectionOperation = RuntimeCollectionOperation {
     export_name: "join",
 };
 
+const COLLECTION_SUM: RuntimeCollectionOperation = RuntimeCollectionOperation {
+    runtime_feature: "core.collection.sum",
+    local_name: "_ssrg_collection_sum",
+    module: "@seseragi/runtime/collection",
+    export_name: "sum",
+};
+
 const COLLECTION_FOR_EACH: RuntimeCollectionOperation = RuntimeCollectionOperation {
     runtime_feature: "effect.collection.for-each",
     local_name: "_ssrg_collection_for_each",
@@ -119,6 +126,22 @@ pub(crate) fn runtime_collection_join_operation(
     .map(|_| &COLLECTION_JOIN)
 }
 
+pub(crate) fn runtime_collection_sum_operation(
+    callee: &str,
+    evidence: &[CoreCallEvidence],
+) -> Option<&'static RuntimeCollectionOperation> {
+    matches!(
+        evidence,
+        [reducible, zero, add]
+            if reducible.constraint.name == "Reducible"
+                && zero.constraint.name == "Zero"
+                && add.constraint.name == "Add"
+    )
+    .then_some(())
+    .filter(|_| callee == "std/prelude::sum")
+    .map(|_| &COLLECTION_SUM)
+}
+
 pub(crate) fn runtime_collection_for_each_operation(
     callee: &str,
     evidence: &[CoreCallEvidence],
@@ -140,6 +163,7 @@ pub(crate) fn runtime_collection_operation_for_feature(
         RANGE_REDUCE,
         LIST_REDUCE,
         COLLECTION_JOIN,
+        COLLECTION_SUM,
         COLLECTION_FOR_EACH,
         ARRAY_COMPREHEND,
         ARRAY_COMPREHEND_FLAT,
@@ -254,6 +278,40 @@ mod tests {
             Some("core.collection.join")
         );
         assert!(runtime_collection_join_operation("user::join", &evidence).is_none());
+    }
+
+    #[test]
+    fn resolves_generic_sum_from_reducible_zero_and_add_evidence() {
+        let evidence = [
+            CoreCallEvidence {
+                constraint: CoreInstanceConstraint {
+                    name: "Reducible".to_owned(),
+                    arguments: vec![],
+                },
+                evidence: CoreInstanceEvidence::Parameter { index: 0 },
+            },
+            CoreCallEvidence {
+                constraint: CoreInstanceConstraint {
+                    name: "Zero".to_owned(),
+                    arguments: vec![],
+                },
+                evidence: CoreInstanceEvidence::Parameter { index: 1 },
+            },
+            CoreCallEvidence {
+                constraint: CoreInstanceConstraint {
+                    name: "Add".to_owned(),
+                    arguments: vec![],
+                },
+                evidence: CoreInstanceEvidence::Parameter { index: 2 },
+            },
+        ];
+
+        assert_eq!(
+            runtime_collection_sum_operation("std/prelude::sum", &evidence)
+                .map(|operation| operation.runtime_feature),
+            Some("core.collection.sum")
+        );
+        assert!(runtime_collection_sum_operation("user::sum", &evidence).is_none());
     }
 
     #[test]

@@ -376,6 +376,12 @@ pub(super) fn select_standard_instance(
 }
 
 fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
+    if matches!(
+        constraint.arguments.as_slice(),
+        [value] if constraint.name == "Zero" && named_type_is(value, "Int")
+    ) {
+        return Some("std/int::Zero".to_owned());
+    }
     if let [type_ref] = constraint.arguments.as_slice() {
         if let Some(instance) = crate::prelude::standard_instance(&constraint.name, type_ref) {
             return Some(instance.identity.to_owned());

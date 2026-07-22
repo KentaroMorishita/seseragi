@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "case": "collection-sum",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/collection-sum",
+    "export": "collectionSumResults",
+    "compiledModule": "../../schema-1/collection-sum/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.int64.zero-dictionary",
+      "core.int64.add-dictionary",
+      "core.collection.sum",
+      "core.int64",
+      "core.unit",
+      "core.array.reducible",
+      "core.list.reducible",
+      "core.list",
+      "core.list.from-array",
+      "core.range.reducible",
+      "core.range",
+      "core.range.inclusive",
+      "core.string",
+      "core.int64.show"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

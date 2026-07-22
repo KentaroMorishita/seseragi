@@ -1,0 +1,26 @@
+fn sumValues<C> values: C -> Int
+where Reducible<C, Int> =
+  sum values
+
+fn emptyValues unit: Unit -> Array<Int> =
+  []
+
+fn arrayTotal unit: Unit -> Int =
+  sumValues [20, 22]
+
+fn listTotal unit: Unit -> Int =
+  sumValues `[10, 20, 12]
+
+fn rangeTotal unit: Unit -> Int =
+  sumValues (1..=4)
+
+fn emptyTotal unit: Unit -> Int =
+  sumValues (emptyValues ())
+
+pub fn collectionSumResults unit: Unit -> Array<String> =
+  [
+    `${arrayTotal ()}`,
+    `${listTotal ()}`,
+    `${rangeTotal ()}`,
+    `${emptyTotal ()}`
+  ]

@@ -1,0 +1,1303 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/collection-sum",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "sumValues",
+      "nameSpan": {
+        "start": 3,
+        "end": 12
+      },
+      "typeParameters": [
+        "C"
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 16,
+            "end": 22
+          },
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "span": {
+              "start": 24,
+              "end": 25
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 29,
+          "end": 32
+        }
+      },
+      "constraints": [
+        {
+          "name": "Reducible",
+          "nameSpan": {
+            "start": 39,
+            "end": 48
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "C",
+              "span": {
+                "start": 49,
+                "end": 50
+              }
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 52,
+                "end": 55
+              }
+            }
+          ],
+          "span": {
+            "start": 39,
+            "end": 56
+          }
+        }
+      ],
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "sum",
+          "span": {
+            "start": 61,
+            "end": 64
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "values",
+          "span": {
+            "start": 65,
+            "end": 71
+          }
+        },
+        "span": {
+          "start": 61,
+          "end": 71
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 71
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "emptyValues",
+      "nameSpan": {
+        "start": 76,
+        "end": 87
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 88,
+            "end": 92
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 94,
+              "end": 98
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 108,
+              "end": 111
+            }
+          }
+        ],
+        "span": {
+          "start": 102,
+          "end": 112
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [],
+        "span": {
+          "start": 117,
+          "end": 119
+        }
+      },
+      "span": {
+        "start": 73,
+        "end": 119
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "arrayTotal",
+      "nameSpan": {
+        "start": 124,
+        "end": 134
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 135,
+            "end": 139
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 141,
+              "end": 145
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 149,
+          "end": 152
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "sumValues",
+          "span": {
+            "start": 157,
+            "end": 166
+          }
+        },
+        "argument": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "integer",
+              "raw": "20",
+              "span": {
+                "start": 168,
+                "end": 170
+              }
+            },
+            {
+              "kind": "integer",
+              "raw": "22",
+              "span": {
+                "start": 172,
+                "end": 174
+              }
+            }
+          ],
+          "span": {
+            "start": 167,
+            "end": 175
+          }
+        },
+        "span": {
+          "start": 157,
+          "end": 175
+        }
+      },
+      "span": {
+        "start": 121,
+        "end": 175
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "listTotal",
+      "nameSpan": {
+        "start": 180,
+        "end": 189
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 190,
+            "end": 194
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 196,
+              "end": 200
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 204,
+          "end": 207
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "sumValues",
+          "span": {
+            "start": 212,
+            "end": 221
+          }
+        },
+        "argument": {
+          "kind": "list",
+          "elements": [
+            {
+              "kind": "integer",
+              "raw": "10",
+              "span": {
+                "start": 224,
+                "end": 226
+              }
+            },
+            {
+              "kind": "integer",
+              "raw": "20",
+              "span": {
+                "start": 228,
+                "end": 230
+              }
+            },
+            {
+              "kind": "integer",
+              "raw": "12",
+              "span": {
+                "start": 232,
+                "end": 234
+              }
+            }
+          ],
+          "span": {
+            "start": 222,
+            "end": 235
+          }
+        },
+        "span": {
+          "start": 212,
+          "end": 235
+        }
+      },
+      "span": {
+        "start": 177,
+        "end": 235
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "rangeTotal",
+      "nameSpan": {
+        "start": 240,
+        "end": 250
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 251,
+            "end": 255
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 257,
+              "end": 261
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 265,
+          "end": 268
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "sumValues",
+          "span": {
+            "start": 273,
+            "end": 282
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "binary",
+            "operator": "..=",
+            "operatorSpan": {
+              "start": 285,
+              "end": 288
+            },
+            "left": {
+              "kind": "integer",
+              "raw": "1",
+              "span": {
+                "start": 284,
+                "end": 285
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "4",
+              "span": {
+                "start": 288,
+                "end": 289
+              }
+            },
+            "span": {
+              "start": 284,
+              "end": 289
+            }
+          },
+          "span": {
+            "start": 283,
+            "end": 290
+          }
+        },
+        "span": {
+          "start": 273,
+          "end": 290
+        }
+      },
+      "span": {
+        "start": 237,
+        "end": 290
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "emptyTotal",
+      "nameSpan": {
+        "start": 295,
+        "end": 305
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 306,
+            "end": 310
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 312,
+              "end": 316
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 320,
+          "end": 323
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "sumValues",
+          "span": {
+            "start": 328,
+            "end": 337
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "emptyValues",
+              "span": {
+                "start": 339,
+                "end": 350
+              }
+            },
+            "argument": {
+              "kind": "unit",
+              "span": {
+                "start": 351,
+                "end": 353
+              }
+            },
+            "span": {
+              "start": 339,
+              "end": 353
+            }
+          },
+          "span": {
+            "start": 338,
+            "end": 354
+          }
+        },
+        "span": {
+          "start": 328,
+          "end": 354
+        }
+      },
+      "span": {
+        "start": 292,
+        "end": 354
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "collectionSumResults",
+      "nameSpan": {
+        "start": 363,
+        "end": 383
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 384,
+            "end": 388
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 390,
+              "end": 394
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 404,
+              "end": 410
+            }
+          }
+        ],
+        "span": {
+          "start": 398,
+          "end": 411
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "arrayTotal",
+                    "span": {
+                      "start": 425,
+                      "end": 435
+                    }
+                  },
+                  "argument": {
+                    "kind": "unit",
+                    "span": {
+                      "start": 436,
+                      "end": 438
+                    }
+                  },
+                  "span": {
+                    "start": 425,
+                    "end": 438
+                  }
+                },
+                "span": {
+                  "start": 423,
+                  "end": 439
+                }
+              }
+            ],
+            "span": {
+              "start": 422,
+              "end": 440
+            }
+          },
+          {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "listTotal",
+                    "span": {
+                      "start": 449,
+                      "end": 458
+                    }
+                  },
+                  "argument": {
+                    "kind": "unit",
+                    "span": {
+                      "start": 459,
+                      "end": 461
+                    }
+                  },
+                  "span": {
+                    "start": 449,
+                    "end": 461
+                  }
+                },
+                "span": {
+                  "start": 447,
+                  "end": 462
+                }
+              }
+            ],
+            "span": {
+              "start": 446,
+              "end": 463
+            }
+          },
+          {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "rangeTotal",
+                    "span": {
+                      "start": 472,
+                      "end": 482
+                    }
+                  },
+                  "argument": {
+                    "kind": "unit",
+                    "span": {
+                      "start": 483,
+                      "end": 485
+                    }
+                  },
+                  "span": {
+                    "start": 472,
+                    "end": 485
+                  }
+                },
+                "span": {
+                  "start": 470,
+                  "end": 486
+                }
+              }
+            ],
+            "span": {
+              "start": 469,
+              "end": 487
+            }
+          },
+          {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "emptyTotal",
+                    "span": {
+                      "start": 496,
+                      "end": 506
+                    }
+                  },
+                  "argument": {
+                    "kind": "unit",
+                    "span": {
+                      "start": 507,
+                      "end": 509
+                    }
+                  },
+                  "span": {
+                    "start": 496,
+                    "end": 509
+                  }
+                },
+                "span": {
+                  "start": 494,
+                  "end": 510
+                }
+              }
+            ],
+            "span": {
+              "start": 493,
+              "end": 511
+            }
+          }
+        ],
+        "span": {
+          "start": 416,
+          "end": 515
+        }
+      },
+      "span": {
+        "start": 356,
+        "end": 515
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 515
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 71
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 73,
+        "end": 119
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 121,
+        "end": 175
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 177,
+        "end": 235
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 237,
+        "end": 290
+      }
+    },
+    {
+      "id": 6,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 292,
+        "end": 354
+      }
+    },
+    {
+      "id": 7,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 356,
+        "end": 515
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "sumValues",
+      "canonical": "artifact/collection-sum::sumValues",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 3,
+        "end": 12
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "emptyValues",
+      "canonical": "artifact/collection-sum::emptyValues",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 76,
+        "end": 87
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "arrayTotal",
+      "canonical": "artifact/collection-sum::arrayTotal",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 124,
+        "end": 134
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "listTotal",
+      "canonical": "artifact/collection-sum::listTotal",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 180,
+        "end": 189
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "rangeTotal",
+      "canonical": "artifact/collection-sum::rangeTotal",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 240,
+        "end": 250
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "emptyTotal",
+      "canonical": "artifact/collection-sum::emptyTotal",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 295,
+        "end": 305
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "collectionSumResults",
+      "canonical": "artifact/collection-sum::collectionSumResults",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 363,
+        "end": 383
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "C",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 1,
+      "origin": {
+        "start": 0,
+        "end": 71
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "values",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 16,
+        "end": 22
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "Reducible",
+      "canonical": "std/prelude::Reducible",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "sum",
+      "canonical": "std/prelude::sum",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 88,
+        "end": 92
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "Array",
+      "canonical": "std/prelude::Array",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 135,
+        "end": 139
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 190,
+        "end": 194
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 5,
+      "origin": {
+        "start": 251,
+        "end": 255
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 6,
+      "origin": {
+        "start": 306,
+        "end": 310
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 7,
+      "origin": {
+        "start": 384,
+        "end": 388
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "C",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 24,
+        "end": 25
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 29,
+        "end": 32
+      }
+    },
+    {
+      "spelling": "Reducible",
+      "namespace": "trait",
+      "target": 10,
+      "origin": {
+        "start": 39,
+        "end": 48
+      }
+    },
+    {
+      "spelling": "C",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 49,
+        "end": 50
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 52,
+        "end": 55
+      }
+    },
+    {
+      "spelling": "sum",
+      "namespace": "value",
+      "target": 11,
+      "origin": {
+        "start": 61,
+        "end": 64
+      }
+    },
+    {
+      "spelling": "values",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 65,
+        "end": 71
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 94,
+        "end": 98
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 102,
+        "end": 112
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 108,
+        "end": 111
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 141,
+        "end": 145
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 149,
+        "end": 152
+      }
+    },
+    {
+      "spelling": "sumValues",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 157,
+        "end": 166
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 196,
+        "end": 200
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 204,
+        "end": 207
+      }
+    },
+    {
+      "spelling": "sumValues",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 212,
+        "end": 221
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 257,
+        "end": 261
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 265,
+        "end": 268
+      }
+    },
+    {
+      "spelling": "sumValues",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 273,
+        "end": 282
+      }
+    },
+    {
+      "spelling": "..=",
+      "namespace": "operator",
+      "origin": {
+        "start": 285,
+        "end": 288
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 312,
+        "end": 316
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 320,
+        "end": 323
+      }
+    },
+    {
+      "spelling": "sumValues",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 328,
+        "end": 337
+      }
+    },
+    {
+      "spelling": "emptyValues",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 339,
+        "end": 350
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 390,
+        "end": 394
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 398,
+        "end": 411
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 20,
+      "origin": {
+        "start": 404,
+        "end": 410
+      }
+    },
+    {
+      "spelling": "arrayTotal",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 425,
+        "end": 435
+      }
+    },
+    {
+      "spelling": "listTotal",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 449,
+        "end": 458
+      }
+    },
+    {
+      "spelling": "rangeTotal",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 472,
+        "end": 482
+      }
+    },
+    {
+      "spelling": "emptyTotal",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 496,
+        "end": 506
+      }
+    }
+  ],
+  "issues": []
+}

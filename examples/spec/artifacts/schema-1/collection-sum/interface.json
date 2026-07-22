@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "module": "artifact/collection-sum",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/collection-sum::collectionSumResults",
+      "namespace": "value",
+      "name": "collectionSumResults",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 356,
+        "end": 515
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

@@ -10,6 +10,22 @@ pub(crate) struct RuntimePreludeDictionary {
 
 const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
     RuntimePreludeDictionary {
+        semantic_identity: "std/int::Zero",
+        runtime_feature: "core.int64.zero-dictionary",
+        local_name: "_ssrg_int_zero",
+        module: "@seseragi/runtime/int64",
+        export_name: "intZero",
+        source_map_name: "intZero",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/int::Add",
+        runtime_feature: "core.int64.add-dictionary",
+        local_name: "_ssrg_int_add",
+        module: "@seseragi/runtime/int64",
+        export_name: "intAdd",
+        source_map_name: "intAdd",
+    },
+    RuntimePreludeDictionary {
         semantic_identity: "std/array::Iterable",
         runtime_feature: "core.array.iterable",
         local_name: "_ssrg_array_iterable",
@@ -220,6 +236,18 @@ mod tests {
     #[test]
     fn maps_the_standard_prelude_dictionary_families() {
         for (identity, feature, module, export_name) in [
+            (
+                "std/int::Zero",
+                "core.int64.zero-dictionary",
+                "@seseragi/runtime/int64",
+                "intZero",
+            ),
+            (
+                "std/int::Add",
+                "core.int64.add-dictionary",
+                "@seseragi/runtime/int64",
+                "intAdd",
+            ),
             (
                 "std/array::Iterable",
                 "core.array.iterable",

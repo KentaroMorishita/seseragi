@@ -1,6 +1,6 @@
 use crate::collection_ops::{
     runtime_collection_for_each_operation, runtime_collection_join_operation,
-    runtime_collection_operation, runtime_iterable_operation,
+    runtime_collection_operation, runtime_collection_sum_operation, runtime_iterable_operation,
 };
 use crate::iterator_ops::runtime_iterator_comprehension_operation;
 use crate::iterator_ops::runtime_iterator_operation;
@@ -47,11 +47,14 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             type_ref,
             ..
         } => {
-            collect_evidence_runtime_requirements(evidence, requirements);
-            if matches!(type_ref, CoreType::Function { .. }) {
-                if let Some(operation) = runtime_int_operation_with_evidence(name, evidence) {
-                    push_unique(requirements, operation.runtime_feature);
-                }
+            let int_operation = matches!(type_ref, CoreType::Function { .. })
+                .then(|| runtime_int_operation_with_evidence(name, evidence))
+                .flatten();
+            if int_operation.is_none() {
+                collect_evidence_runtime_requirements(evidence, requirements);
+            }
+            if let Some(operation) = int_operation {
+                push_unique(requirements, operation.runtime_feature);
             }
             if let Some(constructor) = runtime_sum_constructor(name) {
                 push_unique(requirements, constructor.runtime_feature);
@@ -77,6 +80,8 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             if let Some(operation) = runtime_collection_for_each_operation(callee, evidence) {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_collection_join_operation(callee, evidence) {
+                push_unique(requirements, operation.runtime_feature);
+            } else if let Some(operation) = runtime_collection_sum_operation(callee, evidence) {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_collection_operation(callee, evidence) {
                 push_unique(requirements, operation.runtime_feature);
@@ -205,14 +210,17 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             type_ref,
             ..
         } => {
-            collect_evidence_runtime_requirements(evidence, requirements);
+            let int_operation = is_int_type(type_ref)
+                .then(|| runtime_int_operation_with_evidence(operator, evidence))
+                .flatten();
+            if int_operation.is_none() {
+                collect_evidence_runtime_requirements(evidence, requirements);
+            }
             collect_type_runtime_requirement(type_ref, requirements);
             if let Some(operation) = runtime_range_operation(operator) {
                 push_unique(requirements, operation.runtime_feature);
-            } else if is_int_type(type_ref) {
-                if let Some(operation) = runtime_int_operation_with_evidence(operator, evidence) {
-                    push_unique(requirements, operation.runtime_feature);
-                }
+            } else if let Some(operation) = int_operation {
+                push_unique(requirements, operation.runtime_feature);
             }
             collect_expr_runtime_requirements(left, requirements);
             collect_expr_runtime_requirements(right, requirements);
@@ -390,17 +398,20 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             type_ref,
             ..
         } => {
-            collect_evidence_runtime_imports(evidence, imports);
-            if matches!(type_ref, CoreType::Function { .. }) {
-                if let Some(operation) = runtime_int_operation_with_evidence(name, evidence) {
-                    push_import_unique(
-                        imports,
-                        TypeScriptImport {
-                            feature: operation.runtime_feature.to_owned(),
-                            local: operation.local_name.to_owned(),
-                        },
-                    );
-                }
+            let int_operation = matches!(type_ref, CoreType::Function { .. })
+                .then(|| runtime_int_operation_with_evidence(name, evidence))
+                .flatten();
+            if int_operation.is_none() {
+                collect_evidence_runtime_imports(evidence, imports);
+            }
+            if let Some(operation) = int_operation {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
             }
             if let Some(constructor) = runtime_sum_constructor(name) {
                 push_sum_constructor_import(imports, constructor);
@@ -442,6 +453,14 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                     },
                 );
             } else if let Some(operation) = runtime_collection_join_operation(callee, evidence) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            } else if let Some(operation) = runtime_collection_sum_operation(callee, evidence) {
                 push_import_unique(
                     imports,
                     TypeScriptImport {
@@ -583,7 +602,12 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             type_ref,
             ..
         } => {
-            collect_evidence_runtime_imports(evidence, imports);
+            let int_operation = is_int_type(type_ref)
+                .then(|| runtime_int_operation_with_evidence(operator, evidence))
+                .flatten();
+            if int_operation.is_none() {
+                collect_evidence_runtime_imports(evidence, imports);
+            }
             if let Some(operation) = runtime_range_operation(operator) {
                 push_import_unique(
                     imports,
@@ -592,16 +616,14 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                         local: operation.local_name.to_owned(),
                     },
                 );
-            } else if is_int_type(type_ref) {
-                if let Some(operation) = runtime_int_operation_with_evidence(operator, evidence) {
-                    push_import_unique(
-                        imports,
-                        TypeScriptImport {
-                            feature: operation.runtime_feature.to_owned(),
-                            local: operation.local_name.to_owned(),
-                        },
-                    );
-                }
+            } else if let Some(operation) = int_operation {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
             }
             collect_expr_runtime_imports(left, imports);
             collect_expr_runtime_imports(right, imports);

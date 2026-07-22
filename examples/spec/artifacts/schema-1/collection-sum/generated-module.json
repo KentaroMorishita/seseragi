@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "module": "artifact/collection-sum",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64.zero-dictionary",
+      "core.int64.add-dictionary",
+      "core.collection.sum",
+      "core.int64",
+      "core.unit",
+      "core.array.reducible",
+      "core.list.reducible",
+      "core.list",
+      "core.list.from-array",
+      "core.range.reducible",
+      "core.range",
+      "core.range.inclusive",
+      "core.string",
+      "core.int64.show"
+    ]
+  },
+  "exports": [
+    "collectionSumResults"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

@@ -250,6 +250,44 @@ fn selects_array_reducible_evidence_for_standard_join() {
 }
 
 #[test]
+fn selects_reducible_zero_and_add_evidence_for_standard_sum() {
+    let typed = type_module(
+        "artifact/collection-sum/main.ssrg",
+        "pub fn total values: Array<Int> -> Int = sum values\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+        panic!("expected total function");
+    };
+    assert!(matches!(
+        body,
+        TypedExpr::Call {
+            callee,
+            evidence,
+            type_ref,
+            ..
+        } if callee == "std/prelude::sum"
+            && type_ref == &named("Int")
+            && matches!(evidence.as_slice(), [
+                crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity: reducible },
+                    ..
+                },
+                crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity: zero },
+                    ..
+                },
+                crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity: add },
+                    ..
+                },
+            ] if reducible == "std/array::Reducible"
+                && zero == "std/int::Zero"
+                && add == "std/int::Add")
+    ));
+}
+
+#[test]
 fn selects_standard_power_evidence_for_an_operator_function_value() {
     let typed = type_module(
         "artifact/power-operator-reference/main.ssrg",

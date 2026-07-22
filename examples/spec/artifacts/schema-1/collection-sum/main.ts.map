@@ -1,0 +1,43 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/collection-sum"
+  ],
+  "sourcesContent": [
+    "fn sumValues<C> values: C -> Int\nwhere Reducible<C, Int> =\n  sum values\n\nfn emptyValues unit: Unit -> Array<Int> =\n  []\n\nfn arrayTotal unit: Unit -> Int =\n  sumValues [20, 22]\n\nfn listTotal unit: Unit -> Int =\n  sumValues `[10, 20, 12]\n\nfn rangeTotal unit: Unit -> Int =\n  sumValues (1..=4)\n\nfn emptyTotal unit: Unit -> Int =\n  sumValues (emptyValues ())\n\npub fn collectionSumResults unit: Unit -> Array<String> =\n  [\n    `${arrayTotal ()}`,\n    `${listTotal ()}`,\n    `${rangeTotal ()}`,\n    `${emptyTotal ()}`\n  ]\n"
+  ],
+  "names": [
+    "sumValues",
+    "_ssrg_collection_sum",
+    "intZero",
+    "intAdd",
+    "emptyValues",
+    "arrayTotal",
+    "sumValues",
+    "arrayReducible",
+    "listTotal",
+    "sumValues",
+    "fromArray",
+    "listReducible",
+    "rangeTotal",
+    "sumValues",
+    "inclusive",
+    "rangeReducible",
+    "emptyTotal",
+    "sumValues",
+    "emptyValues",
+    "arrayReducible",
+    "collectionSumResults",
+    "intShow",
+    "arrayTotal",
+    "intShow",
+    "listTotal",
+    "intShow",
+    "rangeTotal",
+    "intShow",
+    "emptyTotal"
+  ],
+  "mappings": ";;;;;;;AAAAA;AAIAI;AAGAC;AAGAG;AAGAI;AAGAI;AAGAI"
+}

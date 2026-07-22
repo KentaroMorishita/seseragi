@@ -1,0 +1,1020 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/collection-sum",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-sum::sumValues",
+      "visibility": "private",
+      "origin": {
+        "start": 0,
+        "end": 71
+      },
+      "scheme": {
+        "typeParameters": [
+          "C"
+        ],
+        "constraints": [
+          {
+            "name": "Reducible",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "C",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "arguments": []
+          },
+          "origin": {
+            "start": 16,
+            "end": 22
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::sum",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            },
+            "origin": {
+              "start": 65,
+              "end": 71
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "C",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          },
+          {
+            "constraint": {
+              "name": "Zero",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Zero"
+            }
+          },
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 61,
+          "end": 71
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-sum::emptyValues",
+      "visibility": "private",
+      "origin": {
+        "start": 73,
+        "end": 119
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 88,
+            "end": 92
+          }
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 117,
+          "end": 119
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-sum::arrayTotal",
+      "visibility": "private",
+      "origin": {
+        "start": 121,
+        "end": 175
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 135,
+            "end": 139
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-sum::sumValues",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "integer",
+                "value": "20",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 168,
+                  "end": 170
+                }
+              },
+              {
+                "kind": "integer",
+                "value": "22",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 172,
+                  "end": 174
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 167,
+              "end": 175
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 157,
+          "end": 175
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-sum::listTotal",
+      "visibility": "private",
+      "origin": {
+        "start": 177,
+        "end": 235
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 190,
+            "end": 194
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-sum::sumValues",
+        "arguments": [
+          {
+            "kind": "list",
+            "elements": [
+              {
+                "kind": "integer",
+                "value": "10",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 224,
+                  "end": 226
+                }
+              },
+              {
+                "kind": "integer",
+                "value": "20",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 228,
+                  "end": 230
+                }
+              },
+              {
+                "kind": "integer",
+                "value": "12",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 232,
+                  "end": 234
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 222,
+              "end": 235
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/list::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 212,
+          "end": 235
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-sum::rangeTotal",
+      "visibility": "private",
+      "origin": {
+        "start": 237,
+        "end": 290
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 251,
+            "end": 255
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-sum::sumValues",
+        "arguments": [
+          {
+            "kind": "binary",
+            "operator": "..=",
+            "left": {
+              "kind": "integer",
+              "value": "1",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 284,
+                "end": 285
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "value": "4",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 288,
+                "end": 289
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Range",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 284,
+              "end": 289
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Range",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/range::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 273,
+          "end": 290
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-sum::emptyTotal",
+      "visibility": "private",
+      "origin": {
+        "start": 292,
+        "end": 354
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 306,
+            "end": 310
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-sum::sumValues",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-sum::emptyValues",
+            "arguments": [
+              {
+                "kind": "unit",
+                "type": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 351,
+                  "end": 353
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 339,
+              "end": 353
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 328,
+          "end": 354
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-sum::collectionSumResults",
+      "visibility": "public",
+      "origin": {
+        "start": 356,
+        "end": 515
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 384,
+            "end": 388
+          }
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "call",
+                  "callee": "artifact/collection-sum::arrayTotal",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 436,
+                        "end": 438
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 425,
+                    "end": 438
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                },
+                "traitIdentity": "std/prelude::Show",
+                "origin": {
+                  "start": 423,
+                  "end": 439
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 422,
+              "end": 440
+            }
+          },
+          {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "call",
+                  "callee": "artifact/collection-sum::listTotal",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 459,
+                        "end": 461
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 449,
+                    "end": 461
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                },
+                "traitIdentity": "std/prelude::Show",
+                "origin": {
+                  "start": 447,
+                  "end": 462
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 446,
+              "end": 463
+            }
+          },
+          {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "call",
+                  "callee": "artifact/collection-sum::rangeTotal",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 483,
+                        "end": 485
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 472,
+                    "end": 485
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                },
+                "traitIdentity": "std/prelude::Show",
+                "origin": {
+                  "start": 470,
+                  "end": 486
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 469,
+              "end": 487
+            }
+          },
+          {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "call",
+                  "callee": "artifact/collection-sum::emptyTotal",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 507,
+                        "end": 509
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 496,
+                    "end": 509
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                },
+                "traitIdentity": "std/prelude::Show",
+                "origin": {
+                  "start": 494,
+                  "end": 510
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 493,
+              "end": 511
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 416,
+          "end": 515
+        }
+      }
+    }
+  ]
+}

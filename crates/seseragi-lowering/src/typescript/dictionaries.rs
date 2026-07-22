@@ -91,7 +91,7 @@ mod tests {
     }
 
     #[test]
-    fn does_not_invent_a_dictionary_for_operation_only_standard_evidence() {
+    fn materializes_a_registered_standard_arithmetic_dictionary() {
         let expression = local_dictionary_expression(
             &CoreInstanceEvidence::Standard {
                 identity: "std/int::Add".to_owned(),
@@ -100,7 +100,12 @@ mod tests {
             &BTreeMap::new(),
         );
 
-        assert_eq!(expression, None);
+        assert_eq!(
+            expression,
+            Some(TypeScriptExpr::RuntimeReference {
+                name: "_ssrg_int_add".to_owned(),
+            })
+        );
     }
 
     #[test]

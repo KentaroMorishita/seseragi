@@ -30,6 +30,23 @@ export function join<Collection>(
   return result
 }
 
+/** Sum a reducible collection using only its selected algebra dictionaries. */
+export function sum<Collection, Element>(
+  reducibleDictionary: RuntimeDictionary,
+  zeroDictionary: RuntimeDictionary,
+  addDictionary: RuntimeDictionary,
+  values: Collection
+): Element {
+  const reducible = reducibleDictionary as Reducible<Collection, Element>
+  const zero = zeroDictionary as Readonly<{
+    zero: (unit: Unit) => Element
+  }>
+  const add = addDictionary as Readonly<{
+    add: (left: Element) => (right: Element) => Element
+  }>
+  return reducible.reduce(zero.zero(undefined))(add.add)(values)
+}
+
 /** Run one cold Effect at a time in the collection's declared iteration order. */
 export function forEach<Collection, Environment, Failure, Element>(
   dictionary: RuntimeDictionary,

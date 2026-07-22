@@ -343,6 +343,7 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
                 | "fromEither"
                 | "reduce"
                 | "join"
+                | "sum"
                 | "forEach"
                 | "unfold"
                 | "next"

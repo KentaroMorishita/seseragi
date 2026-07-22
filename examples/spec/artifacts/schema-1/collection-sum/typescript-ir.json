@@ -1,0 +1,416 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/collection-sum",
+  "runtimeRequirements": [
+    "core.int64.zero-dictionary",
+    "core.int64.add-dictionary",
+    "core.collection.sum",
+    "core.int64",
+    "core.unit",
+    "core.array.reducible",
+    "core.list.reducible",
+    "core.list",
+    "core.list.from-array",
+    "core.range.reducible",
+    "core.range",
+    "core.range.inclusive",
+    "core.string",
+    "core.int64.show"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.zero-dictionary",
+      "local": "_ssrg_int_zero"
+    },
+    {
+      "feature": "core.int64.add-dictionary",
+      "local": "_ssrg_int_add"
+    },
+    {
+      "feature": "core.collection.sum",
+      "local": "_ssrg_collection_sum"
+    },
+    {
+      "feature": "core.array.reducible",
+      "local": "_ssrg_array_reducible"
+    },
+    {
+      "feature": "core.list.reducible",
+      "local": "_ssrg_list_reducible"
+    },
+    {
+      "feature": "core.list.from-array",
+      "local": "_ssrg_list_from_array"
+    },
+    {
+      "feature": "core.range.reducible",
+      "local": "_ssrg_range_reducible"
+    },
+    {
+      "feature": "core.range.inclusive",
+      "local": "_ssrg_range_inclusive"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "sumValues",
+      "typeParameters": [
+        "C"
+      ],
+      "constraints": [
+        {
+          "name": "Reducible",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "bigint"
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "type": "C",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_sum",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$0"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_int_zero"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_int_add"
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 71
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "emptyValues",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [],
+        "elementType": {
+          "kind": "bigint"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 73,
+        "end": 119
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "arrayTotal",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "sumValues",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "bigint",
+                "value": "20"
+              },
+              {
+                "kind": "bigint",
+                "value": "22"
+              }
+            ],
+            "elementType": {
+              "kind": "bigint"
+            }
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 121,
+        "end": 175
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "listTotal",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "sumValues",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_list_from_array",
+            "arguments": [
+              {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "bigint",
+                    "value": "10"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "20"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "12"
+                  }
+                ],
+                "elementType": {
+                  "kind": "bigint"
+                }
+              }
+            ]
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_list_reducible"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 177,
+        "end": 235
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "rangeTotal",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "sumValues",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_range_inclusive",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "1"
+              },
+              {
+                "kind": "bigint",
+                "value": "4"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_range_reducible"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 237,
+        "end": 290
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "emptyTotal",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "sumValues",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "emptyValues",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 292,
+        "end": 354
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "collectionSumResults",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_show_intShow"
+            },
+            "method": "show",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "arrayTotal",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_show_intShow"
+            },
+            "method": "show",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "listTotal",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_show_intShow"
+            },
+            "method": "show",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "rangeTotal",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_show_intShow"
+            },
+            "method": "show",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "emptyTotal",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "elementType": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 356,
+        "end": 515
+      }
+    }
+  ]
+}

@@ -19,7 +19,16 @@ export {
   succeed,
   unit,
 } from "./effect"
-export { add, divide, multiply, power, remainder, subtract } from "./int64"
+export {
+  add,
+  divide,
+  intAdd,
+  intZero,
+  multiply,
+  power,
+  remainder,
+  subtract,
+} from "./int64"
 export {
   arrayApplicative,
   arrayFunctor,
@@ -34,6 +43,7 @@ export type { Iterable, Reducible } from "./collection"
 export {
   forEach as forEachCollection,
   join as joinCollection,
+  sum as sumCollection,
 } from "./collection"
 export type { IntRange } from "./range"
 export {
