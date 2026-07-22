@@ -202,16 +202,16 @@ fn missing_surface_body_diagnostics(
     declarations
         .iter()
         .filter_map(|declaration| {
-            let span = match declaration {
+            let (span, effect_body) = match declaration {
                 SurfaceDecl::Let {
                     body: None, span, ..
                 }
                 | SurfaceDecl::Fn {
                     body: None, span, ..
-                }
-                | SurfaceDecl::EffectFn {
+                } => (*span, false),
+                SurfaceDecl::EffectFn {
                     body: None, span, ..
-                } => *span,
+                } => (*span, true),
                 _ => return None,
             };
             if existing.iter().any(|diagnostic| {
@@ -221,7 +221,11 @@ fn missing_surface_body_diagnostics(
             }) {
                 return None;
             }
-            let primary = malformed_tuple_body_range(tokens, span.start, span.end)?;
+            let primary = if effect_body {
+                invalid_body_range(tokens, span.start, span.end)
+            } else {
+                malformed_pure_body_range(tokens, span.start, span.end)
+            }?;
             Some(Diagnostic {
                 id: String::new(),
                 code: "SES-P0001".to_owned(),
@@ -235,7 +239,7 @@ fn missing_surface_body_diagnostics(
         .collect()
 }
 
-fn malformed_tuple_body_range(
+fn invalid_body_range(
     tokens: &[Token],
     declaration_start: usize,
     declaration_end: usize,
@@ -246,6 +250,37 @@ fn malformed_tuple_body_range(
             && token.end <= declaration_end
     });
     let equals = equals?;
+    let body = tokens
+        .iter()
+        .filter(|token| {
+            token.start >= equals.end
+                && token.end <= declaration_end
+                && token.kind != TokenKind::Eof
+                && !is_trivia(token.kind)
+        })
+        .collect::<Vec<_>>();
+    match (body.first(), body.last()) {
+        (Some(first), Some(last)) => Some(ByteRange {
+            start: first.start,
+            end: last.end,
+        }),
+        _ => Some(ByteRange {
+            start: equals.end,
+            end: equals.end,
+        }),
+    }
+}
+
+fn malformed_pure_body_range(
+    tokens: &[Token],
+    declaration_start: usize,
+    declaration_end: usize,
+) -> Option<ByteRange> {
+    let equals = tokens.iter().find(|token| {
+        token.kind == TokenKind::OperatorEquals
+            && token.start >= declaration_start
+            && token.end <= declaration_end
+    })?;
     let body = tokens
         .iter()
         .filter(|token| {
@@ -620,6 +655,28 @@ mod tests {
         assert_eq!(
             diagnostics.diagnostics[0].primary,
             ByteRange { start: 24, end: 43 }
+        );
+    }
+
+    #[test]
+    fn reports_an_effect_body_that_surface_syntax_cannot_normalize() {
+        let source = "pub effect fn main = for n <- 1..=3 { println $ `${n}` }\n";
+        let diagnostics = parse_diagnostics("main.ssrg", source);
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "parser.expected-expression"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange {
+                start: source
+                    .find("for")
+                    .expect("fixture contains the invalid body"),
+                end: source.trim_end().len(),
+            }
         );
     }
 

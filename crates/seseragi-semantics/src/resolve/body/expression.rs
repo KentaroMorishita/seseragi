@@ -58,14 +58,16 @@ pub(super) fn resolve_expression(
             if let Some(type_ref) = &parameter.type_ref {
                 resolve_type_ref(resolver, lambda_scope, type_ref);
             }
-            resolver.register(
-                lambda_scope,
-                SymbolNamespace::Value,
-                crate::SymbolKind::Parameter,
-                &parameter.name,
-                None,
-                parameter.name_span,
-            );
+            if parameter.name != "_" {
+                resolver.register(
+                    lambda_scope,
+                    SymbolNamespace::Value,
+                    crate::SymbolKind::Parameter,
+                    &parameter.name,
+                    None,
+                    parameter.name_span,
+                );
+            }
             resolve_expression(resolver, lambda_scope, body);
         }
         SurfaceExpr::Tuple { elements, .. }

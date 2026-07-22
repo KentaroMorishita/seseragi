@@ -430,7 +430,10 @@ impl ExpressionParser<'_> {
                 break;
             }
             let parameter = self.tokens.get(self.cursor)?.clone();
-            if parameter.kind != TokenKind::IdentifierLower {
+            if !matches!(
+                parameter.kind,
+                TokenKind::IdentifierLower | TokenKind::Wildcard
+            ) {
                 return None;
             }
             self.cursor += 1;

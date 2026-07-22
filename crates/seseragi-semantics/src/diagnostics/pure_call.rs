@@ -18,6 +18,12 @@ pub(super) fn call_diagnostic(
     function_span: seseragi_syntax::ByteSpan,
 ) -> Diagnostic {
     let (code, message_key, primary, related_message) = match issue {
+        PureCallIssue::InvalidExpression { expression } => (
+            "SES-T0101",
+            "expression.invalid",
+            expression,
+            "the expression could not be resolved to a typed language construct".to_owned(),
+        ),
         PureCallIssue::Arity {
             callee,
             expected,
@@ -150,6 +156,18 @@ mod tests {
             artifact.diagnostics[0].message_key,
             "lambda.parameter-type-unresolved"
         );
+    }
+
+    #[test]
+    fn reports_an_invalid_expression_instead_of_emitting_a_recovery_hole() {
+        let artifact = semantic_diagnostics(
+            "invalid-expression.ssrg",
+            "pub fn broken -> Int = (\\value: Int -> value) 1\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(artifact.diagnostics[0].message_key, "expression.invalid");
     }
 
     #[test]

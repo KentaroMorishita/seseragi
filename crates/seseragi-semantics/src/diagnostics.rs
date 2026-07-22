@@ -54,6 +54,17 @@ pub(crate) fn semantic_diagnostics_from_resolved(
     traits::collect_trait_diagnostics(resolved, &resolution, &mut diagnostics);
     impl_blocks::collect_impl_diagnostics(resolved, &resolution, &mut diagnostics);
     resolution::collect_resolution_diagnostics(resolved, &mut diagnostics);
+    let primary_diagnostics = diagnostics
+        .iter()
+        .filter(|diagnostic| diagnostic.message_key != "expression.invalid")
+        .map(|diagnostic| diagnostic.primary)
+        .collect::<Vec<_>>();
+    diagnostics.retain(|diagnostic| {
+        diagnostic.message_key != "expression.invalid"
+            || !primary_diagnostics.iter().any(|primary| {
+                diagnostic.primary.start <= primary.end && primary.start <= diagnostic.primary.end
+            })
+    });
 
     artifact.diagnostics = diagnostics
         .into_iter()

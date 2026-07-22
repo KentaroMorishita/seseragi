@@ -388,7 +388,25 @@ pub(crate) fn analyze_resolved_expression(
     expression: &SurfaceExpr,
     context: &PureExpressionContext<'_>,
 ) -> SurfaceExpressionAnalysis {
-    type_surface_expression(expression, context)
+    let mut analysis = type_surface_expression(expression, context);
+    ensure_recovery_hole_issue(&mut analysis);
+    analysis
+}
+
+pub(crate) fn ensure_recovery_hole_issue(analysis: &mut SurfaceExpressionAnalysis) {
+    if analysis.conditional_issue.is_none()
+        && analysis.array_issue.is_none()
+        && analysis.record_issue.is_none()
+        && analysis.range_issue.is_none()
+        && analysis.pure_call_issue.is_none()
+        && analysis.monad_do_issue.is_none()
+        && analysis.match_issues.is_empty()
+    {
+        if let Some(expression) = recovery_hole_origin(&analysis.value) {
+            analysis.pure_call_issue = Some(PureCallIssue::InvalidExpression { expression });
+            analysis.semantic_type = SemanticTypeKey::Invalid;
+        }
+    }
 }
 
 pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<TypedType> {
@@ -648,6 +666,100 @@ pub(super) fn type_surface_expression(
             },
             SemanticTypeKey::Invalid,
         ),
+    }
+}
+
+fn recovery_hole_origin(expression: &TypedExpr) -> Option<ByteSpan> {
+    match expression {
+        TypedExpr::Variable { name, origin, .. } if name.is_empty() => Some(*origin),
+        TypedExpr::Template { parts, .. } => parts.iter().find_map(|part| match part {
+            TypedTemplatePart::Text { .. } => None,
+            TypedTemplatePart::Interpolation { value, .. } => recovery_hole_origin(value),
+        }),
+        TypedExpr::FieldAccess { receiver, .. }
+        | TypedExpr::OptionalFieldAccess { receiver, .. }
+        | TypedExpr::Lambda { body: receiver, .. } => recovery_hole_origin(receiver),
+        TypedExpr::Call { arguments, .. }
+        | TypedExpr::Tuple {
+            elements: arguments,
+            ..
+        }
+        | TypedExpr::Array {
+            elements: arguments,
+            ..
+        }
+        | TypedExpr::List {
+            elements: arguments,
+            ..
+        }
+        | TypedExpr::EffectCall { arguments, .. }
+        | TypedExpr::EffectInvoke { arguments, .. } => {
+            arguments.iter().find_map(recovery_hole_origin)
+        }
+        TypedExpr::Record { items, .. } => items
+            .iter()
+            .find_map(|item| recovery_hole_origin(item.value())),
+        TypedExpr::ArrayComprehension {
+            element, clauses, ..
+        }
+        | TypedExpr::ListComprehension {
+            element, clauses, ..
+        } => recovery_hole_origin(element).or_else(|| {
+            clauses.iter().find_map(|clause| match clause {
+                crate::TypedComprehensionClause::Generator { source, .. } => {
+                    recovery_hole_origin(source)
+                }
+                crate::TypedComprehensionClause::Guard { condition, .. } => {
+                    recovery_hole_origin(condition)
+                }
+            })
+        }),
+        TypedExpr::Binary { left, right, .. } => {
+            recovery_hole_origin(left).or_else(|| recovery_hole_origin(right))
+        }
+        TypedExpr::If {
+            condition,
+            then_branch,
+            else_branch,
+            ..
+        } => recovery_hole_origin(condition)
+            .or_else(|| recovery_hole_origin(then_branch))
+            .or_else(|| recovery_hole_origin(else_branch)),
+        TypedExpr::Match {
+            scrutinee, arms, ..
+        } => recovery_hole_origin(scrutinee).or_else(|| {
+            arms.iter().find_map(|arm| {
+                arm.guard
+                    .as_ref()
+                    .and_then(recovery_hole_origin)
+                    .or_else(|| recovery_hole_origin(&arm.body))
+            })
+        }),
+        TypedExpr::DoBlock {
+            statements, result, ..
+        } => statements
+            .iter()
+            .find_map(|statement| match statement {
+                crate::TypedDoStatement::Effect { value }
+                | crate::TypedDoStatement::PureLet { value, .. }
+                | crate::TypedDoStatement::Bind { value, .. } => recovery_hole_origin(value),
+            })
+            .or_else(|| recovery_hole_origin(result)),
+        TypedExpr::MonadDo {
+            statements, result, ..
+        } => statements
+            .iter()
+            .find_map(|statement| match statement {
+                crate::TypedMonadDoStatement::Expression { value }
+                | crate::TypedMonadDoStatement::PureLet { value, .. }
+                | crate::TypedMonadDoStatement::Bind { value, .. } => recovery_hole_origin(value),
+            })
+            .or_else(|| recovery_hole_origin(result)),
+        TypedExpr::Unit { .. }
+        | TypedExpr::Integer { .. }
+        | TypedExpr::String { .. }
+        | TypedExpr::Boolean { .. }
+        | TypedExpr::Variable { .. } => None,
     }
 }
 

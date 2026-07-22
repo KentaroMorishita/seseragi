@@ -8,7 +8,8 @@ use std::collections::BTreeMap;
 use super::pure_issues::{ArrayIssue, PureCallIssue, RangeIssue, RecordIssue};
 use super::semantic_types::SemanticValueType;
 use super::surface_expr::{
-    analyze_resolved_expression, application, PureExpressionContext, SurfaceExpressionAnalysis,
+    analyze_resolved_expression, application, ensure_recovery_hole_issue, PureExpressionContext,
+    SurfaceExpressionAnalysis,
 };
 use super::type_ref::{
     application_argument_type_from_expr, effect_success_type_from_expr, inferred_type_from_expr,
@@ -56,8 +57,19 @@ pub(crate) fn analyze_effect_body(
             ranges: &mut range_issues,
         },
     );
+    let mut final_analysis = SurfaceExpressionAnalysis::valid(value);
+    if call_issues.is_empty()
+        && array_issues.is_empty()
+        && record_issues.is_empty()
+        && range_issues.is_empty()
+    {
+        ensure_recovery_hole_issue(&mut final_analysis);
+        if let Some(issue) = final_analysis.pure_call_issue {
+            call_issues.push(issue);
+        }
+    }
     EffectBodyAnalysis {
-        value,
+        value: final_analysis.value,
         call_issues,
         array_issues,
         record_issues,

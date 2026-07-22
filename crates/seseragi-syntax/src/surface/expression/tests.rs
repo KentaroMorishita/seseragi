@@ -323,6 +323,20 @@ fn parses_annotated_and_curried_lambdas_as_nested_expressions() {
 }
 
 #[test]
+fn parses_a_lambda_discard_parameter() {
+    let body = first_body("pub let keep: (Int -> String) = \\_ -> \"ok\"\n");
+    let SurfaceExpr::Lambda {
+        parameter, body, ..
+    } = body
+    else {
+        panic!("expected lambda")
+    };
+    assert_eq!(parameter.name, "_");
+    assert!(parameter.type_ref.is_none());
+    assert!(matches!(body.as_ref(), SurfaceExpr::String { .. }));
+}
+
+#[test]
 fn parses_tuple_values_without_losing_grouped_expressions() {
     let body = first_body("pub fn pair left: Int -> right: Bool -> (Int, Bool) = (left, right)\n");
 

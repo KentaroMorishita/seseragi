@@ -385,6 +385,39 @@ fn rejects_an_unconstrained_lambda_before_producing_typescript() {
 }
 
 #[test]
+fn compiles_a_lambda_discard_parameter() {
+    let compiled = compile_module(input(
+        "artifact/driver-lambda-discard/main.ssrg",
+        "artifact/driver-lambda-discard",
+        "pub let keep: (Int -> String) = \\_ -> \"ok\"\n",
+    ))
+    .expect("a discard parameter should be typed from its function context");
+
+    assert!(compiled.diagnostics.diagnostics.is_empty());
+    assert_eq!(
+        compiled.generated.typescript,
+        "export const keep: (argument: bigint) => string = (_: bigint) => \"ok\";\n"
+    );
+}
+
+#[test]
+fn rejects_an_unsupported_effect_expression_before_typescript_emission() {
+    let diagnostics = compile_module(input(
+        "artifact/driver-invalid-effect-expression/main.ssrg",
+        "artifact/driver-invalid-effect-expression",
+        "pub effect fn main = for n <- 1..=3 { println $ `${n}` }\n",
+    ))
+    .expect_err("an unsupported effect expression must prevent emission");
+
+    assert_eq!(diagnostics.diagnostics.len(), 1);
+    assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
+    assert_eq!(
+        diagnostics.diagnostics[0].message_key,
+        "parser.expected-expression"
+    );
+}
+
+#[test]
 fn rejects_imports_until_a_project_resolver_can_link_them() {
     let diagnostics = compile_module(input(
         "entry.ssrg",

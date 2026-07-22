@@ -5,26 +5,6 @@
   "diagnostics": [
     {
       "id": "d1",
-      "code": "SES-T0101",
-      "severity": "Error",
-      "messageKey": "effect.compact-body-not-effect",
-      "primary": {
-        "start": 4112,
-        "end": 4192
-      },
-      "related": [
-        {
-          "message": "compact inferred effect function",
-          "primary": {
-            "start": 4089,
-            "end": 4192
-          }
-        }
-      ],
-      "fixes": []
-    },
-    {
-      "id": "d2",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -44,7 +24,7 @@
       "fixes": []
     },
     {
-      "id": "d3",
+      "id": "d2",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -64,7 +44,7 @@
       "fixes": []
     },
     {
-      "id": "d4",
+      "id": "d3",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -84,7 +64,7 @@
       "fixes": []
     },
     {
-      "id": "d5",
+      "id": "d4",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -104,7 +84,7 @@
       "fixes": []
     },
     {
-      "id": "d6",
+      "id": "d5",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -124,7 +104,7 @@
       "fixes": []
     },
     {
-      "id": "d7",
+      "id": "d6",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -144,7 +124,7 @@
       "fixes": []
     },
     {
-      "id": "d8",
+      "id": "d7",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -164,7 +144,7 @@
       "fixes": []
     },
     {
-      "id": "d9",
+      "id": "d8",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -184,7 +164,7 @@
       "fixes": []
     },
     {
-      "id": "d10",
+      "id": "d9",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -204,7 +184,7 @@
       "fixes": []
     },
     {
-      "id": "d11",
+      "id": "d10",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -224,7 +204,7 @@
       "fixes": []
     },
     {
-      "id": "d12",
+      "id": "d11",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -244,7 +224,7 @@
       "fixes": []
     },
     {
-      "id": "d13",
+      "id": "d12",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -264,7 +244,7 @@
       "fixes": []
     },
     {
-      "id": "d14",
+      "id": "d13",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -284,7 +264,7 @@
       "fixes": []
     },
     {
-      "id": "d15",
+      "id": "d14",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -304,7 +284,7 @@
       "fixes": []
     },
     {
-      "id": "d16",
+      "id": "d15",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -324,7 +304,7 @@
       "fixes": []
     },
     {
-      "id": "d17",
+      "id": "d16",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -344,7 +324,7 @@
       "fixes": []
     },
     {
-      "id": "d18",
+      "id": "d17",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -364,7 +344,7 @@
       "fixes": []
     },
     {
-      "id": "d19",
+      "id": "d18",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -384,7 +364,7 @@
       "fixes": []
     },
     {
-      "id": "d20",
+      "id": "d19",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -404,7 +384,7 @@
       "fixes": []
     },
     {
-      "id": "d21",
+      "id": "d20",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -424,7 +404,7 @@
       "fixes": []
     },
     {
-      "id": "d22",
+      "id": "d21",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -444,7 +424,7 @@
       "fixes": []
     },
     {
-      "id": "d23",
+      "id": "d22",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -464,7 +444,7 @@
       "fixes": []
     },
     {
-      "id": "d24",
+      "id": "d23",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -484,7 +464,7 @@
       "fixes": []
     },
     {
-      "id": "d25",
+      "id": "d24",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",
@@ -504,7 +484,7 @@
       "fixes": []
     },
     {
-      "id": "d26",
+      "id": "d25",
       "code": "SES-N0001",
       "severity": "Error",
       "messageKey": "name.unresolved",

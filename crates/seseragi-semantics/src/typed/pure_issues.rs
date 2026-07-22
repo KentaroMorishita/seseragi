@@ -3,6 +3,9 @@ use seseragi_syntax::ByteSpan;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum PureCallIssue {
+    InvalidExpression {
+        expression: ByteSpan,
+    },
     Arity {
         callee: ByteSpan,
         expected: usize,
