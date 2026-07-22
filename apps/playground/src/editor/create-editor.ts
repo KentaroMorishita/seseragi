@@ -1,21 +1,13 @@
-import {
-  defaultKeymap,
-  history,
-  historyKeymap,
-  indentWithTab,
-} from "@codemirror/commands"
-import { bracketMatching, indentOnInput } from "@codemirror/language"
 import { lintGutter } from "@codemirror/lint"
 import { EditorState } from "@codemirror/state"
 import {
-  drawSelection,
   EditorView,
   highlightActiveLine,
   highlightActiveLineGutter,
   highlightSpecialChars,
-  keymap,
   lineNumbers,
 } from "@codemirror/view"
+import { editingExtensions } from "./editing-extensions"
 import { seseragiLanguage } from "./seseragi-language"
 import { seseragiEditorTheme } from "./theme"
 
@@ -31,19 +23,16 @@ export function createEditor(
       extensions: [
         lineNumbers(),
         highlightSpecialChars(),
-        history(),
-        drawSelection(),
-        indentOnInput(),
-        bracketMatching(),
+        editingExtensions,
         highlightActiveLine(),
         highlightActiveLineGutter(),
         lintGutter(),
         EditorView.lineWrapping,
         EditorView.contentAttributes.of({
           "aria-label": "Seseragi source editor",
-          "aria-keyshortcuts": "Control+/ Meta+/",
+          "aria-keyshortcuts":
+            "Control+F Meta+F Control+/ Meta+/ Alt+ArrowUp Alt+ArrowDown",
         }),
-        keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
         seseragiLanguage,
         ...seseragiEditorTheme,
         EditorView.updateListener.of((update) => {

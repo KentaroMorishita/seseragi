@@ -1,6 +1,7 @@
 import { HighlightStyle, syntaxHighlighting } from "@codemirror/language"
 import { EditorView } from "@codemirror/view"
 import { tags } from "@lezer/highlight"
+import { editorSelectionClassNames } from "./editing-extensions"
 
 const colors = {
   text: "#dce9e4",
@@ -11,6 +12,14 @@ const colors = {
   blue: "#82b9f6",
   green: "#a9d989",
 }
+
+export const editorSelectionColors = {
+  primary: "#397a65aa",
+  secondary: "#385d78aa",
+  selectionMatch: "#69582188",
+  searchMatch: "#6c3b7788",
+  selectedSearchMatch: "#a1556dcc",
+} as const
 
 export const seseragiEditorTheme = [
   EditorView.theme(
@@ -33,8 +42,29 @@ export const seseragiEditorTheme = [
       },
       ".cm-cursor, .cm-dropCursor": { borderLeftColor: colors.accent },
       ".cm-selectionBackground, ::selection": {
-        backgroundColor: "#27574888 !important",
+        backgroundColor: "#27574899 !important",
       },
+      [`& .${editorSelectionClassNames.primary}`]: {
+        backgroundColor: editorSelectionColors.primary,
+        boxShadow: "inset 0 -2px 0 #9af0c9",
+      },
+      [`& .${editorSelectionClassNames.secondary}`]: {
+        backgroundColor: editorSelectionColors.secondary,
+        boxShadow: "inset 0 -2px 0 #91ccf8",
+      },
+      [`& .${editorSelectionClassNames.selectionMatch}`]: {
+        backgroundColor: editorSelectionColors.selectionMatch,
+        outline: "1px solid #d7b95499",
+      },
+      [`& .${editorSelectionClassNames.searchMatch}`]: {
+        backgroundColor: editorSelectionColors.searchMatch,
+        outline: "1px solid #d8a0e599",
+      },
+      [`& .${editorSelectionClassNames.searchMatch}.${editorSelectionClassNames.selectedSearchMatch}`]:
+        {
+          backgroundColor: editorSelectionColors.selectedSearchMatch,
+          outline: "1px solid #ffc0d2",
+        },
       ".cm-activeLine": { backgroundColor: "#13201d" },
       ".cm-gutters": {
         backgroundColor: "#0b1210",
@@ -51,6 +81,34 @@ export const seseragiEditorTheme = [
         color: colors.text,
       },
       ".cm-foldPlaceholder": { backgroundColor: "transparent", border: "none" },
+      ".cm-panels": {
+        backgroundColor: "#101b18",
+        color: colors.text,
+      },
+      ".cm-search": {
+        alignItems: "center",
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "6px",
+        padding: "8px 10px",
+      },
+      ".cm-search input": {
+        backgroundColor: "#0b1210",
+        border: "1px solid #355149",
+        borderRadius: "6px",
+        color: colors.text,
+        padding: "5px 7px",
+      },
+      ".cm-search button": {
+        backgroundColor: "#1a302a",
+        border: "1px solid #355149",
+        borderRadius: "6px",
+        color: colors.text,
+        padding: "4px 8px",
+      },
+      ".cm-search button:hover": {
+        backgroundColor: "#24443a",
+      },
       ".cm-diagnostic": { padding: "6px 10px" },
       ".cm-tooltip": {
         backgroundColor: "#14211e",
