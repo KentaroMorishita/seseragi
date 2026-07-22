@@ -43,11 +43,32 @@ const COLLECTION_SUM: RuntimeCollectionOperation = RuntimeCollectionOperation {
     export_name: "sum",
 };
 
+const COLLECTION_PRODUCT: RuntimeCollectionOperation = RuntimeCollectionOperation {
+    runtime_feature: "core.collection.product",
+    local_name: "_ssrg_collection_product",
+    module: "@seseragi/runtime/collection",
+    export_name: "product",
+};
+
 const COLLECTION_COMBINE: RuntimeCollectionOperation = RuntimeCollectionOperation {
     runtime_feature: "core.collection.combine",
     local_name: "_ssrg_collection_combine",
     module: "@seseragi/runtime/collection",
     export_name: "combine",
+};
+
+const COLLECTION_ANY: RuntimeCollectionOperation = RuntimeCollectionOperation {
+    runtime_feature: "core.collection.any",
+    local_name: "_ssrg_collection_any",
+    module: "@seseragi/runtime/collection",
+    export_name: "any",
+};
+
+const COLLECTION_ALL: RuntimeCollectionOperation = RuntimeCollectionOperation {
+    runtime_feature: "core.collection.all",
+    local_name: "_ssrg_collection_all",
+    module: "@seseragi/runtime/collection",
+    export_name: "all",
 };
 
 const COLLECTION_FOR_EACH: RuntimeCollectionOperation = RuntimeCollectionOperation {
@@ -149,6 +170,22 @@ pub(crate) fn runtime_collection_sum_operation(
     .map(|_| &COLLECTION_SUM)
 }
 
+pub(crate) fn runtime_collection_product_operation(
+    callee: &str,
+    evidence: &[CoreCallEvidence],
+) -> Option<&'static RuntimeCollectionOperation> {
+    matches!(
+        evidence,
+        [reducible, one, mul]
+            if reducible.constraint.name == "Reducible"
+                && one.constraint.name == "One"
+                && mul.constraint.name == "Mul"
+    )
+    .then_some(())
+    .filter(|_| callee == "std/prelude::product")
+    .map(|_| &COLLECTION_PRODUCT)
+}
+
 pub(crate) fn runtime_collection_combine_operation(
     callee: &str,
     evidence: &[CoreCallEvidence],
@@ -162,6 +199,22 @@ pub(crate) fn runtime_collection_combine_operation(
     .then_some(())
     .filter(|_| callee == "std/prelude::combine")
     .map(|_| &COLLECTION_COMBINE)
+}
+
+pub(crate) fn runtime_collection_predicate_operation(
+    callee: &str,
+    evidence: &[CoreCallEvidence],
+) -> Option<&'static RuntimeCollectionOperation> {
+    matches!(
+        evidence,
+        [iterable] if iterable.constraint.name == "Iterable"
+    )
+    .then_some(())?;
+    match callee {
+        "std/prelude::any" => Some(&COLLECTION_ANY),
+        "std/prelude::all" => Some(&COLLECTION_ALL),
+        _ => None,
+    }
 }
 
 pub(crate) fn runtime_collection_for_each_operation(
@@ -186,7 +239,10 @@ pub(crate) fn runtime_collection_operation_for_feature(
         LIST_REDUCE,
         COLLECTION_JOIN,
         COLLECTION_SUM,
+        COLLECTION_PRODUCT,
         COLLECTION_COMBINE,
+        COLLECTION_ANY,
+        COLLECTION_ALL,
         COLLECTION_FOR_EACH,
         ARRAY_COMPREHEND,
         ARRAY_COMPREHEND_FLAT,
@@ -224,6 +280,16 @@ pub(crate) fn runtime_iterable_operation(
 mod tests {
     use super::*;
     use crate::{CoreInstanceConstraint, CoreType};
+
+    fn parameter_evidence(name: &str, index: usize) -> CoreCallEvidence {
+        CoreCallEvidence {
+            constraint: CoreInstanceConstraint {
+                name: name.to_owned(),
+                arguments: Vec::new(),
+            },
+            evidence: CoreInstanceEvidence::Parameter { index },
+        }
+    }
 
     #[test]
     fn resolves_array_reduce_only_with_selected_standard_evidence() {
@@ -335,6 +401,38 @@ mod tests {
             Some("core.collection.sum")
         );
         assert!(runtime_collection_sum_operation("user::sum", &evidence).is_none());
+    }
+
+    #[test]
+    fn resolves_generic_product_from_reducible_one_and_mul_evidence() {
+        let evidence = [
+            parameter_evidence("Reducible", 0),
+            parameter_evidence("One", 1),
+            parameter_evidence("Mul", 2),
+        ];
+
+        assert_eq!(
+            runtime_collection_product_operation("std/prelude::product", &evidence)
+                .map(|operation| operation.runtime_feature),
+            Some("core.collection.product")
+        );
+        assert!(runtime_collection_product_operation("user::product", &evidence).is_none());
+    }
+
+    #[test]
+    fn resolves_short_circuit_predicate_aggregates_from_iterable_evidence() {
+        let evidence = [parameter_evidence("Iterable", 0)];
+
+        assert_eq!(
+            runtime_collection_predicate_operation("std/prelude::any", &evidence)
+                .map(|operation| operation.runtime_feature),
+            Some("core.collection.any")
+        );
+        assert_eq!(
+            runtime_collection_predicate_operation("std/prelude::all", &evidence)
+                .map(|operation| operation.runtime_feature),
+            Some("core.collection.all")
+        );
     }
 
     #[test]

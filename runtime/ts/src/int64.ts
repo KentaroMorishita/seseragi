@@ -18,6 +18,10 @@ export const intZero = {
   zero: (_unit: Unit): bigint => 0n,
 } as const
 
+export const intOne = {
+  one: (_unit: Unit): bigint => 1n,
+} as const
+
 export const intAdd = {
   add:
     (left: bigint) =>
@@ -32,6 +36,13 @@ export function subtract(left: bigint, right: bigint): bigint {
 export function multiply(left: bigint, right: bigint): bigint {
   return assertInt64(left * right)
 }
+
+export const intMul = {
+  mul:
+    (left: bigint) =>
+    (right: bigint): bigint =>
+      multiply(left, right),
+} as const
 
 export function divide(left: bigint, right: bigint): bigint {
   if (right === 0n) {

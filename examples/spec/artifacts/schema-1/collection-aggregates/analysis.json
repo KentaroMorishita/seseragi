@@ -1,0 +1,7160 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "module": "artifact/collection-aggregates",
+  "diagnostics": {
+    "schema": 1,
+    "source": "artifact/collection-aggregates/main.ssrg",
+    "positionEncoding": "utf-8",
+    "diagnostics": []
+  },
+  "symbols": [
+    {
+      "id": 0,
+      "identity": "artifact/collection-aggregates::productValues",
+      "name": "productValues",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 3,
+        "end": 16
+      },
+      "typeName": "C -> Int",
+      "callable": {
+        "identity": "artifact/collection-aggregates::productValues",
+        "name": "productValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Int",
+        "constraints": [
+          "Reducible<C, Int>"
+        ],
+        "signature": "productValues<C> values: C -> Int where Reducible<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 1,
+      "identity": "artifact/collection-aggregates::anyPositive",
+      "name": "anyPositive",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 84,
+        "end": 95
+      },
+      "typeName": "C -> Bool",
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyPositive",
+        "name": "anyPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "anyPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 2,
+      "identity": "artifact/collection-aggregates::allPositive",
+      "name": "allPositive",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 186,
+        "end": 197
+      },
+      "typeName": "C -> Bool",
+      "callable": {
+        "identity": "artifact/collection-aggregates::allPositive",
+        "name": "allPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "allPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 3,
+      "identity": "artifact/collection-aggregates::emptyValues",
+      "name": "emptyValues",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 288,
+        "end": 299
+      },
+      "typeName": "Unit -> Array<Int>",
+      "callable": {
+        "identity": "artifact/collection-aggregates::emptyValues",
+        "name": "emptyValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "Array<Int>",
+        "constraints": [],
+        "signature": "emptyValues unit: Unit -> Array<Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 4,
+      "identity": "artifact/collection-aggregates::yesNo",
+      "name": "yesNo",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 336,
+        "end": 341
+      },
+      "typeName": "Bool -> String",
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 5,
+      "identity": "artifact/collection-aggregates::number",
+      "name": "number",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 406,
+        "end": 412
+      },
+      "typeName": "Int -> String",
+      "callable": {
+        "identity": "artifact/collection-aggregates::number",
+        "name": "number",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Int"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "number value: Int -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 6,
+      "identity": "artifact/collection-aggregates::productArray",
+      "name": "productArray",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 453,
+        "end": 465
+      },
+      "typeName": "Unit -> String",
+      "callable": {
+        "identity": "artifact/collection-aggregates::productArray",
+        "name": "productArray",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productArray unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 7,
+      "identity": "artifact/collection-aggregates::productList",
+      "name": "productList",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 528,
+        "end": 539
+      },
+      "typeName": "Unit -> String",
+      "callable": {
+        "identity": "artifact/collection-aggregates::productList",
+        "name": "productList",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productList unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 8,
+      "identity": "artifact/collection-aggregates::productRange",
+      "name": "productRange",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 603,
+        "end": 615
+      },
+      "typeName": "Unit -> String",
+      "callable": {
+        "identity": "artifact/collection-aggregates::productRange",
+        "name": "productRange",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productRange unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 9,
+      "identity": "artifact/collection-aggregates::productEmpty",
+      "name": "productEmpty",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 676,
+        "end": 688
+      },
+      "typeName": "Unit -> String",
+      "callable": {
+        "identity": "artifact/collection-aggregates::productEmpty",
+        "name": "productEmpty",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productEmpty unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 10,
+      "identity": "artifact/collection-aggregates::anyArray",
+      "name": "anyArray",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 758,
+        "end": 766
+      },
+      "typeName": "Unit -> String",
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyArray",
+        "name": "anyArray",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyArray unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 11,
+      "identity": "artifact/collection-aggregates::anyList",
+      "name": "anyList",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 826,
+        "end": 833
+      },
+      "typeName": "Unit -> String",
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyList",
+        "name": "anyList",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyList unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 12,
+      "identity": "artifact/collection-aggregates::anyRange",
+      "name": "anyRange",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 894,
+        "end": 902
+      },
+      "typeName": "Unit -> String",
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyRange",
+        "name": "anyRange",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyRange unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 13,
+      "identity": "artifact/collection-aggregates::anyEmpty",
+      "name": "anyEmpty",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 960,
+        "end": 968
+      },
+      "typeName": "Unit -> String",
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyEmpty",
+        "name": "anyEmpty",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyEmpty unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 14,
+      "identity": "artifact/collection-aggregates::allArray",
+      "name": "allArray",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 1035,
+        "end": 1043
+      },
+      "typeName": "Unit -> String",
+      "callable": {
+        "identity": "artifact/collection-aggregates::allArray",
+        "name": "allArray",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allArray unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 15,
+      "identity": "artifact/collection-aggregates::allList",
+      "name": "allList",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 1103,
+        "end": 1110
+      },
+      "typeName": "Unit -> String",
+      "callable": {
+        "identity": "artifact/collection-aggregates::allList",
+        "name": "allList",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allList unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 16,
+      "identity": "artifact/collection-aggregates::allRange",
+      "name": "allRange",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 1171,
+        "end": 1179
+      },
+      "typeName": "Unit -> String",
+      "callable": {
+        "identity": "artifact/collection-aggregates::allRange",
+        "name": "allRange",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allRange unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 17,
+      "identity": "artifact/collection-aggregates::allEmpty",
+      "name": "allEmpty",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 1237,
+        "end": 1245
+      },
+      "typeName": "Unit -> String",
+      "callable": {
+        "identity": "artifact/collection-aggregates::allEmpty",
+        "name": "allEmpty",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allEmpty unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 18,
+      "identity": "artifact/collection-aggregates::collectionAggregateResults",
+      "name": "collectionAggregateResults",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 1316,
+        "end": 1342
+      },
+      "typeName": "Unit -> Array<String>",
+      "callable": {
+        "identity": "artifact/collection-aggregates::collectionAggregateResults",
+        "name": "collectionAggregateResults",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "Array<String>",
+        "constraints": [],
+        "signature": "collectionAggregateResults unit: Unit -> Array<String>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 19,
+      "identity": "artifact/collection-aggregates::local(19)",
+      "name": "C",
+      "module": "artifact/collection-aggregates",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 79
+      }
+    },
+    {
+      "id": 20,
+      "identity": "artifact/collection-aggregates::local(20)",
+      "name": "values",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 20,
+        "end": 26
+      },
+      "typeName": "C"
+    },
+    {
+      "id": 21,
+      "identity": "std/prelude::Int",
+      "name": "Int",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 22,
+      "identity": "std/prelude::Reducible",
+      "name": "Reducible",
+      "module": "std/prelude",
+      "namespace": "trait",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 23,
+      "identity": "std/prelude::product",
+      "name": "product",
+      "module": "std/prelude",
+      "namespace": "value",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "C -> A",
+      "callable": {
+        "identity": "std/prelude::product",
+        "name": "product",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "C"
+          }
+        ],
+        "result": "A",
+        "constraints": [
+          "Reducible<C, A>",
+          "One<A>",
+          "Mul<A, A, A>"
+        ],
+        "signature": "product<C, A> arg1: C -> A where Reducible<C, A>, One<A>, Mul<A, A, A>",
+        "remainingParameters": []
+      },
+      "description": "Multiplies every element of a reducible collection from one."
+    },
+    {
+      "id": 24,
+      "identity": "artifact/collection-aggregates::local(24)",
+      "name": "C",
+      "module": "artifact/collection-aggregates",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 81,
+        "end": 181
+      }
+    },
+    {
+      "id": 25,
+      "identity": "artifact/collection-aggregates::local(25)",
+      "name": "values",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 99,
+        "end": 105
+      },
+      "typeName": "C"
+    },
+    {
+      "id": 26,
+      "identity": "std/prelude::Bool",
+      "name": "Bool",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 27,
+      "identity": "std/prelude::Iterable",
+      "name": "Iterable",
+      "module": "std/prelude",
+      "namespace": "trait",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 28,
+      "identity": "std/prelude::any",
+      "name": "any",
+      "module": "std/prelude",
+      "namespace": "value",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "(A -> Bool) -> C -> Bool",
+      "callable": {
+        "identity": "std/prelude::any",
+        "name": "any",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A -> Bool"
+          },
+          {
+            "name": "arg2",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, A>"
+        ],
+        "signature": "any<C, A> arg1: (A -> Bool) -> arg2: C -> Bool where Iterable<C, A>",
+        "remainingParameters": []
+      },
+      "description": "Returns true at the first element accepted by the predicate."
+    },
+    {
+      "id": 29,
+      "identity": "artifact/collection-aggregates::local(29)",
+      "name": "value",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 150,
+        "end": 155
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 30,
+      "identity": "std/prelude::>",
+      "name": ">",
+      "module": "std/prelude",
+      "namespace": "operator",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 31,
+      "identity": "artifact/collection-aggregates::local(31)",
+      "name": "C",
+      "module": "artifact/collection-aggregates",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 183,
+        "end": 283
+      }
+    },
+    {
+      "id": 32,
+      "identity": "artifact/collection-aggregates::local(32)",
+      "name": "values",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 201,
+        "end": 207
+      },
+      "typeName": "C"
+    },
+    {
+      "id": 33,
+      "identity": "std/prelude::all",
+      "name": "all",
+      "module": "std/prelude",
+      "namespace": "value",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "(A -> Bool) -> C -> Bool",
+      "callable": {
+        "identity": "std/prelude::all",
+        "name": "all",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A -> Bool"
+          },
+          {
+            "name": "arg2",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, A>"
+        ],
+        "signature": "all<C, A> arg1: (A -> Bool) -> arg2: C -> Bool where Iterable<C, A>",
+        "remainingParameters": []
+      },
+      "description": "Returns false at the first element rejected by the predicate."
+    },
+    {
+      "id": 34,
+      "identity": "artifact/collection-aggregates::local(34)",
+      "name": "value",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 252,
+        "end": 257
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 35,
+      "identity": "std/prelude::Unit",
+      "name": "Unit",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 36,
+      "identity": "artifact/collection-aggregates::local(36)",
+      "name": "unit",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 300,
+        "end": 304
+      },
+      "typeName": "Unit"
+    },
+    {
+      "id": 37,
+      "identity": "std/prelude::Array",
+      "name": "Array",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 38,
+      "identity": "artifact/collection-aggregates::local(38)",
+      "name": "value",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 342,
+        "end": 347
+      },
+      "typeName": "Bool"
+    },
+    {
+      "id": 39,
+      "identity": "std/prelude::String",
+      "name": "String",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 40,
+      "identity": "artifact/collection-aggregates::local(40)",
+      "name": "value",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 413,
+        "end": 418
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 41,
+      "identity": "artifact/collection-aggregates::local(41)",
+      "name": "unit",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 466,
+        "end": 470
+      },
+      "typeName": "Unit"
+    },
+    {
+      "id": 42,
+      "identity": "artifact/collection-aggregates::local(42)",
+      "name": "unit",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 540,
+        "end": 544
+      },
+      "typeName": "Unit"
+    },
+    {
+      "id": 43,
+      "identity": "artifact/collection-aggregates::local(43)",
+      "name": "unit",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 616,
+        "end": 620
+      },
+      "typeName": "Unit"
+    },
+    {
+      "id": 44,
+      "identity": "artifact/collection-aggregates::local(44)",
+      "name": "unit",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 689,
+        "end": 693
+      },
+      "typeName": "Unit"
+    },
+    {
+      "id": 45,
+      "identity": "artifact/collection-aggregates::local(45)",
+      "name": "unit",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 767,
+        "end": 771
+      },
+      "typeName": "Unit"
+    },
+    {
+      "id": 46,
+      "identity": "artifact/collection-aggregates::local(46)",
+      "name": "unit",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 834,
+        "end": 838
+      },
+      "typeName": "Unit"
+    },
+    {
+      "id": 47,
+      "identity": "artifact/collection-aggregates::local(47)",
+      "name": "unit",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 903,
+        "end": 907
+      },
+      "typeName": "Unit"
+    },
+    {
+      "id": 48,
+      "identity": "artifact/collection-aggregates::local(48)",
+      "name": "unit",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 969,
+        "end": 973
+      },
+      "typeName": "Unit"
+    },
+    {
+      "id": 49,
+      "identity": "artifact/collection-aggregates::local(49)",
+      "name": "unit",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 1044,
+        "end": 1048
+      },
+      "typeName": "Unit"
+    },
+    {
+      "id": 50,
+      "identity": "artifact/collection-aggregates::local(50)",
+      "name": "unit",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 1111,
+        "end": 1115
+      },
+      "typeName": "Unit"
+    },
+    {
+      "id": 51,
+      "identity": "artifact/collection-aggregates::local(51)",
+      "name": "unit",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 1180,
+        "end": 1184
+      },
+      "typeName": "Unit"
+    },
+    {
+      "id": 52,
+      "identity": "artifact/collection-aggregates::local(52)",
+      "name": "unit",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 1246,
+        "end": 1250
+      },
+      "typeName": "Unit"
+    },
+    {
+      "id": 53,
+      "identity": "artifact/collection-aggregates::local(53)",
+      "name": "unit",
+      "module": "artifact/collection-aggregates",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 1343,
+        "end": 1347
+      },
+      "typeName": "Unit"
+    }
+  ],
+  "symbolOccurrences": [
+    {
+      "range": {
+        "start": 3,
+        "end": 16
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 84,
+        "end": 95
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 186,
+        "end": 197
+      },
+      "symbol": 2
+    },
+    {
+      "range": {
+        "start": 288,
+        "end": 299
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 336,
+        "end": 341
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 406,
+        "end": 412
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 453,
+        "end": 465
+      },
+      "symbol": 6
+    },
+    {
+      "range": {
+        "start": 528,
+        "end": 539
+      },
+      "symbol": 7
+    },
+    {
+      "range": {
+        "start": 603,
+        "end": 615
+      },
+      "symbol": 8
+    },
+    {
+      "range": {
+        "start": 676,
+        "end": 688
+      },
+      "symbol": 9
+    },
+    {
+      "range": {
+        "start": 758,
+        "end": 766
+      },
+      "symbol": 10
+    },
+    {
+      "range": {
+        "start": 826,
+        "end": 833
+      },
+      "symbol": 11
+    },
+    {
+      "range": {
+        "start": 894,
+        "end": 902
+      },
+      "symbol": 12
+    },
+    {
+      "range": {
+        "start": 960,
+        "end": 968
+      },
+      "symbol": 13
+    },
+    {
+      "range": {
+        "start": 1035,
+        "end": 1043
+      },
+      "symbol": 14
+    },
+    {
+      "range": {
+        "start": 1103,
+        "end": 1110
+      },
+      "symbol": 15
+    },
+    {
+      "range": {
+        "start": 1171,
+        "end": 1179
+      },
+      "symbol": 16
+    },
+    {
+      "range": {
+        "start": 1237,
+        "end": 1245
+      },
+      "symbol": 17
+    },
+    {
+      "range": {
+        "start": 1316,
+        "end": 1342
+      },
+      "symbol": 18
+    },
+    {
+      "range": {
+        "start": 0,
+        "end": 79
+      },
+      "symbol": 19
+    },
+    {
+      "range": {
+        "start": 20,
+        "end": 26
+      },
+      "symbol": 20
+    },
+    {
+      "range": {
+        "start": 81,
+        "end": 181
+      },
+      "symbol": 24
+    },
+    {
+      "range": {
+        "start": 99,
+        "end": 105
+      },
+      "symbol": 25
+    },
+    {
+      "range": {
+        "start": 150,
+        "end": 155
+      },
+      "symbol": 29
+    },
+    {
+      "range": {
+        "start": 183,
+        "end": 283
+      },
+      "symbol": 31
+    },
+    {
+      "range": {
+        "start": 201,
+        "end": 207
+      },
+      "symbol": 32
+    },
+    {
+      "range": {
+        "start": 252,
+        "end": 257
+      },
+      "symbol": 34
+    },
+    {
+      "range": {
+        "start": 300,
+        "end": 304
+      },
+      "symbol": 36
+    },
+    {
+      "range": {
+        "start": 342,
+        "end": 347
+      },
+      "symbol": 38
+    },
+    {
+      "range": {
+        "start": 413,
+        "end": 418
+      },
+      "symbol": 40
+    },
+    {
+      "range": {
+        "start": 466,
+        "end": 470
+      },
+      "symbol": 41
+    },
+    {
+      "range": {
+        "start": 540,
+        "end": 544
+      },
+      "symbol": 42
+    },
+    {
+      "range": {
+        "start": 616,
+        "end": 620
+      },
+      "symbol": 43
+    },
+    {
+      "range": {
+        "start": 689,
+        "end": 693
+      },
+      "symbol": 44
+    },
+    {
+      "range": {
+        "start": 767,
+        "end": 771
+      },
+      "symbol": 45
+    },
+    {
+      "range": {
+        "start": 834,
+        "end": 838
+      },
+      "symbol": 46
+    },
+    {
+      "range": {
+        "start": 903,
+        "end": 907
+      },
+      "symbol": 47
+    },
+    {
+      "range": {
+        "start": 969,
+        "end": 973
+      },
+      "symbol": 48
+    },
+    {
+      "range": {
+        "start": 1044,
+        "end": 1048
+      },
+      "symbol": 49
+    },
+    {
+      "range": {
+        "start": 1111,
+        "end": 1115
+      },
+      "symbol": 50
+    },
+    {
+      "range": {
+        "start": 1180,
+        "end": 1184
+      },
+      "symbol": 51
+    },
+    {
+      "range": {
+        "start": 1246,
+        "end": 1250
+      },
+      "symbol": 52
+    },
+    {
+      "range": {
+        "start": 1343,
+        "end": 1347
+      },
+      "symbol": 53
+    },
+    {
+      "range": {
+        "start": 28,
+        "end": 29
+      },
+      "symbol": 19
+    },
+    {
+      "range": {
+        "start": 33,
+        "end": 36
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 43,
+        "end": 52
+      },
+      "symbol": 22
+    },
+    {
+      "range": {
+        "start": 53,
+        "end": 54
+      },
+      "symbol": 19
+    },
+    {
+      "range": {
+        "start": 56,
+        "end": 59
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 65,
+        "end": 72
+      },
+      "symbol": 23
+    },
+    {
+      "range": {
+        "start": 73,
+        "end": 79
+      },
+      "symbol": 20
+    },
+    {
+      "range": {
+        "start": 107,
+        "end": 108
+      },
+      "symbol": 24
+    },
+    {
+      "range": {
+        "start": 112,
+        "end": 116
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 123,
+        "end": 131
+      },
+      "symbol": 27
+    },
+    {
+      "range": {
+        "start": 132,
+        "end": 133
+      },
+      "symbol": 24
+    },
+    {
+      "range": {
+        "start": 135,
+        "end": 138
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 144,
+        "end": 147
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 157,
+        "end": 160
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 164,
+        "end": 169
+      },
+      "symbol": 29
+    },
+    {
+      "range": {
+        "start": 170,
+        "end": 171
+      },
+      "symbol": 30
+    },
+    {
+      "range": {
+        "start": 175,
+        "end": 181
+      },
+      "symbol": 25
+    },
+    {
+      "range": {
+        "start": 209,
+        "end": 210
+      },
+      "symbol": 31
+    },
+    {
+      "range": {
+        "start": 214,
+        "end": 218
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 225,
+        "end": 233
+      },
+      "symbol": 27
+    },
+    {
+      "range": {
+        "start": 234,
+        "end": 235
+      },
+      "symbol": 31
+    },
+    {
+      "range": {
+        "start": 237,
+        "end": 240
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 246,
+        "end": 249
+      },
+      "symbol": 33
+    },
+    {
+      "range": {
+        "start": 259,
+        "end": 262
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 266,
+        "end": 271
+      },
+      "symbol": 34
+    },
+    {
+      "range": {
+        "start": 272,
+        "end": 273
+      },
+      "symbol": 30
+    },
+    {
+      "range": {
+        "start": 277,
+        "end": 283
+      },
+      "symbol": 32
+    },
+    {
+      "range": {
+        "start": 306,
+        "end": 310
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 314,
+        "end": 324
+      },
+      "symbol": 37
+    },
+    {
+      "range": {
+        "start": 320,
+        "end": 323
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 349,
+        "end": 353
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 357,
+        "end": 363
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 371,
+        "end": 376
+      },
+      "symbol": 38
+    },
+    {
+      "range": {
+        "start": 420,
+        "end": 423
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 427,
+        "end": 433
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 441,
+        "end": 446
+      },
+      "symbol": 40
+    },
+    {
+      "range": {
+        "start": 472,
+        "end": 476
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 480,
+        "end": 486
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 491,
+        "end": 497
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 499,
+        "end": 512
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 546,
+        "end": 550
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 554,
+        "end": 560
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 565,
+        "end": 571
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 573,
+        "end": 586
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 622,
+        "end": 626
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 630,
+        "end": 636
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 641,
+        "end": 647
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 649,
+        "end": 662
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 695,
+        "end": 699
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 703,
+        "end": 709
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 714,
+        "end": 720
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 722,
+        "end": 735
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 737,
+        "end": 748
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 773,
+        "end": 777
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 781,
+        "end": 787
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 792,
+        "end": 797
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 799,
+        "end": 810
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 840,
+        "end": 844
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 848,
+        "end": 854
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 859,
+        "end": 864
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 866,
+        "end": 877
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 909,
+        "end": 913
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 917,
+        "end": 923
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 928,
+        "end": 933
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 935,
+        "end": 946
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 975,
+        "end": 979
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 983,
+        "end": 989
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 994,
+        "end": 999
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 1001,
+        "end": 1012
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 1014,
+        "end": 1025
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 1050,
+        "end": 1054
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 1058,
+        "end": 1064
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 1069,
+        "end": 1074
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 1076,
+        "end": 1087
+      },
+      "symbol": 2
+    },
+    {
+      "range": {
+        "start": 1117,
+        "end": 1121
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 1125,
+        "end": 1131
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 1136,
+        "end": 1141
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 1143,
+        "end": 1154
+      },
+      "symbol": 2
+    },
+    {
+      "range": {
+        "start": 1186,
+        "end": 1190
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 1194,
+        "end": 1200
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 1205,
+        "end": 1210
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 1212,
+        "end": 1223
+      },
+      "symbol": 2
+    },
+    {
+      "range": {
+        "start": 1252,
+        "end": 1256
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 1260,
+        "end": 1266
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 1271,
+        "end": 1276
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 1278,
+        "end": 1289
+      },
+      "symbol": 2
+    },
+    {
+      "range": {
+        "start": 1291,
+        "end": 1302
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 1349,
+        "end": 1353
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 1357,
+        "end": 1370
+      },
+      "symbol": 37
+    },
+    {
+      "range": {
+        "start": 1363,
+        "end": 1369
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 1381,
+        "end": 1393
+      },
+      "symbol": 6
+    },
+    {
+      "range": {
+        "start": 1402,
+        "end": 1413
+      },
+      "symbol": 7
+    },
+    {
+      "range": {
+        "start": 1422,
+        "end": 1434
+      },
+      "symbol": 8
+    },
+    {
+      "range": {
+        "start": 1443,
+        "end": 1455
+      },
+      "symbol": 9
+    },
+    {
+      "range": {
+        "start": 1464,
+        "end": 1472
+      },
+      "symbol": 10
+    },
+    {
+      "range": {
+        "start": 1481,
+        "end": 1488
+      },
+      "symbol": 11
+    },
+    {
+      "range": {
+        "start": 1497,
+        "end": 1505
+      },
+      "symbol": 12
+    },
+    {
+      "range": {
+        "start": 1514,
+        "end": 1522
+      },
+      "symbol": 13
+    },
+    {
+      "range": {
+        "start": 1531,
+        "end": 1539
+      },
+      "symbol": 14
+    },
+    {
+      "range": {
+        "start": 1548,
+        "end": 1555
+      },
+      "symbol": 15
+    },
+    {
+      "range": {
+        "start": 1564,
+        "end": 1572
+      },
+      "symbol": 16
+    },
+    {
+      "range": {
+        "start": 1581,
+        "end": 1589
+      },
+      "symbol": 17
+    }
+  ],
+  "typeOccurrences": [
+    {
+      "range": {
+        "start": 3,
+        "end": 16
+      },
+      "type": "C -> Int"
+    },
+    {
+      "range": {
+        "start": 20,
+        "end": 26
+      },
+      "type": "C"
+    },
+    {
+      "range": {
+        "start": 65,
+        "end": 72
+      },
+      "type": "C -> A"
+    },
+    {
+      "range": {
+        "start": 65,
+        "end": 79
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 73,
+        "end": 79
+      },
+      "type": "C"
+    },
+    {
+      "range": {
+        "start": 84,
+        "end": 95
+      },
+      "type": "C -> Bool"
+    },
+    {
+      "range": {
+        "start": 99,
+        "end": 105
+      },
+      "type": "C"
+    },
+    {
+      "range": {
+        "start": 144,
+        "end": 147
+      },
+      "type": "(A -> Bool) -> C -> Bool"
+    },
+    {
+      "range": {
+        "start": 144,
+        "end": 181
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 149,
+        "end": 173
+      },
+      "type": "Int -> Bool"
+    },
+    {
+      "range": {
+        "start": 150,
+        "end": 155
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 164,
+        "end": 169
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 164,
+        "end": 173
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 172,
+        "end": 173
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 175,
+        "end": 181
+      },
+      "type": "C"
+    },
+    {
+      "range": {
+        "start": 186,
+        "end": 197
+      },
+      "type": "C -> Bool"
+    },
+    {
+      "range": {
+        "start": 201,
+        "end": 207
+      },
+      "type": "C"
+    },
+    {
+      "range": {
+        "start": 246,
+        "end": 249
+      },
+      "type": "(A -> Bool) -> C -> Bool"
+    },
+    {
+      "range": {
+        "start": 246,
+        "end": 283
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 251,
+        "end": 275
+      },
+      "type": "Int -> Bool"
+    },
+    {
+      "range": {
+        "start": 252,
+        "end": 257
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 266,
+        "end": 271
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 266,
+        "end": 275
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 274,
+        "end": 275
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 277,
+        "end": 283
+      },
+      "type": "C"
+    },
+    {
+      "range": {
+        "start": 288,
+        "end": 299
+      },
+      "type": "Unit -> Array<Int>"
+    },
+    {
+      "range": {
+        "start": 300,
+        "end": 304
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 329,
+        "end": 331
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 336,
+        "end": 341
+      },
+      "type": "Bool -> String"
+    },
+    {
+      "range": {
+        "start": 342,
+        "end": 347
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 368,
+        "end": 401
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 371,
+        "end": 376
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 382,
+        "end": 388
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 394,
+        "end": 401
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 406,
+        "end": 412
+      },
+      "type": "Int -> String"
+    },
+    {
+      "range": {
+        "start": 413,
+        "end": 418
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 438,
+        "end": 448
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 441,
+        "end": 446
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 453,
+        "end": 465
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 466,
+        "end": 470
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 491,
+        "end": 497
+      },
+      "type": "Int -> String"
+    },
+    {
+      "range": {
+        "start": 491,
+        "end": 523
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 499,
+        "end": 512
+      },
+      "type": "C -> Int"
+    },
+    {
+      "range": {
+        "start": 499,
+        "end": 522
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 513,
+        "end": 522
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 514,
+        "end": 515
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 517,
+        "end": 518
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 520,
+        "end": 521
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 528,
+        "end": 539
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 540,
+        "end": 544
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 565,
+        "end": 571
+      },
+      "type": "Int -> String"
+    },
+    {
+      "range": {
+        "start": 565,
+        "end": 598
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 573,
+        "end": 586
+      },
+      "type": "C -> Int"
+    },
+    {
+      "range": {
+        "start": 573,
+        "end": 597
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 587,
+        "end": 597
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 589,
+        "end": 590
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 592,
+        "end": 593
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 595,
+        "end": 596
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 603,
+        "end": 615
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 616,
+        "end": 620
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 641,
+        "end": 647
+      },
+      "type": "Int -> String"
+    },
+    {
+      "range": {
+        "start": 641,
+        "end": 671
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 649,
+        "end": 662
+      },
+      "type": "C -> Int"
+    },
+    {
+      "range": {
+        "start": 649,
+        "end": 670
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 664,
+        "end": 665
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 664,
+        "end": 669
+      },
+      "type": "Range<Int>"
+    },
+    {
+      "range": {
+        "start": 668,
+        "end": 669
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 676,
+        "end": 688
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 689,
+        "end": 693
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 714,
+        "end": 720
+      },
+      "type": "Int -> String"
+    },
+    {
+      "range": {
+        "start": 714,
+        "end": 753
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 722,
+        "end": 735
+      },
+      "type": "C -> Int"
+    },
+    {
+      "range": {
+        "start": 722,
+        "end": 752
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 737,
+        "end": 748
+      },
+      "type": "Unit -> Array<Int>"
+    },
+    {
+      "range": {
+        "start": 737,
+        "end": 751
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 749,
+        "end": 751
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 758,
+        "end": 766
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 767,
+        "end": 771
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 792,
+        "end": 797
+      },
+      "type": "Bool -> String"
+    },
+    {
+      "range": {
+        "start": 792,
+        "end": 821
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 799,
+        "end": 810
+      },
+      "type": "C -> Bool"
+    },
+    {
+      "range": {
+        "start": 799,
+        "end": 820
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 811,
+        "end": 820
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 812,
+        "end": 813
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 815,
+        "end": 816
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 818,
+        "end": 819
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 826,
+        "end": 833
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 834,
+        "end": 838
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 859,
+        "end": 864
+      },
+      "type": "Bool -> String"
+    },
+    {
+      "range": {
+        "start": 859,
+        "end": 889
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 866,
+        "end": 877
+      },
+      "type": "C -> Bool"
+    },
+    {
+      "range": {
+        "start": 866,
+        "end": 888
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 878,
+        "end": 888
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 880,
+        "end": 881
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 883,
+        "end": 884
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 886,
+        "end": 887
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 894,
+        "end": 902
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 903,
+        "end": 907
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 928,
+        "end": 933
+      },
+      "type": "Bool -> String"
+    },
+    {
+      "range": {
+        "start": 928,
+        "end": 955
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 935,
+        "end": 946
+      },
+      "type": "C -> Bool"
+    },
+    {
+      "range": {
+        "start": 935,
+        "end": 954
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 948,
+        "end": 949
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 948,
+        "end": 953
+      },
+      "type": "Range<Int>"
+    },
+    {
+      "range": {
+        "start": 952,
+        "end": 953
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 960,
+        "end": 968
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 969,
+        "end": 973
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 994,
+        "end": 999
+      },
+      "type": "Bool -> String"
+    },
+    {
+      "range": {
+        "start": 994,
+        "end": 1030
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1001,
+        "end": 1012
+      },
+      "type": "C -> Bool"
+    },
+    {
+      "range": {
+        "start": 1001,
+        "end": 1029
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 1014,
+        "end": 1025
+      },
+      "type": "Unit -> Array<Int>"
+    },
+    {
+      "range": {
+        "start": 1014,
+        "end": 1028
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 1026,
+        "end": 1028
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1035,
+        "end": 1043
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1044,
+        "end": 1048
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1069,
+        "end": 1074
+      },
+      "type": "Bool -> String"
+    },
+    {
+      "range": {
+        "start": 1069,
+        "end": 1098
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1076,
+        "end": 1087
+      },
+      "type": "C -> Bool"
+    },
+    {
+      "range": {
+        "start": 1076,
+        "end": 1097
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 1088,
+        "end": 1097
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 1089,
+        "end": 1090
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1092,
+        "end": 1093
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1095,
+        "end": 1096
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1103,
+        "end": 1110
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1111,
+        "end": 1115
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1136,
+        "end": 1141
+      },
+      "type": "Bool -> String"
+    },
+    {
+      "range": {
+        "start": 1136,
+        "end": 1166
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1143,
+        "end": 1154
+      },
+      "type": "C -> Bool"
+    },
+    {
+      "range": {
+        "start": 1143,
+        "end": 1165
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 1155,
+        "end": 1165
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 1157,
+        "end": 1158
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1160,
+        "end": 1161
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1163,
+        "end": 1164
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1171,
+        "end": 1179
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1180,
+        "end": 1184
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1205,
+        "end": 1210
+      },
+      "type": "Bool -> String"
+    },
+    {
+      "range": {
+        "start": 1205,
+        "end": 1232
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1212,
+        "end": 1223
+      },
+      "type": "C -> Bool"
+    },
+    {
+      "range": {
+        "start": 1212,
+        "end": 1231
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 1225,
+        "end": 1226
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1225,
+        "end": 1230
+      },
+      "type": "Range<Int>"
+    },
+    {
+      "range": {
+        "start": 1229,
+        "end": 1230
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1237,
+        "end": 1245
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1246,
+        "end": 1250
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1271,
+        "end": 1276
+      },
+      "type": "Bool -> String"
+    },
+    {
+      "range": {
+        "start": 1271,
+        "end": 1307
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1278,
+        "end": 1289
+      },
+      "type": "C -> Bool"
+    },
+    {
+      "range": {
+        "start": 1278,
+        "end": 1306
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 1291,
+        "end": 1302
+      },
+      "type": "Unit -> Array<Int>"
+    },
+    {
+      "range": {
+        "start": 1291,
+        "end": 1305
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 1303,
+        "end": 1305
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1316,
+        "end": 1342
+      },
+      "type": "Unit -> Array<String>"
+    },
+    {
+      "range": {
+        "start": 1343,
+        "end": 1347
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1375,
+        "end": 1596
+      },
+      "type": "Array<String>"
+    },
+    {
+      "range": {
+        "start": 1381,
+        "end": 1393
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1381,
+        "end": 1396
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1394,
+        "end": 1396
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1402,
+        "end": 1413
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1402,
+        "end": 1416
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1414,
+        "end": 1416
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1422,
+        "end": 1434
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1422,
+        "end": 1437
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1435,
+        "end": 1437
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1443,
+        "end": 1455
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1443,
+        "end": 1458
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1456,
+        "end": 1458
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1464,
+        "end": 1472
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1464,
+        "end": 1475
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1473,
+        "end": 1475
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1481,
+        "end": 1488
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1481,
+        "end": 1491
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1489,
+        "end": 1491
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1497,
+        "end": 1505
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1497,
+        "end": 1508
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1506,
+        "end": 1508
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1514,
+        "end": 1522
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1514,
+        "end": 1525
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1523,
+        "end": 1525
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1531,
+        "end": 1539
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1531,
+        "end": 1542
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1540,
+        "end": 1542
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1548,
+        "end": 1555
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1548,
+        "end": 1558
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1556,
+        "end": 1558
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1564,
+        "end": 1572
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1564,
+        "end": 1575
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1573,
+        "end": 1575
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 1581,
+        "end": 1589
+      },
+      "type": "Unit -> String"
+    },
+    {
+      "range": {
+        "start": 1581,
+        "end": 1592
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1590,
+        "end": 1592
+      },
+      "type": "Unit"
+    }
+  ],
+  "callableOccurrences": [
+    {
+      "range": {
+        "start": 3,
+        "end": 16
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productValues",
+        "name": "productValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Int",
+        "constraints": [
+          "Reducible<C, Int>"
+        ],
+        "signature": "productValues<C> values: C -> Int where Reducible<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 84,
+        "end": 95
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyPositive",
+        "name": "anyPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "anyPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 186,
+        "end": 197
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allPositive",
+        "name": "allPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "allPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 288,
+        "end": 299
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::emptyValues",
+        "name": "emptyValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "Array<Int>",
+        "constraints": [],
+        "signature": "emptyValues unit: Unit -> Array<Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 336,
+        "end": 341
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 406,
+        "end": 412
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::number",
+        "name": "number",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Int"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "number value: Int -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 453,
+        "end": 465
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productArray",
+        "name": "productArray",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productArray unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 528,
+        "end": 539
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productList",
+        "name": "productList",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productList unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 603,
+        "end": 615
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productRange",
+        "name": "productRange",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productRange unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 676,
+        "end": 688
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productEmpty",
+        "name": "productEmpty",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productEmpty unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 758,
+        "end": 766
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyArray",
+        "name": "anyArray",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyArray unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 826,
+        "end": 833
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyList",
+        "name": "anyList",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyList unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 894,
+        "end": 902
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyRange",
+        "name": "anyRange",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyRange unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 960,
+        "end": 968
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyEmpty",
+        "name": "anyEmpty",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyEmpty unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1035,
+        "end": 1043
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allArray",
+        "name": "allArray",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allArray unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1103,
+        "end": 1110
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allList",
+        "name": "allList",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allList unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1171,
+        "end": 1179
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allRange",
+        "name": "allRange",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allRange unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1237,
+        "end": 1245
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allEmpty",
+        "name": "allEmpty",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allEmpty unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1316,
+        "end": 1342
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::collectionAggregateResults",
+        "name": "collectionAggregateResults",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "Array<String>",
+        "constraints": [],
+        "signature": "collectionAggregateResults unit: Unit -> Array<String>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 65,
+        "end": 72
+      },
+      "callable": {
+        "identity": "std/prelude::product",
+        "name": "product",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "C"
+          }
+        ],
+        "result": "A",
+        "constraints": [
+          "Reducible<C, A>",
+          "One<A>",
+          "Mul<A, A, A>"
+        ],
+        "signature": "product<C, A> arg1: C -> A where Reducible<C, A>, One<A>, Mul<A, A, A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 144,
+        "end": 147
+      },
+      "callable": {
+        "identity": "std/prelude::any",
+        "name": "any",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A -> Bool"
+          },
+          {
+            "name": "arg2",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, A>"
+        ],
+        "signature": "any<C, A> arg1: (A -> Bool) -> arg2: C -> Bool where Iterable<C, A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 246,
+        "end": 249
+      },
+      "callable": {
+        "identity": "std/prelude::all",
+        "name": "all",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A -> Bool"
+          },
+          {
+            "name": "arg2",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, A>"
+        ],
+        "signature": "all<C, A> arg1: (A -> Bool) -> arg2: C -> Bool where Iterable<C, A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 491,
+        "end": 497
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::number",
+        "name": "number",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Int"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "number value: Int -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 499,
+        "end": 512
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productValues",
+        "name": "productValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Int",
+        "constraints": [
+          "Reducible<C, Int>"
+        ],
+        "signature": "productValues<C> values: C -> Int where Reducible<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 565,
+        "end": 571
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::number",
+        "name": "number",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Int"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "number value: Int -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 573,
+        "end": 586
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productValues",
+        "name": "productValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Int",
+        "constraints": [
+          "Reducible<C, Int>"
+        ],
+        "signature": "productValues<C> values: C -> Int where Reducible<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 641,
+        "end": 647
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::number",
+        "name": "number",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Int"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "number value: Int -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 649,
+        "end": 662
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productValues",
+        "name": "productValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Int",
+        "constraints": [
+          "Reducible<C, Int>"
+        ],
+        "signature": "productValues<C> values: C -> Int where Reducible<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 714,
+        "end": 720
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::number",
+        "name": "number",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Int"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "number value: Int -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 722,
+        "end": 735
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productValues",
+        "name": "productValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Int",
+        "constraints": [
+          "Reducible<C, Int>"
+        ],
+        "signature": "productValues<C> values: C -> Int where Reducible<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 737,
+        "end": 748
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::emptyValues",
+        "name": "emptyValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "Array<Int>",
+        "constraints": [],
+        "signature": "emptyValues unit: Unit -> Array<Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 792,
+        "end": 797
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 799,
+        "end": 810
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyPositive",
+        "name": "anyPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "anyPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 859,
+        "end": 864
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 866,
+        "end": 877
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyPositive",
+        "name": "anyPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "anyPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 928,
+        "end": 933
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 935,
+        "end": 946
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyPositive",
+        "name": "anyPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "anyPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 994,
+        "end": 999
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1001,
+        "end": 1012
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyPositive",
+        "name": "anyPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "anyPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1014,
+        "end": 1025
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::emptyValues",
+        "name": "emptyValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "Array<Int>",
+        "constraints": [],
+        "signature": "emptyValues unit: Unit -> Array<Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1069,
+        "end": 1074
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1076,
+        "end": 1087
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allPositive",
+        "name": "allPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "allPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1136,
+        "end": 1141
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1143,
+        "end": 1154
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allPositive",
+        "name": "allPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "allPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1205,
+        "end": 1210
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1212,
+        "end": 1223
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allPositive",
+        "name": "allPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "allPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1271,
+        "end": 1276
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1278,
+        "end": 1289
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allPositive",
+        "name": "allPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "allPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1291,
+        "end": 1302
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::emptyValues",
+        "name": "emptyValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "Array<Int>",
+        "constraints": [],
+        "signature": "emptyValues unit: Unit -> Array<Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1381,
+        "end": 1393
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productArray",
+        "name": "productArray",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productArray unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1402,
+        "end": 1413
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productList",
+        "name": "productList",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productList unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1422,
+        "end": 1434
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productRange",
+        "name": "productRange",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productRange unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1443,
+        "end": 1455
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productEmpty",
+        "name": "productEmpty",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productEmpty unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1464,
+        "end": 1472
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyArray",
+        "name": "anyArray",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyArray unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1481,
+        "end": 1488
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyList",
+        "name": "anyList",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyList unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1497,
+        "end": 1505
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyRange",
+        "name": "anyRange",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyRange unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1514,
+        "end": 1522
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyEmpty",
+        "name": "anyEmpty",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyEmpty unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1531,
+        "end": 1539
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allArray",
+        "name": "allArray",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allArray unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1548,
+        "end": 1555
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allList",
+        "name": "allList",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allList unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1564,
+        "end": 1572
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allRange",
+        "name": "allRange",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allRange unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1581,
+        "end": 1589
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allEmpty",
+        "name": "allEmpty",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allEmpty unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 65,
+        "end": 79
+      },
+      "callable": {
+        "identity": "std/prelude::product",
+        "name": "product",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "C"
+          }
+        ],
+        "result": "A",
+        "constraints": [
+          "Reducible<C, A>",
+          "One<A>",
+          "Mul<A, A, A>"
+        ],
+        "signature": "product<C, A> arg1: C -> A where Reducible<C, A>, One<A>, Mul<A, A, A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 144,
+        "end": 181
+      },
+      "callable": {
+        "identity": "std/prelude::any",
+        "name": "any",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A -> Bool"
+          },
+          {
+            "name": "arg2",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, A>"
+        ],
+        "signature": "any<C, A> arg1: (A -> Bool) -> arg2: C -> Bool where Iterable<C, A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 246,
+        "end": 283
+      },
+      "callable": {
+        "identity": "std/prelude::all",
+        "name": "all",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A -> Bool"
+          },
+          {
+            "name": "arg2",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, A>"
+        ],
+        "signature": "all<C, A> arg1: (A -> Bool) -> arg2: C -> Bool where Iterable<C, A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 491,
+        "end": 523
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::number",
+        "name": "number",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Int"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "number value: Int -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 499,
+        "end": 522
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productValues",
+        "name": "productValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Int",
+        "constraints": [
+          "Reducible<C, Int>"
+        ],
+        "signature": "productValues<C> values: C -> Int where Reducible<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 565,
+        "end": 598
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::number",
+        "name": "number",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Int"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "number value: Int -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 573,
+        "end": 597
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productValues",
+        "name": "productValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Int",
+        "constraints": [
+          "Reducible<C, Int>"
+        ],
+        "signature": "productValues<C> values: C -> Int where Reducible<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 641,
+        "end": 671
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::number",
+        "name": "number",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Int"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "number value: Int -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 649,
+        "end": 670
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productValues",
+        "name": "productValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Int",
+        "constraints": [
+          "Reducible<C, Int>"
+        ],
+        "signature": "productValues<C> values: C -> Int where Reducible<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 714,
+        "end": 753
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::number",
+        "name": "number",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Int"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "number value: Int -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 722,
+        "end": 752
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productValues",
+        "name": "productValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Int",
+        "constraints": [
+          "Reducible<C, Int>"
+        ],
+        "signature": "productValues<C> values: C -> Int where Reducible<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 737,
+        "end": 751
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::emptyValues",
+        "name": "emptyValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "Array<Int>",
+        "constraints": [],
+        "signature": "emptyValues unit: Unit -> Array<Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 792,
+        "end": 821
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 799,
+        "end": 820
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyPositive",
+        "name": "anyPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "anyPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 859,
+        "end": 889
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 866,
+        "end": 888
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyPositive",
+        "name": "anyPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "anyPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 928,
+        "end": 955
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 935,
+        "end": 954
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyPositive",
+        "name": "anyPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "anyPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 994,
+        "end": 1030
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1001,
+        "end": 1029
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyPositive",
+        "name": "anyPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "anyPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1014,
+        "end": 1028
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::emptyValues",
+        "name": "emptyValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "Array<Int>",
+        "constraints": [],
+        "signature": "emptyValues unit: Unit -> Array<Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1069,
+        "end": 1098
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1076,
+        "end": 1097
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allPositive",
+        "name": "allPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "allPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1136,
+        "end": 1166
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1143,
+        "end": 1165
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allPositive",
+        "name": "allPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "allPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1205,
+        "end": 1232
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1212,
+        "end": 1231
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allPositive",
+        "name": "allPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "allPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1271,
+        "end": 1307
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::yesNo",
+        "name": "yesNo",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Bool"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "yesNo value: Bool -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1278,
+        "end": 1306
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allPositive",
+        "name": "allPositive",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "C"
+          }
+        ],
+        "result": "Bool",
+        "constraints": [
+          "Iterable<C, Int>"
+        ],
+        "signature": "allPositive<C> values: C -> Bool where Iterable<C, Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1291,
+        "end": 1305
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::emptyValues",
+        "name": "emptyValues",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "Array<Int>",
+        "constraints": [],
+        "signature": "emptyValues unit: Unit -> Array<Int>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1381,
+        "end": 1396
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productArray",
+        "name": "productArray",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productArray unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1402,
+        "end": 1416
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productList",
+        "name": "productList",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productList unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1422,
+        "end": 1437
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productRange",
+        "name": "productRange",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productRange unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1443,
+        "end": 1458
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::productEmpty",
+        "name": "productEmpty",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "productEmpty unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1464,
+        "end": 1475
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyArray",
+        "name": "anyArray",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyArray unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1481,
+        "end": 1491
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyList",
+        "name": "anyList",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyList unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1497,
+        "end": 1508
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyRange",
+        "name": "anyRange",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyRange unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1514,
+        "end": 1525
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::anyEmpty",
+        "name": "anyEmpty",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "anyEmpty unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1531,
+        "end": 1542
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allArray",
+        "name": "allArray",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allArray unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1548,
+        "end": 1558
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allList",
+        "name": "allList",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allList unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1564,
+        "end": 1575
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allRange",
+        "name": "allRange",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allRange unit: Unit -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1581,
+        "end": 1592
+      },
+      "callable": {
+        "identity": "artifact/collection-aggregates::allEmpty",
+        "name": "allEmpty",
+        "module": "artifact/collection-aggregates",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "allEmpty unit: Unit -> String",
+        "remainingParameters": []
+      }
+    }
+  ],
+  "standardLibrary": [
+    {
+      "identity": "std/prelude::all",
+      "name": "all",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "all<C, A> arg1: (A -> Bool) -> arg2: C -> Bool where Iterable<C, A>",
+      "description": "Returns false at the first element rejected by the predicate.",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        "Iterable<C, A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::any",
+      "name": "any",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "any<C, A> arg1: (A -> Bool) -> arg2: C -> Bool where Iterable<C, A>",
+      "description": "Returns true at the first element accepted by the predicate.",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        "Iterable<C, A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::combine",
+      "name": "combine",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "combine<C, A> arg1: C -> A where Reducible<C, A>, Monoid<A>",
+      "description": "Combines a reducible collection using its Monoid instance.",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        "Reducible<C, A>",
+        "Monoid<A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::forEach",
+      "name": "forEach",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "forEach<C, R, E, A> arg1: (A -> Effect<R, E, Unit>) -> arg2: C -> Effect<R, E, Unit> where Iterable<C, A>",
+      "description": "Runs one Effect for every value exposed by an Iterable instance.",
+      "typeParameters": [
+        "C",
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": [
+        "Iterable<C, A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::join",
+      "name": "join",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+      "description": "Joins a reducible collection of strings with a separator.",
+      "typeParameters": [
+        "C"
+      ],
+      "constraints": [
+        "Reducible<C, String>"
+      ]
+    },
+    {
+      "identity": "std/prelude::next",
+      "name": "next",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "next<A> arg1: Iterator<A> -> Maybe<(A, Iterator<A>)>",
+      "description": "Reads the next Iterator value and its remaining Iterator.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::product",
+      "name": "product",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "product<C, A> arg1: C -> A where Reducible<C, A>, One<A>, Mul<A, A, A>",
+      "description": "Multiplies every element of a reducible collection from one.",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        "Reducible<C, A>",
+        "One<A>",
+        "Mul<A, A, A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::reduce",
+      "name": "reduce",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "reduce<C, A, B> arg1: B -> arg2: (B -> A -> B) -> arg3: C -> B where Reducible<C, A>",
+      "description": "Folds a reducible collection into one accumulated value.",
+      "typeParameters": [
+        "C",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Reducible<C, A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::sum",
+      "name": "sum",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "sum<C, A> arg1: C -> A where Reducible<C, A>, Zero<A>, Add<A, A, A>",
+      "description": "Adds every element of a reducible collection from zero.",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        "Reducible<C, A>",
+        "Zero<A>",
+        "Add<A, A, A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::unfold",
+      "name": "unfold",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "unfold<S, A> arg1: (S -> Maybe<(A, S)>) -> arg2: S -> Iterator<A>",
+      "description": "Builds a lazy Iterator from an initial state and step function.",
+      "typeParameters": [
+        "S",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::Dom",
+      "name": "Dom",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "Dom",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomError",
+      "name": "DomError",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "DomError",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomOptions",
+      "name": "DomOptions",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "DomOptions",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomRuntimeError",
+      "name": "DomRuntimeError",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "DomRuntimeError<_>",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomTarget",
+      "name": "DomTarget",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "DomTarget",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::app",
+      "name": "app",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "app<State, Msg> arg1: ({target: String, initial: State, update: Msg -> State -> State, view: State -> Html<Msg>}) -> Effect<{dom: Dom}, String, Unit>",
+      "description": "Mounts a typed state-update-view application into a DOM target.",
+      "typeParameters": [
+        "State",
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::defaultOptions",
+      "name": "defaultOptions",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "defaultOptions arg1: Unit -> DomOptions",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::query",
+      "name": "query",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "query arg1: String -> Effect<{dom: Dom}, DomError, DomTarget>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::run",
+      "name": "run",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "run<Msg> arg1: DomOptions -> arg2: DomTarget -> arg3: (Msg -> Effect<{}, Never, Unit>) -> arg4: Signal<Html<Msg>> -> Effect<{dom: Dom}, DomRuntimeError<Never>, Unit>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::fail",
+      "name": "fail",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "fail<E> error: E -> Effect<{}, E, Never>",
+      "description": "Creates an Effect that fails with a typed error.",
+      "typeParameters": [
+        "E"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::fromEither",
+      "name": "fromEither",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "fromEither<E, A> value: Either<E, A> -> Effect<{}, E, A>",
+      "description": "Lifts Either into Effect without performing an external operation.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::mapError",
+      "name": "mapError",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "mapError<R, E, F, A> mapFailure: (E -> F) -> effect: Effect<R, E, A> -> Effect<R, F, A>",
+      "description": "Transforms an Effect failure while preserving its success value.",
+      "typeParameters": [
+        "R",
+        "E",
+        "F",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::print",
+      "name": "print",
+      "module": "std/prelude",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "print text: String -> Effect<{console: Console}, ConsoleError, Unit>",
+      "description": "Writes text through Console without adding a newline.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::println",
+      "name": "println",
+      "module": "std/prelude",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "println text: String -> Effect<{console: Console}, ConsoleError, Unit>",
+      "description": "Writes text followed by a newline through Console.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::readLine",
+      "name": "readLine",
+      "module": "std/prelude",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "readLine unit: Unit -> Effect<{stdin: Stdin}, StdinError, Maybe<String>>",
+      "description": "Reads one optional line through Stdin.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::succeed",
+      "name": "succeed",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "succeed<A> value: A -> Effect<{}, Never, A>",
+      "description": "Creates an Effect that succeeds with a value.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::ChangeEvent",
+      "name": "ChangeEvent",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-struct",
+      "signature": "ChangeEvent",
+      "description": "Immutable form-control snapshot containing value and checked state.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::Html",
+      "name": "Html",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-type",
+      "signature": "Html<_>",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::InputEvent",
+      "name": "InputEvent",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-struct",
+      "signature": "InputEvent",
+      "description": "Immutable text-input snapshot containing only the current String value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::trait(IntoChildren)",
+      "name": "IntoChildren",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "trait",
+      "signature": "IntoChildren<_, _>",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [
+        "C",
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::Style",
+      "name": "Style",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-type",
+      "signature": "Style",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::trait(StyleRecord)",
+      "name": "StyleRecord",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "trait",
+      "signature": "StyleRecord<_>",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [
+        "R"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::button",
+      "name": "button",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::div",
+      "name": "div",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "div<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::form",
+      "name": "form",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "form<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates a typed form whose onSubmit message prevents native page reload.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::fragment",
+      "name": "fragment",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "fragment<Msg, C> arg1: C -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::h1",
+      "name": "h1",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "h1<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::h2",
+      "name": "h2",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "h2<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::input",
+      "name": "input",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+      "description": "Creates a controlled input with typed input and change event snapshots.",
+      "typeParameters": [
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::label",
+      "name": "label",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "label<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates a label connected through the htmlFor prop.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::main",
+      "name": "main",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "main<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::p",
+      "name": "p",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "p<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::renderDocument",
+      "name": "renderDocument",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "renderDocument<Msg> arg1: Html<Msg> -> String",
+      "description": "Renders typed HTML as a complete document string.",
+      "typeParameters": [
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::renderToString",
+      "name": "renderToString",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "renderToString<Msg> arg1: Html<Msg> -> String",
+      "description": "Renders typed HTML to an escaped fragment string.",
+      "typeParameters": [
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::section",
+      "name": "section",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "section<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::span",
+      "name": "span",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "span<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::style",
+      "name": "style",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "style<R> arg1: R -> Style where StyleRecord<R>",
+      "description": "Validates and converts a style record into inline Style.",
+      "typeParameters": [
+        "R"
+      ],
+      "constraints": [
+        "StyleRecord<R>"
+      ]
+    },
+    {
+      "identity": "std/web/html::text",
+      "name": "text",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "text<Msg> arg1: String -> Html<Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::textarea",
+      "name": "textarea",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "textarea<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+      "description": "Creates a controlled textarea with typed input and change snapshots.",
+      "typeParameters": [
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Either",
+      "name": "Either",
+      "module": "std/prelude",
+      "category": "Maybe / Either",
+      "kind": "type",
+      "signature": "Either<E, A>",
+      "description": "Represents either a typed failure or a success value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Just",
+      "name": "Just",
+      "module": "std/prelude",
+      "category": "Maybe / Either",
+      "kind": "constructor",
+      "signature": "A -> Maybe<A>",
+      "description": "Constructs a present Maybe value.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Left",
+      "name": "Left",
+      "module": "std/prelude",
+      "category": "Maybe / Either",
+      "kind": "constructor",
+      "signature": "E -> Either<E, A>",
+      "description": "Constructs the failure side of Either.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Maybe",
+      "name": "Maybe",
+      "module": "std/prelude",
+      "category": "Maybe / Either",
+      "kind": "type",
+      "signature": "Maybe<A>",
+      "description": "Represents an optional value as Nothing or Just.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Nothing",
+      "name": "Nothing",
+      "module": "std/prelude",
+      "category": "Maybe / Either",
+      "kind": "constructor",
+      "signature": "Maybe<A>",
+      "description": "Constructs an empty Maybe value.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Right",
+      "name": "Right",
+      "module": "std/prelude",
+      "category": "Maybe / Either",
+      "kind": "constructor",
+      "signature": "A -> Either<E, A>",
+      "description": "Constructs the success side of Either.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::!=",
+      "name": "!=",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "!= via Eq.eq",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Eq"
+      ]
+    },
+    {
+      "identity": "std/prelude::%",
+      "name": "%",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "% via Rem.rem",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Rem"
+      ]
+    },
+    {
+      "identity": "std/prelude::*",
+      "name": "*",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "* via Mul.mul",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Mul"
+      ]
+    },
+    {
+      "identity": "std/prelude::**",
+      "name": "**",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "** via Pow.pow",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Pow"
+      ]
+    },
+    {
+      "identity": "std/prelude::+",
+      "name": "+",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "+ via Add.add",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Add"
+      ]
+    },
+    {
+      "identity": "std/prelude::-",
+      "name": "-",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "- via Sub.sub",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Sub"
+      ]
+    },
+    {
+      "identity": "std/prelude::/",
+      "name": "/",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "/ via Div.div",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Div"
+      ]
+    },
+    {
+      "identity": "std/prelude::<$>",
+      "name": "<$>",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "<$> via Functor.map",
+      "description": "Operator spelling for a standard trait method.",
+      "typeParameters": [],
+      "constraints": [
+        "Functor"
+      ]
+    },
+    {
+      "identity": "std/prelude::<*>",
+      "name": "<*>",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "<*> via Applicative.apply",
+      "description": "Operator spelling for a standard trait method.",
+      "typeParameters": [],
+      "constraints": [
+        "Applicative"
+      ]
+    },
+    {
+      "identity": "std/prelude::==",
+      "name": "==",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "== via Eq.eq",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Eq"
+      ]
+    },
+    {
+      "identity": "std/prelude::>>=",
+      "name": ">>=",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": ">>= via Monad.flatMap",
+      "description": "Operator spelling for a standard trait method.",
+      "typeParameters": [],
+      "constraints": [
+        "Monad"
+      ]
+    },
+    {
+      "identity": "std/signal::MutableSignal",
+      "name": "MutableSignal",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "opaque-type",
+      "signature": "MutableSignal<_>",
+      "description": "Type from the standard Signal surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::Signal",
+      "name": "Signal",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "opaque-type",
+      "signature": "Signal<_>",
+      "description": "Type from the standard Signal surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::SignalChange",
+      "name": "SignalChange",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "opaque-type",
+      "signature": "SignalChange",
+      "description": "Type from the standard Signal surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::Subscription",
+      "name": "Subscription",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "opaque-type",
+      "signature": "Subscription",
+      "description": "Type from the standard Signal surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::combine",
+      "name": "combine",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "combine<A, B, C> arg1: (A -> B -> C) -> arg2: Signal<A> -> arg3: Signal<B> -> Signal<C>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A",
+        "B",
+        "C"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::constant",
+      "name": "constant",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "constant<A> arg1: A -> Signal<A>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::make",
+      "name": "make",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "make<A> arg1: A -> Effect<{}, Never, MutableSignal<A>>",
+      "description": "Creates a mutable Signal inside Effect.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::map",
+      "name": "map",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "map<A, B> arg1: (A -> B) -> arg2: Signal<A> -> Signal<B>",
+      "description": "Derives a Signal by transforming each current value.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::planSet",
+      "name": "planSet",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "planSet<A> arg1: A -> arg2: MutableSignal<A> -> SignalChange",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::planUpdate",
+      "name": "planUpdate",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "planUpdate<A> arg1: (A -> A) -> arg2: MutableSignal<A> -> SignalChange",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::read",
+      "name": "read",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "read<A> arg1: Signal<A> -> Effect<{}, Never, A>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::set",
+      "name": "set",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "set<A> arg1: A -> arg2: MutableSignal<A> -> Effect<{}, Never, Unit>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::subscribe",
+      "name": "subscribe",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "subscribe<R, A> arg1: (A -> Effect<R, Never, Unit>) -> arg2: Signal<A> -> Effect<R, Never, Subscription>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "R",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::switchMap",
+      "name": "switchMap",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "switchMap<A, B> arg1: (A -> Signal<B>) -> arg2: Signal<A> -> Signal<B>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::transaction",
+      "name": "transaction",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "transaction arg1: Array<SignalChange> -> Effect<{}, Never, Unit>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::unsubscribe",
+      "name": "unsubscribe",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "unsubscribe arg1: Subscription -> Effect<{}, Never, Unit>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::update",
+      "name": "update",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "update<A> arg1: (A -> A) -> arg2: MutableSignal<A> -> Effect<{}, Never, Unit>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Applicative",
+      "name": "Applicative",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Applicative",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Functor",
+      "name": "Functor",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Functor",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Monad",
+      "name": "Monad",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Monad",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Monoid",
+      "name": "Monoid",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Monoid",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Semigroup",
+      "name": "Semigroup",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Semigroup",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Semigroup::append",
+      "name": "append",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "append<A> arg1: A -> arg2: A -> A where Semigroup<A>",
+      "description": "Associatively combines two values.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Semigroup<A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Applicative::apply",
+      "name": "apply",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "apply<F, A, B> arg1: (F<A -> B>) -> arg2: F<A> -> F<B> where Applicative<F>",
+      "description": "Applies a function inside an Applicative context.",
+      "typeParameters": [
+        "F",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Applicative<F>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Monoid::empty",
+      "name": "empty",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "empty<A> arg1: Unit -> A where Monoid<A>",
+      "description": "Returns the identity value for a Monoid.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Monoid<A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Monad::flatMap",
+      "name": "flatMap",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "flatMap<M, A, B> arg1: (A -> M<B>) -> arg2: M<A> -> M<B> where Monad<M>",
+      "description": "Sequences a Monad with a value-dependent next computation.",
+      "typeParameters": [
+        "M",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Monad<M>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Functor::map",
+      "name": "map",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "map<F, A, B> arg1: (A -> B) -> arg2: F<A> -> F<B> where Functor<F>",
+      "description": "Transforms the value inside a Functor without changing its shape.",
+      "typeParameters": [
+        "F",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Functor<F>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Applicative::pure",
+      "name": "pure",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "pure<F, A> arg1: A -> F<A> where Applicative<F>",
+      "description": "Lifts a value into an Applicative context.",
+      "typeParameters": [
+        "F",
+        "A"
+      ],
+      "constraints": [
+        "Applicative<F>"
+      ]
+    }
+  ]
+}

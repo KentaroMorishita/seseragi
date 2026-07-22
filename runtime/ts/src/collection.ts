@@ -47,6 +47,23 @@ export function sum<Collection, Element>(
   return reducible.reduce(zero.zero(undefined))(add.add)(values)
 }
 
+/** Multiply a reducible collection using its selected algebra dictionaries. */
+export function product<Collection, Element>(
+  reducibleDictionary: RuntimeDictionary,
+  oneDictionary: RuntimeDictionary,
+  mulDictionary: RuntimeDictionary,
+  values: Collection
+): Element {
+  const reducible = reducibleDictionary as Reducible<Collection, Element>
+  const one = oneDictionary as Readonly<{
+    one: (unit: Unit) => Element
+  }>
+  const mul = mulDictionary as Readonly<{
+    mul: (left: Element) => (right: Element) => Element
+  }>
+  return reducible.reduce(one.one(undefined))(mul.mul)(values)
+}
+
 /** Combine a reducible collection using only its selected Monoid dictionary. */
 export function combine<Collection, Element>(
   reducibleDictionary: RuntimeDictionary,
@@ -59,6 +76,40 @@ export function combine<Collection, Element>(
     empty: (unit: Unit) => Element
   }>
   return reducible.reduce(monoid.empty(undefined))(monoid.append)(values)
+}
+
+/** Stop at the first element accepted by the predicate. */
+export function any<Collection, Element>(
+  dictionary: RuntimeDictionary,
+  predicate: (value: Element) => boolean,
+  values: Collection
+): boolean {
+  const iterable = dictionary as Iterable<Collection, Element>
+  let iterator = iterable.iterate(values)
+  while (true) {
+    const step = iterator.next()
+    if (step.tag === "Nothing") return false
+    const [value, rest] = step.value
+    if (predicate(value)) return true
+    iterator = rest
+  }
+}
+
+/** Stop at the first element rejected by the predicate. */
+export function all<Collection, Element>(
+  dictionary: RuntimeDictionary,
+  predicate: (value: Element) => boolean,
+  values: Collection
+): boolean {
+  const iterable = dictionary as Iterable<Collection, Element>
+  let iterator = iterable.iterate(values)
+  while (true) {
+    const step = iterator.next()
+    if (step.tag === "Nothing") return true
+    const [value, rest] = step.value
+    if (!predicate(value)) return false
+    iterator = rest
+  }
 }
 
 /** Run one cold Effect at a time in the collection's declared iteration order. */

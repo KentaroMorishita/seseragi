@@ -1,0 +1,2429 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/collection-aggregates",
+  "functions": [
+    {
+      "symbol": "artifact/collection-aggregates::productValues",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 79
+      },
+      "typeParameters": [
+        "C"
+      ],
+      "constraints": [
+        {
+          "name": "Reducible",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::product",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 73,
+              "end": 79
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "C",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          },
+          {
+            "constraint": {
+              "name": "One",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::One"
+            }
+          },
+          {
+            "constraint": {
+              "name": "Mul",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Mul"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 65,
+          "end": 79
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::anyPositive",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 81,
+        "end": 181
+      },
+      "typeParameters": [
+        "C"
+      ],
+      "constraints": [
+        {
+          "name": "Iterable",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::any",
+        "arguments": [
+          {
+            "kind": "lambda",
+            "parameter": {
+              "id": "value",
+              "kind": "named",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": ">",
+              "left": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 164,
+                  "end": 169
+                }
+              },
+              "right": {
+                "kind": "int64",
+                "value": "0",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 172,
+                  "end": 173
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 164,
+                "end": 173
+              }
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 149,
+              "end": 173
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 175,
+              "end": 181
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Iterable",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "C",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 144,
+          "end": 181
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::allPositive",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 183,
+        "end": 283
+      },
+      "typeParameters": [
+        "C"
+      ],
+      "constraints": [
+        {
+          "name": "Iterable",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "C",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::all",
+        "arguments": [
+          {
+            "kind": "lambda",
+            "parameter": {
+              "id": "value",
+              "kind": "named",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": ">",
+              "left": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 266,
+                  "end": 271
+                }
+              },
+              "right": {
+                "kind": "int64",
+                "value": "0",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 274,
+                  "end": 275
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 266,
+                "end": 275
+              }
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 251,
+              "end": 275
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "C",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 277,
+              "end": 283
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Iterable",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "C",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 246,
+          "end": 283
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::emptyValues",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 285,
+        "end": 331
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 329,
+          "end": 331
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::yesNo",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 333,
+        "end": 401
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 371,
+            "end": 376
+          }
+        },
+        "thenBranch": {
+          "kind": "string",
+          "value": "true",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 382,
+            "end": 388
+          }
+        },
+        "elseBranch": {
+          "kind": "string",
+          "value": "false",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 394,
+            "end": 401
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 368,
+          "end": 401
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::number",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 403,
+        "end": 448
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 441,
+                "end": 446
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::Int>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 439,
+              "end": 447
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 438,
+          "end": 448
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::productArray",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 450,
+        "end": 523
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-aggregates::number",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::productValues",
+            "arguments": [
+              {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "int64",
+                    "value": "2",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 514,
+                      "end": 515
+                    }
+                  },
+                  {
+                    "kind": "int64",
+                    "value": "3",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 517,
+                      "end": 518
+                    }
+                  },
+                  {
+                    "kind": "int64",
+                    "value": "4",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 520,
+                      "end": 521
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 513,
+                  "end": 522
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Reducible",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/array::Reducible"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 499,
+              "end": 522
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 491,
+          "end": 523
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::productList",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 525,
+        "end": 598
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-aggregates::number",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::productValues",
+            "arguments": [
+              {
+                "kind": "list",
+                "elements": [
+                  {
+                    "kind": "int64",
+                    "value": "2",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 589,
+                      "end": 590
+                    }
+                  },
+                  {
+                    "kind": "int64",
+                    "value": "3",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 592,
+                      "end": 593
+                    }
+                  },
+                  {
+                    "kind": "int64",
+                    "value": "4",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 595,
+                      "end": 596
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 587,
+                  "end": 597
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Reducible",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/list::Reducible"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 573,
+              "end": 597
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 565,
+          "end": 598
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::productRange",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 600,
+        "end": 671
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-aggregates::number",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::productValues",
+            "arguments": [
+              {
+                "kind": "binary",
+                "operator": "..=",
+                "left": {
+                  "kind": "int64",
+                  "value": "1",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 664,
+                    "end": 665
+                  }
+                },
+                "right": {
+                  "kind": "int64",
+                  "value": "4",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 668,
+                    "end": 669
+                  }
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Range",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 664,
+                  "end": 669
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Reducible",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Range",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/range::Reducible"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 649,
+              "end": 670
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 641,
+          "end": 671
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::productEmpty",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 673,
+        "end": 753
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-aggregates::number",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::productValues",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/collection-aggregates::emptyValues",
+                "arguments": [
+                  {
+                    "kind": "unit",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 749,
+                      "end": 751
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 737,
+                  "end": 751
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Reducible",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/array::Reducible"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 722,
+              "end": 752
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 714,
+          "end": 753
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::anyArray",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 755,
+        "end": 821
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-aggregates::yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::anyPositive",
+            "arguments": [
+              {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "int64",
+                    "value": "0",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 812,
+                      "end": 813
+                    }
+                  },
+                  {
+                    "kind": "int64",
+                    "value": "0",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 815,
+                      "end": 816
+                    }
+                  },
+                  {
+                    "kind": "int64",
+                    "value": "2",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 818,
+                      "end": 819
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 811,
+                  "end": 820
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Iterable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/array::Iterable"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 799,
+              "end": 820
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 792,
+          "end": 821
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::anyList",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 823,
+        "end": 889
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-aggregates::yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::anyPositive",
+            "arguments": [
+              {
+                "kind": "list",
+                "elements": [
+                  {
+                    "kind": "int64",
+                    "value": "0",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 880,
+                      "end": 881
+                    }
+                  },
+                  {
+                    "kind": "int64",
+                    "value": "0",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 883,
+                      "end": 884
+                    }
+                  },
+                  {
+                    "kind": "int64",
+                    "value": "0",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 886,
+                      "end": 887
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 878,
+                  "end": 888
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Iterable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/list::Iterable"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 866,
+              "end": 888
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 859,
+          "end": 889
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::anyRange",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 891,
+        "end": 955
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-aggregates::yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::anyPositive",
+            "arguments": [
+              {
+                "kind": "binary",
+                "operator": "..=",
+                "left": {
+                  "kind": "int64",
+                  "value": "0",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 948,
+                    "end": 949
+                  }
+                },
+                "right": {
+                  "kind": "int64",
+                  "value": "2",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 952,
+                    "end": 953
+                  }
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Range",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 948,
+                  "end": 953
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Iterable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Range",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/range::Iterable"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 935,
+              "end": 954
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 928,
+          "end": 955
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::anyEmpty",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 957,
+        "end": 1030
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-aggregates::yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::anyPositive",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/collection-aggregates::emptyValues",
+                "arguments": [
+                  {
+                    "kind": "unit",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1026,
+                      "end": 1028
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1014,
+                  "end": 1028
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Iterable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/array::Iterable"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1001,
+              "end": 1029
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 994,
+          "end": 1030
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::allArray",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1032,
+        "end": 1098
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-aggregates::yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::allPositive",
+            "arguments": [
+              {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "int64",
+                    "value": "1",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1089,
+                      "end": 1090
+                    }
+                  },
+                  {
+                    "kind": "int64",
+                    "value": "2",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1092,
+                      "end": 1093
+                    }
+                  },
+                  {
+                    "kind": "int64",
+                    "value": "3",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1095,
+                      "end": 1096
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1088,
+                  "end": 1097
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Iterable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/array::Iterable"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1076,
+              "end": 1097
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1069,
+          "end": 1098
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::allList",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1100,
+        "end": 1166
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-aggregates::yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::allPositive",
+            "arguments": [
+              {
+                "kind": "list",
+                "elements": [
+                  {
+                    "kind": "int64",
+                    "value": "1",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1157,
+                      "end": 1158
+                    }
+                  },
+                  {
+                    "kind": "int64",
+                    "value": "2",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1160,
+                      "end": 1161
+                    }
+                  },
+                  {
+                    "kind": "int64",
+                    "value": "3",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1163,
+                      "end": 1164
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1155,
+                  "end": 1165
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Iterable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/list::Iterable"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1143,
+              "end": 1165
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1136,
+          "end": 1166
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::allRange",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1168,
+        "end": 1232
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-aggregates::yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::allPositive",
+            "arguments": [
+              {
+                "kind": "binary",
+                "operator": "..=",
+                "left": {
+                  "kind": "int64",
+                  "value": "1",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1225,
+                    "end": 1226
+                  }
+                },
+                "right": {
+                  "kind": "int64",
+                  "value": "3",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1229,
+                    "end": 1230
+                  }
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Range",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1225,
+                  "end": 1230
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Iterable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Range",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/range::Iterable"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1212,
+              "end": 1231
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1205,
+          "end": 1232
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::allEmpty",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1234,
+        "end": 1307
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-aggregates::yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::allPositive",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/collection-aggregates::emptyValues",
+                "arguments": [
+                  {
+                    "kind": "unit",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1303,
+                      "end": 1305
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1291,
+                  "end": 1305
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Iterable",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/array::Iterable"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1278,
+              "end": 1306
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1271,
+          "end": 1307
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-aggregates::collectionAggregateResults",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1309,
+        "end": 1596
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::productArray",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1394,
+                  "end": 1396
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1381,
+              "end": 1396
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::productList",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1414,
+                  "end": 1416
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1402,
+              "end": 1416
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::productRange",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1435,
+                  "end": 1437
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1422,
+              "end": 1437
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::productEmpty",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1456,
+                  "end": 1458
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1443,
+              "end": 1458
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::anyArray",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1473,
+                  "end": 1475
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1464,
+              "end": 1475
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::anyList",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1489,
+                  "end": 1491
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1481,
+              "end": 1491
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::anyRange",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1506,
+                  "end": 1508
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1497,
+              "end": 1508
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::anyEmpty",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1523,
+                  "end": 1525
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1514,
+              "end": 1525
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::allArray",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1540,
+                  "end": 1542
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1531,
+              "end": 1542
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::allList",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1556,
+                  "end": 1558
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1548,
+              "end": 1558
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::allRange",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1573,
+                  "end": 1575
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1564,
+              "end": 1575
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-aggregates::allEmpty",
+            "arguments": [
+              {
+                "kind": "unit",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1590,
+                  "end": 1592
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1581,
+              "end": 1592
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1375,
+          "end": 1596
+        }
+      }
+    }
+  ]
+}

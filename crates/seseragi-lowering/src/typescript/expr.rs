@@ -1,7 +1,8 @@
 use crate::collection_ops::runtime_collection_for_each_operation;
 use crate::collection_ops::{
     runtime_collection_combine_operation, runtime_collection_join_operation,
-    runtime_collection_operation, runtime_collection_sum_operation,
+    runtime_collection_operation, runtime_collection_predicate_operation,
+    runtime_collection_product_operation, runtime_collection_sum_operation,
 };
 use crate::effect_ops::runtime_effect_operation;
 use crate::equality_ops::strict_equality_operator_with_evidence;
@@ -232,6 +233,24 @@ pub(super) fn lower_core_expr_to_typescript(
                     callee: operation.local_name.to_owned(),
                     arguments,
                 }
+            } else if let Some(operation) = runtime_collection_product_operation(&callee, &evidence)
+            {
+                let dictionaries = evidence
+                    .iter()
+                    .map(|selected| {
+                        local_dictionary_expression(
+                            &selected.evidence,
+                            imported_values,
+                            imported_types,
+                        )
+                        .expect("product requires materialized Reducible, One, and Mul evidence")
+                    })
+                    .collect::<Vec<_>>();
+                arguments.splice(0..0, dictionaries);
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
             } else if let Some(operation) = runtime_collection_combine_operation(&callee, &evidence)
             {
                 let dictionaries = evidence
@@ -246,6 +265,20 @@ pub(super) fn lower_core_expr_to_typescript(
                     })
                     .collect::<Vec<_>>();
                 arguments.splice(0..0, dictionaries);
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
+            } else if let Some(operation) =
+                runtime_collection_predicate_operation(&callee, &evidence)
+            {
+                let dictionary = local_dictionary_expression(
+                    &evidence[0].evidence,
+                    imported_values,
+                    imported_types,
+                )
+                .expect("any/all require materialized Iterable dictionary evidence");
+                arguments.insert(0, dictionary);
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments,

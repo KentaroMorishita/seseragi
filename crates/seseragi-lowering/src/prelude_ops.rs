@@ -18,12 +18,28 @@ const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
         source_map_name: "intZero",
     },
     RuntimePreludeDictionary {
+        semantic_identity: "std/int::One",
+        runtime_feature: "core.int64.one-dictionary",
+        local_name: "_ssrg_int_one",
+        module: "@seseragi/runtime/int64",
+        export_name: "intOne",
+        source_map_name: "intOne",
+    },
+    RuntimePreludeDictionary {
         semantic_identity: "std/int::Add",
         runtime_feature: "core.int64.add-dictionary",
         local_name: "_ssrg_int_add",
         module: "@seseragi/runtime/int64",
         export_name: "intAdd",
         source_map_name: "intAdd",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/int::Mul",
+        runtime_feature: "core.int64.mul-dictionary",
+        local_name: "_ssrg_int_mul",
+        module: "@seseragi/runtime/int64",
+        export_name: "intMul",
+        source_map_name: "intMul",
     },
     RuntimePreludeDictionary {
         semantic_identity: "std/string::Semigroup",

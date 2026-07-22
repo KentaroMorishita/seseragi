@@ -288,6 +288,80 @@ fn selects_reducible_zero_and_add_evidence_for_standard_sum() {
 }
 
 #[test]
+fn selects_reducible_one_and_mul_evidence_for_standard_product() {
+    let typed = type_module(
+        "artifact/collection-product/main.ssrg",
+        "pub fn total values: List<Int> -> Int = product values\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+        panic!("expected total function");
+    };
+    assert!(matches!(
+        body,
+        TypedExpr::Call {
+            callee,
+            evidence,
+            type_ref,
+            ..
+        } if callee == "std/prelude::product"
+            && type_ref == &named("Int")
+            && matches!(evidence.as_slice(), [
+                crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity: reducible },
+                    ..
+                },
+                crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity: one },
+                    ..
+                },
+                crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity: mul },
+                    ..
+                },
+            ] if reducible == "std/list::Reducible"
+                && one == "std/int::One"
+                && mul == "std/int::Mul")
+    ));
+}
+
+#[test]
+fn selects_iterable_evidence_for_short_circuit_aggregates() {
+    let typed = type_module(
+        "artifact/collection-predicates/main.ssrg",
+        "pub fn hasPositive values: Range<Int> -> Bool = any (\\value: Int -> value > 0) values\n\
+         pub fn allPositive values: Array<Int> -> Bool = all (\\value: Int -> value > 0) values\n",
+    );
+
+    for (declaration, expected_callee, expected_identity) in [
+        (
+            &typed.declarations[0],
+            "std/prelude::any",
+            "std/range::Iterable",
+        ),
+        (
+            &typed.declarations[1],
+            "std/prelude::all",
+            "std/array::Iterable",
+        ),
+    ] {
+        let TypedDecl::Fn { body, .. } = declaration else {
+            panic!("expected predicate aggregate function");
+        };
+        assert!(matches!(
+            body,
+            TypedExpr::Call { callee, evidence, type_ref, .. }
+                if callee == expected_callee
+                    && type_ref == &named("Bool")
+                    && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                        evidence: TypedInstanceEvidence::Standard { identity },
+                        ..
+                    }] if identity == expected_identity)
+        ));
+    }
+}
+
+#[test]
 fn selects_reducible_and_monoid_evidence_for_standard_combine() {
     let typed = type_module(
         "artifact/collection-combine/main.ssrg",

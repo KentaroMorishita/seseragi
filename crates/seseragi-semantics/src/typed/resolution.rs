@@ -515,8 +515,17 @@ fn collect_callables(
             Some("std/prelude::sum") => {
                 callables.insert(symbol.id, standard_sum_callable());
             }
+            Some("std/prelude::product") => {
+                callables.insert(symbol.id, standard_product_callable());
+            }
             Some("std/prelude::combine") => {
                 callables.insert(symbol.id, standard_combine_callable());
+            }
+            Some("std/prelude::any") => {
+                callables.insert(symbol.id, standard_predicate_aggregate_callable("any"));
+            }
+            Some("std/prelude::all") => {
+                callables.insert(symbol.id, standard_predicate_aggregate_callable("all"));
             }
             Some("std/prelude::forEach") => {
                 callables.insert(symbol.id, standard_for_each_callable());
@@ -858,6 +867,39 @@ fn standard_sum_callable() -> TopLevelPureFunction {
     }
 }
 
+fn standard_product_callable() -> TopLevelPureFunction {
+    let collection = named_type("C");
+    let element = named_type("A");
+    TopLevelPureFunction {
+        symbol: "std/prelude::product".to_owned(),
+        trait_identity: None,
+        trait_method: None,
+        type_parameters: vec![
+            seseragi_syntax::TypeParameter::value("C"),
+            seseragi_syntax::TypeParameter::value("A"),
+        ],
+        constraints: vec![
+            crate::TypedConstraint {
+                name: "Reducible".to_owned(),
+                arguments: vec![collection.clone(), element.clone()],
+            },
+            crate::TypedConstraint {
+                name: "One".to_owned(),
+                arguments: vec![element.clone()],
+            },
+            crate::TypedConstraint {
+                name: "Mul".to_owned(),
+                arguments: vec![element.clone(), element.clone(), element.clone()],
+            },
+        ],
+        constraint_identities: vec![None; 3],
+        parameters: vec![collection],
+        semantic_parameters: vec![SemanticTypeKey::Other],
+        result: element,
+        semantic_result: SemanticTypeKey::Other,
+    }
+}
+
 fn standard_combine_callable() -> TopLevelPureFunction {
     let collection = named_type("C");
     let element = named_type("A");
@@ -883,6 +925,36 @@ fn standard_combine_callable() -> TopLevelPureFunction {
         parameters: vec![collection],
         semantic_parameters: vec![SemanticTypeKey::Other],
         result: element,
+        semantic_result: SemanticTypeKey::Other,
+    }
+}
+
+fn standard_predicate_aggregate_callable(name: &str) -> TopLevelPureFunction {
+    let collection = named_type("C");
+    let element = named_type("A");
+    let boolean = named_type("Bool");
+    TopLevelPureFunction {
+        symbol: format!("std/prelude::{name}"),
+        trait_identity: None,
+        trait_method: None,
+        type_parameters: vec![
+            seseragi_syntax::TypeParameter::value("C"),
+            seseragi_syntax::TypeParameter::value("A"),
+        ],
+        constraints: vec![crate::TypedConstraint {
+            name: "Iterable".to_owned(),
+            arguments: vec![collection.clone(), element.clone()],
+        }],
+        constraint_identities: vec![None],
+        parameters: vec![
+            TypedType::Function {
+                parameter: Box::new(element),
+                result: Box::new(boolean.clone()),
+            },
+            collection,
+        ],
+        semantic_parameters: vec![SemanticTypeKey::Other; 2],
+        result: boolean,
         semantic_result: SemanticTypeKey::Other,
     }
 }
@@ -1017,7 +1089,9 @@ pub(crate) fn standard_reference_callables() -> Vec<(&'static str, TopLevelPureF
                     "reduce" => standard_reduce_callable(),
                     "join" => standard_join_callable(),
                     "sum" => standard_sum_callable(),
+                    "product" => standard_product_callable(),
                     "combine" => standard_combine_callable(),
+                    "any" | "all" => standard_predicate_aggregate_callable(name),
                     "forEach" => standard_for_each_callable(),
                     "unfold" => standard_unfold_callable(),
                     "next" => standard_next_reference_callable(),

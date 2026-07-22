@@ -1,0 +1,72 @@
+fn productValues<C> values: C -> Int
+where Reducible<C, Int> =
+  product values
+
+fn anyPositive<C> values: C -> Bool
+where Iterable<C, Int> =
+  any (\value: Int -> value > 0) values
+
+fn allPositive<C> values: C -> Bool
+where Iterable<C, Int> =
+  all (\value: Int -> value > 0) values
+
+fn emptyValues unit: Unit -> Array<Int> =
+  []
+
+fn yesNo value: Bool -> String =
+  if value then "true" else "false"
+
+fn number value: Int -> String =
+  `${value}`
+
+fn productArray unit: Unit -> String =
+  number (productValues [2, 3, 4])
+
+fn productList unit: Unit -> String =
+  number (productValues `[2, 3, 4])
+
+fn productRange unit: Unit -> String =
+  number (productValues (1..=4))
+
+fn productEmpty unit: Unit -> String =
+  number (productValues (emptyValues ()))
+
+fn anyArray unit: Unit -> String =
+  yesNo (anyPositive [0, 0, 2])
+
+fn anyList unit: Unit -> String =
+  yesNo (anyPositive `[0, 0, 0])
+
+fn anyRange unit: Unit -> String =
+  yesNo (anyPositive (0..=2))
+
+fn anyEmpty unit: Unit -> String =
+  yesNo (anyPositive (emptyValues ()))
+
+fn allArray unit: Unit -> String =
+  yesNo (allPositive [1, 2, 3])
+
+fn allList unit: Unit -> String =
+  yesNo (allPositive `[1, 2, 3])
+
+fn allRange unit: Unit -> String =
+  yesNo (allPositive (1..=3))
+
+fn allEmpty unit: Unit -> String =
+  yesNo (allPositive (emptyValues ()))
+
+pub fn collectionAggregateResults unit: Unit -> Array<String> =
+  [
+    productArray (),
+    productList (),
+    productRange (),
+    productEmpty (),
+    anyArray (),
+    anyList (),
+    anyRange (),
+    anyEmpty (),
+    allArray (),
+    allList (),
+    allRange (),
+    allEmpty ()
+  ]

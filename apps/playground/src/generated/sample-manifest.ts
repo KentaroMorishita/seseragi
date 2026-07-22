@@ -73,15 +73,17 @@ export const generatedSamples: readonly GeneratedSample[] = [
     definition: {
       "id": "collections",
       "title": "Collectionを組み立てる",
-      "summary": "Range、内包表記、joinとMonoidのcombineでCollectionを読みやすく表示します。",
+      "summary": "Array、List、Rangeをgenericな集約と内包表記で処理します。",
       "kind": "recipe",
       "difficulty": "beginner",
       "topics": [
+        "Collection",
         "Range",
-        "comprehension",
+        "product",
+        "any",
+        "all",
         "join",
-        "Monoid",
-        "combine"
+        "Monoid"
       ],
       "capabilities": [
         "console"
@@ -96,12 +98,12 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/collections/main.ssrg",
       "guidePath": "examples/samples/collections/guide.md",
       "expectedOutputPath": "examples/samples/collections/stdout.txt",
-      "sourceHash": "sha256:734be60934718b3c648c965490d09ad3a657cb0aeb4abb5b0f9d32b7767be682"
+      "sourceHash": "sha256:3af9d215e587ca8388cf9ffa754a199e96a7fd9311f6a946bd6cfc2292f0cf04"
     },
     source: sample0Source,
     guide: sample0Guide,
     stdin: "",
-    expectedOutput: sample0Output,
+    expectedOutput: (sample0Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -133,7 +135,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample1Source,
     guide: sample1Guide,
     stdin: "",
-    expectedOutput: sample1Output,
+    expectedOutput: (sample1Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -165,7 +167,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample2Source,
     guide: sample2Guide,
     stdin: "",
-    expectedOutput: sample2Output,
+    expectedOutput: (sample2Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -199,7 +201,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample3Source,
     guide: sample3Guide,
     stdin: "",
-    expectedOutput: sample3Output,
+    expectedOutput: (sample3Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -231,7 +233,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample4Source,
     guide: sample4Guide,
     stdin: "",
-    expectedOutput: "",
+    expectedOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -263,7 +265,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample5Source,
     guide: sample5Guide,
     stdin: "",
-    expectedOutput: sample5Output,
+    expectedOutput: (sample5Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -295,7 +297,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample6Source,
     guide: sample6Guide,
     stdin: "",
-    expectedOutput: sample6Output,
+    expectedOutput: (sample6Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -325,7 +327,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample7Source,
     guide: sample7Guide,
     stdin: "",
-    expectedOutput: sample7Output,
+    expectedOutput: (sample7Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -359,7 +361,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample8Source,
     guide: sample8Guide,
     stdin: "",
-    expectedOutput: sample8Output,
+    expectedOutput: (sample8Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -393,7 +395,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample9Source,
     guide: sample9Guide,
     stdin: "",
-    expectedOutput: sample9Output,
+    expectedOutput: (sample9Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -426,7 +428,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample10Source,
     guide: sample10Guide,
     stdin: "",
-    expectedOutput: "",
+    expectedOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -458,7 +460,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample11Source,
     guide: sample11Guide,
     stdin: "",
-    expectedOutput: sample11Output,
+    expectedOutput: (sample11Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -490,7 +492,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample12Source,
     guide: sample12Guide,
     stdin: "",
-    expectedOutput: sample12Output,
+    expectedOutput: (sample12Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -524,7 +526,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample13Source,
     guide: sample13Guide,
     stdin: "",
-    expectedOutput: sample13Output,
+    expectedOutput: (sample13Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -556,7 +558,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample14Source,
     guide: sample14Guide,
     stdin: "",
-    expectedOutput: sample14Output,
+    expectedOutput: (sample14Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -592,7 +594,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample15Source,
     guide: sample15Guide,
     stdin: sample15Stdin,
-    expectedOutput: sample15Output,
+    expectedOutput: (sample15Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -624,7 +626,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample16Source,
     guide: sample16Guide,
     stdin: "",
-    expectedOutput: sample16Output,
+    expectedOutput: (sample16Output).replace(/\r?\n$/u, ""),
   }
 ]
 

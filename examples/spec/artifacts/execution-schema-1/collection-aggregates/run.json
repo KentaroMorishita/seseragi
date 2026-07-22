@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "case": "collection-aggregates",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/collection-aggregates",
+    "export": "collectionAggregateResults",
+    "compiledModule": "../../schema-1/collection-aggregates/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.int64.one-dictionary",
+      "core.int64.mul-dictionary",
+      "core.collection.product",
+      "core.int64",
+      "core.collection.any",
+      "core.bool",
+      "core.collection.all",
+      "core.unit",
+      "core.string",
+      "core.int64.show",
+      "core.array.reducible",
+      "core.list.reducible",
+      "core.list",
+      "core.list.from-array",
+      "core.range.reducible",
+      "core.range",
+      "core.range.inclusive",
+      "core.array.iterable",
+      "core.list.iterable",
+      "core.range.iterable"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

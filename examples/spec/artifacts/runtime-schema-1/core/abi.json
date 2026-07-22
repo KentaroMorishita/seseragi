@@ -43,6 +43,17 @@
       }
     },
     {
+      "id": "core.int64.one-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly One<bigint> dictionary",
+      "boundary": "standard One<Int> dictionary",
+      "instanceIdentity": "std/int::One",
+      "import": {
+        "module": "@seseragi/runtime/int64",
+        "export": "intOne"
+      }
+    },
+    {
       "id": "core.int64.add-dictionary",
       "kind": "runtime-binding",
       "typescript": "readonly Add<bigint, bigint, bigint> dictionary",
@@ -51,6 +62,17 @@
       "import": {
         "module": "@seseragi/runtime/int64",
         "export": "intAdd"
+      }
+    },
+    {
+      "id": "core.int64.mul-dictionary",
+      "kind": "runtime-binding",
+      "typescript": "readonly Mul<bigint, bigint, bigint> dictionary",
+      "boundary": "standard Mul<Int, Int, Int> dictionary",
+      "instanceIdentity": "std/int::Mul",
+      "import": {
+        "module": "@seseragi/runtime/int64",
+        "export": "intMul"
       }
     },
     {
@@ -157,6 +179,16 @@
       }
     },
     {
+      "id": "core.collection.product",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Reducible<C, A> -> One<A> -> Mul<A, A, A> -> C -> A",
+      "import": {
+        "module": "@seseragi/runtime/collection",
+        "export": "product"
+      }
+    },
+    {
       "id": "core.collection.combine",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -164,6 +196,26 @@
       "import": {
         "module": "@seseragi/runtime/collection",
         "export": "combine"
+      }
+    },
+    {
+      "id": "core.collection.any",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Iterable<C, A> -> (A -> Bool) -> C -> Bool",
+      "import": {
+        "module": "@seseragi/runtime/collection",
+        "export": "any"
+      }
+    },
+    {
+      "id": "core.collection.all",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Iterable<C, A> -> (A -> Bool) -> C -> Bool",
+      "import": {
+        "module": "@seseragi/runtime/collection",
+        "export": "all"
       }
     },
     {

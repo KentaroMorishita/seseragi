@@ -396,6 +396,38 @@
   ],
   "standardLibrary": [
     {
+      "identity": "std/prelude::all",
+      "name": "all",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "all<C, A> arg1: (A -> Bool) -> arg2: C -> Bool where Iterable<C, A>",
+      "description": "Returns false at the first element rejected by the predicate.",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        "Iterable<C, A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::any",
+      "name": "any",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "any<C, A> arg1: (A -> Bool) -> arg2: C -> Bool where Iterable<C, A>",
+      "description": "Returns true at the first element accepted by the predicate.",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        "Iterable<C, A>"
+      ]
+    },
+    {
       "identity": "std/prelude::combine",
       "name": "combine",
       "module": "std/prelude",
@@ -457,6 +489,24 @@
         "A"
       ],
       "constraints": []
+    },
+    {
+      "identity": "std/prelude::product",
+      "name": "product",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "product<C, A> arg1: C -> A where Reducible<C, A>, One<A>, Mul<A, A, A>",
+      "description": "Multiplies every element of a reducible collection from one.",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        "Reducible<C, A>",
+        "One<A>",
+        "Mul<A, A, A>"
+      ]
     },
     {
       "identity": "std/prelude::reduce",

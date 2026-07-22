@@ -4,8 +4,17 @@ fn evenLabels limit: Int -> Array<String> =
 fn frame labels: Array<String> -> String =
   combine ["[", join " / " labels, "]"]
 
-// Rangeから選んだ値をjoinし、StringのMonoidで枠を連結します。
+fn yesNo value: Bool -> String =
+  if value then "yes" else "no"
+
+fn number value: Int -> String =
+  `${value}`
+
+// 集約はArray、List、Rangeを同じgeneric APIで扱います。
 pub effect fn main =
-  evenLabels 8
-  |> frame
-  |> println
+  do {
+    evenLabels 8 |> frame |> println
+    product [2, 3, 4] |> number |> println
+    any (\value: Int -> value > 3) (1..=5) |> yesNo |> println
+    all (\value: Int -> value > 0) `[1, 2, 3] |> yesNo |> println
+  }

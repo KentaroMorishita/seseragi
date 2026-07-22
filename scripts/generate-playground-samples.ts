@@ -146,7 +146,7 @@ function renderGeneratedModule(
       `    source: ${sample.sourceImport},`,
       `    guide: ${sample.guideImport},`,
       `    stdin: ${sample.stdinImport ?? '""'},`,
-      `    expectedOutput: ${sample.outputImport ?? '""'},`,
+      `    expectedOutput: (${sample.outputImport ?? '""'}).replace(/\\r?\\n$/u, ""),`,
       "  }",
     ].join("\n")
   })

@@ -23,6 +23,8 @@ export {
   add,
   divide,
   intAdd,
+  intMul,
+  intOne,
   intZero,
   multiply,
   power,
@@ -43,9 +45,12 @@ export {
 } from "./array"
 export type { Iterable, Reducible } from "./collection"
 export {
+  all as allCollection,
+  any as anyCollection,
   combine as combineCollection,
   forEach as forEachCollection,
   join as joinCollection,
+  product as productCollection,
   sum as sumCollection,
 } from "./collection"
 export type { IntRange } from "./range"

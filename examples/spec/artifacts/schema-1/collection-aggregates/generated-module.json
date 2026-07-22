@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "module": "artifact/collection-aggregates",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64.one-dictionary",
+      "core.int64.mul-dictionary",
+      "core.collection.product",
+      "core.int64",
+      "core.collection.any",
+      "core.bool",
+      "core.collection.all",
+      "core.unit",
+      "core.string",
+      "core.int64.show",
+      "core.array.reducible",
+      "core.list.reducible",
+      "core.list",
+      "core.list.from-array",
+      "core.range.reducible",
+      "core.range",
+      "core.range.inclusive",
+      "core.array.iterable",
+      "core.list.iterable",
+      "core.range.iterable"
+    ]
+  },
+  "exports": [
+    "collectionAggregateResults"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

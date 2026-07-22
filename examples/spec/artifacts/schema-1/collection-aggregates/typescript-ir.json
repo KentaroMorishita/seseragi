@@ -1,0 +1,1097 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/collection-aggregates",
+  "runtimeRequirements": [
+    "core.int64.one-dictionary",
+    "core.int64.mul-dictionary",
+    "core.collection.product",
+    "core.int64",
+    "core.collection.any",
+    "core.bool",
+    "core.collection.all",
+    "core.unit",
+    "core.string",
+    "core.int64.show",
+    "core.array.reducible",
+    "core.list.reducible",
+    "core.list",
+    "core.list.from-array",
+    "core.range.reducible",
+    "core.range",
+    "core.range.inclusive",
+    "core.array.iterable",
+    "core.list.iterable",
+    "core.range.iterable"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.one-dictionary",
+      "local": "_ssrg_int_one"
+    },
+    {
+      "feature": "core.int64.mul-dictionary",
+      "local": "_ssrg_int_mul"
+    },
+    {
+      "feature": "core.collection.product",
+      "local": "_ssrg_collection_product"
+    },
+    {
+      "feature": "core.collection.any",
+      "local": "_ssrg_collection_any"
+    },
+    {
+      "feature": "core.collection.all",
+      "local": "_ssrg_collection_all"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.array.reducible",
+      "local": "_ssrg_array_reducible"
+    },
+    {
+      "feature": "core.list.reducible",
+      "local": "_ssrg_list_reducible"
+    },
+    {
+      "feature": "core.list.from-array",
+      "local": "_ssrg_list_from_array"
+    },
+    {
+      "feature": "core.range.reducible",
+      "local": "_ssrg_range_reducible"
+    },
+    {
+      "feature": "core.range.inclusive",
+      "local": "_ssrg_range_inclusive"
+    },
+    {
+      "feature": "core.array.iterable",
+      "local": "_ssrg_array_iterable"
+    },
+    {
+      "feature": "core.list.iterable",
+      "local": "_ssrg_list_iterable"
+    },
+    {
+      "feature": "core.range.iterable",
+      "local": "_ssrg_range_iterable"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "productValues",
+      "typeParameters": [
+        "C"
+      ],
+      "constraints": [
+        {
+          "name": "Reducible",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "bigint"
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "type": "C",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_product",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$0"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_int_one"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_int_mul"
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 79
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "anyPositive",
+      "typeParameters": [
+        "C"
+      ],
+      "constraints": [
+        {
+          "name": "Iterable",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "bigint"
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "type": "C",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_any",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$0"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "value: bigint",
+            "body": {
+              "kind": "binary",
+              "operator": ">",
+              "left": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "right": {
+                "kind": "bigint",
+                "value": "0"
+              }
+            }
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 81,
+        "end": 181
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "allPositive",
+      "typeParameters": [
+        "C"
+      ],
+      "constraints": [
+        {
+          "name": "Iterable",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "C",
+              "arguments": []
+            },
+            {
+              "kind": "bigint"
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "type": "C",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_all",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "__ssrg$evidence$0"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "value: bigint",
+            "body": {
+              "kind": "binary",
+              "operator": ">",
+              "left": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "right": {
+                "kind": "bigint",
+                "value": "0"
+              }
+            }
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 183,
+        "end": 283
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "emptyValues",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [],
+        "elementType": {
+          "kind": "bigint"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 285,
+        "end": 331
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "yesNo",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "conditional",
+        "condition": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "thenBranch": {
+          "kind": "string",
+          "value": "true"
+        },
+        "elseBranch": {
+          "kind": "string",
+          "value": "false"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 333,
+        "end": 401
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "number",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_show_intShow"
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 403,
+        "end": 448
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "productArray",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "number",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "productValues",
+            "arguments": [
+              {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "bigint",
+                    "value": "2"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "3"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "4"
+                  }
+                ],
+                "elementType": {
+                  "kind": "bigint"
+                }
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_array_reducible"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 450,
+        "end": 523
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "productList",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "number",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "productValues",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_from_array",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "2"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "3"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "4"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_list_reducible"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 525,
+        "end": 598
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "productRange",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "number",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "productValues",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_range_inclusive",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "1"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "4"
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_range_reducible"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 600,
+        "end": 671
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "productEmpty",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "number",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "productValues",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "emptyValues",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_array_reducible"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 673,
+        "end": 753
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "anyArray",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "anyPositive",
+            "arguments": [
+              {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "bigint",
+                    "value": "0"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "0"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "2"
+                  }
+                ],
+                "elementType": {
+                  "kind": "bigint"
+                }
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_array_iterable"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 755,
+        "end": 821
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "anyList",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "anyPositive",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_from_array",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "0"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "0"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "0"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_list_iterable"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 823,
+        "end": 889
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "anyRange",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "anyPositive",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_range_inclusive",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "0"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_range_iterable"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 891,
+        "end": 955
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "anyEmpty",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "anyPositive",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "emptyValues",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_array_iterable"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 957,
+        "end": 1030
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "allArray",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "allPositive",
+            "arguments": [
+              {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "bigint",
+                    "value": "1"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "2"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "3"
+                  }
+                ],
+                "elementType": {
+                  "kind": "bigint"
+                }
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_array_iterable"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1032,
+        "end": 1098
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "allList",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "allPositive",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_from_array",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "2"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "3"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_list_iterable"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1100,
+        "end": 1166
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "allRange",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "allPositive",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_range_inclusive",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "1"
+                  },
+                  {
+                    "kind": "bigint",
+                    "value": "3"
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_range_iterable"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1168,
+        "end": 1232
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "allEmpty",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "yesNo",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "allPositive",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "emptyValues",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_array_iterable"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1234,
+        "end": 1307
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "collectionAggregateResults",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "productArray",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "productList",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "productRange",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "productEmpty",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "anyArray",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "anyList",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "anyRange",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "anyEmpty",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "allArray",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "allList",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "allRange",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "allEmpty",
+            "arguments": [
+              {
+                "kind": "undefined"
+              }
+            ]
+          }
+        ],
+        "elementType": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1309,
+        "end": 1596
+      }
+    }
+  ]
+}

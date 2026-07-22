@@ -4,7 +4,14 @@ import {
   arrayMonoid,
   arrayReducible,
 } from "../../../runtime/ts/src/array"
-import { combine, forEach } from "../../../runtime/ts/src/collection"
+import {
+  all,
+  any,
+  combine,
+  forEach,
+  product,
+} from "../../../runtime/ts/src/collection"
+import { intMul, intOne } from "../../../runtime/ts/src/int64"
 import {
   Empty,
   fromArray,
@@ -62,6 +69,49 @@ describe("Collection runtime", () => {
     expect(
       combine<List<never>, List<never>>(listReducible, listMonoid, Empty)
     ).toBe(Empty)
+  })
+
+  test("multiplies from one and preserves the empty product", () => {
+    expect(
+      product<ReadonlyArray<bigint>, bigint>(arrayReducible, intOne, intMul, [
+        2n,
+        3n,
+        4n,
+      ])
+    ).toBe(24n)
+    expect(
+      product<ReadonlyArray<bigint>, bigint>(arrayReducible, intOne, intMul, [])
+    ).toBe(1n)
+  })
+
+  test("short-circuits any and all with their documented empty results", () => {
+    const anyObserved: number[] = []
+    expect(
+      any(
+        arrayIterable,
+        (value: number) => {
+          anyObserved.push(value)
+          return value === 2
+        },
+        [1, 2, 3]
+      )
+    ).toBe(true)
+    expect(anyObserved).toEqual([1, 2])
+
+    const allObserved: number[] = []
+    expect(
+      all(
+        arrayIterable,
+        (value: number) => {
+          allObserved.push(value)
+          return value < 2
+        },
+        [1, 2, 3]
+      )
+    ).toBe(false)
+    expect(allObserved).toEqual([1, 2])
+    expect(any(arrayIterable, () => true, [])).toBe(false)
+    expect(all(arrayIterable, () => false, [])).toBe(true)
   })
 
   test("runs effectful traversal cold and in source order", async () => {

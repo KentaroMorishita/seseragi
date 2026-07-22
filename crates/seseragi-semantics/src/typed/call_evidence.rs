@@ -376,11 +376,16 @@ pub(super) fn select_standard_instance(
 }
 
 fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
-    if matches!(
-        constraint.arguments.as_slice(),
-        [value] if constraint.name == "Zero" && named_type_is(value, "Int")
-    ) {
-        return Some("std/int::Zero".to_owned());
+    if let [value] = constraint.arguments.as_slice() {
+        if let Some((_, _, identity)) =
+            STANDARD_VALUE_INSTANCES
+                .iter()
+                .find(|(trait_name, type_name, _)| {
+                    constraint.name == *trait_name && named_type_is(value, type_name)
+                })
+        {
+            return Some((*identity).to_owned());
+        }
     }
     if let [type_ref] = constraint.arguments.as_slice() {
         if let Some(instance) = crate::prelude::standard_instance(&constraint.name, type_ref) {
@@ -422,6 +427,11 @@ fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
         _ => None,
     }
 }
+
+const STANDARD_VALUE_INSTANCES: &[(&str, &str, &str)] = &[
+    ("Zero", "Int", "std/int::Zero"),
+    ("One", "Int", "std/int::One"),
+];
 
 fn show_instance_identity(constraint: &TypedConstraint) -> Option<&'static str> {
     let [value] = constraint.arguments.as_slice() else {

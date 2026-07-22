@@ -68,10 +68,11 @@ for (const { directory, metadata } of samples) {
   if (status !== 0) {
     throw new Error(`sample ${metadata.id} failed in CLI:\n${stderr}`)
   }
+  const normalizedExpected = expected.replace(/\r?\n$/u, "")
   const normalizedStdout = stdout.replace(/\r?\n$/u, "")
-  if (normalizedStdout !== expected) {
+  if (normalizedStdout !== normalizedExpected) {
     throw new Error(
-      `sample ${metadata.id} output mismatch\nexpected: ${JSON.stringify(expected)}\nactual: ${JSON.stringify(normalizedStdout)}`
+      `sample ${metadata.id} output mismatch\nexpected: ${JSON.stringify(normalizedExpected)}\nactual: ${JSON.stringify(normalizedStdout)}`
     )
   }
   checked += 1

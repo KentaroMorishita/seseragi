@@ -373,7 +373,7 @@ pub(crate) const SUM_TYPES: &[PreludeSumType] = &[
 ];
 
 pub(crate) const PURE_FUNCTION_NAMES: &[&str] = &[
-    "reduce", "join", "sum", "combine", "forEach", "unfold", "next",
+    "reduce", "join", "sum", "product", "combine", "any", "all", "forEach", "unfold", "next",
 ];
 
 pub(crate) fn sum_type_for_symbol(

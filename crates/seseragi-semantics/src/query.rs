@@ -1137,7 +1137,16 @@ fn standard_category(name: &str, module: &str) -> &'static str {
         "std/prelude"
             if matches!(
                 name,
-                "reduce" | "join" | "sum" | "combine" | "forEach" | "unfold" | "next"
+                "reduce"
+                    | "join"
+                    | "sum"
+                    | "product"
+                    | "combine"
+                    | "any"
+                    | "all"
+                    | "forEach"
+                    | "unfold"
+                    | "next"
             ) =>
         {
             "Collection"
@@ -1150,7 +1159,10 @@ fn standard_description(identity: &str) -> Option<&'static str> {
     Some(match identity {
         "std/prelude::join" => "Joins a reducible collection of strings with a separator.",
         "std/prelude::sum" => "Adds every element of a reducible collection from zero.",
+        "std/prelude::product" => "Multiplies every element of a reducible collection from one.",
         "std/prelude::combine" => "Combines a reducible collection using its Monoid instance.",
+        "std/prelude::any" => "Returns true at the first element accepted by the predicate.",
+        "std/prelude::all" => "Returns false at the first element rejected by the predicate.",
         "std/prelude::reduce" => "Folds a reducible collection into one accumulated value.",
         "std/prelude::forEach" => {
             "Runs one Effect for every value exposed by an Iterable instance."
