@@ -39,13 +39,17 @@ textarea {
 }
 
 .app-shell {
+  --safe-area-top: env(safe-area-inset-top);
+  --safe-area-right: env(safe-area-inset-right);
+  --safe-area-bottom: env(safe-area-inset-bottom);
+  --safe-area-left: env(safe-area-inset-left);
   height: 100dvh;
   min-height: 0;
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr) auto;
   overflow: hidden;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right)
-    env(safe-area-inset-bottom) env(safe-area-inset-left);
+  padding: var(--safe-area-top) var(--safe-area-right) var(--safe-area-bottom)
+    var(--safe-area-left);
 }
 
 .topbar {
@@ -1286,7 +1290,7 @@ footer a {
     z-index: 5;
     top: 42px;
     bottom: 0;
-    left: 0;
+    left: var(--safe-area-left);
     width: 42px;
     grid-template-columns: 1fr;
     grid-template-rows: 50px 50px;

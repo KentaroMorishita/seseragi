@@ -43,10 +43,11 @@ describe("mobile editing layout contract", () => {
       "@media (orientation: landscape) and (max-width: 960px) and (max-height: 520px)"
     )
     expect(styles).toMatch(
-      /\.mobile-tabs \{[\s\S]*?position: absolute;[\s\S]*?width: 42px;/
+      /\.mobile-tabs \{[\s\S]*?position: absolute;[\s\S]*?left: var\(--safe-area-left\);[\s\S]*?width: 42px;/
     )
     expect(styles).toMatch(/\.workspace \{[\s\S]*?margin-left: 42px;/)
     expect(styles).toContain("grid-template-rows: 42px 0 minmax(0, 1fr) 0")
+    expect(styles).toContain("--safe-area-left: env(safe-area-inset-left)")
   })
 
   test("keeps Sample, overflow tools, and Run in one mobile topbar row", async () => {
