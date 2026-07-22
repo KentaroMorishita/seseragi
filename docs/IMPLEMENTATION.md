@@ -102,8 +102,9 @@ formatter独自に推測しません。
 
 Playground-0では`seseragi-wasm`が同じ`compile_module`とpublicなruntime entry contractをversioned JSONへ変換します。
 playground adapterは生成TypeScriptをbrowser用Console / Stdin service providerで実行し、compilerやEffect semanticsを
-再実装しません。sampleは`examples/spec/lessons/01-hello-world.ssrg?raw`を直接読み、WASM integration testはlesson 01に
-加えてPhase 1累積じゃんけんをdeterministic inputで実行します。`bun run test:playground:wasm`がWASM生成とintegration、
+再実装しません。実行可能sampleは`examples/samples/<stable-slug>/`へmetadata、source、guide、期待出力を
+まとめ、生成manifestがPlaygroundへ取り込みます。同じsourceをWASM integrationとnative CLI sample checkで
+実行します。`bun run test:playground:wasm`がWASM生成とintegration、
 `bun run build:playground`がWASMを含むproduction bundleを検証します。
 
 Playground-1では`apps/playground`へCodeMirror 6、Seseragi専用stream language、mobile panel、任意Stdinを
@@ -111,6 +112,10 @@ Playground-1では`apps/playground`へCodeMirror 6、Seseragi専用stream langua
 UI boundaryでのみUTF-16へ変換し、
 compiler diagnosticを再生成しません。初期application chunkは約18 KB、editor chunkは約330 KBです。約3.6 MBのbrowser
 TypeScript transpilerはRun時だけlazy loadし、約900 KBのWASMもdriver初回利用時に初期化します。
+
+sample catalogはLearnとDiscoverを分離します。Learnは複数のlearning path内だけで進捗を示し、
+Discoverはtitle、summary、topicの検索とkind、topic、capability、featured/new filterを持ちます。
+directoryを一つ追加するだけでcatalogへ自動検出され、中央配列や番号付きfilenameは更新しません。
 
 VercelのGit buildへRust / rustup / wasm-pack installを持ち込むとhost差とdownload failureがdeploymentを壊すため、
 `apps/playground/src/wasm/pkg`は例外的にversioned deployment artifactとしてcommitします。Rust compilerまたはWASM

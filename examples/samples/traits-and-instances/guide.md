@@ -1,0 +1,1 @@
+Traitは振る舞いの型契約、instanceは特定の型に対する実装です。呼び出し側は選択されたdictionaryを通じてmethodを使います。

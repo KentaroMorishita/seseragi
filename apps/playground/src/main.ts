@@ -10,7 +10,7 @@ import {
   type BrowserExecution,
   startGeneratedModule,
 } from "./runtime/browser-execution"
-import { samples } from "./samples"
+import { learningPaths, samples } from "./samples"
 import "./styles.css"
 import { requiredElement } from "./ui/elements"
 import { connectMobilePanels } from "./ui/mobile-panels"
@@ -31,11 +31,53 @@ const sampleBrowserClose = requiredElement(
   "#sample-browser-close",
   HTMLButtonElement
 )
-const sampleBrowserGroups = requiredElement(
-  "#sample-browser-groups",
+const sampleBrowserLearnTab = requiredElement(
+  "#sample-browser-learn-tab",
+  HTMLButtonElement
+)
+const sampleBrowserDiscoverTab = requiredElement(
+  "#sample-browser-discover-tab",
+  HTMLButtonElement
+)
+const sampleBrowserLearnPanel = requiredElement(
+  "#sample-browser-learn-panel",
   HTMLElement
 )
-const currentSampleLevel = requiredElement("#current-sample-level", HTMLElement)
+const sampleBrowserDiscoverPanel = requiredElement(
+  "#sample-browser-discover-panel",
+  HTMLElement
+)
+const sampleLearningPaths = requiredElement(
+  "#sample-learning-paths",
+  HTMLElement
+)
+const sampleSearch = requiredElement("#sample-search", HTMLInputElement)
+const sampleKindFilter = requiredElement(
+  "#sample-kind-filter",
+  HTMLSelectElement
+)
+const sampleTopicFilter = requiredElement(
+  "#sample-topic-filter",
+  HTMLSelectElement
+)
+const sampleCapabilityFilter = requiredElement(
+  "#sample-capability-filter",
+  HTMLSelectElement
+)
+const sampleFeaturedFilter = requiredElement(
+  "#sample-featured-filter",
+  HTMLInputElement
+)
+const sampleNewFilter = requiredElement("#sample-new-filter", HTMLInputElement)
+const sampleResultCount = requiredElement("#sample-result-count", HTMLElement)
+const sampleDiscoverResults = requiredElement(
+  "#sample-discover-results",
+  HTMLElement
+)
+const currentSampleContext = requiredElement(
+  "#current-sample-context",
+  HTMLElement
+)
 const currentSampleTitle = requiredElement("#current-sample-title", HTMLElement)
 const runButton = requiredElement("#run-button", HTMLButtonElement)
 const resetSampleButton = requiredElement(
@@ -73,6 +115,7 @@ const sampleGuideConcepts = requiredElement(
   "#sample-guide-concepts",
   HTMLUListElement
 )
+const sampleGuideBody = requiredElement("#sample-guide-body", HTMLElement)
 const sampleGuideSource = requiredElement("#sample-guide-source", HTMLElement)
 const stdinInput = requiredElement("#stdin-input", HTMLTextAreaElement)
 const output = requiredElement("#output", HTMLPreElement)
@@ -98,27 +141,44 @@ const sampleGuide = connectSampleGuide({
   category: sampleGuideCategory,
   title: sampleGuideTitle,
   summary: sampleGuideSummary,
-  concepts: sampleGuideConcepts,
+  topics: sampleGuideConcepts,
+  body: sampleGuideBody,
   source: sampleGuideSource,
 })
 
-let source = samples[0]?.source ?? ""
-let outputMode: "text" | "html" = samples[0]?.outputMode ?? "text"
+const initialSample =
+  samples.find((sample) => sample.id === learningPaths[0]?.samples[0]) ??
+  samples[0]
+let source = initialSample?.source ?? ""
+let outputMode: "text" | "html" = initialSample?.outputMode ?? "text"
 let htmlPreviewUrl: string | undefined
 let activeExecution: BrowserExecution | undefined
 let runRevision = 0
-let currentSample = samples[0]
+let currentSample = initialSample
 
 const sampleBrowser = connectSampleBrowser(
   {
     button: sampleBrowserButton,
     dialog: sampleBrowserDialog,
     closeButton: sampleBrowserClose,
-    groups: sampleBrowserGroups,
-    currentLevel: currentSampleLevel,
+    learnTab: sampleBrowserLearnTab,
+    discoverTab: sampleBrowserDiscoverTab,
+    learnPanel: sampleBrowserLearnPanel,
+    discoverPanel: sampleBrowserDiscoverPanel,
+    learningPaths: sampleLearningPaths,
+    search: sampleSearch,
+    kindFilter: sampleKindFilter,
+    topicFilter: sampleTopicFilter,
+    capabilityFilter: sampleCapabilityFilter,
+    featuredFilter: sampleFeaturedFilter,
+    newFilter: sampleNewFilter,
+    resultCount: sampleResultCount,
+    results: sampleDiscoverResults,
+    currentContext: currentSampleContext,
     currentTitle: currentSampleTitle,
   },
   samples,
+  learningPaths,
   (sample) => loadSample(sample, "Sample loaded")
 )
 
@@ -128,7 +188,6 @@ const editor = createEditor(editorHost, source, (nextSource) => {
   setStatus("ready", "Ready to run")
 })
 
-const initialSample = samples[0]
 if (initialSample) {
   stdinInput.value = initialSample.stdin
   setStdinVisible(initialSample.stdin !== "")

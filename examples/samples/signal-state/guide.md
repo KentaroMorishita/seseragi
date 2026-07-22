@@ -1,0 +1,1 @@
+複数のmutable Signalから一つのdashboard値を導出します。transaction内の更新はまとめてcommitされ、observerへ途中状態を見せません。

@@ -1,0 +1,1 @@
+構造的Recordは必要なfieldだけを型で要求できます。spread更新は元のRecordを保ったまま、一部のfieldだけを差し替えます。

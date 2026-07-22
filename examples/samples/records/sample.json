@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "records",
+  "title": "Recordと更新",
+  "summary": "Recordのfield、spread更新、width typingを一つの値で確認します。",
+  "kind": "recipe",
+  "difficulty": "intermediate",
+  "topics": ["Record", "spread", "width typing"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["data-and-patterns"],
+  "featured": false,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

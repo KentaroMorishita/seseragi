@@ -1,10 +1,4 @@
-export type SampleGuideValue = {
-  readonly label: string
-  readonly level: string
-  readonly summary: string
-  readonly concepts: readonly string[]
-  readonly sourcePath: string
-}
+import type { PlaygroundSample } from "../samples"
 
 type SampleGuideElements = {
   readonly button: HTMLButtonElement
@@ -13,12 +7,13 @@ type SampleGuideElements = {
   readonly category: HTMLElement
   readonly title: HTMLElement
   readonly summary: HTMLElement
-  readonly concepts: HTMLUListElement
+  readonly topics: HTMLUListElement
+  readonly body: HTMLElement
   readonly source: HTMLElement
 }
 
 export function connectSampleGuide(elements: SampleGuideElements): {
-  readonly setSample: (sample: SampleGuideValue) => void
+  readonly setSample: (sample: PlaygroundSample) => void
 } {
   const ownerDocument = elements.panel.ownerDocument
 
@@ -52,18 +47,27 @@ export function connectSampleGuide(elements: SampleGuideElements): {
 
   return {
     setSample: (sample) => {
-      elements.category.textContent = sample.level
-      elements.title.textContent = sample.label
+      elements.category.textContent = `${difficultyLabel(sample.difficulty)} · ${kindLabel(sample.kind)}`
+      elements.title.textContent = sample.title
       elements.summary.textContent = sample.summary
+      elements.body.textContent = sample.guide.trim()
       elements.source.textContent = sample.sourcePath
-      elements.concepts.replaceChildren(
-        ...sample.concepts.map((concept) => {
+      elements.topics.replaceChildren(
+        ...sample.topics.map((topic) => {
           const item = ownerDocument.createElement("li")
-          item.textContent = concept
+          item.textContent = topic
           return item
         })
       )
       setOpen(false)
     },
   }
+}
+
+function difficultyLabel(value: PlaygroundSample["difficulty"]): string {
+  return { beginner: "初級", intermediate: "中級", advanced: "上級" }[value]
+}
+
+function kindLabel(value: PlaygroundSample["kind"]): string {
+  return { lesson: "Lesson", recipe: "Recipe", showcase: "Showcase" }[value]
 }

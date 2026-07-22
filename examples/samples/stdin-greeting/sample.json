@@ -1,0 +1,20 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "stdin-greeting",
+  "title": "標準入力を扱う",
+  "summary": "readLineのMaybeをmatchし、入力の有無を安全に処理します。",
+  "kind": "recipe",
+  "difficulty": "intermediate",
+  "topics": ["Stdin", "readLine", "Maybe", "match"],
+  "capabilities": ["console", "stdin"],
+  "outputMode": "text",
+  "prerequisites": ["data-and-patterns", "effects-and-do"],
+  "featured": false,
+  "isNew": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "stdin": "stdin.txt",
+    "expectedOutput": "stdout.txt"
+  }
+}

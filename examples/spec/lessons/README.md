@@ -1,7 +1,8 @@
 # Seseragi 学習コース
 
-このdirectoryは、人がSeseragiを順番に学ぶための実行可能なlessonです。網羅性だけを目的とする
-小さなcompiler fixtureは `../fixtures/` に分離します。
+このdirectoryは、完成仕様を人が順番に学ぶためのdesign lessonです。現行compilerで今すぐ
+実行できることを保証するcatalogではありません。実装済みsurfaceを動かす教材は
+[`../../samples/`](../../samples/README.md)、小さなcompiler fixtureは `../fixtures/` に分離します。
 
 各lessonは次を守ります。
 

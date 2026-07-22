@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "collections",
+  "title": "Collectionを組み立てる",
+  "summary": "Range、内包表記、joinとMonoidのcombineでCollectionを読みやすく表示します。",
+  "kind": "recipe",
+  "difficulty": "beginner",
+  "topics": ["Range", "comprehension", "join", "Monoid", "combine"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["functions-and-pipelines"],
+  "featured": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

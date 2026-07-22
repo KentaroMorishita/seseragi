@@ -1,0 +1,62 @@
+{
+  "$schema": "./learning-paths.schema.json",
+  "schema": 1,
+  "paths": [
+    {
+      "id": "first-steps",
+      "title": "Seseragiの最初の一歩",
+      "summary": "最小programから関数、data、Collectionまで順に動かします。",
+      "samples": [
+        "hello-world",
+        "functions-and-pipelines",
+        "data-and-patterns",
+        "collections"
+      ]
+    },
+    {
+      "id": "data-and-types",
+      "title": "データと型",
+      "summary": "Record、generic Struct、newtypeでdomainの境界を作ります。",
+      "samples": [
+        "data-and-patterns",
+        "records",
+        "generic-structs",
+        "newtypes"
+      ]
+    },
+    {
+      "id": "collection-recipes",
+      "title": "Collection処理",
+      "summary": "Range、内包表記、join、Monoidを日常的な処理として使います。",
+      "samples": ["functions-and-pipelines", "collections"]
+    },
+    {
+      "id": "effects-and-failure",
+      "title": "Effectと失敗",
+      "summary": "順序を持つ処理、標準入力、Eitherによる失敗の合成を学びます。",
+      "samples": ["effects-and-do", "stdin-greeting", "either-and-monad"]
+    },
+    {
+      "id": "traits-and-abstraction",
+      "title": "Traitと抽象化",
+      "summary": "instance、impl、演算子、Functor / Applicativeを一つずつ積み上げます。",
+      "samples": [
+        "traits-and-instances",
+        "impl-and-operators",
+        "signal-composition"
+      ]
+    },
+    {
+      "id": "signal-and-state",
+      "title": "Signalと状態",
+      "summary": "Signalの合成からtransaction、interactive stateへ進みます。",
+      "samples": ["signal-composition", "signal-state", "interactive-app"]
+    },
+    {
+      "id": "web-ui",
+      "title": "Web UI",
+      "summary": "関数component、Style、SSR、typed eventを小さなUIへまとめます。",
+      "samples": ["html-components", "interactive-app"]
+    }
+  ]
+}

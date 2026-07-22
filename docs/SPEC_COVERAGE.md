@@ -129,11 +129,12 @@
 
 ### executable design example
 
-- `examples/spec/lessons/` を難易度順の学習教材として管理
+- `examples/spec/lessons/` を完成仕様のdesign curriculumとして管理
+- `examples/samples/` を現行compilerで実行可能な学習・発見catalogとして管理
 - `examples/spec/fixtures/` をpositive / diagnostic / multi-file conformance targetとして管理
 - `examples/spec/COVERAGE.md` で全仕様機能をlessonまたはfixtureへ対応づける
 - 一般的なprogramからstdlib不足とhost requirement矛盾を発見する
-- playground sampleへsourceを複製せず生成・直接読込する
+- Playgroundとnative CLIが`examples/samples/`の同じsourceを自動発見して実行する
 - token / lossless CST / diagnostic / module interfaceのversioned artifact contract
 
 ### Web UI

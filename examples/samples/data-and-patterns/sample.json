@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "data-and-patterns",
+  "title": "データ型とPattern match",
+  "summary": "取り得る状態をADTで表し、matchで漏れなく値を取り出します。",
+  "kind": "lesson",
+  "difficulty": "beginner",
+  "topics": ["ADT", "constructor", "match"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["functions-and-pipelines"],
+  "featured": false,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

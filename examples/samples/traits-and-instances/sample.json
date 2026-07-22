@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "traits-and-instances",
+  "title": "Traitとinstance",
+  "summary": "型が満たす振る舞いをTraitで宣言し、instanceから選択します。",
+  "kind": "lesson",
+  "difficulty": "advanced",
+  "topics": ["trait", "instance", "dictionary"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["generic-structs"],
+  "featured": false,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

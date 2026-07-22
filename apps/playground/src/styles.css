@@ -172,7 +172,7 @@ textarea {
 }
 .sample-browser-dialog[open] {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
 }
 .sample-browser-dialog-header {
   display: flex;
@@ -210,28 +210,89 @@ textarea {
   cursor: pointer;
   font-size: 21px;
 }
-.sample-browser-groups {
+.sample-browser-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 10px 26px 0;
+  border-bottom: 1px solid #20332c;
+}
+.sample-browser-tabs button {
+  min-height: 38px;
+  padding: 0 16px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: #7c9188;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 750;
+}
+.sample-browser-tabs button[aria-selected="true"] {
+  border-bottom-color: #7ed6ad;
+  color: #e9f5f0;
+}
+.sample-browser-content {
   min-height: 0;
   overflow: auto;
   overscroll-behavior: contain;
   padding: 22px 26px 30px;
 }
-.sample-level + .sample-level {
+.sample-browser-panel[hidden] {
+  display: none;
+}
+.sample-path + .sample-path {
   margin-top: 30px;
 }
-.sample-level-heading {
+.sample-path-heading {
   display: flex;
   align-items: baseline;
   gap: 12px;
   margin-bottom: 11px;
 }
-.sample-level-heading h3 {
+.sample-path-heading h3 {
   margin: 0;
   color: #e9f5f0;
   font-size: 15px;
 }
-.sample-level-heading p {
+.sample-path-heading p {
   margin: 0;
+  color: #71877e;
+  font-size: 11px;
+}
+.sample-discover-filters {
+  display: grid;
+  grid-template-columns: minmax(210px, 2fr) repeat(3, minmax(120px, 1fr));
+  align-items: end;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.sample-discover-filters label:not(.sample-check) {
+  display: grid;
+  gap: 5px;
+  color: #82968e;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+}
+.sample-discover-filters input[type="search"],
+.sample-discover-filters select {
+  min-width: 0;
+  min-height: 38px;
+  border: 1px solid #294139;
+  border-radius: 9px;
+  padding: 0 10px;
+  color: #dce9e4;
+  background: #101c18;
+  font: inherit;
+}
+.sample-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #a4b9b0;
+  font-size: 11px;
+}
+.sample-result-count {
+  margin: 0 0 10px;
   color: #71877e;
   font-size: 11px;
 }
@@ -243,10 +304,9 @@ textarea {
 .sample-card {
   min-height: 128px;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  grid-template-rows: auto auto auto;
+  grid-template-rows: auto auto auto auto auto;
   align-content: start;
-  gap: 5px 10px;
+  gap: 5px;
   padding: 15px;
   border: 1px solid #20372f;
   border-radius: 13px;
@@ -265,30 +325,45 @@ textarea {
   border-color: #7ed6ad;
   box-shadow: inset 0 0 0 1px #7ed6ad55;
 }
-.sample-card-sequence {
-  grid-row: 1 / -1;
+.sample-card-meta {
   color: #7ed6ad;
-  font-family: "SFMono-Regular", Consolas, monospace;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
+  letter-spacing: 0.04em;
 }
 .sample-card strong {
   color: #edf7f3;
   font-size: 14px;
-}
-.sample-card-summary,
-.sample-card-concepts {
-  grid-column: 2;
 }
 .sample-card-summary {
   color: #9db1a9;
   font-size: 12px;
   line-height: 1.5;
 }
-.sample-card-concepts {
+.sample-card-topics {
   margin-top: 3px;
   color: #688078;
   font-size: 10px;
+}
+.sample-card-route {
+  color: #789087;
+  font-size: 9px;
+  line-height: 1.5;
+}
+.sample-card-badges {
+  min-height: 18px;
+  display: flex;
+  gap: 5px;
+  margin-top: 4px;
+}
+.sample-card-badge {
+  padding: 2px 6px;
+  border: 1px solid #35584c;
+  border-radius: 999px;
+  color: #9ee8c8;
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
 }
 
 .run-button {
@@ -627,6 +702,15 @@ pre {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.sample-guide-body {
+  margin: 14px 0;
+  padding-top: 14px;
+  border-top: 1px solid #294139;
+  color: #b8cbc3;
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
 
 footer {
   grid-row: 4;
@@ -712,14 +796,24 @@ footer a {
     max-width: 32rem;
     font-size: 12px;
   }
-  .sample-browser-groups {
+  .sample-browser-tabs {
+    padding-inline: 18px;
+  }
+  .sample-browser-content {
     padding: 17px 18px 24px;
   }
-  .sample-level-heading {
+  .sample-path-heading {
     display: block;
   }
-  .sample-level-heading p {
+  .sample-path-heading p {
     margin-top: 3px;
+  }
+  .sample-discover-filters {
+    grid-template-columns: 1fr;
+  }
+  .sample-discover-filters input[type="search"],
+  .sample-discover-filters select {
+    font-size: 16px;
   }
   .sample-card-grid {
     grid-template-columns: 1fr;

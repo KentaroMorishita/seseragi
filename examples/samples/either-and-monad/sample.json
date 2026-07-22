@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "either-and-monad",
+  "title": "EitherとMonad",
+  "summary": "PreludeのEither Monadを、doと明示的な>>=の両方で利用します。",
+  "kind": "recipe",
+  "difficulty": "advanced",
+  "topics": ["Either", "Monad", "do", ">>="],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["data-and-patterns", "effects-and-do"],
+  "featured": false,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

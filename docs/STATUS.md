@@ -49,7 +49,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | 性能モデル、最適化境界                     | 初稿あり      | shape・profile差分・stack fixtureあり      | 未着手             |
 | diagnostics、formatter、LSP                | 縦slice進行中 | diagnostic fixture + stdio / CLI integration | LSP-0とformatter-0を実装              |
 | syntax highlight                           | token契約あり | spec preview拡張あり                       | 仮実装あり         |
-| playground                                 | 共有契約あり  | lesson 01 + Phase 1 WASM execution          | Playground-1 mobile / deploy surface実装済み |
+| playground                                 | 共有契約あり  | 16 sampleのWASM / native CLI execution      | Learn / Discover catalog、mobile / deploy surface実装済み |
 
 ここでいう「未着手」はcanonical Rust compiler / runtime境界にまだ接続されていない状態です。
 移行前のroot TypeScript compilerは削除済みで、機能の実装済み判定には使いません。
@@ -58,6 +58,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 
 - 規範仕様: `docs/spec/00-language.md` から `14-performance.md` とAppendix grammar
 - 学習教材: `examples/spec/lessons/` の31 lesson
+- 現行compilerで動くsample catalog: `examples/samples/` のmetadata / source / guide / snapshot
 - versioned conformance入力: positive / diagnostic / runtime artifactとproject fixture
 - coverage表: `docs/SPEC_COVERAGE.md` と `examples/spec/COVERAGE.md`
 - grammar対応表: `examples/spec/grammar-coverage.json`
@@ -433,8 +434,10 @@ Playground-1は`apps/playground`へCodeMirror 6、専用Seseragi highlight、mob
 driver diagnosticsのsource range表示を実装しました。Vercel buildはreview済みWASM artifactを静的bundleするため
 Rust installを要求しません。Rust移行完了後に旧React / Monaco Playgroundは削除し、
 `apps/playground`とdeployment configを唯一のbrowser surfaceにしました。
-sample catalogは代表的な19本へ整理し、各sampleの目的とconceptをworkspaceの行数を増やさないGuide overlayで
-確認できます。`Signalで動くFlow UI`は`Ready` / `Focusing` / `Resting`のtyped state machine、再利用する
+sample catalogはstable slugのdirectoryを自動発見し、複数のlearning pathと検索・filterを分離しました。
+schema、欠落file、重複、prerequisite cycle、source hash、生成物stalenessをgateにし、同じsourceを
+Playground WASMとnative CLIで実行します。各sampleのguideはworkspaceの行数を増やさないoverlayで確認できます。
+`Interactive Web App`は`Ready` / `Focusing` / `Resting`のtyped state machine、再利用する
 `html.Style`、関数component、pure reducerを受け取る`dom.app`を一つのinteractive browser sampleで固定します。
 interactive previewはWebKitでも親pageが登録したbutton listenerを配送できるsandbox tokenを使い、同時に
 preview documentのCSPを`script-src 'none'`としてiframe-owned scriptを拒否します。

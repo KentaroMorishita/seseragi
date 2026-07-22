@@ -1,192 +1,366 @@
-export const sampleLevels = ["初級", "中級", "上級", "実践"] as const
+export const sampleKinds = ["lesson", "recipe", "showcase"] as const
+export const sampleDifficulties = [
+  "beginner",
+  "intermediate",
+  "advanced",
+] as const
+export const sampleCapabilities = ["console", "stdin", "dom"] as const
+export const sampleOutputModes = ["text", "html"] as const
 
-export type PlaygroundSampleLevel = (typeof sampleLevels)[number]
+export type SampleKind = (typeof sampleKinds)[number]
+export type SampleDifficulty = (typeof sampleDifficulties)[number]
+export type SampleCapability = (typeof sampleCapabilities)[number]
+export type SampleOutputMode = (typeof sampleOutputModes)[number]
 
-export type PlaygroundSampleDefinition = {
-  readonly id: string
-  readonly label: string
-  readonly level: PlaygroundSampleLevel
-  readonly sequence: number
-  readonly summary: string
-  readonly concepts: readonly string[]
-  readonly sourcePath: string
-  readonly stdin: string
-  readonly expectedOutput: string
-  readonly outputMode?: "text" | "html"
-  readonly interactive?: boolean
+export type SampleFiles = {
+  readonly source: string
+  readonly guide: string
+  readonly stdin?: string
+  readonly expectedOutput?: string
 }
 
-export const sampleCatalog: readonly PlaygroundSampleDefinition[] = [
-  {
-    id: "hello-world",
-    label: "Hello world",
-    level: "初級",
-    sequence: 1,
-    summary: "最小の公開mainから文字列を出力し、まず実行の手触りをつかみます。",
-    concepts: ["effect fn", "main", "println"],
-    sourcePath: "examples/playground/01-hello-world.ssrg",
-    stdin: "",
-    expectedOutput: "Hello, Seseragi!",
-  },
-  {
-    id: "functions-and-pipelines",
-    label: "関数とパイプライン",
-    level: "初級",
-    sequence: 2,
-    summary: "小さな関数を定義し、値を|>で左から右へ流して組み立てます。",
-    concepts: ["fn", "curry", "|>"],
-    sourcePath: "examples/playground/02-functions-and-pipelines.ssrg",
-    stdin: "",
-    expectedOutput: "Answer: 42",
-  },
-  {
-    id: "data-and-patterns",
-    label: "データ型とPattern match",
-    level: "初級",
-    sequence: 3,
-    summary: "取り得る状態をADTで表し、matchで漏れなく値を取り出します。",
-    concepts: ["ADT", "constructor", "match"],
-    sourcePath: "examples/playground/03-data-and-patterns.ssrg",
-    stdin: "",
-    expectedOutput: "Shipped to Osaka",
-  },
-  {
-    id: "collections",
-    label: "Collectionを組み立てる",
-    level: "初級",
-    sequence: 4,
-    summary:
-      "Range、内包表記、joinとMonoidのcombineでCollectionを読みやすく表示します。",
-    concepts: ["Range", "内包表記", "join", "Monoid", "combine"],
-    sourcePath: "examples/playground/04-collections.ssrg",
-    stdin: "",
-    expectedOutput: "[#2 / #4 / #6 / #8]",
-  },
-  {
-    id: "records",
-    label: "Recordと更新",
-    level: "中級",
-    sequence: 5,
-    summary: "Recordのfield、spread更新、width typingを一つの値で確認します。",
-    concepts: ["Record", "spread", "width typing"],
-    sourcePath: "examples/playground/05-records.ssrg",
-    stdin: "",
-    expectedOutput: "Aoi Tanaka",
-  },
-  {
-    id: "generic-structs",
-    label: "Generic Structとimpl",
-    level: "中級",
-    sequence: 6,
-    summary: "Box<Int>の推論と、genericなmethodが型を保つ流れを確認します。",
-    concepts: ["Struct", "generic inference", "impl"],
-    sourcePath: "examples/playground/06-generic-structs.ssrg",
-    stdin: "",
-    expectedOutput: "Box result: 42",
-  },
-  {
-    id: "newtypes",
-    label: "newtypeで境界を作る",
-    level: "中級",
-    sequence: 7,
-    summary: "実行時コストを増やさず、Intと混ざらないdomainのIDを作ります。",
-    concepts: ["newtype", "nominal type", "pattern"],
-    sourcePath: "examples/playground/07-newtypes.ssrg",
-    stdin: "",
-    expectedOutput: "/users/42",
-  },
-  {
-    id: "effects-and-do",
-    label: "Effectをdoで合成",
-    level: "中級",
-    sequence: 8,
-    summary: "複数のEffectとpureなletを、do blockの中で順番に合成します。",
-    concepts: ["Effect", "do", "let"],
-    sourcePath: "examples/playground/08-effects-and-do.ssrg",
-    stdin: "",
-    expectedOutput: "Building Seseragi...\nDone.",
-  },
-  {
-    id: "either-and-monad",
-    label: "EitherとMonad",
-    level: "上級",
-    sequence: 9,
-    summary: "PreludeのEither Monadを、doと明示的な>>=の両方で利用します。",
-    concepts: ["Either", "Monad", "do / >>="],
-    sourcePath: "examples/playground/09-either-and-monad.ssrg",
-    stdin: "",
-    expectedOutput: "do: 42\n>>=: 42",
-  },
-  {
-    id: "traits-and-instances",
-    label: "Traitとinstance",
-    level: "上級",
-    sequence: 10,
-    summary: "型が満たす振る舞いをTraitで宣言し、instanceから選択します。",
-    concepts: ["trait", "instance", "dictionary"],
-    sourcePath: "examples/playground/10-traits-and-instances.ssrg",
-    stdin: "",
-    expectedOutput: "active",
-  },
-  {
-    id: "impl-and-operators",
-    label: "implと演算子",
-    level: "上級",
-    sequence: 11,
-    summary: "Structのimplでmethodと演算子をdomainの型へまとめます。",
-    concepts: ["impl", "operator", "Add / Eq"],
-    sourcePath: "examples/playground/11-impl-and-operators.ssrg",
-    stdin: "",
-    expectedOutput: "Score: 42",
-  },
-  {
-    id: "signal-composition",
-    label: "Signalの<$> / <*>",
-    level: "上級",
-    sequence: 12,
-    summary: "SignalのFunctor / Applicative instanceを演算子から利用します。",
-    concepts: ["Signal", "<$>", "<*>"],
-    sourcePath: "examples/playground/12-signal-composition.ssrg",
-    stdin: "",
-    expectedOutput: "Signal answer: 42",
-  },
-  {
-    id: "signal-state",
-    label: "Signalで状態をまとめる",
-    level: "実践",
-    sequence: 13,
-    summary:
-      "複数Signalからderived stateを作り、transactionで一度に更新します。",
-    concepts: ["Signal", "derived state", "transaction"],
-    sourcePath: "examples/playground/13-signal-state.ssrg",
-    stdin: "",
-    expectedOutput: "Dashboard total: 52",
-  },
-  {
-    id: "html-components",
-    label: "ComponentとStyleでSSR",
-    level: "実践",
-    sequence: 14,
-    summary: "関数componentと再利用可能なStyleからHTMLを組み立て、SSRします。",
-    concepts: ["Html", "function component", "reusable Style"],
-    sourcePath: "examples/playground/14-html-components.ssrg",
-    stdin: "",
-    expectedOutput:
-      '<main id="app" class="min-h-screen bg-emerald-50 p-8 sm:p-12"><h1 class="mx-auto mb-6 max-w-xl text-3xl font-bold text-emerald-950">Seseragi components</h1><section class="mx-auto max-w-xl" style="--card-shadow: 0 4px 16px #0002; background-color: #fff; box-shadow: var(--card-shadow); border-radius: 16px; padding: 24px"><h2 style="color: #185f50; margin-top: 0">Reusable card</h2><p style="color: #315c53; margin-bottom: 0">Function component from children</p></section></main>',
-    outputMode: "html",
-  },
-  {
-    id: "interactive-app",
-    label: "Interactive Web App",
-    level: "実践",
-    sequence: 15,
-    summary:
-      "pure reducer、typed Msg、Signal、DOM mountを小さなWeb appに統合します。",
-    concepts: ["typed Msg", "pure reducer", "dom.app"],
-    sourcePath: "examples/playground/15-interactive-app.ssrg",
-    stdin: "",
-    expectedOutput: "",
-    outputMode: "html",
-    interactive: true,
-  },
-]
+export type SampleMetadata = {
+  readonly id: string
+  readonly title: string
+  readonly summary: string
+  readonly kind: SampleKind
+  readonly difficulty: SampleDifficulty
+  readonly topics: readonly string[]
+  readonly capabilities: readonly SampleCapability[]
+  readonly outputMode: SampleOutputMode
+  readonly prerequisites: readonly string[]
+  readonly featured: boolean
+  readonly isNew: boolean
+  readonly interactive: boolean
+  readonly files: SampleFiles
+}
+
+export type PlaygroundSampleDefinition = Omit<SampleMetadata, "files"> & {
+  readonly sourcePath: string
+  readonly guidePath: string
+  readonly stdinPath?: string
+  readonly expectedOutputPath?: string
+  readonly sourceHash: string
+}
+
+export type GeneratedSample = {
+  readonly definition: PlaygroundSampleDefinition
+  readonly source: string
+  readonly guide: string
+  readonly stdin: string
+  readonly expectedOutput: string
+}
+
+export type LearningPathDefinition = {
+  readonly id: string
+  readonly title: string
+  readonly summary: string
+  readonly samples: readonly string[]
+}
+
+type JsonObject = Readonly<Record<string, unknown>>
+
+const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u
+const fileNamePattern = /^[a-z0-9][a-z0-9._-]*$/u
+
+export function parseSampleMetadata(
+  value: unknown,
+  directoryId: string
+): SampleMetadata {
+  const metadata = expectObject(value, `sample ${directoryId}`)
+  assertAllowedKeys(
+    metadata,
+    [
+      "$schema",
+      "id",
+      "title",
+      "summary",
+      "kind",
+      "difficulty",
+      "topics",
+      "capabilities",
+      "outputMode",
+      "prerequisites",
+      "featured",
+      "isNew",
+      "interactive",
+      "files",
+    ],
+    `sample ${directoryId}`
+  )
+
+  const id = expectSlug(metadata.id, `sample ${directoryId}.id`)
+  if (id !== directoryId) {
+    throw new Error(`sample directory ${directoryId} does not match id ${id}`)
+  }
+  const kind = expectEnum(metadata.kind, sampleKinds, `sample ${id}.kind`)
+  const difficulty = expectEnum(
+    metadata.difficulty,
+    sampleDifficulties,
+    `sample ${id}.difficulty`
+  )
+  const topics = expectUniqueStrings(metadata.topics, `sample ${id}.topics`)
+  if (topics.length === 0)
+    throw new Error(`sample ${id}.topics must not be empty`)
+  const capabilities = expectEnumArray(
+    metadata.capabilities,
+    sampleCapabilities,
+    `sample ${id}.capabilities`
+  )
+  if (capabilities.length === 0) {
+    throw new Error(`sample ${id}.capabilities must not be empty`)
+  }
+  const outputMode = expectEnum(
+    metadata.outputMode,
+    sampleOutputModes,
+    `sample ${id}.outputMode`
+  )
+  const prerequisites = expectUniqueSlugs(
+    metadata.prerequisites,
+    `sample ${id}.prerequisites`
+  )
+  const featured = expectBoolean(metadata.featured, `sample ${id}.featured`)
+  const isNew = expectOptionalBoolean(metadata.isNew, `sample ${id}.isNew`)
+  const interactive = expectOptionalBoolean(
+    metadata.interactive,
+    `sample ${id}.interactive`
+  )
+  const files = parseSampleFiles(metadata.files, id)
+
+  if (interactive && !capabilities.includes("dom")) {
+    throw new Error(`interactive sample ${id} must declare the dom capability`)
+  }
+  if (capabilities.includes("stdin") !== (files.stdin !== undefined)) {
+    throw new Error(
+      `sample ${id} must declare both the stdin capability and stdin file`
+    )
+  }
+  if (!interactive && files.expectedOutput === undefined) {
+    throw new Error(`non-interactive sample ${id} requires expectedOutput`)
+  }
+
+  return {
+    id,
+    title: expectNonEmptyString(metadata.title, `sample ${id}.title`),
+    summary: expectNonEmptyString(metadata.summary, `sample ${id}.summary`),
+    kind,
+    difficulty,
+    topics,
+    capabilities,
+    outputMode,
+    prerequisites,
+    featured,
+    isNew,
+    interactive,
+    files,
+  }
+}
+
+export function parseLearningPaths(value: unknown): LearningPathDefinition[] {
+  const root = expectObject(value, "learning paths")
+  assertAllowedKeys(root, ["$schema", "schema", "paths"], "learning paths")
+  if (root.schema !== 1) throw new Error("learning paths.schema must be 1")
+  if (!Array.isArray(root.paths))
+    throw new Error("learning paths.paths must be an array")
+
+  return root.paths.map((rawPath, index) => {
+    const path = expectObject(rawPath, `learning path ${index}`)
+    assertAllowedKeys(
+      path,
+      ["id", "title", "summary", "samples"],
+      `learning path ${index}`
+    )
+    const id = expectSlug(path.id, `learning path ${index}.id`)
+    return {
+      id,
+      title: expectNonEmptyString(path.title, `learning path ${id}.title`),
+      summary: expectNonEmptyString(
+        path.summary,
+        `learning path ${id}.summary`
+      ),
+      samples: expectUniqueSlugs(path.samples, `learning path ${id}.samples`),
+    }
+  })
+}
+
+export function validateSampleCatalog(
+  samples: readonly Pick<SampleMetadata, "id" | "prerequisites">[],
+  learningPaths: readonly LearningPathDefinition[]
+): void {
+  const byId = new Map<string, Pick<SampleMetadata, "id" | "prerequisites">>()
+  for (const sample of samples) {
+    if (byId.has(sample.id))
+      throw new Error(`duplicate sample id: ${sample.id}`)
+    byId.set(sample.id, sample)
+  }
+
+  for (const sample of samples) {
+    for (const prerequisite of sample.prerequisites) {
+      if (!byId.has(prerequisite)) {
+        throw new Error(
+          `sample ${sample.id} references missing prerequisite ${prerequisite}`
+        )
+      }
+    }
+  }
+  assertAcyclicPrerequisites(byId)
+
+  const pathIds = new Set<string>()
+  for (const path of learningPaths) {
+    if (pathIds.has(path.id))
+      throw new Error(`duplicate learning path id: ${path.id}`)
+    pathIds.add(path.id)
+    if (path.samples.length === 0) {
+      throw new Error(`learning path ${path.id} must not be empty`)
+    }
+    for (const sampleId of path.samples) {
+      if (!byId.has(sampleId)) {
+        throw new Error(
+          `learning path ${path.id} references missing sample ${sampleId}`
+        )
+      }
+    }
+  }
+}
+
+function parseSampleFiles(value: unknown, id: string): SampleFiles {
+  const files = expectObject(value, `sample ${id}.files`)
+  assertAllowedKeys(
+    files,
+    ["source", "guide", "stdin", "expectedOutput"],
+    `sample ${id}.files`
+  )
+  return {
+    source: expectFileName(files.source, `sample ${id}.files.source`),
+    guide: expectFileName(files.guide, `sample ${id}.files.guide`),
+    ...(files.stdin === undefined
+      ? {}
+      : { stdin: expectFileName(files.stdin, `sample ${id}.files.stdin`) }),
+    ...(files.expectedOutput === undefined
+      ? {}
+      : {
+          expectedOutput: expectFileName(
+            files.expectedOutput,
+            `sample ${id}.files.expectedOutput`
+          ),
+        }),
+  }
+}
+
+function assertAcyclicPrerequisites(
+  byId: ReadonlyMap<string, Pick<SampleMetadata, "id" | "prerequisites">>
+): void {
+  const visiting = new Set<string>()
+  const visited = new Set<string>()
+
+  const visit = (id: string, trail: readonly string[]): void => {
+    if (visited.has(id)) return
+    if (visiting.has(id)) {
+      throw new Error(
+        `sample prerequisite cycle: ${[...trail, id].join(" -> ")}`
+      )
+    }
+    visiting.add(id)
+    const sample = byId.get(id)
+    if (!sample) return
+    for (const prerequisite of sample.prerequisites) {
+      visit(prerequisite, [...trail, id])
+    }
+    visiting.delete(id)
+    visited.add(id)
+  }
+
+  for (const id of byId.keys()) visit(id, [])
+}
+
+function expectObject(value: unknown, context: string): JsonObject {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    throw new Error(`${context} must be an object`)
+  }
+  return value as JsonObject
+}
+
+function expectNonEmptyString(value: unknown, context: string): string {
+  if (typeof value !== "string" || value.trim() === "") {
+    throw new Error(`${context} must be a non-empty string`)
+  }
+  return value
+}
+
+function expectBoolean(value: unknown, context: string): boolean {
+  if (typeof value !== "boolean")
+    throw new Error(`${context} must be a boolean`)
+  return value
+}
+
+function expectOptionalBoolean(value: unknown, context: string): boolean {
+  return value === undefined ? false : expectBoolean(value, context)
+}
+
+function expectSlug(value: unknown, context: string): string {
+  const slug = expectNonEmptyString(value, context)
+  if (!slugPattern.test(slug))
+    throw new Error(`${context} must be a stable slug`)
+  return slug
+}
+
+function expectFileName(value: unknown, context: string): string {
+  const fileName = expectNonEmptyString(value, context)
+  if (!fileNamePattern.test(fileName)) {
+    throw new Error(`${context} must be a file in the sample directory`)
+  }
+  return fileName
+}
+
+function expectUniqueStrings(value: unknown, context: string): string[] {
+  if (!Array.isArray(value)) throw new Error(`${context} must be an array`)
+  const strings = value.map((item, index) =>
+    expectNonEmptyString(item, `${context}[${index}]`)
+  )
+  if (new Set(strings).size !== strings.length) {
+    throw new Error(`${context} must not contain duplicates`)
+  }
+  return strings
+}
+
+function expectUniqueSlugs(value: unknown, context: string): string[] {
+  const strings = expectUniqueStrings(value, context)
+  for (const [index, string] of strings.entries()) {
+    expectSlug(string, `${context}[${index}]`)
+  }
+  return strings
+}
+
+function expectEnum<const Value extends string>(
+  value: unknown,
+  allowed: readonly Value[],
+  context: string
+): Value {
+  if (typeof value !== "string" || !allowed.includes(value as Value)) {
+    throw new Error(`${context} must be one of: ${allowed.join(", ")}`)
+  }
+  return value as Value
+}
+
+function expectEnumArray<const Value extends string>(
+  value: unknown,
+  allowed: readonly Value[],
+  context: string
+): Value[] {
+  const values = expectUniqueStrings(value, context)
+  return values.map((item, index) =>
+    expectEnum(item, allowed, `${context}[${index}]`)
+  )
+}
+
+function assertAllowedKeys(
+  value: JsonObject,
+  allowed: readonly string[],
+  context: string
+): void {
+  const allowedKeys = new Set(allowed)
+  const unknown = Object.keys(value).filter((key) => !allowedKeys.has(key))
+  if (unknown.length > 0) {
+    throw new Error(`${context} has unknown field(s): ${unknown.join(", ")}`)
+  }
+}

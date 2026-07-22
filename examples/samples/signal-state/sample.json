@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "signal-state",
+  "title": "Signalで状態をまとめる",
+  "summary": "複数Signalからderived stateを作り、transactionで一度に更新します。",
+  "kind": "showcase",
+  "difficulty": "advanced",
+  "topics": ["Signal", "derived state", "transaction"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["signal-composition"],
+  "featured": false,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "html-components",
+  "title": "ComponentとStyleでSSR",
+  "summary": "関数componentと再利用可能なStyleからHTMLを組み立て、SSRします。",
+  "kind": "showcase",
+  "difficulty": "advanced",
+  "topics": ["Html", "function component", "Style", "SSR"],
+  "capabilities": ["console"],
+  "outputMode": "html",
+  "prerequisites": ["functions-and-pipelines", "records"],
+  "featured": true,
+  "isNew": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.html"
+  }
+}

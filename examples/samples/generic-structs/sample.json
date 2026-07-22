@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "generic-structs",
+  "title": "Generic Structとimpl",
+  "summary": "Box<Int>の推論と、genericなmethodが型を保つ流れを確認します。",
+  "kind": "lesson",
+  "difficulty": "intermediate",
+  "topics": ["Struct", "generic inference", "impl"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["records"],
+  "featured": false,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

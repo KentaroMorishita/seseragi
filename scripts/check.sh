@@ -18,6 +18,8 @@ bunx biome lint \
   apps/playground/src/runtime \
   apps/playground/src/ui \
   apps/playground/tests \
+  scripts/check-samples-cli.ts \
+  scripts/generate-playground-samples.ts \
   runtime/ts/src
 
 echo "Testing Rust workspace..."
@@ -25,6 +27,9 @@ cargo test --workspace
 
 echo "Running canonical conformance fixtures..."
 cargo run -p seseragi-conformance -- .
+
+echo "Checking runnable samples through the native CLI..."
+bun run test:samples:cli
 
 echo "Installing frozen Playground dependencies..."
 (
@@ -38,6 +43,7 @@ bun run test:playground:wasm
 echo "Type-checking and building Playground..."
 (
   cd apps/playground
+  bun run samples:check
   bun run typecheck
   bun run build
 )

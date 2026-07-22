@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "effects-and-do",
+  "title": "Effectをdoで合成",
+  "summary": "複数のEffectとpureなletを、do blockの中で順番に合成します。",
+  "kind": "lesson",
+  "difficulty": "intermediate",
+  "topics": ["Effect", "do", "let"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["functions-and-pipelines"],
+  "featured": false,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

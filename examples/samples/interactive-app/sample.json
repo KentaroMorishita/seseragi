@@ -1,0 +1,19 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "interactive-app",
+  "title": "Interactive Web App",
+  "summary": "pure reducer、typed Msg、Signal、DOM mountを小さなWeb appに統合します。",
+  "kind": "showcase",
+  "difficulty": "advanced",
+  "topics": ["typed Msg", "pure reducer", "Signal", "dom.app"],
+  "capabilities": ["dom"],
+  "outputMode": "html",
+  "prerequisites": ["signal-state", "html-components"],
+  "featured": true,
+  "isNew": true,
+  "interactive": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md"
+  }
+}

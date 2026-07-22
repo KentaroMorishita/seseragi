@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "signal-composition",
+  "title": "Signalの<$> / <*>",
+  "summary": "SignalのFunctor / Applicative instanceを演算子から利用します。",
+  "kind": "lesson",
+  "difficulty": "advanced",
+  "topics": ["Signal", "Functor", "Applicative", "<$>", "<*>"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["traits-and-instances"],
+  "featured": false,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

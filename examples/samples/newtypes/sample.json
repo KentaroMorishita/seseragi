@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "newtypes",
+  "title": "newtypeで境界を作る",
+  "summary": "実行時コストを増やさず、Intと混ざらないdomainのIDを作ります。",
+  "kind": "lesson",
+  "difficulty": "intermediate",
+  "topics": ["newtype", "nominal type", "pattern"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["data-and-patterns"],
+  "featured": false,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

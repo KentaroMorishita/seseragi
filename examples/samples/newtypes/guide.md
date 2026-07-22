@@ -1,0 +1,1 @@
+同じInt表現でも、UserIdを別のnominal typeとして扱います。constructorとpattern以外では中身へ暗黙変換されません。

@@ -5,6 +5,9 @@
 言語実装のconformance完了条件は、required行がすべてcoveredになり、positive / negativeの両方が必要な
 機能でdiagnostic fixtureも通ることです。
 
+`examples/spec/lessons/`は完成仕様のdesign coverage、`examples/samples/`は現行compilerで
+実行可能なPlayground / native CLI catalogです。両者の状態を混同しません。
+
 | 仕様領域                                      | 学習用target      | 機械検証target                                 | 状態    |
 | --------------------------------------------- | ----------------- | ---------------------------------------------- | ------- |
 | program、entry point、Effect main             | Lessons 01-18     | entry signature diagnostics / `project-schema-1/{imported-effect-console,rock-paper-scissors-cli-split}` | partial |
@@ -67,7 +70,7 @@
 | source map / cross-language stack             | interop guide     | `projects/source-map-rejection`                | partial |
 | manifest、dependency、lockfile                | package guide     | `fixtures/projects/package-*` + split RPS manifest discovery | partial (path dependency execution + source identity audit) |
 | parser recovery、formatter、LSP、highlight    | lessons全体       | tooling snapshots + Phase 1 format round-trip   | partial |
-| shared-driver playground / browser host       | Lesson 01         | `tests/playground-wasm.integration.ts`         | covered |
+| shared-driver playground / browser host       | `examples/samples/` | `apps/playground/tests/playground.integration.test.ts` + native CLI sample check | covered |
 | stable tool options / target capabilities     | none              | `projects/target-capabilities`                 | covered |
 | diagnostic schema / inference explanation     | none              | diagnostic JSON / explain snapshots            | partial |
 | document comments / doctest                   | none              | `projects/doc-tests`                           | partial |

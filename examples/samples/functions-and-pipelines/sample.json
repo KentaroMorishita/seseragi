@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "functions-and-pipelines",
+  "title": "関数とパイプライン",
+  "summary": "小さな関数を定義し、値を|>で左から右へ流して組み立てます。",
+  "kind": "lesson",
+  "difficulty": "beginner",
+  "topics": ["fn", "curry", "pipeline"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["hello-world"],
+  "featured": false,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

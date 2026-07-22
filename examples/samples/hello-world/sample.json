@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "hello-world",
+  "title": "Hello world",
+  "summary": "最小の公開mainから文字列を出力し、まず実行の手触りをつかみます。",
+  "kind": "lesson",
+  "difficulty": "beginner",
+  "topics": ["effect fn", "main", "println"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": [],
+  "featured": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

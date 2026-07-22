@@ -4,11 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "samples:generate": "bun ../../scripts/generate-playground-samples.ts",
+    "samples:check": "bun ../../scripts/generate-playground-samples.ts --check",
+    "dev": "bun run samples:generate && vite",
+    "build": "bun run samples:check && vite build",
     "build:wasm": "../../scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg",
-    "test": "bun test",
-    "typecheck": "tsc --noEmit"
+    "test": "bun run samples:check && bun test",
+    "typecheck": "bun run samples:check && tsc --noEmit"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.0.0",

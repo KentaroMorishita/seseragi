@@ -28,7 +28,7 @@
             aria-controls="sample-browser-dialog"
             aria-expanded="false"
           >
-            <span id="current-sample-level" class="sample-browser-level">初級 01</span>
+            <span id="current-sample-context" class="sample-browser-level">初級 · Lesson</span>
             <span id="current-sample-title" class="sample-browser-title">Hello world</span>
             <span class="sample-browser-chevron" aria-hidden="true">⌄</span>
           </button>
@@ -69,9 +69,9 @@
       >
         <div class="sample-browser-dialog-header">
           <div>
-            <span class="sample-browser-kicker">LEARNING PATH</span>
-            <h2 id="sample-browser-title">Seseragiを学ぶ</h2>
-            <p>上から順に進めても、知りたいtopicから始めても大丈夫です。</p>
+            <span class="sample-browser-kicker">SAMPLE CATALOG</span>
+            <h2 id="sample-browser-title">動かしながらSeseragiを学ぶ</h2>
+            <p>学習pathで進むか、目的・topicからサンプルを探せます。</p>
           </div>
           <button
             id="sample-browser-close"
@@ -80,7 +80,72 @@
             aria-label="サンプル一覧を閉じる"
           >×</button>
         </div>
-        <div id="sample-browser-groups" class="sample-browser-groups"></div>
+        <div class="sample-browser-tabs" role="tablist" aria-label="サンプルの探し方">
+          <button
+            id="sample-browser-learn-tab"
+            type="button"
+            role="tab"
+            aria-controls="sample-browser-learn-panel"
+            aria-selected="true"
+          >Learn</button>
+          <button
+            id="sample-browser-discover-tab"
+            type="button"
+            role="tab"
+            aria-controls="sample-browser-discover-panel"
+            aria-selected="false"
+          >Discover</button>
+        </div>
+        <div class="sample-browser-content">
+          <section
+            id="sample-browser-learn-panel"
+            class="sample-browser-panel"
+            role="tabpanel"
+            aria-labelledby="sample-browser-learn-tab"
+          >
+            <div id="sample-learning-paths" class="sample-learning-paths"></div>
+          </section>
+          <section
+            id="sample-browser-discover-panel"
+            class="sample-browser-panel"
+            role="tabpanel"
+            aria-labelledby="sample-browser-discover-tab"
+            hidden
+          >
+            <div class="sample-discover-filters">
+              <label class="sample-search-field">
+                <span>検索</span>
+                <input id="sample-search" type="search" placeholder="title・summary・topic" />
+              </label>
+              <label>
+                <span>Kind</span>
+                <select id="sample-kind-filter">
+                  <option value="">すべて</option>
+                  <option value="lesson">Lesson</option>
+                  <option value="recipe">Recipe</option>
+                  <option value="showcase">Showcase</option>
+                </select>
+              </label>
+              <label>
+                <span>Topic</span>
+                <select id="sample-topic-filter"><option value="">すべて</option></select>
+              </label>
+              <label>
+                <span>Capability</span>
+                <select id="sample-capability-filter">
+                  <option value="">すべて</option>
+                  <option value="console">Console</option>
+                  <option value="stdin">Stdin</option>
+                  <option value="dom">DOM</option>
+                </select>
+              </label>
+              <label class="sample-check"><input id="sample-featured-filter" type="checkbox" /> Featured</label>
+              <label class="sample-check"><input id="sample-new-filter" type="checkbox" /> New</label>
+            </div>
+            <p id="sample-result-count" class="sample-result-count"></p>
+            <div id="sample-discover-results" class="sample-card-grid"></div>
+          </section>
+        </div>
       </dialog>
 
       <nav class="mobile-tabs" aria-label="Playground panels">
@@ -147,6 +212,7 @@
             <h2 id="sample-guide-title"></h2>
             <p id="sample-guide-summary"></p>
             <ul id="sample-guide-concepts" aria-label="学べる要素"></ul>
+            <div id="sample-guide-body" class="sample-guide-body"></div>
             <code id="sample-guide-source"></code>
           </aside>
           <div id="editor" class="editor-host"></div>

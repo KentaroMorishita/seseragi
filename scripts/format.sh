@@ -18,4 +18,6 @@ bunx biome format --write \
   apps/playground/src/runtime \
   apps/playground/src/ui \
   apps/playground/tests \
+  scripts/check-samples-cli.ts \
+  scripts/generate-playground-samples.ts \
   runtime/ts/src

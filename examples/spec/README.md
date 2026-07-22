@@ -1,7 +1,8 @@
 # Seseragi specification examples
 
-このdirectoryは刷新仕様に対する学習教材とconformance targetです。現行compilerとの互換exampleでは
-ありません。読みやすさと機械的網羅性を一fileへ同居させず、二層に分けます。
+このdirectoryは完成仕様に対するdesign curriculumとconformance targetです。現行compilerとの互換exampleでは
+ありません。今すぐ実行して学ぶcatalogは [`../samples/`](../samples/README.md) を正本とし、
+Playgroundとnative CLIが同じsourceを検証します。
 
 仕様、fixture、実装の現在の境界は [`docs/STATUS.md`](../../docs/STATUS.md) を参照してください。
 
@@ -20,8 +21,8 @@
 - `docs/spec/` の正本に定義された構文とAPIだけを使う。
 - host service requirementとfailure型をmainの型へ明示する。
 - 期待する出力または値をfile内に記録する。
-- parse、type check、format、実行、LSP、highlight、playgroundで同じsourceを使う。
-- playgroundへ載せる場合もsourceを複製せず、このfileから生成または直接読み込む。
+- 実装sliceが到達した時点でparse、type check、format、実行、LSP、highlightへ同じsourceを接続する。
+- 現行Playgroundへ載せる実行可能exampleは`examples/samples/`へ独立したsample資産として置く。
 
 lessonを追加するときは、一般的なcodeを書くために毎回自前実装が必要になった処理を記録します。
 複数のexampleで繰り返す純粋操作、Effect operation、decoder、resource処理は標準ライブラリ候補です。

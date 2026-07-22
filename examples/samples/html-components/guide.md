@@ -1,0 +1,1 @@
+関数をcomponentとしてchildrenから呼び、`html.Style`をtop-level値へ切り出して再利用します。出力はescaped HTMLとしてSSR previewへ渡されます。

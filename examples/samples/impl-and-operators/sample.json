@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "impl-and-operators",
+  "title": "implと演算子",
+  "summary": "Structのimplでmethodと演算子をdomainの型へまとめます。",
+  "kind": "recipe",
+  "difficulty": "advanced",
+  "topics": ["impl", "operator", "Add", "Eq"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["generic-structs", "traits-and-instances"],
+  "featured": false,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

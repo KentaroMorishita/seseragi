@@ -180,9 +180,12 @@ playgroundは専用の簡易parserやruntime semanticsを持ちません。compi
 diagnostic、実行hostを再利用し、CLIと同じsourceへ同じ結果を返します。browserなどhost targetの
 差はservice providerで表し、言語構文の分岐にしません。
 
-playground sampleは `examples/spec/lessons/` のsourceから生成または直接読み込みます。同じprogramを
-playground source内へ手作業で複製してはなりません。lessonの変更を取り込んだ生成物には
-source fileと内容hashを記録し、stale sampleを検出できなければなりません。
+現行compilerで実行できるplayground sampleは `examples/samples/<stable-slug>/` を正本とします。
+各directoryはmetadata、source、guide、必要ならStdinと期待出力を所有し、Playgroundとnative CLIの
+検証が同じsourceを読みます。中央のimport map、全体通し番号、別copyを手作業で保守してはなりません。
+生成manifestにはsource fileと内容hashを記録し、schema違反、重複id、欠落file、prerequisite cycle、
+stale生成物をbuild前に検出します。`examples/spec/lessons/` は完成仕様を学ぶdesign curriculumであり、
+未実装surfaceをPlaygroundへ公開するためのcopy元にはしません。
 
 ## 12.12 languageとしての最低surface
 
