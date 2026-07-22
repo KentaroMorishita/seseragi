@@ -6,6 +6,31 @@ use crate::pipeline::{
 use std::fs;
 use std::path::Path;
 
+pub(crate) fn check_analysis_json(case: &Path) -> Result<(), String> {
+    let source_path = case.join("main.ssrg");
+    let expected_path = case.join("analysis.json");
+    let source = fs::read_to_string(&source_path)
+        .map_err(|error| format!("failed to read source: {error}"))?;
+    let expected = fs::read_to_string(&expected_path)
+        .map_err(|error| format!("failed to read expected AnalysisDocument: {error}"))?;
+    let module_id = artifact_module_id(case)?;
+    let source_name = interface_source_name(case)?;
+    let actual = seseragi_driver::analyze_module(seseragi_driver::CompileInput::new(
+        &source_name,
+        &module_id,
+        &source,
+    ));
+    let actual_value = serde_json::to_value(actual)
+        .map_err(|error| format!("failed to encode AnalysisDocument: {error}"))?;
+    let expected_value: serde_json::Value = serde_json::from_str(&expected)
+        .map_err(|error| format!("failed to parse expected AnalysisDocument: {error}"))?;
+
+    if actual_value != expected_value {
+        return Err("AnalysisDocument artifact mismatch".to_owned());
+    }
+    Ok(())
+}
+
 pub(crate) fn check_tokens(case: &Path) -> Result<(), String> {
     let source_path = case.join("main.ssrg");
     let expected_path = case.join("tokens.json");

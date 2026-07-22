@@ -4,6 +4,7 @@
 //! project layer. This crate owns the ordered frontend-to-backend pipeline and
 //! never derives logical identity from a physical path.
 
+mod analyze;
 mod compile;
 mod dependencies;
 mod format;
@@ -15,6 +16,7 @@ mod output_plan;
 mod project_compile;
 mod reporting;
 
+pub use analyze::analyze_module;
 pub use compile::{
     compile_linked_module, compile_linked_module_with_output_paths, compile_module,
     LinkedCompileError,
@@ -33,3 +35,7 @@ pub use project_compile::{
 };
 pub use reporting::render_terminal_diagnostics;
 pub use seseragi_formatter::FormattedSource;
+pub use seseragi_semantics::{
+    AnalysisCallable, AnalysisCallableOccurrence, AnalysisDocument, AnalysisParameter,
+    AnalysisReferenceItem, AnalysisSymbol, AnalysisSymbolOccurrence, AnalysisTypeOccurrence,
+};

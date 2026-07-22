@@ -42,4 +42,4 @@ pub use specifier::{
     classify_specifier, resolve_relative_specifier, ImportSpecifier, RelativeSpecifierError,
     SpecifierError,
 };
-pub use standard::{is_standard_module, standard_module_target};
+pub use standard::{is_standard_module, standard_module_interfaces, standard_module_target};

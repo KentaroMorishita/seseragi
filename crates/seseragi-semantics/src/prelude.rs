@@ -372,6 +372,10 @@ pub(crate) const SUM_TYPES: &[PreludeSumType] = &[
     },
 ];
 
+pub(crate) const PURE_FUNCTION_NAMES: &[&str] = &[
+    "reduce", "join", "sum", "combine", "forEach", "unfold", "next",
+];
+
 pub(crate) fn sum_type_for_symbol(
     namespace: SymbolNamespace,
     spelling: &str,
@@ -406,23 +410,10 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
                 | "Stdin"
                 | "StdinError"
         ),
-        SymbolNamespace::Value => matches!(
-            spelling,
-            "print"
-                | "println"
-                | "readLine"
-                | "succeed"
-                | "fail"
-                | "mapError"
-                | "fromEither"
-                | "reduce"
-                | "join"
-                | "sum"
-                | "combine"
-                | "forEach"
-                | "unfold"
-                | "next"
-        ),
+        SymbolNamespace::Value => {
+            crate::effect_ops::known_effect_operation_by_surface(spelling).is_some()
+                || PURE_FUNCTION_NAMES.contains(&spelling)
+        }
         SymbolNamespace::Operator => {
             seseragi_syntax::standard_operator(spelling).is_some()
                 || seseragi_syntax::standard_trait_operator(spelling).is_some()

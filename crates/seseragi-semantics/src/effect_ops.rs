@@ -76,6 +76,10 @@ pub(crate) fn known_effect_operation_by_surface(
         .find(|operation| operation.surface_name == surface_name)
 }
 
+pub(crate) fn known_effect_operations() -> impl Iterator<Item = KnownEffectOperation> {
+    KNOWN_EFFECT_OPERATIONS.iter().copied()
+}
+
 pub fn known_effect_operation_by_semantic(semantic_name: &str) -> Option<KnownEffectOperation> {
     KNOWN_EFFECT_OPERATIONS
         .iter()

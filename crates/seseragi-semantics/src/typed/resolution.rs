@@ -961,6 +961,7 @@ fn standard_next_callable(
     resolved: &ResolvedModule,
     semantic_types: &SemanticTypeCatalog,
 ) -> TopLevelPureFunction {
+    let mut callable = standard_next_reference_callable();
     let element = named_type("A");
     let iterator = named_type_with("Iterator", vec![element.clone()]);
     let semantic_element = scheme_value("A");
@@ -974,13 +975,16 @@ fn standard_next_callable(
             semantic_iterator.key.clone(),
         ]),
     };
-    let result = named_type_with(
-        "Maybe",
-        vec![TypedType::Tuple {
-            elements: vec![element, iterator.clone()],
-        }],
-    );
+    let result = callable.result.clone();
     let semantic_result = prelude_adt_semantic(resolved, semantic_types, &result, semantic_payload);
+    callable.semantic_parameters = vec![semantic_iterator.key];
+    callable.semantic_result = semantic_result.key;
+    callable
+}
+
+fn standard_next_reference_callable() -> TopLevelPureFunction {
+    let element = named_type("A");
+    let iterator = named_type_with("Iterator", vec![element.clone()]);
     TopLevelPureFunction {
         symbol: "std/prelude::next".to_owned(),
         trait_identity: None,
@@ -989,10 +993,40 @@ fn standard_next_callable(
         constraints: Vec::new(),
         constraint_identities: Vec::new(),
         parameters: vec![iterator.clone()],
-        semantic_parameters: vec![semantic_iterator.key],
-        semantic_result: semantic_result.key,
-        result,
+        semantic_parameters: vec![SemanticTypeKey::Other],
+        semantic_result: SemanticTypeKey::Other,
+        result: named_type_with(
+            "Maybe",
+            vec![TypedType::Tuple {
+                elements: vec![element, iterator],
+            }],
+        ),
     }
+}
+
+pub(crate) fn standard_reference_callables() -> Vec<(&'static str, TopLevelPureFunction)> {
+    let mut callables = crate::prelude::TRAIT_METHODS
+        .iter()
+        .map(|method| (method.name, standard_trait_method_callable(method)))
+        .collect::<Vec<_>>();
+    callables.extend(
+        crate::prelude::PURE_FUNCTION_NAMES
+            .iter()
+            .filter_map(|name| {
+                let callable = match *name {
+                    "reduce" => standard_reduce_callable(),
+                    "join" => standard_join_callable(),
+                    "sum" => standard_sum_callable(),
+                    "combine" => standard_combine_callable(),
+                    "forEach" => standard_for_each_callable(),
+                    "unfold" => standard_unfold_callable(),
+                    "next" => standard_next_reference_callable(),
+                    _ => return None,
+                };
+                Some((*name, callable))
+            }),
+    );
+    callables
 }
 
 fn named_type(name: &str) -> TypedType {

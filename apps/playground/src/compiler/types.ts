@@ -53,8 +53,71 @@ export type EntryContract = {
       }
 }
 
-type DiagnosticArtifact = {
+export type DiagnosticArtifact = {
   readonly diagnostics: readonly Diagnostic[]
+}
+
+export type AnalysisParameter = {
+  readonly name?: string
+  readonly type: string
+}
+
+export type AnalysisCallable = {
+  readonly identity: string
+  readonly name: string
+  readonly module: string
+  readonly typeParameters: readonly string[]
+  readonly parameters: readonly AnalysisParameter[]
+  readonly result: string
+  readonly constraints: readonly string[]
+  readonly signature: string
+  readonly remainingParameters: readonly AnalysisParameter[]
+}
+
+export type AnalysisSymbol = {
+  readonly id: number
+  readonly identity: string
+  readonly name: string
+  readonly module: string
+  readonly namespace: string
+  readonly kind: string
+  readonly definition: SourceRange
+  readonly typeName?: string
+  readonly callable?: AnalysisCallable
+  readonly description?: string
+}
+
+export type AnalysisReferenceItem = {
+  readonly identity: string
+  readonly name: string
+  readonly module: string
+  readonly category: string
+  readonly kind: string
+  readonly signature?: string
+  readonly description: string
+  readonly typeParameters: readonly string[]
+  readonly constraints: readonly string[]
+}
+
+export type AnalysisDocument = {
+  readonly schema: number
+  readonly source: string
+  readonly module: string
+  readonly diagnostics: DiagnosticArtifact
+  readonly symbols: readonly AnalysisSymbol[]
+  readonly symbolOccurrences: readonly {
+    readonly range: SourceRange
+    readonly symbol: number
+  }[]
+  readonly typeOccurrences: readonly {
+    readonly range: SourceRange
+    readonly type: string
+  }[]
+  readonly callableOccurrences: readonly {
+    readonly range: SourceRange
+    readonly callable: AnalysisCallable
+  }[]
+  readonly standardLibrary: readonly AnalysisReferenceItem[]
 }
 
 type GeneratedBundle = {

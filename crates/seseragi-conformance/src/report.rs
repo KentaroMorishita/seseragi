@@ -105,6 +105,11 @@ fn categories(suite: &Suite) -> Vec<Category<'_>> {
             cases: &suite.semantic_diagnostics_cases,
         },
         Category {
+            json_key: "analysis",
+            text_label: "Analysis",
+            cases: &suite.analysis_cases,
+        },
+        Category {
             json_key: "surfaceAst",
             text_label: "SurfaceAst",
             cases: &suite.surface_ast_cases,

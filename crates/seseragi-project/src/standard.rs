@@ -38,6 +38,17 @@ pub fn standard_module_target(specifier: &str) -> Option<ModuleLinkTarget> {
         .map(|module| ModuleLinkTarget::external((module.interface)()))
 }
 
+/// Returns every compiler-owned standard module interface.
+///
+/// Tooling consumes the same interface registry as the linker so Reference,
+/// hover, and future completion surfaces cannot drift from compilation.
+pub fn standard_module_interfaces() -> Vec<ModuleInterface> {
+    STANDARD_MODULES
+        .iter()
+        .map(|module| (module.interface)())
+        .collect()
+}
+
 fn web_dom_interface() -> ModuleInterface {
     let exports = vec![
         type_export("std/web/dom", "Dom", 0, "opaque-type"),

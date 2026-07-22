@@ -121,6 +121,14 @@ pub fn standard_trait_operator(spelling: &str) -> Option<&'static StandardTraitO
         .find(|operator| operator.spelling == spelling)
 }
 
+pub fn standard_operators() -> impl Iterator<Item = &'static StandardOperator> {
+    STANDARD_OPERATORS.iter()
+}
+
+pub fn standard_trait_operators() -> impl Iterator<Item = &'static StandardTraitOperator> {
+    STANDARD_TRAIT_OPERATORS.iter()
+}
+
 pub fn operator_section_policy(spelling: &str) -> OperatorSectionPolicy {
     if standard_operator(spelling).is_some() || standard_trait_operator(spelling).is_some() {
         return OperatorSectionPolicy::Referenceable;

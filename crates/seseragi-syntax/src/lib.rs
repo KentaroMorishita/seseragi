@@ -27,8 +27,9 @@ pub use lexer::{is_custom_operator_candidate, lex};
 pub use source::{LineColumn, LineIndex, SourceSnapshot, Span};
 pub use standard_operator::{
     declarable_standard_operator, impl_operator_instances, operator_section_policy,
-    standard_operator, standard_trait_operator, OperatorAssociativity, OperatorSectionPolicy,
-    StandardOperator, StandardOperatorKind, StandardTraitOperator,
+    standard_operator, standard_operators, standard_trait_operator, standard_trait_operators,
+    OperatorAssociativity, OperatorSectionPolicy, StandardOperator, StandardOperatorKind,
+    StandardTraitOperator,
 };
 pub use surface::{
     parse_surface_ast, ByteSpan, SurfaceComprehensionClause, SurfaceConstraint, SurfaceDecl,

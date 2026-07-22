@@ -27,3 +27,11 @@ export function utf8RangeToUtf16(
   const to = utf8ByteOffsetToUtf16(source, range.end)
   return { from, to: Math.max(from, to) }
 }
+
+export function utf16OffsetToUtf8Byte(
+  source: string,
+  utf16Offset: number
+): number {
+  const target = Math.max(0, Math.min(source.length, utf16Offset))
+  return encoder.encode(source.slice(0, target)).length
+}

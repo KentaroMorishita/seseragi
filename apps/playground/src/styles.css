@@ -239,6 +239,130 @@ textarea {
 .sample-browser-panel[hidden] {
   display: none;
 }
+.reference-browser-dialog[open] {
+  grid-template-rows: auto auto minmax(0, 1fr);
+}
+.reference-browser-filters {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(150px, 220px) auto;
+  align-items: end;
+  gap: 12px;
+  padding: 14px 26px;
+  border-bottom: 1px solid #20332c;
+  background: #0b1512;
+}
+.reference-browser-filters label {
+  display: grid;
+  gap: 5px;
+  color: #82968e;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.reference-browser-filters input,
+.reference-browser-filters select {
+  min-height: 40px;
+  border: 1px solid #294139;
+  border-radius: 9px;
+  padding: 0 11px;
+  color: #dce9e4;
+  background: #101c18;
+  outline: none;
+}
+.reference-browser-filters input:focus,
+.reference-browser-filters select:focus {
+  border-color: #7ed6ad;
+  box-shadow: 0 0 0 2px #7ed6ad21;
+}
+.reference-results {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  align-content: start;
+  gap: 12px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 20px 26px 28px;
+}
+.reference-card {
+  min-width: 0;
+  border: 1px solid #233a32;
+  border-radius: 13px;
+  padding: 15px;
+  background: #101b17;
+}
+.reference-card header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.reference-card header div {
+  display: grid;
+  gap: 3px;
+}
+.reference-card strong {
+  color: #f2faf6;
+  font-size: 15px;
+}
+.reference-card header span,
+.reference-card header code,
+.reference-card small {
+  color: #769087;
+  font-size: 10px;
+}
+.reference-card pre {
+  margin: 12px 0 8px;
+  overflow-x: auto;
+  border-radius: 8px;
+  padding: 10px;
+  color: #b8f2d7;
+  background: #08110e;
+  font: 12px/1.55 "SFMono-Regular", Consolas, monospace;
+  white-space: pre-wrap;
+}
+.reference-card p {
+  margin: 0;
+  color: #9eb2aa;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.reference-card small {
+  display: block;
+  margin-top: 9px;
+  color: #d8b4fe;
+}
+.analysis-hover {
+  max-width: min(520px, calc(100vw - 36px));
+  display: grid;
+  gap: 6px;
+  border: 1px solid #315047;
+  border-radius: 10px;
+  padding: 11px 13px;
+  color: #dce9e4;
+  background: #101b17;
+  box-shadow: 0 12px 36px #000a;
+}
+.analysis-hover code {
+  color: #b8f2d7;
+  font: 12px/1.5 "SFMono-Regular", Consolas, monospace;
+  white-space: pre-wrap;
+}
+.analysis-hover span {
+  color: #d8b4fe;
+  font-size: 11px;
+}
+.analysis-hover small {
+  color: #6fa18e;
+  font: 10px/1.4 "SFMono-Regular", Consolas, monospace;
+}
+.analysis-hover p {
+  margin: 0;
+  color: #9eb2aa;
+  font-size: 11px;
+  line-height: 1.45;
+}
 .sample-path + .sample-path {
   margin-top: 30px;
 }
@@ -822,6 +946,14 @@ footer a {
 }
 
 @media (max-width: 760px), (max-width: 960px) and (max-height: 520px) {
+  .reference-browser-filters {
+    grid-template-columns: 1fr;
+    padding: 12px 14px;
+  }
+  .reference-results {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
   .app-shell {
     height: 100dvh;
     overflow: hidden;

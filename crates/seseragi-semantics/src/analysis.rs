@@ -1,9 +1,10 @@
-use crate::{diagnostics, resolve, typed, TypedModule, TypedModuleInterface};
+use crate::{diagnostics, resolve, typed, ResolvedModule, TypedModule, TypedModuleInterface};
 use seseragi_syntax::{DiagnosticArtifact, DiagnosticSeverity, ModuleInterface};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct AnalyzedModule {
     pub diagnostics: DiagnosticArtifact,
+    pub resolved: ResolvedModule,
     pub typed_hir: TypedModule,
     pub typed_interface: TypedModuleInterface,
 }
@@ -32,9 +33,10 @@ pub fn analyze_module_interface(
     }
 
     let (typed_hir, typed_interface) =
-        typed::type_resolved_module_with_public_interface(shallow, resolved);
+        typed::type_resolved_module_with_public_interface(shallow, resolved.clone());
     Ok(AnalyzedModule {
         diagnostics,
+        resolved,
         typed_hir,
         typed_interface,
     })
@@ -60,9 +62,10 @@ pub fn analyze_linked_module(
     }
 
     let (typed_hir, typed_interface) =
-        typed::type_resolved_module_with_public_interface(shallow, resolved);
+        typed::type_resolved_module_with_public_interface(shallow, resolved.clone());
     Ok(AnalyzedModule {
         diagnostics,
+        resolved,
         typed_hir,
         typed_interface,
     })

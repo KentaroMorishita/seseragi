@@ -1,43 +1,17 @@
-use crate::{CompileInput, CompiledModule};
+use crate::{analyze::analyze_module_frontend, CompileInput, CompiledModule};
 use seseragi_lowering::{
     emit_typescript_module, emit_typescript_module_with_output_paths,
     lower_core_module_to_typescript_ir, lower_core_module_to_typescript_ir_with_plan,
     lower_typed_module, GeneratedOutputPaths, TypeScriptLoweringError, TypeScriptOutputPlan,
 };
-use seseragi_project::{link_module, standard_module_target};
 use seseragi_semantics::analyze_linked_module;
-use seseragi_syntax::{
-    parse_diagnostics, parse_unlinked_module_interface, DiagnosticArtifact, DiagnosticSeverity,
-};
-use std::collections::BTreeMap;
+use seseragi_syntax::{parse_diagnostics, DiagnosticArtifact};
 
 /// Compiles one source using an explicit logical module identity. This is a
 /// pure single-module pipeline. Compiler-owned standard modules are linked by
 /// public interface; source-package imports still require the project driver.
 pub fn compile_module(input: CompileInput<'_>) -> Result<CompiledModule, DiagnosticArtifact> {
-    let mut diagnostics = parse_diagnostics(input.source_name(), input.source());
-    if has_errors(&diagnostics) {
-        return Err(diagnostics);
-    }
-
-    let unlinked =
-        parse_unlinked_module_interface(input.source_name(), input.module_id(), input.source());
-    let targets = unlinked
-        .imports
-        .iter()
-        .filter_map(|import| {
-            standard_module_target(&import.specifier)
-                .map(|target| (import.specifier.clone(), target))
-        })
-        .collect::<BTreeMap<_, _>>();
-    let linked = match link_module(unlinked, &targets) {
-        Ok(linked) => linked,
-        Err(errors) => {
-            crate::dependencies::append_link_diagnostics(errors, &mut diagnostics);
-            return Err(diagnostics);
-        }
-    };
-    let analyzed = analyze_linked_module(diagnostics, linked, input.source())?;
+    let analyzed = analyze_module_frontend(input)?;
     Ok(finish_compilation(
         analyzed.diagnostics,
         analyzed.typed_hir,
@@ -92,13 +66,6 @@ pub fn compile_linked_module_with_output_paths(
         typescript_ir,
         generated,
     })
-}
-
-fn has_errors(diagnostics: &DiagnosticArtifact) -> bool {
-    diagnostics
-        .diagnostics
-        .iter()
-        .any(|diagnostic| diagnostic.severity == DiagnosticSeverity::Error)
 }
 
 fn finish_compilation(

@@ -41,7 +41,7 @@ use interface::typed_interface_from_modules;
 pub(crate) use pure_issues::{
     ArrayIssue, ConditionalIssue, MatchIssue, MonadDoIssue, PureCallIssue, RangeIssue, RecordIssue,
 };
-pub(crate) use resolution::TypedResolution;
+pub(crate) use resolution::{standard_reference_callables, TypedResolution};
 use surface::typed_decls_from_surface;
 pub(crate) use surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use type_ref::typed_type_from_interface_type;

@@ -34,6 +34,18 @@
           </button>
           <div class="toolbar" role="toolbar" aria-label="Playground tools">
             <button
+              id="reference-browser-button"
+              class="toolbar-button"
+              type="button"
+              aria-haspopup="dialog"
+              aria-controls="reference-browser-dialog"
+              aria-expanded="false"
+              title="標準ライブラリReferenceを開く"
+            >
+              <span aria-hidden="true">⌘</span>
+              <span class="toolbar-label">Reference</span>
+            </button>
+            <button
               id="stdin-toggle-button"
               class="toolbar-button"
               type="button"
@@ -146,6 +158,42 @@
             <div id="sample-discover-results" class="sample-card-grid"></div>
           </section>
         </div>
+      </dialog>
+
+      <dialog
+        id="reference-browser-dialog"
+        class="sample-browser-dialog reference-browser-dialog"
+        aria-labelledby="reference-browser-title"
+      >
+        <div class="sample-browser-dialog-header">
+          <div>
+            <span class="sample-browser-kicker">LANGUAGE REFERENCE</span>
+            <h2 id="reference-browser-title">型と標準surfaceを探す</h2>
+            <p>compilerのPrelude registryとmodule interfaceから生成しています。</p>
+          </div>
+          <button
+            id="reference-browser-close"
+            class="sample-browser-close"
+            type="button"
+            aria-label="Referenceを閉じる"
+          >×</button>
+        </div>
+        <div class="reference-browser-filters">
+          <label>
+            <span>検索</span>
+            <input
+              id="reference-search"
+              type="search"
+              placeholder="join・Effect・Signal・HTML…"
+            />
+          </label>
+          <label>
+            <span>Category</span>
+            <select id="reference-category"><option value="">すべて</option></select>
+          </label>
+          <span id="reference-result-count" class="sample-result-count"></span>
+        </div>
+        <div id="reference-results" class="reference-results"></div>
       </dialog>
 
       <nav class="mobile-tabs" aria-label="Playground panels">

@@ -1,7 +1,11 @@
 import { describe, expect, test } from "bun:test"
 import { createHash } from "node:crypto"
 import { readdir } from "node:fs/promises"
-import type { CompileResponse } from "../src/compiler/types"
+import { queryAnalysisAt } from "../src/analysis/document"
+import type {
+  AnalysisDocument,
+  CompileResponse,
+} from "../src/compiler/types"
 import { executeGeneratedModule } from "../src/runtime/browser-execution"
 import {
   sampleCapabilities,
@@ -16,6 +20,11 @@ type WasmBindings = {
     readonly module_or_path: ArrayBuffer
   }) => Promise<unknown>
   readonly compile_single_file: (
+    sourceName: string,
+    moduleId: string,
+    source: string
+  ) => string
+  readonly analyze_single_file: (
     sourceName: string,
     moduleId: string,
     source: string
@@ -46,6 +55,13 @@ async function compile(
   return JSON.parse(
     wasm.compile_single_file(sourceName, `playground/${sourceName}`, source)
   ) as CompileResponse
+}
+
+async function analyze(source: string): Promise<AnalysisDocument> {
+  const wasm = await loadBindings()
+  return JSON.parse(
+    wasm.analyze_single_file("main.ssrg", "playground/main", source)
+  ) as AnalysisDocument
 }
 
 describe("Playground sample catalog", () => {
@@ -183,12 +199,57 @@ describe("Playground sample catalog", () => {
     ).text()
 
     expect(main).toContain("renderDiagnosticCards(output, diagnostics")
-    expect(main).toContain("utf8RangeToUtf16(source, byteRange)")
+    expect(main).toContain("utf8RangeToUtf16(analyzedSource, byteRange)")
     expect(cards).toContain("diagnostic.message")
     expect(cards).not.toContain("diagnostic.messageKey")
     expect(cards).toContain("Expected")
     expect(cards).toContain("Help:")
     expect(cards).toContain("Fix:")
+  })
+
+  test("shares symbol, inferred type, callable and standard Reference metadata", async () => {
+    const source =
+      "fn add left: Int -> right: Int -> Int = left + right\n" +
+      "let addOne = add 1\n"
+    const analysis = await analyze(source)
+    const addReference = source.lastIndexOf("add 1")
+    const partialArgument = addReference + "add ".length
+
+    expect(analysis.diagnostics.diagnostics).toEqual([])
+    expect(queryAnalysisAt(analysis, addReference).symbol?.identity).toBe(
+      "playground/main::add"
+    )
+    expect(queryAnalysisAt(analysis, addReference).type).toBe(
+      "Int -> Int -> Int"
+    )
+    expect(
+      queryAnalysisAt(analysis, partialArgument).callable?.remainingParameters
+    ).toEqual([{ name: "right", type: "Int" }])
+    expect(
+      analysis.standardLibrary
+        .filter((item) => ["join", "sum", "forEach", "map"].includes(item.name))
+        .map((item) => item.name)
+    ).toEqual(expect.arrayContaining(["join", "sum", "forEach", "map"]))
+  })
+
+  test("connects live hover and generated Reference UI without running Effects", async () => {
+    const html = await Bun.file(
+      new URL("../index.html", import.meta.url)
+    ).text()
+    const main = await Bun.file(
+      new URL("../src/main.ts", import.meta.url)
+    ).text()
+    const reference = await Bun.file(
+      new URL("../src/ui/reference-browser.ts", import.meta.url)
+    ).text()
+
+    expect(html).toContain('id="reference-browser-button"')
+    expect(html).toContain('id="reference-search"')
+    expect(html).toContain('id="reference-category"')
+    expect(main).toContain("createLiveAnalysis({")
+    expect(main).toContain("analysisHoverAt(latestAnalysis")
+    expect(main).toContain("referenceBrowser.setCatalog(analysis.standardLibrary)")
+    expect(reference).not.toContain("const referenceItems")
   })
 
   test("renders HTML output in an isolated preview", async () => {

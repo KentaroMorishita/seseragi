@@ -7,6 +7,7 @@ pub(super) enum Stage {
     Cst,
     Diagnostics,
     SemanticDiagnostics,
+    Analysis,
     Interface,
     SurfaceAst,
     ResolvedAst,
@@ -17,11 +18,12 @@ pub(super) enum Stage {
     GeneratedModule,
 }
 
-const STAGES: [Stage; 12] = [
+const STAGES: [Stage; 13] = [
     Stage::Tokens,
     Stage::Cst,
     Stage::Diagnostics,
     Stage::SemanticDiagnostics,
+    Stage::Analysis,
     Stage::Interface,
     Stage::SurfaceAst,
     Stage::ResolvedAst,
@@ -43,6 +45,7 @@ impl Stage {
             Self::Cst => "cst",
             Self::Diagnostics => "diagnostics",
             Self::SemanticDiagnostics => "semantic-diagnostics",
+            Self::Analysis => "analysis",
             Self::Interface => "interface",
             Self::SurfaceAst => "surface-ast",
             Self::ResolvedAst => "resolved-ast",
@@ -60,6 +63,7 @@ impl Stage {
             Self::Cst => "cst.json",
             Self::Diagnostics => "diagnostics.json",
             Self::SemanticDiagnostics => "semantic-diagnostics.json",
+            Self::Analysis => "analysis.json",
             Self::Interface => "interface.json",
             Self::SurfaceAst => "surface-ast.json",
             Self::ResolvedAst => "resolved-ast.json",

@@ -38,6 +38,7 @@ SourceSnapshot
 | `ModuleInterface` | public name、type scheme、fixity、instance head、deprecation metadata | function body、backend表現            |
 | `ResolvedAst`     | canonical symbol ID、scope、import edge                               | 型推論結果、runtime layout            |
 | `TypedHir`        | 型、kind、constraint evidence、coercion、exhaustiveness               | TypeScript syntax、optimization形状   |
+| `AnalysisDocument`| diagnostic、symbol / scope、式型、callable、標準Reference query      | lowering、実行、editor固有UI          |
 | `CoreIr`          | 評価順を明示した小さい意味核、Effect operation、closure、ADT          | source sugar、host固有module spelling |
 | `TypeScriptIr`    | JS/TS ABI、runtime call、async boundary、source-map origin            | Seseragiの型推論判断                  |
 
@@ -117,6 +118,14 @@ Playground-1では`apps/playground`へCodeMirror 6、Seseragi専用stream langua
 UI boundaryでのみUTF-16へ変換し、
 compiler diagnosticを再生成しません。初期application chunkは約18 KB、editor chunkは約330 KBです。約3.6 MBのbrowser
 TypeScript transpilerはRun時だけlazy loadし、約900 KBのWASMもdriver初回利用時に初期化します。
+
+Analysis sliceでは`seseragi-driver::analyze_module`を`compile_module`と同じparse / link / semantic frontendへ
+接続しました。`seseragi-semantics::AnalysisDocument`はresolverのsymbol / scope graphとTyped HIRを結合し、
+diagnostic、symbol、型、完全・部分適用callable、definition、visible symbolをUTF-8 byte rangeで返します。
+標準Referenceはtyping registry、Effect operation registry、Prelude sum type、standard module interface、operator
+registryから生成します。`seseragi-wasm::analyze_single_file`はこのpure frontendだけを公開し、Playgroundの
+debounced revision-safe analysis、CodeMirror hover、live diagnostic、検索可能なReferenceが同じsnapshotを使います。
+`analysis-schema-1/shared-queries`はこのJSON contractをcanonical fixtureとして固定します。
 
 sample catalogはLearnとDiscoverを分離します。Learnは複数のlearning path内だけで進捗を示し、
 Discoverはtitle、summary、topicの検索とkind、topic、capability、featured/new filterを持ちます。

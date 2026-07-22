@@ -1,6 +1,34 @@
 /* @ts-self-types="./seseragi_wasm.d.ts" */
 
 /**
+ * Analyzes one source without lowering, code generation, Effect execution,
+ * or DOM mounting. The returned occurrence tables back hover and Reference
+ * queries while diagnostics remain identical to compile responses.
+ * @param {string} source_name
+ * @param {string} module_id
+ * @param {string} source
+ * @returns {string}
+ */
+export function analyze_single_file(source_name, module_id, source) {
+    let deferred4_0;
+    let deferred4_1;
+    try {
+        const ptr0 = passStringToWasm0(source_name, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(module_id, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ptr2 = passStringToWasm0(source, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len2 = WASM_VECTOR_LEN;
+        const ret = wasm.analyze_single_file(ptr0, len0, ptr1, len1, ptr2, len2);
+        deferred4_0 = ret[0];
+        deferred4_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred4_0, deferred4_1, 1);
+    }
+}
+
+/**
  * Compiles one already-identified source with the same driver used by the
  * native CLI and LSP, returning a versioned JSON envelope for JavaScript.
  * @param {string} source_name

@@ -81,6 +81,17 @@ fn write_case(case: &Path, selection: &Selection) -> Result<(), String> {
             &seseragi_semantics::semantic_diagnostics("main.ssrg", &source),
         )?;
     }
+    if selection.contains(Stage::Analysis) {
+        write_json(
+            case,
+            "analysis.json",
+            &seseragi_driver::analyze_module(seseragi_driver::CompileInput::new(
+                &source_name,
+                &module_id(case)?,
+                &source,
+            )),
+        )?;
+    }
     if selection.contains(Stage::Interface) {
         write_json(
             case,

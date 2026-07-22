@@ -5,7 +5,7 @@
 //! contracts.
 
 use serde::Serialize;
-use seseragi_driver::{compile_module, CompileInput};
+use seseragi_driver::{analyze_module, compile_module, CompileInput};
 use seseragi_lowering::GeneratedBundle;
 use seseragi_runtime::{main_contract, MainContract};
 use seseragi_syntax::DiagnosticArtifact;
@@ -56,6 +56,19 @@ pub fn compile_single_file(source_name: &str, module_id: &str, source: &str) -> 
     serde_json::to_string(&response).expect("playground compile response must serialize")
 }
 
+/// Analyzes one source without lowering, code generation, Effect execution,
+/// or DOM mounting. The returned occurrence tables back hover and Reference
+/// queries while diagnostics remain identical to compile responses.
+#[wasm_bindgen]
+pub fn analyze_single_file(source_name: &str, module_id: &str, source: &str) -> String {
+    serde_json::to_string(&analyze_module(CompileInput::new(
+        source_name,
+        module_id,
+        source,
+    )))
+    .expect("playground analysis response must serialize")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -90,5 +103,27 @@ mod tests {
             .as_array()
             .unwrap()
             .is_empty());
+    }
+
+    #[test]
+    fn returns_frontend_queries_without_generating_or_running_code() {
+        let source = "fn add left: Int -> right: Int -> Int = left + right\nlet addOne = add 1\n";
+        let response: Value =
+            serde_json::from_str(&analyze_single_file("main.ssrg", "playground/main", source))
+                .unwrap();
+
+        assert_eq!(response["schema"], 1);
+        assert!(response["diagnostics"]["diagnostics"]
+            .as_array()
+            .unwrap()
+            .is_empty());
+        assert!(response["symbolOccurrences"].as_array().unwrap().len() > 2);
+        assert!(response["typeOccurrences"].as_array().unwrap().len() > 2);
+        assert!(response["standardLibrary"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|item| item["name"] == "join"));
+        assert!(response.get("generated").is_none());
     }
 }

@@ -2,6 +2,13 @@
 /* eslint-disable */
 
 /**
+ * Analyzes one source without lowering, code generation, Effect execution,
+ * or DOM mounting. The returned occurrence tables back hover and Reference
+ * queries while diagnostics remain identical to compile responses.
+ */
+export function analyze_single_file(source_name: string, module_id: string, source: string): string;
+
+/**
  * Compiles one already-identified source with the same driver used by the
  * native CLI and LSP, returning a versioned JSON envelope for JavaScript.
  */
@@ -11,6 +18,7 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
+    readonly analyze_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
     readonly compile_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
     readonly __wbindgen_externrefs: WebAssembly.Table;
     readonly __wbindgen_malloc: (a: number, b: number) => number;

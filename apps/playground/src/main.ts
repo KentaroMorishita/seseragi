@@ -1,6 +1,14 @@
 import { setDiagnostics } from "@codemirror/lint"
-import type { Diagnostic } from "./compiler/types"
-import { compileSingleFile } from "./compiler/wasm-driver"
+import { analysisHoverAt } from "./analysis/hover"
+import {
+  createLiveAnalysis,
+  type LiveAnalysisController,
+} from "./analysis/live-analysis"
+import type { AnalysisDocument, Diagnostic } from "./compiler/types"
+import {
+  analyzeSingleFile,
+  compileSingleFile,
+} from "./compiler/wasm-driver"
 import { renderDiagnosticCards } from "./diagnostics/diagnostic-cards"
 import { toEditorDiagnostics } from "./diagnostics/editor-diagnostics"
 import { utf8RangeToUtf16 } from "./diagnostics/source-range"
@@ -15,6 +23,7 @@ import "./styles.css"
 import { requiredElement } from "./ui/elements"
 import { connectMobilePanels } from "./ui/mobile-panels"
 import { connectPanelLayout } from "./ui/panel-layout"
+import { connectReferenceBrowser } from "./ui/reference-browser"
 import { connectSampleBrowser } from "./ui/sample-browser"
 import { connectSampleGuide } from "./ui/sample-guide"
 
@@ -31,6 +40,31 @@ const sampleBrowserClose = requiredElement(
   "#sample-browser-close",
   HTMLButtonElement
 )
+const referenceBrowserButton = requiredElement(
+  "#reference-browser-button",
+  HTMLButtonElement
+)
+const referenceBrowserDialog = requiredElement(
+  "#reference-browser-dialog",
+  HTMLDialogElement
+)
+const referenceBrowserClose = requiredElement(
+  "#reference-browser-close",
+  HTMLButtonElement
+)
+const referenceSearch = requiredElement(
+  "#reference-search",
+  HTMLInputElement
+)
+const referenceCategory = requiredElement(
+  "#reference-category",
+  HTMLSelectElement
+)
+const referenceResultCount = requiredElement(
+  "#reference-result-count",
+  HTMLElement
+)
+const referenceResults = requiredElement("#reference-results", HTMLElement)
 const sampleBrowserLearnTab = requiredElement(
   "#sample-browser-learn-tab",
   HTMLButtonElement
@@ -145,6 +179,15 @@ const sampleGuide = connectSampleGuide({
   body: sampleGuideBody,
   source: sampleGuideSource,
 })
+const referenceBrowser = connectReferenceBrowser({
+  button: referenceBrowserButton,
+  dialog: referenceBrowserDialog,
+  closeButton: referenceBrowserClose,
+  search: referenceSearch,
+  category: referenceCategory,
+  count: referenceResultCount,
+  results: referenceResults,
+})
 
 const initialSample =
   samples.find((sample) => sample.id === learningPaths[0]?.samples[0]) ??
@@ -155,6 +198,7 @@ let htmlPreviewUrl: string | undefined
 let activeExecution: BrowserExecution | undefined
 let runRevision = 0
 let currentSample = initialSample
+let latestAnalysis: AnalysisDocument | undefined
 
 const sampleBrowser = connectSampleBrowser(
   {
@@ -182,11 +226,49 @@ const sampleBrowser = connectSampleBrowser(
   (sample) => loadSample(sample, "Sample loaded")
 )
 
-const editor = createEditor(editorHost, source, (nextSource) => {
-  source = nextSource
-  editor.dispatch(setDiagnostics(editor.state, []))
-  setStatus("ready", "Ready to run")
+const editor = createEditor(
+  editorHost,
+  source,
+  (nextSource) => {
+    source = nextSource
+    latestAnalysis = undefined
+    editor.dispatch(setDiagnostics(editor.state, []))
+    liveAnalysis.schedule(source)
+  },
+  (position) => analysisHoverAt(latestAnalysis, source, position)
+)
+
+const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
+  analyze: analyzeSingleFile,
+  onPending: () => {
+    if (!runButton.disabled) setStatus("running", "Analyzing…")
+  },
+  onError: (error) => {
+    if (runButton.disabled) return
+    setStatus("error", error instanceof Error ? error.message : "Analysis failed")
+  },
+  apply: (analysis, analyzedSource) => {
+    latestAnalysis = analysis
+    referenceBrowser.setCatalog(analysis.standardLibrary)
+    const diagnostics = analysis.diagnostics.diagnostics
+    editor.dispatch(
+      setDiagnostics(editor.state, [
+        ...toEditorDiagnostics(analyzedSource, diagnostics),
+      ])
+    )
+    if (runButton.disabled) return
+    if (diagnostics.length > 0) {
+      showDiagnostics(diagnostics, analyzedSource)
+      setStatus("error", `${diagnostics.length} diagnostic(s)`)
+    } else {
+      if (output.dataset.liveDiagnostics === "true") {
+        showTextOutput("No diagnostics. Runでprogramを実行できます。")
+      }
+      setStatus("ready", "Analysis ready")
+    }
+  },
 })
+liveAnalysis.schedule(source)
 
 if (initialSample) {
   stdinInput.value = initialSample.stdin
@@ -349,6 +431,7 @@ function cancelActiveExecution(): void {
 
 function showExecutionOutput(stdout: string): void {
   output.className = "output-text"
+  delete output.dataset.liveDiagnostics
   output.textContent = stdout || "Program completed with no output."
   setOutputMode(outputMode)
   renderHtmlPreview(stdout)
@@ -356,16 +439,21 @@ function showExecutionOutput(stdout: string): void {
 
 function showTextOutput(message: string): void {
   output.className = "output-text"
+  delete output.dataset.liveDiagnostics
   output.textContent = message
   clearHtmlPreview()
   setOutputMode("text")
 }
 
-function showDiagnostics(diagnostics: readonly Diagnostic[]): void {
+function showDiagnostics(
+  diagnostics: readonly Diagnostic[],
+  analyzedSource = source
+): void {
   clearHtmlPreview()
   setOutputMode("text")
+  output.dataset.liveDiagnostics = "true"
   renderDiagnosticCards(output, diagnostics, (byteRange) => {
-    const range = utf8RangeToUtf16(source, byteRange)
+    const range = utf8RangeToUtf16(analyzedSource, byteRange)
     editor.dispatch({
       selection: { anchor: range.from, head: range.to },
       scrollIntoView: true,

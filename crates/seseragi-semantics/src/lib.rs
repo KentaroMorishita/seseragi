@@ -4,6 +4,7 @@ mod effect_ops;
 mod instance_identity;
 mod model;
 mod prelude;
+mod query;
 mod resolve;
 mod standard;
 mod typed;
@@ -15,6 +16,11 @@ pub use model::*;
 pub use prelude::{
     standard_equality_instance_by_identity, standard_prelude_surface, StandardEqualityInstance,
     StandardModuleSurface,
+};
+pub use query::{
+    analysis_document, diagnostics_only_analysis, standard_library_catalog, AnalysisCallable,
+    AnalysisCallableOccurrence, AnalysisDocument, AnalysisParameter, AnalysisReferenceItem,
+    AnalysisSymbol, AnalysisSymbolOccurrence, AnalysisTypeOccurrence,
 };
 pub use resolve::{resolve_linked_module, resolve_module, resolve_module_interface};
 pub use typed::{type_module, type_module_interface, type_module_public_interface};

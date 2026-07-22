@@ -123,6 +123,11 @@ diagnosticの最初のhuman-readable sliceはunresolved name、arity、型不一
 Effect必須位置、non-exhaustive match、parser errorを共通 `message` / labels / notes / helps / fixes / type差分へ
 変換します。CLIはsnippetとcaret、LSPはrelated informationとdata、Playgroundはeditorへ戻れるcardを表示し、
 内部 `messageKey` をuser-facing textへ出しません。
+shared Analysis APIは同じlinked frontendとTyped HIRからdiagnostic、position上のsymbol / type / callable、
+definition、scope内のvisible symbol、標準Referenceを一つの`AnalysisDocument`へ統合しました。部分適用は完全signatureと
+残parameterを併記し、標準ReferenceはPrelude、Effect operation、operator、standard module interfaceの既存registryから
+生成します。Playgroundはdebounceとrevision照合を行い、Runなしのlive diagnostic、hover、検索可能なReferenceを
+WASM経由で表示します。analysis経路はlowering、code generation、Effect実行、DOM mountを呼びません。
 Playground-0も`seseragi-wasm`から同じdriverとruntime entry contractを利用し、lesson sourceを手作業で複製せず
 WASM compile、generated TypeScript、browser host runtimeへ接続済みです。Phase 1累積じゃんけんもdeterministic Stdinで
 browser host実行しています。formatter-0はlossless token / CST、shared driver、native CLIを接続し、Phase 1

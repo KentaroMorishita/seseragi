@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import {
+  utf16OffsetToUtf8Byte,
   utf8ByteOffsetToUtf16,
   utf8RangeToUtf16,
 } from "../src/diagnostics/source-range"
@@ -18,6 +19,9 @@ describe("UTF-8 driver ranges", () => {
     expect(utf8ByteOffsetToUtf16(source, 4)).toBe(2)
     expect(utf8ByteOffsetToUtf16(source, 8)).toBe(4)
     expect(utf8ByteOffsetToUtf16(source, 9)).toBe(5)
+    expect(utf16OffsetToUtf8Byte(source, 1)).toBe(1)
+    expect(utf16OffsetToUtf8Byte(source, 2)).toBe(4)
+    expect(utf16OffsetToUtf8Byte(source, 4)).toBe(8)
   })
 
   test("clamps offsets beyond the document", () => {
