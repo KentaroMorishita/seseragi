@@ -1,8 +1,8 @@
 {
   "name": "seseragi-spec-preview",
   "displayName": "Seseragi",
-  "description": "Syntax highlighting and native language-server support for Seseragi",
-  "version": "0.2.0",
+  "description": "The official Seseragi language extension with syntax highlighting and the native language server",
+  "version": "0.3.0",
   "publisher": "seseragi-dev",
   "license": "Apache-2.0",
   "repository": {
@@ -12,8 +12,11 @@
   },
   "files": [
     "dist",
+    "CHANGELOG.md",
+    "LICENSE.txt",
     "language-configuration.json",
     "README.md",
+    "server",
     "syntaxes"
   ],
   "engines": {
@@ -25,11 +28,15 @@
   ],
   "main": "./dist/extension.js",
   "activationEvents": [
-    "onLanguage:seseragi"
+    "onLanguage:seseragi",
+    "onCommand:seseragi.restartLanguageServer",
+    "onCommand:seseragi.showLanguageServerOutput"
   ],
   "scripts": {
     "build": "esbuild extension.js --bundle --minify --platform=node --external:vscode --outfile=dist/extension.js",
-    "package": "bun run build && vsce package --out ../../target/seseragi-vscode.vsix"
+    "test": "bun test tests",
+    "package": "bun run test && bun scripts/package-extension.ts",
+    "package:verify": "bun scripts/verify-package.ts"
   },
   "contributes": {
     "languages": [
@@ -47,8 +54,20 @@
     "grammars": [
       {
         "language": "seseragi",
-        "scopeName": "source.seseragi-spec-preview",
+        "scopeName": "source.seseragi",
         "path": "./syntaxes/seseragi.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "seseragi.restartLanguageServer",
+        "title": "Restart Language Server",
+        "category": "Seseragi"
+      },
+      {
+        "command": "seseragi.showLanguageServerOutput",
+        "title": "Show Language Server Output",
+        "category": "Seseragi"
       }
     ],
     "configuration": {
@@ -56,8 +75,8 @@
       "properties": {
         "seseragi.languageServer.path": {
           "type": "string",
-          "default": "seseragi-lsp",
-          "description": "Path to the seseragi-lsp executable. Relative commands are resolved through PATH."
+          "default": "",
+          "markdownDescription": "Optional path to a custom `seseragi-lsp` executable. Leave empty to use the platform binary bundled with the extension."
         }
       }
     },
@@ -173,6 +192,7 @@
   },
   "devDependencies": {
     "@vscode/vsce": "^3.6.2",
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.25.0",
+    "fflate": "^0.8.2"
   }
 }

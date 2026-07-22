@@ -1,27 +1,28 @@
 # Seseragi editor support
 
-このdirectoryでは`seseragi-spec-preview`を現行Seseragi VS Code extensionとして
-維持します。既存installのupgradeを保つためextension IDは
-`seseragi-dev.seseragi-spec-preview`のまま、language IDは`seseragi`へ統一しています。
-すべての`.ssrg`へTextMate highlightingとnative LSPの
-hover、completion、signature help、definition、quick fix、semantic tokenを提供します。
+`seseragi-spec-preview/`は現行の正式なSeseragi VS Code extensionです。
+directory名とpackage名、extension ID `seseragi-dev.seseragi-spec-preview`だけは
+旧0.1.0を上書き更新し、二重起動を防ぐために維持しています。syntax-onlyの旧実装は
+残っていません。
 
-Rust compilerのparser、型検査、diagnosticはextensionへ複製しません。薄いclientが
-`crates/seseragi-lsp`のstdio serverを起動し、Playgroundと同じshared Analysis APIを使います。
+すべての`.ssrg`とuntitled documentへTextMate grammarを適用し、同梱した
+`crates/seseragi-lsp`からhover、completion、signature help、definition、diagnostic、
+quick fix、semantic tokensを提供します。
 
-## Local install
+## Build and package
 
 ```sh
-cargo install --path crates/seseragi-lsp
 cd extensions/seseragi-spec-preview
 bun install --frozen-lockfile
 bun run package
-code --install-extension ../../target/seseragi-vscode.vsix --force
 ```
 
-repository内のdebug binaryを使う場合はVS Code setting
-`seseragi.languageServer.path`をabsoluteな`target/debug/seseragi-lsp`へ変更してください。
+package scriptは現在のplatform用`seseragi-lsp`をrelease buildし、VSIXへ一つだけ同梱し、
+manifest、license、server target、package sizeを検査します。出力先は
+`target/seseragi-vscode-<platform>.vsix`です。
 
-## License
+macOS arm64/x64、Linux x64、Windows x64のpackageは
+`.github/workflows/vscode-extension.yml`で個別に生成します。release tagはextension versionと
+一致する`vscode-v<version>`を使います。
 
-Apache-2.0
+独自serverを試す場合だけ`seseragi.languageServer.path`を設定してください。

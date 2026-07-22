@@ -4,7 +4,7 @@ use seseragi_driver::{
     analyze_module, AnalysisDocument, AnalysisReferenceItem, AnalysisSymbol, CompileInput,
 };
 use seseragi_source::{EncodedPosition, LineIndex, PositionEncoding};
-use seseragi_syntax::ByteSpan;
+use seseragi_syntax::{parse_surface_ast, ByteSpan};
 use std::collections::{BTreeMap, BTreeSet};
 
 pub(crate) const SEMANTIC_TOKEN_TYPES: [&str; 22] = [
@@ -160,13 +160,15 @@ pub(crate) fn completion(
     let Some(position) = document.byte_position(params.position, encoding) else {
         return json!([]);
     };
-    let namespace_module = namespace_prefix(&document.source, position).and_then(|prefix| {
+    let namespace = namespace_prefix(&document.source, position);
+    let namespace_module = namespace.and_then(|prefix| {
         document
             .analysis
             .visible_symbols(position)
             .into_iter()
             .find(|symbol| symbol.namespace == "module" && symbol.name == prefix)
             .map(|symbol| symbol.module.clone())
+            .or_else(|| imported_namespace_module(&document.source, prefix))
     });
 
     let mut items = Vec::new();
@@ -180,7 +182,7 @@ pub(crate) fn completion(
         {
             push_reference_completion(&mut items, &mut seen, item, "0");
         }
-    } else {
+    } else if namespace.is_none() {
         for symbol in document.analysis.visible_symbols(position) {
             let key = format!("{}:{}", symbol.namespace, symbol.identity);
             if !seen.insert(key) {
@@ -447,6 +449,19 @@ fn namespace_prefix(source: &str, position: usize) -> Option<&str> {
         .unwrap_or(0);
     let name = &prefix[start..];
     (!name.is_empty()).then_some(name)
+}
+
+fn imported_namespace_module(source: &str, prefix: &str) -> Option<String> {
+    parse_surface_ast("<completion>", source)
+        .imports
+        .into_iter()
+        .find_map(|import| {
+            import
+                .items
+                .iter()
+                .any(|item| item.namespace == "namespace" && item.alias.as_deref() == Some(prefix))
+                .then_some(import.specifier)
+        })
 }
 
 fn hover_range(analysis: &AnalysisDocument, position: usize) -> Option<ByteSpan> {

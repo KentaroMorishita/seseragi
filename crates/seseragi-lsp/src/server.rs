@@ -102,7 +102,16 @@ impl State {
                                 "range": false
                             }
                         },
-                        "serverInfo": {"name": "seseragi-lsp", "version": env!("CARGO_PKG_VERSION")}
+                        "serverInfo": {
+                            "name": crate::SERVER_NAME,
+                            "version": crate::SERVER_VERSION
+                        },
+                        "experimental": {
+                            "seseragi": {
+                                "protocolVersion": crate::PROTOCOL_VERSION,
+                                "analysisSchemaVersion": crate::ANALYSIS_SCHEMA_VERSION
+                            }
+                        }
                     }),
                 )])
             }

@@ -18,6 +18,10 @@ bunx biome format --write \
   apps/playground/src/runtime \
   apps/playground/src/ui \
   apps/playground/tests \
+  extensions/seseragi-spec-preview/extension.js \
+  extensions/seseragi-spec-preview/extension-core.js \
+  extensions/seseragi-spec-preview/scripts \
+  extensions/seseragi-spec-preview/tests \
   scripts/check-samples-cli.ts \
   scripts/generate-playground-samples.ts \
   runtime/ts/src

@@ -36,7 +36,13 @@ fn messages(bytes: &[u8]) -> Vec<Value> {
 }
 
 fn run_server(input: &[Value]) -> Vec<Value> {
-    let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi-lsp"))
+    run_server_with_args(input, &[])
+}
+
+fn run_server_with_args(input: &[Value], args: &[&str]) -> Vec<Value> {
+    let mut command = Command::new(env!("CARGO_BIN_EXE_seseragi-lsp"));
+    command.args(args);
+    let mut child = command
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .spawn()
@@ -54,6 +60,93 @@ fn run_server(input: &[Value]) -> Vec<Value> {
 
 fn response(messages: &[Value], id: i64) -> &Value {
     messages.iter().find(|message| message["id"] == id).unwrap()
+}
+
+#[test]
+fn binary_reports_its_distribution_contract() {
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi-lsp"))
+        .arg("--version-json")
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    let version: Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(version["name"], "seseragi-lsp");
+    assert_eq!(version["version"], env!("CARGO_PKG_VERSION"));
+    assert_eq!(version["protocolVersion"], 1);
+    assert_eq!(version["analysisSchemaVersion"], 1);
+}
+
+#[test]
+fn binary_accepts_explicit_stdio_transport() {
+    let input = [
+        json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"capabilities": {}}
+        }),
+        json!({"jsonrpc": "2.0", "id": 2, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+
+    let messages = run_server_with_args(&input, &["--stdio"]);
+    assert_eq!(messages[0]["result"]["serverInfo"]["name"], "seseragi-lsp");
+}
+
+#[test]
+fn namespace_completion_stays_scoped_inside_an_incomplete_nested_expression() {
+    let uri = "file:///nested-completion.ssrg";
+    let source = concat!(
+        "// 🙂\n",
+        "import * as html from \"std/web/html\"\n",
+        "fn view -> html.Html<Never> =\n",
+        "  html.main {\n",
+        "    children: [\n",
+        "      html.  \n",
+    );
+    let input = [
+        json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"capabilities": {"general": {"positionEncodings": ["utf-16"]}}}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": uri, "languageId": "seseragi", "version": 1, "text": source
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 2, "method": "textDocument/completion",
+            "params": {
+                "textDocument": {"uri": uri},
+                "position": {"line": 5, "character": 13}
+            }
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didChange",
+            "params": {
+                "textDocument": {"uri": uri, "version": 2},
+                "contentChanges": [{"text": "import * as html from \"std/web/html\"\nfn view = unknown.\n"}]
+            }
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 3, "method": "textDocument/completion",
+            "params": {
+                "textDocument": {"uri": uri},
+                "position": {"line": 1, "character": 18}
+            }
+        }),
+        json!({"jsonrpc": "2.0", "id": 4, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+
+    let messages = run_server(&input);
+    let nested = response(&messages, 2)["result"].as_array().unwrap();
+    assert!(nested.iter().any(|item| item["label"] == "div"));
+    assert!(nested.iter().any(|item| item["label"] == "span"));
+    assert!(!nested.iter().any(|item| item["label"] == "Maybe"));
+    assert!(!nested.iter().any(|item| item["label"] == "Monoid"));
+
+    let unresolved = response(&messages, 3)["result"].as_array().unwrap();
+    assert!(unresolved.is_empty(), "{unresolved:?}");
 }
 
 #[test]
@@ -77,6 +170,10 @@ fn binary_serves_open_document_diagnostics_over_stdio() {
     assert_eq!(
         messages[0]["result"]["capabilities"]["positionEncoding"],
         "utf-16"
+    );
+    assert_eq!(
+        messages[0]["result"]["experimental"]["seseragi"]["protocolVersion"],
+        1
     );
     assert_eq!(messages[1]["method"], "textDocument/publishDiagnostics");
     assert_eq!(messages[1]["params"]["uri"], "file:///human.ssrg");

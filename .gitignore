@@ -9,6 +9,8 @@ bun.lock
 # Build outputs
 dist/
 target/
+extensions/seseragi-spec-preview/LICENSE.txt
+extensions/seseragi-spec-preview/server/
 *.tsbuildinfo
 
 # Environment

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "name": "Seseragi",
-  "scopeName": "source.seseragi-spec-preview",
+  "scopeName": "source.seseragi",
   "patterns": [
     {
       "include": "#comments"
