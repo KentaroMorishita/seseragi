@@ -48,17 +48,15 @@ fn parse_segment(tokens: &[Token], start: usize, end: usize) -> Option<ParsedSeg
         end: tokens[last].end,
     };
 
-    if let Some(bind) = significant
-        .iter()
-        .copied()
-        .find(|index| tokens[*index].kind == TokenKind::OperatorBind)
-    {
-        let value = expression_or_error(tokens, bind + 1, end, tokens[bind].end);
-        return Some(ParsedSegment::Bind(SurfaceDoItem::Bind {
-            pattern: parse_pattern_range(tokens, start, bind),
-            value,
-            span,
-        }));
+    if tokens[first].kind != TokenKind::KeywordFor {
+        if let Some(bind) = top_level_token(tokens, start, end, TokenKind::OperatorBind) {
+            let value = expression_or_error(tokens, bind + 1, end, tokens[bind].end);
+            return Some(ParsedSegment::Bind(SurfaceDoItem::Bind {
+                pattern: parse_pattern_range(tokens, start, bind),
+                value,
+                span,
+            }));
+        }
     }
 
     if tokens[first].kind == TokenKind::KeywordLet {
@@ -137,12 +135,10 @@ fn segment_is_complete(tokens: &[Token], start: usize, end: usize) -> bool {
     let Some(first) = significant.first().copied() else {
         return false;
     };
-    if let Some(bind) = significant
-        .iter()
-        .copied()
-        .find(|index| tokens[*index].kind == TokenKind::OperatorBind)
-    {
-        return parse_expression_range(tokens, bind + 1, end).is_some();
+    if tokens[first].kind != TokenKind::KeywordFor {
+        if let Some(bind) = top_level_token(tokens, start, end, TokenKind::OperatorBind) {
+            return parse_expression_range(tokens, bind + 1, end).is_some();
+        }
     }
     if tokens[first].kind == TokenKind::KeywordLet {
         return significant
@@ -152,6 +148,32 @@ fn segment_is_complete(tokens: &[Token], start: usize, end: usize) -> bool {
             .is_some_and(|equals| parse_expression_range(tokens, equals + 1, end).is_some());
     }
     parse_expression_range(tokens, start, end).is_some()
+}
+
+fn top_level_token(
+    tokens: &[Token],
+    start: usize,
+    end: usize,
+    expected: TokenKind,
+) -> Option<usize> {
+    let mut brace_depth = 0usize;
+    let mut paren_depth = 0usize;
+    let mut square_depth = 0usize;
+    for (index, token) in tokens.iter().enumerate().take(end).skip(start) {
+        if token.kind == expected && brace_depth == 0 && paren_depth == 0 && square_depth == 0 {
+            return Some(index);
+        }
+        match token.kind {
+            TokenKind::PunctuationBraceLeft => brace_depth += 1,
+            TokenKind::PunctuationBraceRight => brace_depth = brace_depth.saturating_sub(1),
+            TokenKind::PunctuationParenLeft => paren_depth += 1,
+            TokenKind::PunctuationParenRight => paren_depth = paren_depth.saturating_sub(1),
+            TokenKind::PunctuationListLeft | TokenKind::PunctuationSquareLeft => square_depth += 1,
+            TokenKind::PunctuationSquareRight => square_depth = square_depth.saturating_sub(1),
+            _ => {}
+        }
+    }
+    None
 }
 
 fn push_non_empty_segment(

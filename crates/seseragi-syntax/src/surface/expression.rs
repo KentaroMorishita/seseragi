@@ -4,6 +4,7 @@ use crate::token::{Token, TokenKind};
 
 mod array;
 mod do_block;
+mod effectful_for;
 mod match_expression;
 mod parenthesized;
 mod record;
@@ -314,6 +315,7 @@ impl ExpressionParser<'_> {
             }),
             TokenKind::OperatorLambda => self.parse_lambda(token, stops),
             TokenKind::KeywordIf => self.parse_if(token, stops),
+            TokenKind::KeywordFor => effectful_for::parse(self, token),
             TokenKind::KeywordMatch => match_expression::parse(self, token),
             TokenKind::KeywordDo => self.parse_do(token),
             TokenKind::PunctuationParenLeft => parenthesized::parse(self, token),
@@ -408,6 +410,7 @@ impl ExpressionParser<'_> {
                     | TokenKind::IdentifierUpper
                     | TokenKind::OperatorLambda
                     | TokenKind::KeywordIf
+                    | TokenKind::KeywordFor
                     | TokenKind::KeywordMatch
                     | TokenKind::KeywordDo
                     | TokenKind::PunctuationParenLeft

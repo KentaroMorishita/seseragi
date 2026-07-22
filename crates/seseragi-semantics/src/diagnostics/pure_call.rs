@@ -110,6 +110,30 @@ pub(super) fn call_diagnostic(
                 type_label(&actual)
             ),
         ),
+        PureCallIssue::EffectfulForBodyNotEffect { body, actual } => (
+            "SES-T0101",
+            "for.body-not-effect",
+            body,
+            format!(
+                "effectful for expects an Effect body, received {}",
+                type_label(&actual)
+            ),
+        ),
+        PureCallIssue::EffectfulForBodyNotUnit { body, actual } => (
+            "SES-T0101",
+            "for.body-not-unit",
+            body,
+            format!(
+                "effectful for expects a Unit-producing body, received {}",
+                type_label(&actual)
+            ),
+        ),
+        PureCallIssue::EffectfulForRefutablePattern { pattern } => (
+            "SES-T0101",
+            "for.refutable-pattern",
+            pattern,
+            "effectful for requires an irrefutable binding pattern".to_owned(),
+        ),
     };
     Diagnostic {
         id: String::new(),

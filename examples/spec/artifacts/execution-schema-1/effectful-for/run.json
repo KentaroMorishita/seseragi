@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "case": "effectful-for",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/effectful-for",
+    "export": "main",
+    "compiledModule": "../../schema-1/effectful-for/generated-module.json",
+    "typedInterface": "../../schema-1/effectful-for/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "effect.core.type",
+      "effect.console.service",
+      "effect.console.error",
+      "core.unit",
+      "effect.core.flatMap",
+      "core.array.iterable",
+      "effect.collection.for-each",
+      "core.int64",
+      "effect.console.println",
+      "core.string",
+      "core.int64.show",
+      "core.list.iterable",
+      "core.list",
+      "core.list.from-array",
+      "core.range.iterable",
+      "core.range",
+      "core.range.inclusive"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["array:1"],
+        "stdout": "array:1\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["array:2"],
+        "stdout": "array:2\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["list:3"],
+        "stdout": "list:3\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["list:4"],
+        "stdout": "list:4\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["range:5"],
+        "stdout": "range:5\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["range:6"],
+        "stdout": "range:6\n"
+      }
+    ]
+  }
+}

@@ -659,25 +659,11 @@ mod tests {
     }
 
     #[test]
-    fn reports_an_effect_body_that_surface_syntax_cannot_normalize() {
+    fn accepts_an_effectful_for_expression() {
         let source = "pub effect fn main = for n <- 1..=3 { println $ `${n}` }\n";
         let diagnostics = parse_diagnostics("main.ssrg", source);
 
-        assert_eq!(diagnostics.diagnostics.len(), 1);
-        assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
-        assert_eq!(
-            diagnostics.diagnostics[0].message_key,
-            "parser.expected-expression"
-        );
-        assert_eq!(
-            diagnostics.diagnostics[0].primary,
-            ByteRange {
-                start: source
-                    .find("for")
-                    .expect("fixture contains the invalid body"),
-                end: source.trim_end().len(),
-            }
-        );
+        assert!(diagnostics.diagnostics.is_empty());
     }
 
     #[test]

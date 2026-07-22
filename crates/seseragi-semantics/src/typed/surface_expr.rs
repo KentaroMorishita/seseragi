@@ -20,6 +20,7 @@ mod array;
 mod binary;
 mod comprehension;
 mod conditional;
+pub(crate) mod effectful_for;
 mod lambda;
 mod match_expression;
 mod monad_do;
@@ -497,6 +498,7 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
             name: "List".to_owned(),
             arguments: vec![surface_expression_type_hint(element)?],
         }),
+        SurfaceExpr::EffectfulFor { .. } => None,
         SurfaceExpr::Grouped { value, .. } => surface_expression_type_hint(value),
         SurfaceExpr::Prefix { .. } | SurfaceExpr::Assignment { .. } => None,
         SurfaceExpr::Lambda {
@@ -570,6 +572,12 @@ pub(super) fn type_surface_expression(
             body,
             span,
         } => lambda::type_lambda(parameter, body, *span, context),
+        SurfaceExpr::EffectfulFor {
+            pattern,
+            source,
+            body,
+            span,
+        } => effectful_for::type_effectful_for(pattern, source, body, *span, context),
         SurfaceExpr::Application { .. } => application::type_application(expression, context),
         SurfaceExpr::Prefix {
             operator,

@@ -70,6 +70,17 @@ pub(super) fn resolve_expression(
             }
             resolve_expression(resolver, lambda_scope, body);
         }
+        SurfaceExpr::EffectfulFor {
+            pattern,
+            source,
+            body,
+            span,
+        } => {
+            resolve_expression(resolver, scope, source);
+            let loop_scope = resolver.new_scope(scope, ScopeKind::Comprehension, *span);
+            resolve_pattern(resolver, loop_scope, pattern);
+            resolve_expression(resolver, loop_scope, body);
+        }
         SurfaceExpr::Tuple { elements, .. }
         | SurfaceExpr::Array { elements, .. }
         | SurfaceExpr::List { elements, .. } => {

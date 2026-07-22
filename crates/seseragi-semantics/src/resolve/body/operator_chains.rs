@@ -223,6 +223,10 @@ fn normalize_expression(
             normalize_expression(value, custom, issues);
         }
         SurfaceExpr::Lambda { body, .. } => normalize_expression(body, custom, issues),
+        SurfaceExpr::EffectfulFor { source, body, .. } => {
+            normalize_expression(source, custom, issues);
+            normalize_expression(body, custom, issues);
+        }
         SurfaceExpr::Tuple { elements, .. }
         | SurfaceExpr::Array { elements, .. }
         | SurfaceExpr::List { elements, .. } => {

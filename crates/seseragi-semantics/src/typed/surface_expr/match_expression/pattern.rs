@@ -36,6 +36,25 @@ pub(in crate::typed::surface_expr) struct PatternAnalysis {
     pub(super) invalid: bool,
 }
 
+impl PatternAnalysis {
+    pub(in crate::typed::surface_expr) fn is_irrefutable(&self) -> bool {
+        !self.invalid && coverage_is_irrefutable(&self.coverage)
+    }
+}
+
+fn coverage_is_irrefutable(pattern: &CoveragePattern) -> bool {
+    match pattern {
+        CoveragePattern::Any => true,
+        CoveragePattern::Tuple(elements) => elements.iter().all(coverage_is_irrefutable),
+        CoveragePattern::Record(fields) => fields
+            .iter()
+            .all(|(_, pattern)| coverage_is_irrefutable(pattern)),
+        CoveragePattern::Literal(_)
+        | CoveragePattern::Constructor { .. }
+        | CoveragePattern::Invalid => false,
+    }
+}
+
 pub(in crate::typed::surface_expr) fn type_pattern(
     pattern: &SurfacePattern,
     expected: &SemanticValueType,

@@ -265,7 +265,6 @@ mod tests {
             "artifact/effect-compact-not-effect/main.ssrg",
             "pub effect fn greet name: String = name\n",
         );
-
         assert_eq!(diagnostics.diagnostics.len(), 1);
         assert_eq!(diagnostics.diagnostics[0].id, "d1");
         assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
@@ -281,6 +280,48 @@ mod tests {
         assert_eq!(
             diagnostics.diagnostics[0].related[0].primary,
             ByteRange { start: 0, end: 39 }
+        );
+    }
+
+    #[test]
+    fn reports_a_non_effectful_for_body() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effectful-for-body/main.ssrg",
+            "pub effect fn main = for value <- [1] { value }\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "for.body-not-effect"
+        );
+    }
+
+    #[test]
+    fn reports_an_effectful_for_body_that_does_not_produce_unit() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effectful-for-success/main.ssrg",
+            "pub effect fn main = for value <- [1] { succeed value }\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+        assert_eq!(diagnostics.diagnostics[0].message_key, "for.body-not-unit");
+    }
+
+    #[test]
+    fn reports_a_refutable_effectful_for_pattern() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effectful-for-pattern/main.ssrg",
+            "pub effect fn main = for True <- [True] { println \"matched\" }\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "for.refutable-pattern"
         );
     }
 

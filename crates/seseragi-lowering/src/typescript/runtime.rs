@@ -1,5 +1,6 @@
 use crate::collection_ops::{
-    runtime_collection_join_operation, runtime_collection_operation, runtime_iterable_operation,
+    runtime_collection_for_each_operation, runtime_collection_join_operation,
+    runtime_collection_operation, runtime_iterable_operation,
 };
 use crate::iterator_ops::runtime_iterator_comprehension_operation;
 use crate::iterator_ops::runtime_iterator_operation;
@@ -73,7 +74,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             if runtime_collection_operation(callee, evidence).is_none() {
                 collect_evidence_runtime_requirements(evidence, requirements);
             }
-            if let Some(operation) = runtime_collection_join_operation(callee, evidence) {
+            if let Some(operation) = runtime_collection_for_each_operation(callee, evidence) {
+                push_unique(requirements, operation.runtime_feature);
+            } else if let Some(operation) = runtime_collection_join_operation(callee, evidence) {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_collection_operation(callee, evidence) {
                 push_unique(requirements, operation.runtime_feature);
@@ -171,13 +174,15 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
                     CoreComprehensionClause::Generator {
                         source, evidence, ..
                     } => {
-                        collect_evidence_runtime_requirements(
-                            std::slice::from_ref(evidence),
-                            requirements,
-                        );
                         let flatten = clauses[index + 1..].iter().any(|clause| {
                             matches!(clause, CoreComprehensionClause::Generator { .. })
                         });
+                        if runtime_iterable_operation(evidence, flatten).is_none() {
+                            collect_evidence_runtime_requirements(
+                                std::slice::from_ref(evidence),
+                                requirements,
+                            );
+                        }
                         let feature = runtime_iterable_operation(evidence, flatten)
                             .map(|operation| operation.runtime_feature)
                             .unwrap_or_else(|| {
@@ -428,7 +433,15 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             if runtime_collection_operation(callee, evidence).is_none() {
                 collect_evidence_runtime_imports(evidence, imports);
             }
-            if let Some(operation) = runtime_collection_join_operation(callee, evidence) {
+            if let Some(operation) = runtime_collection_for_each_operation(callee, evidence) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            } else if let Some(operation) = runtime_collection_join_operation(callee, evidence) {
                 push_import_unique(
                     imports,
                     TypeScriptImport {
@@ -532,10 +545,15 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                     CoreComprehensionClause::Generator {
                         source, evidence, ..
                     } => {
-                        collect_evidence_runtime_imports(std::slice::from_ref(evidence), imports);
                         let flatten = clauses[index + 1..].iter().any(|clause| {
                             matches!(clause, CoreComprehensionClause::Generator { .. })
                         });
+                        if runtime_iterable_operation(evidence, flatten).is_none() {
+                            collect_evidence_runtime_imports(
+                                std::slice::from_ref(evidence),
+                                imports,
+                            );
+                        }
                         let (feature, local) = runtime_iterable_operation(evidence, flatten)
                             .map(|operation| (operation.runtime_feature, operation.local_name))
                             .unwrap_or_else(|| {

@@ -1,3 +1,6 @@
+import type { Iterator as SeseragiIterator } from "./iterator"
+import { Just, Nothing } from "./sum"
+
 /** Immutable persistent linked list used by the Seseragi `List<A>` ABI. */
 export type List<A> = Empty | Cons<A>
 
@@ -47,6 +50,19 @@ export const listReducible = Object.freeze({
     (step: (accumulator: B) => (value: A) => B) =>
     (values: List<A>): B =>
       reduce(initial, step, values),
+})
+
+function listIterator<A>(values: List<A>): SeseragiIterator<A> {
+  return {
+    next: () =>
+      values.tag === "Cons"
+        ? Just([values.head, listIterator(values.tail)] as const)
+        : Nothing,
+  }
+}
+
+export const listIterable = Object.freeze({
+  iterate: <A>(values: List<A>): SeseragiIterator<A> => listIterator(values),
 })
 
 /** Pure comprehension lowering for the standard List Iterable instance. */

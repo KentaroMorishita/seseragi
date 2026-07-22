@@ -10,6 +10,30 @@ pub(crate) struct RuntimePreludeDictionary {
 
 const RUNTIME_PRELUDE_DICTIONARIES: &[RuntimePreludeDictionary] = &[
     RuntimePreludeDictionary {
+        semantic_identity: "std/array::Iterable",
+        runtime_feature: "core.array.iterable",
+        local_name: "_ssrg_array_iterable",
+        module: "@seseragi/runtime/array",
+        export_name: "arrayIterable",
+        source_map_name: "arrayIterable",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/list::Iterable",
+        runtime_feature: "core.list.iterable",
+        local_name: "_ssrg_list_iterable",
+        module: "@seseragi/runtime/list",
+        export_name: "listIterable",
+        source_map_name: "listIterable",
+    },
+    RuntimePreludeDictionary {
+        semantic_identity: "std/range::Iterable",
+        runtime_feature: "core.range.iterable",
+        local_name: "_ssrg_range_iterable",
+        module: "@seseragi/runtime/range",
+        export_name: "rangeIterable",
+        source_map_name: "rangeIterable",
+    },
+    RuntimePreludeDictionary {
         semantic_identity: "std/array::Reducible",
         runtime_feature: "core.array.reducible",
         local_name: "_ssrg_array_reducible",
@@ -196,6 +220,24 @@ mod tests {
     #[test]
     fn maps_the_standard_prelude_dictionary_families() {
         for (identity, feature, module, export_name) in [
+            (
+                "std/array::Iterable",
+                "core.array.iterable",
+                "@seseragi/runtime/array",
+                "arrayIterable",
+            ),
+            (
+                "std/list::Iterable",
+                "core.list.iterable",
+                "@seseragi/runtime/list",
+                "listIterable",
+            ),
+            (
+                "std/range::Iterable",
+                "core.range.iterable",
+                "@seseragi/runtime/range",
+                "rangeIterable",
+            ),
             (
                 "std/array::Reducible",
                 "core.array.reducible",

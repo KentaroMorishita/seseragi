@@ -1,0 +1,440 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/effectful-for",
+  "runtimeRequirements": [
+    "effect.core.type",
+    "effect.console.service",
+    "effect.console.error",
+    "core.unit",
+    "effect.core.flatMap",
+    "core.array.iterable",
+    "effect.collection.for-each",
+    "core.int64",
+    "effect.console.println",
+    "core.string",
+    "core.int64.show",
+    "core.list.iterable",
+    "core.list",
+    "core.list.from-array",
+    "core.range.iterable",
+    "core.range",
+    "core.range.inclusive"
+  ],
+  "imports": [
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "core.array.iterable",
+      "local": "_ssrg_array_iterable"
+    },
+    {
+      "feature": "effect.collection.for-each",
+      "local": "_ssrg_collection_for_each"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.list.iterable",
+      "local": "_ssrg_list_iterable"
+    },
+    {
+      "feature": "core.list.from-array",
+      "local": "_ssrg_list_from_array"
+    },
+    {
+      "feature": "core.range.iterable",
+      "local": "_ssrg_range_iterable"
+    },
+    {
+      "feature": "core.range.inclusive",
+      "local": "_ssrg_range_inclusive"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "effect.console.service",
+      "local": "Console"
+    },
+    {
+      "feature": "effect.console.error",
+      "local": "ConsoleError"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_collection_for_each",
+              "arguments": [
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_array_iterable"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "$ssrg_for_value: bigint",
+                  "body": {
+                    "kind": "decision",
+                    "scrutinee": {
+                      "kind": "identifier",
+                      "name": "$ssrg_for_value"
+                    },
+                    "scrutineeType": {
+                      "kind": "bigint"
+                    },
+                    "branches": [
+                      {
+                        "tests": [],
+                        "bindings": [
+                          {
+                            "name": "value",
+                            "type": {
+                              "kind": "bigint"
+                            },
+                            "path": []
+                          }
+                        ],
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_console_println",
+                          "arguments": [
+                            {
+                              "kind": "binary",
+                              "operator": "+",
+                              "left": {
+                                "kind": "string",
+                                "value": "array:"
+                              },
+                              "right": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_show_intShow"
+                                },
+                                "method": "show",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "value"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": [
+                            {
+                              "name": "console",
+                              "optional": false,
+                              "type": {
+                                "kind": "reference",
+                                "name": "Console",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "reference",
+                          "name": "ConsoleError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "bigint",
+                      "value": "1"
+                    },
+                    {
+                      "kind": "bigint",
+                      "value": "2"
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "bigint"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_collection_for_each",
+              "arguments": [
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_list_iterable"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "$ssrg_for_value: bigint",
+                  "body": {
+                    "kind": "decision",
+                    "scrutinee": {
+                      "kind": "identifier",
+                      "name": "$ssrg_for_value"
+                    },
+                    "scrutineeType": {
+                      "kind": "bigint"
+                    },
+                    "branches": [
+                      {
+                        "tests": [],
+                        "bindings": [
+                          {
+                            "name": "value",
+                            "type": {
+                              "kind": "bigint"
+                            },
+                            "path": []
+                          }
+                        ],
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_console_println",
+                          "arguments": [
+                            {
+                              "kind": "binary",
+                              "operator": "+",
+                              "left": {
+                                "kind": "string",
+                                "value": "list:"
+                              },
+                              "right": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_show_intShow"
+                                },
+                                "method": "show",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "value"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": [
+                            {
+                              "name": "console",
+                              "optional": false,
+                              "type": {
+                                "kind": "reference",
+                                "name": "Console",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "reference",
+                          "name": "ConsoleError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_list_from_array",
+                  "arguments": [
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "bigint",
+                          "value": "3"
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "4"
+                        }
+                      ],
+                      "elementType": {
+                        "kind": "bigint"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_collection_for_each",
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_range_iterable"
+            },
+            {
+              "kind": "lambda",
+              "parameter": "$ssrg_for_value: bigint",
+              "body": {
+                "kind": "decision",
+                "scrutinee": {
+                  "kind": "identifier",
+                  "name": "$ssrg_for_value"
+                },
+                "scrutineeType": {
+                  "kind": "bigint"
+                },
+                "branches": [
+                  {
+                    "tests": [],
+                    "bindings": [
+                      {
+                        "name": "value",
+                        "type": {
+                          "kind": "bigint"
+                        },
+                        "path": []
+                      }
+                    ],
+                    "value": {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_console_println",
+                      "arguments": [
+                        {
+                          "kind": "binary",
+                          "operator": "+",
+                          "left": {
+                            "kind": "string",
+                            "value": "range:"
+                          },
+                          "right": {
+                            "kind": "dictionary-call",
+                            "dictionary": {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_show_intShow"
+                            },
+                            "method": "show",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "value"
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "reference",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "fields": [
+                        {
+                          "name": "console",
+                          "optional": false,
+                          "type": {
+                            "kind": "reference",
+                            "name": "Console",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "reference",
+                      "name": "ConsoleError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_range_inclusive",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "5"
+                },
+                {
+                  "kind": "bigint",
+                  "value": "6"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 225
+      }
+    }
+  ]
+}

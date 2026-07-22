@@ -1,0 +1,9 @@
+import { flatMap as _ssrg_effect_flatMap, type Effect as Effect } from "@seseragi/runtime/effect"
+import { arrayIterable as _ssrg_array_iterable } from "@seseragi/runtime/array"
+import { forEach as _ssrg_collection_for_each } from "@seseragi/runtime/collection"
+import { println as _ssrg_console_println, type Console as Console, type ConsoleError as ConsoleError } from "@seseragi/runtime/console"
+import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
+import { listIterable as _ssrg_list_iterable, fromArray as _ssrg_list_from_array } from "@seseragi/runtime/list"
+import { rangeIterable as _ssrg_range_iterable, inclusive as _ssrg_range_inclusive } from "@seseragi/runtime/range"
+
+export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_collection_for_each(_ssrg_array_iterable, ($ssrg_for_value: bigint) => (($ssrg_match: bigint): Effect<{ readonly "console": Console }, ConsoleError, undefined> => ((value: bigint): Effect<{ readonly "console": Console }, ConsoleError, undefined> => _ssrg_console_println("array:" + _ssrg_show_intShow["show"](value)))($ssrg_match))($ssrg_for_value), [1n, 2n]), () => _ssrg_effect_flatMap(_ssrg_collection_for_each(_ssrg_list_iterable, ($ssrg_for_value: bigint) => (($ssrg_match: bigint): Effect<{ readonly "console": Console }, ConsoleError, undefined> => ((value: bigint): Effect<{ readonly "console": Console }, ConsoleError, undefined> => _ssrg_console_println("list:" + _ssrg_show_intShow["show"](value)))($ssrg_match))($ssrg_for_value), _ssrg_list_from_array([3n, 4n])), () => _ssrg_collection_for_each(_ssrg_range_iterable, ($ssrg_for_value: bigint) => (($ssrg_match: bigint): Effect<{ readonly "console": Console }, ConsoleError, undefined> => ((value: bigint): Effect<{ readonly "console": Console }, ConsoleError, undefined> => _ssrg_console_println("range:" + _ssrg_show_intShow["show"](value)))($ssrg_match))($ssrg_for_value), _ssrg_range_inclusive(5n, 6n))))

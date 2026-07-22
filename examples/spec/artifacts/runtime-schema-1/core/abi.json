@@ -104,6 +104,17 @@
       }
     },
     {
+      "id": "core.array.iterable",
+      "kind": "runtime-binding",
+      "typescript": "readonly Iterable dictionary",
+      "boundary": "standard Iterable<Array<A>, A> dictionary",
+      "instanceIdentity": "std/array::Iterable",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "arrayIterable"
+      }
+    },
+    {
       "id": "core.collection.join",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -111,6 +122,16 @@
       "import": {
         "module": "@seseragi/runtime/collection",
         "export": "join"
+      }
+    },
+    {
+      "id": "effect.collection.for-each",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Iterable<C, A> -> (A -> Effect<R, E, Unit>) -> C -> Effect<R, E, Unit>",
+      "import": {
+        "module": "@seseragi/runtime/collection",
+        "export": "forEach"
       }
     },
     {
@@ -182,6 +203,17 @@
       "import": {
         "module": "@seseragi/runtime/range",
         "export": "rangeReducible"
+      }
+    },
+    {
+      "id": "core.range.iterable",
+      "kind": "runtime-binding",
+      "typescript": "readonly Iterable dictionary",
+      "boundary": "standard Iterable<Range<Int>, Int> dictionary",
+      "instanceIdentity": "std/range::Iterable",
+      "import": {
+        "module": "@seseragi/runtime/range",
+        "export": "rangeIterable"
       }
     },
     {
@@ -300,6 +332,17 @@
       "import": {
         "module": "@seseragi/runtime/list",
         "export": "listReducible"
+      }
+    },
+    {
+      "id": "core.list.iterable",
+      "kind": "runtime-binding",
+      "typescript": "readonly Iterable dictionary",
+      "boundary": "standard Iterable<List<A>, A> dictionary",
+      "instanceIdentity": "std/list::Iterable",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "listIterable"
       }
     },
     {

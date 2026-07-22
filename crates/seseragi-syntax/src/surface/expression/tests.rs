@@ -1031,6 +1031,49 @@ fn parses_list_comprehensions_with_the_same_clause_grammar() {
 }
 
 #[test]
+fn preserves_effectful_for_until_semantic_typing() {
+    let body = first_body("pub effect fn main = for value <- [1, 2] { println $ `${value}` }\n");
+
+    let SurfaceExpr::EffectfulFor {
+        pattern,
+        source,
+        body,
+        ..
+    } = body
+    else {
+        panic!("expected effectful for expression");
+    };
+    assert!(matches!(pattern, SurfacePattern::Name { name, .. } if name == "value"));
+    assert!(matches!(
+        source.as_ref(),
+        SurfaceExpr::Array { elements, .. } if elements.len() == 2
+    ));
+    assert!(matches!(body.as_ref(), SurfaceExpr::Application { .. }));
+}
+
+#[test]
+fn keeps_effectful_for_bind_syntax_out_of_do_bind_parsing() {
+    let body = first_body(
+        "pub effect fn main = do {\n  for value <- [1, 2] {\n    println $ `${value}`\n  }\n  println \"done\"\n}\n",
+    );
+
+    let SurfaceExpr::Do { items, result, .. } = body else {
+        panic!("expected do block");
+    };
+    assert!(matches!(
+        &items[0],
+        crate::SurfaceDoItem::Expression {
+            value: SurfaceExpr::EffectfulFor { .. },
+            ..
+        }
+    ));
+    assert!(matches!(
+        result.as_deref(),
+        Some(SurfaceExpr::Application { .. })
+    ));
+}
+
+#[test]
 fn parses_multiline_comprehension_with_multiple_generators() {
     let body = first_body(
         "fn pairs limit: Int -> Array<(Int, Int)> = [\n  (left, right)\n  | left <- 1..=limit,\n    right <- [left, limit],\n    left < right\n]\n",

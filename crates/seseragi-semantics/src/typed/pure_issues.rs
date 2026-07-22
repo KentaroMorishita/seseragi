@@ -40,6 +40,17 @@ pub(crate) enum PureCallIssue {
         expected: TypedType,
         actual: TypedType,
     },
+    EffectfulForBodyNotEffect {
+        body: ByteSpan,
+        actual: TypedType,
+    },
+    EffectfulForBodyNotUnit {
+        body: ByteSpan,
+        actual: TypedType,
+    },
+    EffectfulForRefutablePattern {
+        pattern: ByteSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

@@ -1,3 +1,6 @@
+import type { Iterator as SeseragiIterator } from "./iterator"
+import { Just, Nothing } from "./sum"
+
 /** Runtime implementation of the standard `Reducible<Array<A>, A>` instance. */
 export function reduce<A, B>(
   initial: B,
@@ -17,6 +20,23 @@ export const arrayReducible = Object.freeze({
     (step: (accumulator: B) => (value: A) => B) =>
     (values: ReadonlyArray<A>): B =>
       reduce(initial, step, values),
+})
+
+function arrayIterator<A>(
+  values: ReadonlyArray<A>,
+  index: number
+): SeseragiIterator<A> {
+  return {
+    next: () =>
+      index < values.length
+        ? Just([values[index] as A, arrayIterator(values, index + 1)] as const)
+        : Nothing,
+  }
+}
+
+export const arrayIterable = Object.freeze({
+  iterate: <A>(values: ReadonlyArray<A>): SeseragiIterator<A> =>
+    arrayIterator(values, 0),
 })
 
 /** Pure comprehension lowering for the standard Array Iterable instance. */

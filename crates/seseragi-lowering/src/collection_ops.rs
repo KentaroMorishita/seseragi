@@ -36,6 +36,13 @@ const COLLECTION_JOIN: RuntimeCollectionOperation = RuntimeCollectionOperation {
     export_name: "join",
 };
 
+const COLLECTION_FOR_EACH: RuntimeCollectionOperation = RuntimeCollectionOperation {
+    runtime_feature: "effect.collection.for-each",
+    local_name: "_ssrg_collection_for_each",
+    module: "@seseragi/runtime/collection",
+    export_name: "forEach",
+};
+
 const ARRAY_COMPREHEND: RuntimeCollectionOperation = RuntimeCollectionOperation {
     runtime_feature: "core.array.comprehend",
     local_name: "_ssrg_array_comprehend",
@@ -112,6 +119,19 @@ pub(crate) fn runtime_collection_join_operation(
     .map(|_| &COLLECTION_JOIN)
 }
 
+pub(crate) fn runtime_collection_for_each_operation(
+    callee: &str,
+    evidence: &[CoreCallEvidence],
+) -> Option<&'static RuntimeCollectionOperation> {
+    matches!(
+        evidence,
+        [selected] if selected.constraint.name == "Iterable"
+    )
+    .then_some(())
+    .filter(|_| callee == "std/prelude::forEach")
+    .map(|_| &COLLECTION_FOR_EACH)
+}
+
 pub(crate) fn runtime_collection_operation_for_feature(
     feature: &str,
 ) -> Option<RuntimeCollectionOperation> {
@@ -120,6 +140,7 @@ pub(crate) fn runtime_collection_operation_for_feature(
         RANGE_REDUCE,
         LIST_REDUCE,
         COLLECTION_JOIN,
+        COLLECTION_FOR_EACH,
         ARRAY_COMPREHEND,
         ARRAY_COMPREHEND_FLAT,
         RANGE_COMPREHEND,
@@ -233,6 +254,32 @@ mod tests {
             Some("core.collection.join")
         );
         assert!(runtime_collection_join_operation("user::join", &evidence).is_none());
+    }
+
+    #[test]
+    fn resolves_generic_for_each_from_iterable_evidence() {
+        let evidence = [CoreCallEvidence {
+            constraint: CoreInstanceConstraint {
+                name: "Iterable".to_owned(),
+                arguments: vec![
+                    CoreType::Named {
+                        name: "C".to_owned(),
+                        arguments: Vec::new(),
+                    },
+                    CoreType::Named {
+                        name: "A".to_owned(),
+                        arguments: Vec::new(),
+                    },
+                ],
+            },
+            evidence: CoreInstanceEvidence::Parameter { index: 0 },
+        }];
+
+        assert_eq!(
+            runtime_collection_for_each_operation("std/prelude::forEach", &evidence)
+                .map(|operation| operation.runtime_feature),
+            Some("effect.collection.for-each")
+        );
     }
 
     #[test]

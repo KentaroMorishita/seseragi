@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "module": "artifact/effectful-for",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}

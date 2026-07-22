@@ -23,14 +23,18 @@ export { add, divide, multiply, power, remainder, subtract } from "./int64"
 export {
   arrayApplicative,
   arrayFunctor,
+  arrayIterable,
   arrayMonad,
   arrayReducible,
   collectFlatMap as collectFlatMapArray,
   collectMap as collectMapArray,
   reduce,
 } from "./array"
-export type { Reducible } from "./collection"
-export { join as joinCollection } from "./collection"
+export type { Iterable, Reducible } from "./collection"
+export {
+  forEach as forEachCollection,
+  join as joinCollection,
+} from "./collection"
 export type { IntRange } from "./range"
 export {
   collectFlatMap as collectFlatMapRange,
@@ -38,6 +42,7 @@ export {
   exclusive as exclusiveRange,
   inclusive as inclusiveRange,
   rangeReducible,
+  rangeIterable,
   reduce as reduceRange,
 } from "./range"
 export type { Iterator } from "./iterator"
@@ -52,6 +57,7 @@ export {
   listApplicative,
   listFunctor,
   listMonad,
+  listIterable,
   listReducible,
   reduce as reduceList,
 } from "./list"

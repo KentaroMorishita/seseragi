@@ -106,6 +106,7 @@ impl Lexer<'_> {
             "else" => TokenKind::KeywordElse,
             "fails" => TokenKind::KeywordFails,
             "fn" => TokenKind::KeywordFn,
+            "for" => TokenKind::KeywordFor,
             "if" => TokenKind::KeywordIf,
             "pub" => TokenKind::KeywordPub,
             "let" => TokenKind::KeywordLet,

@@ -1,0 +1,1091 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/effectful-for",
+  "declarations": [
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/effectful-for::main",
+      "visibility": "public",
+      "origin": {
+        "start": 0,
+        "end": 225
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::forEach",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "$ssrg_for_value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 36,
+                      "end": 41
+                    }
+                  },
+                  "body": {
+                    "kind": "match",
+                    "scrutinee": {
+                      "kind": "variable",
+                      "name": "$ssrg_for_value",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 36,
+                        "end": 41
+                      }
+                    },
+                    "arms": [
+                      {
+                        "pattern": {
+                          "kind": "binding",
+                          "symbol": 1,
+                          "name": "value",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 36,
+                            "end": 41
+                          }
+                        },
+                        "body": {
+                          "kind": "effect-call",
+                          "operation": "std/prelude::println",
+                          "effect": {
+                            "environment": {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": [
+                                {
+                                  "name": "console",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Console",
+                                    "arguments": []
+                                  }
+                                }
+                              ]
+                            },
+                            "failure": {
+                              "kind": "named",
+                              "name": "ConsoleError",
+                              "arguments": []
+                            },
+                            "success": {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          },
+                          "arguments": [
+                            {
+                              "kind": "template",
+                              "parts": [
+                                {
+                                  "kind": "text",
+                                  "value": "array:",
+                                  "origin": {
+                                    "start": 71,
+                                    "end": 77
+                                  }
+                                },
+                                {
+                                  "kind": "interpolation",
+                                  "value": {
+                                    "kind": "variable",
+                                    "name": "value",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "start": 79,
+                                      "end": 84
+                                    }
+                                  },
+                                  "evidence": {
+                                    "constraint": {
+                                      "name": "Show",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "Show<std/prelude::Int>"
+                                    }
+                                  },
+                                  "traitIdentity": "std/prelude::Show",
+                                  "origin": {
+                                    "start": 77,
+                                    "end": 85
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 70,
+                                "end": 86
+                              }
+                            }
+                          ],
+                          "origin": {
+                            "start": 60,
+                            "end": 86
+                          }
+                        },
+                        "origin": {
+                          "start": 36,
+                          "end": 86
+                        }
+                      }
+                    ],
+                    "exhaustive": true,
+                    "type": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "console",
+                              "type": {
+                                "kind": "named",
+                                "name": "Console",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "ConsoleError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 36,
+                      "end": 86
+                    }
+                  },
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "console",
+                              "type": {
+                                "kind": "named",
+                                "name": "Console",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "ConsoleError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "start": 36,
+                    "end": 86
+                  }
+                },
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "value": "1",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 46,
+                        "end": 47
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "value": "2",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 49,
+                        "end": 50
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 45,
+                    "end": 51
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Iterable",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/array::Iterable"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "console",
+                        "type": {
+                          "kind": "named",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 32,
+                "end": 92
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::forEach",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "$ssrg_for_value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 101,
+                      "end": 106
+                    }
+                  },
+                  "body": {
+                    "kind": "match",
+                    "scrutinee": {
+                      "kind": "variable",
+                      "name": "$ssrg_for_value",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 101,
+                        "end": 106
+                      }
+                    },
+                    "arms": [
+                      {
+                        "pattern": {
+                          "kind": "binding",
+                          "symbol": 3,
+                          "name": "value",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 101,
+                            "end": 106
+                          }
+                        },
+                        "body": {
+                          "kind": "effect-call",
+                          "operation": "std/prelude::println",
+                          "effect": {
+                            "environment": {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": [
+                                {
+                                  "name": "console",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Console",
+                                    "arguments": []
+                                  }
+                                }
+                              ]
+                            },
+                            "failure": {
+                              "kind": "named",
+                              "name": "ConsoleError",
+                              "arguments": []
+                            },
+                            "success": {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          },
+                          "arguments": [
+                            {
+                              "kind": "template",
+                              "parts": [
+                                {
+                                  "kind": "text",
+                                  "value": "list:",
+                                  "origin": {
+                                    "start": 137,
+                                    "end": 142
+                                  }
+                                },
+                                {
+                                  "kind": "interpolation",
+                                  "value": {
+                                    "kind": "variable",
+                                    "name": "value",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "start": 144,
+                                      "end": 149
+                                    }
+                                  },
+                                  "evidence": {
+                                    "constraint": {
+                                      "name": "Show",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "Show<std/prelude::Int>"
+                                    }
+                                  },
+                                  "traitIdentity": "std/prelude::Show",
+                                  "origin": {
+                                    "start": 142,
+                                    "end": 150
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 136,
+                                "end": 151
+                              }
+                            }
+                          ],
+                          "origin": {
+                            "start": 126,
+                            "end": 151
+                          }
+                        },
+                        "origin": {
+                          "start": 101,
+                          "end": 151
+                        }
+                      }
+                    ],
+                    "exhaustive": true,
+                    "type": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "console",
+                              "type": {
+                                "kind": "named",
+                                "name": "Console",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "ConsoleError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 101,
+                      "end": 151
+                    }
+                  },
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "console",
+                              "type": {
+                                "kind": "named",
+                                "name": "Console",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "ConsoleError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "start": 101,
+                    "end": 151
+                  }
+                },
+                {
+                  "kind": "list",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "value": "3",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 112,
+                        "end": 113
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "value": "4",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 115,
+                        "end": 116
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "List",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 110,
+                    "end": 117
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Iterable",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/list::Iterable"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "console",
+                        "type": {
+                          "kind": "named",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 97,
+                "end": 157
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "std/prelude::forEach",
+          "arguments": [
+            {
+              "kind": "lambda",
+              "parameter": {
+                "kind": "named",
+                "name": "$ssrg_for_value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 166,
+                  "end": 171
+                }
+              },
+              "body": {
+                "kind": "match",
+                "scrutinee": {
+                  "kind": "variable",
+                  "name": "$ssrg_for_value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 166,
+                    "end": 171
+                  }
+                },
+                "arms": [
+                  {
+                    "pattern": {
+                      "kind": "binding",
+                      "symbol": 4,
+                      "name": "value",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 166,
+                        "end": 171
+                      }
+                    },
+                    "body": {
+                      "kind": "effect-call",
+                      "operation": "std/prelude::println",
+                      "effect": {
+                        "environment": {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "console",
+                              "type": {
+                                "kind": "named",
+                                "name": "Console",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        "failure": {
+                          "kind": "named",
+                          "name": "ConsoleError",
+                          "arguments": []
+                        },
+                        "success": {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      },
+                      "arguments": [
+                        {
+                          "kind": "template",
+                          "parts": [
+                            {
+                              "kind": "text",
+                              "value": "range:",
+                              "origin": {
+                                "start": 200,
+                                "end": 206
+                              }
+                            },
+                            {
+                              "kind": "interpolation",
+                              "value": {
+                                "kind": "variable",
+                                "name": "value",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 208,
+                                  "end": 213
+                                }
+                              },
+                              "evidence": {
+                                "constraint": {
+                                  "name": "Show",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "standard",
+                                  "identity": "Show<std/prelude::Int>"
+                                }
+                              },
+                              "traitIdentity": "std/prelude::Show",
+                              "origin": {
+                                "start": 206,
+                                "end": 214
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 199,
+                            "end": 215
+                          }
+                        }
+                      ],
+                      "origin": {
+                        "start": 189,
+                        "end": 215
+                      }
+                    },
+                    "origin": {
+                      "start": 166,
+                      "end": 215
+                    }
+                  }
+                ],
+                "exhaustive": true,
+                "type": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "console",
+                          "type": {
+                            "kind": "named",
+                            "name": "Console",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "ConsoleError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 166,
+                  "end": 215
+                }
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "console",
+                          "type": {
+                            "kind": "named",
+                            "name": "Console",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "ConsoleError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "origin": {
+                "start": 166,
+                "end": 215
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "..=",
+              "left": {
+                "kind": "integer",
+                "value": "5",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 175,
+                  "end": 176
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "value": "6",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 179,
+                  "end": 180
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Range",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 175,
+                "end": 180
+              }
+            }
+          ],
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Iterable",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Range",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/range::Iterable"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 162,
+            "end": 221
+          }
+        },
+        "origin": {
+          "start": 23,
+          "end": 225
+        }
+      }
+    }
+  ]
+}

@@ -512,6 +512,9 @@ fn collect_callables(
             Some("std/prelude::join") => {
                 callables.insert(symbol.id, standard_join_callable());
             }
+            Some("std/prelude::forEach") => {
+                callables.insert(symbol.id, standard_for_each_callable());
+            }
             Some("std/prelude::unfold") => {
                 callables.insert(symbol.id, standard_unfold_callable());
             }
@@ -812,6 +815,40 @@ fn standard_join_callable() -> TopLevelPureFunction {
         parameters: vec![string.clone(), collection],
         semantic_parameters: vec![SemanticTypeKey::Other; 2],
         result: string,
+        semantic_result: SemanticTypeKey::Other,
+    }
+}
+
+fn standard_for_each_callable() -> TopLevelPureFunction {
+    let collection = named_type("C");
+    let environment = named_type("R");
+    let failure = named_type("E");
+    let element = named_type("A");
+    let effect = named_type_with("Effect", vec![environment, failure, named_type("Unit")]);
+    TopLevelPureFunction {
+        symbol: "std/prelude::forEach".to_owned(),
+        trait_identity: None,
+        trait_method: None,
+        type_parameters: vec![
+            seseragi_syntax::TypeParameter::value("C"),
+            seseragi_syntax::TypeParameter::value("R"),
+            seseragi_syntax::TypeParameter::value("E"),
+            seseragi_syntax::TypeParameter::value("A"),
+        ],
+        constraints: vec![crate::TypedConstraint {
+            name: "Iterable".to_owned(),
+            arguments: vec![collection.clone(), element.clone()],
+        }],
+        constraint_identities: vec![None],
+        parameters: vec![
+            TypedType::Function {
+                parameter: Box::new(element),
+                result: Box::new(effect.clone()),
+            },
+            collection,
+        ],
+        semantic_parameters: vec![SemanticTypeKey::Other; 2],
+        result: effect,
         semantic_result: SemanticTypeKey::Other,
     }
 }

@@ -80,6 +80,14 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
         }
         "template" => validate_template(expression, path),
         "arrayComprehension" | "listComprehension" => validate_comprehension(expression, path),
+        "effectfulFor" => {
+            let pattern = expression
+                .get("pattern")
+                .ok_or_else(|| format!("SurfaceAst {path}.pattern is required"))?;
+            validate_pattern(pattern, &format!("{path}.pattern"))?;
+            validate_child(expression, "source", path)?;
+            validate_child(expression, "body", path)
+        }
         "grouped" => validate_child(expression, "value", path),
         "lambda" => {
             let parameter = expression

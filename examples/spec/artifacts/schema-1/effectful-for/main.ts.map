@@ -1,0 +1,32 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effectful-for"
+  ],
+  "sourcesContent": [
+    "pub effect fn main =\n  do {\n    for value <- [1, 2] {\n      println $ `array:${value}`\n    }\n    for value <- `[3, 4] {\n      println $ `list:${value}`\n    }\n    for value <- 5..=6 {\n      println $ `range:${value}`\n    }\n  }\n"
+  ],
+  "names": [
+    "main",
+    "_ssrg_collection_for_each",
+    "arrayIterable",
+    "value",
+    "println",
+    "intShow",
+    "_ssrg_collection_for_each",
+    "listIterable",
+    "value",
+    "println",
+    "intShow",
+    "fromArray",
+    "_ssrg_collection_for_each",
+    "rangeIterable",
+    "value",
+    "println",
+    "intShow",
+    "inclusive"
+  ],
+  "mappings": ";;;;;;;;AAAAA"
+}

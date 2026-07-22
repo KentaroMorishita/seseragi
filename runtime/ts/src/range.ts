@@ -1,4 +1,6 @@
 import { add } from "./int64"
+import type { Iterator as SeseragiIterator } from "./iterator"
+import { Just, Nothing } from "./sum"
 
 export type IntRange = Readonly<{
   start: bigint
@@ -43,6 +45,35 @@ export const rangeReducible = Object.freeze({
     (step: (accumulator: B) => (value: bigint) => B) =>
     (range: IntRange): B =>
       reduce(initial, step, range),
+})
+
+function emptyIterator(): SeseragiIterator<bigint> {
+  return { next: () => Nothing }
+}
+
+function rangeIterator(
+  range: IntRange,
+  current: bigint
+): SeseragiIterator<bigint> {
+  return {
+    next: () => {
+      if (range.inclusive ? current > range.end : current >= range.end) {
+        return Nothing
+      }
+      const rest =
+        current === range.end
+          ? emptyIterator()
+          : rangeIterator(range, add(current, 1n))
+      return Just([current, rest] as const)
+    },
+  }
+}
+
+export const rangeIterable = Object.freeze({
+  iterate: (range: IntRange): SeseragiIterator<bigint> =>
+    range.start > range.end
+      ? emptyIterator()
+      : rangeIterator(range, range.start),
 })
 
 /** Pure comprehension lowering for the standard Range Iterable instance. */

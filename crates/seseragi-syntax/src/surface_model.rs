@@ -441,6 +441,12 @@ pub enum SurfaceExpr {
         body: Box<SurfaceExpr>,
         span: ByteSpan,
     },
+    EffectfulFor {
+        pattern: SurfacePattern,
+        source: Box<SurfaceExpr>,
+        body: Box<SurfaceExpr>,
+        span: ByteSpan,
+    },
     Tuple {
         elements: Vec<SurfaceExpr>,
         span: ByteSpan,
@@ -527,6 +533,7 @@ impl SurfaceExpr {
             | Self::Prefix { span, .. }
             | Self::Assignment { span, .. }
             | Self::Lambda { span, .. }
+            | Self::EffectfulFor { span, .. }
             | Self::Tuple { span, .. }
             | Self::Array { span, .. }
             | Self::List { span, .. }

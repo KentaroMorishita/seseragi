@@ -95,6 +95,30 @@ fn type_effect_expression(
         return type_effect_expression(value, context, resolution, issues);
     }
 
+    if let SurfaceExpr::EffectfulFor {
+        pattern,
+        source,
+        body,
+        span,
+    } = expression
+    {
+        let analysis = super::surface_expr::effectful_for::type_effectful_for_with(
+            pattern,
+            source,
+            body,
+            *span,
+            context,
+            |body, body_context| {
+                let value = type_effect_expression(body, body_context, resolution, issues);
+                let semantic_type = body_context
+                    .semantic_value_from_typed_type(&application_argument_type_from_expr(&value))
+                    .key;
+                SurfaceExpressionAnalysis::valid_with_semantic_type(value, semantic_type)
+            },
+        );
+        return finish_expression_analysis(analysis, issues);
+    }
+
     if let Some((operation, arguments)) =
         effect_application(expression, context, resolution, issues)
     {

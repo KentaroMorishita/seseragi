@@ -401,20 +401,38 @@ fn compiles_a_lambda_discard_parameter() {
 }
 
 #[test]
-fn rejects_an_unsupported_effect_expression_before_typescript_emission() {
-    let diagnostics = compile_module(input(
-        "artifact/driver-invalid-effect-expression/main.ssrg",
-        "artifact/driver-invalid-effect-expression",
+fn compiles_effectful_for_through_iterable_evidence() {
+    let compiled = compile_module(input(
+        "artifact/driver-effectful-for/main.ssrg",
+        "artifact/driver-effectful-for",
         "pub effect fn main = for n <- 1..=3 { println $ `${n}` }\n",
     ))
-    .expect_err("an unsupported effect expression must prevent emission");
+    .expect("effectful for should compile through standard Iterable evidence");
 
-    assert_eq!(diagnostics.diagnostics.len(), 1);
-    assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
-    assert_eq!(
-        diagnostics.diagnostics[0].message_key,
-        "parser.expected-expression"
-    );
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("_ssrg_collection_for_each"));
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("_ssrg_range_iterable"));
+}
+
+#[test]
+fn compiles_an_irrefutable_tuple_pattern_in_effectful_for() {
+    let compiled = compile_module(input(
+        "artifact/driver-effectful-for-tuple/main.ssrg",
+        "artifact/driver-effectful-for-tuple",
+        "pub effect fn main = for (label, value) <- [(\"answer\", 42)] { println $ `${label}: ${value}` }\n",
+    ))
+    .expect("effectful for should bind an irrefutable tuple pattern");
+
+    assert!(compiled.diagnostics.diagnostics.is_empty());
+    assert!(compiled
+        .generated
+        .typescript
+        .contains("_ssrg_array_iterable"));
 }
 
 #[test]

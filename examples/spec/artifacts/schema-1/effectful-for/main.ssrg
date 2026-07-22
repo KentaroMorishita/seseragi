@@ -1,0 +1,12 @@
+pub effect fn main =
+  do {
+    for value <- [1, 2] {
+      println $ `array:${value}`
+    }
+    for value <- `[3, 4] {
+      println $ `list:${value}`
+    }
+    for value <- 5..=6 {
+      println $ `range:${value}`
+    }
+  }

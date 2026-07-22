@@ -1,3 +1,4 @@
+use crate::collection_ops::runtime_collection_for_each_operation;
 use crate::collection_ops::{runtime_collection_join_operation, runtime_collection_operation};
 use crate::effect_ops::runtime_effect_operation;
 use crate::equality_ops::strict_equality_operator_with_evidence;
@@ -183,6 +184,20 @@ pub(super) fn lower_core_expr_to_typescript(
                 TypeScriptExpr::DictionaryCall {
                     dictionary: Box::new(selected),
                     method: dispatch.method,
+                    arguments,
+                }
+            } else if let Some(operation) =
+                runtime_collection_for_each_operation(&callee, &evidence)
+            {
+                let dictionary = local_dictionary_expression(
+                    &evidence[0].evidence,
+                    imported_values,
+                    imported_types,
+                )
+                .expect("forEach requires materialized Iterable dictionary evidence");
+                arguments.insert(0, dictionary);
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
                     arguments,
                 }
             } else if let Some(operation) = runtime_collection_join_operation(&callee, &evidence) {

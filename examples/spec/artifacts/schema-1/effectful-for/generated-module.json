@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "module": "artifact/effectful-for",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "effect.core.type",
+      "effect.console.service",
+      "effect.console.error",
+      "core.unit",
+      "effect.core.flatMap",
+      "core.array.iterable",
+      "effect.collection.for-each",
+      "core.int64",
+      "effect.console.println",
+      "core.string",
+      "core.int64.show",
+      "core.list.iterable",
+      "core.list",
+      "core.list.from-array",
+      "core.range.iterable",
+      "core.range",
+      "core.range.inclusive"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}
