@@ -769,6 +769,14 @@ textarea {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
+.editor-host .ssrg-indent-space {
+  background-image: radial-gradient(
+    circle at 50% 55%,
+    rgb(142 163 154 / 32%) 0 0.7px,
+    transparent 0.95px
+  );
+  background-repeat: no-repeat;
+}
 
 textarea {
   width: 100%;

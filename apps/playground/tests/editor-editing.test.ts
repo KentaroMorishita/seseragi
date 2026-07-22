@@ -197,10 +197,18 @@ describe("Playground editor operations", () => {
       })
 
     expect(marks).toEqual([
-      { from: 0, to: 1, className: "cm-highlightSpace" },
-      { from: 1, to: 2, className: "cm-highlightSpace" },
+      { from: 0, to: 1, className: "ssrg-indent-space" },
+      { from: 1, to: 2, className: "ssrg-indent-space" },
       { from: 16, to: 17, className: "cm-highlightTab" },
     ])
+  })
+
+  test("uses a quiet marker instead of CodeMirror's full-size space dot", async () => {
+    const styles = await Bun.file(
+      new URL("../src/styles.css", import.meta.url)
+    ).text()
+    expect(styles).toContain(".editor-host .ssrg-indent-space")
+    expect(styles).toContain("rgb(142 163 154 / 32%) 0 0.7px")
   })
 
   test("renders primary and secondary selections without underline shadows", async () => {

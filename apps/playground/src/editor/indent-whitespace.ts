@@ -1,7 +1,7 @@
 import { StateField } from "@codemirror/state"
 import { Decoration, type DecorationSet, EditorView } from "@codemirror/view"
 
-const space = Decoration.mark({ class: "cm-highlightSpace" })
+const space = Decoration.mark({ class: "ssrg-indent-space" })
 const tab = Decoration.mark({ class: "cm-highlightTab" })
 
 function indentationMarks(view: EditorView["state"]): DecorationSet {
