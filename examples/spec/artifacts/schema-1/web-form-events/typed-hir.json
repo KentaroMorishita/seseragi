@@ -1,0 +1,1438 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/web-form-events",
+  "externalTypeBindings": [
+    {
+      "spelling": "Style",
+      "canonical": "std/web/html::Style",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Style"
+      }
+    },
+    {
+      "spelling": "html.Html",
+      "canonical": "std/web/html::Html",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Html"
+      }
+    },
+    {
+      "spelling": "html.InputEvent",
+      "canonical": "std/web/html::InputEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "InputEvent"
+      }
+    },
+    {
+      "spelling": "html.ChangeEvent",
+      "canonical": "std/web/html::ChangeEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "ChangeEvent"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Html",
+          "local": "html.Html",
+          "canonical": "std/web/html::Html",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "InputEvent",
+          "local": "html.InputEvent",
+          "canonical": "std/web/html::InputEvent",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "ChangeEvent",
+          "local": "html.ChangeEvent",
+          "canonical": "std/web/html::ChangeEvent",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "form",
+          "local": "html.form",
+          "canonical": "std/web/html::form",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "label",
+          "local": "html.label",
+          "canonical": "std/web/html::label",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "input",
+          "local": "html.input",
+          "canonical": "std/web/html::input",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "textarea",
+          "local": "html.textarea",
+          "canonical": "std/web/html::textarea",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "button",
+          "local": "html.button",
+          "canonical": "std/web/html::button",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/web-form-events::Msg",
+      "name": "Msg",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/web-form-events::DraftChanged",
+          "name": "DraftChanged",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Msg",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 53,
+            "end": 65
+          }
+        },
+        {
+          "symbol": "artifact/web-form-events::CheckedChanged",
+          "name": "CheckedChanged",
+          "payload": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Msg",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 77,
+            "end": 91
+          }
+        },
+        {
+          "symbol": "artifact/web-form-events::Submitted",
+          "name": "Submitted",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Msg",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 101,
+            "end": 110
+          }
+        }
+      ],
+      "origin": {
+        "start": 38,
+        "end": 110
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/web-form-events::draftMessage",
+      "visibility": "private",
+      "origin": {
+        "start": 112,
+        "end": 186
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Msg",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "event",
+          "type": {
+            "kind": "external-named",
+            "name": "html.InputEvent",
+            "canonical": "std/web/html::InputEvent",
+            "arguments": []
+          },
+          "origin": {
+            "start": 128,
+            "end": 133
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/web-form-events::DraftChanged",
+        "arguments": [
+          {
+            "kind": "field-access",
+            "receiver": {
+              "kind": "variable",
+              "name": "event",
+              "type": {
+                "kind": "external-named",
+                "name": "html.InputEvent",
+                "canonical": "std/web/html::InputEvent",
+                "arguments": []
+              },
+              "origin": {
+                "start": 175,
+                "end": 180
+              }
+            },
+            "field": "value",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 175,
+              "end": 186
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Msg",
+          "arguments": []
+        },
+        "origin": {
+          "start": 162,
+          "end": 186
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/web-form-events::checkedMessage",
+      "visibility": "private",
+      "origin": {
+        "start": 188,
+        "end": 269
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Msg",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "event",
+          "type": {
+            "kind": "external-named",
+            "name": "html.ChangeEvent",
+            "canonical": "std/web/html::ChangeEvent",
+            "arguments": []
+          },
+          "origin": {
+            "start": 206,
+            "end": 211
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/web-form-events::CheckedChanged",
+        "arguments": [
+          {
+            "kind": "field-access",
+            "receiver": {
+              "kind": "variable",
+              "name": "event",
+              "type": {
+                "kind": "external-named",
+                "name": "html.ChangeEvent",
+                "canonical": "std/web/html::ChangeEvent",
+                "arguments": []
+              },
+              "origin": {
+                "start": 256,
+                "end": 261
+              }
+            },
+            "field": "checked",
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "start": 256,
+              "end": 269
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Msg",
+          "arguments": []
+        },
+        "origin": {
+          "start": 241,
+          "end": 269
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/web-form-events::view",
+      "visibility": "public",
+      "origin": {
+        "start": 271,
+        "end": 992
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "html.Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Msg",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "draft",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 283,
+            "end": 288
+          }
+        },
+        {
+          "kind": "named",
+          "name": "checked",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 300,
+            "end": 307
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::form",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "onSubmit",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-form-events::Submitted",
+                  "type": {
+                    "kind": "named",
+                    "name": "Msg",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 362,
+                    "end": 371
+                  }
+                },
+                "origin": {
+                  "start": 352,
+                  "end": 371
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::label",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "htmlFor",
+                              "value": {
+                                "kind": "string",
+                                "value": "draft",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 417,
+                                  "end": 424
+                                }
+                              },
+                              "origin": {
+                                "start": 408,
+                                "end": 424
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Draft",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 436,
+                                  "end": 443
+                                }
+                              },
+                              "origin": {
+                                "start": 426,
+                                "end": 443
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "htmlFor",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 406,
+                            "end": 445
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Msg",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<String>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 395,
+                        "end": 445
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::input",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "id",
+                              "value": {
+                                "kind": "string",
+                                "value": "draft",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 478,
+                                  "end": 485
+                                }
+                              },
+                              "origin": {
+                                "start": 474,
+                                "end": 485
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "name",
+                              "value": {
+                                "kind": "string",
+                                "value": "draft",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 501,
+                                  "end": 508
+                                }
+                              },
+                              "origin": {
+                                "start": 495,
+                                "end": 508
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "value",
+                              "value": {
+                                "kind": "variable",
+                                "name": "draft",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 525,
+                                  "end": 530
+                                }
+                              },
+                              "origin": {
+                                "start": 518,
+                                "end": 530
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "required",
+                              "value": {
+                                "kind": "boolean",
+                                "value": true,
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 550,
+                                  "end": 554
+                                }
+                              },
+                              "origin": {
+                                "start": 540,
+                                "end": 554
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "placeholder",
+                              "value": {
+                                "kind": "string",
+                                "value": "Type a task",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 577,
+                                  "end": 590
+                                }
+                              },
+                              "origin": {
+                                "start": 564,
+                                "end": 590
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "inputType",
+                              "value": {
+                                "kind": "string",
+                                "value": "text",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 611,
+                                  "end": 617
+                                }
+                              },
+                              "origin": {
+                                "start": 600,
+                                "end": 617
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "onInput",
+                              "value": {
+                                "kind": "variable",
+                                "name": "artifact/web-form-events::draftMessage",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.InputEvent",
+                                    "canonical": "std/web/html::InputEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Msg",
+                                    "arguments": []
+                                  }
+                                },
+                                "origin": {
+                                  "start": 636,
+                                  "end": 648
+                                }
+                              },
+                              "origin": {
+                                "start": 627,
+                                "end": 648
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "id",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "inputType",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "name",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onInput",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.InputEvent",
+                                    "canonical": "std/web/html::InputEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Msg",
+                                    "arguments": []
+                                  }
+                                }
+                              },
+                              {
+                                "name": "placeholder",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "required",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "value",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 464,
+                            "end": 656
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 453,
+                        "end": 656
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::textarea",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "name",
+                              "value": {
+                                "kind": "string",
+                                "value": "notes",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 694,
+                                  "end": 701
+                                }
+                              },
+                              "origin": {
+                                "start": 688,
+                                "end": 701
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "value",
+                              "value": {
+                                "kind": "string",
+                                "value": "",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 718,
+                                  "end": 720
+                                }
+                              },
+                              "origin": {
+                                "start": 711,
+                                "end": 720
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "onInput",
+                              "value": {
+                                "kind": "variable",
+                                "name": "artifact/web-form-events::draftMessage",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.InputEvent",
+                                    "canonical": "std/web/html::InputEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Msg",
+                                    "arguments": []
+                                  }
+                                },
+                                "origin": {
+                                  "start": 739,
+                                  "end": 751
+                                }
+                              },
+                              "origin": {
+                                "start": 730,
+                                "end": 751
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "name",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onInput",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.InputEvent",
+                                    "canonical": "std/web/html::InputEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Msg",
+                                    "arguments": []
+                                  }
+                                }
+                              },
+                              {
+                                "name": "value",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 678,
+                            "end": 759
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 664,
+                        "end": 759
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::input",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "checked",
+                              "value": {
+                                "kind": "variable",
+                                "name": "checked",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 788,
+                                  "end": 795
+                                }
+                              },
+                              "origin": {
+                                "start": 788,
+                                "end": 795
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "inputType",
+                              "value": {
+                                "kind": "string",
+                                "value": "checkbox",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 816,
+                                  "end": 826
+                                }
+                              },
+                              "origin": {
+                                "start": 805,
+                                "end": 826
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "onChange",
+                              "value": {
+                                "kind": "variable",
+                                "name": "artifact/web-form-events::checkedMessage",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.ChangeEvent",
+                                    "canonical": "std/web/html::ChangeEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Msg",
+                                    "arguments": []
+                                  }
+                                },
+                                "origin": {
+                                  "start": 846,
+                                  "end": 860
+                                }
+                              },
+                              "origin": {
+                                "start": 836,
+                                "end": 860
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "checked",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "inputType",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onChange",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.ChangeEvent",
+                                    "canonical": "std/web/html::ChangeEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Msg",
+                                    "arguments": []
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 778,
+                            "end": 868
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 767,
+                        "end": 868
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "buttonType",
+                              "value": {
+                                "kind": "string",
+                                "value": "submit",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 910,
+                                  "end": 918
+                                }
+                              },
+                              "origin": {
+                                "start": 898,
+                                "end": 918
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "disabled",
+                              "value": {
+                                "kind": "binary",
+                                "operator": "==",
+                                "left": {
+                                  "kind": "variable",
+                                  "name": "draft",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "start": 938,
+                                    "end": 943
+                                  }
+                                },
+                                "right": {
+                                  "kind": "string",
+                                  "value": "",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "start": 947,
+                                    "end": 949
+                                  }
+                                },
+                                "evidence": [
+                                  {
+                                    "constraint": {
+                                      "name": "Eq",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "String",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "std/string::Eq"
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 938,
+                                  "end": 949
+                                }
+                              },
+                              "origin": {
+                                "start": 928,
+                                "end": 949
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Add",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 969,
+                                  "end": 974
+                                }
+                              },
+                              "origin": {
+                                "start": 959,
+                                "end": 974
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "buttonType",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "disabled",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Bool",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 888,
+                            "end": 982
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Msg",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<String>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 876,
+                        "end": 982
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 387,
+                    "end": 988
+                  }
+                },
+                "origin": {
+                  "start": 377,
+                  "end": 988
+                }
+              }
+            ],
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Msg",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "onSubmit",
+                  "type": {
+                    "kind": "named",
+                    "name": "Msg",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "start": 346,
+              "end": 992
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "IntoChildren",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Msg",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Msg",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/web/html::IntoChildren<Array>"
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Msg",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 336,
+          "end": 992
+        }
+      }
+    }
+  ]
+}

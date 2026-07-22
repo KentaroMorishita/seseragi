@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "module": "artifact/web-form-events",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/web/html",
+      "module": "artifact/web-form-events/std/web/html",
+      "origin": {
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/web-form-events/std/web/html::*",
+          "localName": "html"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/web-form-events::view",
+      "namespace": "value",
+      "name": "view",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 271,
+        "end": 992
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "html.Html",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Msg",
+                  "arguments": []
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

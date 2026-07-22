@@ -110,7 +110,7 @@ fn typed_method(
     scoped_evidence: &[crate::typed::ScopedCallEvidence],
 ) -> Option<TypedInstanceMethod> {
     let body = method.body.as_ref()?;
-    let parameters = typed_parameters_from_surface(&method.parameters);
+    let parameters = typed_parameters_from_surface(&method.parameters, resolution);
     let mut method_evidence = scoped_evidence.to_vec();
     let next_evidence_index = scoped_evidence
         .iter()

@@ -108,14 +108,16 @@ export {
   Nothing,
   Right,
 } from "./sum"
-export type { Html, Style } from "./html"
+export type { ChangeEvent, Html, InputEvent, Style } from "./html"
 export {
   button,
   div,
+  form,
   fragment,
   h1,
   h2,
   input,
+  label,
   main,
   p,
   renderDocument,
@@ -124,6 +126,7 @@ export {
   span,
   style,
   text,
+  textarea,
 } from "./html"
 export type {
   Dom,

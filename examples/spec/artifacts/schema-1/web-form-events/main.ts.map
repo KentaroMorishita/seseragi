@@ -1,0 +1,29 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/web-form-events"
+  ],
+  "sourcesContent": [
+    "import * as html from \"std/web/html\"\n\ntype Msg =\n  | DraftChanged String\n  | CheckedChanged Bool\n  | Submitted\n\nfn draftMessage event: html.InputEvent -> Msg =\n  DraftChanged event.value\n\nfn checkedMessage event: html.ChangeEvent -> Msg =\n  CheckedChanged event.checked\n\npub fn view draft: String -> checked: Bool -> html.Html<Msg> =\n  html.form {\n    onSubmit: Submitted,\n    children: [\n      html.label { htmlFor: \"draft\", children: \"Draft\" },\n      html.input {\n        id: \"draft\",\n        name: \"draft\",\n        value: draft,\n        required: True,\n        placeholder: \"Type a task\",\n        inputType: \"text\",\n        onInput: draftMessage\n      },\n      html.textarea {\n        name: \"notes\",\n        value: \"\",\n        onInput: draftMessage\n      },\n      html.input {\n        checked,\n        inputType: \"checkbox\",\n        onChange: checkedMessage\n      },\n      html.button {\n        buttonType: \"submit\",\n        disabled: draft == \"\",\n        children: \"Add\"\n      }\n    ]\n  }\n"
+  ],
+  "names": [
+    "Msg",
+    "DraftChanged",
+    "CheckedChanged",
+    "Submitted",
+    "draftMessage",
+    "DraftChanged",
+    "checkedMessage",
+    "CheckedChanged",
+    "view",
+    "form",
+    "label",
+    "input",
+    "textarea",
+    "input",
+    "button"
+  ],
+  "mappings": ";;AAEAA;;;;AACIC;AACAC;AACAC;AAEJC;AAGAE;AAGAE"
+}

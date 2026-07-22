@@ -162,6 +162,19 @@ fn web_html_interface() -> ModuleInterface {
     let mut exports = vec![
         type_export("std/web/html", "Html", 1, "opaque-type"),
         type_export("std/web/html", "Style", 0, "opaque-type"),
+        record_type_export(
+            "std/web/html",
+            "InputEvent",
+            [required("value", named("String"))],
+        ),
+        record_type_export(
+            "std/web/html",
+            "ChangeEvent",
+            [
+                required("value", named("String")),
+                required("checked", named("Bool")),
+            ],
+        ),
         trait_export("std/web/html", "IntoChildren", ["C", "Msg"]),
         trait_export("std/web/html", "StyleRecord", ["R"]),
         function_export(
@@ -190,12 +203,22 @@ fn web_html_interface() -> ModuleInterface {
         exports.push(constrained_html_function(tag, element_props()));
     }
     exports.push(constrained_html_function("button", button_props()));
+    exports.push(constrained_html_function("form", form_props()));
+    exports.push(constrained_html_function("label", label_props()));
     exports.push(function_export(
         "std/web/html",
         "input",
         ["Msg"],
         Vec::new(),
         vec![input_props()],
+        html(named("Msg")),
+    ));
+    exports.push(function_export(
+        "std/web/html",
+        "textarea",
+        ["Msg"],
+        Vec::new(),
+        vec![textarea_props()],
         html(named("Msg")),
     ));
     for renderer in ["renderToString", "renderDocument"] {
@@ -395,6 +418,35 @@ fn button_props() -> InterfaceType {
         optional("key", named("String")),
         optional("style", named("Style")),
         optional("disabled", named("Bool")),
+        optional("buttonType", named("String")),
+        optional("onClick", named("Msg")),
+        required("children", named("C")),
+    ])
+}
+
+fn form_props() -> InterfaceType {
+    record([
+        optional("id", named("String")),
+        optional("className", named("String")),
+        optional("title", named("String")),
+        optional("hidden", named("Bool")),
+        optional("key", named("String")),
+        optional("style", named("Style")),
+        optional("onClick", named("Msg")),
+        optional("onSubmit", named("Msg")),
+        required("children", named("C")),
+    ])
+}
+
+fn label_props() -> InterfaceType {
+    record([
+        optional("id", named("String")),
+        optional("className", named("String")),
+        optional("title", named("String")),
+        optional("hidden", named("Bool")),
+        optional("key", named("String")),
+        optional("style", named("Style")),
+        optional("htmlFor", named("String")),
         optional("onClick", named("Msg")),
         required("children", named("C")),
     ])
@@ -410,8 +462,43 @@ fn input_props() -> InterfaceType {
         optional("style", named("Style")),
         optional("value", named("String")),
         optional("checked", named("Bool")),
+        optional("name", named("String")),
         optional("disabled", named("Bool")),
+        optional("required", named("Bool")),
         optional("placeholder", named("String")),
+        optional("inputType", named("String")),
+        optional(
+            "onInput",
+            function_type(vec![html_event_type("InputEvent")], named("Msg")),
+        ),
+        optional(
+            "onChange",
+            function_type(vec![html_event_type("ChangeEvent")], named("Msg")),
+        ),
+    ])
+}
+
+fn textarea_props() -> InterfaceType {
+    record([
+        optional("id", named("String")),
+        optional("className", named("String")),
+        optional("title", named("String")),
+        optional("hidden", named("Bool")),
+        optional("key", named("String")),
+        optional("style", named("Style")),
+        optional("value", named("String")),
+        optional("name", named("String")),
+        optional("disabled", named("Bool")),
+        optional("required", named("Bool")),
+        optional("placeholder", named("String")),
+        optional(
+            "onInput",
+            function_type(vec![html_event_type("InputEvent")], named("Msg")),
+        ),
+        optional(
+            "onChange",
+            function_type(vec![html_event_type("ChangeEvent")], named("Msg")),
+        ),
     ])
 }
 
@@ -437,6 +524,16 @@ fn type_export(module: &str, name: &str, arity: u32, declaration_kind: &str) -> 
         methods: Vec::new(),
         representation: None,
     }
+}
+
+fn record_type_export<const N: usize>(
+    module: &str,
+    name: &str,
+    fields: [InterfaceRecordField; N],
+) -> InterfaceExport {
+    let mut export = type_export(module, name, 0, "opaque-struct");
+    export.representation = Some(record(fields));
+    export
 }
 
 fn trait_export<const N: usize>(
@@ -496,6 +593,16 @@ fn html(message: InterfaceType) -> InterfaceType {
         name: "Html".to_owned(),
         arguments: vec![message],
     }
+}
+
+fn html_event_type(name: &str) -> InterfaceType {
+    external_type(
+        name,
+        &format!("std/web/html::{name}"),
+        "std/web/html",
+        name,
+        Vec::new(),
+    )
 }
 
 fn named(name: &str) -> InterfaceType {
@@ -606,5 +713,48 @@ mod tests {
             .exports
             .iter()
             .any(|export| export.namespace == "value" && export.name == "app"));
+    }
+
+    #[test]
+    fn exposes_typed_form_events_from_the_shared_html_interface() {
+        let target = standard_module_target("std/web/html").unwrap();
+        let interface = target.interface();
+
+        for name in ["form", "label", "input", "textarea"] {
+            assert!(interface
+                .exports
+                .iter()
+                .any(|export| export.namespace == "value" && export.name == name));
+        }
+        let input_event = interface
+            .exports
+            .iter()
+            .find(|export| export.namespace == "type" && export.name == "InputEvent")
+            .unwrap();
+        assert_eq!(
+            input_event.declaration_kind.as_deref(),
+            Some("opaque-struct")
+        );
+        let Some(InterfaceType::Record { fields, .. }) = &input_event.representation else {
+            panic!("InputEvent must expose its immutable snapshot fields");
+        };
+        assert_eq!(fields.len(), 1);
+        assert_eq!(fields[0].name, "value");
+
+        let input = interface
+            .exports
+            .iter()
+            .find(|export| export.namespace == "value" && export.name == "input")
+            .unwrap();
+        let InterfaceType::Function { parameter, .. } = &input.scheme.type_ref else {
+            panic!("input must be callable");
+        };
+        let InterfaceType::Record { fields, .. } = parameter.as_ref() else {
+            panic!("input must accept a props record");
+        };
+        assert!(fields.iter().any(|field| field.name == "onInput"));
+        assert!(fields.iter().any(|field| field.name == "onChange"));
+        assert!(fields.iter().any(|field| field.name == "required"));
+        assert!(fields.iter().any(|field| field.name == "inputType"));
     }
 }

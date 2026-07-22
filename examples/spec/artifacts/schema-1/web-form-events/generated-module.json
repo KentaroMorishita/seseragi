@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "module": "artifact/web-form-events",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "web.html.input-event-type",
+      "web.html.change-event-type",
+      "web.html.type",
+      "core.adt",
+      "core.string",
+      "core.bool",
+      "web.html.form",
+      "web.html.label",
+      "web.html.input",
+      "web.html.textarea",
+      "web.html.button"
+    ]
+  },
+  "exports": [
+    "view"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

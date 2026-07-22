@@ -199,6 +199,95 @@ fails ConsoleError =
     }
 
     #[test]
+    fn compiles_typed_form_event_snapshots_through_the_runtime_abi() {
+        let source = r#"import * as html from "std/web/html"
+
+type Msg =
+  | DraftChanged String
+  | CheckedChanged Bool
+  | Submitted
+
+fn draftMessage event: html.InputEvent -> Msg =
+  DraftChanged event.value
+
+fn checkedMessage event: html.ChangeEvent -> Msg =
+  CheckedChanged event.checked
+
+pub fn view draft: String -> checked: Bool -> html.Html<Msg> =
+  html.form {
+    onSubmit: Submitted,
+    children: [
+      html.label { htmlFor: "draft", children: "Draft" },
+      html.input {
+        id: "draft",
+        name: "draft",
+        value: draft,
+        required: True,
+        placeholder: "Type a task",
+        inputType: "text",
+        onInput: draftMessage
+      },
+      html.input {
+        checked,
+        inputType: "checkbox",
+        onChange: checkedMessage
+      },
+      html.button {
+        buttonType: "submit",
+        disabled: draft == "",
+        children: "Add"
+      }
+    ]
+  }
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-form-events",
+            source,
+        ))
+        .expect("typed form event snapshots should compile");
+
+        assert!(compiled.generated.typescript.contains("_ssrg_html_form"));
+        assert!(compiled.generated.typescript.contains("_ssrg_html_label"));
+        assert!(compiled.generated.typescript.contains("_ssrg_html_input"));
+        assert!(compiled.generated.typescript.contains("type InputEvent"));
+        assert!(compiled.generated.typescript.contains("type ChangeEvent"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("(event: InputEvent)"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("(event: ChangeEvent)"));
+        assert!(!compiled.generated.typescript.contains("html_InputEvent"));
+        assert!(!compiled.generated.typescript.contains("html_ChangeEvent"));
+        assert!(!compiled.generated.typescript.contains("std/web/html"));
+    }
+
+    #[test]
+    fn rejects_a_form_event_handler_with_the_wrong_shape_before_lowering() {
+        let source = r#"import * as html from "std/web/html"
+
+type Msg = | Submitted
+
+pub fn invalid -> html.Html<Msg> =
+  html.input { onInput: Submitted }
+"#;
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-form-invalid-event",
+            source,
+        ))
+        .expect_err("a non-mapper onInput value must stop before lowering");
+
+        assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+            diagnostic.code == "SES-T0101"
+                && diagnostic.message_key == "call.argument-type-mismatch"
+        }));
+    }
+
+    #[test]
     fn compiles_the_standard_dom_app_without_manual_signal_plumbing() {
         let source = r##"import * as dom from "std/web/dom"
 import * as html from "std/web/html"

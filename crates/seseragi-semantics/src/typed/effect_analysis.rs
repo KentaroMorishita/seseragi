@@ -90,7 +90,7 @@ pub(crate) fn analyze_effect_function(
     let Some(surface_body) = body.as_ref() else {
         return Vec::new();
     };
-    let typed_parameters = typed_parameters_from_surface(parameters);
+    let typed_parameters = typed_parameters_from_surface(parameters, resolution);
     let body_analysis = analyze_effect_body(surface_body, &typed_parameters, resolution);
     let typed_body = body_analysis.value;
 

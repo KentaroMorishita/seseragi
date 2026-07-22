@@ -231,6 +231,25 @@ describe("Playground sample catalog", () => {
         .filter((item) => ["join", "sum", "forEach", "map"].includes(item.name))
         .map((item) => item.name)
     ).toEqual(expect.arrayContaining(["join", "sum", "forEach", "map"]))
+    const formItems = analysis.standardLibrary.filter(
+      (item) => item.module === "std/web/html"
+    )
+    expect(formItems.map((item) => item.name)).toEqual(
+      expect.arrayContaining([
+        "InputEvent",
+        "ChangeEvent",
+        "form",
+        "label",
+        "input",
+        "textarea",
+      ])
+    )
+    expect(
+      formItems.find((item) => item.name === "input")?.signature
+    ).toContain("onInput?: InputEvent -> Msg")
+    expect(formItems.find((item) => item.name === "form")?.signature).toContain(
+      "onSubmit?: Msg"
+    )
   })
 
   test("connects live hover and generated Reference UI without running Effects", async () => {
@@ -271,10 +290,13 @@ describe("Playground sample catalog", () => {
 
     expect(sample?.outputMode).toBe("html")
     expect(html).toContain('id="show-html-preview-button"')
-    expect(html).toContain('sandbox="allow-same-origin allow-scripts"')
+    expect(html).toContain(
+      'sandbox="allow-forms allow-same-origin allow-scripts"'
+    )
     expect(main).toContain("createPreviewDocument(html)")
     expect(main).toContain("prepareInteractivePreview()")
     expect(previewDocument).toContain("script-src 'none'")
+    expect(previewDocument).toContain("form-action 'none'")
   })
 
   for (const sample of samples) {

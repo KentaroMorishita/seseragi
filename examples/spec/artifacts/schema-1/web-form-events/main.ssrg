@@ -1,0 +1,44 @@
+import * as html from "std/web/html"
+
+type Msg =
+  | DraftChanged String
+  | CheckedChanged Bool
+  | Submitted
+
+fn draftMessage event: html.InputEvent -> Msg =
+  DraftChanged event.value
+
+fn checkedMessage event: html.ChangeEvent -> Msg =
+  CheckedChanged event.checked
+
+pub fn view draft: String -> checked: Bool -> html.Html<Msg> =
+  html.form {
+    onSubmit: Submitted,
+    children: [
+      html.label { htmlFor: "draft", children: "Draft" },
+      html.input {
+        id: "draft",
+        name: "draft",
+        value: draft,
+        required: True,
+        placeholder: "Type a task",
+        inputType: "text",
+        onInput: draftMessage
+      },
+      html.textarea {
+        name: "notes",
+        value: "",
+        onInput: draftMessage
+      },
+      html.input {
+        checked,
+        inputType: "checkbox",
+        onChange: checkedMessage
+      },
+      html.button {
+        buttonType: "submit",
+        disabled: draft == "",
+        children: "Add"
+      }
+    ]
+  }

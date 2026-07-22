@@ -49,7 +49,10 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
     operation!("h1", "web.html.h1", "_ssrg_html_h1"),
     operation!("h2", "web.html.h2", "_ssrg_html_h2"),
     operation!("button", "web.html.button", "_ssrg_html_button"),
+    operation!("form", "web.html.form", "_ssrg_html_form"),
+    operation!("label", "web.html.label", "_ssrg_html_label"),
     operation!("input", "web.html.input", "_ssrg_html_input"),
+    operation!("textarea", "web.html.textarea", "_ssrg_html_textarea"),
     operation!(
         "renderToString",
         "web.html.render-to-string",

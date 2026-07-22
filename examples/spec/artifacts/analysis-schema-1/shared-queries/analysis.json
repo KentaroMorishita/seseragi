@@ -703,6 +703,17 @@
       "constraints": []
     },
     {
+      "identity": "std/web/html::ChangeEvent",
+      "name": "ChangeEvent",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-struct",
+      "signature": "ChangeEvent",
+      "description": "Immutable form-control snapshot containing value and checked state.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/html::Html",
       "name": "Html",
       "module": "std/web/html",
@@ -713,6 +724,17 @@
       "typeParameters": [
         "T0"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::InputEvent",
+      "name": "InputEvent",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-struct",
+      "signature": "InputEvent",
+      "description": "Immutable text-input snapshot containing only the current String value.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -759,7 +781,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
         "Msg",
@@ -777,6 +799,22 @@
       "kind": "function",
       "signature": "div<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::form",
+      "name": "form",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "form<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates a typed form whose onSubmit message prevents native page reload.",
       "typeParameters": [
         "Msg",
         "C"
@@ -839,12 +877,28 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "input<Msg> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, disabled?: Bool, placeholder?: String} -> Html<Msg>",
-      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+      "description": "Creates a controlled input with typed input and change event snapshots.",
       "typeParameters": [
         "Msg"
       ],
       "constraints": []
+    },
+    {
+      "identity": "std/web/html::label",
+      "name": "label",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "label<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates a label connected through the htmlFor prop.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
     },
     {
       "identity": "std/web/html::main",
@@ -959,6 +1013,19 @@
       "kind": "function",
       "signature": "text<Msg> arg1: String -> Html<Msg>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::textarea",
+      "name": "textarea",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "textarea<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+      "description": "Creates a controlled textarea with typed input and change snapshots.",
       "typeParameters": [
         "Msg"
       ],

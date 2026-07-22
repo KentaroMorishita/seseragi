@@ -56,7 +56,7 @@
       "id": "web-ui",
       "title": "Web UI",
       "summary": "関数component、Style、SSR、typed eventを小さなUIへまとめます。",
-      "samples": ["html-components", "interactive-app"]
+      "samples": ["html-components", "interactive-app", "form-todo"]
     }
   ]
 }

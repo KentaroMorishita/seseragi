@@ -1,0 +1,436 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/web-form-events",
+  "runtimeRequirements": [
+    "web.html.input-event-type",
+    "web.html.change-event-type",
+    "web.html.type",
+    "core.adt",
+    "core.string",
+    "core.bool",
+    "web.html.form",
+    "web.html.label",
+    "web.html.input",
+    "web.html.textarea",
+    "web.html.button"
+  ],
+  "imports": [
+    {
+      "feature": "web.html.form",
+      "local": "_ssrg_html_form"
+    },
+    {
+      "feature": "web.html.label",
+      "local": "_ssrg_html_label"
+    },
+    {
+      "feature": "web.html.input",
+      "local": "_ssrg_html_input"
+    },
+    {
+      "feature": "web.html.textarea",
+      "local": "_ssrg_html_textarea"
+    },
+    {
+      "feature": "web.html.button",
+      "local": "_ssrg_html_button"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "web.html.input-event-type",
+      "local": "InputEvent"
+    },
+    {
+      "feature": "web.html.change-event-type",
+      "local": "ChangeEvent"
+    },
+    {
+      "feature": "web.html.type",
+      "local": "Html"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "Msg",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "DraftChanged",
+          "tag": "DraftChanged",
+          "payload": {
+            "kind": "string"
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 53,
+            "end": 65
+          }
+        },
+        {
+          "exported": false,
+          "name": "CheckedChanged",
+          "tag": "CheckedChanged",
+          "payload": {
+            "kind": "boolean"
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 77,
+            "end": 91
+          }
+        },
+        {
+          "exported": false,
+          "name": "Submitted",
+          "tag": "Submitted",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 101,
+            "end": 110
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 38,
+        "end": 110
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "draftMessage",
+      "parameters": [
+        {
+          "name": "event",
+          "type": "InputEvent",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "DraftChanged",
+        "arguments": [
+          {
+            "kind": "field-access",
+            "receiver": {
+              "kind": "identifier",
+              "name": "event"
+            },
+            "field": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 112,
+        "end": 186
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "checkedMessage",
+      "parameters": [
+        {
+          "name": "event",
+          "type": "ChangeEvent",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "CheckedChanged",
+        "arguments": [
+          {
+            "kind": "field-access",
+            "receiver": {
+              "kind": "identifier",
+              "name": "event"
+            },
+            "field": "checked"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 188,
+        "end": 269
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "view",
+      "parameters": [
+        {
+          "name": "draft",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "checked",
+          "type": "boolean",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_form",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "onSubmit",
+                "value": {
+                  "kind": "identifier",
+                  "name": "Submitted"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_label",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "htmlFor",
+                              "value": {
+                                "kind": "string",
+                                "value": "draft"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Draft"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_input",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "id",
+                              "value": {
+                                "kind": "string",
+                                "value": "draft"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "name",
+                              "value": {
+                                "kind": "string",
+                                "value": "draft"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "value",
+                              "value": {
+                                "kind": "identifier",
+                                "name": "draft"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "required",
+                              "value": {
+                                "kind": "boolean",
+                                "value": true
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "placeholder",
+                              "value": {
+                                "kind": "string",
+                                "value": "Type a task"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "inputType",
+                              "value": {
+                                "kind": "string",
+                                "value": "text"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "onInput",
+                              "value": {
+                                "kind": "identifier",
+                                "name": "draftMessage"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_textarea",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "name",
+                              "value": {
+                                "kind": "string",
+                                "value": "notes"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "value",
+                              "value": {
+                                "kind": "string",
+                                "value": ""
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "onInput",
+                              "value": {
+                                "kind": "identifier",
+                                "name": "draftMessage"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_input",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "checked",
+                              "value": {
+                                "kind": "identifier",
+                                "name": "checked"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "inputType",
+                              "value": {
+                                "kind": "string",
+                                "value": "checkbox"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "onChange",
+                              "value": {
+                                "kind": "identifier",
+                                "name": "checkedMessage"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "buttonType",
+                              "value": {
+                                "kind": "string",
+                                "value": "submit"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "disabled",
+                              "value": {
+                                "kind": "binary",
+                                "operator": "===",
+                                "left": {
+                                  "kind": "identifier",
+                                  "name": "draft"
+                                },
+                                "right": {
+                                  "kind": "string",
+                                  "value": ""
+                                }
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Add"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "reference",
+                    "name": "Html",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Msg",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 271,
+        "end": 992
+      }
+    }
+  ]
+}

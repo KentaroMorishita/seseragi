@@ -1,0 +1,19 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "form-todo",
+  "title": "Typed formでTodoを追加",
+  "summary": "input snapshot、submit、Signal更新を小さなTodo formでつなぎます。",
+  "kind": "showcase",
+  "difficulty": "intermediate",
+  "topics": ["form", "InputEvent", "ChangeEvent", "typed Msg"],
+  "capabilities": ["dom"],
+  "outputMode": "html",
+  "prerequisites": ["interactive-app"],
+  "featured": true,
+  "isNew": true,
+  "interactive": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md"
+  }
+}

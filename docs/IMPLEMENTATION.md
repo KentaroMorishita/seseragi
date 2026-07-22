@@ -146,6 +146,14 @@ sample catalogはLearnとDiscoverを分離します。Learnは複数のlearning 
 Discoverはtitle、summary、topicの検索とkind、topic、capability、featured/new filterを持ちます。
 directoryを一つ追加するだけでcatalogへ自動検出され、中央配列や番号付きfilenameは更新しません。
 
+typed formの最小sliceでは`std/web/html`のinterfaceを唯一の公開契約とし、`InputEvent` / `ChangeEvent`を
+read-onlyなopaque struct representationとしてanalysis、type checker、generated TypeScriptへ通します。
+browser runtimeはnative DOM Eventを公開せず、targetの`value` / `checked`を一度だけ読んだimmutable snapshotを
+typed mapperへ渡します。`click` / `input` / `change` / `submit`はmount rootのdelegated listenerを一度だけ登録し、
+再renderではevent binding tableを交換します。submitはMsgをqueueする前に同期的に`preventDefault`します。
+preview iframeはevent生成に必要な`allow-forms`を持ちますが、document CSPの`form-action 'none'`で外部送信と
+default navigationを拒否します。
+
 VercelのGit buildへRust / rustup / wasm-pack installを持ち込むとhost差とdownload failureがdeploymentを壊すため、
 `apps/playground/src/wasm/pkg`は例外的にversioned deployment artifactとしてcommitします。Rust compilerまたはWASM
 adapter変更時は`bun run build:playground:wasm`で再生成し、browser execution integrationと同じcommitに含めます。

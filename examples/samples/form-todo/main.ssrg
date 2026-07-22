@@ -1,0 +1,144 @@
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+
+struct Model {
+  draft: String,
+  note: String,
+  urgent: Bool,
+  items: Array<String>,
+}
+
+type Msg =
+  | DraftChanged String
+  | NoteChanged String
+  | UrgentChanged Bool
+  | Submitted
+
+let initialModel: Model =
+  Model { draft: "", note: "", urgent: False, items: [] }
+
+fn draftMessage event: html.InputEvent -> Msg =
+  DraftChanged event.value
+
+fn noteMessage event: html.InputEvent -> Msg =
+  NoteChanged event.value
+
+fn urgentMessage event: html.ChangeEvent -> Msg =
+  UrgentChanged event.checked
+
+fn itemLabel model: Model -> String =
+  if model.urgent then
+    `Urgent: ${model.draft}`
+  else if model.note == "" then
+    model.draft
+  else
+    `${model.draft} — ${model.note}`
+
+fn update message: Msg -> model: Model -> Model =
+  match message {
+    DraftChanged value -> Model { ...model, draft: value }
+    NoteChanged value -> Model { ...model, note: value }
+    UrgentChanged checked -> Model { ...model, urgent: checked }
+    Submitted ->
+      if model.draft == "" then
+        model
+      else
+        Model {
+          draft: "",
+          note: "",
+          urgent: False,
+          items: combine [model.items, [itemLabel model]]
+        }
+  }
+
+fn itemRow item: String -> html.Html<Msg> =
+  html.p {
+    className: "rounded-xl bg-slate-100 px-4 py-3 text-slate-800",
+    children: item
+  }
+
+fn view model: Model -> html.Html<Msg> =
+  html.main {
+    className: "min-h-screen bg-emerald-50 p-6 sm:p-10",
+    children: html.section {
+      className: "mx-auto max-w-lg rounded-2xl bg-white p-6 shadow-lg sm:p-8",
+      children: [
+        html.h1 {
+          className: "mb-2 mt-0 text-3xl font-bold text-slate-900",
+          children: "Typed form todo"
+        },
+        html.p {
+          className: "mb-6 mt-0 text-slate-600",
+          children: "Input events become immutable Seseragi messages."
+        },
+        html.form {
+          onSubmit: Submitted,
+          children: [
+            html.label {
+              htmlFor: "todo-title",
+              className: "mb-2 block font-semibold text-slate-700",
+              children: "Task"
+            },
+            html.input {
+              id: "todo-title",
+              name: "title",
+              value: model.draft,
+              placeholder: "Ship the next slice",
+              inputType: "text",
+              required: True,
+              onInput: draftMessage,
+              className: "mb-3 w-full rounded-xl border border-slate-300 px-4 py-3 text-base"
+            },
+            html.label {
+              htmlFor: "todo-note",
+              className: "mb-2 block font-semibold text-slate-700",
+              children: "Note"
+            },
+            html.textarea {
+              id: "todo-note",
+              name: "note",
+              value: model.note,
+              placeholder: "Optional detail",
+              onInput: noteMessage,
+              className: "mb-3 w-full rounded-xl border border-slate-300 px-4 py-3 text-base"
+            },
+            html.label {
+              className: "mb-4 flex items-center gap-2 text-slate-700",
+              children: [
+                html.input {
+                  name: "urgent",
+                  inputType: "checkbox",
+                  checked: model.urgent,
+                  onChange: urgentMessage
+                },
+                html.text "Mark as urgent"
+              ]
+            },
+            html.p {
+              className: "mb-4 text-sm text-emerald-700",
+              children: `Live preview: ${model.draft}`
+            },
+            html.button {
+              buttonType: "submit",
+              disabled: model.draft == "",
+              className: "w-full rounded-xl border-0 bg-emerald-600 px-4 py-3 font-semibold text-white",
+              children: "Add task"
+            }
+          ]
+        },
+        html.div {
+          className: "mt-6 grid gap-2",
+          children: [itemRow item | item <- model.items]
+        }
+      ]
+    }
+  }
+
+// onSubmitはpage reloadを防ぎ、pureなupdateへSubmittedを渡します。
+pub effect fn main =
+  dom.app {
+    target: "#app",
+    initial: initialModel,
+    update,
+    view
+  }

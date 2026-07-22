@@ -1188,6 +1188,22 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/web/html::renderToString" => "Renders typed HTML to an escaped fragment string.",
         "std/web/html::renderDocument" => "Renders typed HTML as a complete document string.",
         "std/web/html::style" => "Validates and converts a style record into inline Style.",
+        "std/web/html::InputEvent" => {
+            "Immutable text-input snapshot containing only the current String value."
+        }
+        "std/web/html::ChangeEvent" => {
+            "Immutable form-control snapshot containing value and checked state."
+        }
+        "std/web/html::form" => {
+            "Creates a typed form whose onSubmit message prevents native page reload."
+        }
+        "std/web/html::label" => "Creates a label connected through the htmlFor prop.",
+        "std/web/html::input" => {
+            "Creates a controlled input with typed input and change event snapshots."
+        }
+        "std/web/html::textarea" => {
+            "Creates a controlled textarea with typed input and change snapshots."
+        }
         "std/signal::map" => "Derives a Signal by transforming each current value.",
         "std/signal::make" => "Creates a mutable Signal inside Effect.",
         _ => return None,

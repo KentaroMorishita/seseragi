@@ -12,6 +12,7 @@ describe("Playground preview document", () => {
 
     expect(document).toContain("<style>")
     expect(document).toContain("script-src 'none'")
+    expect(document).toContain("form-action 'none'")
     expect(document).toContain("default-src 'none'")
     expect(document).toContain(".min-h-screen")
     expect(document).toContain(".sm\\:p-12")

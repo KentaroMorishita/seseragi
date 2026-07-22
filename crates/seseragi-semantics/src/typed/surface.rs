@@ -31,7 +31,8 @@ pub(crate) fn typed_decls_from_surface(
                 combined_type_parameters.extend(method.type_parameters.clone());
                 let mut combined_constraints = constraints.clone();
                 combined_constraints.extend(method.constraints.clone());
-                let typed_parameters = typed_parameters_from_surface(&method.parameters);
+                let typed_parameters =
+                    typed_parameters_from_surface(&method.parameters, resolution);
                 let scoped_evidence =
                     crate::typed::scoped_call_evidence(&combined_constraints, resolution);
                 let context = PureExpressionContext::new(&typed_parameters, resolution)
@@ -134,7 +135,7 @@ pub(crate) fn typed_decl_from_surface(
             span,
             ..
         } => {
-            let typed_parameters = typed_parameters_from_surface(&parameters);
+            let typed_parameters = typed_parameters_from_surface(&parameters, resolution);
             let body = body
                 .as_ref()
                 .map(|body| typed_effect_body(body, &typed_parameters, resolution))
@@ -173,7 +174,7 @@ pub(crate) fn typed_decl_from_surface(
             span,
             ..
         } => {
-            let typed_parameters = typed_parameters_from_surface(&parameters);
+            let typed_parameters = typed_parameters_from_surface(&parameters, resolution);
             let scoped_evidence = crate::typed::scoped_call_evidence(&constraints, resolution);
             let context = PureExpressionContext::new(&typed_parameters, resolution)
                 .with_evidence_parameters(scoped_evidence)
@@ -226,7 +227,7 @@ pub(crate) fn typed_decl_from_surface(
             span,
             ..
         } => {
-            let typed_parameters = typed_parameters_from_surface(&parameters);
+            let typed_parameters = typed_parameters_from_surface(&parameters, resolution);
             let scoped_evidence = crate::typed::scoped_call_evidence(&constraints, resolution);
             let context = PureExpressionContext::new(&typed_parameters, resolution)
                 .with_evidence_parameters(scoped_evidence)

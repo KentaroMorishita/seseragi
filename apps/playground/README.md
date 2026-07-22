@@ -24,11 +24,16 @@ browser DOMまで実行します。
 mount lifecycle、portableなerror変換は標準helperが所有し、effectful dispatchやcustom lifecycleが必要な場合だけ
 低レベルの`dom.query` / `dom.run`へ降ります。
 
+formは`onInput` / `onChange`からnative Eventそのものではなく、immutableな`InputEvent` / `ChangeEvent` snapshotを
+typed Msgへ変換します。`onSubmit`はbrowser navigationより先に`preventDefault`されます。controlled inputと
+textareaはstableな`id`を使うと、Signal更新による再render後もfocusとselectionを維持します。
+
 ## HTML preview
 
 SSRとinteractive DOMは、iframe-owned scriptをCSPの`script-src 'none'`で拒否する同じsandbox iframeへ表示します。
-WebKitが親pageから登録したevent listenerも`allow-scripts`なしでは停止するため、sandbox tokenは
-`allow-same-origin allow-scripts`とし、実行可否はpreview documentのCSPで固定します。preview documentには
+WebKitが親pageから登録したevent listenerも`allow-scripts`なしでは停止し、formのsubmit eventには`allow-forms`が
+必要なため、sandbox tokenは`allow-forms allow-same-origin allow-scripts`とします。実行可否はpreview documentの
+`script-src 'none'`、form送信は`form-action 'none'`で拒否します。preview documentには
 Playgroundが所有するTailwind風utility CSSの小さなsubsetを注入するため、Seseragi側は`className`へ
 `flex`、`grid`、spacing、typography、color、border、shadow、`sm:` responsiveなどを指定できます。
 inline styleとCSS variablesは`html.style`で併用できます。外部CDNとiframe内scriptには依存しません。

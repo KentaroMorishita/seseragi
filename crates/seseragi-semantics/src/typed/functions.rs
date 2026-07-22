@@ -2,7 +2,7 @@ use crate::{TypedConstraint, TypedType};
 use seseragi_syntax::{SurfaceParameter, TypeParameter};
 
 use super::semantic_types::SemanticTypeKey;
-use super::type_ref::typed_type_from_type_ref;
+use super::TypedResolution;
 
 mod generic;
 
@@ -27,6 +27,7 @@ pub(crate) struct TopLevelPureFunction {
 
 pub(crate) fn typed_parameters_from_surface(
     parameters: &[SurfaceParameter],
+    resolution: &TypedResolution<'_>,
 ) -> Vec<crate::TypedParameter> {
     if parameters.is_empty() {
         return vec![crate::TypedParameter::ImplicitUnit {
@@ -40,7 +41,9 @@ pub(crate) fn typed_parameters_from_surface(
         .iter()
         .map(|parameter| crate::TypedParameter::Named {
             name: parameter.name.clone(),
-            type_ref: typed_type_from_type_ref(&parameter.type_ref),
+            type_ref: resolution
+                .semantic_value_from_type_ref(&parameter.type_ref)
+                .type_ref,
             origin: parameter.name_span,
         })
         .collect()

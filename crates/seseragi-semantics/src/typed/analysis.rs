@@ -41,7 +41,7 @@ pub(crate) fn analyze_pure_function(
             match_issues: Vec::new(),
         };
     };
-    let typed_parameters = typed_parameters_from_surface(parameters);
+    let typed_parameters = typed_parameters_from_surface(parameters, resolution);
     let context = PureExpressionContext::new(&typed_parameters, resolution)
         .with_evidence_parameters(scoped_evidence.to_vec())
         .with_expected(Some(resolution.semantic_value_from_type_ref(return_type)));

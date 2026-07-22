@@ -1,0 +1,3044 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "module": "artifact/web-form-events",
+  "diagnostics": {
+    "schema": 1,
+    "source": "artifact/web-form-events/main.ssrg",
+    "positionEncoding": "utf-8",
+    "diagnostics": []
+  },
+  "symbols": [
+    {
+      "id": 0,
+      "identity": "artifact/web-form-events::Msg",
+      "name": "Msg",
+      "module": "artifact/web-form-events",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 43,
+        "end": 46
+      },
+      "typeName": "Msg"
+    },
+    {
+      "id": 1,
+      "identity": "artifact/web-form-events::DraftChanged",
+      "name": "DraftChanged",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 53,
+        "end": 65
+      },
+      "typeName": "String -> Msg",
+      "callable": {
+        "identity": "artifact/web-form-events::DraftChanged",
+        "name": "DraftChanged",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "DraftChanged arg1: String -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 2,
+      "identity": "artifact/web-form-events::CheckedChanged",
+      "name": "CheckedChanged",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 77,
+        "end": 91
+      },
+      "typeName": "Bool -> Msg",
+      "callable": {
+        "identity": "artifact/web-form-events::CheckedChanged",
+        "name": "CheckedChanged",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Bool"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "CheckedChanged arg1: Bool -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 3,
+      "identity": "artifact/web-form-events::Submitted",
+      "name": "Submitted",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 101,
+        "end": 110
+      },
+      "typeName": "Msg"
+    },
+    {
+      "id": 4,
+      "identity": "artifact/web-form-events::draftMessage",
+      "name": "draftMessage",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 115,
+        "end": 127
+      },
+      "typeName": "html.InputEvent -> Msg",
+      "callable": {
+        "identity": "artifact/web-form-events::draftMessage",
+        "name": "draftMessage",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "event",
+            "type": "html.InputEvent"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "draftMessage event: html.InputEvent -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 5,
+      "identity": "artifact/web-form-events::checkedMessage",
+      "name": "checkedMessage",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 191,
+        "end": 205
+      },
+      "typeName": "html.ChangeEvent -> Msg",
+      "callable": {
+        "identity": "artifact/web-form-events::checkedMessage",
+        "name": "checkedMessage",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "event",
+            "type": "html.ChangeEvent"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "checkedMessage event: html.ChangeEvent -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 6,
+      "identity": "artifact/web-form-events::view",
+      "name": "view",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 278,
+        "end": 282
+      },
+      "typeName": "String -> Bool -> html.Html<Msg>",
+      "callable": {
+        "identity": "artifact/web-form-events::view",
+        "name": "view",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "draft",
+            "type": "String"
+          },
+          {
+            "name": "checked",
+            "type": "Bool"
+          }
+        ],
+        "result": "html.Html<Msg>",
+        "constraints": [],
+        "signature": "view draft: String -> checked: Bool -> html.Html<Msg>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 7,
+      "identity": "std/web/html::*",
+      "name": "html",
+      "module": "std/web/html",
+      "namespace": "module",
+      "kind": "module-import",
+      "definition": {
+        "start": 12,
+        "end": 16
+      }
+    },
+    {
+      "id": 8,
+      "identity": "std/web/html::Html::T0",
+      "name": "T0",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 9,
+      "identity": "std/web/html::Html",
+      "name": "Html",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 12,
+        "end": 16
+      }
+    },
+    {
+      "id": 10,
+      "identity": "std/web/html::Style",
+      "name": "Style",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "identity": "std/web/html::InputEvent",
+      "name": "InputEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "description": "Immutable text-input snapshot containing only the current String value."
+    },
+    {
+      "id": 12,
+      "identity": "std/web/html::ChangeEvent",
+      "name": "ChangeEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "description": "Immutable form-control snapshot containing value and checked state."
+    },
+    {
+      "id": 13,
+      "identity": "std/prelude::String",
+      "name": "String",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 14,
+      "identity": "std/prelude::Bool",
+      "name": "Bool",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 15,
+      "identity": "artifact/web-form-events::local(15)",
+      "name": "event",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 128,
+        "end": 133
+      },
+      "typeName": "html.InputEvent"
+    },
+    {
+      "id": 16,
+      "identity": "artifact/web-form-events::local(16)",
+      "name": "event",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 206,
+        "end": 211
+      },
+      "typeName": "html.ChangeEvent"
+    },
+    {
+      "id": 17,
+      "identity": "artifact/web-form-events::local(17)",
+      "name": "draft",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 283,
+        "end": 288
+      },
+      "typeName": "String"
+    },
+    {
+      "id": 18,
+      "identity": "artifact/web-form-events::local(18)",
+      "name": "checked",
+      "module": "artifact/web-form-events",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 300,
+        "end": 307
+      },
+      "typeName": "Bool"
+    },
+    {
+      "id": 19,
+      "identity": "std/web/html::form",
+      "name": "form",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "imported",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "typeName": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg>",
+      "callable": {
+        "identity": "std/web/html::form",
+        "name": "form",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [
+          "IntoChildren<C, Msg>"
+        ],
+        "signature": "form<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "remainingParameters": []
+      },
+      "description": "Creates a typed form whose onSubmit message prevents native page reload."
+    },
+    {
+      "id": 20,
+      "identity": "std/web/html::label",
+      "name": "label",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "imported",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "typeName": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg>",
+      "callable": {
+        "identity": "std/web/html::label",
+        "name": "label",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [
+          "IntoChildren<C, Msg>"
+        ],
+        "signature": "label<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "remainingParameters": []
+      },
+      "description": "Creates a label connected through the htmlFor prop."
+    },
+    {
+      "id": 21,
+      "identity": "std/web/html::input",
+      "name": "input",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "imported",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "typeName": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+      "callable": {
+        "identity": "std/web/html::input",
+        "name": "input",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [],
+        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "remainingParameters": []
+      },
+      "description": "Creates a controlled input with typed input and change event snapshots."
+    },
+    {
+      "id": 22,
+      "identity": "std/web/html::textarea",
+      "name": "textarea",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "imported",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "typeName": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+      "callable": {
+        "identity": "std/web/html::textarea",
+        "name": "textarea",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [],
+        "signature": "textarea<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "remainingParameters": []
+      },
+      "description": "Creates a controlled textarea with typed input and change snapshots."
+    },
+    {
+      "id": 23,
+      "identity": "std/web/html::button",
+      "name": "button",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "imported",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "typeName": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg>",
+      "callable": {
+        "identity": "std/web/html::button",
+        "name": "button",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [
+          "IntoChildren<C, Msg>"
+        ],
+        "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 24,
+      "identity": "std/prelude::==",
+      "name": "==",
+      "module": "std/prelude",
+      "namespace": "operator",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "symbolOccurrences": [
+    {
+      "range": {
+        "start": 43,
+        "end": 46
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 53,
+        "end": 65
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 77,
+        "end": 91
+      },
+      "symbol": 2
+    },
+    {
+      "range": {
+        "start": 101,
+        "end": 110
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 115,
+        "end": 127
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 191,
+        "end": 205
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 278,
+        "end": 282
+      },
+      "symbol": 6
+    },
+    {
+      "range": {
+        "start": 12,
+        "end": 16
+      },
+      "symbol": 7
+    },
+    {
+      "range": {
+        "start": 128,
+        "end": 133
+      },
+      "symbol": 15
+    },
+    {
+      "range": {
+        "start": 206,
+        "end": 211
+      },
+      "symbol": 16
+    },
+    {
+      "range": {
+        "start": 283,
+        "end": 288
+      },
+      "symbol": 17
+    },
+    {
+      "range": {
+        "start": 300,
+        "end": 307
+      },
+      "symbol": 18
+    },
+    {
+      "range": {
+        "start": 66,
+        "end": 72
+      },
+      "symbol": 13
+    },
+    {
+      "range": {
+        "start": 92,
+        "end": 96
+      },
+      "symbol": 14
+    },
+    {
+      "range": {
+        "start": 135,
+        "end": 150
+      },
+      "symbol": 11
+    },
+    {
+      "range": {
+        "start": 154,
+        "end": 157
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 162,
+        "end": 174
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 175,
+        "end": 180
+      },
+      "symbol": 15
+    },
+    {
+      "range": {
+        "start": 213,
+        "end": 229
+      },
+      "symbol": 12
+    },
+    {
+      "range": {
+        "start": 233,
+        "end": 236
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 241,
+        "end": 255
+      },
+      "symbol": 2
+    },
+    {
+      "range": {
+        "start": 256,
+        "end": 261
+      },
+      "symbol": 16
+    },
+    {
+      "range": {
+        "start": 290,
+        "end": 296
+      },
+      "symbol": 13
+    },
+    {
+      "range": {
+        "start": 309,
+        "end": 313
+      },
+      "symbol": 14
+    },
+    {
+      "range": {
+        "start": 317,
+        "end": 331
+      },
+      "symbol": 9
+    },
+    {
+      "range": {
+        "start": 327,
+        "end": 330
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 336,
+        "end": 345
+      },
+      "symbol": 19
+    },
+    {
+      "range": {
+        "start": 362,
+        "end": 371
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 395,
+        "end": 405
+      },
+      "symbol": 20
+    },
+    {
+      "range": {
+        "start": 453,
+        "end": 463
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 525,
+        "end": 530
+      },
+      "symbol": 17
+    },
+    {
+      "range": {
+        "start": 636,
+        "end": 648
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 664,
+        "end": 677
+      },
+      "symbol": 22
+    },
+    {
+      "range": {
+        "start": 739,
+        "end": 751
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 767,
+        "end": 777
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 788,
+        "end": 795
+      },
+      "symbol": 18
+    },
+    {
+      "range": {
+        "start": 846,
+        "end": 860
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 876,
+        "end": 887
+      },
+      "symbol": 23
+    },
+    {
+      "range": {
+        "start": 938,
+        "end": 943
+      },
+      "symbol": 17
+    },
+    {
+      "range": {
+        "start": 944,
+        "end": 946
+      },
+      "symbol": 24
+    }
+  ],
+  "typeOccurrences": [
+    {
+      "range": {
+        "start": 43,
+        "end": 46
+      },
+      "type": "Msg"
+    },
+    {
+      "range": {
+        "start": 53,
+        "end": 65
+      },
+      "type": "String -> Msg"
+    },
+    {
+      "range": {
+        "start": 77,
+        "end": 91
+      },
+      "type": "Bool -> Msg"
+    },
+    {
+      "range": {
+        "start": 101,
+        "end": 110
+      },
+      "type": "Msg"
+    },
+    {
+      "range": {
+        "start": 115,
+        "end": 127
+      },
+      "type": "html.InputEvent -> Msg"
+    },
+    {
+      "range": {
+        "start": 128,
+        "end": 133
+      },
+      "type": "html.InputEvent"
+    },
+    {
+      "range": {
+        "start": 154,
+        "end": 157
+      },
+      "type": "Msg"
+    },
+    {
+      "range": {
+        "start": 162,
+        "end": 174
+      },
+      "type": "String -> Msg"
+    },
+    {
+      "range": {
+        "start": 162,
+        "end": 186
+      },
+      "type": "Msg"
+    },
+    {
+      "range": {
+        "start": 175,
+        "end": 180
+      },
+      "type": "html.InputEvent"
+    },
+    {
+      "range": {
+        "start": 175,
+        "end": 186
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 191,
+        "end": 205
+      },
+      "type": "html.ChangeEvent -> Msg"
+    },
+    {
+      "range": {
+        "start": 206,
+        "end": 211
+      },
+      "type": "html.ChangeEvent"
+    },
+    {
+      "range": {
+        "start": 233,
+        "end": 236
+      },
+      "type": "Msg"
+    },
+    {
+      "range": {
+        "start": 241,
+        "end": 255
+      },
+      "type": "Bool -> Msg"
+    },
+    {
+      "range": {
+        "start": 241,
+        "end": 269
+      },
+      "type": "Msg"
+    },
+    {
+      "range": {
+        "start": 256,
+        "end": 261
+      },
+      "type": "html.ChangeEvent"
+    },
+    {
+      "range": {
+        "start": 256,
+        "end": 269
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 278,
+        "end": 282
+      },
+      "type": "String -> Bool -> html.Html<Msg>"
+    },
+    {
+      "range": {
+        "start": 283,
+        "end": 288
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 300,
+        "end": 307
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 327,
+        "end": 330
+      },
+      "type": "Msg"
+    },
+    {
+      "range": {
+        "start": 336,
+        "end": 345
+      },
+      "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg>"
+    },
+    {
+      "range": {
+        "start": 336,
+        "end": 992
+      },
+      "type": "html.Html<Msg>"
+    },
+    {
+      "range": {
+        "start": 346,
+        "end": 992
+      },
+      "type": "{children: Array<html.Html<Msg>>, onSubmit: Msg}"
+    },
+    {
+      "range": {
+        "start": 362,
+        "end": 371
+      },
+      "type": "Msg"
+    },
+    {
+      "range": {
+        "start": 387,
+        "end": 988
+      },
+      "type": "Array<html.Html<Msg>>"
+    },
+    {
+      "range": {
+        "start": 395,
+        "end": 405
+      },
+      "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg>"
+    },
+    {
+      "range": {
+        "start": 395,
+        "end": 445
+      },
+      "type": "html.Html<Msg>"
+    },
+    {
+      "range": {
+        "start": 406,
+        "end": 445
+      },
+      "type": "{children: String, htmlFor: String}"
+    },
+    {
+      "range": {
+        "start": 417,
+        "end": 424
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 436,
+        "end": 443
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 453,
+        "end": 463
+      },
+      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>"
+    },
+    {
+      "range": {
+        "start": 453,
+        "end": 656
+      },
+      "type": "html.Html<Msg>"
+    },
+    {
+      "range": {
+        "start": 464,
+        "end": 656
+      },
+      "type": "{id: String, inputType: String, name: String, onInput: html.InputEvent -> Msg, placeholder: String, required: Bool, value: String}"
+    },
+    {
+      "range": {
+        "start": 478,
+        "end": 485
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 501,
+        "end": 508
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 525,
+        "end": 530
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 550,
+        "end": 554
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 577,
+        "end": 590
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 611,
+        "end": 617
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 636,
+        "end": 648
+      },
+      "type": "html.InputEvent -> Msg"
+    },
+    {
+      "range": {
+        "start": 664,
+        "end": 677
+      },
+      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>"
+    },
+    {
+      "range": {
+        "start": 664,
+        "end": 759
+      },
+      "type": "html.Html<Msg>"
+    },
+    {
+      "range": {
+        "start": 678,
+        "end": 759
+      },
+      "type": "{name: String, onInput: html.InputEvent -> Msg, value: String}"
+    },
+    {
+      "range": {
+        "start": 694,
+        "end": 701
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 718,
+        "end": 720
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 739,
+        "end": 751
+      },
+      "type": "html.InputEvent -> Msg"
+    },
+    {
+      "range": {
+        "start": 767,
+        "end": 777
+      },
+      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>"
+    },
+    {
+      "range": {
+        "start": 767,
+        "end": 868
+      },
+      "type": "html.Html<Msg>"
+    },
+    {
+      "range": {
+        "start": 778,
+        "end": 868
+      },
+      "type": "{checked: Bool, inputType: String, onChange: html.ChangeEvent -> Msg}"
+    },
+    {
+      "range": {
+        "start": 788,
+        "end": 795
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 816,
+        "end": 826
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 846,
+        "end": 860
+      },
+      "type": "html.ChangeEvent -> Msg"
+    },
+    {
+      "range": {
+        "start": 876,
+        "end": 887
+      },
+      "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg>"
+    },
+    {
+      "range": {
+        "start": 876,
+        "end": 982
+      },
+      "type": "html.Html<Msg>"
+    },
+    {
+      "range": {
+        "start": 888,
+        "end": 982
+      },
+      "type": "{buttonType: String, children: String, disabled: Bool}"
+    },
+    {
+      "range": {
+        "start": 910,
+        "end": 918
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 938,
+        "end": 943
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 938,
+        "end": 949
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 947,
+        "end": 949
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 969,
+        "end": 974
+      },
+      "type": "String"
+    }
+  ],
+  "callableOccurrences": [
+    {
+      "range": {
+        "start": 53,
+        "end": 65
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::DraftChanged",
+        "name": "DraftChanged",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "DraftChanged arg1: String -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 77,
+        "end": 91
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::CheckedChanged",
+        "name": "CheckedChanged",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Bool"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "CheckedChanged arg1: Bool -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 115,
+        "end": 127
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::draftMessage",
+        "name": "draftMessage",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "event",
+            "type": "html.InputEvent"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "draftMessage event: html.InputEvent -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 191,
+        "end": 205
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::checkedMessage",
+        "name": "checkedMessage",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "event",
+            "type": "html.ChangeEvent"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "checkedMessage event: html.ChangeEvent -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 278,
+        "end": 282
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::view",
+        "name": "view",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "draft",
+            "type": "String"
+          },
+          {
+            "name": "checked",
+            "type": "Bool"
+          }
+        ],
+        "result": "html.Html<Msg>",
+        "constraints": [],
+        "signature": "view draft: String -> checked: Bool -> html.Html<Msg>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 162,
+        "end": 174
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::DraftChanged",
+        "name": "DraftChanged",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "DraftChanged arg1: String -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 241,
+        "end": 255
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::CheckedChanged",
+        "name": "CheckedChanged",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Bool"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "CheckedChanged arg1: Bool -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 336,
+        "end": 345
+      },
+      "callable": {
+        "identity": "std/web/html::form",
+        "name": "form",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [
+          "IntoChildren<C, Msg>"
+        ],
+        "signature": "form<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 395,
+        "end": 405
+      },
+      "callable": {
+        "identity": "std/web/html::label",
+        "name": "label",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [
+          "IntoChildren<C, Msg>"
+        ],
+        "signature": "label<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 453,
+        "end": 463
+      },
+      "callable": {
+        "identity": "std/web/html::input",
+        "name": "input",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [],
+        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 636,
+        "end": 648
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::draftMessage",
+        "name": "draftMessage",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "event",
+            "type": "html.InputEvent"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "draftMessage event: html.InputEvent -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 664,
+        "end": 677
+      },
+      "callable": {
+        "identity": "std/web/html::textarea",
+        "name": "textarea",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [],
+        "signature": "textarea<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 739,
+        "end": 751
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::draftMessage",
+        "name": "draftMessage",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "event",
+            "type": "html.InputEvent"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "draftMessage event: html.InputEvent -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 767,
+        "end": 777
+      },
+      "callable": {
+        "identity": "std/web/html::input",
+        "name": "input",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [],
+        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 846,
+        "end": 860
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::checkedMessage",
+        "name": "checkedMessage",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "event",
+            "type": "html.ChangeEvent"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "checkedMessage event: html.ChangeEvent -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 876,
+        "end": 887
+      },
+      "callable": {
+        "identity": "std/web/html::button",
+        "name": "button",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [
+          "IntoChildren<C, Msg>"
+        ],
+        "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 162,
+        "end": 186
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::DraftChanged",
+        "name": "DraftChanged",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "DraftChanged arg1: String -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 241,
+        "end": 269
+      },
+      "callable": {
+        "identity": "artifact/web-form-events::CheckedChanged",
+        "name": "CheckedChanged",
+        "module": "artifact/web-form-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Bool"
+          }
+        ],
+        "result": "Msg",
+        "constraints": [],
+        "signature": "CheckedChanged arg1: Bool -> Msg",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 336,
+        "end": 992
+      },
+      "callable": {
+        "identity": "std/web/html::form",
+        "name": "form",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [
+          "IntoChildren<C, Msg>"
+        ],
+        "signature": "form<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 395,
+        "end": 445
+      },
+      "callable": {
+        "identity": "std/web/html::label",
+        "name": "label",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [
+          "IntoChildren<C, Msg>"
+        ],
+        "signature": "label<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 453,
+        "end": 656
+      },
+      "callable": {
+        "identity": "std/web/html::input",
+        "name": "input",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [],
+        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 664,
+        "end": 759
+      },
+      "callable": {
+        "identity": "std/web/html::textarea",
+        "name": "textarea",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [],
+        "signature": "textarea<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 767,
+        "end": 868
+      },
+      "callable": {
+        "identity": "std/web/html::input",
+        "name": "input",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [],
+        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 876,
+        "end": 982
+      },
+      "callable": {
+        "identity": "std/web/html::button",
+        "name": "button",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Msg",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C}"
+          }
+        ],
+        "result": "Html<Msg>",
+        "constraints": [
+          "IntoChildren<C, Msg>"
+        ],
+        "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "remainingParameters": []
+      }
+    }
+  ],
+  "standardLibrary": [
+    {
+      "identity": "std/prelude::combine",
+      "name": "combine",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "combine<C, A> arg1: C -> A where Reducible<C, A>, Monoid<A>",
+      "description": "Combines a reducible collection using its Monoid instance.",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        "Reducible<C, A>",
+        "Monoid<A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::forEach",
+      "name": "forEach",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "forEach<C, R, E, A> arg1: (A -> Effect<R, E, Unit>) -> arg2: C -> Effect<R, E, Unit> where Iterable<C, A>",
+      "description": "Runs one Effect for every value exposed by an Iterable instance.",
+      "typeParameters": [
+        "C",
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": [
+        "Iterable<C, A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::join",
+      "name": "join",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+      "description": "Joins a reducible collection of strings with a separator.",
+      "typeParameters": [
+        "C"
+      ],
+      "constraints": [
+        "Reducible<C, String>"
+      ]
+    },
+    {
+      "identity": "std/prelude::next",
+      "name": "next",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "next<A> arg1: Iterator<A> -> Maybe<(A, Iterator<A>)>",
+      "description": "Reads the next Iterator value and its remaining Iterator.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::reduce",
+      "name": "reduce",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "reduce<C, A, B> arg1: B -> arg2: (B -> A -> B) -> arg3: C -> B where Reducible<C, A>",
+      "description": "Folds a reducible collection into one accumulated value.",
+      "typeParameters": [
+        "C",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Reducible<C, A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::sum",
+      "name": "sum",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "sum<C, A> arg1: C -> A where Reducible<C, A>, Zero<A>, Add<A, A, A>",
+      "description": "Adds every element of a reducible collection from zero.",
+      "typeParameters": [
+        "C",
+        "A"
+      ],
+      "constraints": [
+        "Reducible<C, A>",
+        "Zero<A>",
+        "Add<A, A, A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::unfold",
+      "name": "unfold",
+      "module": "std/prelude",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "unfold<S, A> arg1: (S -> Maybe<(A, S)>) -> arg2: S -> Iterator<A>",
+      "description": "Builds a lazy Iterator from an initial state and step function.",
+      "typeParameters": [
+        "S",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::Dom",
+      "name": "Dom",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "Dom",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomError",
+      "name": "DomError",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "DomError",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomOptions",
+      "name": "DomOptions",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "DomOptions",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomRuntimeError",
+      "name": "DomRuntimeError",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "DomRuntimeError<_>",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomTarget",
+      "name": "DomTarget",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "DomTarget",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::app",
+      "name": "app",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "app<State, Msg> arg1: ({target: String, initial: State, update: Msg -> State -> State, view: State -> Html<Msg>}) -> Effect<{dom: Dom}, String, Unit>",
+      "description": "Mounts a typed state-update-view application into a DOM target.",
+      "typeParameters": [
+        "State",
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::defaultOptions",
+      "name": "defaultOptions",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "defaultOptions arg1: Unit -> DomOptions",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::query",
+      "name": "query",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "query arg1: String -> Effect<{dom: Dom}, DomError, DomTarget>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::run",
+      "name": "run",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "run<Msg> arg1: DomOptions -> arg2: DomTarget -> arg3: (Msg -> Effect<{}, Never, Unit>) -> arg4: Signal<Html<Msg>> -> Effect<{dom: Dom}, DomRuntimeError<Never>, Unit>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::fail",
+      "name": "fail",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "fail<E> error: E -> Effect<{}, E, Never>",
+      "description": "Creates an Effect that fails with a typed error.",
+      "typeParameters": [
+        "E"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::fromEither",
+      "name": "fromEither",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "fromEither<E, A> value: Either<E, A> -> Effect<{}, E, A>",
+      "description": "Lifts Either into Effect without performing an external operation.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::mapError",
+      "name": "mapError",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "mapError<R, E, F, A> mapFailure: (E -> F) -> effect: Effect<R, E, A> -> Effect<R, F, A>",
+      "description": "Transforms an Effect failure while preserving its success value.",
+      "typeParameters": [
+        "R",
+        "E",
+        "F",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::print",
+      "name": "print",
+      "module": "std/prelude",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "print text: String -> Effect<{console: Console}, ConsoleError, Unit>",
+      "description": "Writes text through Console without adding a newline.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::println",
+      "name": "println",
+      "module": "std/prelude",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "println text: String -> Effect<{console: Console}, ConsoleError, Unit>",
+      "description": "Writes text followed by a newline through Console.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::readLine",
+      "name": "readLine",
+      "module": "std/prelude",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "readLine unit: Unit -> Effect<{stdin: Stdin}, StdinError, Maybe<String>>",
+      "description": "Reads one optional line through Stdin.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::succeed",
+      "name": "succeed",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "succeed<A> value: A -> Effect<{}, Never, A>",
+      "description": "Creates an Effect that succeeds with a value.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::ChangeEvent",
+      "name": "ChangeEvent",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-struct",
+      "signature": "ChangeEvent",
+      "description": "Immutable form-control snapshot containing value and checked state.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::Html",
+      "name": "Html",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-type",
+      "signature": "Html<_>",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::InputEvent",
+      "name": "InputEvent",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-struct",
+      "signature": "InputEvent",
+      "description": "Immutable text-input snapshot containing only the current String value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::trait(IntoChildren)",
+      "name": "IntoChildren",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "trait",
+      "signature": "IntoChildren<_, _>",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [
+        "C",
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::Style",
+      "name": "Style",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-type",
+      "signature": "Style",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::trait(StyleRecord)",
+      "name": "StyleRecord",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "trait",
+      "signature": "StyleRecord<_>",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [
+        "R"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::button",
+      "name": "button",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::div",
+      "name": "div",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "div<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::form",
+      "name": "form",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "form<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates a typed form whose onSubmit message prevents native page reload.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::fragment",
+      "name": "fragment",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "fragment<Msg, C> arg1: C -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::h1",
+      "name": "h1",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "h1<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::h2",
+      "name": "h2",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "h2<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::input",
+      "name": "input",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+      "description": "Creates a controlled input with typed input and change event snapshots.",
+      "typeParameters": [
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::label",
+      "name": "label",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "label<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates a label connected through the htmlFor prop.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::main",
+      "name": "main",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "main<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::p",
+      "name": "p",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "p<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::renderDocument",
+      "name": "renderDocument",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "renderDocument<Msg> arg1: Html<Msg> -> String",
+      "description": "Renders typed HTML as a complete document string.",
+      "typeParameters": [
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::renderToString",
+      "name": "renderToString",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "renderToString<Msg> arg1: Html<Msg> -> String",
+      "description": "Renders typed HTML to an escaped fragment string.",
+      "typeParameters": [
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::section",
+      "name": "section",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "section<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::span",
+      "name": "span",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "span<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Msg>"
+      ]
+    },
+    {
+      "identity": "std/web/html::style",
+      "name": "style",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "style<R> arg1: R -> Style where StyleRecord<R>",
+      "description": "Validates and converts a style record into inline Style.",
+      "typeParameters": [
+        "R"
+      ],
+      "constraints": [
+        "StyleRecord<R>"
+      ]
+    },
+    {
+      "identity": "std/web/html::text",
+      "name": "text",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "text<Msg> arg1: String -> Html<Msg>",
+      "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::textarea",
+      "name": "textarea",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "textarea<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+      "description": "Creates a controlled textarea with typed input and change snapshots.",
+      "typeParameters": [
+        "Msg"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Either",
+      "name": "Either",
+      "module": "std/prelude",
+      "category": "Maybe / Either",
+      "kind": "type",
+      "signature": "Either<E, A>",
+      "description": "Represents either a typed failure or a success value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Just",
+      "name": "Just",
+      "module": "std/prelude",
+      "category": "Maybe / Either",
+      "kind": "constructor",
+      "signature": "A -> Maybe<A>",
+      "description": "Constructs a present Maybe value.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Left",
+      "name": "Left",
+      "module": "std/prelude",
+      "category": "Maybe / Either",
+      "kind": "constructor",
+      "signature": "E -> Either<E, A>",
+      "description": "Constructs the failure side of Either.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Maybe",
+      "name": "Maybe",
+      "module": "std/prelude",
+      "category": "Maybe / Either",
+      "kind": "type",
+      "signature": "Maybe<A>",
+      "description": "Represents an optional value as Nothing or Just.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Nothing",
+      "name": "Nothing",
+      "module": "std/prelude",
+      "category": "Maybe / Either",
+      "kind": "constructor",
+      "signature": "Maybe<A>",
+      "description": "Constructs an empty Maybe value.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Right",
+      "name": "Right",
+      "module": "std/prelude",
+      "category": "Maybe / Either",
+      "kind": "constructor",
+      "signature": "A -> Either<E, A>",
+      "description": "Constructs the success side of Either.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::!=",
+      "name": "!=",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "!= via Eq.eq",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Eq"
+      ]
+    },
+    {
+      "identity": "std/prelude::%",
+      "name": "%",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "% via Rem.rem",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Rem"
+      ]
+    },
+    {
+      "identity": "std/prelude::*",
+      "name": "*",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "* via Mul.mul",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Mul"
+      ]
+    },
+    {
+      "identity": "std/prelude::**",
+      "name": "**",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "** via Pow.pow",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Pow"
+      ]
+    },
+    {
+      "identity": "std/prelude::+",
+      "name": "+",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "+ via Add.add",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Add"
+      ]
+    },
+    {
+      "identity": "std/prelude::-",
+      "name": "-",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "- via Sub.sub",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Sub"
+      ]
+    },
+    {
+      "identity": "std/prelude::/",
+      "name": "/",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "/ via Div.div",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Div"
+      ]
+    },
+    {
+      "identity": "std/prelude::<$>",
+      "name": "<$>",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "<$> via Functor.map",
+      "description": "Operator spelling for a standard trait method.",
+      "typeParameters": [],
+      "constraints": [
+        "Functor"
+      ]
+    },
+    {
+      "identity": "std/prelude::<*>",
+      "name": "<*>",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "<*> via Applicative.apply",
+      "description": "Operator spelling for a standard trait method.",
+      "typeParameters": [],
+      "constraints": [
+        "Applicative"
+      ]
+    },
+    {
+      "identity": "std/prelude::==",
+      "name": "==",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": "== via Eq.eq",
+      "description": "Dispatches through the standard trait instance selected by the operand types.",
+      "typeParameters": [],
+      "constraints": [
+        "Eq"
+      ]
+    },
+    {
+      "identity": "std/prelude::>>=",
+      "name": ">>=",
+      "module": "std/prelude",
+      "category": "Operators",
+      "kind": "operator",
+      "signature": ">>= via Monad.flatMap",
+      "description": "Operator spelling for a standard trait method.",
+      "typeParameters": [],
+      "constraints": [
+        "Monad"
+      ]
+    },
+    {
+      "identity": "std/signal::MutableSignal",
+      "name": "MutableSignal",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "opaque-type",
+      "signature": "MutableSignal<_>",
+      "description": "Type from the standard Signal surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::Signal",
+      "name": "Signal",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "opaque-type",
+      "signature": "Signal<_>",
+      "description": "Type from the standard Signal surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::SignalChange",
+      "name": "SignalChange",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "opaque-type",
+      "signature": "SignalChange",
+      "description": "Type from the standard Signal surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::Subscription",
+      "name": "Subscription",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "opaque-type",
+      "signature": "Subscription",
+      "description": "Type from the standard Signal surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::combine",
+      "name": "combine",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "combine<A, B, C> arg1: (A -> B -> C) -> arg2: Signal<A> -> arg3: Signal<B> -> Signal<C>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A",
+        "B",
+        "C"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::constant",
+      "name": "constant",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "constant<A> arg1: A -> Signal<A>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::make",
+      "name": "make",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "make<A> arg1: A -> Effect<{}, Never, MutableSignal<A>>",
+      "description": "Creates a mutable Signal inside Effect.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::map",
+      "name": "map",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "map<A, B> arg1: (A -> B) -> arg2: Signal<A> -> Signal<B>",
+      "description": "Derives a Signal by transforming each current value.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::planSet",
+      "name": "planSet",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "planSet<A> arg1: A -> arg2: MutableSignal<A> -> SignalChange",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::planUpdate",
+      "name": "planUpdate",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "planUpdate<A> arg1: (A -> A) -> arg2: MutableSignal<A> -> SignalChange",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::read",
+      "name": "read",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "read<A> arg1: Signal<A> -> Effect<{}, Never, A>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::set",
+      "name": "set",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "set<A> arg1: A -> arg2: MutableSignal<A> -> Effect<{}, Never, Unit>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::subscribe",
+      "name": "subscribe",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "subscribe<R, A> arg1: (A -> Effect<R, Never, Unit>) -> arg2: Signal<A> -> Effect<R, Never, Subscription>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "R",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::switchMap",
+      "name": "switchMap",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "switchMap<A, B> arg1: (A -> Signal<B>) -> arg2: Signal<A> -> Signal<B>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::transaction",
+      "name": "transaction",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "transaction arg1: Array<SignalChange> -> Effect<{}, Never, Unit>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::unsubscribe",
+      "name": "unsubscribe",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "unsubscribe arg1: Subscription -> Effect<{}, Never, Unit>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/signal::update",
+      "name": "update",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "update<A> arg1: (A -> A) -> arg2: MutableSignal<A> -> Effect<{}, Never, Unit>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Applicative",
+      "name": "Applicative",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Applicative",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Functor",
+      "name": "Functor",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Functor",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Monad",
+      "name": "Monad",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Monad",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Monoid",
+      "name": "Monoid",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Monoid",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Semigroup",
+      "name": "Semigroup",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait Semigroup",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Semigroup::append",
+      "name": "append",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "append<A> arg1: A -> arg2: A -> A where Semigroup<A>",
+      "description": "Associatively combines two values.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Semigroup<A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Applicative::apply",
+      "name": "apply",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "apply<F, A, B> arg1: (F<A -> B>) -> arg2: F<A> -> F<B> where Applicative<F>",
+      "description": "Applies a function inside an Applicative context.",
+      "typeParameters": [
+        "F",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Applicative<F>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Monoid::empty",
+      "name": "empty",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "empty<A> arg1: Unit -> A where Monoid<A>",
+      "description": "Returns the identity value for a Monoid.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Monoid<A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Monad::flatMap",
+      "name": "flatMap",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "flatMap<M, A, B> arg1: (A -> M<B>) -> arg2: M<A> -> M<B> where Monad<M>",
+      "description": "Sequences a Monad with a value-dependent next computation.",
+      "typeParameters": [
+        "M",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Monad<M>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Functor::map",
+      "name": "map",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "map<F, A, B> arg1: (A -> B) -> arg2: F<A> -> F<B> where Functor<F>",
+      "description": "Transforms the value inside a Functor without changing its shape.",
+      "typeParameters": [
+        "F",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Functor<F>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Applicative::pure",
+      "name": "pure",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "pure<F, A> arg1: A -> F<A> where Applicative<F>",
+      "description": "Lifts a value into an Applicative context.",
+      "typeParameters": [
+        "F",
+        "A"
+      ],
+      "constraints": [
+        "Applicative<F>"
+      ]
+    }
+  ]
+}

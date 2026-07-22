@@ -68,6 +68,18 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "Style",
     },
     RuntimeTypeImport {
+        canonical: "std/web/html::InputEvent",
+        runtime_feature: "web.html.input-event-type",
+        module: "@seseragi/runtime/html",
+        export_name: "InputEvent",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/html::ChangeEvent",
+        runtime_feature: "web.html.change-event-type",
+        module: "@seseragi/runtime/html",
+        export_name: "ChangeEvent",
+    },
+    RuntimeTypeImport {
         canonical: "std/web/dom::Dom",
         runtime_feature: "web.dom.service",
         module: "@seseragi/runtime/dom",
