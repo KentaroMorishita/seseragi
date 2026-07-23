@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "module": "artifact/collection-transform",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/array",
+      "module": "artifact/collection-transform/std/array",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/collection-transform/std/array::*",
+          "localName": "arrays"
+        }
+      ]
+    },
+    {
+      "specifier": "std/list",
+      "module": "artifact/collection-transform/std/list",
+      "origin": {
+        "start": 36,
+        "end": 69
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/collection-transform/std/list::*",
+          "localName": "lists"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/collection-transform::collectionTransformResults",
+      "namespace": "value",
+      "name": "collectionTransformResults",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 512,
+        "end": 891
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

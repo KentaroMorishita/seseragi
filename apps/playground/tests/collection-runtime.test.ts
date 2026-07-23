@@ -3,6 +3,9 @@ import {
   arrayIterable,
   arrayMonoid,
   arrayReducible,
+  filter as filterArray,
+  filterMap as filterMapArray,
+  flatMap as flatMapArray,
   get as getArray,
   head as headArray,
   isEmpty as isEmptyArray,
@@ -19,6 +22,9 @@ import {
 import { intMul, intOne } from "../../../runtime/ts/src/int64"
 import {
   Empty,
+  filter as filterList,
+  filterMap as filterMapList,
+  flatMap as flatMapList,
   fromArray,
   get as getList,
   head as headList,
@@ -34,6 +40,50 @@ import { stringMonoid } from "../../../runtime/ts/src/string"
 import { Just, Nothing } from "../../../runtime/ts/src/sum"
 
 describe("Collection runtime", () => {
+  test("transforms Array values in source order", () => {
+    const observed: number[] = []
+    expect(
+      filterArray(
+        (value) => {
+          observed.push(value)
+          return value % 2 === 0
+        },
+        [1, 2, 3, 4]
+      )
+    ).toEqual([2, 4])
+    expect(observed).toEqual([1, 2, 3, 4])
+    expect(filterArray(() => true, [])).toEqual([])
+    expect(
+      filterMapArray(
+        (value: number) => (value % 2 === 0 ? Just(`#${value}`) : Nothing),
+        [1, 2, 3]
+      )
+    ).toEqual(["#2"])
+    expect(flatMapArray((value: number) => [value, -value], [1, 2])).toEqual([
+      1, -1, 2, -2,
+    ])
+  })
+
+  test("transforms persistent List values in source order", () => {
+    const values = fromArray([1, 2, 3, 4])
+    expect(filterList((value) => value % 2 === 0, values)).toEqual(
+      fromArray([2, 4])
+    )
+    expect(filterList(() => true, Empty)).toBe(Empty)
+    expect(
+      filterMapList(
+        (value: number) => (value % 2 === 0 ? Just(`#${value}`) : Nothing),
+        values
+      )
+    ).toEqual(fromArray(["#2", "#4"]))
+    expect(
+      flatMapList(
+        (value: number) => fromArray([value, -value]),
+        fromArray([1, 2])
+      )
+    ).toEqual(fromArray([1, -1, 2, -2]))
+  })
+
   test("observes Array values without leaking invalid indexes", () => {
     const values = [10n, 20n]
 

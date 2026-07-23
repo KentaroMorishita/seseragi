@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "case": "collection-transform",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/collection-transform",
+    "export": "collectionTransformResults",
+    "compiledModule": "../../schema-1/collection-transform/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.list",
+      "core.int64",
+      "core.bool",
+      "core.int64.remainder",
+      "core.maybe",
+      "core.string",
+      "core.maybe.just",
+      "core.int64.show",
+      "core.maybe.nothing",
+      "core.int64.subtract",
+      "core.list.from-array",
+      "core.array.reducible",
+      "core.collection.join",
+      "core.array.comprehend",
+      "core.list.comprehend",
+      "core.unit",
+      "core.array.filter",
+      "core.list.filter",
+      "core.array.filter-map",
+      "core.list.reducible",
+      "core.list.filter-map",
+      "core.array.flat-map",
+      "core.list.flat-map"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

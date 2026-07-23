@@ -1,0 +1,30 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+
+fn even value: Int -> Bool =
+  value % 2 == 0
+
+fn labelEven value: Int -> Maybe<String> =
+  if even value then Just `#${value}` else Nothing
+
+fn signedArray value: Int -> Array<Int> =
+  [value, 0 - value]
+
+fn signedList value: Int -> List<Int> =
+  `[value, 0 - value]
+
+fn showArray values: Array<Int> -> String =
+  join "," [`${value}` | value <- values]
+
+fn showList values: List<Int> -> String =
+  join "," [`${value}` | value <- values]
+
+pub fn collectionTransformResults unit: Unit -> Array<String> =
+  [
+    showArray (arrays.filter even [1, 2, 3, 4]),
+    showList (lists.filter even `[1, 2, 3, 4]),
+    join "," (arrays.filterMap labelEven [1, 2, 3, 4]),
+    join "," (lists.filterMap labelEven `[1, 2, 3, 4]),
+    showArray (arrays.flatMap signedArray [1, 2]),
+    showList (lists.flatMap signedList `[1, 2])
+  ]

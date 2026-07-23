@@ -1,6 +1,6 @@
 import type { Iterator as SeseragiIterator } from "./iterator"
 import type { Unit } from "./effect"
-import { Just, Nothing } from "./sum"
+import { Just, Nothing, type Maybe } from "./sum"
 
 /** Runtime dictionary for the standard `Semigroup<Array<A>>` instance. */
 export const arraySemigroup = Object.freeze({
@@ -52,6 +52,34 @@ export const arrayIterable = Object.freeze({
   iterate: <A>(values: ReadonlyArray<A>): SeseragiIterator<A> =>
     arrayIterator(values, 0),
 })
+
+export function filter<A>(
+  predicate: (value: A) => boolean,
+  values: ReadonlyArray<A>
+): ReadonlyArray<A> {
+  return values.filter(predicate)
+}
+
+export function filterMap<A, B>(
+  f: (value: A) => Maybe<B>,
+  values: ReadonlyArray<A>
+): ReadonlyArray<B> {
+  const result: B[] = []
+  for (const value of values) {
+    const mapped = f(value)
+    if (mapped.tag === "Just") result.push(mapped.value)
+  }
+  return result
+}
+
+export function flatMap<A, B>(
+  f: (value: A) => ReadonlyArray<B>,
+  values: ReadonlyArray<A>
+): ReadonlyArray<B> {
+  const result: B[] = []
+  for (const value of values) result.push(...f(value))
+  return result
+}
 
 export function length<A>(values: ReadonlyArray<A>): bigint {
   return BigInt(values.length)

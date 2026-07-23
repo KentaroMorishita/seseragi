@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "module": "artifact/collection-transform",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.list",
+      "core.int64",
+      "core.bool",
+      "core.int64.remainder",
+      "core.maybe",
+      "core.string",
+      "core.maybe.just",
+      "core.int64.show",
+      "core.maybe.nothing",
+      "core.int64.subtract",
+      "core.list.from-array",
+      "core.array.reducible",
+      "core.collection.join",
+      "core.array.comprehend",
+      "core.list.comprehend",
+      "core.unit",
+      "core.array.filter",
+      "core.list.filter",
+      "core.array.filter-map",
+      "core.list.reducible",
+      "core.list.filter-map",
+      "core.array.flat-map",
+      "core.list.flat-map"
+    ]
+  },
+  "exports": [
+    "collectionTransformResults"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

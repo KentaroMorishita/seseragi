@@ -1,8 +1,11 @@
 import * as arrays from "std/array"
 import * as lists from "std/list"
 
+fn evenLabel value: Int -> Maybe<String> =
+  if value % 2 == 0 then Just `#${value}` else Nothing
+
 fn evenLabels limit: Int -> Array<String> =
-  [`#${value}` | value <- 1..=limit, value % 2 == 0]
+  arrays.filterMap evenLabel [value | value <- 1..=limit]
 
 fn frame labels: Array<String> -> String =
   combine ["[", join " / " labels, "]"]

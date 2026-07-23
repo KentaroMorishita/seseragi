@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "tokens": "tokens.json",
+  "root": {
+    "kind": "module",
+    "startToken": 0,
+    "endToken": 389,
+    "children": [
+      {
+        "kind": "top-decl",
+        "startToken": 0,
+        "endToken": 12,
+        "children": []
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 12,
+        "endToken": 25,
+        "children": []
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 25,
+        "endToken": 52,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 25,
+            "endToken": 52,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 52,
+        "endToken": 88,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 52,
+            "endToken": 88,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 88,
+        "endToken": 119,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 88,
+            "endToken": 119,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 119,
+        "endToken": 150,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 119,
+            "endToken": 150,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 150,
+        "endToken": 186,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 150,
+            "endToken": 186,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 186,
+        "endToken": 222,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 186,
+            "endToken": 222,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 222,
+        "endToken": 389,
+        "children": [
+          {
+            "kind": "decl-modifiers",
+            "startToken": 222,
+            "endToken": 223,
+            "children": []
+          },
+          {
+            "kind": "fn-decl",
+            "startToken": 224,
+            "endToken": 389,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "missing": [],
+  "errors": []
+}

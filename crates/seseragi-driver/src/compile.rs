@@ -516,6 +516,66 @@ pub fn listRest -> Maybe<List<Int>> = lists.tail `[10, 20]
     }
 
     #[test]
+    fn compiles_array_and_list_transformations_through_the_runtime_abi() {
+        let source = r#"import * as arrays from "std/array"
+import * as lists from "std/list"
+
+fn even value: Int -> Bool = value % 2 == 0
+fn labelEven value: Int -> Maybe<String> =
+  if even value then Just `#${value}` else Nothing
+fn repeatArray value: Int -> Array<Int> = [value, value]
+fn repeatList value: Int -> List<Int> = `[value, value]
+
+pub fn filteredArray -> Array<Int> = arrays.filter even [1, 2, 3]
+pub fn filteredList -> List<Int> = lists.filter even `[1, 2, 3]
+pub fn mappedArray -> Array<String> = arrays.filterMap labelEven [1, 2, 3]
+pub fn mappedList -> List<String> = lists.filterMap labelEven `[1, 2, 3]
+pub fn flattenedArray -> Array<Int> = arrays.flatMap repeatArray [1, 2]
+pub fn flattenedList -> List<Int> = lists.flatMap repeatList `[1, 2]
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/collection-transform",
+            source,
+        ))
+        .expect("standard collection transformations should compile");
+
+        for helper in [
+            "_ssrg_array_filter",
+            "_ssrg_array_filterMap",
+            "_ssrg_array_flatMap",
+            "_ssrg_list_filter",
+            "_ssrg_list_filterMap",
+            "_ssrg_list_flatMap",
+        ] {
+            assert!(compiled.generated.typescript.contains(helper), "{helper}");
+        }
+    }
+
+    #[test]
+    fn rejects_collection_transform_callbacks_with_the_wrong_result_type() {
+        let source = r#"import * as arrays from "std/array"
+
+pub fn invalid -> Array<Int> =
+  arrays.filter (\value: Int -> value + 1) [1, 2, 3]
+"#;
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/collection-transform-invalid",
+            source,
+        ))
+        .expect_err("a filter callback must return Bool before lowering");
+
+        assert!(
+            diagnostics.diagnostics.iter().any(|diagnostic| {
+                diagnostic.code == "SES-T0101"
+                    && diagnostic.message_key == "lambda.body-type-mismatch"
+            }),
+            "{diagnostics:?}"
+        );
+    }
+
+    #[test]
     fn lowers_parameterless_pure_functions_with_an_implicit_unit() {
         let source = "fn answer -> Int = 42\npub fn run -> Int = answer ()\n";
         let compiled = compile_module(CompileInput::new(

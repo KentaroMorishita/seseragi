@@ -5,7 +5,7 @@
   "summary": "Array、List、Rangeをgenericな集約と安全な参照で処理します。",
   "kind": "recipe",
   "difficulty": "beginner",
-  "topics": ["Collection", "Array", "List", "Maybe", "Range", "product", "any", "all"],
+  "topics": ["Collection", "Array", "List", "Maybe", "Range", "filterMap", "product", "any"],
   "capabilities": ["console"],
   "outputMode": "text",
   "prerequisites": ["functions-and-pipelines"],

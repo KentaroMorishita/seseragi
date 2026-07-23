@@ -5387,6 +5387,88 @@
       ]
     },
     {
+      "identity": "std/array::filter",
+      "name": "filter",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "filter<A> arg1: (A -> Bool) -> arg2: Array<A> -> Array<A>",
+      "description": "Keeps collection elements whose predicate returns True.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::filter",
+      "name": "filter",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "filter<A> arg1: (A -> Bool) -> arg2: List<A> -> List<A>",
+      "description": "Keeps collection elements whose predicate returns True.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::filterMap",
+      "name": "filterMap",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "filterMap<A, B> arg1: (A -> Maybe<B>) -> arg2: Array<A> -> Array<B>",
+      "description": "Transforms collection elements and drops Nothing results.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::filterMap",
+      "name": "filterMap",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "filterMap<A, B> arg1: (A -> Maybe<B>) -> arg2: List<A> -> List<B>",
+      "description": "Transforms collection elements and drops Nothing results.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::flatMap",
+      "name": "flatMap",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "flatMap<A, B> arg1: (A -> Array<B>) -> arg2: Array<A> -> Array<B>",
+      "description": "Transforms each element to a collection and flattens the results.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::flatMap",
+      "name": "flatMap",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "flatMap<A, B> arg1: (A -> List<B>) -> arg2: List<A> -> List<B>",
+      "description": "Transforms each element to a collection and flattens the results.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::forEach",
       "name": "forEach",
       "module": "std/prelude",
@@ -6704,7 +6786,7 @@
       "category": "Traits",
       "kind": "function",
       "signature": "flatMap<M, A, B> arg1: (A -> M<B>) -> arg2: M<A> -> M<B> where Monad<M>",
-      "description": "Sequences a Monad with a value-dependent next computation.",
+      "description": "Transforms each element to a collection and flattens the results.",
       "typeParameters": [
         "M",
         "A",

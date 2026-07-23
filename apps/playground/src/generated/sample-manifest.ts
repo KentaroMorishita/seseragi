@@ -82,9 +82,9 @@ export const generatedSamples: readonly GeneratedSample[] = [
         "List",
         "Maybe",
         "Range",
+        "filterMap",
         "product",
-        "any",
-        "all"
+        "any"
       ],
       "capabilities": [
         "console"
@@ -99,7 +99,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/collections/main.ssrg",
       "guidePath": "examples/samples/collections/guide.md",
       "expectedOutputPath": "examples/samples/collections/stdout.txt",
-      "sourceHash": "sha256:01f5b72fed4a10a625cdda74518d3f270ce70db275c49e2a123eed0678da2c02"
+      "sourceHash": "sha256:92be61f6a04187d3aa8ee407ca8e2db1510f1febbeb5e3e0967bc5385a45c547"
     },
     source: sample0Source,
     guide: sample0Guide,

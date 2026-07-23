@@ -159,6 +159,36 @@
       }
     },
     {
+      "id": "core.array.filter",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> Bool) -> Array<A> -> Array<A>",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "filter"
+      }
+    },
+    {
+      "id": "core.array.filter-map",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> Maybe<B>) -> Array<A> -> Array<B>",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "filterMap"
+      }
+    },
+    {
+      "id": "core.array.flat-map",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> Array<B>) -> Array<A> -> Array<B>",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "flatMap"
+      }
+    },
+    {
       "id": "core.array.length",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -487,6 +517,36 @@
       "import": {
         "module": "@seseragi/runtime/list",
         "export": "listIterable"
+      }
+    },
+    {
+      "id": "core.list.filter",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> Bool) -> List<A> -> List<A>",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "filter"
+      }
+    },
+    {
+      "id": "core.list.filter-map",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> Maybe<B>) -> List<A> -> List<B>",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "filterMap"
+      }
+    },
+    {
+      "id": "core.list.flat-map",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> List<B>) -> List<A> -> List<B>",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "flatMap"
       }
     },
     {

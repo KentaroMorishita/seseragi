@@ -1,6 +1,6 @@
 import type { Iterator as SeseragiIterator } from "./iterator"
 import type { Unit } from "./effect"
-import { Just, Nothing } from "./sum"
+import { Just, Nothing, type Maybe } from "./sum"
 
 /** Immutable persistent linked list used by the Seseragi `List<A>` ABI. */
 export type List<A> = Empty | Cons<A>
@@ -94,6 +94,50 @@ function listIterator<A>(values: List<A>): SeseragiIterator<A> {
 export const listIterable = Object.freeze({
   iterate: <A>(values: List<A>): SeseragiIterator<A> => listIterator(values),
 })
+
+export function filter<A>(
+  predicate: (value: A) => boolean,
+  values: List<A>
+): List<A> {
+  const result: A[] = []
+  let cursor = values
+  while (cursor.tag === "Cons") {
+    if (predicate(cursor.head)) result.push(cursor.head)
+    cursor = cursor.tail
+  }
+  return fromArray(result)
+}
+
+export function filterMap<A, B>(
+  f: (value: A) => Maybe<B>,
+  values: List<A>
+): List<B> {
+  const result: B[] = []
+  let cursor = values
+  while (cursor.tag === "Cons") {
+    const mapped = f(cursor.head)
+    if (mapped.tag === "Just") result.push(mapped.value)
+    cursor = cursor.tail
+  }
+  return fromArray(result)
+}
+
+export function flatMap<A, B>(
+  f: (value: A) => List<B>,
+  values: List<A>
+): List<B> {
+  const result: B[] = []
+  let outer = values
+  while (outer.tag === "Cons") {
+    let inner = f(outer.head)
+    while (inner.tag === "Cons") {
+      result.push(inner.head)
+      inner = inner.tail
+    }
+    outer = outer.tail
+  }
+  return fromArray(result)
+}
 
 export function length<A>(values: List<A>): bigint {
   let result = 0n

@@ -122,6 +122,33 @@ const LIST_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOperat
 
 const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
     (
+        "std/array::filter",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.filter",
+            local_name: "_ssrg_array_filter",
+            module: "@seseragi/runtime/array",
+            export_name: "filter",
+        },
+    ),
+    (
+        "std/array::filterMap",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.filter-map",
+            local_name: "_ssrg_array_filterMap",
+            module: "@seseragi/runtime/array",
+            export_name: "filterMap",
+        },
+    ),
+    (
+        "std/array::flatMap",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.flat-map",
+            local_name: "_ssrg_array_flatMap",
+            module: "@seseragi/runtime/array",
+            export_name: "flatMap",
+        },
+    ),
+    (
         "std/array::length",
         RuntimeCollectionOperation {
             runtime_feature: "core.array.length",
@@ -164,6 +191,33 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_tail",
             module: "@seseragi/runtime/array",
             export_name: "tail",
+        },
+    ),
+    (
+        "std/list::filter",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.filter",
+            local_name: "_ssrg_list_filter",
+            module: "@seseragi/runtime/list",
+            export_name: "filter",
+        },
+    ),
+    (
+        "std/list::filterMap",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.filter-map",
+            local_name: "_ssrg_list_filterMap",
+            module: "@seseragi/runtime/list",
+            export_name: "filterMap",
+        },
+    ),
+    (
+        "std/list::flatMap",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.flat-map",
+            local_name: "_ssrg_list_flatMap",
+            module: "@seseragi/runtime/list",
+            export_name: "flatMap",
         },
     ),
     (
@@ -545,9 +599,9 @@ mod tests {
     #[test]
     fn resolves_standard_array_and_list_operations_from_one_registry() {
         assert_eq!(
-            runtime_standard_collection_operation("std/array::head")
+            runtime_standard_collection_operation("std/array::filterMap")
                 .map(|operation| operation.runtime_feature),
-            Some("core.array.head")
+            Some("core.array.filter-map")
         );
         assert_eq!(
             runtime_standard_collection_operation("std/list::tail")

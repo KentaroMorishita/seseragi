@@ -35,17 +35,51 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
 ];
 
 fn array_interface() -> ModuleInterface {
-    collection_access_interface("std/array", "Array")
+    collection_interface("std/array", "Array")
 }
 
 fn list_interface() -> ModuleInterface {
-    collection_access_interface("std/list", "List")
+    collection_interface("std/list", "List")
 }
 
-fn collection_access_interface(module: &str, collection: &str) -> ModuleInterface {
+fn collection_interface(module: &str, collection: &str) -> ModuleInterface {
     let values = named_with(collection, vec![named("A")]);
+    let mapped_values = named_with(collection, vec![named("B")]);
     let maybe_value = named_with("Maybe", vec![named("A")]);
     let exports = vec![
+        function_export(
+            module,
+            "filter",
+            ["A"],
+            Vec::new(),
+            vec![
+                function_type(vec![named("A")], named("Bool")),
+                values.clone(),
+            ],
+            values.clone(),
+        ),
+        function_export(
+            module,
+            "filterMap",
+            ["A", "B"],
+            Vec::new(),
+            vec![
+                function_type(vec![named("A")], named_with("Maybe", vec![named("B")])),
+                values.clone(),
+            ],
+            mapped_values.clone(),
+        ),
+        function_export(
+            module,
+            "flatMap",
+            ["A", "B"],
+            Vec::new(),
+            vec![
+                function_type(vec![named("A")], mapped_values.clone()),
+                values.clone(),
+            ],
+            mapped_values,
+        ),
         function_export(
             module,
             "length",
@@ -775,7 +809,16 @@ mod tests {
         assert!(standard_module_target("std/web/missing").is_none());
         for module in ["std/array", "std/list"] {
             let target = standard_module_target(module).unwrap();
-            for name in ["length", "isEmpty", "get", "head", "tail"] {
+            for name in [
+                "filter",
+                "filterMap",
+                "flatMap",
+                "length",
+                "isEmpty",
+                "get",
+                "head",
+                "tail",
+            ] {
                 assert!(target
                     .interface()
                     .exports
