@@ -109,6 +109,25 @@ export function drop<A>(
   return values.slice(Number(count))
 }
 
+export function append<A>(
+  suffix: ReadonlyArray<A>,
+  values: ReadonlyArray<A>
+): ReadonlyArray<A> {
+  return [...values, ...suffix]
+}
+
+export function concat<A>(
+  values: ReadonlyArray<ReadonlyArray<A>>
+): ReadonlyArray<A> {
+  const result: A[] = []
+  for (const value of values) result.push(...value)
+  return result
+}
+
+export function reverse<A>(values: ReadonlyArray<A>): ReadonlyArray<A> {
+  return values.slice().reverse()
+}
+
 export function length<A>(values: ReadonlyArray<A>): bigint {
   return BigInt(values.length)
 }

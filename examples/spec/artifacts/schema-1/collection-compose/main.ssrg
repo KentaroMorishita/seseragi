@@ -1,0 +1,23 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+
+fn showArray values: Array<Int> -> String =
+  join "," [`${value}` | value <- values]
+
+fn showList values: List<Int> -> String =
+  join "," [`${value}` | value <- values]
+
+fn nestedLists unit: Unit -> List<List<Int>> =
+  `[ `[1, 2], `[], `[3, 4] ]
+
+pub fn collectionComposeResults unit: Unit -> Array<String> =
+  [
+    showArray ([1, 2] |> arrays.append [3, 4]),
+    showList (`[1, 2] |> lists.append `[3, 4]),
+    showArray (arrays.concat [[1, 2], [], [3, 4]]),
+    showList (lists.concat (nestedLists ())),
+    showArray (arrays.reverse [1, 2, 3]),
+    showList (lists.reverse `[1, 2, 3]),
+    showArray (arrays.concat []),
+    showList (lists.concat `[])
+  ]

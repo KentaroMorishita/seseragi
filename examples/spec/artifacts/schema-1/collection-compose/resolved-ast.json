@@ -1,0 +1,1844 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/collection-compose",
+  "dependencies": [
+    {
+      "specifier": "std/array",
+      "module": "artifact/collection-compose/std/array",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/collection-compose/std/array::*",
+          "localName": "arrays"
+        }
+      ]
+    },
+    {
+      "specifier": "std/list",
+      "module": "artifact/collection-compose/std/list",
+      "origin": {
+        "start": 36,
+        "end": 69
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/collection-compose/std/list::*",
+          "localName": "lists"
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "showArray",
+      "nameSpan": {
+        "start": 74,
+        "end": 83
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 84,
+            "end": 90
+          },
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 98,
+                  "end": 101
+                }
+              }
+            ],
+            "span": {
+              "start": 92,
+              "end": 102
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 106,
+          "end": 112
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "join",
+            "span": {
+              "start": 117,
+              "end": 121
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\",\"",
+            "span": {
+              "start": 122,
+              "end": 125
+            }
+          },
+          "span": {
+            "start": 117,
+            "end": 125
+          }
+        },
+        "argument": {
+          "kind": "arrayComprehension",
+          "element": {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "name",
+                  "name": "value",
+                  "span": {
+                    "start": 130,
+                    "end": 135
+                  }
+                },
+                "span": {
+                  "start": 128,
+                  "end": 136
+                }
+              }
+            ],
+            "span": {
+              "start": 127,
+              "end": 137
+            }
+          },
+          "clauses": [
+            {
+              "kind": "generator",
+              "pattern": {
+                "kind": "name",
+                "name": "value",
+                "nameSpan": {
+                  "start": 140,
+                  "end": 145
+                },
+                "span": {
+                  "start": 140,
+                  "end": 145
+                }
+              },
+              "source": {
+                "kind": "name",
+                "name": "values",
+                "span": {
+                  "start": 149,
+                  "end": 155
+                }
+              },
+              "span": {
+                "start": 140,
+                "end": 155
+              }
+            }
+          ],
+          "span": {
+            "start": 126,
+            "end": 156
+          }
+        },
+        "span": {
+          "start": 117,
+          "end": 156
+        }
+      },
+      "span": {
+        "start": 71,
+        "end": 156
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "showList",
+      "nameSpan": {
+        "start": 161,
+        "end": 169
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 170,
+            "end": 176
+          },
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 183,
+                  "end": 186
+                }
+              }
+            ],
+            "span": {
+              "start": 178,
+              "end": 187
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 191,
+          "end": 197
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "join",
+            "span": {
+              "start": 202,
+              "end": 206
+            }
+          },
+          "argument": {
+            "kind": "string",
+            "raw": "\",\"",
+            "span": {
+              "start": 207,
+              "end": 210
+            }
+          },
+          "span": {
+            "start": 202,
+            "end": 210
+          }
+        },
+        "argument": {
+          "kind": "arrayComprehension",
+          "element": {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "name",
+                  "name": "value",
+                  "span": {
+                    "start": 215,
+                    "end": 220
+                  }
+                },
+                "span": {
+                  "start": 213,
+                  "end": 221
+                }
+              }
+            ],
+            "span": {
+              "start": 212,
+              "end": 222
+            }
+          },
+          "clauses": [
+            {
+              "kind": "generator",
+              "pattern": {
+                "kind": "name",
+                "name": "value",
+                "nameSpan": {
+                  "start": 225,
+                  "end": 230
+                },
+                "span": {
+                  "start": 225,
+                  "end": 230
+                }
+              },
+              "source": {
+                "kind": "name",
+                "name": "values",
+                "span": {
+                  "start": 234,
+                  "end": 240
+                }
+              },
+              "span": {
+                "start": 225,
+                "end": 240
+              }
+            }
+          ],
+          "span": {
+            "start": 211,
+            "end": 241
+          }
+        },
+        "span": {
+          "start": 202,
+          "end": 241
+        }
+      },
+      "span": {
+        "start": 158,
+        "end": 241
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "nestedLists",
+      "nameSpan": {
+        "start": 246,
+        "end": 257
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 258,
+            "end": 262
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 264,
+              "end": 268
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "List",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 282,
+                  "end": 285
+                }
+              }
+            ],
+            "span": {
+              "start": 277,
+              "end": 286
+            }
+          }
+        ],
+        "span": {
+          "start": 272,
+          "end": 287
+        }
+      },
+      "body": {
+        "kind": "list",
+        "elements": [
+          {
+            "kind": "list",
+            "elements": [
+              {
+                "kind": "integer",
+                "raw": "1",
+                "span": {
+                  "start": 297,
+                  "end": 298
+                }
+              },
+              {
+                "kind": "integer",
+                "raw": "2",
+                "span": {
+                  "start": 300,
+                  "end": 301
+                }
+              }
+            ],
+            "span": {
+              "start": 295,
+              "end": 302
+            }
+          },
+          {
+            "kind": "list",
+            "elements": [],
+            "span": {
+              "start": 304,
+              "end": 307
+            }
+          },
+          {
+            "kind": "list",
+            "elements": [
+              {
+                "kind": "integer",
+                "raw": "3",
+                "span": {
+                  "start": 311,
+                  "end": 312
+                }
+              },
+              {
+                "kind": "integer",
+                "raw": "4",
+                "span": {
+                  "start": 314,
+                  "end": 315
+                }
+              }
+            ],
+            "span": {
+              "start": 309,
+              "end": 316
+            }
+          }
+        ],
+        "span": {
+          "start": 292,
+          "end": 318
+        }
+      },
+      "span": {
+        "start": 243,
+        "end": 318
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "collectionComposeResults",
+      "nameSpan": {
+        "start": 327,
+        "end": 351
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 352,
+            "end": 356
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 358,
+              "end": 362
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 372,
+              "end": 378
+            }
+          }
+        ],
+        "span": {
+          "start": 366,
+          "end": 379
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "showArray",
+              "span": {
+                "start": 390,
+                "end": 399
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "member",
+                    "receiver": {
+                      "kind": "name",
+                      "name": "arrays",
+                      "span": {
+                        "start": 411,
+                        "end": 417
+                      }
+                    },
+                    "field": "append",
+                    "fieldSpan": {
+                      "start": 418,
+                      "end": 424
+                    },
+                    "span": {
+                      "start": 411,
+                      "end": 424
+                    }
+                  },
+                  "argument": {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "raw": "3",
+                        "span": {
+                          "start": 426,
+                          "end": 427
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "raw": "4",
+                        "span": {
+                          "start": 429,
+                          "end": 430
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 425,
+                      "end": 431
+                    }
+                  },
+                  "span": {
+                    "start": 411,
+                    "end": 431
+                  }
+                },
+                "argument": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 402,
+                        "end": 403
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "raw": "2",
+                      "span": {
+                        "start": 405,
+                        "end": 406
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 401,
+                    "end": 407
+                  }
+                },
+                "span": {
+                  "start": 401,
+                  "end": 431
+                }
+              },
+              "span": {
+                "start": 400,
+                "end": 432
+              }
+            },
+            "span": {
+              "start": 390,
+              "end": 432
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "showList",
+              "span": {
+                "start": 438,
+                "end": 446
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "member",
+                    "receiver": {
+                      "kind": "name",
+                      "name": "lists",
+                      "span": {
+                        "start": 459,
+                        "end": 464
+                      }
+                    },
+                    "field": "append",
+                    "fieldSpan": {
+                      "start": 465,
+                      "end": 471
+                    },
+                    "span": {
+                      "start": 459,
+                      "end": 471
+                    }
+                  },
+                  "argument": {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "raw": "3",
+                        "span": {
+                          "start": 474,
+                          "end": 475
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "raw": "4",
+                        "span": {
+                          "start": 477,
+                          "end": 478
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 472,
+                      "end": 479
+                    }
+                  },
+                  "span": {
+                    "start": 459,
+                    "end": 479
+                  }
+                },
+                "argument": {
+                  "kind": "list",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 450,
+                        "end": 451
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "raw": "2",
+                      "span": {
+                        "start": 453,
+                        "end": 454
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 448,
+                    "end": 455
+                  }
+                },
+                "span": {
+                  "start": 448,
+                  "end": 479
+                }
+              },
+              "span": {
+                "start": 447,
+                "end": 480
+              }
+            },
+            "span": {
+              "start": 438,
+              "end": 480
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "showArray",
+              "span": {
+                "start": 486,
+                "end": 495
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "arrays",
+                    "span": {
+                      "start": 497,
+                      "end": 503
+                    }
+                  },
+                  "field": "concat",
+                  "fieldSpan": {
+                    "start": 504,
+                    "end": 510
+                  },
+                  "span": {
+                    "start": 497,
+                    "end": 510
+                  }
+                },
+                "argument": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "integer",
+                          "raw": "1",
+                          "span": {
+                            "start": 513,
+                            "end": 514
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "raw": "2",
+                          "span": {
+                            "start": 516,
+                            "end": 517
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 512,
+                        "end": 518
+                      }
+                    },
+                    {
+                      "kind": "array",
+                      "elements": [],
+                      "span": {
+                        "start": 520,
+                        "end": 522
+                      }
+                    },
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "integer",
+                          "raw": "3",
+                          "span": {
+                            "start": 525,
+                            "end": 526
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "raw": "4",
+                          "span": {
+                            "start": 528,
+                            "end": 529
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 524,
+                        "end": 530
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 511,
+                    "end": 531
+                  }
+                },
+                "span": {
+                  "start": 497,
+                  "end": 531
+                }
+              },
+              "span": {
+                "start": 496,
+                "end": 532
+              }
+            },
+            "span": {
+              "start": 486,
+              "end": 532
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "showList",
+              "span": {
+                "start": 538,
+                "end": 546
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "lists",
+                    "span": {
+                      "start": 548,
+                      "end": 553
+                    }
+                  },
+                  "field": "concat",
+                  "fieldSpan": {
+                    "start": 554,
+                    "end": 560
+                  },
+                  "span": {
+                    "start": 548,
+                    "end": 560
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "nestedLists",
+                      "span": {
+                        "start": 562,
+                        "end": 573
+                      }
+                    },
+                    "argument": {
+                      "kind": "unit",
+                      "span": {
+                        "start": 574,
+                        "end": 576
+                      }
+                    },
+                    "span": {
+                      "start": 562,
+                      "end": 576
+                    }
+                  },
+                  "span": {
+                    "start": 561,
+                    "end": 577
+                  }
+                },
+                "span": {
+                  "start": 548,
+                  "end": 577
+                }
+              },
+              "span": {
+                "start": 547,
+                "end": 578
+              }
+            },
+            "span": {
+              "start": 538,
+              "end": 578
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "showArray",
+              "span": {
+                "start": 584,
+                "end": 593
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "arrays",
+                    "span": {
+                      "start": 595,
+                      "end": 601
+                    }
+                  },
+                  "field": "reverse",
+                  "fieldSpan": {
+                    "start": 602,
+                    "end": 609
+                  },
+                  "span": {
+                    "start": 595,
+                    "end": 609
+                  }
+                },
+                "argument": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 611,
+                        "end": 612
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "raw": "2",
+                      "span": {
+                        "start": 614,
+                        "end": 615
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "raw": "3",
+                      "span": {
+                        "start": 617,
+                        "end": 618
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 610,
+                    "end": 619
+                  }
+                },
+                "span": {
+                  "start": 595,
+                  "end": 619
+                }
+              },
+              "span": {
+                "start": 594,
+                "end": 620
+              }
+            },
+            "span": {
+              "start": 584,
+              "end": 620
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "showList",
+              "span": {
+                "start": 626,
+                "end": 634
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "lists",
+                    "span": {
+                      "start": 636,
+                      "end": 641
+                    }
+                  },
+                  "field": "reverse",
+                  "fieldSpan": {
+                    "start": 642,
+                    "end": 649
+                  },
+                  "span": {
+                    "start": 636,
+                    "end": 649
+                  }
+                },
+                "argument": {
+                  "kind": "list",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 652,
+                        "end": 653
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "raw": "2",
+                      "span": {
+                        "start": 655,
+                        "end": 656
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "raw": "3",
+                      "span": {
+                        "start": 658,
+                        "end": 659
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 650,
+                    "end": 660
+                  }
+                },
+                "span": {
+                  "start": 636,
+                  "end": 660
+                }
+              },
+              "span": {
+                "start": 635,
+                "end": 661
+              }
+            },
+            "span": {
+              "start": 626,
+              "end": 661
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "showArray",
+              "span": {
+                "start": 667,
+                "end": 676
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "arrays",
+                    "span": {
+                      "start": 678,
+                      "end": 684
+                    }
+                  },
+                  "field": "concat",
+                  "fieldSpan": {
+                    "start": 685,
+                    "end": 691
+                  },
+                  "span": {
+                    "start": 678,
+                    "end": 691
+                  }
+                },
+                "argument": {
+                  "kind": "array",
+                  "elements": [],
+                  "span": {
+                    "start": 692,
+                    "end": 694
+                  }
+                },
+                "span": {
+                  "start": 678,
+                  "end": 694
+                }
+              },
+              "span": {
+                "start": 677,
+                "end": 695
+              }
+            },
+            "span": {
+              "start": 667,
+              "end": 695
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "showList",
+              "span": {
+                "start": 701,
+                "end": 709
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "lists",
+                    "span": {
+                      "start": 711,
+                      "end": 716
+                    }
+                  },
+                  "field": "concat",
+                  "fieldSpan": {
+                    "start": 717,
+                    "end": 723
+                  },
+                  "span": {
+                    "start": 711,
+                    "end": 723
+                  }
+                },
+                "argument": {
+                  "kind": "list",
+                  "elements": [],
+                  "span": {
+                    "start": 724,
+                    "end": 727
+                  }
+                },
+                "span": {
+                  "start": 711,
+                  "end": 727
+                }
+              },
+              "span": {
+                "start": 710,
+                "end": 728
+              }
+            },
+            "span": {
+              "start": 701,
+              "end": 728
+            }
+          }
+        ],
+        "span": {
+          "start": 384,
+          "end": 732
+        }
+      },
+      "span": {
+        "start": 320,
+        "end": 732
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 71,
+        "end": 732
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 71,
+        "end": 156
+      }
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "kind": "comprehension",
+      "origin": {
+        "start": 140,
+        "end": 155
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 158,
+        "end": 241
+      }
+    },
+    {
+      "id": 4,
+      "parent": 3,
+      "kind": "comprehension",
+      "origin": {
+        "start": 225,
+        "end": 240
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 243,
+        "end": 318
+      }
+    },
+    {
+      "id": 6,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 320,
+        "end": 732
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "showArray",
+      "canonical": "artifact/collection-compose::showArray",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 74,
+        "end": 83
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "showList",
+      "canonical": "artifact/collection-compose::showList",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 161,
+        "end": 169
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "nestedLists",
+      "canonical": "artifact/collection-compose::nestedLists",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 246,
+        "end": 257
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "collectionComposeResults",
+      "canonical": "artifact/collection-compose::collectionComposeResults",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 327,
+        "end": 351
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "arrays",
+      "canonical": "artifact/collection-compose/std/array::*",
+      "namespace": "module",
+      "kind": "module-import",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 35
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "lists",
+      "canonical": "artifact/collection-compose/std/list::*",
+      "namespace": "module",
+      "kind": "module-import",
+      "scope": 0,
+      "origin": {
+        "start": 36,
+        "end": 69
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "Array",
+      "canonical": "std/prelude::Array",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "values",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 84,
+        "end": 90
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "join",
+      "canonical": "std/prelude::join",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 2,
+      "origin": {
+        "start": 140,
+        "end": 145
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "List",
+      "canonical": "std/prelude::List",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "values",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 170,
+        "end": 176
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 4,
+      "origin": {
+        "start": 225,
+        "end": 230
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 5,
+      "origin": {
+        "start": 258,
+        "end": 262
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 6,
+      "origin": {
+        "start": 352,
+        "end": 356
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 92,
+        "end": 102
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 98,
+        "end": 101
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 106,
+        "end": 112
+      }
+    },
+    {
+      "spelling": "join",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 117,
+        "end": 121
+      }
+    },
+    {
+      "spelling": "values",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 149,
+        "end": 155
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 11,
+      "origin": {
+        "start": 130,
+        "end": 135
+      }
+    },
+    {
+      "spelling": "List",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 178,
+        "end": 187
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 183,
+        "end": 186
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 191,
+        "end": 197
+      }
+    },
+    {
+      "spelling": "join",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 202,
+        "end": 206
+      }
+    },
+    {
+      "spelling": "values",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 234,
+        "end": 240
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 215,
+        "end": 220
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 264,
+        "end": 268
+      }
+    },
+    {
+      "spelling": "List",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 272,
+        "end": 287
+      }
+    },
+    {
+      "spelling": "List",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 277,
+        "end": 286
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 282,
+        "end": 285
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 358,
+        "end": 362
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 366,
+        "end": 379
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 9,
+      "origin": {
+        "start": 372,
+        "end": 378
+      }
+    },
+    {
+      "spelling": "showArray",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 390,
+        "end": 399
+      }
+    },
+    {
+      "spelling": "arrays.append",
+      "namespace": "value",
+      "origin": {
+        "start": 411,
+        "end": 424
+      }
+    },
+    {
+      "spelling": "showList",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 438,
+        "end": 446
+      }
+    },
+    {
+      "spelling": "lists.append",
+      "namespace": "value",
+      "origin": {
+        "start": 459,
+        "end": 471
+      }
+    },
+    {
+      "spelling": "showArray",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 486,
+        "end": 495
+      }
+    },
+    {
+      "spelling": "arrays.concat",
+      "namespace": "value",
+      "origin": {
+        "start": 497,
+        "end": 510
+      }
+    },
+    {
+      "spelling": "showList",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 538,
+        "end": 546
+      }
+    },
+    {
+      "spelling": "lists.concat",
+      "namespace": "value",
+      "origin": {
+        "start": 548,
+        "end": 560
+      }
+    },
+    {
+      "spelling": "nestedLists",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 562,
+        "end": 573
+      }
+    },
+    {
+      "spelling": "showArray",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 584,
+        "end": 593
+      }
+    },
+    {
+      "spelling": "arrays.reverse",
+      "namespace": "value",
+      "origin": {
+        "start": 595,
+        "end": 609
+      }
+    },
+    {
+      "spelling": "showList",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 626,
+        "end": 634
+      }
+    },
+    {
+      "spelling": "lists.reverse",
+      "namespace": "value",
+      "origin": {
+        "start": 636,
+        "end": 649
+      }
+    },
+    {
+      "spelling": "showArray",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 667,
+        "end": 676
+      }
+    },
+    {
+      "spelling": "arrays.concat",
+      "namespace": "value",
+      "origin": {
+        "start": 678,
+        "end": 691
+      }
+    },
+    {
+      "spelling": "showList",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 701,
+        "end": 709
+      }
+    },
+    {
+      "spelling": "lists.concat",
+      "namespace": "value",
+      "origin": {
+        "start": 711,
+        "end": 723
+      }
+    }
+  ],
+  "issues": [
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 411,
+        "end": 424
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 459,
+        "end": 471
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 497,
+        "end": 510
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 548,
+        "end": 560
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 595,
+        "end": 609
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 636,
+        "end": 649
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 678,
+        "end": 691
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 711,
+        "end": 723
+      }
+    }
+  ]
+}

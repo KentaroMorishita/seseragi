@@ -176,6 +176,33 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
         },
     ),
     (
+        "std/array::append",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.append",
+            local_name: "_ssrg_array_append",
+            module: "@seseragi/runtime/array",
+            export_name: "append",
+        },
+    ),
+    (
+        "std/array::concat",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.concat",
+            local_name: "_ssrg_array_concat",
+            module: "@seseragi/runtime/array",
+            export_name: "concat",
+        },
+    ),
+    (
+        "std/array::reverse",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.reverse",
+            local_name: "_ssrg_array_reverse",
+            module: "@seseragi/runtime/array",
+            export_name: "reverse",
+        },
+    ),
+    (
         "std/array::length",
         RuntimeCollectionOperation {
             runtime_feature: "core.array.length",
@@ -272,6 +299,33 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_drop",
             module: "@seseragi/runtime/list",
             export_name: "drop",
+        },
+    ),
+    (
+        "std/list::append",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.append",
+            local_name: "_ssrg_list_append",
+            module: "@seseragi/runtime/list",
+            export_name: "append",
+        },
+    ),
+    (
+        "std/list::concat",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.concat",
+            local_name: "_ssrg_list_concat",
+            module: "@seseragi/runtime/list",
+            export_name: "concat",
+        },
+    ),
+    (
+        "std/list::reverse",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.reverse",
+            local_name: "_ssrg_list_reverse",
+            module: "@seseragi/runtime/list",
+            export_name: "reverse",
         },
     ),
     (

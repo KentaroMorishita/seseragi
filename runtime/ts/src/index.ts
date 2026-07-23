@@ -32,6 +32,7 @@ export {
   subtract,
 } from "./int64"
 export {
+  append as appendArray,
   arrayMonoid,
   arrayApplicative,
   arrayFunctor,
@@ -41,6 +42,7 @@ export {
   arraySemigroup,
   collectFlatMap as collectFlatMapArray,
   collectMap as collectMapArray,
+  concat as concatArray,
   drop as dropArray,
   filter as filterArray,
   filterMap as filterMapArray,
@@ -51,6 +53,7 @@ export {
   isEmpty as isEmptyArray,
   length as lengthArray,
   reduce,
+  reverse as reverseArray,
   take as takeArray,
   tail as tailArray,
 } from "./array"
@@ -81,6 +84,7 @@ export {
   append as appendList,
   collectFlatMap as collectFlatMapList,
   collectMap as collectMapList,
+  concat as concatList,
   Cons,
   drop as dropList,
   Empty,
@@ -101,6 +105,7 @@ export {
   listSemigroup,
   length as lengthList,
   reduce as reduceList,
+  reverse as reverseList,
   take as takeList,
   tail as tailList,
 } from "./list"

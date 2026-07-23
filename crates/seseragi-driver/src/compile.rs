@@ -538,6 +538,11 @@ pub fn takenArray -> Array<Int> = arrays.take 2 [1, 2, 3]
 pub fn takenList -> List<Int> = lists.take 2 `[1, 2, 3]
 pub fn droppedArray -> Array<Int> = arrays.drop 2 [1, 2, 3]
 pub fn droppedList -> List<Int> = lists.drop 2 `[1, 2, 3]
+pub fn appendedArray -> Array<Int> = arrays.append [3, 4] [1, 2]
+pub fn appendedList -> List<Int> = lists.append `[3, 4] `[1, 2]
+pub fn concatenatedArray -> Array<Int> = arrays.concat [[1, 2], [3, 4]]
+pub fn reversedArray -> Array<Int> = arrays.reverse [1, 2, 3]
+pub fn reversedList -> List<Int> = lists.reverse `[1, 2, 3]
 "#;
         let compiled = compile_module(CompileInput::new(
             "main.ssrg",
@@ -559,6 +564,11 @@ pub fn droppedList -> List<Int> = lists.drop 2 `[1, 2, 3]
             "_ssrg_list_take",
             "_ssrg_array_drop",
             "_ssrg_list_drop",
+            "_ssrg_array_append",
+            "_ssrg_list_append",
+            "_ssrg_array_concat",
+            "_ssrg_array_reverse",
+            "_ssrg_list_reverse",
         ] {
             assert!(compiled.generated.typescript.contains(helper), "{helper}");
         }

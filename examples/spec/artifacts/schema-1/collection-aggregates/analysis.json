@@ -5909,6 +5909,32 @@
       ]
     },
     {
+      "identity": "std/array::append",
+      "name": "append",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "append<A> arg1: Array<A> -> arg2: Array<A> -> Array<A>",
+      "description": "Appends the suffix after the collection values.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::append",
+      "name": "append",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "append<A> arg1: List<A> -> arg2: List<A> -> List<A>",
+      "description": "Appends the suffix after the collection values.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::combine",
       "name": "combine",
       "module": "std/prelude",
@@ -5924,6 +5950,32 @@
         "Reducible<C, A>",
         "Monoid<A>"
       ]
+    },
+    {
+      "identity": "std/array::concat",
+      "name": "concat",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "concat<A> arg1: Array<Array<A>> -> Array<A>",
+      "description": "Flattens one level of nested collections in source order.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::concat",
+      "name": "concat",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "concat<A> arg1: List<List<A>> -> List<A>",
+      "description": "Flattens one level of nested collections in source order.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
     },
     {
       "identity": "std/array::drop",
@@ -6243,6 +6295,32 @@
       "constraints": [
         "Reducible<C, A>"
       ]
+    },
+    {
+      "identity": "std/array::reverse",
+      "name": "reverse",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "reverse<A> arg1: Array<A> -> Array<A>",
+      "description": "Returns the collection elements in reverse order.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::reverse",
+      "name": "reverse",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "reverse<A> arg1: List<A> -> List<A>",
+      "description": "Returns the collection elements in reverse order.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
     },
     {
       "identity": "std/prelude::sum",
@@ -7356,7 +7434,7 @@
       "category": "Traits",
       "kind": "function",
       "signature": "append<A> arg1: A -> arg2: A -> A where Semigroup<A>",
-      "description": "Associatively combines two values.",
+      "description": "Appends the suffix after the collection values.",
       "typeParameters": [
         "A"
       ],

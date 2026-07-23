@@ -1,0 +1,1621 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/collection-compose",
+  "externalTypeBindings": [
+    {
+      "spelling": "List",
+      "canonical": "std/prelude::List"
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/array",
+      "module": "std/array",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "append",
+          "local": "arrays.append",
+          "canonical": "std/array::append",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "concat",
+          "local": "arrays.concat",
+          "canonical": "std/array::concat",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "reverse",
+          "local": "arrays.reverse",
+          "canonical": "std/array::reverse",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/list",
+      "module": "std/list",
+      "origin": {
+        "start": 36,
+        "end": 69
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "append",
+          "local": "lists.append",
+          "canonical": "std/list::append",
+          "origin": {
+            "start": 48,
+            "end": 53
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "concat",
+          "local": "lists.concat",
+          "canonical": "std/list::concat",
+          "origin": {
+            "start": 48,
+            "end": 53
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "reverse",
+          "local": "lists.reverse",
+          "canonical": "std/list::reverse",
+          "origin": {
+            "start": 48,
+            "end": 53
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-compose::showArray",
+      "visibility": "private",
+      "origin": {
+        "start": 71,
+        "end": 156
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 84,
+            "end": 90
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::join",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": ",",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 122,
+              "end": 125
+            }
+          },
+          {
+            "kind": "array-comprehension",
+            "element": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 130,
+                      "end": 135
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "start": 128,
+                    "end": 136
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 127,
+                "end": 137
+              }
+            },
+            "clauses": [
+              {
+                "kind": "generator",
+                "pattern": {
+                  "kind": "binding",
+                  "symbol": 11,
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 140,
+                    "end": 145
+                  }
+                },
+                "source": {
+                  "kind": "variable",
+                  "name": "values",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 149,
+                    "end": 155
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Iterable",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/array::Iterable"
+                  }
+                },
+                "origin": {
+                  "start": 140,
+                  "end": 155
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 126,
+              "end": 156
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 117,
+          "end": 156
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-compose::showList",
+      "visibility": "private",
+      "origin": {
+        "start": 158,
+        "end": 241
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 170,
+            "end": 176
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::join",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": ",",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 207,
+              "end": 210
+            }
+          },
+          {
+            "kind": "array-comprehension",
+            "element": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 215,
+                      "end": 220
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "start": 213,
+                    "end": 221
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 212,
+                "end": 222
+              }
+            },
+            "clauses": [
+              {
+                "kind": "generator",
+                "pattern": {
+                  "kind": "binding",
+                  "symbol": 14,
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 225,
+                    "end": 230
+                  }
+                },
+                "source": {
+                  "kind": "variable",
+                  "name": "values",
+                  "type": {
+                    "kind": "named",
+                    "name": "List",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 234,
+                    "end": 240
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Iterable",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/list::Iterable"
+                  }
+                },
+                "origin": {
+                  "start": 225,
+                  "end": 240
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 211,
+              "end": 241
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 202,
+          "end": 241
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-compose::nestedLists",
+      "visibility": "private",
+      "origin": {
+        "start": 243,
+        "end": 318
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 258,
+            "end": 262
+          }
+        }
+      ],
+      "body": {
+        "kind": "list",
+        "elements": [
+          {
+            "kind": "list",
+            "elements": [
+              {
+                "kind": "integer",
+                "value": "1",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 297,
+                  "end": 298
+                }
+              },
+              {
+                "kind": "integer",
+                "value": "2",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 300,
+                  "end": 301
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 295,
+              "end": 302
+            }
+          },
+          {
+            "kind": "list",
+            "elements": [],
+            "type": {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 304,
+              "end": 307
+            }
+          },
+          {
+            "kind": "list",
+            "elements": [
+              {
+                "kind": "integer",
+                "value": "3",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 311,
+                  "end": 312
+                }
+              },
+              {
+                "kind": "integer",
+                "value": "4",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 314,
+                  "end": 315
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 309,
+              "end": 316
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "List",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 292,
+          "end": 318
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-compose::collectionComposeResults",
+      "visibility": "public",
+      "origin": {
+        "start": 320,
+        "end": 732
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 352,
+            "end": 356
+          }
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-compose::showArray",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::append",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "3",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 426,
+                          "end": 427
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "4",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 429,
+                          "end": 430
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 425,
+                      "end": 431
+                    }
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "1",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 402,
+                          "end": 403
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "2",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 405,
+                          "end": 406
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 401,
+                      "end": 407
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 401,
+                  "end": 431
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 390,
+              "end": 432
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-compose::showList",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::append",
+                "arguments": [
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "3",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 474,
+                          "end": 475
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "4",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 477,
+                          "end": 478
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 472,
+                      "end": 479
+                    }
+                  },
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "1",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 450,
+                          "end": 451
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "2",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 453,
+                          "end": 454
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 448,
+                      "end": 455
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 448,
+                  "end": 479
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 438,
+              "end": 480
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-compose::showArray",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::concat",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "integer",
+                            "value": "1",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 513,
+                              "end": 514
+                            }
+                          },
+                          {
+                            "kind": "integer",
+                            "value": "2",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 516,
+                              "end": 517
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Array",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 512,
+                          "end": 518
+                        }
+                      },
+                      {
+                        "kind": "array",
+                        "elements": [],
+                        "type": {
+                          "kind": "named",
+                          "name": "Array",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 520,
+                          "end": 522
+                        }
+                      },
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "integer",
+                            "value": "3",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 525,
+                              "end": 526
+                            }
+                          },
+                          {
+                            "kind": "integer",
+                            "value": "4",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 528,
+                              "end": 529
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Array",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "start": 524,
+                          "end": 530
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Array",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 511,
+                      "end": 531
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 497,
+                  "end": 531
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 486,
+              "end": 532
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-compose::showList",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::concat",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "artifact/collection-compose::nestedLists",
+                    "arguments": [
+                      {
+                        "kind": "unit",
+                        "type": {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 574,
+                          "end": 576
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "List",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 562,
+                      "end": 576
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 548,
+                  "end": 577
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 538,
+              "end": 578
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-compose::showArray",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::reverse",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "1",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 611,
+                          "end": 612
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "2",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 614,
+                          "end": 615
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "3",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 617,
+                          "end": 618
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 610,
+                      "end": 619
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 595,
+                  "end": 619
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 584,
+              "end": 620
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-compose::showList",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::reverse",
+                "arguments": [
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "1",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 652,
+                          "end": 653
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "2",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 655,
+                          "end": 656
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "3",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 658,
+                          "end": 659
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 650,
+                      "end": 660
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 636,
+                  "end": 660
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 626,
+              "end": 661
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-compose::showArray",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::concat",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Array",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 692,
+                      "end": 694
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 678,
+                  "end": 694
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 667,
+              "end": 695
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-compose::showList",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::concat",
+                "arguments": [
+                  {
+                    "kind": "list",
+                    "elements": [],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "List",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 724,
+                      "end": 727
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 711,
+                  "end": 727
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 701,
+              "end": 728
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 384,
+          "end": 732
+        }
+      }
+    }
+  ]
+}

@@ -31,7 +31,7 @@ export function fromArray<A>(values: ReadonlyArray<A>): List<A> {
 }
 
 /** Append two persistent lists while preserving their source order. */
-export function append<A>(left: List<A>, right: List<A>): List<A> {
+function appendValues<A>(left: List<A>, right: List<A>): List<A> {
   const values: A[] = []
   let cursor = left
   while (cursor.tag === "Cons") {
@@ -50,7 +50,7 @@ export const listSemigroup = Object.freeze({
   append:
     <A>(left: List<A>) =>
     (right: List<A>): List<A> =>
-      append(left, right),
+      appendValues(left, right),
 })
 
 /** Runtime dictionary for the standard `Monoid<List<A>>` instance. */
@@ -170,6 +170,34 @@ export function drop<A>(count: bigint, values: List<A>): List<A> {
     cursor = cursor.tail
   }
   return cursor
+}
+
+export function append<A>(suffix: List<A>, values: List<A>): List<A> {
+  return appendValues(values, suffix)
+}
+
+export function concat<A>(values: List<List<A>>): List<A> {
+  const result: A[] = []
+  let outer = values
+  while (outer.tag === "Cons") {
+    let inner = outer.head
+    while (inner.tag === "Cons") {
+      result.push(inner.head)
+      inner = inner.tail
+    }
+    outer = outer.tail
+  }
+  return fromArray(result)
+}
+
+export function reverse<A>(values: List<A>): List<A> {
+  let result: List<A> = Empty
+  let cursor = values
+  while (cursor.tag === "Cons") {
+    result = Cons(cursor.head, result)
+    cursor = cursor.tail
+  }
+  return result
 }
 
 export function length<A>(values: List<A>): bigint {

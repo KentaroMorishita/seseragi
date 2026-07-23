@@ -1,146 +1,30 @@
 {
   "schema": 1,
   "source": "main.ssrg",
-  "module": "artifact/collection-transform",
+  "module": "artifact/collection-compose",
   "diagnostics": {
     "schema": 1,
-    "source": "artifact/collection-transform/main.ssrg",
+    "source": "artifact/collection-compose/main.ssrg",
     "positionEncoding": "utf-8",
     "diagnostics": []
   },
   "symbols": [
     {
       "id": 0,
-      "identity": "artifact/collection-transform::even",
-      "name": "even",
-      "module": "artifact/collection-transform",
+      "identity": "artifact/collection-compose::showArray",
+      "name": "showArray",
+      "module": "artifact/collection-compose",
       "namespace": "value",
       "kind": "function",
       "definition": {
         "start": 74,
-        "end": 78
-      },
-      "typeName": "Int -> Bool",
-      "callable": {
-        "identity": "artifact/collection-transform::even",
-        "name": "even",
-        "module": "artifact/collection-transform",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "Int"
-          }
-        ],
-        "result": "Bool",
-        "constraints": [],
-        "signature": "even value: Int -> Bool",
-        "remainingParameters": []
-      }
-    },
-    {
-      "id": 1,
-      "identity": "artifact/collection-transform::labelEven",
-      "name": "labelEven",
-      "module": "artifact/collection-transform",
-      "namespace": "value",
-      "kind": "function",
-      "definition": {
-        "start": 121,
-        "end": 130
-      },
-      "typeName": "Int -> Maybe<String>",
-      "callable": {
-        "identity": "artifact/collection-transform::labelEven",
-        "name": "labelEven",
-        "module": "artifact/collection-transform",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "Int"
-          }
-        ],
-        "result": "Maybe<String>",
-        "constraints": [],
-        "signature": "labelEven value: Int -> Maybe<String>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "id": 2,
-      "identity": "artifact/collection-transform::signedArray",
-      "name": "signedArray",
-      "module": "artifact/collection-transform",
-      "namespace": "value",
-      "kind": "function",
-      "definition": {
-        "start": 216,
-        "end": 227
-      },
-      "typeName": "Int -> Array<Int>",
-      "callable": {
-        "identity": "artifact/collection-transform::signedArray",
-        "name": "signedArray",
-        "module": "artifact/collection-transform",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "Int"
-          }
-        ],
-        "result": "Array<Int>",
-        "constraints": [],
-        "signature": "signedArray value: Int -> Array<Int>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "id": 3,
-      "identity": "artifact/collection-transform::signedList",
-      "name": "signedList",
-      "module": "artifact/collection-transform",
-      "namespace": "value",
-      "kind": "function",
-      "definition": {
-        "start": 280,
-        "end": 290
-      },
-      "typeName": "Int -> List<Int>",
-      "callable": {
-        "identity": "artifact/collection-transform::signedList",
-        "name": "signedList",
-        "module": "artifact/collection-transform",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "Int"
-          }
-        ],
-        "result": "List<Int>",
-        "constraints": [],
-        "signature": "signedList value: Int -> List<Int>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "id": 4,
-      "identity": "artifact/collection-transform::showArray",
-      "name": "showArray",
-      "module": "artifact/collection-transform",
-      "namespace": "value",
-      "kind": "function",
-      "definition": {
-        "start": 343,
-        "end": 352
+        "end": 83
       },
       "typeName": "Array<Int> -> String",
       "callable": {
-        "identity": "artifact/collection-transform::showArray",
+        "identity": "artifact/collection-compose::showArray",
         "name": "showArray",
-        "module": "artifact/collection-transform",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
@@ -155,21 +39,21 @@
       }
     },
     {
-      "id": 5,
-      "identity": "artifact/collection-transform::showList",
+      "id": 1,
+      "identity": "artifact/collection-compose::showList",
       "name": "showList",
-      "module": "artifact/collection-transform",
+      "module": "artifact/collection-compose",
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 430,
-        "end": 438
+        "start": 161,
+        "end": 169
       },
       "typeName": "List<Int> -> String",
       "callable": {
-        "identity": "artifact/collection-transform::showList",
+        "identity": "artifact/collection-compose::showList",
         "name": "showList",
-        "module": "artifact/collection-transform",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
@@ -184,21 +68,50 @@
       }
     },
     {
-      "id": 6,
-      "identity": "artifact/collection-transform::collectionTransformResults",
-      "name": "collectionTransformResults",
-      "module": "artifact/collection-transform",
+      "id": 2,
+      "identity": "artifact/collection-compose::nestedLists",
+      "name": "nestedLists",
+      "module": "artifact/collection-compose",
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 519,
-        "end": 545
+        "start": 246,
+        "end": 257
+      },
+      "typeName": "Unit -> List<List<Int>>",
+      "callable": {
+        "identity": "artifact/collection-compose::nestedLists",
+        "name": "nestedLists",
+        "module": "artifact/collection-compose",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "List<List<Int>>",
+        "constraints": [],
+        "signature": "nestedLists unit: Unit -> List<List<Int>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 3,
+      "identity": "artifact/collection-compose::collectionComposeResults",
+      "name": "collectionComposeResults",
+      "module": "artifact/collection-compose",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 327,
+        "end": 351
       },
       "typeName": "Unit -> Array<String>",
       "callable": {
-        "identity": "artifact/collection-transform::collectionTransformResults",
-        "name": "collectionTransformResults",
-        "module": "artifact/collection-transform",
+        "identity": "artifact/collection-compose::collectionComposeResults",
+        "name": "collectionComposeResults",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
@@ -208,12 +121,12 @@
         ],
         "result": "Array<String>",
         "constraints": [],
-        "signature": "collectionTransformResults unit: Unit -> Array<String>",
+        "signature": "collectionComposeResults unit: Unit -> Array<String>",
         "remainingParameters": []
       }
     },
     {
-      "id": 7,
+      "id": 4,
       "identity": "std/array::*",
       "name": "arrays",
       "module": "std/array",
@@ -225,7 +138,7 @@
       }
     },
     {
-      "id": 8,
+      "id": 5,
       "identity": "std/list::*",
       "name": "lists",
       "module": "std/list",
@@ -237,157 +150,7 @@
       }
     },
     {
-      "id": 9,
-      "identity": "std/prelude::Int",
-      "name": "Int",
-      "module": "std/prelude",
-      "namespace": "type",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 10,
-      "identity": "artifact/collection-transform::local(10)",
-      "name": "value",
-      "module": "artifact/collection-transform",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 79,
-        "end": 84
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 11,
-      "identity": "std/prelude::Bool",
-      "name": "Bool",
-      "module": "std/prelude",
-      "namespace": "type",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 12,
-      "identity": "std/prelude::%",
-      "name": "%",
-      "module": "std/prelude",
-      "namespace": "operator",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 13,
-      "identity": "std/prelude::==",
-      "name": "==",
-      "module": "std/prelude",
-      "namespace": "operator",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 14,
-      "identity": "artifact/collection-transform::local(14)",
-      "name": "value",
-      "module": "artifact/collection-transform",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 131,
-        "end": 136
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 15,
-      "identity": "std/prelude::Maybe",
-      "name": "Maybe",
-      "module": "std/prelude",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "description": "Represents an optional value as Nothing or Just."
-    },
-    {
-      "id": 16,
-      "identity": "std/prelude::Maybe::A",
-      "name": "A",
-      "module": "std/prelude",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 17,
-      "identity": "std/prelude::Nothing",
-      "name": "Nothing",
-      "module": "std/prelude",
-      "namespace": "value",
-      "kind": "constructor",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "description": "Constructs an empty Maybe value."
-    },
-    {
-      "id": 18,
-      "identity": "std/prelude::Just",
-      "name": "Just",
-      "module": "std/prelude",
-      "namespace": "value",
-      "kind": "constructor",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "description": "Constructs a present Maybe value."
-    },
-    {
-      "id": 19,
-      "identity": "std/prelude::String",
-      "name": "String",
-      "module": "std/prelude",
-      "namespace": "type",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 20,
-      "identity": "artifact/collection-transform::local(20)",
-      "name": "value",
-      "module": "artifact/collection-transform",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 228,
-        "end": 233
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 21,
+      "id": 6,
       "identity": "std/prelude::Array",
       "name": "Array",
       "module": "std/prelude",
@@ -399,34 +162,9 @@
       }
     },
     {
-      "id": 22,
-      "identity": "std/prelude::-",
-      "name": "-",
-      "module": "std/prelude",
-      "namespace": "operator",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 23,
-      "identity": "artifact/collection-transform::local(23)",
-      "name": "value",
-      "module": "artifact/collection-transform",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 291,
-        "end": 296
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 24,
-      "identity": "std/prelude::List",
-      "name": "List",
+      "id": 7,
+      "identity": "std/prelude::Int",
+      "name": "Int",
       "module": "std/prelude",
       "namespace": "type",
       "kind": "prelude",
@@ -436,20 +174,32 @@
       }
     },
     {
-      "id": 25,
-      "identity": "artifact/collection-transform::local(25)",
+      "id": 8,
+      "identity": "artifact/collection-compose::local(8)",
       "name": "values",
-      "module": "artifact/collection-transform",
+      "module": "artifact/collection-compose",
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 353,
-        "end": 359
+        "start": 84,
+        "end": 90
       },
       "typeName": "Array<Int>"
     },
     {
-      "id": 26,
+      "id": 9,
+      "identity": "std/prelude::String",
+      "name": "String",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
       "identity": "std/prelude::join",
       "name": "join",
       "module": "std/prelude",
@@ -487,46 +237,58 @@
       "description": "Joins a reducible collection of strings with a separator."
     },
     {
-      "id": 27,
-      "identity": "artifact/collection-transform::local(27)",
+      "id": 11,
+      "identity": "artifact/collection-compose::local(11)",
       "name": "value",
-      "module": "artifact/collection-transform",
+      "module": "artifact/collection-compose",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 409,
-        "end": 414
+        "start": 140,
+        "end": 145
       },
       "typeName": "Int"
     },
     {
-      "id": 28,
-      "identity": "artifact/collection-transform::local(28)",
+      "id": 12,
+      "identity": "std/prelude::List",
+      "name": "List",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "identity": "artifact/collection-compose::local(13)",
       "name": "values",
-      "module": "artifact/collection-transform",
+      "module": "artifact/collection-compose",
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 439,
-        "end": 445
+        "start": 170,
+        "end": 176
       },
       "typeName": "List<Int>"
     },
     {
-      "id": 29,
-      "identity": "artifact/collection-transform::local(29)",
+      "id": 14,
+      "identity": "artifact/collection-compose::local(14)",
       "name": "value",
-      "module": "artifact/collection-transform",
+      "module": "artifact/collection-compose",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 494,
-        "end": 499
+        "start": 225,
+        "end": 230
       },
       "typeName": "Int"
     },
     {
-      "id": 30,
+      "id": 15,
       "identity": "std/prelude::Unit",
       "name": "Unit",
       "module": "std/prelude",
@@ -538,22 +300,35 @@
       }
     },
     {
-      "id": 31,
-      "identity": "artifact/collection-transform::local(31)",
+      "id": 16,
+      "identity": "artifact/collection-compose::local(16)",
       "name": "unit",
-      "module": "artifact/collection-transform",
+      "module": "artifact/collection-compose",
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 546,
-        "end": 550
+        "start": 258,
+        "end": 262
       },
       "typeName": "Unit"
     },
     {
-      "id": 32,
-      "identity": "std/array::filter",
-      "name": "filter",
+      "id": 17,
+      "identity": "artifact/collection-compose::local(17)",
+      "name": "unit",
+      "module": "artifact/collection-compose",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 352,
+        "end": 356
+      },
+      "typeName": "Unit"
+    },
+    {
+      "id": 18,
+      "identity": "std/array::append",
+      "name": "append",
       "module": "std/array",
       "namespace": "value",
       "kind": "imported",
@@ -561,10 +336,10 @@
         "start": 12,
         "end": 18
       },
-      "typeName": "(A -> Bool) -> Array<A> -> Array<A>",
+      "typeName": "Array<A> -> Array<A> -> Array<A>",
       "callable": {
-        "identity": "std/array::filter",
-        "name": "filter",
+        "identity": "std/array::append",
+        "name": "append",
         "module": "std/array",
         "typeParameters": [
           "A"
@@ -572,7 +347,7 @@
         "parameters": [
           {
             "name": "arg1",
-            "type": "A -> Bool"
+            "type": "Array<A>"
           },
           {
             "name": "arg2",
@@ -581,15 +356,15 @@
         ],
         "result": "Array<A>",
         "constraints": [],
-        "signature": "filter<A> arg1: (A -> Bool) -> arg2: Array<A> -> Array<A>",
+        "signature": "append<A> arg1: Array<A> -> arg2: Array<A> -> Array<A>",
         "remainingParameters": []
       },
-      "description": "Keeps collection elements whose predicate returns True."
+      "description": "Appends the suffix after the collection values."
     },
     {
-      "id": 33,
-      "identity": "std/list::filter",
-      "name": "filter",
+      "id": 19,
+      "identity": "std/list::append",
+      "name": "append",
       "module": "std/list",
       "namespace": "value",
       "kind": "imported",
@@ -597,10 +372,10 @@
         "start": 48,
         "end": 53
       },
-      "typeName": "(A -> Bool) -> List<A> -> List<A>",
+      "typeName": "List<A> -> List<A> -> List<A>",
       "callable": {
-        "identity": "std/list::filter",
-        "name": "filter",
+        "identity": "std/list::append",
+        "name": "append",
         "module": "std/list",
         "typeParameters": [
           "A"
@@ -608,7 +383,7 @@
         "parameters": [
           {
             "name": "arg1",
-            "type": "A -> Bool"
+            "type": "List<A>"
           },
           {
             "name": "arg2",
@@ -617,15 +392,15 @@
         ],
         "result": "List<A>",
         "constraints": [],
-        "signature": "filter<A> arg1: (A -> Bool) -> arg2: List<A> -> List<A>",
+        "signature": "append<A> arg1: List<A> -> arg2: List<A> -> List<A>",
         "remainingParameters": []
       },
-      "description": "Keeps collection elements whose predicate returns True."
+      "description": "Appends the suffix after the collection values."
     },
     {
-      "id": 34,
-      "identity": "std/array::filterMap",
-      "name": "filterMap",
+      "id": 20,
+      "identity": "std/array::concat",
+      "name": "concat",
       "module": "std/array",
       "namespace": "value",
       "kind": "imported",
@@ -633,36 +408,31 @@
         "start": 12,
         "end": 18
       },
-      "typeName": "(A -> Maybe<B>) -> Array<A> -> Array<B>",
+      "typeName": "Array<Array<A>> -> Array<A>",
       "callable": {
-        "identity": "std/array::filterMap",
-        "name": "filterMap",
+        "identity": "std/array::concat",
+        "name": "concat",
         "module": "std/array",
         "typeParameters": [
-          "A",
-          "B"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "A -> Maybe<B>"
-          },
-          {
-            "name": "arg2",
-            "type": "Array<A>"
+            "type": "Array<Array<A>>"
           }
         ],
-        "result": "Array<B>",
+        "result": "Array<A>",
         "constraints": [],
-        "signature": "filterMap<A, B> arg1: (A -> Maybe<B>) -> arg2: Array<A> -> Array<B>",
+        "signature": "concat<A> arg1: Array<Array<A>> -> Array<A>",
         "remainingParameters": []
       },
-      "description": "Transforms collection elements and drops Nothing results."
+      "description": "Flattens one level of nested collections in source order."
     },
     {
-      "id": 35,
-      "identity": "std/list::filterMap",
-      "name": "filterMap",
+      "id": 21,
+      "identity": "std/list::concat",
+      "name": "concat",
       "module": "std/list",
       "namespace": "value",
       "kind": "imported",
@@ -670,36 +440,31 @@
         "start": 48,
         "end": 53
       },
-      "typeName": "(A -> Maybe<B>) -> List<A> -> List<B>",
+      "typeName": "List<List<A>> -> List<A>",
       "callable": {
-        "identity": "std/list::filterMap",
-        "name": "filterMap",
+        "identity": "std/list::concat",
+        "name": "concat",
         "module": "std/list",
         "typeParameters": [
-          "A",
-          "B"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "A -> Maybe<B>"
-          },
-          {
-            "name": "arg2",
-            "type": "List<A>"
+            "type": "List<List<A>>"
           }
         ],
-        "result": "List<B>",
+        "result": "List<A>",
         "constraints": [],
-        "signature": "filterMap<A, B> arg1: (A -> Maybe<B>) -> arg2: List<A> -> List<B>",
+        "signature": "concat<A> arg1: List<List<A>> -> List<A>",
         "remainingParameters": []
       },
-      "description": "Transforms collection elements and drops Nothing results."
+      "description": "Flattens one level of nested collections in source order."
     },
     {
-      "id": 36,
-      "identity": "std/array::flatMap",
-      "name": "flatMap",
+      "id": 22,
+      "identity": "std/array::reverse",
+      "name": "reverse",
       "module": "std/array",
       "namespace": "value",
       "kind": "imported",
@@ -707,36 +472,31 @@
         "start": 12,
         "end": 18
       },
-      "typeName": "(A -> Array<B>) -> Array<A> -> Array<B>",
+      "typeName": "Array<A> -> Array<A>",
       "callable": {
-        "identity": "std/array::flatMap",
-        "name": "flatMap",
+        "identity": "std/array::reverse",
+        "name": "reverse",
         "module": "std/array",
         "typeParameters": [
-          "A",
-          "B"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "A -> Array<B>"
-          },
-          {
-            "name": "arg2",
             "type": "Array<A>"
           }
         ],
-        "result": "Array<B>",
+        "result": "Array<A>",
         "constraints": [],
-        "signature": "flatMap<A, B> arg1: (A -> Array<B>) -> arg2: Array<A> -> Array<B>",
+        "signature": "reverse<A> arg1: Array<A> -> Array<A>",
         "remainingParameters": []
       },
-      "description": "Transforms each element to a collection and flattens the results."
+      "description": "Returns the collection elements in reverse order."
     },
     {
-      "id": 37,
-      "identity": "std/list::flatMap",
-      "name": "flatMap",
+      "id": 23,
+      "identity": "std/list::reverse",
+      "name": "reverse",
       "module": "std/list",
       "namespace": "value",
       "kind": "imported",
@@ -744,945 +504,870 @@
         "start": 48,
         "end": 53
       },
-      "typeName": "(A -> List<B>) -> List<A> -> List<B>",
+      "typeName": "List<A> -> List<A>",
       "callable": {
-        "identity": "std/list::flatMap",
-        "name": "flatMap",
+        "identity": "std/list::reverse",
+        "name": "reverse",
         "module": "std/list",
         "typeParameters": [
-          "A",
-          "B"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "A -> List<B>"
-          },
-          {
-            "name": "arg2",
             "type": "List<A>"
           }
         ],
-        "result": "List<B>",
+        "result": "List<A>",
         "constraints": [],
-        "signature": "flatMap<A, B> arg1: (A -> List<B>) -> arg2: List<A> -> List<B>",
+        "signature": "reverse<A> arg1: List<A> -> List<A>",
         "remainingParameters": []
       },
-      "description": "Transforms each element to a collection and flattens the results."
+      "description": "Returns the collection elements in reverse order."
     }
   ],
   "symbolOccurrences": [
     {
       "range": {
         "start": 74,
-        "end": 78
+        "end": 83
       },
       "symbol": 0
     },
     {
       "range": {
-        "start": 121,
-        "end": 130
+        "start": 161,
+        "end": 169
       },
       "symbol": 1
     },
     {
       "range": {
-        "start": 216,
-        "end": 227
+        "start": 246,
+        "end": 257
       },
       "symbol": 2
     },
     {
       "range": {
-        "start": 280,
-        "end": 290
+        "start": 327,
+        "end": 351
       },
       "symbol": 3
-    },
-    {
-      "range": {
-        "start": 343,
-        "end": 352
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 430,
-        "end": 438
-      },
-      "symbol": 5
-    },
-    {
-      "range": {
-        "start": 519,
-        "end": 545
-      },
-      "symbol": 6
     },
     {
       "range": {
         "start": 12,
         "end": 18
       },
-      "symbol": 7
+      "symbol": 4
     },
     {
       "range": {
         "start": 48,
         "end": 53
       },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 84,
+        "end": 90
+      },
       "symbol": 8
     },
     {
       "range": {
-        "start": 79,
-        "end": 84
-      },
-      "symbol": 10
-    },
-    {
-      "range": {
-        "start": 131,
-        "end": 136
-      },
-      "symbol": 14
-    },
-    {
-      "range": {
-        "start": 228,
-        "end": 233
-      },
-      "symbol": 20
-    },
-    {
-      "range": {
-        "start": 291,
-        "end": 296
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 353,
-        "end": 359
-      },
-      "symbol": 25
-    },
-    {
-      "range": {
-        "start": 409,
-        "end": 414
-      },
-      "symbol": 27
-    },
-    {
-      "range": {
-        "start": 439,
-        "end": 445
-      },
-      "symbol": 28
-    },
-    {
-      "range": {
-        "start": 494,
-        "end": 499
-      },
-      "symbol": 29
-    },
-    {
-      "range": {
-        "start": 546,
-        "end": 550
-      },
-      "symbol": 31
-    },
-    {
-      "range": {
-        "start": 86,
-        "end": 89
-      },
-      "symbol": 9
-    },
-    {
-      "range": {
-        "start": 93,
-        "end": 97
+        "start": 140,
+        "end": 145
       },
       "symbol": 11
     },
     {
       "range": {
-        "start": 102,
-        "end": 107
-      },
-      "symbol": 10
-    },
-    {
-      "range": {
-        "start": 108,
-        "end": 109
-      },
-      "symbol": 12
-    },
-    {
-      "range": {
-        "start": 112,
-        "end": 114
+        "start": 170,
+        "end": 176
       },
       "symbol": 13
     },
     {
       "range": {
-        "start": 138,
-        "end": 141
-      },
-      "symbol": 9
-    },
-    {
-      "range": {
-        "start": 145,
-        "end": 158
-      },
-      "symbol": 15
-    },
-    {
-      "range": {
-        "start": 151,
-        "end": 157
-      },
-      "symbol": 19
-    },
-    {
-      "range": {
-        "start": 166,
-        "end": 170
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 171,
-        "end": 176
+        "start": 225,
+        "end": 230
       },
       "symbol": 14
     },
     {
       "range": {
-        "start": 182,
-        "end": 186
+        "start": 258,
+        "end": 262
       },
-      "symbol": 18
+      "symbol": 16
     },
     {
       "range": {
-        "start": 191,
-        "end": 196
-      },
-      "symbol": 14
-    },
-    {
-      "range": {
-        "start": 204,
-        "end": 211
+        "start": 352,
+        "end": 356
       },
       "symbol": 17
     },
     {
       "range": {
-        "start": 235,
-        "end": 238
+        "start": 92,
+        "end": 102
+      },
+      "symbol": 6
+    },
+    {
+      "range": {
+        "start": 98,
+        "end": 101
+      },
+      "symbol": 7
+    },
+    {
+      "range": {
+        "start": 106,
+        "end": 112
       },
       "symbol": 9
     },
     {
       "range": {
-        "start": 242,
-        "end": 252
+        "start": 117,
+        "end": 121
       },
-      "symbol": 21
+      "symbol": 10
     },
     {
       "range": {
-        "start": 248,
-        "end": 251
+        "start": 149,
+        "end": 155
+      },
+      "symbol": 8
+    },
+    {
+      "range": {
+        "start": 130,
+        "end": 135
+      },
+      "symbol": 11
+    },
+    {
+      "range": {
+        "start": 178,
+        "end": 187
+      },
+      "symbol": 12
+    },
+    {
+      "range": {
+        "start": 183,
+        "end": 186
+      },
+      "symbol": 7
+    },
+    {
+      "range": {
+        "start": 191,
+        "end": 197
       },
       "symbol": 9
     },
     {
       "range": {
-        "start": 258,
-        "end": 263
+        "start": 202,
+        "end": 206
       },
-      "symbol": 20
+      "symbol": 10
     },
     {
       "range": {
-        "start": 267,
+        "start": 234,
+        "end": 240
+      },
+      "symbol": 13
+    },
+    {
+      "range": {
+        "start": 215,
+        "end": 220
+      },
+      "symbol": 14
+    },
+    {
+      "range": {
+        "start": 264,
         "end": 268
       },
-      "symbol": 22
+      "symbol": 15
     },
     {
       "range": {
-        "start": 269,
-        "end": 274
+        "start": 272,
+        "end": 287
+      },
+      "symbol": 12
+    },
+    {
+      "range": {
+        "start": 277,
+        "end": 286
+      },
+      "symbol": 12
+    },
+    {
+      "range": {
+        "start": 282,
+        "end": 285
+      },
+      "symbol": 7
+    },
+    {
+      "range": {
+        "start": 358,
+        "end": 362
+      },
+      "symbol": 15
+    },
+    {
+      "range": {
+        "start": 366,
+        "end": 379
+      },
+      "symbol": 6
+    },
+    {
+      "range": {
+        "start": 372,
+        "end": 378
+      },
+      "symbol": 9
+    },
+    {
+      "range": {
+        "start": 390,
+        "end": 399
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 411,
+        "end": 424
+      },
+      "symbol": 18
+    },
+    {
+      "range": {
+        "start": 438,
+        "end": 446
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 459,
+        "end": 471
+      },
+      "symbol": 19
+    },
+    {
+      "range": {
+        "start": 486,
+        "end": 495
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 497,
+        "end": 510
       },
       "symbol": 20
     },
     {
       "range": {
-        "start": 298,
-        "end": 301
+        "start": 538,
+        "end": 546
       },
-      "symbol": 9
+      "symbol": 1
     },
     {
       "range": {
-        "start": 305,
-        "end": 314
-      },
-      "symbol": 24
-    },
-    {
-      "range": {
-        "start": 310,
-        "end": 313
-      },
-      "symbol": 9
-    },
-    {
-      "range": {
-        "start": 321,
-        "end": 326
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 330,
-        "end": 331
-      },
-      "symbol": 22
-    },
-    {
-      "range": {
-        "start": 332,
-        "end": 337
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 361,
-        "end": 371
+        "start": 548,
+        "end": 560
       },
       "symbol": 21
     },
     {
       "range": {
-        "start": 367,
-        "end": 370
-      },
-      "symbol": 9
-    },
-    {
-      "range": {
-        "start": 375,
-        "end": 381
-      },
-      "symbol": 19
-    },
-    {
-      "range": {
-        "start": 386,
-        "end": 390
-      },
-      "symbol": 26
-    },
-    {
-      "range": {
-        "start": 418,
-        "end": 424
-      },
-      "symbol": 25
-    },
-    {
-      "range": {
-        "start": 399,
-        "end": 404
-      },
-      "symbol": 27
-    },
-    {
-      "range": {
-        "start": 447,
-        "end": 456
-      },
-      "symbol": 24
-    },
-    {
-      "range": {
-        "start": 452,
-        "end": 455
-      },
-      "symbol": 9
-    },
-    {
-      "range": {
-        "start": 460,
-        "end": 466
-      },
-      "symbol": 19
-    },
-    {
-      "range": {
-        "start": 471,
-        "end": 475
-      },
-      "symbol": 26
-    },
-    {
-      "range": {
-        "start": 503,
-        "end": 509
-      },
-      "symbol": 28
-    },
-    {
-      "range": {
-        "start": 484,
-        "end": 489
-      },
-      "symbol": 29
-    },
-    {
-      "range": {
-        "start": 552,
-        "end": 556
-      },
-      "symbol": 30
-    },
-    {
-      "range": {
-        "start": 560,
+        "start": 562,
         "end": 573
       },
-      "symbol": 21
-    },
-    {
-      "range": {
-        "start": 566,
-        "end": 572
-      },
-      "symbol": 19
+      "symbol": 2
     },
     {
       "range": {
         "start": 584,
         "end": 593
       },
-      "symbol": 4
+      "symbol": 0
     },
     {
       "range": {
         "start": 595,
-        "end": 608
+        "end": 609
       },
-      "symbol": 32
+      "symbol": 22
     },
     {
       "range": {
-        "start": 609,
-        "end": 613
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 633,
-        "end": 641
-      },
-      "symbol": 5
-    },
-    {
-      "range": {
-        "start": 643,
-        "end": 655
-      },
-      "symbol": 33
-    },
-    {
-      "range": {
-        "start": 656,
-        "end": 660
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 681,
-        "end": 685
-      },
-      "symbol": 26
-    },
-    {
-      "range": {
-        "start": 691,
-        "end": 707
-      },
-      "symbol": 34
-    },
-    {
-      "range": {
-        "start": 708,
-        "end": 717
+        "start": 626,
+        "end": 634
       },
       "symbol": 1
     },
     {
       "range": {
-        "start": 737,
-        "end": 741
+        "start": 636,
+        "end": 649
       },
-      "symbol": 26
+      "symbol": 23
     },
     {
       "range": {
-        "start": 747,
-        "end": 762
+        "start": 667,
+        "end": 676
       },
-      "symbol": 35
+      "symbol": 0
     },
     {
       "range": {
-        "start": 763,
-        "end": 772
+        "start": 678,
+        "end": 691
+      },
+      "symbol": 20
+    },
+    {
+      "range": {
+        "start": 701,
+        "end": 709
       },
       "symbol": 1
     },
     {
       "range": {
-        "start": 793,
-        "end": 802
+        "start": 711,
+        "end": 723
       },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 804,
-        "end": 818
-      },
-      "symbol": 36
-    },
-    {
-      "range": {
-        "start": 819,
-        "end": 830
-      },
-      "symbol": 2
-    },
-    {
-      "range": {
-        "start": 844,
-        "end": 852
-      },
-      "symbol": 5
-    },
-    {
-      "range": {
-        "start": 854,
-        "end": 867
-      },
-      "symbol": 37
-    },
-    {
-      "range": {
-        "start": 868,
-        "end": 878
-      },
-      "symbol": 3
+      "symbol": 21
     }
   ],
   "typeOccurrences": [
     {
       "range": {
         "start": 74,
-        "end": 78
-      },
-      "type": "Int -> Bool"
-    },
-    {
-      "range": {
-        "start": 79,
-        "end": 84
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 102,
-        "end": 107
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 102,
-        "end": 111
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 102,
-        "end": 116
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 110,
-        "end": 111
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 115,
-        "end": 116
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 121,
-        "end": 130
-      },
-      "type": "Int -> Maybe<String>"
-    },
-    {
-      "range": {
-        "start": 131,
-        "end": 136
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 163,
-        "end": 211
-      },
-      "type": "Maybe<String>"
-    },
-    {
-      "range": {
-        "start": 166,
-        "end": 170
-      },
-      "type": "Int -> Bool"
-    },
-    {
-      "range": {
-        "start": 166,
-        "end": 176
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 171,
-        "end": 176
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 182,
-        "end": 198
-      },
-      "type": "Maybe<String>"
-    },
-    {
-      "range": {
-        "start": 187,
-        "end": 198
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 191,
-        "end": 196
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 204,
-        "end": 211
-      },
-      "type": "Maybe<String>"
-    },
-    {
-      "range": {
-        "start": 216,
-        "end": 227
-      },
-      "type": "Int -> Array<Int>"
-    },
-    {
-      "range": {
-        "start": 228,
-        "end": 233
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 257,
-        "end": 275
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 258,
-        "end": 263
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 265,
-        "end": 266
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 265,
-        "end": 274
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 269,
-        "end": 274
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 280,
-        "end": 290
-      },
-      "type": "Int -> List<Int>"
-    },
-    {
-      "range": {
-        "start": 291,
-        "end": 296
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 319,
-        "end": 338
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 321,
-        "end": 326
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 328,
-        "end": 329
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 328,
-        "end": 337
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 332,
-        "end": 337
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 343,
-        "end": 352
+        "end": 83
       },
       "type": "Array<Int> -> String"
     },
     {
       "range": {
-        "start": 353,
-        "end": 359
+        "start": 84,
+        "end": 90
       },
       "type": "Array<Int>"
     },
     {
       "range": {
-        "start": 386,
-        "end": 390
+        "start": 117,
+        "end": 121
       },
       "type": "String -> C -> String"
     },
     {
       "range": {
-        "start": 386,
-        "end": 425
+        "start": 117,
+        "end": 156
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 391,
-        "end": 394
+        "start": 122,
+        "end": 125
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 395,
-        "end": 425
+        "start": 126,
+        "end": 156
       },
       "type": "Array<String>"
     },
     {
       "range": {
-        "start": 396,
-        "end": 406
+        "start": 127,
+        "end": 137
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 399,
-        "end": 404
+        "start": 130,
+        "end": 135
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 409,
-        "end": 414
+        "start": 140,
+        "end": 145
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 418,
-        "end": 424
+        "start": 149,
+        "end": 155
       },
       "type": "Array<Int>"
     },
     {
       "range": {
-        "start": 430,
-        "end": 438
+        "start": 161,
+        "end": 169
       },
       "type": "List<Int> -> String"
     },
     {
       "range": {
-        "start": 439,
-        "end": 445
+        "start": 170,
+        "end": 176
       },
       "type": "List<Int>"
     },
     {
       "range": {
-        "start": 471,
-        "end": 475
+        "start": 202,
+        "end": 206
       },
       "type": "String -> C -> String"
     },
     {
       "range": {
-        "start": 471,
-        "end": 510
+        "start": 202,
+        "end": 241
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 476,
-        "end": 479
+        "start": 207,
+        "end": 210
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 480,
-        "end": 510
+        "start": 211,
+        "end": 241
       },
       "type": "Array<String>"
     },
     {
       "range": {
-        "start": 481,
-        "end": 491
+        "start": 212,
+        "end": 222
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 484,
-        "end": 489
+        "start": 215,
+        "end": 220
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 494,
-        "end": 499
+        "start": 225,
+        "end": 230
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 503,
-        "end": 509
+        "start": 234,
+        "end": 240
       },
       "type": "List<Int>"
     },
     {
       "range": {
-        "start": 519,
-        "end": 545
+        "start": 246,
+        "end": 257
       },
-      "type": "Unit -> Array<String>"
+      "type": "Unit -> List<List<Int>>"
     },
     {
       "range": {
-        "start": 546,
-        "end": 550
+        "start": 258,
+        "end": 262
       },
       "type": "Unit"
     },
     {
       "range": {
-        "start": 578,
-        "end": 891
+        "start": 292,
+        "end": 318
+      },
+      "type": "List<List<Int>>"
+    },
+    {
+      "range": {
+        "start": 295,
+        "end": 302
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 297,
+        "end": 298
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 300,
+        "end": 301
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 304,
+        "end": 307
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 309,
+        "end": 316
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 311,
+        "end": 312
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 314,
+        "end": 315
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 327,
+        "end": 351
+      },
+      "type": "Unit -> Array<String>"
+    },
+    {
+      "range": {
+        "start": 352,
+        "end": 356
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 384,
+        "end": 732
       },
       "type": "Array<String>"
+    },
+    {
+      "range": {
+        "start": 390,
+        "end": 399
+      },
+      "type": "Array<Int> -> String"
+    },
+    {
+      "range": {
+        "start": 390,
+        "end": 432
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 401,
+        "end": 407
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 401,
+        "end": 431
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 402,
+        "end": 403
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 405,
+        "end": 406
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 411,
+        "end": 424
+      },
+      "type": "Array<A> -> Array<A> -> Array<A>"
+    },
+    {
+      "range": {
+        "start": 425,
+        "end": 431
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 426,
+        "end": 427
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 429,
+        "end": 430
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 438,
+        "end": 446
+      },
+      "type": "List<Int> -> String"
+    },
+    {
+      "range": {
+        "start": 438,
+        "end": 480
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 448,
+        "end": 455
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 448,
+        "end": 479
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 450,
+        "end": 451
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 453,
+        "end": 454
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 459,
+        "end": 471
+      },
+      "type": "List<A> -> List<A> -> List<A>"
+    },
+    {
+      "range": {
+        "start": 472,
+        "end": 479
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 474,
+        "end": 475
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 477,
+        "end": 478
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 486,
+        "end": 495
+      },
+      "type": "Array<Int> -> String"
+    },
+    {
+      "range": {
+        "start": 486,
+        "end": 532
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 497,
+        "end": 510
+      },
+      "type": "Array<Array<A>> -> Array<A>"
+    },
+    {
+      "range": {
+        "start": 497,
+        "end": 531
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 511,
+        "end": 531
+      },
+      "type": "Array<Array<Int>>"
+    },
+    {
+      "range": {
+        "start": 512,
+        "end": 518
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 513,
+        "end": 514
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 516,
+        "end": 517
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 520,
+        "end": 522
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 524,
+        "end": 530
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 525,
+        "end": 526
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 528,
+        "end": 529
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 538,
+        "end": 546
+      },
+      "type": "List<Int> -> String"
+    },
+    {
+      "range": {
+        "start": 538,
+        "end": 578
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 548,
+        "end": 560
+      },
+      "type": "List<List<A>> -> List<A>"
+    },
+    {
+      "range": {
+        "start": 548,
+        "end": 577
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 562,
+        "end": 573
+      },
+      "type": "Unit -> List<List<Int>>"
+    },
+    {
+      "range": {
+        "start": 562,
+        "end": 576
+      },
+      "type": "List<List<Int>>"
+    },
+    {
+      "range": {
+        "start": 574,
+        "end": 576
+      },
+      "type": "Unit"
     },
     {
       "range": {
@@ -1694,501 +1379,189 @@
     {
       "range": {
         "start": 584,
-        "end": 627
+        "end": 620
       },
       "type": "String"
     },
     {
       "range": {
         "start": 595,
-        "end": 608
+        "end": 609
       },
-      "type": "(A -> Bool) -> Array<A> -> Array<A>"
+      "type": "Array<A> -> Array<A>"
     },
     {
       "range": {
         "start": 595,
-        "end": 626
+        "end": 619
       },
       "type": "Array<Int>"
     },
     {
       "range": {
-        "start": 609,
-        "end": 613
+        "start": 610,
+        "end": 619
       },
-      "type": "Int -> Bool"
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 611,
+        "end": 612
+      },
+      "type": "Int"
     },
     {
       "range": {
         "start": 614,
-        "end": 626
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 615,
-        "end": 616
+        "end": 615
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 618,
-        "end": 619
+        "start": 617,
+        "end": 618
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 621,
-        "end": 622
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 624,
-        "end": 625
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 633,
-        "end": 641
+        "start": 626,
+        "end": 634
       },
       "type": "List<Int> -> String"
     },
     {
       "range": {
-        "start": 633,
-        "end": 675
+        "start": 626,
+        "end": 661
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 643,
-        "end": 655
+        "start": 636,
+        "end": 649
       },
-      "type": "(A -> Bool) -> List<A> -> List<A>"
+      "type": "List<A> -> List<A>"
     },
     {
       "range": {
-        "start": 643,
-        "end": 674
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 656,
+        "start": 636,
         "end": 660
       },
-      "type": "Int -> Bool"
+      "type": "List<Int>"
     },
     {
       "range": {
-        "start": 661,
-        "end": 674
+        "start": 650,
+        "end": 660
       },
       "type": "List<Int>"
     },
     {
       "range": {
-        "start": 663,
-        "end": 664
+        "start": 652,
+        "end": 653
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 666,
-        "end": 667
+        "start": 655,
+        "end": 656
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 669,
-        "end": 670
+        "start": 658,
+        "end": 659
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 672,
-        "end": 673
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 681,
-        "end": 685
-      },
-      "type": "String -> C -> String"
-    },
-    {
-      "range": {
-        "start": 681,
-        "end": 731
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 686,
-        "end": 689
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 691,
-        "end": 707
-      },
-      "type": "(A -> Maybe<B>) -> Array<A> -> Array<B>"
-    },
-    {
-      "range": {
-        "start": 691,
-        "end": 730
-      },
-      "type": "Array<String>"
-    },
-    {
-      "range": {
-        "start": 708,
-        "end": 717
-      },
-      "type": "Int -> Maybe<String>"
-    },
-    {
-      "range": {
-        "start": 718,
-        "end": 730
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 719,
-        "end": 720
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 722,
-        "end": 723
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 725,
-        "end": 726
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 728,
-        "end": 729
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 737,
-        "end": 741
-      },
-      "type": "String -> C -> String"
-    },
-    {
-      "range": {
-        "start": 737,
-        "end": 787
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 742,
-        "end": 745
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 747,
-        "end": 762
-      },
-      "type": "(A -> Maybe<B>) -> List<A> -> List<B>"
-    },
-    {
-      "range": {
-        "start": 747,
-        "end": 786
-      },
-      "type": "List<String>"
-    },
-    {
-      "range": {
-        "start": 763,
-        "end": 772
-      },
-      "type": "Int -> Maybe<String>"
-    },
-    {
-      "range": {
-        "start": 773,
-        "end": 786
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 775,
-        "end": 776
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 778,
-        "end": 779
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 781,
-        "end": 782
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 784,
-        "end": 785
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 793,
-        "end": 802
+        "start": 667,
+        "end": 676
       },
       "type": "Array<Int> -> String"
     },
     {
       "range": {
-        "start": 793,
-        "end": 838
+        "start": 667,
+        "end": 695
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 804,
-        "end": 818
+        "start": 678,
+        "end": 691
       },
-      "type": "(A -> Array<B>) -> Array<A> -> Array<B>"
+      "type": "Array<Array<A>> -> Array<A>"
     },
     {
       "range": {
-        "start": 804,
-        "end": 837
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 819,
-        "end": 830
-      },
-      "type": "Int -> Array<Int>"
-    },
-    {
-      "range": {
-        "start": 831,
-        "end": 837
+        "start": 678,
+        "end": 694
       },
       "type": "Array<Int>"
     },
     {
       "range": {
-        "start": 832,
-        "end": 833
+        "start": 692,
+        "end": 694
       },
-      "type": "Int"
+      "type": "Array<Array<Int>>"
     },
     {
       "range": {
-        "start": 835,
-        "end": 836
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 844,
-        "end": 852
+        "start": 701,
+        "end": 709
       },
       "type": "List<Int> -> String"
     },
     {
       "range": {
-        "start": 844,
-        "end": 887
+        "start": 701,
+        "end": 728
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 854,
-        "end": 867
+        "start": 711,
+        "end": 723
       },
-      "type": "(A -> List<B>) -> List<A> -> List<B>"
+      "type": "List<List<A>> -> List<A>"
     },
     {
       "range": {
-        "start": 854,
-        "end": 886
+        "start": 711,
+        "end": 727
       },
       "type": "List<Int>"
     },
     {
       "range": {
-        "start": 868,
-        "end": 878
+        "start": 724,
+        "end": 727
       },
-      "type": "Int -> List<Int>"
-    },
-    {
-      "range": {
-        "start": 879,
-        "end": 886
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 881,
-        "end": 882
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 884,
-        "end": 885
-      },
-      "type": "Int"
+      "type": "List<List<Int>>"
     }
   ],
   "callableOccurrences": [
     {
       "range": {
         "start": 74,
-        "end": 78
+        "end": 83
       },
       "callable": {
-        "identity": "artifact/collection-transform::even",
-        "name": "even",
-        "module": "artifact/collection-transform",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "Int"
-          }
-        ],
-        "result": "Bool",
-        "constraints": [],
-        "signature": "even value: Int -> Bool",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 121,
-        "end": 130
-      },
-      "callable": {
-        "identity": "artifact/collection-transform::labelEven",
-        "name": "labelEven",
-        "module": "artifact/collection-transform",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "Int"
-          }
-        ],
-        "result": "Maybe<String>",
-        "constraints": [],
-        "signature": "labelEven value: Int -> Maybe<String>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 216,
-        "end": 227
-      },
-      "callable": {
-        "identity": "artifact/collection-transform::signedArray",
-        "name": "signedArray",
-        "module": "artifact/collection-transform",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "Int"
-          }
-        ],
-        "result": "Array<Int>",
-        "constraints": [],
-        "signature": "signedArray value: Int -> Array<Int>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 280,
-        "end": 290
-      },
-      "callable": {
-        "identity": "artifact/collection-transform::signedList",
-        "name": "signedList",
-        "module": "artifact/collection-transform",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "Int"
-          }
-        ],
-        "result": "List<Int>",
-        "constraints": [],
-        "signature": "signedList value: Int -> List<Int>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 343,
-        "end": 352
-      },
-      "callable": {
-        "identity": "artifact/collection-transform::showArray",
+        "identity": "artifact/collection-compose::showArray",
         "name": "showArray",
-        "module": "artifact/collection-transform",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
@@ -2204,13 +1577,13 @@
     },
     {
       "range": {
-        "start": 430,
-        "end": 438
+        "start": 161,
+        "end": 169
       },
       "callable": {
-        "identity": "artifact/collection-transform::showList",
+        "identity": "artifact/collection-compose::showList",
         "name": "showList",
-        "module": "artifact/collection-transform",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
@@ -2226,13 +1599,35 @@
     },
     {
       "range": {
-        "start": 519,
-        "end": 545
+        "start": 246,
+        "end": 257
       },
       "callable": {
-        "identity": "artifact/collection-transform::collectionTransformResults",
-        "name": "collectionTransformResults",
-        "module": "artifact/collection-transform",
+        "identity": "artifact/collection-compose::nestedLists",
+        "name": "nestedLists",
+        "module": "artifact/collection-compose",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "List<List<Int>>",
+        "constraints": [],
+        "signature": "nestedLists unit: Unit -> List<List<Int>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 327,
+        "end": 351
+      },
+      "callable": {
+        "identity": "artifact/collection-compose::collectionComposeResults",
+        "name": "collectionComposeResults",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
@@ -2242,89 +1637,281 @@
         ],
         "result": "Array<String>",
         "constraints": [],
-        "signature": "collectionTransformResults unit: Unit -> Array<String>",
+        "signature": "collectionComposeResults unit: Unit -> Array<String>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 166,
-        "end": 170
+        "start": 117,
+        "end": 121
       },
       "callable": {
-        "identity": "artifact/collection-transform::even",
-        "name": "even",
-        "module": "artifact/collection-transform",
+        "identity": "std/prelude::join",
+        "name": "join",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          },
+          {
+            "name": "arg2",
+            "type": "C"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Reducible<C, String>"
+        ],
+        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 202,
+        "end": 206
+      },
+      "callable": {
+        "identity": "std/prelude::join",
+        "name": "join",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          },
+          {
+            "name": "arg2",
+            "type": "C"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Reducible<C, String>"
+        ],
+        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 390,
+        "end": 399
+      },
+      "callable": {
+        "identity": "artifact/collection-compose::showArray",
+        "name": "showArray",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "value",
-            "type": "Int"
+            "name": "values",
+            "type": "Array<Int>"
           }
         ],
-        "result": "Bool",
+        "result": "String",
         "constraints": [],
-        "signature": "even value: Int -> Bool",
+        "signature": "showArray values: Array<Int> -> String",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 386,
-        "end": 390
+        "start": 411,
+        "end": 424
       },
       "callable": {
-        "identity": "std/prelude::join",
-        "name": "join",
-        "module": "std/prelude",
+        "identity": "std/array::append",
+        "name": "append",
+        "module": "std/array",
         "typeParameters": [
-          "C"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "String"
+            "type": "Array<A>"
           },
           {
             "name": "arg2",
-            "type": "C"
+            "type": "Array<A>"
           }
         ],
-        "result": "String",
-        "constraints": [
-          "Reducible<C, String>"
-        ],
-        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+        "result": "Array<A>",
+        "constraints": [],
+        "signature": "append<A> arg1: Array<A> -> arg2: Array<A> -> Array<A>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 471,
-        "end": 475
+        "start": 438,
+        "end": 446
       },
       "callable": {
-        "identity": "std/prelude::join",
-        "name": "join",
-        "module": "std/prelude",
+        "identity": "artifact/collection-compose::showList",
+        "name": "showList",
+        "module": "artifact/collection-compose",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "List<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showList values: List<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 459,
+        "end": 471
+      },
+      "callable": {
+        "identity": "std/list::append",
+        "name": "append",
+        "module": "std/list",
         "typeParameters": [
-          "C"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "String"
+            "type": "List<A>"
           },
           {
             "name": "arg2",
-            "type": "C"
+            "type": "List<A>"
+          }
+        ],
+        "result": "List<A>",
+        "constraints": [],
+        "signature": "append<A> arg1: List<A> -> arg2: List<A> -> List<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 486,
+        "end": 495
+      },
+      "callable": {
+        "identity": "artifact/collection-compose::showArray",
+        "name": "showArray",
+        "module": "artifact/collection-compose",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "Array<Int>"
           }
         ],
         "result": "String",
-        "constraints": [
-          "Reducible<C, String>"
+        "constraints": [],
+        "signature": "showArray values: Array<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 497,
+        "end": 510
+      },
+      "callable": {
+        "identity": "std/array::concat",
+        "name": "concat",
+        "module": "std/array",
+        "typeParameters": [
+          "A"
         ],
-        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Array<Array<A>>"
+          }
+        ],
+        "result": "Array<A>",
+        "constraints": [],
+        "signature": "concat<A> arg1: Array<Array<A>> -> Array<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 538,
+        "end": 546
+      },
+      "callable": {
+        "identity": "artifact/collection-compose::showList",
+        "name": "showList",
+        "module": "artifact/collection-compose",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "List<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showList values: List<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 548,
+        "end": 560
+      },
+      "callable": {
+        "identity": "std/list::concat",
+        "name": "concat",
+        "module": "std/list",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "List<List<A>>"
+          }
+        ],
+        "result": "List<A>",
+        "constraints": [],
+        "signature": "concat<A> arg1: List<List<A>> -> List<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 562,
+        "end": 573
+      },
+      "callable": {
+        "identity": "artifact/collection-compose::nestedLists",
+        "name": "nestedLists",
+        "module": "artifact/collection-compose",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "List<List<Int>>",
+        "constraints": [],
+        "signature": "nestedLists unit: Unit -> List<List<Int>>",
         "remainingParameters": []
       }
     },
@@ -2334,9 +1921,9 @@
         "end": 593
       },
       "callable": {
-        "identity": "artifact/collection-transform::showArray",
+        "identity": "artifact/collection-compose::showArray",
         "name": "showArray",
-        "module": "artifact/collection-transform",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
@@ -2353,11 +1940,11 @@
     {
       "range": {
         "start": 595,
-        "end": 608
+        "end": 609
       },
       "callable": {
-        "identity": "std/array::filter",
-        "name": "filter",
+        "identity": "std/array::reverse",
+        "name": "reverse",
         "module": "std/array",
         "typeParameters": [
           "A"
@@ -2365,50 +1952,24 @@
         "parameters": [
           {
             "name": "arg1",
-            "type": "A -> Bool"
-          },
-          {
-            "name": "arg2",
             "type": "Array<A>"
           }
         ],
         "result": "Array<A>",
         "constraints": [],
-        "signature": "filter<A> arg1: (A -> Bool) -> arg2: Array<A> -> Array<A>",
+        "signature": "reverse<A> arg1: Array<A> -> Array<A>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 609,
-        "end": 613
+        "start": 626,
+        "end": 634
       },
       "callable": {
-        "identity": "artifact/collection-transform::even",
-        "name": "even",
-        "module": "artifact/collection-transform",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "Int"
-          }
-        ],
-        "result": "Bool",
-        "constraints": [],
-        "signature": "even value: Int -> Bool",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 633,
-        "end": 641
-      },
-      "callable": {
-        "identity": "artifact/collection-transform::showList",
+        "identity": "artifact/collection-compose::showList",
         "name": "showList",
-        "module": "artifact/collection-transform",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
@@ -2424,12 +1985,12 @@
     },
     {
       "range": {
-        "start": 643,
-        "end": 655
+        "start": 636,
+        "end": 649
       },
       "callable": {
-        "identity": "std/list::filter",
-        "name": "filter",
+        "identity": "std/list::reverse",
+        "name": "reverse",
         "module": "std/list",
         "typeParameters": [
           "A"
@@ -2437,212 +1998,24 @@
         "parameters": [
           {
             "name": "arg1",
-            "type": "A -> Bool"
-          },
-          {
-            "name": "arg2",
             "type": "List<A>"
           }
         ],
         "result": "List<A>",
         "constraints": [],
-        "signature": "filter<A> arg1: (A -> Bool) -> arg2: List<A> -> List<A>",
+        "signature": "reverse<A> arg1: List<A> -> List<A>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 656,
-        "end": 660
+        "start": 667,
+        "end": 676
       },
       "callable": {
-        "identity": "artifact/collection-transform::even",
-        "name": "even",
-        "module": "artifact/collection-transform",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "Int"
-          }
-        ],
-        "result": "Bool",
-        "constraints": [],
-        "signature": "even value: Int -> Bool",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 681,
-        "end": 685
-      },
-      "callable": {
-        "identity": "std/prelude::join",
-        "name": "join",
-        "module": "std/prelude",
-        "typeParameters": [
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "String"
-          },
-          {
-            "name": "arg2",
-            "type": "C"
-          }
-        ],
-        "result": "String",
-        "constraints": [
-          "Reducible<C, String>"
-        ],
-        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 691,
-        "end": 707
-      },
-      "callable": {
-        "identity": "std/array::filterMap",
-        "name": "filterMap",
-        "module": "std/array",
-        "typeParameters": [
-          "A",
-          "B"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "A -> Maybe<B>"
-          },
-          {
-            "name": "arg2",
-            "type": "Array<A>"
-          }
-        ],
-        "result": "Array<B>",
-        "constraints": [],
-        "signature": "filterMap<A, B> arg1: (A -> Maybe<B>) -> arg2: Array<A> -> Array<B>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 708,
-        "end": 717
-      },
-      "callable": {
-        "identity": "artifact/collection-transform::labelEven",
-        "name": "labelEven",
-        "module": "artifact/collection-transform",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "Int"
-          }
-        ],
-        "result": "Maybe<String>",
-        "constraints": [],
-        "signature": "labelEven value: Int -> Maybe<String>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 737,
-        "end": 741
-      },
-      "callable": {
-        "identity": "std/prelude::join",
-        "name": "join",
-        "module": "std/prelude",
-        "typeParameters": [
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "String"
-          },
-          {
-            "name": "arg2",
-            "type": "C"
-          }
-        ],
-        "result": "String",
-        "constraints": [
-          "Reducible<C, String>"
-        ],
-        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 747,
-        "end": 762
-      },
-      "callable": {
-        "identity": "std/list::filterMap",
-        "name": "filterMap",
-        "module": "std/list",
-        "typeParameters": [
-          "A",
-          "B"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "A -> Maybe<B>"
-          },
-          {
-            "name": "arg2",
-            "type": "List<A>"
-          }
-        ],
-        "result": "List<B>",
-        "constraints": [],
-        "signature": "filterMap<A, B> arg1: (A -> Maybe<B>) -> arg2: List<A> -> List<B>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 763,
-        "end": 772
-      },
-      "callable": {
-        "identity": "artifact/collection-transform::labelEven",
-        "name": "labelEven",
-        "module": "artifact/collection-transform",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "Int"
-          }
-        ],
-        "result": "Maybe<String>",
-        "constraints": [],
-        "signature": "labelEven value: Int -> Maybe<String>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 793,
-        "end": 802
-      },
-      "callable": {
-        "identity": "artifact/collection-transform::showArray",
+        "identity": "artifact/collection-compose::showArray",
         "name": "showArray",
-        "module": "artifact/collection-transform",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
@@ -2658,64 +2031,37 @@
     },
     {
       "range": {
-        "start": 804,
-        "end": 818
+        "start": 678,
+        "end": 691
       },
       "callable": {
-        "identity": "std/array::flatMap",
-        "name": "flatMap",
+        "identity": "std/array::concat",
+        "name": "concat",
         "module": "std/array",
         "typeParameters": [
-          "A",
-          "B"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "A -> Array<B>"
-          },
-          {
-            "name": "arg2",
-            "type": "Array<A>"
+            "type": "Array<Array<A>>"
           }
         ],
-        "result": "Array<B>",
+        "result": "Array<A>",
         "constraints": [],
-        "signature": "flatMap<A, B> arg1: (A -> Array<B>) -> arg2: Array<A> -> Array<B>",
+        "signature": "concat<A> arg1: Array<Array<A>> -> Array<A>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 819,
-        "end": 830
+        "start": 701,
+        "end": 709
       },
       "callable": {
-        "identity": "artifact/collection-transform::signedArray",
-        "name": "signedArray",
-        "module": "artifact/collection-transform",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "Int"
-          }
-        ],
-        "result": "Array<Int>",
-        "constraints": [],
-        "signature": "signedArray value: Int -> Array<Int>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 844,
-        "end": 852
-      },
-      "callable": {
-        "identity": "artifact/collection-transform::showList",
+        "identity": "artifact/collection-compose::showList",
         "name": "showList",
-        "module": "artifact/collection-transform",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
@@ -2731,146 +2077,311 @@
     },
     {
       "range": {
-        "start": 854,
-        "end": 867
+        "start": 711,
+        "end": 723
       },
       "callable": {
-        "identity": "std/list::flatMap",
-        "name": "flatMap",
+        "identity": "std/list::concat",
+        "name": "concat",
         "module": "std/list",
         "typeParameters": [
-          "A",
-          "B"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "A -> List<B>"
+            "type": "List<List<A>>"
+          }
+        ],
+        "result": "List<A>",
+        "constraints": [],
+        "signature": "concat<A> arg1: List<List<A>> -> List<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 117,
+        "end": 156
+      },
+      "callable": {
+        "identity": "std/prelude::join",
+        "name": "join",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          },
+          {
+            "name": "arg2",
+            "type": "C"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Reducible<C, String>"
+        ],
+        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 202,
+        "end": 241
+      },
+      "callable": {
+        "identity": "std/prelude::join",
+        "name": "join",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          },
+          {
+            "name": "arg2",
+            "type": "C"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Reducible<C, String>"
+        ],
+        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 390,
+        "end": 432
+      },
+      "callable": {
+        "identity": "artifact/collection-compose::showArray",
+        "name": "showArray",
+        "module": "artifact/collection-compose",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "Array<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showArray values: Array<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 401,
+        "end": 431
+      },
+      "callable": {
+        "identity": "std/array::append",
+        "name": "append",
+        "module": "std/array",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Array<A>"
+          },
+          {
+            "name": "arg2",
+            "type": "Array<A>"
+          }
+        ],
+        "result": "Array<A>",
+        "constraints": [],
+        "signature": "append<A> arg1: Array<A> -> arg2: Array<A> -> Array<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 438,
+        "end": 480
+      },
+      "callable": {
+        "identity": "artifact/collection-compose::showList",
+        "name": "showList",
+        "module": "artifact/collection-compose",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "List<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showList values: List<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 448,
+        "end": 479
+      },
+      "callable": {
+        "identity": "std/list::append",
+        "name": "append",
+        "module": "std/list",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "List<A>"
           },
           {
             "name": "arg2",
             "type": "List<A>"
           }
         ],
-        "result": "List<B>",
+        "result": "List<A>",
         "constraints": [],
-        "signature": "flatMap<A, B> arg1: (A -> List<B>) -> arg2: List<A> -> List<B>",
+        "signature": "append<A> arg1: List<A> -> arg2: List<A> -> List<A>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 868,
-        "end": 878
+        "start": 486,
+        "end": 532
       },
       "callable": {
-        "identity": "artifact/collection-transform::signedList",
-        "name": "signedList",
-        "module": "artifact/collection-transform",
+        "identity": "artifact/collection-compose::showArray",
+        "name": "showArray",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "value",
-            "type": "Int"
+            "name": "values",
+            "type": "Array<Int>"
           }
         ],
-        "result": "List<Int>",
+        "result": "String",
         "constraints": [],
-        "signature": "signedList value: Int -> List<Int>",
+        "signature": "showArray values: Array<Int> -> String",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 166,
-        "end": 176
+        "start": 497,
+        "end": 531
       },
       "callable": {
-        "identity": "artifact/collection-transform::even",
-        "name": "even",
-        "module": "artifact/collection-transform",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "value",
-            "type": "Int"
-          }
-        ],
-        "result": "Bool",
-        "constraints": [],
-        "signature": "even value: Int -> Bool",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 386,
-        "end": 425
-      },
-      "callable": {
-        "identity": "std/prelude::join",
-        "name": "join",
-        "module": "std/prelude",
+        "identity": "std/array::concat",
+        "name": "concat",
+        "module": "std/array",
         "typeParameters": [
-          "C"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "String"
-          },
-          {
-            "name": "arg2",
-            "type": "C"
+            "type": "Array<Array<A>>"
           }
         ],
-        "result": "String",
-        "constraints": [
-          "Reducible<C, String>"
-        ],
-        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+        "result": "Array<A>",
+        "constraints": [],
+        "signature": "concat<A> arg1: Array<Array<A>> -> Array<A>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 471,
-        "end": 510
+        "start": 538,
+        "end": 578
       },
       "callable": {
-        "identity": "std/prelude::join",
-        "name": "join",
-        "module": "std/prelude",
+        "identity": "artifact/collection-compose::showList",
+        "name": "showList",
+        "module": "artifact/collection-compose",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "List<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showList values: List<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 548,
+        "end": 577
+      },
+      "callable": {
+        "identity": "std/list::concat",
+        "name": "concat",
+        "module": "std/list",
         "typeParameters": [
-          "C"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "String"
-          },
-          {
-            "name": "arg2",
-            "type": "C"
+            "type": "List<List<A>>"
           }
         ],
-        "result": "String",
-        "constraints": [
-          "Reducible<C, String>"
+        "result": "List<A>",
+        "constraints": [],
+        "signature": "concat<A> arg1: List<List<A>> -> List<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 562,
+        "end": 576
+      },
+      "callable": {
+        "identity": "artifact/collection-compose::nestedLists",
+        "name": "nestedLists",
+        "module": "artifact/collection-compose",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
         ],
-        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+        "result": "List<List<Int>>",
+        "constraints": [],
+        "signature": "nestedLists unit: Unit -> List<List<Int>>",
         "remainingParameters": []
       }
     },
     {
       "range": {
         "start": 584,
-        "end": 627
+        "end": 620
       },
       "callable": {
-        "identity": "artifact/collection-transform::showArray",
+        "identity": "artifact/collection-compose::showArray",
         "name": "showArray",
-        "module": "artifact/collection-transform",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
@@ -2887,11 +2398,11 @@
     {
       "range": {
         "start": 595,
-        "end": 626
+        "end": 619
       },
       "callable": {
-        "identity": "std/array::filter",
-        "name": "filter",
+        "identity": "std/array::reverse",
+        "name": "reverse",
         "module": "std/array",
         "typeParameters": [
           "A"
@@ -2899,28 +2410,24 @@
         "parameters": [
           {
             "name": "arg1",
-            "type": "A -> Bool"
-          },
-          {
-            "name": "arg2",
             "type": "Array<A>"
           }
         ],
         "result": "Array<A>",
         "constraints": [],
-        "signature": "filter<A> arg1: (A -> Bool) -> arg2: Array<A> -> Array<A>",
+        "signature": "reverse<A> arg1: Array<A> -> Array<A>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 633,
-        "end": 675
+        "start": 626,
+        "end": 661
       },
       "callable": {
-        "identity": "artifact/collection-transform::showList",
+        "identity": "artifact/collection-compose::showList",
         "name": "showList",
-        "module": "artifact/collection-transform",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
@@ -2936,12 +2443,12 @@
     },
     {
       "range": {
-        "start": 643,
-        "end": 674
+        "start": 636,
+        "end": 660
       },
       "callable": {
-        "identity": "std/list::filter",
-        "name": "filter",
+        "identity": "std/list::reverse",
+        "name": "reverse",
         "module": "std/list",
         "typeParameters": [
           "A"
@@ -2949,146 +2456,24 @@
         "parameters": [
           {
             "name": "arg1",
-            "type": "A -> Bool"
-          },
-          {
-            "name": "arg2",
             "type": "List<A>"
           }
         ],
         "result": "List<A>",
         "constraints": [],
-        "signature": "filter<A> arg1: (A -> Bool) -> arg2: List<A> -> List<A>",
+        "signature": "reverse<A> arg1: List<A> -> List<A>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 681,
-        "end": 731
+        "start": 667,
+        "end": 695
       },
       "callable": {
-        "identity": "std/prelude::join",
-        "name": "join",
-        "module": "std/prelude",
-        "typeParameters": [
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "String"
-          },
-          {
-            "name": "arg2",
-            "type": "C"
-          }
-        ],
-        "result": "String",
-        "constraints": [
-          "Reducible<C, String>"
-        ],
-        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 691,
-        "end": 730
-      },
-      "callable": {
-        "identity": "std/array::filterMap",
-        "name": "filterMap",
-        "module": "std/array",
-        "typeParameters": [
-          "A",
-          "B"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "A -> Maybe<B>"
-          },
-          {
-            "name": "arg2",
-            "type": "Array<A>"
-          }
-        ],
-        "result": "Array<B>",
-        "constraints": [],
-        "signature": "filterMap<A, B> arg1: (A -> Maybe<B>) -> arg2: Array<A> -> Array<B>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 737,
-        "end": 787
-      },
-      "callable": {
-        "identity": "std/prelude::join",
-        "name": "join",
-        "module": "std/prelude",
-        "typeParameters": [
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "String"
-          },
-          {
-            "name": "arg2",
-            "type": "C"
-          }
-        ],
-        "result": "String",
-        "constraints": [
-          "Reducible<C, String>"
-        ],
-        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 747,
-        "end": 786
-      },
-      "callable": {
-        "identity": "std/list::filterMap",
-        "name": "filterMap",
-        "module": "std/list",
-        "typeParameters": [
-          "A",
-          "B"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "A -> Maybe<B>"
-          },
-          {
-            "name": "arg2",
-            "type": "List<A>"
-          }
-        ],
-        "result": "List<B>",
-        "constraints": [],
-        "signature": "filterMap<A, B> arg1: (A -> Maybe<B>) -> arg2: List<A> -> List<B>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 793,
-        "end": 838
-      },
-      "callable": {
-        "identity": "artifact/collection-transform::showArray",
+        "identity": "artifact/collection-compose::showArray",
         "name": "showArray",
-        "module": "artifact/collection-transform",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
@@ -3104,42 +2489,37 @@
     },
     {
       "range": {
-        "start": 804,
-        "end": 837
+        "start": 678,
+        "end": 694
       },
       "callable": {
-        "identity": "std/array::flatMap",
-        "name": "flatMap",
+        "identity": "std/array::concat",
+        "name": "concat",
         "module": "std/array",
         "typeParameters": [
-          "A",
-          "B"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "A -> Array<B>"
-          },
-          {
-            "name": "arg2",
-            "type": "Array<A>"
+            "type": "Array<Array<A>>"
           }
         ],
-        "result": "Array<B>",
+        "result": "Array<A>",
         "constraints": [],
-        "signature": "flatMap<A, B> arg1: (A -> Array<B>) -> arg2: Array<A> -> Array<B>",
+        "signature": "concat<A> arg1: Array<Array<A>> -> Array<A>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 844,
-        "end": 887
+        "start": 701,
+        "end": 728
       },
       "callable": {
-        "identity": "artifact/collection-transform::showList",
+        "identity": "artifact/collection-compose::showList",
         "name": "showList",
-        "module": "artifact/collection-transform",
+        "module": "artifact/collection-compose",
         "typeParameters": [],
         "parameters": [
           {
@@ -3155,30 +2535,25 @@
     },
     {
       "range": {
-        "start": 854,
-        "end": 886
+        "start": 711,
+        "end": 727
       },
       "callable": {
-        "identity": "std/list::flatMap",
-        "name": "flatMap",
+        "identity": "std/list::concat",
+        "name": "concat",
         "module": "std/list",
         "typeParameters": [
-          "A",
-          "B"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "A -> List<B>"
-          },
-          {
-            "name": "arg2",
-            "type": "List<A>"
+            "type": "List<List<A>>"
           }
         ],
-        "result": "List<B>",
+        "result": "List<A>",
         "constraints": [],
-        "signature": "flatMap<A, B> arg1: (A -> List<B>) -> arg2: List<A> -> List<B>",
+        "signature": "concat<A> arg1: List<List<A>> -> List<A>",
         "remainingParameters": []
       }
     }

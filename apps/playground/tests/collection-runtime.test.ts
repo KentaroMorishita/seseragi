@@ -1,8 +1,10 @@
 import { describe, expect, test } from "bun:test"
 import {
+  append as appendArray,
   arrayIterable,
   arrayMonoid,
   arrayReducible,
+  concat as concatArray,
   drop as dropArray,
   filter as filterArray,
   filterMap as filterMapArray,
@@ -12,6 +14,7 @@ import {
   head as headArray,
   isEmpty as isEmptyArray,
   length as lengthArray,
+  reverse as reverseArray,
   take as takeArray,
   tail as tailArray,
 } from "../../../runtime/ts/src/array"
@@ -24,6 +27,8 @@ import {
 } from "../../../runtime/ts/src/collection"
 import { intMul, intOne } from "../../../runtime/ts/src/int64"
 import {
+  append as appendList,
+  concat as concatList,
   Empty,
   drop as dropList,
   filter as filterList,
@@ -39,6 +44,7 @@ import {
   listMonoid,
   listReducible,
   reduce as reduceList,
+  reverse as reverseList,
   take as takeList,
   tail as tailList,
 } from "../../../runtime/ts/src/list"
@@ -46,6 +52,32 @@ import { stringMonoid } from "../../../runtime/ts/src/string"
 import { Just, Nothing } from "../../../runtime/ts/src/sum"
 
 describe("Collection runtime", () => {
+  test("appends, concatenates, and reverses Array values without mutation", () => {
+    const values = [1, 2]
+    const suffix = [3, 4]
+    expect(appendArray(suffix, values)).toEqual([1, 2, 3, 4])
+    expect(values).toEqual([1, 2])
+    expect(suffix).toEqual([3, 4])
+    expect(concatArray([[1, 2], [], [3]])).toEqual([1, 2, 3])
+    expect(concatArray([])).toEqual([])
+    expect(reverseArray([1, 2, 3])).toEqual([3, 2, 1])
+    expect(reverseArray([])).toEqual([])
+  })
+
+  test("appends, concatenates, and reverses persistent List values", () => {
+    const values = fromArray([1, 2])
+    const suffix = fromArray([3, 4])
+    const appended = appendList(suffix, values)
+    expect(appended).toEqual(fromArray([1, 2, 3, 4]))
+    expect(dropList(2n, appended)).toBe(suffix)
+    expect(
+      concatList(fromArray([fromArray([1, 2]), Empty, fromArray([3])]))
+    ).toEqual(fromArray([1, 2, 3]))
+    expect(concatList(Empty)).toBe(Empty)
+    expect(reverseList(fromArray([1, 2, 3]))).toEqual(fromArray([3, 2, 1]))
+    expect(reverseList(Empty)).toBe(Empty)
+  })
+
   test("finds and slices Array values with documented count boundaries", () => {
     const observed: number[] = []
     expect(

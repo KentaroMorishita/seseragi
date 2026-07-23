@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "case": "collection-compose",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/collection-compose",
+    "export": "collectionComposeResults",
+    "compiledModule": "../../schema-1/collection-compose/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.list",
+      "core.int64",
+      "core.array.reducible",
+      "core.collection.join",
+      "core.string",
+      "core.int64.show",
+      "core.array.comprehend",
+      "core.list.comprehend",
+      "core.unit",
+      "core.list.from-array",
+      "core.array.append",
+      "core.list.append",
+      "core.array.concat",
+      "core.list.concat",
+      "core.array.reverse",
+      "core.list.reverse"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

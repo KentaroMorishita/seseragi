@@ -1,0 +1,51 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/collection-compose"
+  ],
+  "sourcesContent": [
+    "import * as arrays from \"std/array\"\nimport * as lists from \"std/list\"\n\nfn showArray values: Array<Int> -> String =\n  join \",\" [`${value}` | value <- values]\n\nfn showList values: List<Int> -> String =\n  join \",\" [`${value}` | value <- values]\n\nfn nestedLists unit: Unit -> List<List<Int>> =\n  `[ `[1, 2], `[], `[3, 4] ]\n\npub fn collectionComposeResults unit: Unit -> Array<String> =\n  [\n    showArray ([1, 2] |> arrays.append [3, 4]),\n    showList (`[1, 2] |> lists.append `[3, 4]),\n    showArray (arrays.concat [[1, 2], [], [3, 4]]),\n    showList (lists.concat (nestedLists ())),\n    showArray (arrays.reverse [1, 2, 3]),\n    showList (lists.reverse `[1, 2, 3]),\n    showArray (arrays.concat []),\n    showList (lists.concat `[])\n  ]\n"
+  ],
+  "names": [
+    "showArray",
+    "_ssrg_collection_join",
+    "arrayReducible",
+    "_ssrg_array_comprehend",
+    "intShow",
+    "showList",
+    "_ssrg_collection_join",
+    "arrayReducible",
+    "_ssrg_list_comprehend",
+    "intShow",
+    "nestedLists",
+    "fromArray",
+    "fromArray",
+    "fromArray",
+    "fromArray",
+    "collectionComposeResults",
+    "showArray",
+    "_ssrg_array_append",
+    "showList",
+    "_ssrg_list_append",
+    "fromArray",
+    "fromArray",
+    "showArray",
+    "_ssrg_array_concat",
+    "showList",
+    "_ssrg_list_concat",
+    "nestedLists",
+    "showArray",
+    "_ssrg_array_reverse",
+    "showList",
+    "_ssrg_list_reverse",
+    "fromArray",
+    "showArray",
+    "_ssrg_array_concat",
+    "showList",
+    "_ssrg_list_concat",
+    "fromArray"
+  ],
+  "mappings": ";;;;;AAGAA;AAGAK;AAGAK;AAGAK"
+}

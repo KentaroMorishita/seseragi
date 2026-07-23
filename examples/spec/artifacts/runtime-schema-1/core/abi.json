@@ -219,6 +219,36 @@
       }
     },
     {
+      "id": "core.array.append",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Array<A> -> Array<A> -> Array<A>",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "append"
+      }
+    },
+    {
+      "id": "core.array.concat",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Array<Array<A>> -> Array<A>",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "concat"
+      }
+    },
+    {
+      "id": "core.array.reverse",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Array<A> -> Array<A>",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "reverse"
+      }
+    },
+    {
       "id": "core.array.length",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -607,6 +637,36 @@
       "import": {
         "module": "@seseragi/runtime/list",
         "export": "drop"
+      }
+    },
+    {
+      "id": "core.list.append",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "List<A> -> List<A> -> List<A>",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "append"
+      }
+    },
+    {
+      "id": "core.list.concat",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "List<List<A>> -> List<A>",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "concat"
+      }
+    },
+    {
+      "id": "core.list.reverse",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "List<A> -> List<A>",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "reverse"
       }
     },
     {

@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "module": "artifact/collection-compose",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/array",
+      "module": "artifact/collection-compose/std/array",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/collection-compose/std/array::*",
+          "localName": "arrays"
+        }
+      ]
+    },
+    {
+      "specifier": "std/list",
+      "module": "artifact/collection-compose/std/list",
+      "origin": {
+        "start": 36,
+        "end": 69
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/collection-compose/std/list::*",
+          "localName": "lists"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/collection-compose::collectionComposeResults",
+      "namespace": "value",
+      "name": "collectionComposeResults",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 320,
+        "end": 732
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

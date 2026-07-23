@@ -1176,6 +1176,15 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         identity if identity.ends_with("::drop") => {
             "Returns the elements after skipping the requested leading count."
         }
+        identity if identity.ends_with("::append") => {
+            "Appends the suffix after the collection values."
+        }
+        identity if identity.ends_with("::concat") => {
+            "Flattens one level of nested collections in source order."
+        }
+        identity if identity.ends_with("::reverse") => {
+            "Returns the collection elements in reverse order."
+        }
         identity if identity.ends_with("::length") => {
             "Returns the number of elements in the collection."
         }
