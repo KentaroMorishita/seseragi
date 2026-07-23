@@ -912,6 +912,32 @@
       "constraints": []
     },
     {
+      "identity": "std/list::toArray",
+      "name": "toArray",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "toArray<A> arg1: List<A> -> Array<A>",
+      "description": "Copies the List elements into an Array in source order.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::toList",
+      "name": "toList",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "toList<A> arg1: Array<A> -> List<A>",
+      "description": "Copies the Array elements into a persistent List in source order.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::unfold",
       "name": "unfold",
       "module": "std/prelude",

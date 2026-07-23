@@ -1,0 +1,18 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+
+fn showArray values: Array<Int> -> String =
+  join "," [`${value}` | value <- values]
+
+fn showList values: List<Int> -> String =
+  join "," [`${value}` | value <- values]
+
+pub fn collectionConvertResults unit: Unit -> Array<String> =
+  [
+    showList (arrays.toList [1, 2, 3]),
+    showArray (lists.toArray `[4, 5, 6]),
+    showArray (lists.toArray (arrays.toList [1, 2, 3])),
+    showList (arrays.toList (lists.toArray `[4, 5, 6])),
+    showList (arrays.toList []),
+    showArray (lists.toArray `[])
+  ]

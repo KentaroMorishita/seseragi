@@ -56,6 +56,7 @@ export {
   reverse as reverseArray,
   take as takeArray,
   tail as tailArray,
+  toList,
 } from "./array"
 export type { Iterable, Reducible } from "./collection"
 export {
@@ -108,6 +109,7 @@ export {
   reverse as reverseList,
   take as takeList,
   tail as tailList,
+  toArray,
 } from "./list"
 export { stringMonoid, stringSemigroup } from "./string"
 export type {

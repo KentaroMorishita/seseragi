@@ -1,5 +1,6 @@
 import type { Iterator as SeseragiIterator } from "./iterator"
 import type { Unit } from "./effect"
+import { fromArray, type List } from "./list"
 import { Just, Nothing, type Maybe } from "./sum"
 
 /** Runtime dictionary for the standard `Semigroup<Array<A>>` instance. */
@@ -52,6 +53,11 @@ export const arrayIterable = Object.freeze({
   iterate: <A>(values: ReadonlyArray<A>): SeseragiIterator<A> =>
     arrayIterator(values, 0),
 })
+
+/** Convert an Array to the persistent List representation in source order. */
+export function toList<A>(values: ReadonlyArray<A>): List<A> {
+  return fromArray(values)
+}
 
 export function filter<A>(
   predicate: (value: A) => boolean,

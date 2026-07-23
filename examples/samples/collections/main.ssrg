@@ -25,7 +25,7 @@ fn maybeNumber value: Maybe<Int> -> String =
 // 集約はArray、List、Rangeを同じgeneric APIで扱います。
 pub effect fn main =
   do {
-    evenLabels 8 |> frame |> println
+    evenLabels 8 |> arrays.toList |> lists.toArray |> frame |> println
     product [2, 3, 4] |> number |> println
     any (\value: Int -> value > 3) (1..=5) |> yesNo |> println
     all (\value: Int -> value > 0) `[1, 2, 3] |> yesNo |> println

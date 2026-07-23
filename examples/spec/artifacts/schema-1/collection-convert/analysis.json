@@ -1,265 +1,164 @@
 {
   "schema": 1,
   "source": "main.ssrg",
-  "module": "artifact/web-form-events",
+  "module": "artifact/collection-convert",
   "diagnostics": {
     "schema": 1,
-    "source": "artifact/web-form-events/main.ssrg",
+    "source": "artifact/collection-convert/main.ssrg",
     "positionEncoding": "utf-8",
     "diagnostics": []
   },
   "symbols": [
     {
       "id": 0,
-      "identity": "artifact/web-form-events::Msg",
-      "name": "Msg",
-      "module": "artifact/web-form-events",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 43,
-        "end": 46
-      },
-      "typeName": "Msg"
-    },
-    {
-      "id": 1,
-      "identity": "artifact/web-form-events::DraftChanged",
-      "name": "DraftChanged",
-      "module": "artifact/web-form-events",
+      "identity": "artifact/collection-convert::showArray",
+      "name": "showArray",
+      "module": "artifact/collection-convert",
       "namespace": "value",
-      "kind": "constructor",
+      "kind": "function",
       "definition": {
-        "start": 53,
-        "end": 65
+        "start": 74,
+        "end": 83
       },
-      "typeName": "String -> Msg",
+      "typeName": "Array<Int> -> String",
       "callable": {
-        "identity": "artifact/web-form-events::DraftChanged",
-        "name": "DraftChanged",
-        "module": "artifact/web-form-events",
+        "identity": "artifact/collection-convert::showArray",
+        "name": "showArray",
+        "module": "artifact/collection-convert",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "arg1",
-            "type": "String"
+            "name": "values",
+            "type": "Array<Int>"
           }
         ],
-        "result": "Msg",
+        "result": "String",
         "constraints": [],
-        "signature": "DraftChanged arg1: String -> Msg",
+        "signature": "showArray values: Array<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 1,
+      "identity": "artifact/collection-convert::showList",
+      "name": "showList",
+      "module": "artifact/collection-convert",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 161,
+        "end": 169
+      },
+      "typeName": "List<Int> -> String",
+      "callable": {
+        "identity": "artifact/collection-convert::showList",
+        "name": "showList",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "List<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showList values: List<Int> -> String",
         "remainingParameters": []
       }
     },
     {
       "id": 2,
-      "identity": "artifact/web-form-events::CheckedChanged",
-      "name": "CheckedChanged",
-      "module": "artifact/web-form-events",
+      "identity": "artifact/collection-convert::collectionConvertResults",
+      "name": "collectionConvertResults",
+      "module": "artifact/collection-convert",
       "namespace": "value",
-      "kind": "constructor",
+      "kind": "function",
       "definition": {
-        "start": 77,
-        "end": 91
+        "start": 250,
+        "end": 274
       },
-      "typeName": "Bool -> Msg",
+      "typeName": "Unit -> Array<String>",
       "callable": {
-        "identity": "artifact/web-form-events::CheckedChanged",
-        "name": "CheckedChanged",
-        "module": "artifact/web-form-events",
+        "identity": "artifact/collection-convert::collectionConvertResults",
+        "name": "collectionConvertResults",
+        "module": "artifact/collection-convert",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "arg1",
-            "type": "Bool"
+            "name": "unit",
+            "type": "Unit"
           }
         ],
-        "result": "Msg",
+        "result": "Array<String>",
         "constraints": [],
-        "signature": "CheckedChanged arg1: Bool -> Msg",
+        "signature": "collectionConvertResults unit: Unit -> Array<String>",
         "remainingParameters": []
       }
     },
     {
       "id": 3,
-      "identity": "artifact/web-form-events::Submitted",
-      "name": "Submitted",
-      "module": "artifact/web-form-events",
-      "namespace": "value",
-      "kind": "constructor",
-      "definition": {
-        "start": 101,
-        "end": 110
-      },
-      "typeName": "Msg"
-    },
-    {
-      "id": 4,
-      "identity": "artifact/web-form-events::draftMessage",
-      "name": "draftMessage",
-      "module": "artifact/web-form-events",
-      "namespace": "value",
-      "kind": "function",
-      "definition": {
-        "start": 115,
-        "end": 127
-      },
-      "typeName": "html.InputEvent -> Msg",
-      "callable": {
-        "identity": "artifact/web-form-events::draftMessage",
-        "name": "draftMessage",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "event",
-            "type": "html.InputEvent"
-          }
-        ],
-        "result": "Msg",
-        "constraints": [],
-        "signature": "draftMessage event: html.InputEvent -> Msg",
-        "remainingParameters": []
-      }
-    },
-    {
-      "id": 5,
-      "identity": "artifact/web-form-events::checkedMessage",
-      "name": "checkedMessage",
-      "module": "artifact/web-form-events",
-      "namespace": "value",
-      "kind": "function",
-      "definition": {
-        "start": 191,
-        "end": 205
-      },
-      "typeName": "html.ChangeEvent -> Msg",
-      "callable": {
-        "identity": "artifact/web-form-events::checkedMessage",
-        "name": "checkedMessage",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "event",
-            "type": "html.ChangeEvent"
-          }
-        ],
-        "result": "Msg",
-        "constraints": [],
-        "signature": "checkedMessage event: html.ChangeEvent -> Msg",
-        "remainingParameters": []
-      }
-    },
-    {
-      "id": 6,
-      "identity": "artifact/web-form-events::view",
-      "name": "view",
-      "module": "artifact/web-form-events",
-      "namespace": "value",
-      "kind": "function",
-      "definition": {
-        "start": 278,
-        "end": 282
-      },
-      "typeName": "String -> Bool -> html.Html<Msg>",
-      "callable": {
-        "identity": "artifact/web-form-events::view",
-        "name": "view",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "draft",
-            "type": "String"
-          },
-          {
-            "name": "checked",
-            "type": "Bool"
-          }
-        ],
-        "result": "html.Html<Msg>",
-        "constraints": [],
-        "signature": "view draft: String -> checked: Bool -> html.Html<Msg>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "id": 7,
-      "identity": "std/web/html::*",
-      "name": "html",
-      "module": "std/web/html",
+      "identity": "std/array::*",
+      "name": "arrays",
+      "module": "std/array",
       "namespace": "module",
       "kind": "module-import",
       "definition": {
         "start": 12,
-        "end": 16
+        "end": 18
       }
+    },
+    {
+      "id": 4,
+      "identity": "std/list::*",
+      "name": "lists",
+      "module": "std/list",
+      "namespace": "module",
+      "kind": "module-import",
+      "definition": {
+        "start": 48,
+        "end": 53
+      }
+    },
+    {
+      "id": 5,
+      "identity": "std/prelude::Array",
+      "name": "Array",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "identity": "std/prelude::Int",
+      "name": "Int",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "identity": "artifact/collection-convert::local(7)",
+      "name": "values",
+      "module": "artifact/collection-convert",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 84,
+        "end": 90
+      },
+      "typeName": "Array<Int>"
     },
     {
       "id": 8,
-      "identity": "std/web/html::Html::T0",
-      "name": "T0",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 9,
-      "identity": "std/web/html::Html",
-      "name": "Html",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 12,
-        "end": 16
-      }
-    },
-    {
-      "id": 10,
-      "identity": "std/web/html::Style",
-      "name": "Style",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 11,
-      "identity": "std/web/html::InputEvent",
-      "name": "InputEvent",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 12,
-        "end": 16
-      },
-      "description": "Immutable text-input snapshot containing only the current String value."
-    },
-    {
-      "id": 12,
-      "identity": "std/web/html::ChangeEvent",
-      "name": "ChangeEvent",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 12,
-        "end": 16
-      },
-      "description": "Immutable form-control snapshot containing value and checked state."
-    },
-    {
-      "id": 13,
       "identity": "std/prelude::String",
       "name": "String",
       "module": "std/prelude",
@@ -271,9 +170,98 @@
       }
     },
     {
+      "id": 9,
+      "identity": "std/prelude::join",
+      "name": "join",
+      "module": "std/prelude",
+      "namespace": "value",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "String -> C -> String",
+      "callable": {
+        "identity": "std/prelude::join",
+        "name": "join",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          },
+          {
+            "name": "arg2",
+            "type": "C"
+          }
+        ],
+        "result": "String",
+        "constraints": [
+          "Reducible<C, String>"
+        ],
+        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+        "remainingParameters": []
+      },
+      "description": "Joins a reducible collection of strings with a separator."
+    },
+    {
+      "id": 10,
+      "identity": "artifact/collection-convert::local(10)",
+      "name": "value",
+      "module": "artifact/collection-convert",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 140,
+        "end": 145
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 11,
+      "identity": "std/prelude::List",
+      "name": "List",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "identity": "artifact/collection-convert::local(12)",
+      "name": "values",
+      "module": "artifact/collection-convert",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 170,
+        "end": 176
+      },
+      "typeName": "List<Int>"
+    },
+    {
+      "id": 13,
+      "identity": "artifact/collection-convert::local(13)",
+      "name": "value",
+      "module": "artifact/collection-convert",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 225,
+        "end": 230
+      },
+      "typeName": "Int"
+    },
+    {
       "id": 14,
-      "identity": "std/prelude::Bool",
-      "name": "Bool",
+      "identity": "std/prelude::Unit",
+      "name": "Unit",
       "module": "std/prelude",
       "namespace": "type",
       "kind": "prelude",
@@ -284,1527 +272,1674 @@
     },
     {
       "id": 15,
-      "identity": "artifact/web-form-events::local(15)",
-      "name": "event",
-      "module": "artifact/web-form-events",
+      "identity": "artifact/collection-convert::local(15)",
+      "name": "unit",
+      "module": "artifact/collection-convert",
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 128,
-        "end": 133
+        "start": 275,
+        "end": 279
       },
-      "typeName": "html.InputEvent"
+      "typeName": "Unit"
     },
     {
       "id": 16,
-      "identity": "artifact/web-form-events::local(16)",
-      "name": "event",
-      "module": "artifact/web-form-events",
+      "identity": "std/array::toList",
+      "name": "toList",
+      "module": "std/array",
       "namespace": "value",
-      "kind": "parameter",
+      "kind": "imported",
       "definition": {
-        "start": 206,
-        "end": 211
+        "start": 12,
+        "end": 18
       },
-      "typeName": "html.ChangeEvent"
+      "typeName": "Array<A> -> List<A>",
+      "callable": {
+        "identity": "std/array::toList",
+        "name": "toList",
+        "module": "std/array",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Array<A>"
+          }
+        ],
+        "result": "List<A>",
+        "constraints": [],
+        "signature": "toList<A> arg1: Array<A> -> List<A>",
+        "remainingParameters": []
+      },
+      "description": "Copies the Array elements into a persistent List in source order."
     },
     {
       "id": 17,
-      "identity": "artifact/web-form-events::local(17)",
-      "name": "draft",
-      "module": "artifact/web-form-events",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 283,
-        "end": 288
-      },
-      "typeName": "String"
-    },
-    {
-      "id": 18,
-      "identity": "artifact/web-form-events::local(18)",
-      "name": "checked",
-      "module": "artifact/web-form-events",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 300,
-        "end": 307
-      },
-      "typeName": "Bool"
-    },
-    {
-      "id": 19,
-      "identity": "std/web/html::form",
-      "name": "form",
-      "module": "std/web/html",
+      "identity": "std/list::toArray",
+      "name": "toArray",
+      "module": "std/list",
       "namespace": "value",
       "kind": "imported",
       "definition": {
-        "start": 12,
-        "end": 16
+        "start": 48,
+        "end": 53
       },
-      "typeName": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg>",
+      "typeName": "List<A> -> Array<A>",
       "callable": {
-        "identity": "std/web/html::form",
-        "name": "form",
-        "module": "std/web/html",
+        "identity": "std/list::toArray",
+        "name": "toArray",
+        "module": "std/list",
         "typeParameters": [
-          "Msg",
-          "C"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C}"
+            "type": "List<A>"
           }
         ],
-        "result": "Html<Msg>",
-        "constraints": [
-          "IntoChildren<C, Msg>"
-        ],
-        "signature": "form<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
-        "remainingParameters": []
-      },
-      "description": "Creates a typed form whose onSubmit message prevents native page reload."
-    },
-    {
-      "id": 20,
-      "identity": "std/web/html::label",
-      "name": "label",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "imported",
-      "definition": {
-        "start": 12,
-        "end": 16
-      },
-      "typeName": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg>",
-      "callable": {
-        "identity": "std/web/html::label",
-        "name": "label",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Msg",
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C}"
-          }
-        ],
-        "result": "Html<Msg>",
-        "constraints": [
-          "IntoChildren<C, Msg>"
-        ],
-        "signature": "label<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
-        "remainingParameters": []
-      },
-      "description": "Creates a label connected through the htmlFor prop."
-    },
-    {
-      "id": 21,
-      "identity": "std/web/html::input",
-      "name": "input",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "imported",
-      "definition": {
-        "start": 12,
-        "end": 16
-      },
-      "typeName": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
-      "callable": {
-        "identity": "std/web/html::input",
-        "name": "input",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Msg"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
-          }
-        ],
-        "result": "Html<Msg>",
+        "result": "Array<A>",
         "constraints": [],
-        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "signature": "toArray<A> arg1: List<A> -> Array<A>",
         "remainingParameters": []
       },
-      "description": "Creates a controlled input with typed input and change event snapshots."
-    },
-    {
-      "id": 22,
-      "identity": "std/web/html::textarea",
-      "name": "textarea",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "imported",
-      "definition": {
-        "start": 12,
-        "end": 16
-      },
-      "typeName": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
-      "callable": {
-        "identity": "std/web/html::textarea",
-        "name": "textarea",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Msg"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
-          }
-        ],
-        "result": "Html<Msg>",
-        "constraints": [],
-        "signature": "textarea<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
-        "remainingParameters": []
-      },
-      "description": "Creates a controlled textarea with typed input and change snapshots."
-    },
-    {
-      "id": 23,
-      "identity": "std/web/html::button",
-      "name": "button",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "imported",
-      "definition": {
-        "start": 12,
-        "end": 16
-      },
-      "typeName": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg>",
-      "callable": {
-        "identity": "std/web/html::button",
-        "name": "button",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Msg",
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C}"
-          }
-        ],
-        "result": "Html<Msg>",
-        "constraints": [
-          "IntoChildren<C, Msg>"
-        ],
-        "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "id": 24,
-      "identity": "std/prelude::==",
-      "name": "==",
-      "module": "std/prelude",
-      "namespace": "operator",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
+      "description": "Copies the List elements into an Array in source order."
     }
   ],
   "symbolOccurrences": [
     {
       "range": {
-        "start": 43,
-        "end": 46
+        "start": 74,
+        "end": 83
       },
       "symbol": 0
     },
     {
       "range": {
-        "start": 53,
-        "end": 65
+        "start": 161,
+        "end": 169
       },
       "symbol": 1
     },
     {
       "range": {
-        "start": 77,
-        "end": 91
+        "start": 250,
+        "end": 274
       },
       "symbol": 2
     },
     {
       "range": {
-        "start": 101,
-        "end": 110
+        "start": 12,
+        "end": 18
       },
       "symbol": 3
     },
     {
       "range": {
-        "start": 115,
-        "end": 127
+        "start": 48,
+        "end": 53
       },
       "symbol": 4
     },
     {
       "range": {
-        "start": 191,
-        "end": 205
-      },
-      "symbol": 5
-    },
-    {
-      "range": {
-        "start": 278,
-        "end": 282
-      },
-      "symbol": 6
-    },
-    {
-      "range": {
-        "start": 12,
-        "end": 16
+        "start": 84,
+        "end": 90
       },
       "symbol": 7
     },
     {
       "range": {
-        "start": 128,
-        "end": 133
+        "start": 140,
+        "end": 145
       },
-      "symbol": 15
+      "symbol": 10
     },
     {
       "range": {
-        "start": 206,
-        "end": 211
-      },
-      "symbol": 16
-    },
-    {
-      "range": {
-        "start": 283,
-        "end": 288
-      },
-      "symbol": 17
-    },
-    {
-      "range": {
-        "start": 300,
-        "end": 307
-      },
-      "symbol": 18
-    },
-    {
-      "range": {
-        "start": 66,
-        "end": 72
-      },
-      "symbol": 13
-    },
-    {
-      "range": {
-        "start": 92,
-        "end": 96
-      },
-      "symbol": 14
-    },
-    {
-      "range": {
-        "start": 135,
-        "end": 150
-      },
-      "symbol": 11
-    },
-    {
-      "range": {
-        "start": 154,
-        "end": 157
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 162,
-        "end": 174
-      },
-      "symbol": 1
-    },
-    {
-      "range": {
-        "start": 175,
-        "end": 180
-      },
-      "symbol": 15
-    },
-    {
-      "range": {
-        "start": 213,
-        "end": 229
+        "start": 170,
+        "end": 176
       },
       "symbol": 12
     },
     {
       "range": {
-        "start": 233,
-        "end": 236
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 241,
-        "end": 255
-      },
-      "symbol": 2
-    },
-    {
-      "range": {
-        "start": 256,
-        "end": 261
-      },
-      "symbol": 16
-    },
-    {
-      "range": {
-        "start": 290,
-        "end": 296
+        "start": 225,
+        "end": 230
       },
       "symbol": 13
     },
     {
       "range": {
-        "start": 309,
-        "end": 313
+        "start": 275,
+        "end": 279
       },
-      "symbol": 14
+      "symbol": 15
     },
     {
       "range": {
-        "start": 317,
-        "end": 331
-      },
-      "symbol": 9
-    },
-    {
-      "range": {
-        "start": 327,
-        "end": 330
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 336,
-        "end": 345
-      },
-      "symbol": 19
-    },
-    {
-      "range": {
-        "start": 362,
-        "end": 371
-      },
-      "symbol": 3
-    },
-    {
-      "range": {
-        "start": 395,
-        "end": 405
-      },
-      "symbol": 20
-    },
-    {
-      "range": {
-        "start": 453,
-        "end": 463
-      },
-      "symbol": 21
-    },
-    {
-      "range": {
-        "start": 525,
-        "end": 530
-      },
-      "symbol": 17
-    },
-    {
-      "range": {
-        "start": 636,
-        "end": 648
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 664,
-        "end": 677
-      },
-      "symbol": 22
-    },
-    {
-      "range": {
-        "start": 739,
-        "end": 751
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 767,
-        "end": 777
-      },
-      "symbol": 21
-    },
-    {
-      "range": {
-        "start": 788,
-        "end": 795
-      },
-      "symbol": 18
-    },
-    {
-      "range": {
-        "start": 846,
-        "end": 860
+        "start": 92,
+        "end": 102
       },
       "symbol": 5
     },
     {
       "range": {
-        "start": 876,
-        "end": 887
+        "start": 98,
+        "end": 101
       },
-      "symbol": 23
+      "symbol": 6
     },
     {
       "range": {
-        "start": 938,
-        "end": 943
+        "start": 106,
+        "end": 112
+      },
+      "symbol": 8
+    },
+    {
+      "range": {
+        "start": 117,
+        "end": 121
+      },
+      "symbol": 9
+    },
+    {
+      "range": {
+        "start": 149,
+        "end": 155
+      },
+      "symbol": 7
+    },
+    {
+      "range": {
+        "start": 130,
+        "end": 135
+      },
+      "symbol": 10
+    },
+    {
+      "range": {
+        "start": 178,
+        "end": 187
+      },
+      "symbol": 11
+    },
+    {
+      "range": {
+        "start": 183,
+        "end": 186
+      },
+      "symbol": 6
+    },
+    {
+      "range": {
+        "start": 191,
+        "end": 197
+      },
+      "symbol": 8
+    },
+    {
+      "range": {
+        "start": 202,
+        "end": 206
+      },
+      "symbol": 9
+    },
+    {
+      "range": {
+        "start": 234,
+        "end": 240
+      },
+      "symbol": 12
+    },
+    {
+      "range": {
+        "start": 215,
+        "end": 220
+      },
+      "symbol": 13
+    },
+    {
+      "range": {
+        "start": 281,
+        "end": 285
+      },
+      "symbol": 14
+    },
+    {
+      "range": {
+        "start": 289,
+        "end": 302
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 295,
+        "end": 301
+      },
+      "symbol": 8
+    },
+    {
+      "range": {
+        "start": 313,
+        "end": 321
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 323,
+        "end": 336
+      },
+      "symbol": 16
+    },
+    {
+      "range": {
+        "start": 353,
+        "end": 362
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 364,
+        "end": 377
       },
       "symbol": 17
     },
     {
       "range": {
-        "start": 944,
-        "end": 946
+        "start": 395,
+        "end": 404
       },
-      "symbol": 24
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 406,
+        "end": 419
+      },
+      "symbol": 17
+    },
+    {
+      "range": {
+        "start": 421,
+        "end": 434
+      },
+      "symbol": 16
+    },
+    {
+      "range": {
+        "start": 452,
+        "end": 460
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 462,
+        "end": 475
+      },
+      "symbol": 16
+    },
+    {
+      "range": {
+        "start": 477,
+        "end": 490
+      },
+      "symbol": 17
+    },
+    {
+      "range": {
+        "start": 509,
+        "end": 517
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 519,
+        "end": 532
+      },
+      "symbol": 16
+    },
+    {
+      "range": {
+        "start": 542,
+        "end": 551
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 553,
+        "end": 566
+      },
+      "symbol": 17
     }
   ],
   "typeOccurrences": [
     {
       "range": {
-        "start": 43,
-        "end": 46
+        "start": 74,
+        "end": 83
       },
-      "type": "Msg"
+      "type": "Array<Int> -> String"
     },
     {
       "range": {
-        "start": 53,
-        "end": 65
+        "start": 84,
+        "end": 90
       },
-      "type": "String -> Msg"
+      "type": "Array<Int>"
     },
     {
       "range": {
-        "start": 77,
-        "end": 91
+        "start": 117,
+        "end": 121
       },
-      "type": "Bool -> Msg"
+      "type": "String -> C -> String"
     },
     {
       "range": {
-        "start": 101,
-        "end": 110
-      },
-      "type": "Msg"
-    },
-    {
-      "range": {
-        "start": 115,
-        "end": 127
-      },
-      "type": "html.InputEvent -> Msg"
-    },
-    {
-      "range": {
-        "start": 128,
-        "end": 133
-      },
-      "type": "html.InputEvent"
-    },
-    {
-      "range": {
-        "start": 154,
-        "end": 157
-      },
-      "type": "Msg"
-    },
-    {
-      "range": {
-        "start": 162,
-        "end": 174
-      },
-      "type": "String -> Msg"
-    },
-    {
-      "range": {
-        "start": 162,
-        "end": 186
-      },
-      "type": "Msg"
-    },
-    {
-      "range": {
-        "start": 175,
-        "end": 180
-      },
-      "type": "html.InputEvent"
-    },
-    {
-      "range": {
-        "start": 175,
-        "end": 186
+        "start": 117,
+        "end": 156
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 191,
-        "end": 205
-      },
-      "type": "html.ChangeEvent -> Msg"
-    },
-    {
-      "range": {
-        "start": 206,
-        "end": 211
-      },
-      "type": "html.ChangeEvent"
-    },
-    {
-      "range": {
-        "start": 233,
-        "end": 236
-      },
-      "type": "Msg"
-    },
-    {
-      "range": {
-        "start": 241,
-        "end": 255
-      },
-      "type": "Bool -> Msg"
-    },
-    {
-      "range": {
-        "start": 241,
-        "end": 269
-      },
-      "type": "Msg"
-    },
-    {
-      "range": {
-        "start": 256,
-        "end": 261
-      },
-      "type": "html.ChangeEvent"
-    },
-    {
-      "range": {
-        "start": 256,
-        "end": 269
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 278,
-        "end": 282
-      },
-      "type": "String -> Bool -> html.Html<Msg>"
-    },
-    {
-      "range": {
-        "start": 283,
-        "end": 288
+        "start": 122,
+        "end": 125
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 300,
-        "end": 307
+        "start": 126,
+        "end": 156
       },
-      "type": "Bool"
+      "type": "Array<String>"
     },
     {
       "range": {
-        "start": 327,
-        "end": 330
+        "start": 127,
+        "end": 137
       },
-      "type": "Msg"
+      "type": "String"
     },
     {
       "range": {
-        "start": 336,
+        "start": 130,
+        "end": 135
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 140,
+        "end": 145
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 149,
+        "end": 155
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 161,
+        "end": 169
+      },
+      "type": "List<Int> -> String"
+    },
+    {
+      "range": {
+        "start": 170,
+        "end": 176
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 202,
+        "end": 206
+      },
+      "type": "String -> C -> String"
+    },
+    {
+      "range": {
+        "start": 202,
+        "end": 241
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 207,
+        "end": 210
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 211,
+        "end": 241
+      },
+      "type": "Array<String>"
+    },
+    {
+      "range": {
+        "start": 212,
+        "end": 222
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 215,
+        "end": 220
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 225,
+        "end": 230
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 234,
+        "end": 240
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 250,
+        "end": 274
+      },
+      "type": "Unit -> Array<String>"
+    },
+    {
+      "range": {
+        "start": 275,
+        "end": 279
+      },
+      "type": "Unit"
+    },
+    {
+      "range": {
+        "start": 307,
+        "end": 575
+      },
+      "type": "Array<String>"
+    },
+    {
+      "range": {
+        "start": 313,
+        "end": 321
+      },
+      "type": "List<Int> -> String"
+    },
+    {
+      "range": {
+        "start": 313,
+        "end": 347
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 323,
+        "end": 336
+      },
+      "type": "Array<A> -> List<A>"
+    },
+    {
+      "range": {
+        "start": 323,
+        "end": 346
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 337,
+        "end": 346
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 338,
+        "end": 339
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 341,
+        "end": 342
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 344,
         "end": 345
       },
-      "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg>"
+      "type": "Int"
     },
     {
       "range": {
-        "start": 336,
-        "end": 992
+        "start": 353,
+        "end": 362
       },
-      "type": "html.Html<Msg>"
+      "type": "Array<Int> -> String"
     },
     {
       "range": {
-        "start": 346,
-        "end": 992
+        "start": 353,
+        "end": 389
       },
-      "type": "{children: Array<html.Html<Msg>>, onSubmit: Msg}"
+      "type": "String"
     },
     {
       "range": {
-        "start": 362,
-        "end": 371
+        "start": 364,
+        "end": 377
       },
-      "type": "Msg"
+      "type": "List<A> -> Array<A>"
     },
     {
       "range": {
-        "start": 387,
-        "end": 988
+        "start": 364,
+        "end": 388
       },
-      "type": "Array<html.Html<Msg>>"
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 378,
+        "end": 388
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 380,
+        "end": 381
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 383,
+        "end": 384
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 386,
+        "end": 387
+      },
+      "type": "Int"
     },
     {
       "range": {
         "start": 395,
-        "end": 405
+        "end": 404
       },
-      "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg>"
+      "type": "Array<Int> -> String"
     },
     {
       "range": {
         "start": 395,
-        "end": 445
+        "end": 446
       },
-      "type": "html.Html<Msg>"
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 406,
+        "end": 419
+      },
+      "type": "List<A> -> Array<A>"
     },
     {
       "range": {
         "start": 406,
         "end": 445
       },
-      "type": "{children: String, htmlFor: String}"
+      "type": "Array<Int>"
     },
     {
       "range": {
-        "start": 417,
-        "end": 424
+        "start": 421,
+        "end": 434
       },
-      "type": "String"
+      "type": "Array<A> -> List<A>"
+    },
+    {
+      "range": {
+        "start": 421,
+        "end": 444
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 435,
+        "end": 444
+      },
+      "type": "Array<Int>"
     },
     {
       "range": {
         "start": 436,
+        "end": 437
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 439,
+        "end": 440
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 442,
         "end": 443
       },
-      "type": "String"
+      "type": "Int"
     },
     {
       "range": {
-        "start": 453,
-        "end": 463
+        "start": 452,
+        "end": 460
       },
-      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>"
+      "type": "List<Int> -> String"
     },
     {
       "range": {
-        "start": 453,
-        "end": 656
-      },
-      "type": "html.Html<Msg>"
-    },
-    {
-      "range": {
-        "start": 464,
-        "end": 656
-      },
-      "type": "{id: String, inputType: String, name: String, onInput: html.InputEvent -> Msg, placeholder: String, required: Bool, value: String}"
-    },
-    {
-      "range": {
-        "start": 478,
-        "end": 485
+        "start": 452,
+        "end": 503
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 501,
-        "end": 508
+        "start": 462,
+        "end": 475
+      },
+      "type": "Array<A> -> List<A>"
+    },
+    {
+      "range": {
+        "start": 462,
+        "end": 502
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 477,
+        "end": 490
+      },
+      "type": "List<A> -> Array<A>"
+    },
+    {
+      "range": {
+        "start": 477,
+        "end": 501
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 491,
+        "end": 501
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 493,
+        "end": 494
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 496,
+        "end": 497
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 499,
+        "end": 500
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 509,
+        "end": 517
+      },
+      "type": "List<Int> -> String"
+    },
+    {
+      "range": {
+        "start": 509,
+        "end": 536
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 525,
-        "end": 530
+        "start": 519,
+        "end": 532
+      },
+      "type": "Array<A> -> List<A>"
+    },
+    {
+      "range": {
+        "start": 519,
+        "end": 535
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 533,
+        "end": 535
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 542,
+        "end": 551
+      },
+      "type": "Array<Int> -> String"
+    },
+    {
+      "range": {
+        "start": 542,
+        "end": 571
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 550,
-        "end": 554
+        "start": 553,
+        "end": 566
       },
-      "type": "Bool"
+      "type": "List<A> -> Array<A>"
     },
     {
       "range": {
-        "start": 577,
-        "end": 590
+        "start": 553,
+        "end": 570
       },
-      "type": "String"
+      "type": "Array<Int>"
     },
     {
       "range": {
-        "start": 611,
-        "end": 617
+        "start": 567,
+        "end": 570
       },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 636,
-        "end": 648
-      },
-      "type": "html.InputEvent -> Msg"
-    },
-    {
-      "range": {
-        "start": 664,
-        "end": 677
-      },
-      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>"
-    },
-    {
-      "range": {
-        "start": 664,
-        "end": 759
-      },
-      "type": "html.Html<Msg>"
-    },
-    {
-      "range": {
-        "start": 678,
-        "end": 759
-      },
-      "type": "{name: String, onInput: html.InputEvent -> Msg, value: String}"
-    },
-    {
-      "range": {
-        "start": 694,
-        "end": 701
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 718,
-        "end": 720
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 739,
-        "end": 751
-      },
-      "type": "html.InputEvent -> Msg"
-    },
-    {
-      "range": {
-        "start": 767,
-        "end": 777
-      },
-      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>"
-    },
-    {
-      "range": {
-        "start": 767,
-        "end": 868
-      },
-      "type": "html.Html<Msg>"
-    },
-    {
-      "range": {
-        "start": 778,
-        "end": 868
-      },
-      "type": "{checked: Bool, inputType: String, onChange: html.ChangeEvent -> Msg}"
-    },
-    {
-      "range": {
-        "start": 788,
-        "end": 795
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 816,
-        "end": 826
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 846,
-        "end": 860
-      },
-      "type": "html.ChangeEvent -> Msg"
-    },
-    {
-      "range": {
-        "start": 876,
-        "end": 887
-      },
-      "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg>"
-    },
-    {
-      "range": {
-        "start": 876,
-        "end": 982
-      },
-      "type": "html.Html<Msg>"
-    },
-    {
-      "range": {
-        "start": 888,
-        "end": 982
-      },
-      "type": "{buttonType: String, children: String, disabled: Bool}"
-    },
-    {
-      "range": {
-        "start": 910,
-        "end": 918
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 938,
-        "end": 943
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 938,
-        "end": 949
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 947,
-        "end": 949
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 969,
-        "end": 974
-      },
-      "type": "String"
+      "type": "List<Int>"
     }
   ],
   "callableOccurrences": [
     {
       "range": {
-        "start": 53,
-        "end": 65
+        "start": 74,
+        "end": 83
       },
       "callable": {
-        "identity": "artifact/web-form-events::DraftChanged",
-        "name": "DraftChanged",
-        "module": "artifact/web-form-events",
+        "identity": "artifact/collection-convert::showArray",
+        "name": "showArray",
+        "module": "artifact/collection-convert",
         "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "Array<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showArray values: Array<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 161,
+        "end": 169
+      },
+      "callable": {
+        "identity": "artifact/collection-convert::showList",
+        "name": "showList",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "List<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showList values: List<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 250,
+        "end": 274
+      },
+      "callable": {
+        "identity": "artifact/collection-convert::collectionConvertResults",
+        "name": "collectionConvertResults",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "unit",
+            "type": "Unit"
+          }
+        ],
+        "result": "Array<String>",
+        "constraints": [],
+        "signature": "collectionConvertResults unit: Unit -> Array<String>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 117,
+        "end": 121
+      },
+      "callable": {
+        "identity": "std/prelude::join",
+        "name": "join",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C"
+        ],
         "parameters": [
           {
             "name": "arg1",
             "type": "String"
+          },
+          {
+            "name": "arg2",
+            "type": "C"
           }
         ],
-        "result": "Msg",
-        "constraints": [],
-        "signature": "DraftChanged arg1: String -> Msg",
+        "result": "String",
+        "constraints": [
+          "Reducible<C, String>"
+        ],
+        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 77,
-        "end": 91
+        "start": 202,
+        "end": 206
       },
       "callable": {
-        "identity": "artifact/web-form-events::CheckedChanged",
-        "name": "CheckedChanged",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
+        "identity": "std/prelude::join",
+        "name": "join",
+        "module": "std/prelude",
+        "typeParameters": [
+          "C"
+        ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "Bool"
-          }
-        ],
-        "result": "Msg",
-        "constraints": [],
-        "signature": "CheckedChanged arg1: Bool -> Msg",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 115,
-        "end": 127
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::draftMessage",
-        "name": "draftMessage",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "event",
-            "type": "html.InputEvent"
-          }
-        ],
-        "result": "Msg",
-        "constraints": [],
-        "signature": "draftMessage event: html.InputEvent -> Msg",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 191,
-        "end": 205
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::checkedMessage",
-        "name": "checkedMessage",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "event",
-            "type": "html.ChangeEvent"
-          }
-        ],
-        "result": "Msg",
-        "constraints": [],
-        "signature": "checkedMessage event: html.ChangeEvent -> Msg",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 278,
-        "end": 282
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::view",
-        "name": "view",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "draft",
             "type": "String"
           },
           {
-            "name": "checked",
-            "type": "Bool"
+            "name": "arg2",
+            "type": "C"
           }
         ],
-        "result": "html.Html<Msg>",
-        "constraints": [],
-        "signature": "view draft: String -> checked: Bool -> html.Html<Msg>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 162,
-        "end": 174
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::DraftChanged",
-        "name": "DraftChanged",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "String"
-          }
-        ],
-        "result": "Msg",
-        "constraints": [],
-        "signature": "DraftChanged arg1: String -> Msg",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 241,
-        "end": 255
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::CheckedChanged",
-        "name": "CheckedChanged",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Bool"
-          }
-        ],
-        "result": "Msg",
-        "constraints": [],
-        "signature": "CheckedChanged arg1: Bool -> Msg",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 336,
-        "end": 345
-      },
-      "callable": {
-        "identity": "std/web/html::form",
-        "name": "form",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Msg",
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C}"
-          }
-        ],
-        "result": "Html<Msg>",
+        "result": "String",
         "constraints": [
-          "IntoChildren<C, Msg>"
+          "Reducible<C, String>"
         ],
-        "signature": "form<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 313,
+        "end": 321
+      },
+      "callable": {
+        "identity": "artifact/collection-convert::showList",
+        "name": "showList",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "List<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showList values: List<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 323,
+        "end": 336
+      },
+      "callable": {
+        "identity": "std/array::toList",
+        "name": "toList",
+        "module": "std/array",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Array<A>"
+          }
+        ],
+        "result": "List<A>",
+        "constraints": [],
+        "signature": "toList<A> arg1: Array<A> -> List<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 353,
+        "end": 362
+      },
+      "callable": {
+        "identity": "artifact/collection-convert::showArray",
+        "name": "showArray",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "Array<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showArray values: Array<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 364,
+        "end": 377
+      },
+      "callable": {
+        "identity": "std/list::toArray",
+        "name": "toArray",
+        "module": "std/list",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "List<A>"
+          }
+        ],
+        "result": "Array<A>",
+        "constraints": [],
+        "signature": "toArray<A> arg1: List<A> -> Array<A>",
         "remainingParameters": []
       }
     },
     {
       "range": {
         "start": 395,
-        "end": 405
+        "end": 404
       },
       "callable": {
-        "identity": "std/web/html::label",
-        "name": "label",
-        "module": "std/web/html",
+        "identity": "artifact/collection-convert::showArray",
+        "name": "showArray",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "Array<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showArray values: Array<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 406,
+        "end": 419
+      },
+      "callable": {
+        "identity": "std/list::toArray",
+        "name": "toArray",
+        "module": "std/list",
         "typeParameters": [
-          "Msg",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "List<A>"
+          }
+        ],
+        "result": "Array<A>",
+        "constraints": [],
+        "signature": "toArray<A> arg1: List<A> -> Array<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 421,
+        "end": 434
+      },
+      "callable": {
+        "identity": "std/array::toList",
+        "name": "toList",
+        "module": "std/array",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Array<A>"
+          }
+        ],
+        "result": "List<A>",
+        "constraints": [],
+        "signature": "toList<A> arg1: Array<A> -> List<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 452,
+        "end": 460
+      },
+      "callable": {
+        "identity": "artifact/collection-convert::showList",
+        "name": "showList",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "List<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showList values: List<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 462,
+        "end": 475
+      },
+      "callable": {
+        "identity": "std/array::toList",
+        "name": "toList",
+        "module": "std/array",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Array<A>"
+          }
+        ],
+        "result": "List<A>",
+        "constraints": [],
+        "signature": "toList<A> arg1: Array<A> -> List<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 477,
+        "end": 490
+      },
+      "callable": {
+        "identity": "std/list::toArray",
+        "name": "toArray",
+        "module": "std/list",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "List<A>"
+          }
+        ],
+        "result": "Array<A>",
+        "constraints": [],
+        "signature": "toArray<A> arg1: List<A> -> Array<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 509,
+        "end": 517
+      },
+      "callable": {
+        "identity": "artifact/collection-convert::showList",
+        "name": "showList",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "List<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showList values: List<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 519,
+        "end": 532
+      },
+      "callable": {
+        "identity": "std/array::toList",
+        "name": "toList",
+        "module": "std/array",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Array<A>"
+          }
+        ],
+        "result": "List<A>",
+        "constraints": [],
+        "signature": "toList<A> arg1: Array<A> -> List<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 542,
+        "end": 551
+      },
+      "callable": {
+        "identity": "artifact/collection-convert::showArray",
+        "name": "showArray",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "Array<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showArray values: Array<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 553,
+        "end": 566
+      },
+      "callable": {
+        "identity": "std/list::toArray",
+        "name": "toArray",
+        "module": "std/list",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "List<A>"
+          }
+        ],
+        "result": "Array<A>",
+        "constraints": [],
+        "signature": "toArray<A> arg1: List<A> -> Array<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 117,
+        "end": 156
+      },
+      "callable": {
+        "identity": "std/prelude::join",
+        "name": "join",
+        "module": "std/prelude",
+        "typeParameters": [
           "C"
         ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C}"
-          }
-        ],
-        "result": "Html<Msg>",
-        "constraints": [
-          "IntoChildren<C, Msg>"
-        ],
-        "signature": "label<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 453,
-        "end": 463
-      },
-      "callable": {
-        "identity": "std/web/html::input",
-        "name": "input",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Msg"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
-          }
-        ],
-        "result": "Html<Msg>",
-        "constraints": [],
-        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 636,
-        "end": 648
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::draftMessage",
-        "name": "draftMessage",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "event",
-            "type": "html.InputEvent"
-          }
-        ],
-        "result": "Msg",
-        "constraints": [],
-        "signature": "draftMessage event: html.InputEvent -> Msg",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 664,
-        "end": 677
-      },
-      "callable": {
-        "identity": "std/web/html::textarea",
-        "name": "textarea",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Msg"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
-          }
-        ],
-        "result": "Html<Msg>",
-        "constraints": [],
-        "signature": "textarea<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 739,
-        "end": 751
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::draftMessage",
-        "name": "draftMessage",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "event",
-            "type": "html.InputEvent"
-          }
-        ],
-        "result": "Msg",
-        "constraints": [],
-        "signature": "draftMessage event: html.InputEvent -> Msg",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 767,
-        "end": 777
-      },
-      "callable": {
-        "identity": "std/web/html::input",
-        "name": "input",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Msg"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
-          }
-        ],
-        "result": "Html<Msg>",
-        "constraints": [],
-        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 846,
-        "end": 860
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::checkedMessage",
-        "name": "checkedMessage",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "event",
-            "type": "html.ChangeEvent"
-          }
-        ],
-        "result": "Msg",
-        "constraints": [],
-        "signature": "checkedMessage event: html.ChangeEvent -> Msg",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 876,
-        "end": 887
-      },
-      "callable": {
-        "identity": "std/web/html::button",
-        "name": "button",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Msg",
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C}"
-          }
-        ],
-        "result": "Html<Msg>",
-        "constraints": [
-          "IntoChildren<C, Msg>"
-        ],
-        "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 162,
-        "end": 186
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::DraftChanged",
-        "name": "DraftChanged",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
         "parameters": [
           {
             "name": "arg1",
             "type": "String"
-          }
-        ],
-        "result": "Msg",
-        "constraints": [],
-        "signature": "DraftChanged arg1: String -> Msg",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 241,
-        "end": 269
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::CheckedChanged",
-        "name": "CheckedChanged",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
+          },
           {
-            "name": "arg1",
-            "type": "Bool"
+            "name": "arg2",
+            "type": "C"
           }
         ],
-        "result": "Msg",
-        "constraints": [],
-        "signature": "CheckedChanged arg1: Bool -> Msg",
+        "result": "String",
+        "constraints": [
+          "Reducible<C, String>"
+        ],
+        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 336,
-        "end": 992
+        "start": 202,
+        "end": 241
       },
       "callable": {
-        "identity": "std/web/html::form",
-        "name": "form",
-        "module": "std/web/html",
+        "identity": "std/prelude::join",
+        "name": "join",
+        "module": "std/prelude",
         "typeParameters": [
-          "Msg",
           "C"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C}"
+            "type": "String"
+          },
+          {
+            "name": "arg2",
+            "type": "C"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "String",
         "constraints": [
-          "IntoChildren<C, Msg>"
+          "Reducible<C, String>"
         ],
-        "signature": "form<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 313,
+        "end": 347
+      },
+      "callable": {
+        "identity": "artifact/collection-convert::showList",
+        "name": "showList",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "List<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showList values: List<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 323,
+        "end": 346
+      },
+      "callable": {
+        "identity": "std/array::toList",
+        "name": "toList",
+        "module": "std/array",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Array<A>"
+          }
+        ],
+        "result": "List<A>",
+        "constraints": [],
+        "signature": "toList<A> arg1: Array<A> -> List<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 353,
+        "end": 389
+      },
+      "callable": {
+        "identity": "artifact/collection-convert::showArray",
+        "name": "showArray",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "Array<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showArray values: Array<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 364,
+        "end": 388
+      },
+      "callable": {
+        "identity": "std/list::toArray",
+        "name": "toArray",
+        "module": "std/list",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "List<A>"
+          }
+        ],
+        "result": "Array<A>",
+        "constraints": [],
+        "signature": "toArray<A> arg1: List<A> -> Array<A>",
         "remainingParameters": []
       }
     },
     {
       "range": {
         "start": 395,
+        "end": 446
+      },
+      "callable": {
+        "identity": "artifact/collection-convert::showArray",
+        "name": "showArray",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "Array<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showArray values: Array<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 406,
         "end": 445
       },
       "callable": {
-        "identity": "std/web/html::label",
-        "name": "label",
-        "module": "std/web/html",
+        "identity": "std/list::toArray",
+        "name": "toArray",
+        "module": "std/list",
         "typeParameters": [
-          "Msg",
-          "C"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C}"
+            "type": "List<A>"
           }
         ],
-        "result": "Html<Msg>",
-        "constraints": [
-          "IntoChildren<C, Msg>"
-        ],
-        "signature": "label<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 453,
-        "end": 656
-      },
-      "callable": {
-        "identity": "std/web/html::input",
-        "name": "input",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Msg"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
-          }
-        ],
-        "result": "Html<Msg>",
+        "result": "Array<A>",
         "constraints": [],
-        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "signature": "toArray<A> arg1: List<A> -> Array<A>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 664,
-        "end": 759
+        "start": 421,
+        "end": 444
       },
       "callable": {
-        "identity": "std/web/html::textarea",
-        "name": "textarea",
-        "module": "std/web/html",
+        "identity": "std/array::toList",
+        "name": "toList",
+        "module": "std/array",
         "typeParameters": [
-          "Msg"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+            "type": "Array<A>"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "List<A>",
         "constraints": [],
-        "signature": "textarea<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "signature": "toList<A> arg1: Array<A> -> List<A>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 767,
-        "end": 868
+        "start": 452,
+        "end": 503
       },
       "callable": {
-        "identity": "std/web/html::input",
-        "name": "input",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Msg"
-        ],
+        "identity": "artifact/collection-convert::showList",
+        "name": "showList",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
         "parameters": [
           {
-            "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+            "name": "values",
+            "type": "List<Int>"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "String",
         "constraints": [],
-        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "signature": "showList values: List<Int> -> String",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 876,
-        "end": 982
+        "start": 462,
+        "end": 502
       },
       "callable": {
-        "identity": "std/web/html::button",
-        "name": "button",
-        "module": "std/web/html",
+        "identity": "std/array::toList",
+        "name": "toList",
+        "module": "std/array",
         "typeParameters": [
-          "Msg",
-          "C"
+          "A"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C}"
+            "type": "Array<A>"
           }
         ],
-        "result": "Html<Msg>",
-        "constraints": [
-          "IntoChildren<C, Msg>"
+        "result": "List<A>",
+        "constraints": [],
+        "signature": "toList<A> arg1: Array<A> -> List<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 477,
+        "end": 501
+      },
+      "callable": {
+        "identity": "std/list::toArray",
+        "name": "toArray",
+        "module": "std/list",
+        "typeParameters": [
+          "A"
         ],
-        "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "List<A>"
+          }
+        ],
+        "result": "Array<A>",
+        "constraints": [],
+        "signature": "toArray<A> arg1: List<A> -> Array<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 509,
+        "end": 536
+      },
+      "callable": {
+        "identity": "artifact/collection-convert::showList",
+        "name": "showList",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "List<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showList values: List<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 519,
+        "end": 535
+      },
+      "callable": {
+        "identity": "std/array::toList",
+        "name": "toList",
+        "module": "std/array",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Array<A>"
+          }
+        ],
+        "result": "List<A>",
+        "constraints": [],
+        "signature": "toList<A> arg1: Array<A> -> List<A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 542,
+        "end": 571
+      },
+      "callable": {
+        "identity": "artifact/collection-convert::showArray",
+        "name": "showArray",
+        "module": "artifact/collection-convert",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "values",
+            "type": "Array<Int>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "showArray values: Array<Int> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 553,
+        "end": 570
+      },
+      "callable": {
+        "identity": "std/list::toArray",
+        "name": "toArray",
+        "module": "std/list",
+        "typeParameters": [
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "List<A>"
+          }
+        ],
+        "result": "Array<A>",
+        "constraints": [],
+        "signature": "toArray<A> arg1: List<A> -> Array<A>",
         "remainingParameters": []
       }
     }

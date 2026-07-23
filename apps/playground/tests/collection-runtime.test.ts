@@ -17,6 +17,7 @@ import {
   reverse as reverseArray,
   take as takeArray,
   tail as tailArray,
+  toList,
 } from "../../../runtime/ts/src/array"
 import {
   all,
@@ -47,11 +48,23 @@ import {
   reverse as reverseList,
   take as takeList,
   tail as tailList,
+  toArray,
 } from "../../../runtime/ts/src/list"
 import { stringMonoid } from "../../../runtime/ts/src/string"
 import { Just, Nothing } from "../../../runtime/ts/src/sum"
 
 describe("Collection runtime", () => {
+  test("converts Array and List values without changing source order", () => {
+    const values = [1, 2, 3]
+    const list = toList(values)
+
+    expect(list).toEqual(fromArray(values))
+    expect(toArray(list)).toEqual(values)
+    expect(toList([])).toBe(Empty)
+    expect(toArray(Empty)).toEqual([])
+    expect(toArray(toList(values))).toEqual(values)
+  })
+
   test("appends, concatenates, and reverses Array values without mutation", () => {
     const values = [1, 2]
     const suffix = [3, 4]

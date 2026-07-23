@@ -6,3 +6,4 @@ Array、List、Rangeをconcrete型ごとの別APIへ分けず、genericな集約
 - `std/array`と`std/list`は、長さや先頭要素を型安全に読み取ります。
 - 見つからないかもしれない`find`は`Maybe`で受け取り、`match`で扱います。
 - `filterMap`は変換と絞り込みを一度に行い、`Nothing`だけを除きます。
+- `toList`と`toArray`は要素順を保ったまま表現を切り替えます。

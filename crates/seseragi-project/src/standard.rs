@@ -35,18 +35,31 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
 ];
 
 fn array_interface() -> ModuleInterface {
-    collection_interface("std/array", "Array")
+    collection_interface("std/array", "Array", "toList", "List")
 }
 
 fn list_interface() -> ModuleInterface {
-    collection_interface("std/list", "List")
+    collection_interface("std/list", "List", "toArray", "Array")
 }
 
-fn collection_interface(module: &str, collection: &str) -> ModuleInterface {
+fn collection_interface(
+    module: &str,
+    collection: &str,
+    conversion: &str,
+    conversion_target: &str,
+) -> ModuleInterface {
     let values = named_with(collection, vec![named("A")]);
     let mapped_values = named_with(collection, vec![named("B")]);
     let maybe_value = named_with("Maybe", vec![named("A")]);
     let exports = vec![
+        function_export(
+            module,
+            conversion,
+            ["A"],
+            Vec::new(),
+            vec![values.clone()],
+            named_with(conversion_target, vec![named("A")]),
+        ),
         function_export(
             module,
             "filter",
@@ -858,7 +871,7 @@ mod tests {
             .iter()
             .any(|export| { export.namespace == "value" && export.name == "renderToString" }));
         assert!(standard_module_target("std/web/missing").is_none());
-        for module in ["std/array", "std/list"] {
+        for (module, conversion) in [("std/array", "toList"), ("std/list", "toArray")] {
             let target = standard_module_target(module).unwrap();
             for name in [
                 "filter",
@@ -870,6 +883,7 @@ mod tests {
                 "append",
                 "concat",
                 "reverse",
+                conversion,
                 "length",
                 "isEmpty",
                 "get",

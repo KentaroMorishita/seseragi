@@ -122,6 +122,15 @@ const LIST_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOperat
 
 const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
     (
+        "std/array::toList",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.to-list",
+            local_name: "_ssrg_array_toList",
+            module: "@seseragi/runtime/array",
+            export_name: "toList",
+        },
+    ),
+    (
         "std/array::filter",
         RuntimeCollectionOperation {
             runtime_feature: "core.array.filter",
@@ -245,6 +254,15 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_array_tail",
             module: "@seseragi/runtime/array",
             export_name: "tail",
+        },
+    ),
+    (
+        "std/list::toArray",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.to-array",
+            local_name: "_ssrg_list_toArray",
+            module: "@seseragi/runtime/list",
+            export_name: "toArray",
         },
     ),
     (

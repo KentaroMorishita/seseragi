@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "module": "artifact/collection-convert",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.list",
+      "core.int64",
+      "core.array.reducible",
+      "core.collection.join",
+      "core.string",
+      "core.int64.show",
+      "core.array.comprehend",
+      "core.list.comprehend",
+      "core.unit",
+      "core.array.to-list",
+      "core.list.to-array",
+      "core.list.from-array"
+    ]
+  },
+  "exports": [
+    "collectionConvertResults"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

@@ -543,6 +543,8 @@ pub fn appendedList -> List<Int> = lists.append `[3, 4] `[1, 2]
 pub fn concatenatedArray -> Array<Int> = arrays.concat [[1, 2], [3, 4]]
 pub fn reversedArray -> Array<Int> = arrays.reverse [1, 2, 3]
 pub fn reversedList -> List<Int> = lists.reverse `[1, 2, 3]
+pub fn convertedList -> List<Int> = arrays.toList [1, 2]
+pub fn convertedArray -> Array<Int> = lists.toArray `[1, 2]
 "#;
         let compiled = compile_module(CompileInput::new(
             "main.ssrg",
@@ -569,6 +571,8 @@ pub fn reversedList -> List<Int> = lists.reverse `[1, 2, 3]
             "_ssrg_array_concat",
             "_ssrg_array_reverse",
             "_ssrg_list_reverse",
+            "_ssrg_array_toList",
+            "_ssrg_list_toArray",
         ] {
             assert!(compiled.generated.typescript.contains(helper), "{helper}");
         }

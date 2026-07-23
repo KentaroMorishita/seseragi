@@ -99,7 +99,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/collections/main.ssrg",
       "guidePath": "examples/samples/collections/guide.md",
       "expectedOutputPath": "examples/samples/collections/stdout.txt",
-      "sourceHash": "sha256:4f90ec1381605b301c756dc8503f212a6578a00bc63efb969aad38af317c843c"
+      "sourceHash": "sha256:7f816829a2832e2453b3c8b96f567d4e0f76f9116784f9983cfe03493de2f9b5"
     },
     source: sample0Source,
     guide: sample0Guide,

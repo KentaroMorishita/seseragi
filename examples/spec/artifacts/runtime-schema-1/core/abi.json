@@ -159,6 +159,16 @@
       }
     },
     {
+      "id": "core.array.to-list",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Array<A> -> List<A> preserving element order",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "toList"
+      }
+    },
+    {
       "id": "core.array.filter",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -577,6 +587,16 @@
       "import": {
         "module": "@seseragi/runtime/list",
         "export": "listIterable"
+      }
+    },
+    {
+      "id": "core.list.to-array",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "List<A> -> Array<A> preserving element order",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "toArray"
       }
     },
     {

@@ -1,0 +1,416 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/collection-convert",
+  "runtimeRequirements": [
+    "core.list",
+    "core.int64",
+    "core.array.reducible",
+    "core.collection.join",
+    "core.string",
+    "core.int64.show",
+    "core.array.comprehend",
+    "core.list.comprehend",
+    "core.unit",
+    "core.array.to-list",
+    "core.list.to-array",
+    "core.list.from-array"
+  ],
+  "imports": [
+    {
+      "feature": "core.array.reducible",
+      "local": "_ssrg_array_reducible"
+    },
+    {
+      "feature": "core.collection.join",
+      "local": "_ssrg_collection_join"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.array.comprehend",
+      "local": "_ssrg_array_comprehend"
+    },
+    {
+      "feature": "core.list.comprehend",
+      "local": "_ssrg_list_comprehend"
+    },
+    {
+      "feature": "core.array.to-list",
+      "local": "_ssrg_array_toList"
+    },
+    {
+      "feature": "core.list.to-array",
+      "local": "_ssrg_list_toArray"
+    },
+    {
+      "feature": "core.list.from-array",
+      "local": "_ssrg_list_from_array"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.list",
+      "local": "List"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "showArray",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_join",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          },
+          {
+            "kind": "string",
+            "value": ","
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_array_comprehend",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "values"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "value",
+                "body": {
+                  "kind": "boolean",
+                  "value": true
+                }
+              },
+              {
+                "kind": "lambda",
+                "parameter": "value",
+                "body": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_intShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "value"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 71,
+        "end": 156
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "showList",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "List<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_join",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          },
+          {
+            "kind": "string",
+            "value": ","
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_list_comprehend",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "values"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "value",
+                "body": {
+                  "kind": "boolean",
+                  "value": true
+                }
+              },
+              {
+                "kind": "lambda",
+                "parameter": "value",
+                "body": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_intShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "value"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 158,
+        "end": 241
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "collectionConvertResults",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "showList",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_toList",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "2"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "3"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showArray",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_toArray",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "4"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "5"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "6"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showArray",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_toArray",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_array_toList",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "1"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "2"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "3"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showList",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_toList",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_toArray",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_list_from_array",
+                        "arguments": [
+                          {
+                            "kind": "array",
+                            "elements": [
+                              {
+                                "kind": "bigint",
+                                "value": "4"
+                              },
+                              {
+                                "kind": "bigint",
+                                "value": "5"
+                              },
+                              {
+                                "kind": "bigint",
+                                "value": "6"
+                              }
+                            ],
+                            "elementType": {
+                              "kind": "bigint"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showList",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_toList",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showArray",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_toArray",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "elementType": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 243,
+        "end": 575
+      }
+    }
+  ]
+}

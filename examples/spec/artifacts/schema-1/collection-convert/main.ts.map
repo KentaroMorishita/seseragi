@@ -1,0 +1,42 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/collection-convert"
+  ],
+  "sourcesContent": [
+    "import * as arrays from \"std/array\"\nimport * as lists from \"std/list\"\n\nfn showArray values: Array<Int> -> String =\n  join \",\" [`${value}` | value <- values]\n\nfn showList values: List<Int> -> String =\n  join \",\" [`${value}` | value <- values]\n\npub fn collectionConvertResults unit: Unit -> Array<String> =\n  [\n    showList (arrays.toList [1, 2, 3]),\n    showArray (lists.toArray `[4, 5, 6]),\n    showArray (lists.toArray (arrays.toList [1, 2, 3])),\n    showList (arrays.toList (lists.toArray `[4, 5, 6])),\n    showList (arrays.toList []),\n    showArray (lists.toArray `[])\n  ]\n"
+  ],
+  "names": [
+    "showArray",
+    "_ssrg_collection_join",
+    "arrayReducible",
+    "_ssrg_array_comprehend",
+    "intShow",
+    "showList",
+    "_ssrg_collection_join",
+    "arrayReducible",
+    "_ssrg_list_comprehend",
+    "intShow",
+    "collectionConvertResults",
+    "showList",
+    "_ssrg_array_toList",
+    "showArray",
+    "_ssrg_list_toArray",
+    "fromArray",
+    "showArray",
+    "_ssrg_list_toArray",
+    "_ssrg_array_toList",
+    "showList",
+    "_ssrg_array_toList",
+    "_ssrg_list_toArray",
+    "fromArray",
+    "showList",
+    "_ssrg_array_toList",
+    "showArray",
+    "_ssrg_list_toArray",
+    "fromArray"
+  ],
+  "mappings": ";;;;;AAGAA;AAGAK;AAGAK"
+}

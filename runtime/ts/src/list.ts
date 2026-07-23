@@ -95,6 +95,17 @@ export const listIterable = Object.freeze({
   iterate: <A>(values: List<A>): SeseragiIterator<A> => listIterator(values),
 })
 
+/** Convert a persistent List to an Array without exposing its representation. */
+export function toArray<A>(values: List<A>): ReadonlyArray<A> {
+  const result: A[] = []
+  let cursor = values
+  while (cursor.tag === "Cons") {
+    result.push(cursor.head)
+    cursor = cursor.tail
+  }
+  return result
+}
+
 export function filter<A>(
   predicate: (value: A) => boolean,
   values: List<A>

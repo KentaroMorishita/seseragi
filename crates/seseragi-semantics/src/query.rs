@@ -1158,6 +1158,12 @@ fn standard_category(name: &str, module: &str) -> &'static str {
 
 fn standard_description(identity: &str) -> Option<&'static str> {
     Some(match identity {
+        identity if identity.ends_with("::toArray") => {
+            "Copies the List elements into an Array in source order."
+        }
+        identity if identity.ends_with("::toList") => {
+            "Copies the Array elements into a persistent List in source order."
+        }
         identity if identity.ends_with("::filter") => {
             "Keeps collection elements whose predicate returns True."
         }
