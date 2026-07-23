@@ -30,5 +30,5 @@ pub effect fn main =
     any (\value: Int -> value > 3) (1..=5) |> yesNo |> println
     all (\value: Int -> value > 0) `[1, 2, 3] |> yesNo |> println
     arrays.length (evenLabels 8) |> number |> println
-    lists.head `[9, 8, 7] |> maybeNumber |> println
+    lists.find (\value: Int -> value > 8) `[7, 9, 10] |> maybeNumber |> println
   }

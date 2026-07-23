@@ -41,14 +41,17 @@ export {
   arraySemigroup,
   collectFlatMap as collectFlatMapArray,
   collectMap as collectMapArray,
+  drop as dropArray,
   filter as filterArray,
   filterMap as filterMapArray,
+  find as findArray,
   flatMap as flatMapArray,
   get as getArray,
   head as headArray,
   isEmpty as isEmptyArray,
   length as lengthArray,
   reduce,
+  take as takeArray,
   tail as tailArray,
 } from "./array"
 export type { Iterable, Reducible } from "./collection"
@@ -79,9 +82,11 @@ export {
   collectFlatMap as collectFlatMapList,
   collectMap as collectMapList,
   Cons,
+  drop as dropList,
   Empty,
   filter as filterList,
   filterMap as filterMapList,
+  find as findList,
   flatMap as flatMapList,
   fromArray as listFromArray,
   get as getList,
@@ -96,6 +101,7 @@ export {
   listSemigroup,
   length as lengthList,
   reduce as reduceList,
+  take as takeList,
   tail as tailList,
 } from "./list"
 export { stringMonoid, stringSemigroup } from "./string"

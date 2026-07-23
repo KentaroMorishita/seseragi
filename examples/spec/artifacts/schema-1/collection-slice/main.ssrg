@@ -1,0 +1,40 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+
+fn even value: Int -> Bool =
+  value % 2 == 0
+
+fn negative value: Int -> Bool =
+  value < 0
+
+fn showMaybe value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "none"
+    Just item -> `${item}`
+  }
+
+fn showArray values: Array<Int> -> String =
+  join "," [`${value}` | value <- values]
+
+fn showList values: List<Int> -> String =
+  join "," [`${value}` | value <- values]
+
+pub fn collectionSliceResults unit: Unit -> Array<String> =
+  [
+    showMaybe (arrays.find even [1, 2, 4]),
+    showMaybe (arrays.find negative [1, 2, 4]),
+    showArray (arrays.take (0 - 1) [1, 2, 3]),
+    showArray (arrays.take 2 [1, 2, 3]),
+    showArray (arrays.take 20 [1, 2, 3]),
+    showArray (arrays.drop (0 - 1) [1, 2, 3]),
+    showArray (arrays.drop 2 [1, 2, 3]),
+    showArray (arrays.drop 20 [1, 2, 3]),
+    showMaybe (lists.find even `[1, 2, 4]),
+    showMaybe (lists.find negative `[1, 2, 4]),
+    showList (lists.take (0 - 1) `[1, 2, 3]),
+    showList (lists.take 2 `[1, 2, 3]),
+    showList (lists.take 20 `[1, 2, 3]),
+    showList (lists.drop (0 - 1) `[1, 2, 3]),
+    showList (lists.drop 2 `[1, 2, 3]),
+    showList (lists.drop 20 `[1, 2, 3])
+  ]

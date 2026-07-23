@@ -3,13 +3,16 @@ import {
   arrayIterable,
   arrayMonoid,
   arrayReducible,
+  drop as dropArray,
   filter as filterArray,
   filterMap as filterMapArray,
+  find as findArray,
   flatMap as flatMapArray,
   get as getArray,
   head as headArray,
   isEmpty as isEmptyArray,
   length as lengthArray,
+  take as takeArray,
   tail as tailArray,
 } from "../../../runtime/ts/src/array"
 import {
@@ -22,8 +25,10 @@ import {
 import { intMul, intOne } from "../../../runtime/ts/src/int64"
 import {
   Empty,
+  drop as dropList,
   filter as filterList,
   filterMap as filterMapList,
+  find as findList,
   flatMap as flatMapList,
   fromArray,
   get as getList,
@@ -34,12 +39,56 @@ import {
   listMonoid,
   listReducible,
   reduce as reduceList,
+  take as takeList,
   tail as tailList,
 } from "../../../runtime/ts/src/list"
 import { stringMonoid } from "../../../runtime/ts/src/string"
 import { Just, Nothing } from "../../../runtime/ts/src/sum"
 
 describe("Collection runtime", () => {
+  test("finds and slices Array values with documented count boundaries", () => {
+    const observed: number[] = []
+    expect(
+      findArray(
+        (value: number) => {
+          observed.push(value)
+          return value === 2
+        },
+        [1, 2, 3]
+      )
+    ).toEqual(Just(2))
+    expect(observed).toEqual([1, 2])
+    expect(findArray(() => true, [])).toBe(Nothing)
+
+    expect(takeArray(-1n, [1, 2, 3])).toEqual([])
+    expect(takeArray(0n, [1, 2, 3])).toEqual([])
+    expect(takeArray(2n, [1, 2, 3])).toEqual([1, 2])
+    expect(takeArray(20n, [1, 2, 3])).toEqual([1, 2, 3])
+    expect(dropArray(-1n, [1, 2, 3])).toEqual([1, 2, 3])
+    expect(dropArray(0n, [1, 2, 3])).toEqual([1, 2, 3])
+    expect(dropArray(2n, [1, 2, 3])).toEqual([3])
+    expect(dropArray(20n, [1, 2, 3])).toEqual([])
+  })
+
+  test("finds and slices persistent List values with shared suffixes", () => {
+    const values = fromArray([1, 2, 3])
+    expect(findList((value) => value === 2, values)).toEqual(Just(2))
+    expect(findList(() => true, Empty)).toBe(Nothing)
+
+    expect(takeList(-1n, values)).toBe(Empty)
+    expect(takeList(0n, values)).toBe(Empty)
+    expect(takeList(2n, values)).toEqual(fromArray([1, 2]))
+    expect(takeList(20n, values)).toEqual(values)
+    expect(dropList(-1n, values)).toBe(values)
+    expect(dropList(0n, values)).toBe(values)
+    expect(dropList(2n, values)).toBe(
+      values.tag === "Cons" && values.tail.tag === "Cons"
+        ? values.tail.tail
+        : Empty
+    )
+    expect(dropList(20n, values)).toBe(Empty)
+  })
+
   test("transforms Array values in source order", () => {
     const observed: number[] = []
     expect(

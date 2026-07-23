@@ -1167,6 +1167,15 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         identity if identity.ends_with("::flatMap") => {
             "Transforms each element to a collection and flattens the results."
         }
+        identity if identity.ends_with("::find") => {
+            "Returns the first matching element, or Nothing when none matches."
+        }
+        identity if identity.ends_with("::take") => {
+            "Returns at most the requested number of leading elements."
+        }
+        identity if identity.ends_with("::drop") => {
+            "Returns the elements after skipping the requested leading count."
+        }
         identity if identity.ends_with("::length") => {
             "Returns the number of elements in the collection."
         }

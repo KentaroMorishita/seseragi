@@ -1,0 +1,1069 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/collection-slice",
+  "runtimeRequirements": [
+    "core.list",
+    "core.int64",
+    "core.bool",
+    "core.int64.remainder",
+    "core.maybe",
+    "core.string",
+    "core.adt",
+    "core.int64.show",
+    "core.array.reducible",
+    "core.collection.join",
+    "core.array.comprehend",
+    "core.list.comprehend",
+    "core.unit",
+    "core.array.find",
+    "core.array.take",
+    "core.int64.subtract",
+    "core.array.drop",
+    "core.list.find",
+    "core.list.from-array",
+    "core.list.take",
+    "core.list.drop"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.remainder",
+      "local": "_ssrg_int64_remainder"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.array.reducible",
+      "local": "_ssrg_array_reducible"
+    },
+    {
+      "feature": "core.collection.join",
+      "local": "_ssrg_collection_join"
+    },
+    {
+      "feature": "core.array.comprehend",
+      "local": "_ssrg_array_comprehend"
+    },
+    {
+      "feature": "core.list.comprehend",
+      "local": "_ssrg_list_comprehend"
+    },
+    {
+      "feature": "core.array.find",
+      "local": "_ssrg_array_find"
+    },
+    {
+      "feature": "core.array.take",
+      "local": "_ssrg_array_take"
+    },
+    {
+      "feature": "core.int64.subtract",
+      "local": "_ssrg_int64_subtract"
+    },
+    {
+      "feature": "core.array.drop",
+      "local": "_ssrg_array_drop"
+    },
+    {
+      "feature": "core.list.find",
+      "local": "_ssrg_list_find"
+    },
+    {
+      "feature": "core.list.from-array",
+      "local": "_ssrg_list_from_array"
+    },
+    {
+      "feature": "core.list.take",
+      "local": "_ssrg_list_take"
+    },
+    {
+      "feature": "core.list.drop",
+      "local": "_ssrg_list_drop"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.list",
+      "local": "List"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "even",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "===",
+        "left": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_int64_remainder",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            },
+            {
+              "kind": "bigint",
+              "value": "2"
+            }
+          ]
+        },
+        "right": {
+          "kind": "bigint",
+          "value": "0"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 71,
+        "end": 116
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "negative",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "<",
+        "left": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "right": {
+          "kind": "bigint",
+          "value": "0"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 118,
+        "end": 162
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "showMaybe",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "bigint"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Nothing"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "none"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "item",
+                "type": {
+                  "kind": "bigint"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_intShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "item"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 164,
+        "end": 275
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "showArray",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_join",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          },
+          {
+            "kind": "string",
+            "value": ","
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_array_comprehend",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "values"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "value",
+                "body": {
+                  "kind": "boolean",
+                  "value": true
+                }
+              },
+              {
+                "kind": "lambda",
+                "parameter": "value",
+                "body": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_intShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "value"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 277,
+        "end": 362
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "showList",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "List<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_join",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          },
+          {
+            "kind": "string",
+            "value": ","
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_list_comprehend",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "values"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "value",
+                "body": {
+                  "kind": "boolean",
+                  "value": true
+                }
+              },
+              {
+                "kind": "lambda",
+                "parameter": "value",
+                "body": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_intShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "value"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 364,
+        "end": 447
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "collectionSliceResults",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "showMaybe",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_find",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "even"
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "2"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "4"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybe",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_find",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "negative"
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "2"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "4"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showArray",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_take",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_subtract",
+                    "arguments": [
+                      {
+                        "kind": "bigint",
+                        "value": "0"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "2"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "3"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showArray",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_take",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "2"
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "2"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "3"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showArray",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_take",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "20"
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "2"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "3"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showArray",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_drop",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_subtract",
+                    "arguments": [
+                      {
+                        "kind": "bigint",
+                        "value": "0"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "2"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "3"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showArray",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_drop",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "2"
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "2"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "3"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showArray",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_drop",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "20"
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "2"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "3"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybe",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_find",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "even"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "1"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "2"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "4"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybe",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_find",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "negative"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "1"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "2"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "4"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showList",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_take",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_subtract",
+                    "arguments": [
+                      {
+                        "kind": "bigint",
+                        "value": "0"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "1"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "2"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "3"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showList",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_take",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "2"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "1"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "2"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "3"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showList",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_take",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "20"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "1"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "2"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "3"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showList",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_drop",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_subtract",
+                    "arguments": [
+                      {
+                        "kind": "bigint",
+                        "value": "0"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "1"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "2"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "3"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showList",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_drop",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "2"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "1"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "2"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "3"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showList",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_drop",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "20"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "1"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "2"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "3"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "elementType": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 449,
+        "end": 1213
+      }
+    }
+  ]
+}

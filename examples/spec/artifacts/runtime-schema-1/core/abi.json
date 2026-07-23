@@ -189,6 +189,36 @@
       }
     },
     {
+      "id": "core.array.find",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> Bool) -> Array<A> -> Maybe<A>",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "find"
+      }
+    },
+    {
+      "id": "core.array.take",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Array<A> -> Array<A>",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "take"
+      }
+    },
+    {
+      "id": "core.array.drop",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Array<A> -> Array<A>",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "drop"
+      }
+    },
+    {
       "id": "core.array.length",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -547,6 +577,36 @@
       "import": {
         "module": "@seseragi/runtime/list",
         "export": "flatMap"
+      }
+    },
+    {
+      "id": "core.list.find",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> Bool) -> List<A> -> Maybe<A>",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "find"
+      }
+    },
+    {
+      "id": "core.list.take",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> List<A> -> List<A>",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "take"
+      }
+    },
+    {
+      "id": "core.list.drop",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> List<A> -> List<A>",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "drop"
       }
     },
     {

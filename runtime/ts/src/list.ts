@@ -139,6 +139,39 @@ export function flatMap<A, B>(
   return fromArray(result)
 }
 
+export function find<A>(predicate: (value: A) => boolean, values: List<A>) {
+  let cursor = values
+  while (cursor.tag === "Cons") {
+    if (predicate(cursor.head)) return Just(cursor.head)
+    cursor = cursor.tail
+  }
+  return Nothing
+}
+
+export function take<A>(count: bigint, values: List<A>): List<A> {
+  if (count <= 0n) return Empty
+  const result: A[] = []
+  let remaining = count
+  let cursor = values
+  while (remaining > 0n && cursor.tag === "Cons") {
+    result.push(cursor.head)
+    remaining -= 1n
+    cursor = cursor.tail
+  }
+  return fromArray(result)
+}
+
+export function drop<A>(count: bigint, values: List<A>): List<A> {
+  if (count <= 0n) return values
+  let remaining = count
+  let cursor = values
+  while (remaining > 0n && cursor.tag === "Cons") {
+    remaining -= 1n
+    cursor = cursor.tail
+  }
+  return cursor
+}
+
 export function length<A>(values: List<A>): bigint {
   let result = 0n
   let cursor = values

@@ -532,6 +532,12 @@ pub fn mappedArray -> Array<String> = arrays.filterMap labelEven [1, 2, 3]
 pub fn mappedList -> List<String> = lists.filterMap labelEven `[1, 2, 3]
 pub fn flattenedArray -> Array<Int> = arrays.flatMap repeatArray [1, 2]
 pub fn flattenedList -> List<Int> = lists.flatMap repeatList `[1, 2]
+pub fn foundArray -> Maybe<Int> = arrays.find even [1, 2, 3]
+pub fn foundList -> Maybe<Int> = lists.find even `[1, 2, 3]
+pub fn takenArray -> Array<Int> = arrays.take 2 [1, 2, 3]
+pub fn takenList -> List<Int> = lists.take 2 `[1, 2, 3]
+pub fn droppedArray -> Array<Int> = arrays.drop 2 [1, 2, 3]
+pub fn droppedList -> List<Int> = lists.drop 2 `[1, 2, 3]
 "#;
         let compiled = compile_module(CompileInput::new(
             "main.ssrg",
@@ -547,6 +553,12 @@ pub fn flattenedList -> List<Int> = lists.flatMap repeatList `[1, 2]
             "_ssrg_list_filter",
             "_ssrg_list_filterMap",
             "_ssrg_list_flatMap",
+            "_ssrg_array_find",
+            "_ssrg_list_find",
+            "_ssrg_array_take",
+            "_ssrg_list_take",
+            "_ssrg_array_drop",
+            "_ssrg_list_drop",
         ] {
             assert!(compiled.generated.typescript.contains(helper), "{helper}");
         }

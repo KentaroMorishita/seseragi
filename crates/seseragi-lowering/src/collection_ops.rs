@@ -149,6 +149,33 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
         },
     ),
     (
+        "std/array::find",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.find",
+            local_name: "_ssrg_array_find",
+            module: "@seseragi/runtime/array",
+            export_name: "find",
+        },
+    ),
+    (
+        "std/array::take",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.take",
+            local_name: "_ssrg_array_take",
+            module: "@seseragi/runtime/array",
+            export_name: "take",
+        },
+    ),
+    (
+        "std/array::drop",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.drop",
+            local_name: "_ssrg_array_drop",
+            module: "@seseragi/runtime/array",
+            export_name: "drop",
+        },
+    ),
+    (
         "std/array::length",
         RuntimeCollectionOperation {
             runtime_feature: "core.array.length",
@@ -218,6 +245,33 @@ const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
             local_name: "_ssrg_list_flatMap",
             module: "@seseragi/runtime/list",
             export_name: "flatMap",
+        },
+    ),
+    (
+        "std/list::find",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.find",
+            local_name: "_ssrg_list_find",
+            module: "@seseragi/runtime/list",
+            export_name: "find",
+        },
+    ),
+    (
+        "std/list::take",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.take",
+            local_name: "_ssrg_list_take",
+            module: "@seseragi/runtime/list",
+            export_name: "take",
+        },
+    ),
+    (
+        "std/list::drop",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.drop",
+            local_name: "_ssrg_list_drop",
+            module: "@seseragi/runtime/list",
+            export_name: "drop",
         },
     ),
     (

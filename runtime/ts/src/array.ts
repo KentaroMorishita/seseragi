@@ -81,6 +81,34 @@ export function flatMap<A, B>(
   return result
 }
 
+export function find<A>(
+  predicate: (value: A) => boolean,
+  values: ReadonlyArray<A>
+) {
+  for (const value of values) {
+    if (predicate(value)) return Just(value)
+  }
+  return Nothing
+}
+
+export function take<A>(
+  count: bigint,
+  values: ReadonlyArray<A>
+): ReadonlyArray<A> {
+  if (count <= 0n) return []
+  if (count >= BigInt(values.length)) return values.slice()
+  return values.slice(0, Number(count))
+}
+
+export function drop<A>(
+  count: bigint,
+  values: ReadonlyArray<A>
+): ReadonlyArray<A> {
+  if (count <= 0n) return values.slice()
+  if (count >= BigInt(values.length)) return []
+  return values.slice(Number(count))
+}
+
 export function length<A>(values: ReadonlyArray<A>): bigint {
   return BigInt(values.length)
 }

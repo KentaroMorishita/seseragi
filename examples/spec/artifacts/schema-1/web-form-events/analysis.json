@@ -1860,6 +1860,32 @@
       ]
     },
     {
+      "identity": "std/array::drop",
+      "name": "drop",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "drop<A> arg1: Int -> arg2: Array<A> -> Array<A>",
+      "description": "Returns the elements after skipping the requested leading count.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::drop",
+      "name": "drop",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "drop<A> arg1: Int -> arg2: List<A> -> List<A>",
+      "description": "Returns the elements after skipping the requested leading count.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/array::filter",
       "name": "filter",
       "module": "std/array",
@@ -1910,6 +1936,32 @@
       "typeParameters": [
         "A",
         "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::find",
+      "name": "find",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "find<A> arg1: (A -> Bool) -> arg2: Array<A> -> Maybe<A>",
+      "description": "Returns the first matching element, or Nothing when none matches.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::find",
+      "name": "find",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "find<A> arg1: (A -> Bool) -> arg2: List<A> -> Maybe<A>",
+      "description": "Returns the first matching element, or Nothing when none matches.",
+      "typeParameters": [
+        "A"
       ],
       "constraints": []
     },
@@ -2165,6 +2217,32 @@
       "kind": "function",
       "signature": "tail<A> arg1: List<A> -> Maybe<List<A>>",
       "description": "Returns all elements after the first, or Nothing for an empty collection.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::take",
+      "name": "take",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "take<A> arg1: Int -> arg2: Array<A> -> Array<A>",
+      "description": "Returns at most the requested number of leading elements.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::take",
+      "name": "take",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "take<A> arg1: Int -> arg2: List<A> -> List<A>",
+      "description": "Returns at most the requested number of leading elements.",
       "typeParameters": [
         "A"
       ],

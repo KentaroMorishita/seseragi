@@ -1,0 +1,2730 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/collection-slice",
+  "externalTypeBindings": [
+    {
+      "spelling": "List",
+      "canonical": "std/prelude::List"
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/array",
+      "module": "std/array",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "find",
+          "local": "arrays.find",
+          "canonical": "std/array::find",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "take",
+          "local": "arrays.take",
+          "canonical": "std/array::take",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "drop",
+          "local": "arrays.drop",
+          "canonical": "std/array::drop",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/list",
+      "module": "std/list",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 36,
+        "end": 69
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "find",
+          "local": "lists.find",
+          "canonical": "std/list::find",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 48,
+            "end": 53
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "take",
+          "local": "lists.take",
+          "canonical": "std/list::take",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 48,
+            "end": 53
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "drop",
+          "local": "lists.drop",
+          "canonical": "std/list::drop",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 48,
+            "end": 53
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/collection-slice::even",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 71,
+        "end": 116
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "left": {
+          "kind": "binary",
+          "operator": "%",
+          "left": {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 102,
+              "end": 107
+            }
+          },
+          "right": {
+            "kind": "int64",
+            "value": "2",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 110,
+              "end": 111
+            }
+          },
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Rem",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/int::Rem"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 102,
+            "end": 111
+          }
+        },
+        "right": {
+          "kind": "int64",
+          "value": "0",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 115,
+            "end": 116
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Eq",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Eq"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 102,
+          "end": 116
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-slice::negative",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 118,
+        "end": 162
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "<",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 153,
+            "end": 158
+          }
+        },
+        "right": {
+          "kind": "int64",
+          "value": "0",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 161,
+            "end": 162
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 153,
+          "end": 162
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-slice::showMaybe",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 164,
+        "end": 275
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 215,
+            "end": 220
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Nothing",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 227,
+                  "end": 234
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "none",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 238,
+                "end": 244
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 227,
+              "end": 244
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Just",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 249,
+                  "end": 258
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "item",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 254,
+                  "end": 258
+                }
+              }
+            ],
+            "value": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "item",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 265,
+                      "end": 269
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 263,
+                    "end": 270
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 262,
+                "end": 271
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 249,
+              "end": 271
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 209,
+          "end": 275
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-slice::showArray",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 277,
+        "end": 362
+      },
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::join",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": ",",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 328,
+              "end": 331
+            }
+          },
+          {
+            "kind": "array-comprehension",
+            "element": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 336,
+                      "end": 341
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 334,
+                    "end": 342
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 333,
+                "end": 343
+              }
+            },
+            "clauses": [
+              {
+                "kind": "generator",
+                "pattern": {
+                  "kind": "binding",
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 346,
+                    "end": 351
+                  }
+                },
+                "source": {
+                  "kind": "variable",
+                  "name": "values",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 355,
+                    "end": 361
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Iterable",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/array::Iterable"
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 346,
+                  "end": 361
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 332,
+              "end": 362
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 323,
+          "end": 362
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-slice::showList",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 364,
+        "end": 447
+      },
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::join",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": ",",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 413,
+              "end": 416
+            }
+          },
+          {
+            "kind": "array-comprehension",
+            "element": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 421,
+                      "end": 426
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 419,
+                    "end": 427
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 418,
+                "end": 428
+              }
+            },
+            "clauses": [
+              {
+                "kind": "generator",
+                "pattern": {
+                  "kind": "binding",
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 431,
+                    "end": 436
+                  }
+                },
+                "source": {
+                  "kind": "variable",
+                  "name": "values",
+                  "type": {
+                    "kind": "named",
+                    "name": "List",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 440,
+                    "end": 446
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Iterable",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/list::Iterable"
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 431,
+                  "end": 446
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 417,
+              "end": 447
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 408,
+          "end": 447
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-slice::collectionSliceResults",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 449,
+        "end": 1213
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showMaybe",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::find",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "artifact/collection-slice::even",
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 540,
+                      "end": 544
+                    }
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 546,
+                          "end": 547
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 549,
+                          "end": 550
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "4",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 552,
+                          "end": 553
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 545,
+                      "end": 554
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 528,
+                  "end": 554
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 517,
+              "end": 555
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showMaybe",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::find",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "artifact/collection-slice::negative",
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 584,
+                      "end": 592
+                    }
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 594,
+                          "end": 595
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 597,
+                          "end": 598
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "4",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 600,
+                          "end": 601
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 593,
+                      "end": 602
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 572,
+                  "end": 602
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 561,
+              "end": 603
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showArray",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::take",
+                "arguments": [
+                  {
+                    "kind": "binary",
+                    "operator": "-",
+                    "left": {
+                      "kind": "int64",
+                      "value": "0",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 633,
+                        "end": 634
+                      }
+                    },
+                    "right": {
+                      "kind": "int64",
+                      "value": "1",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 637,
+                        "end": 638
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Sub",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Sub"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 633,
+                      "end": 638
+                    }
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 641,
+                          "end": 642
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 644,
+                          "end": 645
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "3",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 647,
+                          "end": 648
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 640,
+                      "end": 649
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 620,
+                  "end": 649
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 609,
+              "end": 650
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showArray",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::take",
+                "arguments": [
+                  {
+                    "kind": "int64",
+                    "value": "2",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 679,
+                      "end": 680
+                    }
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 682,
+                          "end": 683
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 685,
+                          "end": 686
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "3",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 688,
+                          "end": 689
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 681,
+                      "end": 690
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 667,
+                  "end": 690
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 656,
+              "end": 691
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showArray",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::take",
+                "arguments": [
+                  {
+                    "kind": "int64",
+                    "value": "20",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 720,
+                      "end": 722
+                    }
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 724,
+                          "end": 725
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 727,
+                          "end": 728
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "3",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 730,
+                          "end": 731
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 723,
+                      "end": 732
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 708,
+                  "end": 732
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 697,
+              "end": 733
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showArray",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::drop",
+                "arguments": [
+                  {
+                    "kind": "binary",
+                    "operator": "-",
+                    "left": {
+                      "kind": "int64",
+                      "value": "0",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 763,
+                        "end": 764
+                      }
+                    },
+                    "right": {
+                      "kind": "int64",
+                      "value": "1",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 767,
+                        "end": 768
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Sub",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Sub"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 763,
+                      "end": 768
+                    }
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 771,
+                          "end": 772
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 774,
+                          "end": 775
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "3",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 777,
+                          "end": 778
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 770,
+                      "end": 779
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 750,
+                  "end": 779
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 739,
+              "end": 780
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showArray",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::drop",
+                "arguments": [
+                  {
+                    "kind": "int64",
+                    "value": "2",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 809,
+                      "end": 810
+                    }
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 812,
+                          "end": 813
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 815,
+                          "end": 816
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "3",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 818,
+                          "end": 819
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 811,
+                      "end": 820
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 797,
+                  "end": 820
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 786,
+              "end": 821
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showArray",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::drop",
+                "arguments": [
+                  {
+                    "kind": "int64",
+                    "value": "20",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 850,
+                      "end": 852
+                    }
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 854,
+                          "end": 855
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 857,
+                          "end": 858
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "3",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 860,
+                          "end": 861
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 853,
+                      "end": 862
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 838,
+                  "end": 862
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 827,
+              "end": 863
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showMaybe",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::find",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "artifact/collection-slice::even",
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 891,
+                      "end": 895
+                    }
+                  },
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 898,
+                          "end": 899
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 901,
+                          "end": 902
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "4",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 904,
+                          "end": 905
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 896,
+                      "end": 906
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 880,
+                  "end": 906
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 869,
+              "end": 907
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showMaybe",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::find",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "artifact/collection-slice::negative",
+                    "type": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 935,
+                      "end": 943
+                    }
+                  },
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 946,
+                          "end": 947
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 949,
+                          "end": 950
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "4",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 952,
+                          "end": 953
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 944,
+                      "end": 954
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 924,
+                  "end": 954
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 913,
+              "end": 955
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showList",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::take",
+                "arguments": [
+                  {
+                    "kind": "binary",
+                    "operator": "-",
+                    "left": {
+                      "kind": "int64",
+                      "value": "0",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 983,
+                        "end": 984
+                      }
+                    },
+                    "right": {
+                      "kind": "int64",
+                      "value": "1",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 987,
+                        "end": 988
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Sub",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Sub"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 983,
+                      "end": 988
+                    }
+                  },
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 992,
+                          "end": 993
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 995,
+                          "end": 996
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "3",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 998,
+                          "end": 999
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 990,
+                      "end": 1000
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 971,
+                  "end": 1000
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 961,
+              "end": 1001
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showList",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::take",
+                "arguments": [
+                  {
+                    "kind": "int64",
+                    "value": "2",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1028,
+                      "end": 1029
+                    }
+                  },
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1032,
+                          "end": 1033
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1035,
+                          "end": 1036
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "3",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1038,
+                          "end": 1039
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1030,
+                      "end": 1040
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1017,
+                  "end": 1040
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1007,
+              "end": 1041
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showList",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::take",
+                "arguments": [
+                  {
+                    "kind": "int64",
+                    "value": "20",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1068,
+                      "end": 1070
+                    }
+                  },
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1073,
+                          "end": 1074
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1076,
+                          "end": 1077
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "3",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1079,
+                          "end": 1080
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1071,
+                      "end": 1081
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1057,
+                  "end": 1081
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1047,
+              "end": 1082
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showList",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::drop",
+                "arguments": [
+                  {
+                    "kind": "binary",
+                    "operator": "-",
+                    "left": {
+                      "kind": "int64",
+                      "value": "0",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1110,
+                        "end": 1111
+                      }
+                    },
+                    "right": {
+                      "kind": "int64",
+                      "value": "1",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1114,
+                        "end": 1115
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Sub",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Sub"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1110,
+                      "end": 1115
+                    }
+                  },
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1119,
+                          "end": 1120
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1122,
+                          "end": 1123
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "3",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1125,
+                          "end": 1126
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1117,
+                      "end": 1127
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1098,
+                  "end": 1127
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1088,
+              "end": 1128
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showList",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::drop",
+                "arguments": [
+                  {
+                    "kind": "int64",
+                    "value": "2",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1155,
+                      "end": 1156
+                    }
+                  },
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1159,
+                          "end": 1160
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1162,
+                          "end": 1163
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "3",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1165,
+                          "end": 1166
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1157,
+                      "end": 1167
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1144,
+                  "end": 1167
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1134,
+              "end": 1168
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-slice::showList",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::drop",
+                "arguments": [
+                  {
+                    "kind": "int64",
+                    "value": "20",
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1195,
+                      "end": 1197
+                    }
+                  },
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "int64",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1200,
+                          "end": 1201
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "2",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1203,
+                          "end": 1204
+                        }
+                      },
+                      {
+                        "kind": "int64",
+                        "value": "3",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1206,
+                          "end": 1207
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1198,
+                      "end": 1208
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1184,
+                  "end": 1208
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1174,
+              "end": 1209
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 511,
+          "end": 1213
+        }
+      }
+    }
+  ]
+}
