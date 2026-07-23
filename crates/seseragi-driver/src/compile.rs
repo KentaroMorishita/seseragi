@@ -474,6 +474,48 @@ pub fn invalid -> html.Style =
     }
 
     #[test]
+    fn compiles_safe_array_and_list_observations_through_the_runtime_abi() {
+        let source = r#"import * as arrays from "std/array"
+import * as lists from "std/list"
+
+pub fn arrayLength -> Int = arrays.length [10, 20]
+pub fn arrayEmpty -> Bool = arrays.isEmpty [10]
+pub fn arrayAt -> Maybe<Int> = arrays.get 1 [10, 20]
+pub fn arrayFirst -> Maybe<Int> = arrays.head [10, 20]
+pub fn arrayRest -> Maybe<Array<Int>> = arrays.tail [10, 20]
+
+pub fn listLength -> Int = lists.length `[10, 20]
+pub fn listEmpty -> Bool = lists.isEmpty `[10]
+pub fn listAt -> Maybe<Int> = lists.get 1 `[10, 20]
+pub fn listFirst -> Maybe<Int> = lists.head `[10, 20]
+pub fn listRest -> Maybe<List<Int>> = lists.tail `[10, 20]
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/collection-access",
+            source,
+        ))
+        .expect("standard collection observations should compile");
+
+        for helper in [
+            "_ssrg_array_length",
+            "_ssrg_array_isEmpty",
+            "_ssrg_array_get",
+            "_ssrg_array_head",
+            "_ssrg_array_tail",
+            "_ssrg_list_length",
+            "_ssrg_list_isEmpty",
+            "_ssrg_list_get",
+            "_ssrg_list_head",
+            "_ssrg_list_tail",
+        ] {
+            assert!(compiled.generated.typescript.contains(helper), "{helper}");
+        }
+        assert!(!compiled.generated.typescript.contains("std/array"));
+        assert!(!compiled.generated.typescript.contains("std/list"));
+    }
+
+    #[test]
     fn lowers_parameterless_pure_functions_with_an_implicit_unit() {
         let source = "fn answer -> Int = 42\npub fn run -> Int = answer ()\n";
         let compiled = compile_module(CompileInput::new(

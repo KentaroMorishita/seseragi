@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "case": "collection-access",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/collection-access",
+    "export": "collectionAccessResults",
+    "compiledModule": "../../schema-1/collection-access/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.list",
+      "core.unit",
+      "core.int64",
+      "core.list.from-array",
+      "core.string",
+      "core.int64.show",
+      "core.bool",
+      "core.maybe",
+      "core.adt",
+      "core.array.length",
+      "core.list.length",
+      "core.array.is-empty",
+      "core.array.get",
+      "core.int64.subtract",
+      "core.array.head",
+      "core.array.tail",
+      "core.list.is-empty",
+      "core.list.get",
+      "core.list.head",
+      "core.list.tail"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

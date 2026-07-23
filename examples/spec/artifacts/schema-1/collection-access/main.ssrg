@@ -1,0 +1,54 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+
+fn emptyArray unit: Unit -> Array<Int> =
+  []
+
+fn emptyList unit: Unit -> List<Int> =
+  `[]
+
+fn number value: Int -> String =
+  `${value}`
+
+fn yesNo value: Bool -> String =
+  if value then "true" else "false"
+
+fn showMaybeInt value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "none"
+    Just item -> number item
+  }
+
+fn showMaybeArray value: Maybe<Array<Int>> -> String =
+  match value {
+    Nothing -> "none"
+    Just items -> number (arrays.length items)
+  }
+
+fn showMaybeList value: Maybe<List<Int>> -> String =
+  match value {
+    Nothing -> "none"
+    Just items -> number (lists.length items)
+  }
+
+pub fn collectionAccessResults unit: Unit -> Array<String> =
+  [
+    number (arrays.length [10, 20]),
+    yesNo (arrays.isEmpty (emptyArray ())),
+    showMaybeInt (arrays.get 1 [10, 20]),
+    showMaybeInt (arrays.get (0 - 1) [10, 20]),
+    showMaybeInt (arrays.get 2 [10, 20]),
+    showMaybeInt (arrays.head [10, 20]),
+    showMaybeInt (arrays.head (emptyArray ())),
+    showMaybeArray (arrays.tail [10]),
+    showMaybeArray (arrays.tail (emptyArray ())),
+    number (lists.length `[10, 20]),
+    yesNo (lists.isEmpty (emptyList ())),
+    showMaybeInt (lists.get 1 `[10, 20]),
+    showMaybeInt (lists.get (0 - 1) `[10, 20]),
+    showMaybeInt (lists.get 2 `[10, 20]),
+    showMaybeInt (lists.head `[10, 20]),
+    showMaybeInt (lists.head (emptyList ())),
+    showMaybeList (lists.tail `[10]),
+    showMaybeList (lists.tail (emptyList ()))
+  ]

@@ -95,6 +95,40 @@ export const listIterable = Object.freeze({
   iterate: <A>(values: List<A>): SeseragiIterator<A> => listIterator(values),
 })
 
+export function length<A>(values: List<A>): bigint {
+  let result = 0n
+  let cursor = values
+  while (cursor.tag === "Cons") {
+    result += 1n
+    cursor = cursor.tail
+  }
+  return result
+}
+
+export function isEmpty<A>(values: List<A>): boolean {
+  return values.tag === "Empty"
+}
+
+export function get<A>(index: bigint, values: List<A>) {
+  if (index < 0n) return Nothing
+  let remaining = index
+  let cursor = values
+  while (cursor.tag === "Cons") {
+    if (remaining === 0n) return Just(cursor.head)
+    remaining -= 1n
+    cursor = cursor.tail
+  }
+  return Nothing
+}
+
+export function head<A>(values: List<A>) {
+  return values.tag === "Empty" ? Nothing : Just(values.head)
+}
+
+export function tail<A>(values: List<A>) {
+  return values.tag === "Empty" ? Nothing : Just(values.tail)
+}
+
 /** Pure comprehension lowering for the standard List Iterable instance. */
 export function collectMap<A, B>(
   values: List<A>,

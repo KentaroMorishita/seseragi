@@ -73,17 +73,18 @@ export const generatedSamples: readonly GeneratedSample[] = [
     definition: {
       "id": "collections",
       "title": "Collectionを組み立てる",
-      "summary": "Array、List、Rangeをgenericな集約と内包表記で処理します。",
+      "summary": "Array、List、Rangeをgenericな集約と安全な参照で処理します。",
       "kind": "recipe",
       "difficulty": "beginner",
       "topics": [
         "Collection",
+        "Array",
+        "List",
+        "Maybe",
         "Range",
         "product",
         "any",
-        "all",
-        "join",
-        "Monoid"
+        "all"
       ],
       "capabilities": [
         "console"
@@ -98,7 +99,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/collections/main.ssrg",
       "guidePath": "examples/samples/collections/guide.md",
       "expectedOutputPath": "examples/samples/collections/stdout.txt",
-      "sourceHash": "sha256:3af9d215e587ca8388cf9ffa754a199e96a7fd9311f6a946bd6cfc2292f0cf04"
+      "sourceHash": "sha256:01f5b72fed4a10a625cdda74518d3f270ce70db275c49e2a123eed0678da2c02"
     },
     source: sample0Source,
     guide: sample0Guide,

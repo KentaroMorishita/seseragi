@@ -1,0 +1,1029 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/collection-access",
+  "runtimeRequirements": [
+    "core.list",
+    "core.unit",
+    "core.int64",
+    "core.list.from-array",
+    "core.string",
+    "core.int64.show",
+    "core.bool",
+    "core.maybe",
+    "core.adt",
+    "core.array.length",
+    "core.list.length",
+    "core.array.is-empty",
+    "core.array.get",
+    "core.int64.subtract",
+    "core.array.head",
+    "core.array.tail",
+    "core.list.is-empty",
+    "core.list.get",
+    "core.list.head",
+    "core.list.tail"
+  ],
+  "imports": [
+    {
+      "feature": "core.list.from-array",
+      "local": "_ssrg_list_from_array"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.array.length",
+      "local": "_ssrg_array_length"
+    },
+    {
+      "feature": "core.list.length",
+      "local": "_ssrg_list_length"
+    },
+    {
+      "feature": "core.array.is-empty",
+      "local": "_ssrg_array_isEmpty"
+    },
+    {
+      "feature": "core.array.get",
+      "local": "_ssrg_array_get"
+    },
+    {
+      "feature": "core.int64.subtract",
+      "local": "_ssrg_int64_subtract"
+    },
+    {
+      "feature": "core.array.head",
+      "local": "_ssrg_array_head"
+    },
+    {
+      "feature": "core.array.tail",
+      "local": "_ssrg_array_tail"
+    },
+    {
+      "feature": "core.list.is-empty",
+      "local": "_ssrg_list_isEmpty"
+    },
+    {
+      "feature": "core.list.get",
+      "local": "_ssrg_list_get"
+    },
+    {
+      "feature": "core.list.head",
+      "local": "_ssrg_list_head"
+    },
+    {
+      "feature": "core.list.tail",
+      "local": "_ssrg_list_tail"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.list",
+      "local": "List"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "emptyArray",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [],
+        "elementType": {
+          "kind": "bigint"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 71,
+        "end": 116
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "emptyList",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_list_from_array",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [],
+            "elementType": {
+              "kind": "bigint"
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 118,
+        "end": 162
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "number",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_show_intShow"
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 164,
+        "end": 209
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "yesNo",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "conditional",
+        "condition": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "thenBranch": {
+          "kind": "string",
+          "value": "true"
+        },
+        "elseBranch": {
+          "kind": "string",
+          "value": "false"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 211,
+        "end": 279
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "showMaybeInt",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "bigint"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Nothing"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "none"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "item",
+                "type": {
+                  "kind": "bigint"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "number",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "item"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 281,
+        "end": 397
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "showMaybeArray",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: ReadonlyArray<bigint> }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "array",
+            "element": {
+              "kind": "bigint"
+            }
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Nothing"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "none"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "items",
+                "type": {
+                  "kind": "array",
+                  "element": {
+                    "kind": "bigint"
+                  }
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "number",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_array_length",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "items"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 399,
+        "end": 542
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "showMaybeList",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: List<bigint> }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "list",
+            "element": {
+              "kind": "bigint"
+            }
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Nothing"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "none"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "items",
+                "type": {
+                  "kind": "list",
+                  "element": {
+                    "kind": "bigint"
+                  }
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "number",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_list_length",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "items"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 544,
+        "end": 684
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "collectionAccessResults",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "number",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_length",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "10"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "20"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "unknown"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "yesNo",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_isEmpty",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "emptyArray",
+                    "arguments": [
+                      {
+                        "kind": "undefined"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybeInt",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_get",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "1"
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "10"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "20"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybeInt",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_get",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_subtract",
+                    "arguments": [
+                      {
+                        "kind": "bigint",
+                        "value": "0"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "10"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "20"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybeInt",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_get",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "2"
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "10"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "20"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybeInt",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_head",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "10"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "20"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybeInt",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_head",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "emptyArray",
+                    "arguments": [
+                      {
+                        "kind": "undefined"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybeArray",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_tail",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "bigint",
+                        "value": "10"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "bigint"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybeArray",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_array_tail",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "emptyArray",
+                    "arguments": [
+                      {
+                        "kind": "undefined"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "number",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_length",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "10"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "20"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "unknown"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "yesNo",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_isEmpty",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "emptyList",
+                    "arguments": [
+                      {
+                        "kind": "undefined"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybeInt",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_get",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "1"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "10"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "20"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybeInt",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_get",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_subtract",
+                    "arguments": [
+                      {
+                        "kind": "bigint",
+                        "value": "0"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "10"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "20"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybeInt",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_get",
+                "arguments": [
+                  {
+                    "kind": "bigint",
+                    "value": "2"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "10"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "20"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybeInt",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_head",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "10"
+                          },
+                          {
+                            "kind": "bigint",
+                            "value": "20"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybeInt",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_head",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "emptyList",
+                    "arguments": [
+                      {
+                        "kind": "undefined"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybeList",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_tail",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [
+                          {
+                            "kind": "bigint",
+                            "value": "10"
+                          }
+                        ],
+                        "elementType": {
+                          "kind": "bigint"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "showMaybeList",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_list_tail",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "emptyList",
+                    "arguments": [
+                      {
+                        "kind": "undefined"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "elementType": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 686,
+        "end": 1527
+      }
+    }
+  ]
+}

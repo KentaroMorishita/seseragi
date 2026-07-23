@@ -3,6 +3,7 @@ use crate::collection_ops::{
     runtime_collection_combine_operation, runtime_collection_join_operation,
     runtime_collection_operation, runtime_collection_predicate_operation,
     runtime_collection_product_operation, runtime_collection_sum_operation,
+    runtime_standard_collection_operation,
 };
 use crate::effect_ops::runtime_effect_operation;
 use crate::equality_ops::strict_equality_operator_with_evidence;
@@ -284,6 +285,11 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else if let Some(operation) = runtime_collection_operation(&callee, &evidence) {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
+            } else if let Some(operation) = runtime_standard_collection_operation(&callee) {
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments,

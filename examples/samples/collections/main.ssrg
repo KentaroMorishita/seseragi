@@ -1,3 +1,6 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+
 fn evenLabels limit: Int -> Array<String> =
   [`#${value}` | value <- 1..=limit, value % 2 == 0]
 
@@ -10,6 +13,12 @@ fn yesNo value: Bool -> String =
 fn number value: Int -> String =
   `${value}`
 
+fn maybeNumber value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "none"
+    Just item -> number item
+  }
+
 // 集約はArray、List、Rangeを同じgeneric APIで扱います。
 pub effect fn main =
   do {
@@ -17,4 +26,6 @@ pub effect fn main =
     product [2, 3, 4] |> number |> println
     any (\value: Int -> value > 3) (1..=5) |> yesNo |> println
     all (\value: Int -> value > 0) `[1, 2, 3] |> yesNo |> println
+    arrays.length (evenLabels 8) |> number |> println
+    lists.head `[9, 8, 7] |> maybeNumber |> println
   }

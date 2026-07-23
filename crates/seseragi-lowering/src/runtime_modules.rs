@@ -1,4 +1,10 @@
-const RUNTIME_PROVIDED_MODULES: &[&str] = &["std/web/html", "std/web/dom", "std/signal"];
+const RUNTIME_PROVIDED_MODULES: &[&str] = &[
+    "std/array",
+    "std/list",
+    "std/web/html",
+    "std/web/dom",
+    "std/signal",
+];
 
 pub(crate) fn is_runtime_provided_module(module: &str) -> bool {
     RUNTIME_PROVIDED_MODULES.contains(&module)
@@ -13,6 +19,8 @@ mod tests {
         assert!(is_runtime_provided_module("std/web/html"));
         assert!(is_runtime_provided_module("std/web/dom"));
         assert!(is_runtime_provided_module("std/signal"));
+        assert!(is_runtime_provided_module("std/array"));
+        assert!(is_runtime_provided_module("std/list"));
         assert!(!is_runtime_provided_module("app/domain"));
     }
 }

@@ -1,0 +1,2669 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/collection-access",
+  "externalTypeBindings": [
+    {
+      "spelling": "List",
+      "canonical": "std/prelude::List"
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/array",
+      "module": "std/array",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "length",
+          "local": "arrays.length",
+          "canonical": "std/array::length",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "isEmpty",
+          "local": "arrays.isEmpty",
+          "canonical": "std/array::isEmpty",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "get",
+          "local": "arrays.get",
+          "canonical": "std/array::get",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "head",
+          "local": "arrays.head",
+          "canonical": "std/array::head",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "tail",
+          "local": "arrays.tail",
+          "canonical": "std/array::tail",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/list",
+      "module": "std/list",
+      "origin": {
+        "start": 36,
+        "end": 69
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "length",
+          "local": "lists.length",
+          "canonical": "std/list::length",
+          "origin": {
+            "start": 48,
+            "end": 53
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "isEmpty",
+          "local": "lists.isEmpty",
+          "canonical": "std/list::isEmpty",
+          "origin": {
+            "start": 48,
+            "end": 53
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "get",
+          "local": "lists.get",
+          "canonical": "std/list::get",
+          "origin": {
+            "start": 48,
+            "end": 53
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "head",
+          "local": "lists.head",
+          "canonical": "std/list::head",
+          "origin": {
+            "start": 48,
+            "end": 53
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "tail",
+          "local": "lists.tail",
+          "canonical": "std/list::tail",
+          "origin": {
+            "start": 48,
+            "end": 53
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-access::emptyArray",
+      "visibility": "private",
+      "origin": {
+        "start": 71,
+        "end": 116
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 85,
+            "end": 89
+          }
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 114,
+          "end": 116
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-access::emptyList",
+      "visibility": "private",
+      "origin": {
+        "start": 118,
+        "end": 162
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 131,
+            "end": 135
+          }
+        }
+      ],
+      "body": {
+        "kind": "list",
+        "elements": [],
+        "type": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 159,
+          "end": 162
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-access::number",
+      "visibility": "private",
+      "origin": {
+        "start": 164,
+        "end": 209
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 174,
+            "end": 179
+          }
+        }
+      ],
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 202,
+                "end": 207
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::Int>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "start": 200,
+              "end": 208
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 199,
+          "end": 209
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-access::yesNo",
+      "visibility": "private",
+      "origin": {
+        "start": 211,
+        "end": 279
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 220,
+            "end": 225
+          }
+        }
+      ],
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 249,
+            "end": 254
+          }
+        },
+        "thenBranch": {
+          "kind": "string",
+          "value": "true",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 260,
+            "end": 266
+          }
+        },
+        "elseBranch": {
+          "kind": "string",
+          "value": "false",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 272,
+            "end": 279
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 246,
+          "end": 279
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-access::showMaybeInt",
+      "visibility": "private",
+      "origin": {
+        "start": 281,
+        "end": 397
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 297,
+            "end": 302
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 335,
+            "end": 340
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Nothing",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 347,
+                "end": 354
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "none",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 358,
+                "end": 364
+              }
+            },
+            "origin": {
+              "start": 347,
+              "end": 364
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Just",
+              "argument": {
+                "kind": "binding",
+                "symbol": 25,
+                "name": "item",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 374,
+                  "end": 378
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 369,
+                "end": 378
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "artifact/collection-access::number",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "item",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 389,
+                    "end": 393
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 382,
+                "end": 393
+              }
+            },
+            "origin": {
+              "start": 369,
+              "end": 393
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 329,
+          "end": 397
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-access::showMaybeArray",
+      "visibility": "private",
+      "origin": {
+        "start": 399,
+        "end": 542
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 417,
+            "end": 422
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 462,
+            "end": 467
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Nothing",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 474,
+                "end": 481
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "none",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 485,
+                "end": 491
+              }
+            },
+            "origin": {
+              "start": 474,
+              "end": 491
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Just",
+              "argument": {
+                "kind": "binding",
+                "symbol": 27,
+                "name": "items",
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 501,
+                  "end": 506
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 496,
+                "end": 506
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "artifact/collection-access::number",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/array::length",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "items",
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 532,
+                        "end": 537
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 518,
+                    "end": 537
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 510,
+                "end": 538
+              }
+            },
+            "origin": {
+              "start": 496,
+              "end": 538
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 456,
+          "end": 542
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-access::showMaybeList",
+      "visibility": "private",
+      "origin": {
+        "start": 544,
+        "end": 684
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 561,
+            "end": 566
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 605,
+            "end": 610
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Nothing",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "List",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 617,
+                "end": 624
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "none",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 628,
+                "end": 634
+              }
+            },
+            "origin": {
+              "start": 617,
+              "end": 634
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Just",
+              "argument": {
+                "kind": "binding",
+                "symbol": 30,
+                "name": "items",
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 644,
+                  "end": 649
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "List",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 639,
+                "end": 649
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "artifact/collection-access::number",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/list::length",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "items",
+                      "type": {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 674,
+                        "end": 679
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 661,
+                    "end": 679
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 653,
+                "end": 680
+              }
+            },
+            "origin": {
+              "start": 639,
+              "end": 680
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 599,
+          "end": 684
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-access::collectionAccessResults",
+      "visibility": "public",
+      "origin": {
+        "start": 686,
+        "end": 1527
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 717,
+            "end": 721
+          }
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::number",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::length",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "10",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 778,
+                          "end": 780
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "20",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 782,
+                          "end": 784
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "hole"
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 777,
+                      "end": 785
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 763,
+                  "end": 785
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 755,
+              "end": 786
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::yesNo",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::isEmpty",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "artifact/collection-access::emptyArray",
+                    "arguments": [
+                      {
+                        "kind": "unit",
+                        "type": {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 826,
+                          "end": 828
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 815,
+                      "end": 828
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 799,
+                  "end": 829
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 792,
+              "end": 830
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::showMaybeInt",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::get",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "1",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 861,
+                      "end": 862
+                    }
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "10",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 864,
+                          "end": 866
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "20",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 868,
+                          "end": 870
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 863,
+                      "end": 871
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 850,
+                  "end": 871
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 836,
+              "end": 872
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::showMaybeInt",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::get",
+                "arguments": [
+                  {
+                    "kind": "binary",
+                    "operator": "-",
+                    "left": {
+                      "kind": "integer",
+                      "value": "0",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 904,
+                        "end": 905
+                      }
+                    },
+                    "right": {
+                      "kind": "integer",
+                      "value": "1",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 908,
+                        "end": 909
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Sub",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Sub"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 904,
+                      "end": 909
+                    }
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "10",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 912,
+                          "end": 914
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "20",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 916,
+                          "end": 918
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 911,
+                      "end": 919
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 892,
+                  "end": 919
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 878,
+              "end": 920
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::showMaybeInt",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::get",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "2",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 951,
+                      "end": 952
+                    }
+                  },
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "10",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 954,
+                          "end": 956
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "20",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 958,
+                          "end": 960
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 953,
+                      "end": 961
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 940,
+                  "end": 961
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 926,
+              "end": 962
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::showMaybeInt",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::head",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "10",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 995,
+                          "end": 997
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "20",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 999,
+                          "end": 1001
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 994,
+                      "end": 1002
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 982,
+                  "end": 1002
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 968,
+              "end": 1003
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::showMaybeInt",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::head",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "artifact/collection-access::emptyArray",
+                    "arguments": [
+                      {
+                        "kind": "unit",
+                        "type": {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1047,
+                          "end": 1049
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1036,
+                      "end": 1049
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1023,
+                  "end": 1050
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1009,
+              "end": 1051
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::showMaybeArray",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::tail",
+                "arguments": [
+                  {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "10",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1086,
+                          "end": 1088
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1085,
+                      "end": 1089
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1073,
+                  "end": 1089
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1057,
+              "end": 1090
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::showMaybeArray",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/array::tail",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "artifact/collection-access::emptyArray",
+                    "arguments": [
+                      {
+                        "kind": "unit",
+                        "type": {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1136,
+                          "end": 1138
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1125,
+                      "end": 1138
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1112,
+                  "end": 1139
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1096,
+              "end": 1140
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::number",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::length",
+                "arguments": [
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "10",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1169,
+                          "end": 1171
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "20",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1173,
+                          "end": 1175
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "hole"
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1167,
+                      "end": 1176
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1154,
+                  "end": 1176
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1146,
+              "end": 1177
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::yesNo",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::isEmpty",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "artifact/collection-access::emptyList",
+                    "arguments": [
+                      {
+                        "kind": "unit",
+                        "type": {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1215,
+                          "end": 1217
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1205,
+                      "end": 1217
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1190,
+                  "end": 1218
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1183,
+              "end": 1219
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::showMaybeInt",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::get",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "1",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1249,
+                      "end": 1250
+                    }
+                  },
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "10",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1253,
+                          "end": 1255
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "20",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1257,
+                          "end": 1259
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1251,
+                      "end": 1260
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1239,
+                  "end": 1260
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1225,
+              "end": 1261
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::showMaybeInt",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::get",
+                "arguments": [
+                  {
+                    "kind": "binary",
+                    "operator": "-",
+                    "left": {
+                      "kind": "integer",
+                      "value": "0",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1292,
+                        "end": 1293
+                      }
+                    },
+                    "right": {
+                      "kind": "integer",
+                      "value": "1",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1296,
+                        "end": 1297
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Sub",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Sub"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1292,
+                      "end": 1297
+                    }
+                  },
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "10",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1301,
+                          "end": 1303
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "20",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1305,
+                          "end": 1307
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1299,
+                      "end": 1308
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1281,
+                  "end": 1308
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1267,
+              "end": 1309
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::showMaybeInt",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::get",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "2",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1339,
+                      "end": 1340
+                    }
+                  },
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "10",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1343,
+                          "end": 1345
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "20",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1347,
+                          "end": 1349
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1341,
+                      "end": 1350
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1329,
+                  "end": 1350
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1315,
+              "end": 1351
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::showMaybeInt",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::head",
+                "arguments": [
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "10",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1384,
+                          "end": 1386
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "value": "20",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1388,
+                          "end": 1390
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1382,
+                      "end": 1391
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1371,
+                  "end": 1391
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1357,
+              "end": 1392
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::showMaybeInt",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::head",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "artifact/collection-access::emptyList",
+                    "arguments": [
+                      {
+                        "kind": "unit",
+                        "type": {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1434,
+                          "end": 1436
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1424,
+                      "end": 1436
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1412,
+                  "end": 1437
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1398,
+              "end": 1438
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::showMaybeList",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::tail",
+                "arguments": [
+                  {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "value": "10",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1472,
+                          "end": 1474
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1470,
+                      "end": 1475
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1459,
+                  "end": 1475
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1444,
+              "end": 1476
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/collection-access::showMaybeList",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/list::tail",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "artifact/collection-access::emptyList",
+                    "arguments": [
+                      {
+                        "kind": "unit",
+                        "type": {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1519,
+                          "end": 1521
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1509,
+                      "end": 1521
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "List",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1497,
+                  "end": 1522
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1482,
+              "end": 1523
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 749,
+          "end": 1527
+        }
+      }
+    }
+  ]
+}

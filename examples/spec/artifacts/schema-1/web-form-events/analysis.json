@@ -1878,6 +1878,84 @@
       ]
     },
     {
+      "identity": "std/array::get",
+      "name": "get",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "get<A> arg1: Int -> arg2: Array<A> -> Maybe<A>",
+      "description": "Returns the indexed element, or Nothing when the index is invalid.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::get",
+      "name": "get",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "get<A> arg1: Int -> arg2: List<A> -> Maybe<A>",
+      "description": "Returns the indexed element, or Nothing when the index is invalid.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::head",
+      "name": "head",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "head<A> arg1: Array<A> -> Maybe<A>",
+      "description": "Returns the first element, or Nothing for an empty collection.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::head",
+      "name": "head",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "head<A> arg1: List<A> -> Maybe<A>",
+      "description": "Returns the first element, or Nothing for an empty collection.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/array::isEmpty",
+      "name": "isEmpty",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "isEmpty<A> arg1: Array<A> -> Bool",
+      "description": "Returns whether the collection contains no elements.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::isEmpty",
+      "name": "isEmpty",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "isEmpty<A> arg1: List<A> -> Bool",
+      "description": "Returns whether the collection contains no elements.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::join",
       "name": "join",
       "module": "std/prelude",
@@ -1891,6 +1969,32 @@
       "constraints": [
         "Reducible<C, String>"
       ]
+    },
+    {
+      "identity": "std/array::length",
+      "name": "length",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "length<A> arg1: Array<A> -> Int",
+      "description": "Returns the number of elements in the collection.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::length",
+      "name": "length",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "length<A> arg1: List<A> -> Int",
+      "description": "Returns the number of elements in the collection.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
     },
     {
       "identity": "std/prelude::next",
@@ -1957,6 +2061,32 @@
         "Zero<A>",
         "Add<A, A, A>"
       ]
+    },
+    {
+      "identity": "std/array::tail",
+      "name": "tail",
+      "module": "std/array",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "tail<A> arg1: Array<A> -> Maybe<Array<A>>",
+      "description": "Returns all elements after the first, or Nothing for an empty collection.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/list::tail",
+      "name": "tail",
+      "module": "std/list",
+      "category": "Collection",
+      "kind": "function",
+      "signature": "tail<A> arg1: List<A> -> Maybe<List<A>>",
+      "description": "Returns all elements after the first, or Nothing for an empty collection.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
     },
     {
       "identity": "std/prelude::unfold",

@@ -159,6 +159,56 @@
       }
     },
     {
+      "id": "core.array.length",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Array<A> -> Int",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "length"
+      }
+    },
+    {
+      "id": "core.array.is-empty",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Array<A> -> Bool",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "isEmpty"
+      }
+    },
+    {
+      "id": "core.array.get",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Array<A> -> Maybe<A>",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "get"
+      }
+    },
+    {
+      "id": "core.array.head",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Array<A> -> Maybe<A>",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "head"
+      }
+    },
+    {
+      "id": "core.array.tail",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Array<A> -> Maybe<Array<A>>",
+      "import": {
+        "module": "@seseragi/runtime/array",
+        "export": "tail"
+      }
+    },
+    {
       "id": "core.collection.join",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -437,6 +487,56 @@
       "import": {
         "module": "@seseragi/runtime/list",
         "export": "listIterable"
+      }
+    },
+    {
+      "id": "core.list.length",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "List<A> -> Int",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "length"
+      }
+    },
+    {
+      "id": "core.list.is-empty",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "List<A> -> Bool",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "isEmpty"
+      }
+    },
+    {
+      "id": "core.list.get",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> List<A> -> Maybe<A>",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "get"
+      }
+    },
+    {
+      "id": "core.list.head",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "List<A> -> Maybe<A>",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "head"
+      }
+    },
+    {
+      "id": "core.list.tail",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "List<A> -> Maybe<List<A>>",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "tail"
       }
     },
     {

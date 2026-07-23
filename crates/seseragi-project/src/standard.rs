@@ -13,6 +13,14 @@ struct StandardModuleDefinition {
 
 const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     StandardModuleDefinition {
+        specifier: "std/array",
+        interface: array_interface,
+    },
+    StandardModuleDefinition {
+        specifier: "std/list",
+        interface: list_interface,
+    },
+    StandardModuleDefinition {
         specifier: "std/web/html",
         interface: web_html_interface,
     },
@@ -25,6 +33,70 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         interface: signal_interface,
     },
 ];
+
+fn array_interface() -> ModuleInterface {
+    collection_access_interface("std/array", "Array")
+}
+
+fn list_interface() -> ModuleInterface {
+    collection_access_interface("std/list", "List")
+}
+
+fn collection_access_interface(module: &str, collection: &str) -> ModuleInterface {
+    let values = named_with(collection, vec![named("A")]);
+    let maybe_value = named_with("Maybe", vec![named("A")]);
+    let exports = vec![
+        function_export(
+            module,
+            "length",
+            ["A"],
+            Vec::new(),
+            vec![values.clone()],
+            named("Int"),
+        ),
+        function_export(
+            module,
+            "isEmpty",
+            ["A"],
+            Vec::new(),
+            vec![values.clone()],
+            named("Bool"),
+        ),
+        function_export(
+            module,
+            "get",
+            ["A"],
+            Vec::new(),
+            vec![named("Int"), values.clone()],
+            maybe_value.clone(),
+        ),
+        function_export(
+            module,
+            "head",
+            ["A"],
+            Vec::new(),
+            vec![values.clone()],
+            maybe_value,
+        ),
+        function_export(
+            module,
+            "tail",
+            ["A"],
+            Vec::new(),
+            vec![values.clone()],
+            named_with("Maybe", vec![values]),
+        ),
+    ];
+    ModuleInterface {
+        schema: 1,
+        module: module.to_owned(),
+        source: format!("{module}.ssrg"),
+        dependencies: Vec::new(),
+        exports,
+        operators: Vec::new(),
+        instances: Vec::new(),
+    }
+}
 
 /// Returns the compiler-owned public interface for a standard module.
 ///
@@ -701,6 +773,16 @@ mod tests {
             .iter()
             .any(|export| { export.namespace == "value" && export.name == "renderToString" }));
         assert!(standard_module_target("std/web/missing").is_none());
+        for module in ["std/array", "std/list"] {
+            let target = standard_module_target(module).unwrap();
+            for name in ["length", "isEmpty", "get", "head", "tail"] {
+                assert!(target
+                    .interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.namespace == "value" && export.name == name));
+            }
+        }
         assert!(standard_module_target("std/signal").is_some());
         let dom = standard_module_target("std/web/dom").unwrap();
         assert!(dom

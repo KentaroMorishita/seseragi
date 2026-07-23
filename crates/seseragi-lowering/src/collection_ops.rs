@@ -120,6 +120,108 @@ const LIST_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOperat
     export_name: "collectFlatMap",
 };
 
+const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
+    (
+        "std/array::length",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.length",
+            local_name: "_ssrg_array_length",
+            module: "@seseragi/runtime/array",
+            export_name: "length",
+        },
+    ),
+    (
+        "std/array::isEmpty",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.is-empty",
+            local_name: "_ssrg_array_isEmpty",
+            module: "@seseragi/runtime/array",
+            export_name: "isEmpty",
+        },
+    ),
+    (
+        "std/array::get",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.get",
+            local_name: "_ssrg_array_get",
+            module: "@seseragi/runtime/array",
+            export_name: "get",
+        },
+    ),
+    (
+        "std/array::head",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.head",
+            local_name: "_ssrg_array_head",
+            module: "@seseragi/runtime/array",
+            export_name: "head",
+        },
+    ),
+    (
+        "std/array::tail",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.array.tail",
+            local_name: "_ssrg_array_tail",
+            module: "@seseragi/runtime/array",
+            export_name: "tail",
+        },
+    ),
+    (
+        "std/list::length",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.length",
+            local_name: "_ssrg_list_length",
+            module: "@seseragi/runtime/list",
+            export_name: "length",
+        },
+    ),
+    (
+        "std/list::isEmpty",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.is-empty",
+            local_name: "_ssrg_list_isEmpty",
+            module: "@seseragi/runtime/list",
+            export_name: "isEmpty",
+        },
+    ),
+    (
+        "std/list::get",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.get",
+            local_name: "_ssrg_list_get",
+            module: "@seseragi/runtime/list",
+            export_name: "get",
+        },
+    ),
+    (
+        "std/list::head",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.head",
+            local_name: "_ssrg_list_head",
+            module: "@seseragi/runtime/list",
+            export_name: "head",
+        },
+    ),
+    (
+        "std/list::tail",
+        RuntimeCollectionOperation {
+            runtime_feature: "core.list.tail",
+            local_name: "_ssrg_list_tail",
+            module: "@seseragi/runtime/list",
+            export_name: "tail",
+        },
+    ),
+];
+
+pub(crate) fn runtime_standard_collection_operation(
+    callee: &str,
+) -> Option<&'static RuntimeCollectionOperation> {
+    STANDARD_COLLECTION_OPERATIONS
+        .iter()
+        .find(|(canonical, _)| *canonical == callee)
+        .map(|(_, operation)| operation)
+}
+
 pub(crate) fn runtime_collection_operation(
     callee: &str,
     evidence: &[CoreCallEvidence],
@@ -252,6 +354,11 @@ pub(crate) fn runtime_collection_operation_for_feature(
         LIST_COMPREHEND_FLAT,
     ]
     .into_iter()
+    .chain(
+        STANDARD_COLLECTION_OPERATIONS
+            .iter()
+            .map(|(_, operation)| *operation),
+    )
     .find(|operation| operation.runtime_feature == feature)
 }
 
@@ -433,6 +540,21 @@ mod tests {
                 .map(|operation| operation.runtime_feature),
             Some("core.collection.all")
         );
+    }
+
+    #[test]
+    fn resolves_standard_array_and_list_operations_from_one_registry() {
+        assert_eq!(
+            runtime_standard_collection_operation("std/array::head")
+                .map(|operation| operation.runtime_feature),
+            Some("core.array.head")
+        );
+        assert_eq!(
+            runtime_standard_collection_operation("std/list::tail")
+                .map(|operation| operation.runtime_feature),
+            Some("core.list.tail")
+        );
+        assert!(runtime_standard_collection_operation("user::head").is_none());
     }
 
     #[test]

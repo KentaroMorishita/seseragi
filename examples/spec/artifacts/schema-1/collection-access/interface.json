@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "module": "artifact/collection-access",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/array",
+      "module": "artifact/collection-access/std/array",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/collection-access/std/array::*",
+          "localName": "arrays"
+        }
+      ]
+    },
+    {
+      "specifier": "std/list",
+      "module": "artifact/collection-access/std/list",
+      "origin": {
+        "start": 36,
+        "end": 69
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/collection-access/std/list::*",
+          "localName": "lists"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/collection-access::collectionAccessResults",
+      "namespace": "value",
+      "name": "collectionAccessResults",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 686,
+        "end": 1527
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

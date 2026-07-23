@@ -41,7 +41,12 @@ export {
   arraySemigroup,
   collectFlatMap as collectFlatMapArray,
   collectMap as collectMapArray,
+  get as getArray,
+  head as headArray,
+  isEmpty as isEmptyArray,
+  length as lengthArray,
   reduce,
+  tail as tailArray,
 } from "./array"
 export type { Iterable, Reducible } from "./collection"
 export {
@@ -73,6 +78,9 @@ export {
   Cons,
   Empty,
   fromArray as listFromArray,
+  get as getList,
+  head as headList,
+  isEmpty as isEmptyList,
   listApplicative,
   listFunctor,
   listMonad,
@@ -80,7 +88,9 @@ export {
   listIterable,
   listReducible,
   listSemigroup,
+  length as lengthList,
   reduce as reduceList,
+  tail as tailList,
 } from "./list"
 export { stringMonoid, stringSemigroup } from "./string"
 export type {

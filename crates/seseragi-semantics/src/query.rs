@@ -1122,6 +1122,7 @@ fn effect_operation_callable(operation: crate::KnownEffectOperation) -> Analysis
 
 fn standard_category(name: &str, module: &str) -> &'static str {
     match module {
+        "std/array" | "std/list" => "Collection",
         "std/signal" => "Signal",
         "std/web/html" => "HTML",
         "std/web/dom" => "DOM",
@@ -1157,6 +1158,21 @@ fn standard_category(name: &str, module: &str) -> &'static str {
 
 fn standard_description(identity: &str) -> Option<&'static str> {
     Some(match identity {
+        identity if identity.ends_with("::length") => {
+            "Returns the number of elements in the collection."
+        }
+        identity if identity.ends_with("::isEmpty") => {
+            "Returns whether the collection contains no elements."
+        }
+        identity if identity.ends_with("::get") => {
+            "Returns the indexed element, or Nothing when the index is invalid."
+        }
+        identity if identity.ends_with("::head") => {
+            "Returns the first element, or Nothing for an empty collection."
+        }
+        identity if identity.ends_with("::tail") => {
+            "Returns all elements after the first, or Nothing for an empty collection."
+        }
         "std/prelude::join" => "Joins a reducible collection of strings with a separator.",
         "std/prelude::sum" => "Adds every element of a reducible collection from zero.",
         "std/prelude::product" => "Multiplies every element of a reducible collection from one.",

@@ -53,6 +53,27 @@ export const arrayIterable = Object.freeze({
     arrayIterator(values, 0),
 })
 
+export function length<A>(values: ReadonlyArray<A>): bigint {
+  return BigInt(values.length)
+}
+
+export function isEmpty<A>(values: ReadonlyArray<A>): boolean {
+  return values.length === 0
+}
+
+export function get<A>(index: bigint, values: ReadonlyArray<A>) {
+  if (index < 0n || index >= BigInt(values.length)) return Nothing
+  return Just(values[Number(index)] as A)
+}
+
+export function head<A>(values: ReadonlyArray<A>) {
+  return values.length === 0 ? Nothing : Just(values[0] as A)
+}
+
+export function tail<A>(values: ReadonlyArray<A>) {
+  return values.length === 0 ? Nothing : Just(values.slice(1))
+}
+
 /** Pure comprehension lowering for the standard Array Iterable instance. */
 export function collectMap<A, B>(
   values: ReadonlyArray<A>,
