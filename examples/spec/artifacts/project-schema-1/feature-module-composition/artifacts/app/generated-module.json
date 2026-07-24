@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "module": "fixture/feature-module-composition::app",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "signal.mutable-type",
+      "effect.core.type",
+      "web.html.type",
+      "signal.type",
+      "web.dom.target",
+      "web.dom.error",
+      "web.dom.service",
+      "web.dom.runtime-error",
+      "web.dom.options",
+      "core.adt",
+      "signal.update",
+      "core.unit",
+      "core.string",
+      "web.html.section",
+      "web.html.button",
+      "web.html.h1",
+      "core.string.show",
+      "web.html.main",
+      "effect.core.flatMap",
+      "signal.make",
+      "signal.map",
+      "signal.applicative",
+      "signal.functor",
+      "effect.core.mapError",
+      "web.dom.query",
+      "web.dom.run",
+      "web.dom.default-options"
+    ]
+  },
+  "exports": [
+    "start"
+  ],
+  "outputs": {
+    "typescript": "dist/feature-module-composition/app.ts",
+    "sourceMap": "dist/feature-module-composition/app.ts.map"
+  }
+}

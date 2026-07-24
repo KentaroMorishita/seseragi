@@ -1,0 +1,192 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/feature-module-composition::todo/form",
+  "runtimeRequirements": [
+    "web.html.input-event-type",
+    "effect.core.type",
+    "web.html.type",
+    "core.string",
+    "core.unit",
+    "web.html.form",
+    "web.html.input",
+    "web.html.button"
+  ],
+  "imports": [
+    {
+      "feature": "web.html.form",
+      "local": "_ssrg_html_form"
+    },
+    {
+      "feature": "web.html.input",
+      "local": "_ssrg_html_input"
+    },
+    {
+      "feature": "web.html.button",
+      "local": "_ssrg_html_button"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "web.html.input-event-type",
+      "local": "InputEvent"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "web.html.type",
+      "local": "Html"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "view",
+      "parameters": [
+        {
+          "name": "draft",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "onDraft",
+          "type": "(argument: InputEvent) => Effect<{  }, never, undefined>",
+          "implicit": false
+        },
+        {
+          "name": "onSubmit",
+          "type": "Effect<{  }, never, undefined>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_form",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "onSubmit",
+                "value": {
+                  "kind": "identifier",
+                  "name": "onSubmit"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_input",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "id",
+                              "value": {
+                                "kind": "string",
+                                "value": "todo-draft"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "value",
+                              "value": {
+                                "kind": "identifier",
+                                "name": "draft"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "placeholder",
+                              "value": {
+                                "kind": "string",
+                                "value": "Add a task"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "onInput",
+                              "value": {
+                                "kind": "identifier",
+                                "name": "onDraft"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "buttonType",
+                              "value": {
+                                "kind": "string",
+                                "value": "submit"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Add"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "reference",
+                    "name": "Html",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "fields": []
+                          },
+                          {
+                            "kind": "never"
+                          },
+                          {
+                            "kind": "undefined"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "form.ssrg",
+        "start": 38,
+        "end": 455
+      }
+    }
+  ]
+}

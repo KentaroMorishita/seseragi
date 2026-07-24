@@ -1,0 +1,1194 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/feature-module-composition::app",
+  "runtimeRequirements": [
+    "signal.mutable-type",
+    "effect.core.type",
+    "web.html.type",
+    "signal.type",
+    "web.dom.target",
+    "web.dom.error",
+    "web.dom.service",
+    "web.dom.runtime-error",
+    "web.dom.options",
+    "core.adt",
+    "signal.update",
+    "core.unit",
+    "core.string",
+    "web.html.section",
+    "web.html.button",
+    "web.html.h1",
+    "core.string.show",
+    "web.html.main",
+    "effect.core.flatMap",
+    "signal.make",
+    "signal.map",
+    "signal.applicative",
+    "signal.functor",
+    "effect.core.mapError",
+    "web.dom.query",
+    "web.dom.run",
+    "web.dom.default-options"
+  ],
+  "imports": [
+    {
+      "feature": "signal.update",
+      "local": "_ssrg_signal_update"
+    },
+    {
+      "feature": "web.html.section",
+      "local": "_ssrg_html_section"
+    },
+    {
+      "feature": "web.html.button",
+      "local": "_ssrg_html_button"
+    },
+    {
+      "feature": "web.html.h1",
+      "local": "_ssrg_html_h1"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "web.html.main",
+      "local": "_ssrg_html_main"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "signal.make",
+      "local": "_ssrg_signal_make"
+    },
+    {
+      "feature": "signal.map",
+      "local": "_ssrg_signal_map"
+    },
+    {
+      "feature": "signal.applicative",
+      "local": "_ssrg_signal_applicative"
+    },
+    {
+      "feature": "signal.functor",
+      "local": "_ssrg_signal_functor"
+    },
+    {
+      "feature": "effect.core.mapError",
+      "local": "_ssrg_effect_mapError"
+    },
+    {
+      "feature": "web.dom.query",
+      "local": "_ssrg_dom_query"
+    },
+    {
+      "feature": "web.dom.run",
+      "local": "_ssrg_dom_run"
+    },
+    {
+      "feature": "web.dom.default-options",
+      "local": "_ssrg_dom_defaultOptions"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "signal.mutable-type",
+      "local": "MutableSignal"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "web.html.type",
+      "local": "Html"
+    },
+    {
+      "feature": "signal.type",
+      "local": "Signal"
+    },
+    {
+      "feature": "web.dom.target",
+      "local": "DomTarget"
+    },
+    {
+      "feature": "web.dom.error",
+      "local": "DomError"
+    },
+    {
+      "feature": "web.dom.service",
+      "local": "Dom"
+    },
+    {
+      "feature": "web.dom.runtime-error",
+      "local": "DomRuntimeError"
+    },
+    {
+      "feature": "web.dom.options",
+      "local": "DomOptions"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/feature-module-composition::counter",
+      "specifier": "./counter.js",
+      "bindings": [
+        {
+          "imported": "create",
+          "local": "createCounter",
+          "sourceLocal": "createCounter",
+          "canonical": "fixture/feature-module-composition::counter::create",
+          "typeOnly": false,
+          "origin": {
+            "source": "app.ssrg",
+            "start": 172,
+            "end": 185
+          }
+        }
+      ],
+      "origin": {
+        "source": "app.ssrg",
+        "start": 153,
+        "end": 204
+      }
+    },
+    {
+      "module": "fixture/feature-module-composition::todo/feature",
+      "specifier": "./todo/feature.js",
+      "bindings": [
+        {
+          "imported": "create",
+          "local": "createTodo",
+          "sourceLocal": "createTodo",
+          "canonical": "fixture/feature-module-composition::todo/feature::create",
+          "typeOnly": false,
+          "origin": {
+            "source": "app.ssrg",
+            "start": 224,
+            "end": 234
+          }
+        }
+      ],
+      "origin": {
+        "source": "app.ssrg",
+        "start": 205,
+        "end": 258
+      }
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "Theme",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Light",
+          "tag": "Light",
+          "origin": {
+            "source": "app.ssrg",
+            "start": 277,
+            "end": 282
+          }
+        },
+        {
+          "exported": false,
+          "name": "Dark",
+          "tag": "Dark",
+          "origin": {
+            "source": "app.ssrg",
+            "start": 287,
+            "end": 291
+          }
+        }
+      ],
+      "origin": {
+        "source": "app.ssrg",
+        "start": 260,
+        "end": 291
+      }
+    },
+    {
+      "exported": false,
+      "name": "AppAction",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "ToggleTheme",
+          "tag": "ToggleTheme",
+          "origin": {
+            "source": "app.ssrg",
+            "start": 314,
+            "end": 325
+          }
+        }
+      ],
+      "origin": {
+        "source": "app.ssrg",
+        "start": 293,
+        "end": 325
+      }
+    }
+  ],
+  "structs": [
+    {
+      "exported": false,
+      "name": "AppState",
+      "brand": "__ssrg$brand$AppState",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "theme",
+          "optional": false,
+          "type": {
+            "kind": "reference",
+            "name": "Theme",
+            "arguments": []
+          }
+        }
+      ],
+      "origin": {
+        "source": "app.ssrg",
+        "start": 327,
+        "end": 362
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "toggle",
+      "parameters": [
+        {
+          "name": "theme",
+          "type": "Theme",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "theme"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Theme",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Light"
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "Dark"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "identifier",
+              "name": "Light"
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "Theme",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 364,
+        "end": 453
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "update",
+      "parameters": [
+        {
+          "name": "action",
+          "type": "AppAction",
+          "implicit": false
+        },
+        {
+          "name": "state",
+          "type": "AppState",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "action"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "AppAction",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [],
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "theme",
+                  "value": {
+                    "kind": "call",
+                    "callee": "toggle",
+                    "arguments": [
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "state"
+                        },
+                        "field": "theme"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "AppState",
+                "arguments": []
+              }
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "AppState",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 455,
+        "end": 594
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "dispatch",
+      "parameters": [
+        {
+          "name": "state",
+          "type": "MutableSignal<AppState>",
+          "implicit": false
+        },
+        {
+          "name": "action",
+          "type": "AppAction",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_signal_update",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "update",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "action"
+              }
+            ]
+          },
+          {
+            "kind": "identifier",
+            "name": "state"
+          }
+        ]
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 596,
+        "end": 731
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "themeName",
+      "parameters": [
+        {
+          "name": "theme",
+          "type": "Theme",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "theme"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Theme",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Light"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Light"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Dark"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 733,
+        "end": 830
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "appView",
+      "parameters": [
+        {
+          "name": "state",
+          "type": "MutableSignal<AppState>",
+          "implicit": false
+        },
+        {
+          "name": "current",
+          "type": "AppState",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_section",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "onClick",
+                              "value": {
+                                "kind": "call",
+                                "callee": "dispatch",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "state"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "ToggleTheme"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Toggle app theme"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_h1",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "binary",
+                                "operator": "+",
+                                "left": {
+                                  "kind": "string",
+                                  "value": "Feature tree: "
+                                },
+                                "right": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_show_stringShow"
+                                  },
+                                  "method": "show",
+                                  "arguments": [
+                                    {
+                                      "kind": "call",
+                                      "callee": "themeName",
+                                      "arguments": [
+                                        {
+                                          "kind": "field-access",
+                                          "receiver": {
+                                            "kind": "identifier",
+                                            "name": "current"
+                                          },
+                                          "field": "theme"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "reference",
+                    "name": "Html",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "fields": []
+                          },
+                          {
+                            "kind": "never"
+                          },
+                          {
+                            "kind": "undefined"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 832,
+        "end": 1163
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "page",
+      "parameters": [
+        {
+          "name": "app",
+          "type": "Html<Effect<{  }, never, undefined>>",
+          "implicit": false
+        },
+        {
+          "name": "first",
+          "type": "Html<Effect<{  }, never, undefined>>",
+          "implicit": false
+        },
+        {
+          "name": "second",
+          "type": "Html<Effect<{  }, never, undefined>>",
+          "implicit": false
+        },
+        {
+          "name": "todo",
+          "type": "Html<Effect<{  }, never, undefined>>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_main",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "identifier",
+                      "name": "app"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "first"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "second"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "todo"
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "reference",
+                    "name": "Html",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "fields": []
+                          },
+                          {
+                            "kind": "never"
+                          },
+                          {
+                            "kind": "undefined"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 1165,
+        "end": 1448
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "perform",
+      "parameters": [
+        {
+          "name": "action",
+          "type": "Effect<{  }, never, undefined>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "action"
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 1450,
+        "end": 1528
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "start",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "const",
+            "name": "appState",
+            "type": {
+              "kind": "reference",
+              "name": "MutableSignal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "AppState",
+                  "arguments": []
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "type-application-call",
+              "callee": "_ssrg_signal_make",
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "AppState",
+                  "arguments": []
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "theme",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "Light"
+                      }
+                    }
+                  ],
+                  "assertedType": {
+                    "kind": "reference",
+                    "name": "AppState",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 1602,
+              "end": 1654
+            }
+          },
+          {
+            "kind": "const",
+            "name": "first",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Html",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": []
+                        },
+                        {
+                          "kind": "never"
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "createCounter",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Counter A"
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 1659,
+              "end": 1693
+            }
+          },
+          {
+            "kind": "const",
+            "name": "second",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Html",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": []
+                        },
+                        {
+                          "kind": "never"
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "createCounter",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Counter B"
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 1698,
+              "end": 1733
+            }
+          },
+          {
+            "kind": "const",
+            "name": "todo",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Html",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": []
+                        },
+                        {
+                          "kind": "never"
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "createTodo",
+              "arguments": [
+                {
+                  "kind": "undefined"
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 1738,
+              "end": 1759
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "app",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Html",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": []
+                        },
+                        {
+                          "kind": "never"
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_map",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "appView",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "appState"
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "appState"
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 1765,
+              "end": 1814
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "content",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Html",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": []
+                        },
+                        {
+                          "kind": "never"
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_signal_applicative"
+              },
+              "method": "apply",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_signal_applicative"
+                  },
+                  "method": "apply",
+                  "arguments": [
+                    {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_signal_applicative"
+                      },
+                      "method": "apply",
+                      "arguments": [
+                        {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_signal_functor"
+                          },
+                          "method": "map",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "page"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "app"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "first"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "second"
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "todo"
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 1819,
+              "end": 1875
+            }
+          },
+          {
+            "kind": "const",
+            "name": "target",
+            "type": {
+              "kind": "reference",
+              "name": "DomTarget",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "error: DomError",
+                  "body": {
+                    "kind": "string",
+                    "value": "DOM target unavailable"
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_dom_query",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "#app"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 1881,
+              "end": 1984
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_effect_mapError",
+          "arguments": [
+            {
+              "kind": "lambda",
+              "parameter": "error: DomRuntimeError<never>",
+              "body": {
+                "kind": "string",
+                "value": "DOM runtime failed"
+              }
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_dom_run",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_dom_defaultOptions",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "target"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "perform"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "content"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 1530,
+        "end": 2127
+      }
+    }
+  ]
+}

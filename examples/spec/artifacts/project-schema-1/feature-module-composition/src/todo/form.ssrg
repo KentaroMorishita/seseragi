@@ -1,0 +1,19 @@
+import * as html from "std/web/html"
+
+pub fn view
+  draft: String
+  -> onDraft: (html.InputEvent -> Effect<{}, Never, Unit>)
+  -> onSubmit: Effect<{}, Never, Unit>
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.form {
+    onSubmit,
+    children: [
+      html.input {
+        id: "todo-draft",
+        value: draft,
+        placeholder: "Add a task",
+        onInput: onDraft
+      },
+      html.button { buttonType: "submit", children: "Add" }
+    ]
+  }

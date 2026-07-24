@@ -471,6 +471,11 @@ browser adapter内部で調停します。composition中のinputとcontrolled re
 吸収して確定valueを一度だけActionへ変換します。公開`InputEvent { value }` ABIは維持し、未確定のままsubmitされた場合は
 Input Actionをsource順にcommitしてからSubmit ActionをFIFOへ流します。runtime event-order testと`form-todo` sampleで
 input / textareaの同じ契約を固定しました。
+stateful feature compositionは新しいcompiler組み込み型を加えず、module-privateなState / Action / MutableSignalを
+Effect constructor内へ閉じ、親には`Signal<Html<Effect<{}, Never, Unit>>>`だけを公開するsurfaceで固定しました。
+`feature-module-composition` project fixtureは独立Counter、Todo Form / Listのshared state、root-owned app-wide stateを、
+`feature-module-lifetime`はhide / re-show、並べ替え、差し替えを固定します。imported componentの外部nominal resultは
+provider provenanceをinterfaceへ保持し、親moduleが子のprivate型やAction variantを参照せずに合成できます。
 2026-07-14にVercel Git buildの成功、`application/wasm` asset配信、本番UIからのlesson 01実行を
 <https://seseragi.vercel.app/>で確認しました。
 local custom traitのvertical sliceは`Traitバッジ`としてsample catalogにも追加し、同じWASM driverとbrowser runtimeで

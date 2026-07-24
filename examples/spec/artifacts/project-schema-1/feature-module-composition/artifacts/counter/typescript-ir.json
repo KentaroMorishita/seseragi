@@ -1,0 +1,619 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/feature-module-composition::counter",
+  "runtimeRequirements": [
+    "signal.mutable-type",
+    "effect.core.type",
+    "web.html.type",
+    "signal.type",
+    "core.adt",
+    "core.int64",
+    "core.int64.add",
+    "core.int64.subtract",
+    "signal.update",
+    "core.unit",
+    "core.string",
+    "web.html.section",
+    "web.html.button",
+    "web.html.h2",
+    "web.html.p",
+    "core.int64.show",
+    "effect.core.flatMap",
+    "signal.make",
+    "effect.core.succeed",
+    "signal.map"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.int64.subtract",
+      "local": "_ssrg_int64_subtract"
+    },
+    {
+      "feature": "signal.update",
+      "local": "_ssrg_signal_update"
+    },
+    {
+      "feature": "web.html.section",
+      "local": "_ssrg_html_section"
+    },
+    {
+      "feature": "web.html.button",
+      "local": "_ssrg_html_button"
+    },
+    {
+      "feature": "web.html.h2",
+      "local": "_ssrg_html_h2"
+    },
+    {
+      "feature": "web.html.p",
+      "local": "_ssrg_html_p"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "signal.make",
+      "local": "_ssrg_signal_make"
+    },
+    {
+      "feature": "effect.core.succeed",
+      "local": "_ssrg_effect_succeed"
+    },
+    {
+      "feature": "signal.map",
+      "local": "_ssrg_signal_map"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "signal.mutable-type",
+      "local": "MutableSignal"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "web.html.type",
+      "local": "Html"
+    },
+    {
+      "feature": "signal.type",
+      "local": "Signal"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "CounterAction",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Increment",
+          "tag": "Increment",
+          "origin": {
+            "source": "counter.ssrg",
+            "start": 191,
+            "end": 200
+          }
+        },
+        {
+          "exported": false,
+          "name": "Decrement",
+          "tag": "Decrement",
+          "origin": {
+            "source": "counter.ssrg",
+            "start": 205,
+            "end": 214
+          }
+        }
+      ],
+      "origin": {
+        "source": "counter.ssrg",
+        "start": 166,
+        "end": 214
+      }
+    }
+  ],
+  "structs": [
+    {
+      "exported": false,
+      "name": "CounterState",
+      "brand": "__ssrg$brand$CounterState",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "count",
+          "optional": false,
+          "type": {
+            "kind": "bigint"
+          }
+        }
+      ],
+      "origin": {
+        "source": "counter.ssrg",
+        "start": 127,
+        "end": 164
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "update",
+      "parameters": [
+        {
+          "name": "action",
+          "type": "CounterAction",
+          "implicit": false
+        },
+        {
+          "name": "state",
+          "type": "CounterState",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "action"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "CounterAction",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Increment"
+              }
+            ],
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "count",
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_add",
+                    "arguments": [
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "state"
+                        },
+                        "field": "count"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "CounterState",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "count",
+                  "value": {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_subtract",
+                    "arguments": [
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "state"
+                        },
+                        "field": "count"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "CounterState",
+                "arguments": []
+              }
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "CounterState",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "counter.ssrg",
+        "start": 216,
+        "end": 423
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "dispatch",
+      "parameters": [
+        {
+          "name": "state",
+          "type": "MutableSignal<CounterState>",
+          "implicit": false
+        },
+        {
+          "name": "action",
+          "type": "CounterAction",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_signal_update",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "update",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "action"
+              }
+            ]
+          },
+          {
+            "kind": "identifier",
+            "name": "state"
+          }
+        ]
+      },
+      "origin": {
+        "source": "counter.ssrg",
+        "start": 425,
+        "end": 568
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "view",
+      "parameters": [
+        {
+          "name": "label",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "state",
+          "type": "MutableSignal<CounterState>",
+          "implicit": false
+        },
+        {
+          "name": "current",
+          "type": "CounterState",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_section",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "onClick",
+                              "value": {
+                                "kind": "call",
+                                "callee": "dispatch",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "state"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "Decrement"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "-1"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "onClick",
+                              "value": {
+                                "kind": "call",
+                                "callee": "dispatch",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "state"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "Increment"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "+1"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_h2",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "identifier",
+                                "name": "label"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_p",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "binary",
+                                "operator": "+",
+                                "left": {
+                                  "kind": "string",
+                                  "value": "Count: "
+                                },
+                                "right": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_show_intShow"
+                                  },
+                                  "method": "show",
+                                  "arguments": [
+                                    {
+                                      "kind": "field-access",
+                                      "receiver": {
+                                        "kind": "identifier",
+                                        "name": "current"
+                                      },
+                                      "field": "count"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "reference",
+                    "name": "Html",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "fields": []
+                          },
+                          {
+                            "kind": "never"
+                          },
+                          {
+                            "kind": "undefined"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "counter.ssrg",
+        "start": 570,
+        "end": 977
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "create",
+      "parameters": [
+        {
+          "name": "label",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "const",
+            "name": "state",
+            "type": {
+              "kind": "reference",
+              "name": "MutableSignal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "CounterState",
+                  "arguments": []
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "type-application-call",
+              "callee": "_ssrg_signal_make",
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "CounterState",
+                  "arguments": []
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "count",
+                      "value": {
+                        "kind": "bigint",
+                        "value": "0"
+                      }
+                    }
+                  ],
+                  "assertedType": {
+                    "kind": "reference",
+                    "name": "CounterState",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "counter.ssrg",
+              "start": 1087,
+              "end": 1136
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_effect_succeed",
+          "arguments": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_map",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "view",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "label"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "state"
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "state"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "counter.ssrg",
+        "start": 979,
+        "end": 1191
+      }
+    }
+  ]
+}

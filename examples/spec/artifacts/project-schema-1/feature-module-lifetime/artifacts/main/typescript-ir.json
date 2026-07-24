@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/feature-module-lifetime::main",
+  "runtimeRequirements": [
+    "core.unit",
+    "core.string"
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/feature-module-lifetime::app",
+      "specifier": "./app.js",
+      "bindings": [
+        {
+          "imported": "start",
+          "local": "start",
+          "sourceLocal": "start",
+          "canonical": "fixture/feature-module-lifetime::app::start",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 14
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 29
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "start",
+        "arguments": [
+          {
+            "kind": "undefined"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 31,
+        "end": 60
+      }
+    }
+  ]
+}

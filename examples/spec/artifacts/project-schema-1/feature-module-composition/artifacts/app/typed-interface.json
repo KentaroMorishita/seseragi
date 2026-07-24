@@ -1,0 +1,163 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/feature-module-composition::app",
+  "source": "app.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/web/dom",
+      "module": "std/web/dom",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/web/dom::*",
+          "localName": "dom"
+        }
+      ]
+    },
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "start": 35,
+        "end": 71
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/web/html::*",
+          "localName": "html"
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 72,
+        "end": 109
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/signal::*",
+          "localName": "signals"
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 110,
+        "end": 152
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "MutableSignal",
+          "symbol": "std/signal::MutableSignal"
+        }
+      ]
+    },
+    {
+      "specifier": "./counter",
+      "module": "fixture/feature-module-composition::counter",
+      "origin": {
+        "start": 153,
+        "end": 204
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "create",
+          "symbol": "fixture/feature-module-composition::counter::create",
+          "localName": "createCounter"
+        }
+      ]
+    },
+    {
+      "specifier": "./todo/feature",
+      "module": "fixture/feature-module-composition::todo/feature",
+      "origin": {
+        "start": 205,
+        "end": 258
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "create",
+          "symbol": "fixture/feature-module-composition::todo/feature::create",
+          "localName": "createTodo"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/feature-module-composition::app::start",
+      "namespace": "value",
+      "name": "start",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 1530,
+        "end": 2127
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "dom",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "dom.Dom",
+                      "canonical": "std/web/dom::Dom",
+                      "providerModule": "std/web/dom",
+                      "providerExport": "Dom",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

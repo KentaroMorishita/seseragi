@@ -88,6 +88,7 @@
 | pure Html props / children / SSR              | Lesson 27         | HTML escaping / props fixtures                 | partial |
 | typed form input / change / submit snapshots  | `form-todo` sample | `schema-1/web-form-events` + `form-todo` sample + browser runtime event-order tests; input / textareaのIME compositionを確定Action一回へまとめ、checkbox / submitを含むtyped Actionとpure updateへ接続 | covered |
 | Signal-driven DOM / event resource lifetime   | Lesson 30         | `projects/dom-*`                               | covered |
+| private feature State / Action composition    | `feature-composition` sample | `project-schema-1/{feature-module-composition,feature-module-lifetime}` + compiler interface regression + Signal / DOM runtime tests; local / nearest-parent shared / root-owned app-wide state、opaque Effect event、hide / re-show、order swap、child replacementを既存Signal / Effect / module privacyで接続 | covered |
 | performance erasure / stack safety            | `local-functions` sample | `schema-1/self-tail-loop` + `execution-schema-1/self-tail-loop` + `project-schema-1/self-tail-loop` + `projects/performance-*`; direct self tail callをloop化し、module-level / local、`if` / `match` / pure blockのtail positionと100,000段actual executionを固定。相互再帰・non-tail recursionは一定stack保証の対象外 | partial |
 | benchmark discovery / baseline regression     | none              | `projects/benchmark-discovery`                 | covered |
 

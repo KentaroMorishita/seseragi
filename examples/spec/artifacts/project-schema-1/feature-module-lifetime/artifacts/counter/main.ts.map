@@ -1,0 +1,34 @@
+{
+  "version": 3,
+  "file": "dist/feature-module-lifetime/counter.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/feature-module-lifetime::counter"
+  ],
+  "sourcesContent": [
+    "import * as html from \"std/web/html\"\nimport * as signals from \"std/signal\"\nimport { MutableSignal, Signal } from \"std/signal\"\n\nstruct CounterState {\n  count: Int,\n}\n\ntype CounterAction =\n  | Increment\n\nfn increment state: CounterState -> CounterState =\n  CounterState { count: state.count + 1 }\n\nfn dispatch state: MutableSignal<CounterState>\n  -> action: CounterAction\n  -> Effect<{}, Never, Unit> =\n  match action {\n    Increment -> signals.update increment state\n  }\n\nfn view label: String\n  -> state: MutableSignal<CounterState>\n  -> current: CounterState\n  -> html.Html<Effect<{}, Never, Unit>> =\n  html.section {\n    key: label,\n    children: [\n      html.button { onClick: dispatch state Increment, children: \"+1\" },\n      html.h2 { children: label },\n      html.p { children: `Count: ${current.count}` }\n    ]\n  }\n\npub effect fn create label: String\n  -> Signal<html.Html<Effect<{}, Never, Unit>>>\nfails Never =\n  do {\n    state <- signals.make $ CounterState { count: 0 }\n    succeed $ signals.map (view label state) state\n  }\n"
+  ],
+  "names": [
+    "CounterAction",
+    "Increment",
+    "CounterState",
+    "increment",
+    "add",
+    "dispatch",
+    "update",
+    "view",
+    "section",
+    "button",
+    "dispatch",
+    "h2",
+    "p",
+    "intShow",
+    "create",
+    "state",
+    "make",
+    "succeed",
+    "map",
+    "view"
+  ],
+  "mappings": ";;;;;;AAQAA;;AACIC;;AALJC;;;;AAOAC;AAGAE;AAOAE;AAaAO"
+}

@@ -24,6 +24,10 @@ browser DOMまで実行します。
 mount lifecycle、portableなerror変換は標準helperが所有し、effectful dispatchやcustom lifecycleが必要な場合だけ
 低レベルの`dom.query` / `dom.run`へ降ります。
 
+`Feature Composition` sampleは、その低レベル境界を一つのprivate `mount` helperへ閉じます。各featureはprivate stateから
+read-onlyな`Signal<Html<Effect<{}, Never, Unit>>>`を作り、親は子Actionのvariantを知らずにhide / re-show、並べ替え、
+差し替えを行います。実際のmodule privacyとshared stateは対応するmulti-module project fixtureで検証します。
+
 formは`onInput` / `onChange`からnative Eventそのものではなく、immutableな`InputEvent` / `ChangeEvent` snapshotを
 typed Actionへ変換します。`onSubmit`はbrowser navigationより先に`preventDefault`されます。controlled inputと
 textareaはstableな`id`を使うと、Signal更新による再render後もfocusとselectionを維持します。日本語IMEなどの

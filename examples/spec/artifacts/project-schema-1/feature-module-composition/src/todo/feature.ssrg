@@ -1,0 +1,69 @@
+import * as arrays from "std/array"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+import { view as todoForm } from "./form"
+import { view as todoList } from "./list"
+
+struct TodoState {
+  draft: String,
+  items: Array<String>,
+}
+
+type TodoAction =
+  | DraftChanged String
+  | Submitted
+  | Cleared
+
+fn update action: TodoAction -> state: TodoState -> TodoState =
+  match action {
+    DraftChanged value -> TodoState { ...state, draft: value }
+    Submitted ->
+      if state.draft == ""
+      then state
+      else TodoState {
+        draft: "",
+        items: arrays.append [state.draft] state.items
+      }
+    Cleared -> TodoState { ...state, items: [] }
+  }
+
+fn dispatch state: MutableSignal<TodoState>
+  -> action: TodoAction
+  -> Effect<{}, Never, Unit> =
+  signals.update (update action) state
+
+fn draftAction event: html.InputEvent -> TodoAction =
+  DraftChanged event.value
+
+fn formView state: MutableSignal<TodoState>
+  -> current: TodoState
+  -> html.Html<Effect<{}, Never, Unit>> =
+  todoForm
+    current.draft
+    (\event: html.InputEvent -> dispatch state (draftAction event))
+    (dispatch state Submitted)
+
+fn listView state: MutableSignal<TodoState>
+  -> current: TodoState
+  -> html.Html<Effect<{}, Never, Unit>> =
+  todoList (join ", " current.items) (dispatch state Cleared)
+
+fn view state: MutableSignal<TodoState>
+  -> current: TodoState
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.section {
+    children: [
+      formView state current,
+      listView state current,
+      html.h2 { children: "Shared Todo" }
+    ]
+  }
+
+pub effect fn create
+  -> Signal<html.Html<Effect<{}, Never, Unit>>>
+fails Never =
+  do {
+    state <- signals.make $ TodoState { draft: "", items: [] }
+    succeed $ signals.map (view state) state
+  }

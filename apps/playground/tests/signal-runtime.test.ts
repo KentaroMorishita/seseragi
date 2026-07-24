@@ -158,6 +158,69 @@ describe("Signal browser runtime", () => {
     await unsubscribe(subscription)({})
   })
 
+  test("retains local feature state while its branch is hidden", async () => {
+    const visible = await make(true)({})
+    const child = await make(0)({})
+    const selected = switchMap(
+      (show: boolean) => (show ? child : constant(-1)),
+      visible
+    )
+    const observed: number[] = []
+    const subscription = await subscribe(
+      (value: number) => () => {
+        observed.push(value)
+        return undefined
+      },
+      selected
+    )({})
+
+    await set(1, child)({})
+    await set(false, visible)({})
+    await set(2, child)({})
+    await set(true, visible)({})
+
+    expect(observed).toEqual([0, 1, -1, 2])
+    await unsubscribe(subscription)({})
+  })
+
+  test("keeps feature state attached to constructor bindings when order changes", async () => {
+    const reversed = await make(false)({})
+    const first = await make(0)({})
+    const second = await make(10)({})
+    const pair = combine(
+      (firstValue: number) => (secondValue: number) => ({
+        first: firstValue,
+        second: secondValue,
+      }),
+      first,
+      second
+    )
+    const ordered = combine(
+      (isReversed: boolean) =>
+        (values: { readonly first: number; readonly second: number }) =>
+          isReversed
+            ? `B:${values.second}|A:${values.first}`
+            : `A:${values.first}|B:${values.second}`,
+      reversed,
+      pair
+    )
+    const observed: string[] = []
+    const subscription = await subscribe(
+      (value: string) => () => {
+        observed.push(value)
+        return undefined
+      },
+      ordered
+    )({})
+
+    await set(1, first)({})
+    await set(true, reversed)({})
+    await set(11, second)({})
+
+    expect(observed).toEqual(["A:0|B:10", "A:1|B:10", "B:10|A:1", "B:11|A:1"])
+    await unsubscribe(subscription)({})
+  })
+
   test("publishes nested switches when dependency revisions collide", async () => {
     const chooseLeft = await make(true)({})
     const left = await make(10)({})

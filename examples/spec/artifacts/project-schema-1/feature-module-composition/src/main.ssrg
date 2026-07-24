@@ -1,0 +1,3 @@
+import { start } from "./app"
+
+pub effect fn main = start ()

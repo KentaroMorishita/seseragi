@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "module": "fixture/feature-module-lifetime::counter",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "signal.mutable-type",
+      "effect.core.type",
+      "web.html.type",
+      "signal.type",
+      "core.adt",
+      "core.int64",
+      "core.int64.add",
+      "core.unit",
+      "signal.update",
+      "core.string",
+      "web.html.section",
+      "web.html.button",
+      "web.html.h2",
+      "web.html.p",
+      "core.int64.show",
+      "effect.core.flatMap",
+      "signal.make",
+      "effect.core.succeed",
+      "signal.map"
+    ]
+  },
+  "exports": [
+    "create"
+  ],
+  "outputs": {
+    "typescript": "dist/feature-module-lifetime/counter.ts",
+    "sourceMap": "dist/feature-module-lifetime/counter.ts.map"
+  }
+}

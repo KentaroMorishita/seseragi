@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/feature-module-composition::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./app",
+      "module": "fixture/feature-module-composition::app",
+      "origin": {
+        "start": 0,
+        "end": 29
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "start",
+          "symbol": "fixture/feature-module-composition::app::start"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/feature-module-composition::main::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 31,
+        "end": 60
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "dom",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "dom.Dom",
+                      "canonical": "std/web/dom::Dom",
+                      "providerModule": "std/web/dom",
+                      "providerExport": "Dom",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

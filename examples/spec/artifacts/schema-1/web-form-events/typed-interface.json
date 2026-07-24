@@ -50,8 +50,11 @@
               "arguments": []
             },
             "result": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "html.Html",
+              "canonical": "std/web/html::Html",
+              "providerModule": "std/web/html",
+              "providerExport": "Html",
               "arguments": [
                 {
                   "kind": "named",

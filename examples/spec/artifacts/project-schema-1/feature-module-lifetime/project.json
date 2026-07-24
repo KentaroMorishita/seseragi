@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/feature-module-lifetime::counter",
+    "fixture/feature-module-lifetime::app",
+    "fixture/feature-module-lifetime::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/feature-module-lifetime::counter",
+      "source": "src/counter.ssrg",
+      "output": "dist/feature-module-lifetime/counter.js",
+      "artifacts": "artifacts/counter",
+      "imports": []
+    },
+    {
+      "id": "fixture/feature-module-lifetime::app",
+      "source": "src/app.ssrg",
+      "output": "dist/feature-module-lifetime/app.js",
+      "artifacts": "artifacts/app",
+      "imports": [
+        {
+          "specifier": "./counter",
+          "module": "fixture/feature-module-lifetime::counter"
+        }
+      ]
+    },
+    {
+      "id": "fixture/feature-module-lifetime::main",
+      "source": "src/main.ssrg",
+      "output": "dist/feature-module-lifetime/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./app",
+          "module": "fixture/feature-module-lifetime::app"
+        }
+      ]
+    }
+  ]
+}

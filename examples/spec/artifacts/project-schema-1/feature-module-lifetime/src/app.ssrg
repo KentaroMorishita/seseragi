@@ -1,0 +1,111 @@
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+import { create as createCounter } from "./counter"
+
+type LayoutAction =
+  | ToggleFirst
+  | SwapChildren
+  | ReplaceFirst
+
+struct LayoutState {
+  showFirst: Bool,
+  reversed: Bool,
+  replacement: Bool,
+}
+
+fn toggle value: Bool -> Bool =
+  if value then False else True
+
+fn update action: LayoutAction -> state: LayoutState -> LayoutState =
+  match action {
+    ToggleFirst -> LayoutState { ...state, showFirst: toggle state.showFirst }
+    SwapChildren -> LayoutState { ...state, reversed: toggle state.reversed }
+    ReplaceFirst -> LayoutState { ...state, replacement: toggle state.replacement }
+  }
+
+fn dispatch state: MutableSignal<LayoutState>
+  -> action: LayoutAction
+  -> Effect<{}, Never, Unit> =
+  signals.update (update action) state
+
+fn controls state: MutableSignal<LayoutState>
+  -> current: LayoutState
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.section {
+    children: [
+      html.button {
+        onClick: dispatch state ToggleFirst,
+        children: "Hide / show first"
+      },
+      html.button {
+        onClick: dispatch state SwapChildren,
+        children: "Swap order"
+      },
+      html.button {
+        onClick: dispatch state ReplaceFirst,
+        children: "Replace first"
+      },
+      html.p {
+        children:
+          if current.showFirst
+          then "First feature is mounted"
+          else "First feature is hidden"
+      }
+    ]
+  }
+
+fn hidden -> html.Html<Effect<{}, Never, Unit>> =
+  html.p { children: "First feature is outside the tree" }
+
+fn selectFirst first: Signal<html.Html<Effect<{}, Never, Unit>>>
+  -> replacement: Signal<html.Html<Effect<{}, Never, Unit>>>
+  -> layout: LayoutState
+  -> Signal<html.Html<Effect<{}, Never, Unit>>> =
+  if layout.showFirst
+  then if layout.replacement then replacement else first
+  else signals.constant $ hidden ()
+
+fn page layout: LayoutState
+  -> panel: html.Html<Effect<{}, Never, Unit>>
+  -> first: html.Html<Effect<{}, Never, Unit>>
+  -> second: html.Html<Effect<{}, Never, Unit>>
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.main {
+    children:
+      if layout.reversed
+      then [panel, second, first]
+      else [panel, first, second]
+  }
+
+fn perform action: Effect<{}, Never, Unit> -> Effect<{}, Never, Unit> = action
+
+pub effect fn start -> Unit
+with dom: dom.Dom
+fails String =
+  do {
+    layout <- signals.make $ LayoutState {
+      showFirst: True,
+      reversed: False,
+      replacement: False
+    }
+    first <- createCounter "Counter A"
+    second <- createCounter "Counter B"
+    replacement <- createCounter "Replacement"
+
+    let panel = signals.map (controls layout) layout
+    let layoutView = signals.map (\current: LayoutState -> current) layout
+    let content =
+      page <$> layoutView <*> panel
+        <*> (signals.switchMap
+          (\current: LayoutState -> selectFirst first replacement current)
+          layout)
+        <*> second
+
+    target <-
+      dom.query "#app"
+        |> mapError (\error: dom.DomError -> "DOM target unavailable")
+    dom.run (dom.defaultOptions ()) target perform content
+      |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
+  }

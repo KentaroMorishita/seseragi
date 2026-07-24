@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/feature-module-composition::todo/list",
+  "runtimeRequirements": [
+    "effect.core.type",
+    "web.html.type",
+    "core.string",
+    "core.unit",
+    "web.html.section",
+    "web.html.button",
+    "web.html.p"
+  ],
+  "imports": [
+    {
+      "feature": "web.html.section",
+      "local": "_ssrg_html_section"
+    },
+    {
+      "feature": "web.html.button",
+      "local": "_ssrg_html_button"
+    },
+    {
+      "feature": "web.html.p",
+      "local": "_ssrg_html_p"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "web.html.type",
+      "local": "Html"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "view",
+      "parameters": [
+        {
+          "name": "summary",
+          "type": "string",
+          "implicit": false
+        },
+        {
+          "name": "clear",
+          "type": "Effect<{  }, never, undefined>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_section",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "onClick",
+                              "value": {
+                                "kind": "identifier",
+                                "name": "clear"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Clear"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_p",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "identifier",
+                                "name": "summary"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "reference",
+                    "name": "Html",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "fields": []
+                          },
+                          {
+                            "kind": "never"
+                          },
+                          {
+                            "kind": "undefined"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "list.ssrg",
+        "start": 38,
+        "end": 280
+      }
+    }
+  ]
+}

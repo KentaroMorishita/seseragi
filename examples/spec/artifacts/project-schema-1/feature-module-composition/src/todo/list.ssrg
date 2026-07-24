@@ -1,0 +1,12 @@
+import * as html from "std/web/html"
+
+pub fn view
+  summary: String
+  -> clear: Effect<{}, Never, Unit>
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.section {
+    children: [
+      html.button { onClick: clear, children: "Clear" },
+      html.p { children: summary }
+    ]
+  }

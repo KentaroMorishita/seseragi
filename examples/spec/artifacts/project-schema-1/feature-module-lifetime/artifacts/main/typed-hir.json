@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/feature-module-lifetime::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "dom.Dom",
+      "canonical": "std/web/dom::Dom",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "Dom"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "./app",
+      "module": "fixture/feature-module-lifetime::app",
+      "origin": {
+        "start": 0,
+        "end": 29
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "start",
+          "local": "start",
+          "canonical": "fixture/feature-module-lifetime::app::start",
+          "origin": {
+            "start": 9,
+            "end": 14
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/feature-module-lifetime::main::main",
+      "visibility": "public",
+      "origin": {
+        "start": 31,
+        "end": 60
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "dom",
+              "type": {
+                "kind": "external-named",
+                "name": "dom.Dom",
+                "canonical": "std/web/dom::Dom",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-invoke",
+        "callee": "fixture/feature-module-lifetime::app::start",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "dom",
+                "type": {
+                  "kind": "external-named",
+                  "name": "dom.Dom",
+                  "canonical": "std/web/dom::Dom",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "unit",
+            "type": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            },
+            "origin": {
+              "start": 58,
+              "end": 60
+            }
+          }
+        ],
+        "origin": {
+          "start": 52,
+          "end": 60
+        }
+      }
+    }
+  ]
+}

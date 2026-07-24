@@ -343,6 +343,20 @@ describe("Playground sample catalog", () => {
     expect(main).toContain("execution.cancel()")
   })
 
+  test("shows stateful feature composition without a flattened root Action", () => {
+    const sample = samples.find(
+      (candidate) => candidate.id === "feature-composition"
+    )
+
+    expect(sample?.interactive).toBe(true)
+    expect(sample?.source).toContain(
+      "Signal<html.Html<Effect<{}, Never, Unit>>>"
+    )
+    expect(sample?.source).toContain("signals.switchMap")
+    expect(sample?.source).toContain("effect fn mount")
+    expect(sample?.source).not.toContain("type RootAction")
+  })
+
   test("returns structured diagnostics for invalid source", async () => {
     const response = await compile("broken.ssrg", "pub let broken: Int =\n")
     expect(response.status).toBe("failure")

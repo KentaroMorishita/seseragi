@@ -1,0 +1,2488 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/feature-module-composition::todo/feature",
+  "externalTypeBindings": [
+    {
+      "spelling": "Effect",
+      "canonical": "std/prelude::Effect"
+    },
+    {
+      "spelling": "html.InputEvent",
+      "canonical": "std/web/html::InputEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "InputEvent"
+      }
+    },
+    {
+      "spelling": "html.Html",
+      "canonical": "std/web/html::Html",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Html"
+      }
+    },
+    {
+      "spelling": "MutableSignal",
+      "canonical": "std/signal::MutableSignal",
+      "provider": {
+        "module": "std/signal",
+        "export": "MutableSignal"
+      }
+    },
+    {
+      "spelling": "Style",
+      "canonical": "std/web/html::Style",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Style"
+      }
+    },
+    {
+      "spelling": "Signal",
+      "canonical": "std/signal::Signal",
+      "provider": {
+        "module": "std/signal",
+        "export": "Signal"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/array",
+      "module": "std/array",
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "append",
+          "local": "arrays.append",
+          "canonical": "std/array::append",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 36,
+        "end": 72
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Html",
+          "local": "html.Html",
+          "canonical": "std/web/html::Html",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 48,
+            "end": 52
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "InputEvent",
+          "local": "html.InputEvent",
+          "canonical": "std/web/html::InputEvent",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 48,
+            "end": 52
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "section",
+          "local": "html.section",
+          "canonical": "std/web/html::section",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 48,
+            "end": 52
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "h2",
+          "local": "html.h2",
+          "canonical": "std/web/html::h2",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 48,
+            "end": 52
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 73,
+        "end": 110
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "MutableSignal",
+          "local": "MutableSignal",
+          "canonical": "std/signal::MutableSignal",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 120,
+            "end": 133
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "Signal",
+          "local": "Signal",
+          "canonical": "std/signal::Signal",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 135,
+            "end": 141
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "update",
+          "local": "signals.update",
+          "canonical": "std/signal::update",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 85,
+            "end": 92
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "make",
+          "local": "signals.make",
+          "canonical": "std/signal::make",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 85,
+            "end": 92
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "map",
+          "local": "signals.map",
+          "canonical": "std/signal::map",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 85,
+            "end": 92
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 111,
+        "end": 161
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "MutableSignal",
+          "local": "MutableSignal",
+          "canonical": "std/signal::MutableSignal",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 120,
+            "end": 133
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "Signal",
+          "local": "Signal",
+          "canonical": "std/signal::Signal",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 135,
+            "end": 141
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "update",
+          "local": "signals.update",
+          "canonical": "std/signal::update",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 85,
+            "end": 92
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "make",
+          "local": "signals.make",
+          "canonical": "std/signal::make",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 85,
+            "end": 92
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "map",
+          "local": "signals.map",
+          "canonical": "std/signal::map",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 85,
+            "end": 92
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "./form",
+      "module": "fixture/feature-module-composition::todo/form",
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 162,
+        "end": 203
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "view",
+          "local": "todoForm",
+          "canonical": "fixture/feature-module-composition::todo/form::view",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 179,
+            "end": 187
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "./list",
+      "module": "fixture/feature-module-composition::todo/list",
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 204,
+        "end": 245
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "view",
+          "local": "todoList",
+          "canonical": "fixture/feature-module-composition::todo/list::view",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 221,
+            "end": 229
+          }
+        }
+      ]
+    }
+  ],
+  "adts": [
+    {
+      "symbol": "fixture/feature-module-composition::todo/feature::TodoAction",
+      "name": "TodoAction",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/feature-module-composition::todo/feature::DraftChanged",
+          "name": "DraftChanged",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 332,
+            "end": 344
+          }
+        },
+        {
+          "symbol": "fixture/feature-module-composition::todo/feature::Submitted",
+          "name": "Submitted",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 356,
+            "end": 365
+          }
+        },
+        {
+          "symbol": "fixture/feature-module-composition::todo/feature::Cleared",
+          "name": "Cleared",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 370,
+            "end": 377
+          }
+        }
+      ],
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 310,
+        "end": 377
+      }
+    }
+  ],
+  "structs": [
+    {
+      "symbol": "fixture/feature-module-composition::todo/feature::TodoState",
+      "name": "TodoState",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "draft",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 268,
+            "end": 273
+          }
+        },
+        {
+          "name": "items",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 285,
+            "end": 290
+          }
+        }
+      ],
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 247,
+        "end": 308
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/feature-module-composition::todo/feature::update",
+      "visibility": "private",
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 379,
+        "end": 741
+      },
+      "parameters": [
+        {
+          "id": "action",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "TodoAction",
+            "arguments": []
+          }
+        },
+        {
+          "id": "state",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "TodoState",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "action",
+          "type": {
+            "kind": "named",
+            "name": "TodoAction",
+            "arguments": []
+          },
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 451,
+            "end": 457
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "TodoAction",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "fixture/feature-module-composition::todo/feature::DraftChanged",
+                "origin": {
+                  "source": "feature.ssrg",
+                  "start": 464,
+                  "end": 482
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "feature.ssrg",
+                  "start": 477,
+                  "end": 482
+                }
+              }
+            ],
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "spread",
+                  "value": {
+                    "kind": "variable",
+                    "name": "state",
+                    "type": {
+                      "kind": "named",
+                      "name": "TodoState",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "feature.ssrg",
+                      "start": 501,
+                      "end": 506
+                    }
+                  },
+                  "origin": {
+                    "source": "feature.ssrg",
+                    "start": 498,
+                    "end": 506
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "draft",
+                  "value": {
+                    "kind": "variable",
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "feature.ssrg",
+                      "start": 515,
+                      "end": 520
+                    }
+                  },
+                  "origin": {
+                    "source": "feature.ssrg",
+                    "start": 508,
+                    "end": 520
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "TodoState",
+                "arguments": []
+              },
+              "origin": {
+                "source": "feature.ssrg",
+                "start": 486,
+                "end": 522
+              }
+            },
+            "origin": {
+              "source": "feature.ssrg",
+              "start": 464,
+              "end": 522
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "fixture/feature-module-composition::todo/feature::Submitted",
+                "origin": {
+                  "source": "feature.ssrg",
+                  "start": 527,
+                  "end": 536
+                }
+              }
+            ],
+            "value": {
+              "kind": "if",
+              "condition": {
+                "kind": "binary",
+                "operator": "==",
+                "left": {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "variable",
+                    "name": "state",
+                    "type": {
+                      "kind": "named",
+                      "name": "TodoState",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "feature.ssrg",
+                      "start": 549,
+                      "end": 554
+                    }
+                  },
+                  "field": "draft",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "feature.ssrg",
+                    "start": 549,
+                    "end": 560
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": "",
+                  "origin": {
+                    "source": "feature.ssrg",
+                    "start": 564,
+                    "end": 566
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Eq",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/string::Eq"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "feature.ssrg",
+                  "start": 549,
+                  "end": 566
+                }
+              },
+              "thenBranch": {
+                "kind": "variable",
+                "name": "state",
+                "type": {
+                  "kind": "named",
+                  "name": "TodoState",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "feature.ssrg",
+                  "start": 578,
+                  "end": 583
+                }
+              },
+              "elseBranch": {
+                "kind": "record",
+                "items": [
+                  {
+                    "kind": "field",
+                    "name": "draft",
+                    "value": {
+                      "kind": "string",
+                      "value": "",
+                      "origin": {
+                        "source": "feature.ssrg",
+                        "start": 622,
+                        "end": 624
+                      }
+                    },
+                    "origin": {
+                      "source": "feature.ssrg",
+                      "start": 615,
+                      "end": 624
+                    }
+                  },
+                  {
+                    "kind": "field",
+                    "name": "items",
+                    "value": {
+                      "kind": "call",
+                      "callee": "std/array::append",
+                      "arguments": [
+                        {
+                          "kind": "array",
+                          "elements": [
+                            {
+                              "kind": "field-access",
+                              "receiver": {
+                                "kind": "variable",
+                                "name": "state",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "TodoState",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "source": "feature.ssrg",
+                                  "start": 656,
+                                  "end": 661
+                                }
+                              },
+                              "field": "draft",
+                              "type": {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "source": "feature.ssrg",
+                                "start": 656,
+                                "end": 667
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "feature.ssrg",
+                            "start": 655,
+                            "end": 668
+                          }
+                        },
+                        {
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "variable",
+                            "name": "state",
+                            "type": {
+                              "kind": "named",
+                              "name": "TodoState",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "feature.ssrg",
+                              "start": 669,
+                              "end": 674
+                            }
+                          },
+                          "field": "items",
+                          "type": {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "feature.ssrg",
+                            "start": 669,
+                            "end": 680
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "feature.ssrg",
+                        "start": 641,
+                        "end": 680
+                      }
+                    },
+                    "origin": {
+                      "source": "feature.ssrg",
+                      "start": 634,
+                      "end": 680
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "TodoState",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "feature.ssrg",
+                  "start": 595,
+                  "end": 688
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "TodoState",
+                "arguments": []
+              },
+              "origin": {
+                "source": "feature.ssrg",
+                "start": 546,
+                "end": 688
+              }
+            },
+            "origin": {
+              "source": "feature.ssrg",
+              "start": 527,
+              "end": 688
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "spread",
+                  "value": {
+                    "kind": "variable",
+                    "name": "state",
+                    "type": {
+                      "kind": "named",
+                      "name": "TodoState",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "feature.ssrg",
+                      "start": 719,
+                      "end": 724
+                    }
+                  },
+                  "origin": {
+                    "source": "feature.ssrg",
+                    "start": 716,
+                    "end": 724
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "items",
+                  "value": {
+                    "kind": "array",
+                    "elements": [],
+                    "type": {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "feature.ssrg",
+                      "start": 733,
+                      "end": 735
+                    }
+                  },
+                  "origin": {
+                    "source": "feature.ssrg",
+                    "start": 726,
+                    "end": 735
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "TodoState",
+                "arguments": []
+              },
+              "origin": {
+                "source": "feature.ssrg",
+                "start": 704,
+                "end": 737
+              }
+            },
+            "origin": {
+              "source": "feature.ssrg",
+              "start": 693,
+              "end": 737
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "TodoState",
+          "arguments": []
+        },
+        "origin": {
+          "source": "feature.ssrg",
+          "start": 445,
+          "end": 741
+        }
+      }
+    },
+    {
+      "symbol": "fixture/feature-module-composition::todo/feature::dispatch",
+      "visibility": "private",
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 743,
+        "end": 880
+      },
+      "parameters": [
+        {
+          "id": "state",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "MutableSignal",
+            "canonical": "std/signal::MutableSignal",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "TodoState",
+                "arguments": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "action",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "TodoAction",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/signal::update",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/feature-module-composition::todo/feature::update",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "action",
+                "type": {
+                  "kind": "named",
+                  "name": "TodoAction",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "feature.ssrg",
+                  "start": 867,
+                  "end": 873
+                }
+              }
+            ],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "TodoState",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "TodoState",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "feature.ssrg",
+              "start": 860,
+              "end": 873
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "state",
+            "type": {
+              "kind": "external-named",
+              "name": "MutableSignal",
+              "canonical": "std/signal::MutableSignal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "TodoState",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "feature.ssrg",
+              "start": 875,
+              "end": 880
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "feature.ssrg",
+          "start": 844,
+          "end": 880
+        }
+      }
+    },
+    {
+      "symbol": "fixture/feature-module-composition::todo/feature::draftAction",
+      "visibility": "private",
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 882,
+        "end": 962
+      },
+      "parameters": [
+        {
+          "id": "event",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "html.InputEvent",
+            "canonical": "std/web/html::InputEvent",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/feature-module-composition::todo/feature::DraftChanged",
+        "arguments": [
+          {
+            "kind": "field-access",
+            "receiver": {
+              "kind": "variable",
+              "name": "event",
+              "type": {
+                "kind": "external-named",
+                "name": "html.InputEvent",
+                "canonical": "std/web/html::InputEvent",
+                "arguments": []
+              },
+              "origin": {
+                "source": "feature.ssrg",
+                "start": 951,
+                "end": 956
+              }
+            },
+            "field": "value",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "feature.ssrg",
+              "start": 951,
+              "end": 962
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "TodoAction",
+          "arguments": []
+        },
+        "origin": {
+          "source": "feature.ssrg",
+          "start": 938,
+          "end": 962
+        }
+      }
+    },
+    {
+      "symbol": "fixture/feature-module-composition::todo/feature::formView",
+      "visibility": "private",
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 964,
+        "end": 1201
+      },
+      "parameters": [
+        {
+          "id": "state",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "MutableSignal",
+            "canonical": "std/signal::MutableSignal",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "TodoState",
+                "arguments": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "current",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "TodoState",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/feature-module-composition::todo/form::view",
+        "arguments": [
+          {
+            "kind": "field-access",
+            "receiver": {
+              "kind": "variable",
+              "name": "current",
+              "type": {
+                "kind": "named",
+                "name": "TodoState",
+                "arguments": []
+              },
+              "origin": {
+                "source": "feature.ssrg",
+                "start": 1089,
+                "end": 1096
+              }
+            },
+            "field": "draft",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "feature.ssrg",
+              "start": 1089,
+              "end": 1102
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": {
+              "id": "event",
+              "kind": "named",
+              "type": {
+                "kind": "external-named",
+                "name": "html.InputEvent",
+                "canonical": "std/web/html::InputEvent",
+                "arguments": []
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "fixture/feature-module-composition::todo/feature::dispatch",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "state",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "TodoState",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "feature.ssrg",
+                    "start": 1144,
+                    "end": 1149
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "fixture/feature-module-composition::todo/feature::draftAction",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "event",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.InputEvent",
+                        "canonical": "std/web/html::InputEvent",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "feature.ssrg",
+                        "start": 1163,
+                        "end": 1168
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "TodoAction",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "feature.ssrg",
+                    "start": 1151,
+                    "end": 1168
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "feature.ssrg",
+                "start": 1135,
+                "end": 1169
+              }
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "external-named",
+                "name": "html.InputEvent",
+                "canonical": "std/web/html::InputEvent",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "feature.ssrg",
+              "start": 1108,
+              "end": 1169
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "fixture/feature-module-composition::todo/feature::dispatch",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "state",
+                "type": {
+                  "kind": "external-named",
+                  "name": "MutableSignal",
+                  "canonical": "std/signal::MutableSignal",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "TodoState",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "feature.ssrg",
+                  "start": 1185,
+                  "end": 1190
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "fixture/feature-module-composition::todo/feature::Submitted",
+                "type": {
+                  "kind": "named",
+                  "name": "TodoAction",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "feature.ssrg",
+                  "start": 1191,
+                  "end": 1200
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "feature.ssrg",
+              "start": 1176,
+              "end": 1200
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "source": "feature.ssrg",
+          "start": 1076,
+          "end": 1201
+        }
+      }
+    },
+    {
+      "symbol": "fixture/feature-module-composition::todo/feature::listView",
+      "visibility": "private",
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 1203,
+        "end": 1374
+      },
+      "parameters": [
+        {
+          "id": "state",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "MutableSignal",
+            "canonical": "std/signal::MutableSignal",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "TodoState",
+                "arguments": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "current",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "TodoState",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/feature-module-composition::todo/list::view",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "std/prelude::join",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": ", ",
+                "origin": {
+                  "source": "feature.ssrg",
+                  "start": 1330,
+                  "end": 1334
+                }
+              },
+              {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "variable",
+                  "name": "current",
+                  "type": {
+                    "kind": "named",
+                    "name": "TodoState",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "feature.ssrg",
+                    "start": 1335,
+                    "end": 1342
+                  }
+                },
+                "field": "items",
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "feature.ssrg",
+                  "start": 1335,
+                  "end": 1348
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Reducible",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/array::Reducible"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "feature.ssrg",
+              "start": 1325,
+              "end": 1348
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "fixture/feature-module-composition::todo/feature::dispatch",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "state",
+                "type": {
+                  "kind": "external-named",
+                  "name": "MutableSignal",
+                  "canonical": "std/signal::MutableSignal",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "TodoState",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "feature.ssrg",
+                  "start": 1360,
+                  "end": 1365
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "fixture/feature-module-composition::todo/feature::Cleared",
+                "type": {
+                  "kind": "named",
+                  "name": "TodoAction",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "feature.ssrg",
+                  "start": 1366,
+                  "end": 1373
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "feature.ssrg",
+              "start": 1351,
+              "end": 1373
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "source": "feature.ssrg",
+          "start": 1315,
+          "end": 1374
+        }
+      }
+    },
+    {
+      "symbol": "fixture/feature-module-composition::todo/feature::view",
+      "visibility": "private",
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 1376,
+        "end": 1626
+      },
+      "parameters": [
+        {
+          "id": "state",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "MutableSignal",
+            "canonical": "std/signal::MutableSignal",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "TodoState",
+                "arguments": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "current",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "TodoState",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::section",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "call",
+                      "callee": "fixture/feature-module-composition::todo/feature::formView",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "state",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "MutableSignal",
+                            "canonical": "std/signal::MutableSignal",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "TodoState",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "feature.ssrg",
+                            "start": 1530,
+                            "end": 1535
+                          }
+                        },
+                        {
+                          "kind": "variable",
+                          "name": "current",
+                          "type": {
+                            "kind": "named",
+                            "name": "TodoState",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "feature.ssrg",
+                            "start": 1536,
+                            "end": 1543
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "feature.ssrg",
+                        "start": 1521,
+                        "end": 1543
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "fixture/feature-module-composition::todo/feature::listView",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "state",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "MutableSignal",
+                            "canonical": "std/signal::MutableSignal",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "TodoState",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "feature.ssrg",
+                            "start": 1560,
+                            "end": 1565
+                          }
+                        },
+                        {
+                          "kind": "variable",
+                          "name": "current",
+                          "type": {
+                            "kind": "named",
+                            "name": "TodoState",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "feature.ssrg",
+                            "start": 1566,
+                            "end": 1573
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "feature.ssrg",
+                        "start": 1551,
+                        "end": 1573
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::h2",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Shared Todo",
+                                "origin": {
+                                  "source": "feature.ssrg",
+                                  "start": 1601,
+                                  "end": 1614
+                                }
+                              },
+                              "origin": {
+                                "source": "feature.ssrg",
+                                "start": 1591,
+                                "end": 1614
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "feature.ssrg",
+                            "start": 1589,
+                            "end": 1616
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Effect",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "closed": true,
+                                    "fields": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Never",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Unit",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<String>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "feature.ssrg",
+                        "start": 1581,
+                        "end": 1616
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "feature.ssrg",
+                    "start": 1513,
+                    "end": 1622
+                  }
+                },
+                "origin": {
+                  "source": "feature.ssrg",
+                  "start": 1503,
+                  "end": 1622
+                }
+              }
+            ],
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "feature.ssrg",
+              "start": 1497,
+              "end": 1626
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "IntoChildren",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/web/html::IntoChildren<Array>"
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "source": "feature.ssrg",
+          "start": 1484,
+          "end": 1626
+        }
+      }
+    },
+    {
+      "symbol": "fixture/feature-module-composition::todo/feature::create",
+      "visibility": "public",
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 1628,
+        "end": 1829
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "state",
+            "type": {
+              "kind": "external-named",
+              "name": "MutableSignal",
+              "canonical": "std/signal::MutableSignal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "TodoState",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::make",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "draft",
+                      "value": {
+                        "kind": "string",
+                        "value": "",
+                        "origin": {
+                          "source": "feature.ssrg",
+                          "start": 1765,
+                          "end": 1767
+                        }
+                      },
+                      "origin": {
+                        "source": "feature.ssrg",
+                        "start": 1758,
+                        "end": 1767
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "items",
+                      "value": {
+                        "kind": "array",
+                        "elements": [],
+                        "type": {
+                          "kind": "named",
+                          "name": "Array",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "feature.ssrg",
+                          "start": 1776,
+                          "end": 1778
+                        }
+                      },
+                      "origin": {
+                        "source": "feature.ssrg",
+                        "start": 1769,
+                        "end": 1778
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "TodoState",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "feature.ssrg",
+                    "start": 1746,
+                    "end": 1780
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "TodoState",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "source": "feature.ssrg",
+                "start": 1731,
+                "end": 1780
+              }
+            },
+            "origin": {
+              "source": "feature.ssrg",
+              "start": 1722,
+              "end": 1780
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "effect.succeed",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": []
+          },
+          "failure": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          },
+          "success": {
+            "kind": "external-named",
+            "name": "Signal",
+            "canonical": "std/signal::Signal",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "html.Html",
+                "canonical": "std/web/html::Html",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "std/signal::map",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/feature-module-composition::todo/feature::view",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "state",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "MutableSignal",
+                        "canonical": "std/signal::MutableSignal",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "TodoState",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "feature.ssrg",
+                        "start": 1813,
+                        "end": 1818
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "TodoState",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "feature.ssrg",
+                    "start": 1808,
+                    "end": 1818
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "state",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "TodoState",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "feature.ssrg",
+                    "start": 1820,
+                    "end": 1825
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "source": "feature.ssrg",
+                "start": 1795,
+                "end": 1825
+              }
+            }
+          ],
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 1785,
+            "end": 1825
+          }
+        },
+        "origin": {
+          "source": "feature.ssrg",
+          "start": 1713,
+          "end": 1829
+        }
+      }
+    }
+  ]
+}

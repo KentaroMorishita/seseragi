@@ -1,0 +1,48 @@
+{
+  "version": 3,
+  "file": "dist/feature-module-composition/todo/feature.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/feature-module-composition::todo/feature"
+  ],
+  "sourcesContent": [
+    "import * as arrays from \"std/array\"\nimport * as html from \"std/web/html\"\nimport * as signals from \"std/signal\"\nimport { MutableSignal, Signal } from \"std/signal\"\nimport { view as todoForm } from \"./form\"\nimport { view as todoList } from \"./list\"\n\nstruct TodoState {\n  draft: String,\n  items: Array<String>,\n}\n\ntype TodoAction =\n  | DraftChanged String\n  | Submitted\n  | Cleared\n\nfn update action: TodoAction -> state: TodoState -> TodoState =\n  match action {\n    DraftChanged value -> TodoState { ...state, draft: value }\n    Submitted ->\n      if state.draft == \"\"\n      then state\n      else TodoState {\n        draft: \"\",\n        items: arrays.append [state.draft] state.items\n      }\n    Cleared -> TodoState { ...state, items: [] }\n  }\n\nfn dispatch state: MutableSignal<TodoState>\n  -> action: TodoAction\n  -> Effect<{}, Never, Unit> =\n  signals.update (update action) state\n\nfn draftAction event: html.InputEvent -> TodoAction =\n  DraftChanged event.value\n\nfn formView state: MutableSignal<TodoState>\n  -> current: TodoState\n  -> html.Html<Effect<{}, Never, Unit>> =\n  todoForm\n    current.draft\n    (\\event: html.InputEvent -> dispatch state (draftAction event))\n    (dispatch state Submitted)\n\nfn listView state: MutableSignal<TodoState>\n  -> current: TodoState\n  -> html.Html<Effect<{}, Never, Unit>> =\n  todoList (join \", \" current.items) (dispatch state Cleared)\n\nfn view state: MutableSignal<TodoState>\n  -> current: TodoState\n  -> html.Html<Effect<{}, Never, Unit>> =\n  html.section {\n    children: [\n      formView state current,\n      listView state current,\n      html.h2 { children: \"Shared Todo\" }\n    ]\n  }\n\npub effect fn create\n  -> Signal<html.Html<Effect<{}, Never, Unit>>>\nfails Never =\n  do {\n    state <- signals.make $ TodoState { draft: \"\", items: [] }\n    succeed $ signals.map (view state) state\n  }\n"
+  ],
+  "names": [
+    "TodoAction",
+    "DraftChanged",
+    "Submitted",
+    "Cleared",
+    "TodoState",
+    "update",
+    "value",
+    "_ssrg_array_append",
+    "dispatch",
+    "update",
+    "update",
+    "draftAction",
+    "DraftChanged",
+    "formView",
+    "todoForm",
+    "dispatch",
+    "draftAction",
+    "dispatch",
+    "listView",
+    "todoList",
+    "_ssrg_collection_join",
+    "arrayReducible",
+    "dispatch",
+    "view",
+    "section",
+    "formView",
+    "listView",
+    "h2",
+    "create",
+    "state",
+    "make",
+    "succeed",
+    "map",
+    "view"
+  ],
+  "mappings": ";;;;;;;;AAYAA;;;;AACIC;AACAC;AACAC;;AARJC;;;;;AAUAC;AAaAG;AAKAG;AAGAE;AAQAK;AAKAK;AAWAK"
+}

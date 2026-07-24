@@ -1,0 +1,1492 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/feature-module-lifetime::app",
+  "runtimeRequirements": [
+    "signal.mutable-type",
+    "effect.core.type",
+    "web.html.type",
+    "signal.type",
+    "web.dom.target",
+    "web.dom.error",
+    "web.dom.service",
+    "web.dom.runtime-error",
+    "web.dom.options",
+    "core.adt",
+    "core.bool",
+    "signal.update",
+    "core.unit",
+    "web.html.section",
+    "web.html.button",
+    "core.string",
+    "web.html.p",
+    "signal.constant",
+    "web.html.main",
+    "effect.core.flatMap",
+    "signal.make",
+    "signal.map",
+    "signal.applicative",
+    "signal.functor",
+    "signal.switch-map",
+    "effect.core.mapError",
+    "web.dom.query",
+    "web.dom.run",
+    "web.dom.default-options"
+  ],
+  "imports": [
+    {
+      "feature": "signal.update",
+      "local": "_ssrg_signal_update"
+    },
+    {
+      "feature": "web.html.section",
+      "local": "_ssrg_html_section"
+    },
+    {
+      "feature": "web.html.button",
+      "local": "_ssrg_html_button"
+    },
+    {
+      "feature": "web.html.p",
+      "local": "_ssrg_html_p"
+    },
+    {
+      "feature": "signal.constant",
+      "local": "_ssrg_signal_constant"
+    },
+    {
+      "feature": "web.html.main",
+      "local": "_ssrg_html_main"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "signal.make",
+      "local": "_ssrg_signal_make"
+    },
+    {
+      "feature": "signal.map",
+      "local": "_ssrg_signal_map"
+    },
+    {
+      "feature": "signal.applicative",
+      "local": "_ssrg_signal_applicative"
+    },
+    {
+      "feature": "signal.functor",
+      "local": "_ssrg_signal_functor"
+    },
+    {
+      "feature": "signal.switch-map",
+      "local": "_ssrg_signal_switchMap"
+    },
+    {
+      "feature": "effect.core.mapError",
+      "local": "_ssrg_effect_mapError"
+    },
+    {
+      "feature": "web.dom.query",
+      "local": "_ssrg_dom_query"
+    },
+    {
+      "feature": "web.dom.run",
+      "local": "_ssrg_dom_run"
+    },
+    {
+      "feature": "web.dom.default-options",
+      "local": "_ssrg_dom_defaultOptions"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "signal.mutable-type",
+      "local": "MutableSignal"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "web.html.type",
+      "local": "Html"
+    },
+    {
+      "feature": "signal.type",
+      "local": "Signal"
+    },
+    {
+      "feature": "web.dom.target",
+      "local": "DomTarget"
+    },
+    {
+      "feature": "web.dom.error",
+      "local": "DomError"
+    },
+    {
+      "feature": "web.dom.service",
+      "local": "Dom"
+    },
+    {
+      "feature": "web.dom.runtime-error",
+      "local": "DomRuntimeError"
+    },
+    {
+      "feature": "web.dom.options",
+      "local": "DomOptions"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/feature-module-lifetime::counter",
+      "specifier": "./counter.js",
+      "bindings": [
+        {
+          "imported": "create",
+          "local": "createCounter",
+          "sourceLocal": "createCounter",
+          "canonical": "fixture/feature-module-lifetime::counter::create",
+          "typeOnly": false,
+          "origin": {
+            "source": "app.ssrg",
+            "start": 180,
+            "end": 193
+          }
+        }
+      ],
+      "origin": {
+        "source": "app.ssrg",
+        "start": 161,
+        "end": 212
+      }
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "LayoutAction",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "ToggleFirst",
+          "tag": "ToggleFirst",
+          "origin": {
+            "source": "app.ssrg",
+            "start": 238,
+            "end": 249
+          }
+        },
+        {
+          "exported": false,
+          "name": "SwapChildren",
+          "tag": "SwapChildren",
+          "origin": {
+            "source": "app.ssrg",
+            "start": 254,
+            "end": 266
+          }
+        },
+        {
+          "exported": false,
+          "name": "ReplaceFirst",
+          "tag": "ReplaceFirst",
+          "origin": {
+            "source": "app.ssrg",
+            "start": 271,
+            "end": 283
+          }
+        }
+      ],
+      "origin": {
+        "source": "app.ssrg",
+        "start": 214,
+        "end": 283
+      }
+    }
+  ],
+  "structs": [
+    {
+      "exported": false,
+      "name": "LayoutState",
+      "brand": "__ssrg$brand$LayoutState",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "showFirst",
+          "optional": false,
+          "type": {
+            "kind": "boolean"
+          }
+        },
+        {
+          "name": "reversed",
+          "optional": false,
+          "type": {
+            "kind": "boolean"
+          }
+        },
+        {
+          "name": "replacement",
+          "optional": false,
+          "type": {
+            "kind": "boolean"
+          }
+        }
+      ],
+      "origin": {
+        "source": "app.ssrg",
+        "start": 285,
+        "end": 365
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "toggle",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "conditional",
+        "condition": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "thenBranch": {
+          "kind": "boolean",
+          "value": false
+        },
+        "elseBranch": {
+          "kind": "boolean",
+          "value": true
+        }
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 367,
+        "end": 430
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "update",
+      "parameters": [
+        {
+          "name": "action",
+          "type": "LayoutAction",
+          "implicit": false
+        },
+        {
+          "name": "state",
+          "type": "LayoutState",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "action"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "LayoutAction",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "ToggleFirst"
+              }
+            ],
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "spread",
+                  "value": {
+                    "kind": "identifier",
+                    "name": "state"
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "showFirst",
+                  "value": {
+                    "kind": "call",
+                    "callee": "toggle",
+                    "arguments": [
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "state"
+                        },
+                        "field": "showFirst"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "LayoutState",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "SwapChildren"
+              }
+            ],
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "spread",
+                  "value": {
+                    "kind": "identifier",
+                    "name": "state"
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "reversed",
+                  "value": {
+                    "kind": "call",
+                    "callee": "toggle",
+                    "arguments": [
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "state"
+                        },
+                        "field": "reversed"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "LayoutState",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "spread",
+                  "value": {
+                    "kind": "identifier",
+                    "name": "state"
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "replacement",
+                  "value": {
+                    "kind": "call",
+                    "callee": "toggle",
+                    "arguments": [
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "state"
+                        },
+                        "field": "replacement"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "LayoutState",
+                "arguments": []
+              }
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "LayoutState",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 432,
+        "end": 763
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "dispatch",
+      "parameters": [
+        {
+          "name": "state",
+          "type": "MutableSignal<LayoutState>",
+          "implicit": false
+        },
+        {
+          "name": "action",
+          "type": "LayoutAction",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_signal_update",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "update",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "action"
+              }
+            ]
+          },
+          {
+            "kind": "identifier",
+            "name": "state"
+          }
+        ]
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 765,
+        "end": 906
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "controls",
+      "parameters": [
+        {
+          "name": "state",
+          "type": "MutableSignal<LayoutState>",
+          "implicit": false
+        },
+        {
+          "name": "current",
+          "type": "LayoutState",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_section",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "onClick",
+                              "value": {
+                                "kind": "call",
+                                "callee": "dispatch",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "state"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "ToggleFirst"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Hide / show first"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "onClick",
+                              "value": {
+                                "kind": "call",
+                                "callee": "dispatch",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "state"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "SwapChildren"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Swap order"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "onClick",
+                              "value": {
+                                "kind": "call",
+                                "callee": "dispatch",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "state"
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "ReplaceFirst"
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Replace first"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_p",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "conditional",
+                                "condition": {
+                                  "kind": "field-access",
+                                  "receiver": {
+                                    "kind": "identifier",
+                                    "name": "current"
+                                  },
+                                  "field": "showFirst"
+                                },
+                                "thenBranch": {
+                                  "kind": "string",
+                                  "value": "First feature is mounted"
+                                },
+                                "elseBranch": {
+                                  "kind": "string",
+                                  "value": "First feature is hidden"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "reference",
+                    "name": "Html",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "fields": []
+                          },
+                          {
+                            "kind": "never"
+                          },
+                          {
+                            "kind": "undefined"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 908,
+        "end": 1546
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "hidden",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_p",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "string",
+                  "value": "First feature is outside the tree"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 1548,
+        "end": 1656
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "selectFirst",
+      "parameters": [
+        {
+          "name": "first",
+          "type": "Signal<Html<Effect<{  }, never, undefined>>>",
+          "implicit": false
+        },
+        {
+          "name": "replacement",
+          "type": "Signal<Html<Effect<{  }, never, undefined>>>",
+          "implicit": false
+        },
+        {
+          "name": "layout",
+          "type": "LayoutState",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "conditional",
+        "condition": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "identifier",
+            "name": "layout"
+          },
+          "field": "showFirst"
+        },
+        "thenBranch": {
+          "kind": "conditional",
+          "condition": {
+            "kind": "field-access",
+            "receiver": {
+              "kind": "identifier",
+              "name": "layout"
+            },
+            "field": "replacement"
+          },
+          "thenBranch": {
+            "kind": "identifier",
+            "name": "replacement"
+          },
+          "elseBranch": {
+            "kind": "identifier",
+            "name": "first"
+          }
+        },
+        "elseBranch": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_signal_constant",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "hidden",
+              "arguments": [
+                {
+                  "kind": "undefined"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 1658,
+        "end": 1973
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "page",
+      "parameters": [
+        {
+          "name": "layout",
+          "type": "LayoutState",
+          "implicit": false
+        },
+        {
+          "name": "panel",
+          "type": "Html<Effect<{  }, never, undefined>>",
+          "implicit": false
+        },
+        {
+          "name": "first",
+          "type": "Html<Effect<{  }, never, undefined>>",
+          "implicit": false
+        },
+        {
+          "name": "second",
+          "type": "Html<Effect<{  }, never, undefined>>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_main",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "conditional",
+                  "condition": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "identifier",
+                      "name": "layout"
+                    },
+                    "field": "reversed"
+                  },
+                  "thenBranch": {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "identifier",
+                        "name": "panel"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "second"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "first"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "reference",
+                      "name": "Html",
+                      "arguments": [
+                        {
+                          "kind": "reference",
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "fields": []
+                            },
+                            {
+                              "kind": "never"
+                            },
+                            {
+                              "kind": "undefined"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "elseBranch": {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "identifier",
+                        "name": "panel"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "first"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "second"
+                      }
+                    ],
+                    "elementType": {
+                      "kind": "reference",
+                      "name": "Html",
+                      "arguments": [
+                        {
+                          "kind": "reference",
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "fields": []
+                            },
+                            {
+                              "kind": "never"
+                            },
+                            {
+                              "kind": "undefined"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 1975,
+        "end": 2311
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "perform",
+      "parameters": [
+        {
+          "name": "action",
+          "type": "Effect<{  }, never, undefined>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "action"
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 2313,
+        "end": 2391
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "start",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "const",
+            "name": "layout",
+            "type": {
+              "kind": "reference",
+              "name": "MutableSignal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "LayoutState",
+                  "arguments": []
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "type-application-call",
+              "callee": "_ssrg_signal_make",
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "LayoutState",
+                  "arguments": []
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "showFirst",
+                      "value": {
+                        "kind": "boolean",
+                        "value": true
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "reversed",
+                      "value": {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "replacement",
+                      "value": {
+                        "kind": "boolean",
+                        "value": false
+                      }
+                    }
+                  ],
+                  "assertedType": {
+                    "kind": "reference",
+                    "name": "LayoutState",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 2465,
+              "end": 2580
+            }
+          },
+          {
+            "kind": "const",
+            "name": "first",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Html",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": []
+                        },
+                        {
+                          "kind": "never"
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "createCounter",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Counter A"
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 2585,
+              "end": 2619
+            }
+          },
+          {
+            "kind": "const",
+            "name": "second",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Html",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": []
+                        },
+                        {
+                          "kind": "never"
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "createCounter",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Counter B"
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 2624,
+              "end": 2659
+            }
+          },
+          {
+            "kind": "const",
+            "name": "replacement",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Html",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": []
+                        },
+                        {
+                          "kind": "never"
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "createCounter",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Replacement"
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 2664,
+              "end": 2706
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "panel",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Html",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": []
+                        },
+                        {
+                          "kind": "never"
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_map",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "controls",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "layout"
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "layout"
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 2712,
+              "end": 2760
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "layoutView",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "LayoutState",
+                  "arguments": []
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_map",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "current: LayoutState",
+                  "body": {
+                    "kind": "identifier",
+                    "name": "current"
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "layout"
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 2765,
+              "end": 2835
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "content",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Html",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": []
+                        },
+                        {
+                          "kind": "never"
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_signal_applicative"
+              },
+              "method": "apply",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_signal_applicative"
+                  },
+                  "method": "apply",
+                  "arguments": [
+                    {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_signal_applicative"
+                      },
+                      "method": "apply",
+                      "arguments": [
+                        {
+                          "kind": "dictionary-call",
+                          "dictionary": {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_signal_functor"
+                          },
+                          "method": "map",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "page"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "layoutView"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "panel"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_signal_switchMap",
+                      "arguments": [
+                        {
+                          "kind": "lambda",
+                          "parameter": "current: LayoutState",
+                          "body": {
+                            "kind": "call",
+                            "callee": "selectFirst",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "first"
+                              },
+                              {
+                                "kind": "identifier",
+                                "name": "replacement"
+                              },
+                              {
+                                "kind": "identifier",
+                                "name": "current"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "layout"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "second"
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 2840,
+              "end": 3032
+            }
+          },
+          {
+            "kind": "const",
+            "name": "target",
+            "type": {
+              "kind": "reference",
+              "name": "DomTarget",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": "error: DomError",
+                  "body": {
+                    "kind": "string",
+                    "value": "DOM target unavailable"
+                  }
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_dom_query",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "#app"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "app.ssrg",
+              "start": 3038,
+              "end": 3141
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_effect_mapError",
+          "arguments": [
+            {
+              "kind": "lambda",
+              "parameter": "error: DomRuntimeError<never>",
+              "body": {
+                "kind": "string",
+                "value": "DOM runtime failed"
+              }
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_dom_run",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_dom_defaultOptions",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "target"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "perform"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "content"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "app.ssrg",
+        "start": 2393,
+        "end": 3283
+      }
+    }
+  ]
+}

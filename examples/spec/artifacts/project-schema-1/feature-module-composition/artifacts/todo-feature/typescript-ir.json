@@ -1,0 +1,855 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/feature-module-composition::todo/feature",
+  "runtimeRequirements": [
+    "signal.mutable-type",
+    "effect.core.type",
+    "web.html.input-event-type",
+    "web.html.type",
+    "signal.type",
+    "core.adt",
+    "core.string",
+    "core.bool",
+    "core.array.append",
+    "signal.update",
+    "core.unit",
+    "core.array.reducible",
+    "core.collection.join",
+    "web.html.section",
+    "web.html.h2",
+    "effect.core.flatMap",
+    "signal.make",
+    "effect.core.succeed",
+    "signal.map"
+  ],
+  "imports": [
+    {
+      "feature": "core.array.append",
+      "local": "_ssrg_array_append"
+    },
+    {
+      "feature": "signal.update",
+      "local": "_ssrg_signal_update"
+    },
+    {
+      "feature": "core.array.reducible",
+      "local": "_ssrg_array_reducible"
+    },
+    {
+      "feature": "core.collection.join",
+      "local": "_ssrg_collection_join"
+    },
+    {
+      "feature": "web.html.section",
+      "local": "_ssrg_html_section"
+    },
+    {
+      "feature": "web.html.h2",
+      "local": "_ssrg_html_h2"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "signal.make",
+      "local": "_ssrg_signal_make"
+    },
+    {
+      "feature": "effect.core.succeed",
+      "local": "_ssrg_effect_succeed"
+    },
+    {
+      "feature": "signal.map",
+      "local": "_ssrg_signal_map"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "signal.mutable-type",
+      "local": "MutableSignal"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "web.html.input-event-type",
+      "local": "InputEvent"
+    },
+    {
+      "feature": "web.html.type",
+      "local": "Html"
+    },
+    {
+      "feature": "signal.type",
+      "local": "Signal"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/feature-module-composition::todo/form",
+      "specifier": "./form.js",
+      "bindings": [
+        {
+          "imported": "view",
+          "local": "todoForm",
+          "sourceLocal": "todoForm",
+          "canonical": "fixture/feature-module-composition::todo/form::view",
+          "typeOnly": false,
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 179,
+            "end": 187
+          }
+        }
+      ],
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 162,
+        "end": 203
+      }
+    },
+    {
+      "module": "fixture/feature-module-composition::todo/list",
+      "specifier": "./list.js",
+      "bindings": [
+        {
+          "imported": "view",
+          "local": "todoList",
+          "sourceLocal": "todoList",
+          "canonical": "fixture/feature-module-composition::todo/list::view",
+          "typeOnly": false,
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 221,
+            "end": 229
+          }
+        }
+      ],
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 204,
+        "end": 245
+      }
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "TodoAction",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "DraftChanged",
+          "tag": "DraftChanged",
+          "payload": {
+            "kind": "string"
+          },
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 332,
+            "end": 344
+          }
+        },
+        {
+          "exported": false,
+          "name": "Submitted",
+          "tag": "Submitted",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 356,
+            "end": 365
+          }
+        },
+        {
+          "exported": false,
+          "name": "Cleared",
+          "tag": "Cleared",
+          "origin": {
+            "source": "feature.ssrg",
+            "start": 370,
+            "end": 377
+          }
+        }
+      ],
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 310,
+        "end": 377
+      }
+    }
+  ],
+  "structs": [
+    {
+      "exported": false,
+      "name": "TodoState",
+      "brand": "__ssrg$brand$TodoState",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "draft",
+          "optional": false,
+          "type": {
+            "kind": "string"
+          }
+        },
+        {
+          "name": "items",
+          "optional": false,
+          "type": {
+            "kind": "array",
+            "element": {
+              "kind": "string"
+            }
+          }
+        }
+      ],
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 247,
+        "end": 308
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "update",
+      "parameters": [
+        {
+          "name": "action",
+          "type": "TodoAction",
+          "implicit": false
+        },
+        {
+          "name": "state",
+          "type": "TodoState",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "action"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "TodoAction",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "DraftChanged"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "spread",
+                  "value": {
+                    "kind": "identifier",
+                    "name": "state"
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "draft",
+                  "value": {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "TodoState",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Submitted"
+              }
+            ],
+            "value": {
+              "kind": "conditional",
+              "condition": {
+                "kind": "binary",
+                "operator": "===",
+                "left": {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "state"
+                  },
+                  "field": "draft"
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ""
+                }
+              },
+              "thenBranch": {
+                "kind": "identifier",
+                "name": "state"
+              },
+              "elseBranch": {
+                "kind": "record",
+                "items": [
+                  {
+                    "kind": "field",
+                    "name": "draft",
+                    "value": {
+                      "kind": "string",
+                      "value": ""
+                    }
+                  },
+                  {
+                    "kind": "field",
+                    "name": "items",
+                    "value": {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_array_append",
+                      "arguments": [
+                        {
+                          "kind": "array",
+                          "elements": [
+                            {
+                              "kind": "field-access",
+                              "receiver": {
+                                "kind": "identifier",
+                                "name": "state"
+                              },
+                              "field": "draft"
+                            }
+                          ],
+                          "elementType": {
+                            "kind": "string"
+                          }
+                        },
+                        {
+                          "kind": "field-access",
+                          "receiver": {
+                            "kind": "identifier",
+                            "name": "state"
+                          },
+                          "field": "items"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "assertedType": {
+                  "kind": "reference",
+                  "name": "TodoState",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "spread",
+                  "value": {
+                    "kind": "identifier",
+                    "name": "state"
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "items",
+                  "value": {
+                    "kind": "array",
+                    "elements": [],
+                    "elementType": {
+                      "kind": "string"
+                    }
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "TodoState",
+                "arguments": []
+              }
+            }
+          }
+        ],
+        "type": {
+          "kind": "reference",
+          "name": "TodoState",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 379,
+        "end": 741
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "dispatch",
+      "parameters": [
+        {
+          "name": "state",
+          "type": "MutableSignal<TodoState>",
+          "implicit": false
+        },
+        {
+          "name": "action",
+          "type": "TodoAction",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_signal_update",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "update",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "action"
+              }
+            ]
+          },
+          {
+            "kind": "identifier",
+            "name": "state"
+          }
+        ]
+      },
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 743,
+        "end": 880
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "draftAction",
+      "parameters": [
+        {
+          "name": "event",
+          "type": "InputEvent",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "DraftChanged",
+        "arguments": [
+          {
+            "kind": "field-access",
+            "receiver": {
+              "kind": "identifier",
+              "name": "event"
+            },
+            "field": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 882,
+        "end": 962
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "formView",
+      "parameters": [
+        {
+          "name": "state",
+          "type": "MutableSignal<TodoState>",
+          "implicit": false
+        },
+        {
+          "name": "current",
+          "type": "TodoState",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "todoForm",
+        "arguments": [
+          {
+            "kind": "field-access",
+            "receiver": {
+              "kind": "identifier",
+              "name": "current"
+            },
+            "field": "draft"
+          },
+          {
+            "kind": "lambda",
+            "parameter": "event: InputEvent",
+            "body": {
+              "kind": "call",
+              "callee": "dispatch",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "state"
+                },
+                {
+                  "kind": "call",
+                  "callee": "draftAction",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "event"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "dispatch",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "state"
+              },
+              {
+                "kind": "identifier",
+                "name": "Submitted"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 964,
+        "end": 1201
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "listView",
+      "parameters": [
+        {
+          "name": "state",
+          "type": "MutableSignal<TodoState>",
+          "implicit": false
+        },
+        {
+          "name": "current",
+          "type": "TodoState",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "todoList",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_collection_join",
+            "arguments": [
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_array_reducible"
+              },
+              {
+                "kind": "string",
+                "value": ", "
+              },
+              {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "identifier",
+                  "name": "current"
+                },
+                "field": "items"
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "dispatch",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "state"
+              },
+              {
+                "kind": "identifier",
+                "name": "Cleared"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 1203,
+        "end": 1374
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "view",
+      "parameters": [
+        {
+          "name": "state",
+          "type": "MutableSignal<TodoState>",
+          "implicit": false
+        },
+        {
+          "name": "current",
+          "type": "TodoState",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_section",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "call",
+                      "callee": "formView",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "state"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "current"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "listView",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "state"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "current"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_h2",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Shared Todo"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "reference",
+                    "name": "Html",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "fields": []
+                          },
+                          {
+                            "kind": "never"
+                          },
+                          {
+                            "kind": "undefined"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 1376,
+        "end": 1626
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "create",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "const",
+            "name": "state",
+            "type": {
+              "kind": "reference",
+              "name": "MutableSignal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "TodoState",
+                  "arguments": []
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "type-application-call",
+              "callee": "_ssrg_signal_make",
+              "typeArguments": [
+                {
+                  "kind": "reference",
+                  "name": "TodoState",
+                  "arguments": []
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "draft",
+                      "value": {
+                        "kind": "string",
+                        "value": ""
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "items",
+                      "value": {
+                        "kind": "array",
+                        "elements": [],
+                        "elementType": {
+                          "kind": "string"
+                        }
+                      }
+                    }
+                  ],
+                  "assertedType": {
+                    "kind": "reference",
+                    "name": "TodoState",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "feature.ssrg",
+              "start": 1722,
+              "end": 1780
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_effect_succeed",
+          "arguments": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_map",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "view",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "state"
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "state"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "feature.ssrg",
+        "start": 1628,
+        "end": 1829
+      }
+    }
+  ]
+}

@@ -21,72 +21,75 @@ import sample4Source from "../../../../examples/samples/either-and-monad/main.ss
 import sample4Guide from "../../../../examples/samples/either-and-monad/guide.md?raw"
 import sample4Output from "../../../../examples/samples/either-and-monad/stdout.txt?raw"
 
-import sample5Source from "../../../../examples/samples/fibonacci-sequence/main.ssrg?raw"
-import sample5Guide from "../../../../examples/samples/fibonacci-sequence/guide.md?raw"
-import sample5Output from "../../../../examples/samples/fibonacci-sequence/stdout.txt?raw"
+import sample5Source from "../../../../examples/samples/feature-composition/main.ssrg?raw"
+import sample5Guide from "../../../../examples/samples/feature-composition/guide.md?raw"
 
-import sample6Source from "../../../../examples/samples/fizzbuzz/main.ssrg?raw"
-import sample6Guide from "../../../../examples/samples/fizzbuzz/guide.md?raw"
-import sample6Output from "../../../../examples/samples/fizzbuzz/stdout.txt?raw"
+import sample6Source from "../../../../examples/samples/fibonacci-sequence/main.ssrg?raw"
+import sample6Guide from "../../../../examples/samples/fibonacci-sequence/guide.md?raw"
+import sample6Output from "../../../../examples/samples/fibonacci-sequence/stdout.txt?raw"
 
-import sample7Source from "../../../../examples/samples/form-todo/main.ssrg?raw"
-import sample7Guide from "../../../../examples/samples/form-todo/guide.md?raw"
+import sample7Source from "../../../../examples/samples/fizzbuzz/main.ssrg?raw"
+import sample7Guide from "../../../../examples/samples/fizzbuzz/guide.md?raw"
+import sample7Output from "../../../../examples/samples/fizzbuzz/stdout.txt?raw"
 
-import sample8Source from "../../../../examples/samples/functions-and-pipelines/main.ssrg?raw"
-import sample8Guide from "../../../../examples/samples/functions-and-pipelines/guide.md?raw"
-import sample8Output from "../../../../examples/samples/functions-and-pipelines/stdout.txt?raw"
+import sample8Source from "../../../../examples/samples/form-todo/main.ssrg?raw"
+import sample8Guide from "../../../../examples/samples/form-todo/guide.md?raw"
 
-import sample9Source from "../../../../examples/samples/generic-structs/main.ssrg?raw"
-import sample9Guide from "../../../../examples/samples/generic-structs/guide.md?raw"
-import sample9Output from "../../../../examples/samples/generic-structs/stdout.txt?raw"
+import sample9Source from "../../../../examples/samples/functions-and-pipelines/main.ssrg?raw"
+import sample9Guide from "../../../../examples/samples/functions-and-pipelines/guide.md?raw"
+import sample9Output from "../../../../examples/samples/functions-and-pipelines/stdout.txt?raw"
 
-import sample10Source from "../../../../examples/samples/hello-world/main.ssrg?raw"
-import sample10Guide from "../../../../examples/samples/hello-world/guide.md?raw"
-import sample10Output from "../../../../examples/samples/hello-world/stdout.txt?raw"
+import sample10Source from "../../../../examples/samples/generic-structs/main.ssrg?raw"
+import sample10Guide from "../../../../examples/samples/generic-structs/guide.md?raw"
+import sample10Output from "../../../../examples/samples/generic-structs/stdout.txt?raw"
 
-import sample11Source from "../../../../examples/samples/html-components/main.ssrg?raw"
-import sample11Guide from "../../../../examples/samples/html-components/guide.md?raw"
-import sample11Output from "../../../../examples/samples/html-components/stdout.html?raw"
+import sample11Source from "../../../../examples/samples/hello-world/main.ssrg?raw"
+import sample11Guide from "../../../../examples/samples/hello-world/guide.md?raw"
+import sample11Output from "../../../../examples/samples/hello-world/stdout.txt?raw"
 
-import sample12Source from "../../../../examples/samples/impl-and-operators/main.ssrg?raw"
-import sample12Guide from "../../../../examples/samples/impl-and-operators/guide.md?raw"
-import sample12Output from "../../../../examples/samples/impl-and-operators/stdout.txt?raw"
+import sample12Source from "../../../../examples/samples/html-components/main.ssrg?raw"
+import sample12Guide from "../../../../examples/samples/html-components/guide.md?raw"
+import sample12Output from "../../../../examples/samples/html-components/stdout.html?raw"
 
-import sample13Source from "../../../../examples/samples/interactive-app/main.ssrg?raw"
-import sample13Guide from "../../../../examples/samples/interactive-app/guide.md?raw"
+import sample13Source from "../../../../examples/samples/impl-and-operators/main.ssrg?raw"
+import sample13Guide from "../../../../examples/samples/impl-and-operators/guide.md?raw"
+import sample13Output from "../../../../examples/samples/impl-and-operators/stdout.txt?raw"
 
-import sample14Source from "../../../../examples/samples/local-functions/main.ssrg?raw"
-import sample14Guide from "../../../../examples/samples/local-functions/guide.md?raw"
-import sample14Output from "../../../../examples/samples/local-functions/stdout.txt?raw"
+import sample14Source from "../../../../examples/samples/interactive-app/main.ssrg?raw"
+import sample14Guide from "../../../../examples/samples/interactive-app/guide.md?raw"
 
-import sample15Source from "../../../../examples/samples/newtypes/main.ssrg?raw"
-import sample15Guide from "../../../../examples/samples/newtypes/guide.md?raw"
-import sample15Output from "../../../../examples/samples/newtypes/stdout.txt?raw"
+import sample15Source from "../../../../examples/samples/local-functions/main.ssrg?raw"
+import sample15Guide from "../../../../examples/samples/local-functions/guide.md?raw"
+import sample15Output from "../../../../examples/samples/local-functions/stdout.txt?raw"
 
-import sample16Source from "../../../../examples/samples/records/main.ssrg?raw"
-import sample16Guide from "../../../../examples/samples/records/guide.md?raw"
-import sample16Output from "../../../../examples/samples/records/stdout.txt?raw"
+import sample16Source from "../../../../examples/samples/newtypes/main.ssrg?raw"
+import sample16Guide from "../../../../examples/samples/newtypes/guide.md?raw"
+import sample16Output from "../../../../examples/samples/newtypes/stdout.txt?raw"
 
-import sample17Source from "../../../../examples/samples/signal-composition/main.ssrg?raw"
-import sample17Guide from "../../../../examples/samples/signal-composition/guide.md?raw"
-import sample17Output from "../../../../examples/samples/signal-composition/stdout.txt?raw"
+import sample17Source from "../../../../examples/samples/records/main.ssrg?raw"
+import sample17Guide from "../../../../examples/samples/records/guide.md?raw"
+import sample17Output from "../../../../examples/samples/records/stdout.txt?raw"
 
-import sample18Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
-import sample18Guide from "../../../../examples/samples/signal-state/guide.md?raw"
-import sample18Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
+import sample18Source from "../../../../examples/samples/signal-composition/main.ssrg?raw"
+import sample18Guide from "../../../../examples/samples/signal-composition/guide.md?raw"
+import sample18Output from "../../../../examples/samples/signal-composition/stdout.txt?raw"
 
-import sample19Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
-import sample19Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
-import sample19Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
-import sample19Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
+import sample19Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
+import sample19Guide from "../../../../examples/samples/signal-state/guide.md?raw"
+import sample19Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
 
-import sample20Source from "../../../../examples/samples/strings-and-templates/main.ssrg?raw"
-import sample20Guide from "../../../../examples/samples/strings-and-templates/guide.md?raw"
-import sample20Output from "../../../../examples/samples/strings-and-templates/stdout.txt?raw"
+import sample20Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
+import sample20Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
+import sample20Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
+import sample20Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
 
-import sample21Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
-import sample21Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
-import sample21Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
+import sample21Source from "../../../../examples/samples/strings-and-templates/main.ssrg?raw"
+import sample21Guide from "../../../../examples/samples/strings-and-templates/guide.md?raw"
+import sample21Output from "../../../../examples/samples/strings-and-templates/stdout.txt?raw"
+
+import sample22Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
+import sample22Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
+import sample22Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
 
 export const generatedSamples: readonly GeneratedSample[] = [
   {
@@ -259,6 +262,39 @@ export const generatedSamples: readonly GeneratedSample[] = [
   },
   {
     definition: {
+      "id": "feature-composition",
+      "title": "Featureを階層合成",
+      "summary": "private stateを持つfeatureをEffect ActionとSignalで階層合成します。",
+      "kind": "showcase",
+      "difficulty": "advanced",
+      "topics": [
+        "feature module",
+        "private state",
+        "Effect Action",
+        "switchMap"
+      ],
+      "capabilities": [
+        "dom"
+      ],
+      "outputMode": "html",
+      "prerequisites": [
+        "signal-state",
+        "interactive-app"
+      ],
+      "featured": true,
+      "isNew": true,
+      "interactive": true,
+      "sourcePath": "examples/samples/feature-composition/main.ssrg",
+      "guidePath": "examples/samples/feature-composition/guide.md",
+      "sourceHash": "sha256:d0fe456d81421207ea1d26ecc047fdc7da2ab9ddcdc9d2b5127188e689ddbe4f"
+    },
+    source: sample5Source,
+    guide: sample5Guide,
+    stdin: "",
+    expectedOutput: ("").replace(/\r?\n$/u, ""),
+  },
+  {
+    definition: {
       "id": "fibonacci-sequence",
       "title": "Fibonacci列を順に出力",
       "summary": "Tail recursionでFibonacci数を求め、Rangeの順序どおりに出力します。",
@@ -285,10 +321,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/fibonacci-sequence/stdout.txt",
       "sourceHash": "sha256:be948e8abe3dda6d22683a7836b47347120bfb5df4d4a5d0b9de16d3e275f885"
     },
-    source: sample5Source,
-    guide: sample5Guide,
+    source: sample6Source,
+    guide: sample6Guide,
     stdin: "",
-    expectedOutput: (sample5Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample6Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -318,10 +354,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/fizzbuzz/stdout.txt",
       "sourceHash": "sha256:3f70961f561f3bc9e9c128b1feebcd27c864d6d9813fd86a884b515f27a47bdf"
     },
-    source: sample6Source,
-    guide: sample6Guide,
+    source: sample7Source,
+    guide: sample7Guide,
     stdin: "",
-    expectedOutput: (sample6Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample7Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -352,8 +388,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "guidePath": "examples/samples/form-todo/guide.md",
       "sourceHash": "sha256:11f7ffb079b41a2a7954dd5c245a5003e2c770eff6195f4aabbae298ba147c37"
     },
-    source: sample7Source,
-    guide: sample7Guide,
+    source: sample8Source,
+    guide: sample8Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
   },
@@ -384,10 +420,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/functions-and-pipelines/stdout.txt",
       "sourceHash": "sha256:bfd9ffe91813eb1073f324d120be3bca5c366e07796bc8b03eff862adf7b9da1"
     },
-    source: sample8Source,
-    guide: sample8Guide,
+    source: sample9Source,
+    guide: sample9Guide,
     stdin: "",
-    expectedOutput: (sample8Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample9Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -416,10 +452,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/generic-structs/stdout.txt",
       "sourceHash": "sha256:8b004813c21513037f19e8db7dc7266c7d856b364ea57c20f7f5faa565a06220"
     },
-    source: sample9Source,
-    guide: sample9Guide,
+    source: sample10Source,
+    guide: sample10Guide,
     stdin: "",
-    expectedOutput: (sample9Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample10Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -446,10 +482,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/hello-world/stdout.txt",
       "sourceHash": "sha256:d7360be0b54120636ec9da3fd33a6887c8db4a569fb67aaf4828196a18188684"
     },
-    source: sample10Source,
-    guide: sample10Guide,
+    source: sample11Source,
+    guide: sample11Guide,
     stdin: "",
-    expectedOutput: (sample10Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample11Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -480,10 +516,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/html-components/stdout.html",
       "sourceHash": "sha256:b7ae5c66e90db19e76b45542be1a73743b8be5195fcdc98ddf6318f31bbd42bf"
     },
-    source: sample11Source,
-    guide: sample11Guide,
+    source: sample12Source,
+    guide: sample12Guide,
     stdin: "",
-    expectedOutput: (sample11Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample12Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -514,10 +550,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/impl-and-operators/stdout.txt",
       "sourceHash": "sha256:393d7f4a7a1672a3c606e5000875b7a325d0a365da77c9fb492f374279733c5d"
     },
-    source: sample12Source,
-    guide: sample12Guide,
+    source: sample13Source,
+    guide: sample13Guide,
     stdin: "",
-    expectedOutput: (sample12Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample13Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -547,8 +583,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "guidePath": "examples/samples/interactive-app/guide.md",
       "sourceHash": "sha256:a492a5e9a94ea9cd331ad661b5de640db98b182b0148b583838303c82517b545"
     },
-    source: sample13Source,
-    guide: sample13Guide,
+    source: sample14Source,
+    guide: sample14Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
   },
@@ -581,10 +617,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/local-functions/stdout.txt",
       "sourceHash": "sha256:1374c5ee9b9f938735e0b3c0cb43f6958a8808e08fdf754f4d4a4f7cae117c2a"
     },
-    source: sample14Source,
-    guide: sample14Guide,
+    source: sample15Source,
+    guide: sample15Guide,
     stdin: "",
-    expectedOutput: (sample14Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample15Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -613,10 +649,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/newtypes/stdout.txt",
       "sourceHash": "sha256:4430fa5c93a95eafdad6327c9d95f45ba87cd4b22454d5ee308dfac65e0f6a70"
     },
-    source: sample15Source,
-    guide: sample15Guide,
+    source: sample16Source,
+    guide: sample16Guide,
     stdin: "",
-    expectedOutput: (sample15Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample16Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -645,10 +681,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/records/stdout.txt",
       "sourceHash": "sha256:d67ae4c83dffcd5c02fe2f804ea557ae0ccf4a5583994188b807595c9d82e9c6"
     },
-    source: sample16Source,
-    guide: sample16Guide,
+    source: sample17Source,
+    guide: sample17Guide,
     stdin: "",
-    expectedOutput: (sample16Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample17Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -679,10 +715,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/signal-composition/stdout.txt",
       "sourceHash": "sha256:5d6b5fc596611dab1aa875e23b4cf9a8004424649cdcf05390ed7a5de41e2173"
     },
-    source: sample17Source,
-    guide: sample17Guide,
+    source: sample18Source,
+    guide: sample18Guide,
     stdin: "",
-    expectedOutput: (sample17Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample18Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -711,10 +747,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/signal-state/stdout.txt",
       "sourceHash": "sha256:cd45873a5ad6e094ce6e89fbe637615b245d09c7994b8079e415783657532cd7"
     },
-    source: sample18Source,
-    guide: sample18Guide,
+    source: sample19Source,
+    guide: sample19Guide,
     stdin: "",
-    expectedOutput: (sample18Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample19Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -747,10 +783,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/stdin-greeting/stdout.txt",
       "sourceHash": "sha256:b1f464858872ecc67efa5cff266c409d4b07d3d349ba2804bb77570c4580f23f"
     },
-    source: sample19Source,
-    guide: sample19Guide,
-    stdin: sample19Stdin,
-    expectedOutput: (sample19Output).replace(/\r?\n$/u, ""),
+    source: sample20Source,
+    guide: sample20Guide,
+    stdin: sample20Stdin,
+    expectedOutput: (sample20Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -779,10 +815,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/strings-and-templates/stdout.txt",
       "sourceHash": "sha256:46e3049dbf57c865573ea765837ab61b586cc74f17cf05af32bedf08bef3d5db"
     },
-    source: sample20Source,
-    guide: sample20Guide,
+    source: sample21Source,
+    guide: sample21Guide,
     stdin: "",
-    expectedOutput: (sample20Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample21Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -811,10 +847,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/traits-and-instances/stdout.txt",
       "sourceHash": "sha256:03daac7021fa32f245dba88dee66f87ff1b00750e45d576548335e78429bdabd"
     },
-    source: sample21Source,
-    guide: sample21Guide,
+    source: sample22Source,
+    guide: sample22Guide,
     stdin: "",
-    expectedOutput: (sample21Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample22Output).replace(/\r?\n$/u, ""),
   }
 ]
 
@@ -903,7 +939,8 @@ export const generatedLearningPaths: readonly LearningPathDefinition[] =
       "samples": [
         "signal-composition",
         "signal-state",
-        "interactive-app"
+        "interactive-app",
+        "feature-composition"
       ]
     },
     {
@@ -913,7 +950,8 @@ export const generatedLearningPaths: readonly LearningPathDefinition[] =
       "samples": [
         "html-components",
         "interactive-app",
-        "form-todo"
+        "form-todo",
+        "feature-composition"
       ]
     }
   ]

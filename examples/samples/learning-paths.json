@@ -37,12 +37,7 @@
       "id": "data-and-types",
       "title": "データと型",
       "summary": "Record、generic Struct、newtypeでdomainの境界を作ります。",
-      "samples": [
-        "data-and-patterns",
-        "records",
-        "generic-structs",
-        "newtypes"
-      ]
+      "samples": ["data-and-patterns", "records", "generic-structs", "newtypes"]
     },
     {
       "id": "collection-recipes",
@@ -75,13 +70,23 @@
       "id": "signal-and-state",
       "title": "Signalと状態",
       "summary": "Signalの合成からtransaction、interactive stateへ進みます。",
-      "samples": ["signal-composition", "signal-state", "interactive-app"]
+      "samples": [
+        "signal-composition",
+        "signal-state",
+        "interactive-app",
+        "feature-composition"
+      ]
     },
     {
       "id": "web-ui",
       "title": "Web UI",
       "summary": "関数component、Style、SSR、typed eventを小さなUIへまとめます。",
-      "samples": ["html-components", "interactive-app", "form-todo"]
+      "samples": [
+        "html-components",
+        "interactive-app",
+        "form-todo",
+        "feature-composition"
+      ]
     }
   ]
 }

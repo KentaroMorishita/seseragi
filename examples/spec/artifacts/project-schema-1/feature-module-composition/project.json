@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": [
+    "fixture/feature-module-composition::counter",
+    "fixture/feature-module-composition::todo/form",
+    "fixture/feature-module-composition::todo/list",
+    "fixture/feature-module-composition::todo/feature",
+    "fixture/feature-module-composition::app",
+    "fixture/feature-module-composition::main"
+  ],
+  "modules": [
+    {
+      "id": "fixture/feature-module-composition::counter",
+      "source": "src/counter.ssrg",
+      "output": "dist/feature-module-composition/counter.js",
+      "artifacts": "artifacts/counter",
+      "imports": []
+    },
+    {
+      "id": "fixture/feature-module-composition::todo/form",
+      "source": "src/todo/form.ssrg",
+      "output": "dist/feature-module-composition/todo/form.js",
+      "artifacts": "artifacts/todo-form",
+      "imports": []
+    },
+    {
+      "id": "fixture/feature-module-composition::todo/list",
+      "source": "src/todo/list.ssrg",
+      "output": "dist/feature-module-composition/todo/list.js",
+      "artifacts": "artifacts/todo-list",
+      "imports": []
+    },
+    {
+      "id": "fixture/feature-module-composition::todo/feature",
+      "source": "src/todo/feature.ssrg",
+      "output": "dist/feature-module-composition/todo/feature.js",
+      "artifacts": "artifacts/todo-feature",
+      "imports": [
+        {
+          "specifier": "./form",
+          "module": "fixture/feature-module-composition::todo/form"
+        },
+        {
+          "specifier": "./list",
+          "module": "fixture/feature-module-composition::todo/list"
+        }
+      ]
+    },
+    {
+      "id": "fixture/feature-module-composition::app",
+      "source": "src/app.ssrg",
+      "output": "dist/feature-module-composition/app.js",
+      "artifacts": "artifacts/app",
+      "imports": [
+        {
+          "specifier": "./counter",
+          "module": "fixture/feature-module-composition::counter"
+        },
+        {
+          "specifier": "./todo/feature",
+          "module": "fixture/feature-module-composition::todo/feature"
+        }
+      ]
+    },
+    {
+      "id": "fixture/feature-module-composition::main",
+      "source": "src/main.ssrg",
+      "output": "dist/feature-module-composition/main.js",
+      "artifacts": "artifacts/main",
+      "imports": [
+        {
+          "specifier": "./app",
+          "module": "fixture/feature-module-composition::app"
+        }
+      ]
+    }
+  ]
+}

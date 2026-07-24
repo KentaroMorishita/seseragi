@@ -350,6 +350,39 @@ keyはparent直下のsibling identity hintで、HTML attributeではありませ
 重複をDuplicateSiblingKeyとして拒否します。keyがないnodeのidentityは同じparent内のunkeyed相対位置です。keyを
 global ID、CSS selector、component identityとして使いません。
 
+### 13.6.1 stateful featureのmodule所有境界
+
+stateful featureもcomponent専用構文を追加せず、通常のEffect functionをconstructorとして表現します。constructorは
+module-privateな`MutableSignal<State>`を一度生成し、親へはread-onlyな
+`Signal<Html<Effect<{}, Never, Unit>>>`を返せます。privateなState、Action、updateはそのmoduleに留まり、event Actionは
+feature自身がSignal更新Effectへ変換します。root DOM runtimeはこのopaqueなEffectを実行するだけで、子のAction variantを
+列挙するroot Actionやdispatch分岐を要求しません。
+
+```seseragi
+effect fn create label: String
+  -> Signal<html.Html<Effect<{}, Never, Unit>>>
+fails Never =
+  do {
+    state <- signals.make $ CounterState { count: 0 }
+    succeed $ signals.map (view label state) state
+  }
+```
+
+stateの所有者は次で固定します。
+
+- local stateはfeature constructorが所有し、private Actionだけが更新する。
+- shared stateは最も近い共通親featureが所有し、子へread-only Signalまたは許可したEffectだけを渡す。
+- app-wide stateはroot featureが所有し、`main`やmodule import時のglobal singletonにしない。
+
+feature identityはconstructorが返したSignal bindingに所属します。component functionの呼び出し順やHtml nodeの`key`から
+stateを暗黙生成しません。条件表示は`switchMap`でactiveなsubtree Signalを選び、同じconstructor resultへ戻ればstateを
+保持し、別のresultへ切り替えれば別featureへ差し替えます。並べ替えもbindingとstateの対応を変えません。
+
+この最小surfaceの子eventはempty requirementかつ`Never` failureのEffectなので、子固有のresource requirementやfailure型を
+親へ展開しません。rootの`dom.run`終了時はcontent subscriptionとevent listenerを既存のDOM resource境界で解除します。
+独自resourceを持つchildのmount / unmount lifetimeは13.8〜13.10のEffect scopeへ結び付け、nodeの`key`をfeature resource
+scopeとして流用しません。pure function componentと単一State + Action用の`dom.app`はこの構成と併存します。
+
 ## 13.7 SSR
 
 ```seseragi

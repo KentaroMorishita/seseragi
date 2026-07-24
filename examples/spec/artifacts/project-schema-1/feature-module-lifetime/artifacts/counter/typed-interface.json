@@ -1,0 +1,142 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/feature-module-lifetime::counter",
+  "source": "counter.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/web/html::*",
+          "localName": "html"
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 37,
+        "end": 74
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/signal::*",
+          "localName": "signals"
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 75,
+        "end": 125
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "MutableSignal",
+          "symbol": "std/signal::MutableSignal"
+        },
+        {
+          "namespace": "type",
+          "name": "Signal",
+          "symbol": "std/signal::Signal"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/feature-module-lifetime::counter::create",
+      "namespace": "value",
+      "name": "create",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 823,
+        "end": 1035
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "providerModule": "std/signal",
+                "providerExport": "Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "providerModule": "std/web/html",
+                    "providerExport": "Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

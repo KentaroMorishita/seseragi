@@ -1,0 +1,81 @@
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal } from "std/signal"
+import { create as createCounter } from "./counter"
+import { create as createTodo } from "./todo/feature"
+
+type Theme =
+  | Light
+  | Dark
+
+type AppAction =
+  | ToggleTheme
+
+struct AppState {
+  theme: Theme,
+}
+
+fn toggle theme: Theme -> Theme =
+  match theme {
+    Light -> Dark
+    Dark -> Light
+  }
+
+fn update action: AppAction -> state: AppState -> AppState =
+  match action {
+    ToggleTheme -> AppState { theme: toggle state.theme }
+  }
+
+fn dispatch state: MutableSignal<AppState>
+  -> action: AppAction
+  -> Effect<{}, Never, Unit> =
+  signals.update (update action) state
+
+fn themeName theme: Theme -> String =
+  match theme {
+    Light -> "Light"
+    Dark -> "Dark"
+  }
+
+fn appView state: MutableSignal<AppState>
+  -> current: AppState
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.section {
+    children: [
+      html.button {
+        onClick: dispatch state ToggleTheme,
+        children: "Toggle app theme"
+      },
+      html.h1 { children: `Feature tree: ${themeName current.theme}` }
+    ]
+  }
+
+fn page app: html.Html<Effect<{}, Never, Unit>>
+  -> first: html.Html<Effect<{}, Never, Unit>>
+  -> second: html.Html<Effect<{}, Never, Unit>>
+  -> todo: html.Html<Effect<{}, Never, Unit>>
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.main { children: [app, first, second, todo] }
+
+fn perform action: Effect<{}, Never, Unit> -> Effect<{}, Never, Unit> = action
+
+pub effect fn start -> Unit
+with dom: dom.Dom
+fails String =
+  do {
+    appState <- signals.make $ AppState { theme: Light }
+    first <- createCounter "Counter A"
+    second <- createCounter "Counter B"
+    todo <- createTodo ()
+
+    let app = signals.map (appView appState) appState
+    let content = page <$> app <*> first <*> second <*> todo
+
+    target <-
+      dom.query "#app"
+        |> mapError (\error: dom.DomError -> "DOM target unavailable")
+
+    dom.run (dom.defaultOptions ()) target perform content
+      |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
+  }

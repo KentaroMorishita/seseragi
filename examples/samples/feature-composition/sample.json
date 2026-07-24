@@ -1,0 +1,19 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "feature-composition",
+  "title": "Featureを階層合成",
+  "summary": "private stateを持つfeatureをEffect ActionとSignalで階層合成します。",
+  "kind": "showcase",
+  "difficulty": "advanced",
+  "topics": ["feature module", "private state", "Effect Action", "switchMap"],
+  "capabilities": ["dom"],
+  "outputMode": "html",
+  "prerequisites": ["signal-state", "interactive-app"],
+  "featured": true,
+  "isNew": true,
+  "interactive": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md"
+  }
+}

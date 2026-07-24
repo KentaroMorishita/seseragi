@@ -1,0 +1,190 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/feature-module-composition::todo/feature",
+  "source": "feature.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/array",
+      "module": "std/array",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/array::*",
+          "localName": "arrays"
+        }
+      ]
+    },
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "start": 36,
+        "end": 72
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/web/html::*",
+          "localName": "html"
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 73,
+        "end": 110
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/signal::*",
+          "localName": "signals"
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 111,
+        "end": 161
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "MutableSignal",
+          "symbol": "std/signal::MutableSignal"
+        },
+        {
+          "namespace": "type",
+          "name": "Signal",
+          "symbol": "std/signal::Signal"
+        }
+      ]
+    },
+    {
+      "specifier": "./form",
+      "module": "fixture/feature-module-composition::todo/form",
+      "origin": {
+        "start": 162,
+        "end": 203
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "view",
+          "symbol": "fixture/feature-module-composition::todo/form::view",
+          "localName": "todoForm"
+        }
+      ]
+    },
+    {
+      "specifier": "./list",
+      "module": "fixture/feature-module-composition::todo/list",
+      "origin": {
+        "start": 204,
+        "end": 245
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "view",
+          "symbol": "fixture/feature-module-composition::todo/list::view",
+          "localName": "todoList"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/feature-module-composition::todo/feature::create",
+      "namespace": "value",
+      "name": "create",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 1628,
+        "end": 1829
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "providerModule": "std/signal",
+                "providerExport": "Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "providerModule": "std/web/html",
+                    "providerExport": "Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

@@ -7,25 +7,78 @@ import {
   type DomOptions,
   type DomRuntimeError,
   type DomTarget,
+  defaultOptions,
+  run as runDom,
 } from "../../../runtime/ts/src/dom"
-import { run, unit, type Unit } from "../../../runtime/ts/src/effect"
+import {
+  type Effect,
+  run,
+  type Unit,
+  unit,
+} from "../../../runtime/ts/src/effect"
 import {
   button,
-  p,
-  renderToString,
   type Html,
+  p,
+  renderForDom,
+  renderToString,
 } from "../../../runtime/ts/src/html"
 import {
+  type ServiceOperation,
   serviceFailure,
   serviceSuccess,
-  type ServiceOperation,
 } from "../../../runtime/ts/src/service"
-import type { Signal } from "../../../runtime/ts/src/signal"
+import { constant, type Signal } from "../../../runtime/ts/src/signal"
 
 type Mode = "Ready" | "Active"
 type Action = "Activate"
 
 describe("high-level DOM app runtime", () => {
+  test("executes a child-owned Effect value without a root Action union", async () => {
+    let childUpdates = 0
+    const childAction: Effect<Record<string, never>, never, Unit> = () => {
+      childUpdates += 1
+      return unit
+    }
+    const content = constant(
+      button({ onClick: childAction, children: "Run child action" })
+    )
+    const target = createDomTarget({ selector: "#app" })
+    const service: Dom = {
+      query() {
+        return serviceSuccess(target)
+      },
+      async run<Failure, Action>(
+        _options: DomOptions,
+        _target: DomTarget,
+        dispatch: DomDispatch<Failure, Action>,
+        mounted: Signal<Html<Action>>
+      ): Promise<Awaited<ServiceOperation<DomRuntimeError<Failure>, Unit>>> {
+        const handler = renderForDom(mounted.current()).eventHandlers.get("0")
+        if (handler?.kind !== "click") {
+          throw new Error("expected child click action")
+        }
+        const result = await dispatch(handler.message)
+        return result.kind === "failure"
+          ? serviceFailure({ tag: "DispatchFailure", value: result.error })
+          : serviceSuccess(unit)
+      },
+    }
+
+    const result = await run(
+      runDom(
+        defaultOptions(unit),
+        target,
+        (action: Effect<Record<string, never>, never, Unit>) => action,
+        content
+      ),
+      { dom: service }
+    )
+
+    expect(result).toEqual({ kind: "success", value: unit })
+    expect(childUpdates).toBe(1)
+  })
+
   test("owns Signal setup and applies actions through a pure reducer", async () => {
     const snapshots: string[] = []
     const service: Dom = {

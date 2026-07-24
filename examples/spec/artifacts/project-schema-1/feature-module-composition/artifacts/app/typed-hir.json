@@ -1,0 +1,4285 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "app.ssrg",
+  "module": "fixture/feature-module-composition::app",
+  "externalTypeBindings": [
+    {
+      "spelling": "Effect",
+      "canonical": "std/prelude::Effect"
+    },
+    {
+      "spelling": "Signal",
+      "canonical": "std/signal::Signal",
+      "provider": {
+        "module": "std/signal",
+        "export": "Signal"
+      }
+    },
+    {
+      "spelling": "html.Html",
+      "canonical": "std/web/html::Html",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Html"
+      }
+    },
+    {
+      "spelling": "MutableSignal",
+      "canonical": "std/signal::MutableSignal",
+      "provider": {
+        "module": "std/signal",
+        "export": "MutableSignal"
+      }
+    },
+    {
+      "spelling": "Style",
+      "canonical": "std/web/html::Style",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Style"
+      }
+    },
+    {
+      "spelling": "dom.Dom",
+      "canonical": "std/web/dom::Dom",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "Dom"
+      }
+    },
+    {
+      "spelling": "dom.DomError",
+      "canonical": "std/web/dom::DomError",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomError"
+      }
+    },
+    {
+      "spelling": "DomTarget",
+      "canonical": "std/web/dom::DomTarget",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomTarget"
+      }
+    },
+    {
+      "spelling": "DomOptions",
+      "canonical": "std/web/dom::DomOptions",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomOptions"
+      }
+    },
+    {
+      "spelling": "dom.DomRuntimeError",
+      "canonical": "std/web/dom::DomRuntimeError",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomRuntimeError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/web/dom",
+      "module": "std/web/dom",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Dom",
+          "local": "dom.Dom",
+          "canonical": "std/web/dom::Dom",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "DomError",
+          "local": "dom.DomError",
+          "canonical": "std/web/dom::DomError",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "DomRuntimeError",
+          "local": "dom.DomRuntimeError",
+          "canonical": "std/web/dom::DomRuntimeError",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "query",
+          "local": "dom.query",
+          "canonical": "std/web/dom::query",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "run",
+          "local": "dom.run",
+          "canonical": "std/web/dom::run",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "defaultOptions",
+          "local": "dom.defaultOptions",
+          "canonical": "std/web/dom::defaultOptions",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "start": 35,
+        "end": 71
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Html",
+          "local": "html.Html",
+          "canonical": "std/web/html::Html",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "section",
+          "local": "html.section",
+          "canonical": "std/web/html::section",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "button",
+          "local": "html.button",
+          "canonical": "std/web/html::button",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "h1",
+          "local": "html.h1",
+          "canonical": "std/web/html::h1",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "main",
+          "local": "html.main",
+          "canonical": "std/web/html::main",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 72,
+        "end": 109
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "MutableSignal",
+          "local": "MutableSignal",
+          "canonical": "std/signal::MutableSignal",
+          "origin": {
+            "start": 119,
+            "end": 132
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "update",
+          "local": "signals.update",
+          "canonical": "std/signal::update",
+          "origin": {
+            "start": 84,
+            "end": 91
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "make",
+          "local": "signals.make",
+          "canonical": "std/signal::make",
+          "origin": {
+            "start": 84,
+            "end": 91
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "map",
+          "local": "signals.map",
+          "canonical": "std/signal::map",
+          "origin": {
+            "start": 84,
+            "end": 91
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 110,
+        "end": 152
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "MutableSignal",
+          "local": "MutableSignal",
+          "canonical": "std/signal::MutableSignal",
+          "origin": {
+            "start": 119,
+            "end": 132
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "update",
+          "local": "signals.update",
+          "canonical": "std/signal::update",
+          "origin": {
+            "start": 84,
+            "end": 91
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "make",
+          "local": "signals.make",
+          "canonical": "std/signal::make",
+          "origin": {
+            "start": 84,
+            "end": 91
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "map",
+          "local": "signals.map",
+          "canonical": "std/signal::map",
+          "origin": {
+            "start": 84,
+            "end": 91
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "./counter",
+      "module": "fixture/feature-module-composition::counter",
+      "origin": {
+        "start": 153,
+        "end": 204
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "create",
+          "local": "createCounter",
+          "canonical": "fixture/feature-module-composition::counter::create",
+          "origin": {
+            "start": 172,
+            "end": 185
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "./todo/feature",
+      "module": "fixture/feature-module-composition::todo/feature",
+      "origin": {
+        "start": 205,
+        "end": 258
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "create",
+          "local": "createTodo",
+          "canonical": "fixture/feature-module-composition::todo/feature::create",
+          "origin": {
+            "start": 224,
+            "end": 234
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/feature-module-composition::app::Theme",
+      "name": "Theme",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/feature-module-composition::app::Light",
+          "name": "Light",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Theme",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 277,
+            "end": 282
+          }
+        },
+        {
+          "symbol": "fixture/feature-module-composition::app::Dark",
+          "name": "Dark",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Theme",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 287,
+            "end": 291
+          }
+        }
+      ],
+      "origin": {
+        "start": 260,
+        "end": 291
+      }
+    },
+    {
+      "kind": "adt",
+      "symbol": "fixture/feature-module-composition::app::AppAction",
+      "name": "AppAction",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/feature-module-composition::app::ToggleTheme",
+          "name": "ToggleTheme",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "AppAction",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 314,
+            "end": 325
+          }
+        }
+      ],
+      "origin": {
+        "start": 293,
+        "end": 325
+      }
+    },
+    {
+      "kind": "struct",
+      "symbol": "fixture/feature-module-composition::app::AppState",
+      "name": "AppState",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "theme",
+          "type": {
+            "kind": "named",
+            "name": "Theme",
+            "arguments": []
+          },
+          "origin": {
+            "start": 347,
+            "end": 352
+          }
+        }
+      ],
+      "origin": {
+        "start": 327,
+        "end": 362
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/feature-module-composition::app::toggle",
+      "visibility": "private",
+      "origin": {
+        "start": 364,
+        "end": 453
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Theme",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "theme",
+          "type": {
+            "kind": "named",
+            "name": "Theme",
+            "arguments": []
+          },
+          "origin": {
+            "start": 374,
+            "end": 379
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "theme",
+          "type": {
+            "kind": "named",
+            "name": "Theme",
+            "arguments": []
+          },
+          "origin": {
+            "start": 406,
+            "end": 411
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "fixture/feature-module-composition::app::Light",
+              "type": {
+                "kind": "named",
+                "name": "Theme",
+                "arguments": []
+              },
+              "origin": {
+                "start": 418,
+                "end": 423
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "fixture/feature-module-composition::app::Dark",
+              "type": {
+                "kind": "named",
+                "name": "Theme",
+                "arguments": []
+              },
+              "origin": {
+                "start": 427,
+                "end": 431
+              }
+            },
+            "origin": {
+              "start": 418,
+              "end": 431
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "fixture/feature-module-composition::app::Dark",
+              "type": {
+                "kind": "named",
+                "name": "Theme",
+                "arguments": []
+              },
+              "origin": {
+                "start": 436,
+                "end": 440
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "fixture/feature-module-composition::app::Light",
+              "type": {
+                "kind": "named",
+                "name": "Theme",
+                "arguments": []
+              },
+              "origin": {
+                "start": 444,
+                "end": 449
+              }
+            },
+            "origin": {
+              "start": 436,
+              "end": 449
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Theme",
+          "arguments": []
+        },
+        "origin": {
+          "start": 400,
+          "end": 453
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/feature-module-composition::app::update",
+      "visibility": "private",
+      "origin": {
+        "start": 455,
+        "end": 594
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "AppState",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "action",
+          "type": {
+            "kind": "named",
+            "name": "AppAction",
+            "arguments": []
+          },
+          "origin": {
+            "start": 465,
+            "end": 471
+          }
+        },
+        {
+          "kind": "named",
+          "name": "state",
+          "type": {
+            "kind": "named",
+            "name": "AppState",
+            "arguments": []
+          },
+          "origin": {
+            "start": 486,
+            "end": 491
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "action",
+          "type": {
+            "kind": "named",
+            "name": "AppAction",
+            "arguments": []
+          },
+          "origin": {
+            "start": 524,
+            "end": 530
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "fixture/feature-module-composition::app::ToggleTheme",
+              "type": {
+                "kind": "named",
+                "name": "AppAction",
+                "arguments": []
+              },
+              "origin": {
+                "start": 537,
+                "end": 548
+              }
+            },
+            "body": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "theme",
+                  "value": {
+                    "kind": "call",
+                    "callee": "fixture/feature-module-composition::app::toggle",
+                    "arguments": [
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "variable",
+                          "name": "state",
+                          "type": {
+                            "kind": "named",
+                            "name": "AppState",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 577,
+                            "end": 582
+                          }
+                        },
+                        "field": "theme",
+                        "type": {
+                          "kind": "named",
+                          "name": "Theme",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 577,
+                          "end": 588
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Theme",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 570,
+                      "end": 588
+                    }
+                  },
+                  "origin": {
+                    "start": 563,
+                    "end": 588
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "AppState",
+                "arguments": []
+              },
+              "origin": {
+                "start": 552,
+                "end": 590
+              }
+            },
+            "origin": {
+              "start": 537,
+              "end": 590
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "AppState",
+          "arguments": []
+        },
+        "origin": {
+          "start": 518,
+          "end": 594
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/feature-module-composition::app::dispatch",
+      "visibility": "private",
+      "origin": {
+        "start": 596,
+        "end": 731
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "state",
+          "type": {
+            "kind": "external-named",
+            "name": "MutableSignal",
+            "canonical": "std/signal::MutableSignal",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "AppState",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 608,
+            "end": 613
+          }
+        },
+        {
+          "kind": "named",
+          "name": "action",
+          "type": {
+            "kind": "named",
+            "name": "AppAction",
+            "arguments": []
+          },
+          "origin": {
+            "start": 644,
+            "end": 650
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/signal::update",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/feature-module-composition::app::update",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "action",
+                "type": {
+                  "kind": "named",
+                  "name": "AppAction",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 718,
+                  "end": 724
+                }
+              }
+            ],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "AppState",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "AppState",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 711,
+              "end": 724
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "state",
+            "type": {
+              "kind": "external-named",
+              "name": "MutableSignal",
+              "canonical": "std/signal::MutableSignal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "AppState",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 726,
+              "end": 731
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 695,
+          "end": 731
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/feature-module-composition::app::themeName",
+      "visibility": "private",
+      "origin": {
+        "start": 733,
+        "end": 830
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "theme",
+          "type": {
+            "kind": "named",
+            "name": "Theme",
+            "arguments": []
+          },
+          "origin": {
+            "start": 746,
+            "end": 751
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "theme",
+          "type": {
+            "kind": "named",
+            "name": "Theme",
+            "arguments": []
+          },
+          "origin": {
+            "start": 779,
+            "end": 784
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "fixture/feature-module-composition::app::Light",
+              "type": {
+                "kind": "named",
+                "name": "Theme",
+                "arguments": []
+              },
+              "origin": {
+                "start": 791,
+                "end": 796
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Light",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 800,
+                "end": 807
+              }
+            },
+            "origin": {
+              "start": 791,
+              "end": 807
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "fixture/feature-module-composition::app::Dark",
+              "type": {
+                "kind": "named",
+                "name": "Theme",
+                "arguments": []
+              },
+              "origin": {
+                "start": 812,
+                "end": 816
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Dark",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 820,
+                "end": 826
+              }
+            },
+            "origin": {
+              "start": 812,
+              "end": 826
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 773,
+          "end": 830
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/feature-module-composition::app::appView",
+      "visibility": "private",
+      "origin": {
+        "start": 832,
+        "end": 1163
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "html.Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "state",
+          "type": {
+            "kind": "external-named",
+            "name": "MutableSignal",
+            "canonical": "std/signal::MutableSignal",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "AppState",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 843,
+            "end": 848
+          }
+        },
+        {
+          "kind": "named",
+          "name": "current",
+          "type": {
+            "kind": "named",
+            "name": "AppState",
+            "arguments": []
+          },
+          "origin": {
+            "start": 879,
+            "end": 886
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::section",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "onClick",
+                              "value": {
+                                "kind": "call",
+                                "callee": "fixture/feature-module-composition::app::dispatch",
+                                "arguments": [
+                                  {
+                                    "kind": "variable",
+                                    "name": "state",
+                                    "type": {
+                                      "kind": "external-named",
+                                      "name": "MutableSignal",
+                                      "canonical": "std/signal::MutableSignal",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "AppState",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "origin": {
+                                      "start": 1018,
+                                      "end": 1023
+                                    }
+                                  },
+                                  {
+                                    "kind": "variable",
+                                    "name": "fixture/feature-module-composition::app::ToggleTheme",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "AppAction",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "start": 1024,
+                                      "end": 1035
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Effect",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Never",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Unit",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "start": 1009,
+                                  "end": 1035
+                                }
+                              },
+                              "origin": {
+                                "start": 1000,
+                                "end": 1035
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Toggle app theme",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 1055,
+                                  "end": 1073
+                                }
+                              },
+                              "origin": {
+                                "start": 1045,
+                                "end": 1073
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onClick",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Effect",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Never",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Unit",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 990,
+                            "end": 1081
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Effect",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "closed": true,
+                                    "fields": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Never",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Unit",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<String>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 978,
+                        "end": 1081
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::h1",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "template",
+                                "parts": [
+                                  {
+                                    "kind": "text",
+                                    "value": "Feature tree: ",
+                                    "origin": {
+                                      "start": 1110,
+                                      "end": 1124
+                                    }
+                                  },
+                                  {
+                                    "kind": "interpolation",
+                                    "value": {
+                                      "kind": "call",
+                                      "callee": "fixture/feature-module-composition::app::themeName",
+                                      "arguments": [
+                                        {
+                                          "kind": "field-access",
+                                          "receiver": {
+                                            "kind": "variable",
+                                            "name": "current",
+                                            "type": {
+                                              "kind": "named",
+                                              "name": "AppState",
+                                              "arguments": []
+                                            },
+                                            "origin": {
+                                              "start": 1136,
+                                              "end": 1143
+                                            }
+                                          },
+                                          "field": "theme",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "Theme",
+                                            "arguments": []
+                                          },
+                                          "origin": {
+                                            "start": 1136,
+                                            "end": 1149
+                                          }
+                                        }
+                                      ],
+                                      "type": {
+                                        "kind": "named",
+                                        "name": "String",
+                                        "arguments": []
+                                      },
+                                      "origin": {
+                                        "start": 1126,
+                                        "end": 1149
+                                      }
+                                    },
+                                    "evidence": {
+                                      "constraint": {
+                                        "name": "Show",
+                                        "arguments": [
+                                          {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      },
+                                      "evidence": {
+                                        "kind": "standard",
+                                        "identity": "Show<std/prelude::String>"
+                                      }
+                                    },
+                                    "traitIdentity": "std/prelude::Show",
+                                    "origin": {
+                                      "start": 1124,
+                                      "end": 1150
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 1109,
+                                  "end": 1151
+                                }
+                              },
+                              "origin": {
+                                "start": 1099,
+                                "end": 1151
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1097,
+                            "end": 1153
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Effect",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "closed": true,
+                                    "fields": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Never",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Unit",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<String>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1089,
+                        "end": 1153
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 970,
+                    "end": 1159
+                  }
+                },
+                "origin": {
+                  "start": 960,
+                  "end": 1159
+                }
+              }
+            ],
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "start": 954,
+              "end": 1163
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "IntoChildren",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/web/html::IntoChildren<Array>"
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 941,
+          "end": 1163
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/feature-module-composition::app::page",
+      "visibility": "private",
+      "origin": {
+        "start": 1165,
+        "end": 1448
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "html.Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "app",
+          "type": {
+            "kind": "external-named",
+            "name": "html.Html",
+            "canonical": "std/web/html::Html",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 1173,
+            "end": 1176
+          }
+        },
+        {
+          "kind": "named",
+          "name": "first",
+          "type": {
+            "kind": "external-named",
+            "name": "html.Html",
+            "canonical": "std/web/html::Html",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 1218,
+            "end": 1223
+          }
+        },
+        {
+          "kind": "named",
+          "name": "second",
+          "type": {
+            "kind": "external-named",
+            "name": "html.Html",
+            "canonical": "std/web/html::Html",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 1265,
+            "end": 1271
+          }
+        },
+        {
+          "kind": "named",
+          "name": "todo",
+          "type": {
+            "kind": "external-named",
+            "name": "html.Html",
+            "canonical": "std/web/html::Html",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 1313,
+            "end": 1317
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::main",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "variable",
+                      "name": "app",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1421,
+                        "end": 1424
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "first",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1426,
+                        "end": 1431
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "second",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1433,
+                        "end": 1439
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "todo",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1441,
+                        "end": 1445
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1420,
+                    "end": 1446
+                  }
+                },
+                "origin": {
+                  "start": 1410,
+                  "end": 1446
+                }
+              }
+            ],
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "start": 1408,
+              "end": 1448
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "IntoChildren",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/web/html::IntoChildren<Array>"
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 1398,
+          "end": 1448
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/feature-module-composition::app::perform",
+      "visibility": "private",
+      "origin": {
+        "start": 1450,
+        "end": 1528
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "action",
+          "type": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 1461,
+            "end": 1467
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "action",
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 1522,
+          "end": 1528
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/feature-module-composition::app::start",
+      "visibility": "public",
+      "origin": {
+        "start": 1530,
+        "end": 2127
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "dom",
+              "type": {
+                "kind": "named",
+                "name": "dom.Dom",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "appState",
+            "type": {
+              "kind": "external-named",
+              "name": "MutableSignal",
+              "canonical": "std/signal::MutableSignal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "AppState",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::make",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "theme",
+                      "value": {
+                        "kind": "variable",
+                        "name": "fixture/feature-module-composition::app::Light",
+                        "type": {
+                          "kind": "named",
+                          "name": "Theme",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1647,
+                          "end": 1652
+                        }
+                      },
+                      "origin": {
+                        "start": 1640,
+                        "end": 1652
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "AppState",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1629,
+                    "end": 1654
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "AppState",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1614,
+                "end": 1654
+              }
+            },
+            "origin": {
+              "start": 1602,
+              "end": 1654
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "first",
+            "type": {
+              "kind": "external-named",
+              "name": "Signal",
+              "canonical": "std/signal::Signal",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.Html",
+                  "canonical": "std/web/html::Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "value": {
+              "kind": "effect-invoke",
+              "callee": "fixture/feature-module-composition::counter::create",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "external-named",
+                  "name": "Signal",
+                  "canonical": "std/signal::Signal",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Counter A",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1682,
+                    "end": 1693
+                  }
+                }
+              ],
+              "origin": {
+                "start": 1668,
+                "end": 1693
+              }
+            },
+            "origin": {
+              "start": 1659,
+              "end": 1693
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "second",
+            "type": {
+              "kind": "external-named",
+              "name": "Signal",
+              "canonical": "std/signal::Signal",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.Html",
+                  "canonical": "std/web/html::Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "value": {
+              "kind": "effect-invoke",
+              "callee": "fixture/feature-module-composition::counter::create",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "external-named",
+                  "name": "Signal",
+                  "canonical": "std/signal::Signal",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "Counter B",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1722,
+                    "end": 1733
+                  }
+                }
+              ],
+              "origin": {
+                "start": 1708,
+                "end": 1733
+              }
+            },
+            "origin": {
+              "start": 1698,
+              "end": 1733
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "todo",
+            "type": {
+              "kind": "external-named",
+              "name": "Signal",
+              "canonical": "std/signal::Signal",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.Html",
+                  "canonical": "std/web/html::Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "value": {
+              "kind": "effect-invoke",
+              "callee": "fixture/feature-module-composition::todo/feature::create",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "external-named",
+                  "name": "Signal",
+                  "canonical": "std/signal::Signal",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "unit",
+                  "type": {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1757,
+                    "end": 1759
+                  }
+                }
+              ],
+              "origin": {
+                "start": 1746,
+                "end": 1759
+              }
+            },
+            "origin": {
+              "start": 1738,
+              "end": 1759
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "app",
+            "type": {
+              "kind": "external-named",
+              "name": "Signal",
+              "canonical": "std/signal::Signal",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.Html",
+                  "canonical": "std/web/html::Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::map",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/feature-module-composition::app::appView",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "appState",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "MutableSignal",
+                        "canonical": "std/signal::MutableSignal",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "AppState",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1796,
+                        "end": 1804
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "AppState",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "start": 1788,
+                    "end": 1804
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "appState",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "AppState",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1806,
+                    "end": 1814
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1775,
+                "end": 1814
+              }
+            },
+            "origin": {
+              "start": 1765,
+              "end": 1814
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "content",
+            "type": {
+              "kind": "external-named",
+              "name": "Signal",
+              "canonical": "std/signal::Signal",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.Html",
+                  "canonical": "std/web/html::Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Applicative::apply",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Applicative::apply",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::Applicative::apply",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "std/prelude::Functor::map",
+                          "arguments": [
+                            {
+                              "kind": "variable",
+                              "name": "fixture/feature-module-composition::app::page",
+                              "type": {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "external-named",
+                                  "name": "html.Html",
+                                  "canonical": "std/web/html::Html",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Effect",
+                                      "arguments": [
+                                        {
+                                          "kind": "record",
+                                          "closed": true,
+                                          "fields": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Never",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Unit",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.Html",
+                                    "canonical": "std/web/html::Html",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Effect",
+                                        "arguments": [
+                                          {
+                                            "kind": "record",
+                                            "closed": true,
+                                            "fields": []
+                                          },
+                                          {
+                                            "kind": "named",
+                                            "name": "Never",
+                                            "arguments": []
+                                          },
+                                          {
+                                            "kind": "named",
+                                            "name": "Unit",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "result": {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "external-named",
+                                      "name": "html.Html",
+                                      "canonical": "std/web/html::Html",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Effect",
+                                          "arguments": [
+                                            {
+                                              "kind": "record",
+                                              "closed": true,
+                                              "fields": []
+                                            },
+                                            {
+                                              "kind": "named",
+                                              "name": "Never",
+                                              "arguments": []
+                                            },
+                                            {
+                                              "kind": "named",
+                                              "name": "Unit",
+                                              "arguments": []
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "result": {
+                                      "kind": "function",
+                                      "parameter": {
+                                        "kind": "external-named",
+                                        "name": "html.Html",
+                                        "canonical": "std/web/html::Html",
+                                        "arguments": [
+                                          {
+                                            "kind": "named",
+                                            "name": "Effect",
+                                            "arguments": [
+                                              {
+                                                "kind": "record",
+                                                "closed": true,
+                                                "fields": []
+                                              },
+                                              {
+                                                "kind": "named",
+                                                "name": "Never",
+                                                "arguments": []
+                                              },
+                                              {
+                                                "kind": "named",
+                                                "name": "Unit",
+                                                "arguments": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      "result": {
+                                        "kind": "external-named",
+                                        "name": "html.Html",
+                                        "canonical": "std/web/html::Html",
+                                        "arguments": [
+                                          {
+                                            "kind": "named",
+                                            "name": "Effect",
+                                            "arguments": [
+                                              {
+                                                "kind": "record",
+                                                "closed": true,
+                                                "fields": []
+                                              },
+                                              {
+                                                "kind": "named",
+                                                "name": "Never",
+                                                "arguments": []
+                                              },
+                                              {
+                                                "kind": "named",
+                                                "name": "Unit",
+                                                "arguments": []
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "origin": {
+                                "start": 1833,
+                                "end": 1837
+                              }
+                            },
+                            {
+                              "kind": "variable",
+                              "name": "app",
+                              "type": {
+                                "kind": "external-named",
+                                "name": "Signal",
+                                "canonical": "std/signal::Signal",
+                                "arguments": [
+                                  {
+                                    "kind": "external-named",
+                                    "name": "html.Html",
+                                    "canonical": "std/web/html::Html",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Effect",
+                                        "arguments": [
+                                          {
+                                            "kind": "record",
+                                            "closed": true,
+                                            "fields": []
+                                          },
+                                          {
+                                            "kind": "named",
+                                            "name": "Never",
+                                            "arguments": []
+                                          },
+                                          {
+                                            "kind": "named",
+                                            "name": "Unit",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "start": 1842,
+                                "end": 1845
+                              }
+                            }
+                          ],
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Functor",
+                                "arguments": [
+                                  {
+                                    "kind": "external-named",
+                                    "name": "Signal",
+                                    "canonical": "std/signal::Signal",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/signal::Functor"
+                              }
+                            }
+                          ],
+                          "traitDispatch": {
+                            "traitIdentity": "std/prelude::Functor",
+                            "method": "map"
+                          },
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Signal",
+                            "canonical": "std/signal::Signal",
+                            "arguments": [
+                              {
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "external-named",
+                                  "name": "html.Html",
+                                  "canonical": "std/web/html::Html",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Effect",
+                                      "arguments": [
+                                        {
+                                          "kind": "record",
+                                          "closed": true,
+                                          "fields": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Never",
+                                          "arguments": []
+                                        },
+                                        {
+                                          "kind": "named",
+                                          "name": "Unit",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                "result": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.Html",
+                                    "canonical": "std/web/html::Html",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Effect",
+                                        "arguments": [
+                                          {
+                                            "kind": "record",
+                                            "closed": true,
+                                            "fields": []
+                                          },
+                                          {
+                                            "kind": "named",
+                                            "name": "Never",
+                                            "arguments": []
+                                          },
+                                          {
+                                            "kind": "named",
+                                            "name": "Unit",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "result": {
+                                    "kind": "function",
+                                    "parameter": {
+                                      "kind": "external-named",
+                                      "name": "html.Html",
+                                      "canonical": "std/web/html::Html",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Effect",
+                                          "arguments": [
+                                            {
+                                              "kind": "record",
+                                              "closed": true,
+                                              "fields": []
+                                            },
+                                            {
+                                              "kind": "named",
+                                              "name": "Never",
+                                              "arguments": []
+                                            },
+                                            {
+                                              "kind": "named",
+                                              "name": "Unit",
+                                              "arguments": []
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "result": {
+                                      "kind": "external-named",
+                                      "name": "html.Html",
+                                      "canonical": "std/web/html::Html",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Effect",
+                                          "arguments": [
+                                            {
+                                              "kind": "record",
+                                              "closed": true,
+                                              "fields": []
+                                            },
+                                            {
+                                              "kind": "named",
+                                              "name": "Never",
+                                              "arguments": []
+                                            },
+                                            {
+                                              "kind": "named",
+                                              "name": "Unit",
+                                              "arguments": []
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1833,
+                            "end": 1845
+                          }
+                        },
+                        {
+                          "kind": "variable",
+                          "name": "first",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Signal",
+                            "canonical": "std/signal::Signal",
+                            "arguments": [
+                              {
+                                "kind": "external-named",
+                                "name": "html.Html",
+                                "canonical": "std/web/html::Html",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Effect",
+                                    "arguments": [
+                                      {
+                                        "kind": "record",
+                                        "closed": true,
+                                        "fields": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Never",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Unit",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1850,
+                            "end": 1855
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Applicative",
+                            "arguments": [
+                              {
+                                "kind": "external-named",
+                                "name": "Signal",
+                                "canonical": "std/signal::Signal",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/signal::Applicative"
+                          }
+                        }
+                      ],
+                      "traitDispatch": {
+                        "traitIdentity": "std/prelude::Applicative",
+                        "method": "apply"
+                      },
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Signal",
+                        "canonical": "std/signal::Signal",
+                        "arguments": [
+                          {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "external-named",
+                              "name": "html.Html",
+                              "canonical": "std/web/html::Html",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Effect",
+                                  "arguments": [
+                                    {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Never",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Unit",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "result": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "external-named",
+                                "name": "html.Html",
+                                "canonical": "std/web/html::Html",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Effect",
+                                    "arguments": [
+                                      {
+                                        "kind": "record",
+                                        "closed": true,
+                                        "fields": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Never",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Unit",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "result": {
+                                "kind": "external-named",
+                                "name": "html.Html",
+                                "canonical": "std/web/html::Html",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Effect",
+                                    "arguments": [
+                                      {
+                                        "kind": "record",
+                                        "closed": true,
+                                        "fields": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Never",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Unit",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1833,
+                        "end": 1855
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "second",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Signal",
+                        "canonical": "std/signal::Signal",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "html.Html",
+                            "canonical": "std/web/html::Html",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Effect",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "closed": true,
+                                    "fields": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Never",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Unit",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1860,
+                        "end": 1866
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Applicative",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "Signal",
+                            "canonical": "std/signal::Signal",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/signal::Applicative"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Applicative",
+                    "method": "apply"
+                  },
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "external-named",
+                          "name": "html.Html",
+                          "canonical": "std/web/html::Html",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Effect",
+                              "arguments": [
+                                {
+                                  "kind": "record",
+                                  "closed": true,
+                                  "fields": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Never",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Unit",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "result": {
+                          "kind": "external-named",
+                          "name": "html.Html",
+                          "canonical": "std/web/html::Html",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Effect",
+                              "arguments": [
+                                {
+                                  "kind": "record",
+                                  "closed": true,
+                                  "fields": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Never",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Unit",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1833,
+                    "end": 1866
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "todo",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1871,
+                    "end": 1875
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Applicative",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "Signal",
+                        "canonical": "std/signal::Signal",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/signal::Applicative"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Applicative",
+                "method": "apply"
+              },
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1833,
+                "end": 1875
+              }
+            },
+            "origin": {
+              "start": 1819,
+              "end": 1875
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "target",
+            "type": {
+              "kind": "external-named",
+              "name": "DomTarget",
+              "canonical": "std/web/dom::DomTarget",
+              "arguments": []
+            },
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/effect::mapError",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "dom",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "dom.Dom",
+                        "canonical": "std/web/dom::Dom",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "external-named",
+                  "name": "DomTarget",
+                  "canonical": "std/web/dom::DomTarget",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "error",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "dom.DomError",
+                      "canonical": "std/web/dom::DomError",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1936,
+                      "end": 1941
+                    }
+                  },
+                  "body": {
+                    "kind": "string",
+                    "value": "DOM target unavailable",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1959,
+                      "end": 1983
+                    }
+                  },
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "dom.DomError",
+                      "canonical": "std/web/dom::DomError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "start": 1935,
+                    "end": 1983
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "std/web/dom::query",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "#app",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1907,
+                        "end": 1913
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "dom",
+                            "type": {
+                              "kind": "external-named",
+                              "name": "dom.Dom",
+                              "canonical": "std/web/dom::Dom",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "dom.DomError",
+                        "canonical": "std/web/dom::DomError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "DomTarget",
+                        "canonical": "std/web/dom::DomTarget",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1897,
+                    "end": 1913
+                  }
+                }
+              ],
+              "origin": {
+                "start": 1897,
+                "end": 1984
+              }
+            },
+            "origin": {
+              "start": 1881,
+              "end": 1984
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/effect::mapError",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "dom",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "dom.Dom",
+                    "canonical": "std/web/dom::Dom",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "lambda",
+              "parameter": {
+                "kind": "named",
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "dom.DomRuntimeError",
+                  "canonical": "std/web/dom::DomRuntimeError",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 2065,
+                  "end": 2070
+                }
+              },
+              "body": {
+                "kind": "string",
+                "value": "DOM runtime failed",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 2102,
+                  "end": 2122
+                }
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "dom.DomRuntimeError",
+                  "canonical": "std/web/dom::DomRuntimeError",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "start": 2064,
+                "end": 2122
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "std/web/dom::run",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/web/dom::defaultOptions",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 2018,
+                        "end": 2020
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "external-named",
+                    "name": "DomOptions",
+                    "canonical": "std/web/dom::DomOptions",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1999,
+                    "end": 2020
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "target",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "DomTarget",
+                    "canonical": "std/web/dom::DomTarget",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 2022,
+                    "end": 2028
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "fixture/feature-module-composition::app::perform",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "start": 2029,
+                    "end": 2036
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "content",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 2037,
+                    "end": 2044
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "dom",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "dom.Dom",
+                          "canonical": "std/web/dom::Dom",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "dom.DomRuntimeError",
+                    "canonical": "std/web/dom::DomRuntimeError",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1990,
+                "end": 2044
+              }
+            }
+          ],
+          "origin": {
+            "start": 1990,
+            "end": 2123
+          }
+        },
+        "origin": {
+          "start": 1593,
+          "end": 2127
+        }
+      }
+    }
+  ]
+}

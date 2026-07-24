@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "dist/feature-module-lifetime/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/feature-module-lifetime::main"
+  ],
+  "sourcesContent": [
+    "import { start } from \"./app\"\n\npub effect fn main = start ()\n"
+  ],
+  "names": [
+    "main",
+    "start"
+  ],
+  "mappings": ";;AAEAA"
+}

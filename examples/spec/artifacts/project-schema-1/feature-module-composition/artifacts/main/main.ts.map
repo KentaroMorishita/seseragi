@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "file": "dist/feature-module-composition/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/feature-module-composition::main"
+  ],
+  "sourcesContent": [
+    "import { start } from \"./app\"\n\npub effect fn main = start ()\n"
+  ],
+  "names": [
+    "main",
+    "start"
+  ],
+  "mappings": ";;AAEAA"
+}

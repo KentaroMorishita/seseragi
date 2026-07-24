@@ -1,0 +1,203 @@
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+
+struct CounterState {
+  count: Int,
+}
+
+type CounterAction =
+  | Increment
+
+fn increment state: CounterState -> CounterState =
+  CounterState { count: state.count + 1 }
+
+fn counterAction state: MutableSignal<CounterState>
+  -> action: CounterAction
+  -> Effect<{}, Never, Unit> =
+  match action {
+    Increment -> signals.update increment state
+  }
+
+fn counterView label: String
+  -> state: MutableSignal<CounterState>
+  -> current: CounterState
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.section {
+    key: label,
+    className: "rounded-2xl border border-slate-200 bg-white p-6 shadow-sm",
+    children: [
+      html.button {
+        onClick: counterAction state Increment,
+        className: "rounded-xl border-0 bg-emerald-500 px-4 py-2 font-semibold text-white",
+        children: "+1"
+      },
+      html.h2 { className: "mb-0 mt-4 text-xl font-bold", children: label },
+      html.p {
+        className: "mb-0 mt-2 text-3xl font-bold text-emerald-600",
+        children: `${current.count}`
+      }
+    ]
+  }
+
+// constructorを呼んだ時点で、各Counter専用のlocal stateが一度だけ作られます。
+effect fn createCounter label: String
+  -> Signal<html.Html<Effect<{}, Never, Unit>>>
+fails Never =
+  do {
+    state <- signals.make $ CounterState { count: 0 }
+    succeed $ signals.map (counterView label state) state
+  }
+
+type LayoutAction =
+  | ToggleFirst
+  | SwapChildren
+  | ReplaceFirst
+
+struct LayoutState {
+  showFirst: Bool,
+  reversed: Bool,
+  replacement: Bool,
+}
+
+fn toggle value: Bool -> Bool =
+  if value then False else True
+
+fn updateLayout action: LayoutAction -> state: LayoutState -> LayoutState =
+  match action {
+    ToggleFirst -> LayoutState { ...state, showFirst: toggle state.showFirst }
+    SwapChildren -> LayoutState { ...state, reversed: toggle state.reversed }
+    ReplaceFirst -> LayoutState { ...state, replacement: toggle state.replacement }
+  }
+
+fn layoutAction state: MutableSignal<LayoutState>
+  -> action: LayoutAction
+  -> Effect<{}, Never, Unit> =
+  signals.update (updateLayout action) state
+
+fn control label: String
+  -> action: Effect<{}, Never, Unit>
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.button {
+    onClick: action,
+    className: "rounded-xl border border-emerald-200 bg-white px-4 py-3 font-semibold text-emerald-800",
+    children: label
+  }
+
+fn controls state: MutableSignal<LayoutState>
+  -> current: LayoutState
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.section {
+    className: "rounded-2xl bg-emerald-50 p-6",
+    children: [
+      control "Hide / show" (layoutAction state ToggleFirst),
+      control "Swap order" (layoutAction state SwapChildren),
+      control "Replace first" (layoutAction state ReplaceFirst),
+      html.p {
+        className: "mb-0 mt-4 text-slate-700",
+        children:
+          if current.showFirst
+          then "The first feature is active."
+          else "Its state is retained while hidden."
+      }
+    ]
+  }
+
+fn hidden -> html.Html<Effect<{}, Never, Unit>> =
+  html.section {
+    className: "rounded-2xl border border-slate-200 bg-slate-50 p-6",
+    children: "First feature is outside the HTML tree."
+  }
+
+fn selectFirst first: Signal<html.Html<Effect<{}, Never, Unit>>>
+  -> replacement: Signal<html.Html<Effect<{}, Never, Unit>>>
+  -> layout: LayoutState
+  -> Signal<html.Html<Effect<{}, Never, Unit>>> =
+  if layout.showFirst
+  then if layout.replacement then replacement else first
+  else signals.constant $ hidden ()
+
+fn heading -> html.Html<Effect<{}, Never, Unit>> =
+  html.h1 {
+    className: "mb-2 text-3xl font-bold text-slate-900 sm:text-4xl",
+    children: "Feature composition"
+  }
+
+fn summary -> html.Html<Effect<{}, Never, Unit>> =
+  html.p {
+    className: "mb-6 text-lg text-slate-700",
+    children: "Private state stays with each constructed feature."
+  }
+
+fn featureGrid layout: LayoutState
+  -> first: html.Html<Effect<{}, Never, Unit>>
+  -> second: html.Html<Effect<{}, Never, Unit>>
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.section {
+    className: "mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2",
+    children:
+      if layout.reversed then [second, first] else [first, second]
+  }
+
+fn body layout: LayoutState
+  -> panel: html.Html<Effect<{}, Never, Unit>>
+  -> first: html.Html<Effect<{}, Never, Unit>>
+  -> second: html.Html<Effect<{}, Never, Unit>>
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.section {
+    className: "mx-auto max-w-2xl",
+    children: [
+      heading (),
+      summary (),
+      panel,
+      featureGrid layout first second
+    ]
+  }
+
+fn page layout: LayoutState
+  -> panel: html.Html<Effect<{}, Never, Unit>>
+  -> first: html.Html<Effect<{}, Never, Unit>>
+  -> second: html.Html<Effect<{}, Never, Unit>>
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.main {
+    className: "min-h-screen bg-slate-50 p-8 sm:p-12",
+    children: body layout panel first second
+  }
+
+fn perform action: Effect<{}, Never, Unit> -> Effect<{}, Never, Unit> = action
+
+effect fn mount content: Signal<html.Html<Effect<{}, Never, Unit>>> -> Unit
+with dom: dom.Dom
+fails String =
+  do {
+    target <-
+      dom.query "#app"
+        |> mapError (\error: dom.DomError -> "DOM target unavailable")
+    dom.run (dom.defaultOptions ()) target perform content
+      |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
+  }
+
+pub effect fn main =
+  do {
+    layout <- signals.make $ LayoutState {
+      showFirst: True,
+      reversed: False,
+      replacement: False
+    }
+    first <- createCounter "Counter A"
+    second <- createCounter "Counter B"
+    replacement <- createCounter "Replacement"
+
+    let panel = signals.map (controls layout) layout
+    let layoutView = signals.map (\current: LayoutState -> current) layout
+    // switchMapは非表示branchを外し、再表示時は同じfeature Signalへ戻ります。
+    let content =
+      page <$> layoutView <*> panel
+        <*> (signals.switchMap
+          (\current: LayoutState -> selectFirst first replacement current)
+          layout)
+        <*> second
+
+    mount content
+  }

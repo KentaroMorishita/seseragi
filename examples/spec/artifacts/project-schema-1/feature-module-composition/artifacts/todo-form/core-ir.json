@@ -1,0 +1,833 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/feature-module-composition::todo/form",
+  "externalTypeBindings": [
+    {
+      "spelling": "Effect",
+      "canonical": "std/prelude::Effect"
+    },
+    {
+      "spelling": "Style",
+      "canonical": "std/web/html::Style",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Style"
+      }
+    },
+    {
+      "spelling": "html.Html",
+      "canonical": "std/web/html::Html",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Html"
+      }
+    },
+    {
+      "spelling": "html.InputEvent",
+      "canonical": "std/web/html::InputEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "InputEvent"
+      }
+    },
+    {
+      "spelling": "ChangeEvent",
+      "canonical": "std/web/html::ChangeEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "ChangeEvent"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "source": "form.ssrg",
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Html",
+          "local": "html.Html",
+          "canonical": "std/web/html::Html",
+          "origin": {
+            "source": "form.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "InputEvent",
+          "local": "html.InputEvent",
+          "canonical": "std/web/html::InputEvent",
+          "origin": {
+            "source": "form.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "form",
+          "local": "html.form",
+          "canonical": "std/web/html::form",
+          "origin": {
+            "source": "form.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "input",
+          "local": "html.input",
+          "canonical": "std/web/html::input",
+          "origin": {
+            "source": "form.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "button",
+          "local": "html.button",
+          "canonical": "std/web/html::button",
+          "origin": {
+            "source": "form.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/feature-module-composition::todo/form::view",
+      "visibility": "public",
+      "origin": {
+        "source": "form.ssrg",
+        "start": 38,
+        "end": 455
+      },
+      "parameters": [
+        {
+          "id": "draft",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        },
+        {
+          "id": "onDraft",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "external-named",
+              "name": "html.InputEvent",
+              "canonical": "std/web/html::InputEvent",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "onSubmit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::form",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "onSubmit",
+                "value": {
+                  "kind": "variable",
+                  "name": "onSubmit",
+                  "type": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "form.ssrg",
+                    "start": 224,
+                    "end": 232
+                  }
+                },
+                "origin": {
+                  "source": "form.ssrg",
+                  "start": 224,
+                  "end": 232
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::input",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "id",
+                              "value": {
+                                "kind": "string",
+                                "value": "todo-draft",
+                                "origin": {
+                                  "source": "form.ssrg",
+                                  "start": 281,
+                                  "end": 293
+                                }
+                              },
+                              "origin": {
+                                "source": "form.ssrg",
+                                "start": 277,
+                                "end": 293
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "value",
+                              "value": {
+                                "kind": "variable",
+                                "name": "draft",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "source": "form.ssrg",
+                                  "start": 310,
+                                  "end": 315
+                                }
+                              },
+                              "origin": {
+                                "source": "form.ssrg",
+                                "start": 303,
+                                "end": 315
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "placeholder",
+                              "value": {
+                                "kind": "string",
+                                "value": "Add a task",
+                                "origin": {
+                                  "source": "form.ssrg",
+                                  "start": 338,
+                                  "end": 350
+                                }
+                              },
+                              "origin": {
+                                "source": "form.ssrg",
+                                "start": 325,
+                                "end": 350
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "onInput",
+                              "value": {
+                                "kind": "variable",
+                                "name": "onDraft",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.InputEvent",
+                                    "canonical": "std/web/html::InputEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Effect",
+                                    "arguments": [
+                                      {
+                                        "kind": "record",
+                                        "closed": true,
+                                        "fields": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Never",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Unit",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                },
+                                "origin": {
+                                  "source": "form.ssrg",
+                                  "start": 369,
+                                  "end": 376
+                                }
+                              },
+                              "origin": {
+                                "source": "form.ssrg",
+                                "start": 360,
+                                "end": 376
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "id",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onInput",
+                                "type": {
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "external-named",
+                                    "name": "html.InputEvent",
+                                    "canonical": "std/web/html::InputEvent",
+                                    "arguments": []
+                                  },
+                                  "result": {
+                                    "kind": "named",
+                                    "name": "Effect",
+                                    "arguments": [
+                                      {
+                                        "kind": "record",
+                                        "closed": true,
+                                        "fields": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Never",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Unit",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "placeholder",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "value",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "form.ssrg",
+                            "start": 267,
+                            "end": 384
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "form.ssrg",
+                        "start": 256,
+                        "end": 384
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "buttonType",
+                              "value": {
+                                "kind": "string",
+                                "value": "submit",
+                                "origin": {
+                                  "source": "form.ssrg",
+                                  "start": 418,
+                                  "end": 426
+                                }
+                              },
+                              "origin": {
+                                "source": "form.ssrg",
+                                "start": 406,
+                                "end": 426
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "Add",
+                                "origin": {
+                                  "source": "form.ssrg",
+                                  "start": 438,
+                                  "end": 443
+                                }
+                              },
+                              "origin": {
+                                "source": "form.ssrg",
+                                "start": 428,
+                                "end": 443
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "buttonType",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "form.ssrg",
+                            "start": 404,
+                            "end": 445
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Effect",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "closed": true,
+                                    "fields": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Never",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Unit",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<String>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "form.ssrg",
+                        "start": 392,
+                        "end": 445
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "form.ssrg",
+                    "start": 248,
+                    "end": 451
+                  }
+                },
+                "origin": {
+                  "source": "form.ssrg",
+                  "start": 238,
+                  "end": 451
+                }
+              }
+            ],
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Effect",
+                            "arguments": [
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Never",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "onSubmit",
+                  "type": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "form.ssrg",
+              "start": 218,
+              "end": 455
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "IntoChildren",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "html.Html",
+                      "canonical": "std/web/html::Html",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/web/html::IntoChildren<Array>"
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "source": "form.ssrg",
+          "start": 208,
+          "end": 455
+        }
+      }
+    }
+  ]
+}

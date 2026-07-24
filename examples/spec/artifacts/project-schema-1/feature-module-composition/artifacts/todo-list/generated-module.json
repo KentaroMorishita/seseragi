@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "module": "fixture/feature-module-composition::todo/list",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "effect.core.type",
+      "web.html.type",
+      "core.string",
+      "core.unit",
+      "web.html.section",
+      "web.html.button",
+      "web.html.p"
+    ]
+  },
+  "exports": [
+    "view"
+  ],
+  "outputs": {
+    "typescript": "dist/feature-module-composition/todo/list.ts",
+    "sourceMap": "dist/feature-module-composition/todo/list.ts.map"
+  }
+}

@@ -281,6 +281,71 @@ mod tests {
     }
 
     #[test]
+    fn preserves_external_result_types_for_imported_component_calls() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module(
+                "fixture/components::parent".to_owned(),
+                [("./child".to_owned(), "fixture/components::child".to_owned())],
+            )
+            .unwrap();
+        graph
+            .add_module("fixture/components::child".to_owned(), [])
+            .unwrap();
+
+        let project = compile_project(
+            graph,
+            [
+                ProjectModuleInput::new(
+                    "child.ssrg",
+                    "fixture/components::child",
+                    "import * as html from \"std/web/html\"\n\nstruct ChildState { count: Int }\n\ntype ChildAction =\n  | Increment\n\npub fn component action: Effect<{}, Never, Unit> -> html.Html<Effect<{}, Never, Unit>> =\n  html.button { onClick: action, children: \"Child\" }\n",
+                    "dist/components/child.js",
+                ),
+                ProjectModuleInput::new(
+                    "parent.ssrg",
+                    "fixture/components::parent",
+                    "import * as html from \"std/web/html\"\nimport { component } from \"./child\"\n\npub fn parent action: Effect<{}, Never, Unit> -> html.Html<Effect<{}, Never, Unit>> =\n  html.section { children: [component action] }\n",
+                    "dist/components/parent.js",
+                ),
+            ],
+        )
+        .unwrap();
+
+        let child = project.modules.get("fixture/components::child").unwrap();
+        let component = child
+            .typed_interface
+            .exports
+            .iter()
+            .find(|export| export.name == "component")
+            .unwrap();
+        let seseragi_syntax::InterfaceType::Function { result, .. } = &component.scheme.type_ref
+        else {
+            panic!("component must expose a function contract");
+        };
+        assert!(matches!(
+            result.as_ref(),
+            seseragi_syntax::InterfaceType::ExternalNamed {
+                canonical,
+                provider_module,
+                provider_export,
+                ..
+            } if canonical == "std/web/html::Html"
+                && provider_module == "std/web/html"
+                && provider_export == "Html"
+        ));
+        assert!(child
+            .typed_interface
+            .exports
+            .iter()
+            .all(|export| export.name != "ChildState" && export.name != "ChildAction"));
+
+        let parent = project.modules.get("fixture/components::parent").unwrap();
+        assert!(parent.generated.typescript.contains("from \"./child.js\""));
+        assert!(parent.generated.typescript.contains("component(action)"));
+    }
+
+    #[test]
     fn rejects_a_graph_input_with_parse_errors_before_linking() {
         let mut graph = ModuleGraph::new();
         graph

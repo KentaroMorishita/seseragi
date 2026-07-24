@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "file": "dist/feature-module-composition/todo/form.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/feature-module-composition::todo/form"
+  ],
+  "sourcesContent": [
+    "import * as html from \"std/web/html\"\n\npub fn view\n  draft: String\n  -> onDraft: (html.InputEvent -> Effect<{}, Never, Unit>)\n  -> onSubmit: Effect<{}, Never, Unit>\n  -> html.Html<Effect<{}, Never, Unit>> =\n  html.form {\n    onSubmit,\n    children: [\n      html.input {\n        id: \"todo-draft\",\n        value: draft,\n        placeholder: \"Add a task\",\n        onInput: onDraft\n      },\n      html.button { buttonType: \"submit\", children: \"Add\" }\n    ]\n  }\n"
+  ],
+  "names": [
+    "view",
+    "form",
+    "input",
+    "button"
+  ],
+  "mappings": ";;;AAEAA"
+}

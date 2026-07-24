@@ -62,15 +62,21 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Hand",
+            "canonical": "fixture/rps-domain-split::domain::Hand",
+            "providerModule": "fixture/rps-domain-split::domain",
+            "providerExport": "Hand",
             "arguments": []
           },
           "result": {
             "kind": "function",
             "parameter": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Hand",
+              "canonical": "fixture/rps-domain-split::domain::Hand",
+              "providerModule": "fixture/rps-domain-split::domain",
+              "providerExport": "Hand",
               "arguments": []
             },
             "result": {
@@ -98,15 +104,21 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Hand",
+            "canonical": "fixture/rps-domain-split::domain::Hand",
+            "providerModule": "fixture/rps-domain-split::domain",
+            "providerExport": "Hand",
             "arguments": []
           },
           "result": {
             "kind": "function",
             "parameter": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Hand",
+              "canonical": "fixture/rps-domain-split::domain::Hand",
+              "providerModule": "fixture/rps-domain-split::domain",
+              "providerExport": "Hand",
               "arguments": []
             },
             "result": {

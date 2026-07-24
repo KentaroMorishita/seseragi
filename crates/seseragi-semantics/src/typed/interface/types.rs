@@ -12,13 +12,31 @@ impl<'a> InterfaceTypes<'a> {
 
     pub(super) fn convert(&self, type_ref: &TypedType) -> InterfaceType {
         match type_ref {
-            TypedType::Named { name, arguments } => InterfaceType::Named {
-                name: name.clone(),
-                arguments: arguments
+            TypedType::Named { name, arguments } => {
+                let arguments = arguments
                     .iter()
                     .map(|argument| self.convert(argument))
-                    .collect(),
-            },
+                    .collect();
+                match self.unique_provider_binding(name) {
+                    Some(binding) => {
+                        let provider = binding
+                            .provider
+                            .as_ref()
+                            .expect("provider binding was filtered above");
+                        InterfaceType::ExternalNamed {
+                            name: name.clone(),
+                            canonical: binding.canonical.clone(),
+                            provider_module: provider.module.clone(),
+                            provider_export: provider.export.clone(),
+                            arguments,
+                        }
+                    }
+                    None => InterfaceType::Named {
+                        name: name.clone(),
+                        arguments,
+                    },
+                }
+            }
             TypedType::ExternalNamed {
                 name,
                 canonical,
@@ -76,5 +94,55 @@ impl<'a> InterfaceTypes<'a> {
             optional: field.optional,
             type_ref: self.convert(&field.type_ref),
         }
+    }
+
+    fn unique_provider_binding(&self, spelling: &str) -> Option<&ExternalTypeBinding> {
+        let mut bindings = self
+            .bindings
+            .iter()
+            .filter(|binding| binding.spelling == spelling && binding.provider.is_some());
+        let first = bindings.next()?;
+        bindings
+            .all(|binding| binding.canonical == first.canonical)
+            .then_some(first)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::ExternalTypeProvider;
+
+    #[test]
+    fn canonicalizes_a_named_type_from_its_unique_provider_binding() {
+        let bindings = [ExternalTypeBinding {
+            spelling: "html.Html".to_owned(),
+            canonical: "std/web/html::Html".to_owned(),
+            provider: Some(ExternalTypeProvider {
+                module: "std/web/html".to_owned(),
+                export: "Html".to_owned(),
+            }),
+        }];
+        let types = InterfaceTypes::new(&bindings);
+
+        assert_eq!(
+            types.convert(&TypedType::Named {
+                name: "html.Html".to_owned(),
+                arguments: vec![TypedType::Named {
+                    name: "Action".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            }),
+            InterfaceType::ExternalNamed {
+                name: "html.Html".to_owned(),
+                canonical: "std/web/html::Html".to_owned(),
+                provider_module: "std/web/html".to_owned(),
+                provider_export: "Html".to_owned(),
+                arguments: vec![InterfaceType::Named {
+                    name: "Action".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            }
+        );
     }
 }

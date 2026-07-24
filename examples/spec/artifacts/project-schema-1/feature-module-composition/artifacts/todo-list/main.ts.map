@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "file": "dist/feature-module-composition/todo/list.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/feature-module-composition::todo/list"
+  ],
+  "sourcesContent": [
+    "import * as html from \"std/web/html\"\n\npub fn view\n  summary: String\n  -> clear: Effect<{}, Never, Unit>\n  -> html.Html<Effect<{}, Never, Unit>> =\n  html.section {\n    children: [\n      html.button { onClick: clear, children: \"Clear\" },\n      html.p { children: summary }\n    ]\n  }\n"
+  ],
+  "names": [
+    "view",
+    "section",
+    "button",
+    "p"
+  ],
+  "mappings": ";;;AAEAA"
+}
