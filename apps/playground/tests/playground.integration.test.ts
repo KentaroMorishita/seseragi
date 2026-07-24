@@ -352,6 +352,23 @@ describe("Playground sample catalog", () => {
     expect(diagnostic?.helps.length).toBeGreaterThan(0)
   })
 
+  test("stops an invalid String escape before browser execution", async () => {
+    const response = await compile(
+      "invalid-escape.ssrg",
+      'pub let message: String = "bad\\qescape"\n'
+    )
+
+    expect(response.status).toBe("failure")
+    if (response.status !== "failure") {
+      throw new Error("invalid escape reached generated output")
+    }
+    expect(response.diagnostics.diagnostics[0]).toMatchObject({
+      code: "SES-P0201",
+      messageKey: "literal.invalid-escape",
+      message: "Literal contains an invalid or unsupported escape sequence",
+    })
+  })
+
   test("exposes type differences and field spelling fixes", async () => {
     const mismatch = await compile(
       "mismatch.ssrg",

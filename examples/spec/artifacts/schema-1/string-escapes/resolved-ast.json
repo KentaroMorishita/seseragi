@@ -1,0 +1,439 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/string-escapes",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "classify",
+      "nameSpan": {
+        "start": 3,
+        "end": 11
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 12,
+            "end": 17
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 19,
+              "end": 25
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 29,
+          "end": 35
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 46,
+            "end": 51
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "string",
+              "raw": "\"line\\nnext\"",
+              "span": {
+                "start": 58,
+                "end": 70
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"matched\"",
+              "span": {
+                "start": 74,
+                "end": 83
+              }
+            },
+            "span": {
+              "start": 58,
+              "end": 83
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "span": {
+                "start": 88,
+                "end": 89
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"other\"",
+              "span": {
+                "start": 93,
+                "end": 100
+              }
+            },
+            "span": {
+              "start": 88,
+              "end": 100
+            }
+          }
+        ],
+        "span": {
+          "start": 40,
+          "end": 104
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 104
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "stringEscapeResults",
+      "nameSpan": {
+        "start": 113,
+        "end": 132
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 133,
+            "end": 137
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 139,
+              "end": 143
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 153,
+              "end": 159
+            }
+          }
+        ],
+        "span": {
+          "start": 147,
+          "end": 160
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "string",
+            "raw": "\"line\\nnext\"",
+            "span": {
+              "start": 171,
+              "end": 183
+            }
+          },
+          {
+            "kind": "string",
+            "raw": "\"tab\\tvalue\"",
+            "span": {
+              "start": 189,
+              "end": 201
+            }
+          },
+          {
+            "kind": "string",
+            "raw": "\"carriage\\rreturn\"",
+            "span": {
+              "start": 207,
+              "end": 225
+            }
+          },
+          {
+            "kind": "string",
+            "raw": "\"quote: \\\"Seseragi\\\"\"",
+            "span": {
+              "start": 231,
+              "end": 252
+            }
+          },
+          {
+            "kind": "string",
+            "raw": "\"slash: \\\\\"",
+            "span": {
+              "start": 258,
+              "end": 269
+            }
+          },
+          {
+            "kind": "string",
+            "raw": "\"lambda: \\u{03BB}\"",
+            "span": {
+              "start": 275,
+              "end": 293
+            }
+          },
+          {
+            "kind": "string",
+            "raw": "\"nul:\\0end\"",
+            "span": {
+              "start": 299,
+              "end": 310
+            }
+          },
+          {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "classify",
+              "span": {
+                "start": 316,
+                "end": 324
+              }
+            },
+            "argument": {
+              "kind": "string",
+              "raw": "\"line\\nnext\"",
+              "span": {
+                "start": 325,
+                "end": 337
+              }
+            },
+            "span": {
+              "start": 316,
+              "end": 337
+            }
+          }
+        ],
+        "span": {
+          "start": 165,
+          "end": 341
+        }
+      },
+      "span": {
+        "start": 106,
+        "end": 341
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 341
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 104
+      }
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "kind": "match-arm",
+      "origin": {
+        "start": 58,
+        "end": 83
+      }
+    },
+    {
+      "id": 3,
+      "parent": 1,
+      "kind": "match-arm",
+      "origin": {
+        "start": 88,
+        "end": 100
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 106,
+        "end": 341
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "classify",
+      "canonical": "artifact/string-escapes::classify",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 3,
+        "end": 11
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "stringEscapeResults",
+      "canonical": "artifact/string-escapes::stringEscapeResults",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 113,
+        "end": 132
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 12,
+        "end": 17
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 133,
+        "end": 137
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "Array",
+      "canonical": "std/prelude::Array",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 19,
+        "end": 25
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 29,
+        "end": 35
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 46,
+        "end": 51
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 139,
+        "end": 143
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 147,
+        "end": 160
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 153,
+        "end": 159
+      }
+    },
+    {
+      "spelling": "classify",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 316,
+        "end": 324
+      }
+    }
+  ],
+  "issues": []
+}

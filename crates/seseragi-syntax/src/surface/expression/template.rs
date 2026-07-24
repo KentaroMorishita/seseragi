@@ -1,6 +1,7 @@
 use super::parse_expression_range;
+use crate::literal::decode_template_text;
 use crate::surface_model::{ByteSpan, SurfaceExpr, SurfaceTemplatePart};
-use crate::template::{decode_template_text, scan_template, TemplateChunk};
+use crate::template::{scan_template, TemplateChunk};
 use crate::{lex, Token, TokenKind};
 
 pub(super) fn parse(token: &Token) -> Option<SurfaceExpr> {

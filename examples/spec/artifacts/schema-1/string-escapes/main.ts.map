@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/string-escapes"
+  ],
+  "sourcesContent": [
+    "fn classify value: String -> String =\n  match value {\n    \"line\\nnext\" -> \"matched\"\n    _ -> \"other\"\n  }\n\npub fn stringEscapeResults unit: Unit -> Array<String> =\n  [\n    \"line\\nnext\",\n    \"tab\\tvalue\",\n    \"carriage\\rreturn\",\n    \"quote: \\\"Seseragi\\\"\",\n    \"slash: \\\\\",\n    \"lambda: \\u{03BB}\",\n    \"nul:\\0end\",\n    classify \"line\\nnext\"\n  ]\n"
+  ],
+  "names": [
+    "classify",
+    "stringEscapeResults",
+    "classify"
+  ],
+  "mappings": "AAAAA;AAMAC"
+}

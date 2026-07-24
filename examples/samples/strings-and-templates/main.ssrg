@@ -1,0 +1,9 @@
+fn greeting name: String -> String =
+  `Hello, ${name}!`
+
+pub effect fn main =
+  do {
+    println "first line\nsecond line"
+    println "quote: \"Seseragi\""
+    greeting "Seseragi" |> println
+  }

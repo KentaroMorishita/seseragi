@@ -1,0 +1,17 @@
+fn classify value: String -> String =
+  match value {
+    "line\nnext" -> "matched"
+    _ -> "other"
+  }
+
+pub fn stringEscapeResults unit: Unit -> Array<String> =
+  [
+    "line\nnext",
+    "tab\tvalue",
+    "carriage\rreturn",
+    "quote: \"Seseragi\"",
+    "slash: \\",
+    "lambda: \u{03BB}",
+    "nul:\0end",
+    classify "line\nnext"
+  ]

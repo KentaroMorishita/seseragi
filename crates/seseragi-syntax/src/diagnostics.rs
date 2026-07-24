@@ -1,8 +1,10 @@
 use crate::cst::parse_cst_from_tokens;
+use crate::decode_string_literal;
 use crate::lexer::lex;
+use crate::literal::decode_template_text;
 use crate::surface::parse_surface_ast;
 use crate::surface_model::SurfaceDecl;
-use crate::template::{decode_template_text, scan_template, TemplateChunk};
+use crate::template::{scan_template, TemplateChunk};
 use crate::{CstArtifact, CstError, CstMissing, CstNode, Token, TokenKind};
 use serde::Serialize;
 
@@ -80,6 +82,9 @@ impl Diagnostic {
             }
             "call.argument-type-mismatch" => {
                 "Argument type does not match the parameter type".to_owned()
+            }
+            "literal.invalid-escape" => {
+                "Literal contains an invalid or unsupported escape sequence".to_owned()
             }
             "function.return-type-mismatch"
             | "let.type-mismatch"
@@ -159,6 +164,9 @@ impl Diagnostic {
             }
             "parser.expected-expression" | "parser.error" => {
                 "Complete the expression at the highlighted location."
+            }
+            "literal.invalid-escape" => {
+                "Use a supported escape such as \\n, \\r, \\t, \\\\, a delimiter escape, or \\u{...}."
             }
             _ => return Vec::new(),
         };
@@ -259,7 +267,7 @@ pub struct DiagnosticEdit {
 pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> DiagnosticArtifact {
     let source_name = source_name.into();
     let tokens = lex(source_name.clone(), source);
-    let literal_diagnostics = integer_literal_diagnostics(&tokens.tokens);
+    let literal_diagnostics = literal_diagnostics(&tokens.tokens);
     let template_diagnostics = template_literal_diagnostics(&tokens.tokens);
     let source_tokens = tokens.tokens.clone();
     let surface = parse_surface_ast(source_name, source);
@@ -315,6 +323,39 @@ fn template_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
             });
         }
     }
+    diagnostics
+}
+
+fn string_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
+    tokens
+        .iter()
+        .filter(|token| {
+            token.kind == TokenKind::LiteralString
+                && token.raw.starts_with('"')
+                && token.raw.ends_with('"')
+                && token.raw.len() >= 2
+        })
+        .filter_map(|token| {
+            let error = decode_string_literal(&token.raw).err()?;
+            Some(Diagnostic {
+                id: String::new(),
+                code: "SES-P0201".to_owned(),
+                severity: DiagnosticSeverity::Error,
+                message_key: "literal.invalid-escape".to_owned(),
+                primary: ByteRange {
+                    start: token.start + error.range.start,
+                    end: token.start + error.range.end,
+                },
+                related: Vec::new(),
+                fixes: Vec::new(),
+            })
+        })
+        .collect()
+}
+
+fn literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
+    let mut diagnostics = integer_literal_diagnostics(tokens);
+    diagnostics.extend(string_literal_diagnostics(tokens));
     diagnostics
 }
 
@@ -698,6 +739,37 @@ mod tests {
             diagnostics.diagnostics[0].primary,
             ByteRange { start: 30, end: 32 }
         );
+    }
+
+    #[test]
+    fn reports_an_invalid_string_escape_with_human_guidance() {
+        let diagnostics = parse_diagnostics(
+            "main.ssrg",
+            r#"pub let message: String = "bad\qescape"
+"#,
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        let diagnostic = &diagnostics.diagnostics[0];
+        assert_eq!(diagnostic.code, "SES-P0201");
+        assert_eq!(diagnostic.message_key, "literal.invalid-escape");
+        assert_eq!(diagnostic.primary, ByteRange { start: 30, end: 32 });
+        assert_eq!(
+            diagnostic.message(),
+            "Literal contains an invalid or unsupported escape sequence"
+        );
+        assert_eq!(diagnostic.helps().len(), 1);
+    }
+
+    #[test]
+    fn accepts_every_supported_string_escape() {
+        let diagnostics = parse_diagnostics(
+            "main.ssrg",
+            r#"pub let message: String = "line\nreturn\rtab\tzero\0slash\\quote\"lambda\u{03BB}"
+"#,
+        );
+
+        assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:?}");
     }
 
     #[test]

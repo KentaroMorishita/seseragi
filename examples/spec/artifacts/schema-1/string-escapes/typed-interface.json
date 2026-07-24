@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/string-escapes",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/string-escapes::stringEscapeResults",
+      "namespace": "value",
+      "name": "stringEscapeResults",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 106,
+        "end": 341
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

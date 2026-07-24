@@ -1,6 +1,6 @@
 use crate::typed::semantic_types::SemanticValueType;
 use crate::TypedPattern;
-use seseragi_syntax::ByteSpan;
+use seseragi_syntax::{decode_string_literal, ByteSpan};
 use std::collections::BTreeMap;
 
 use super::{invalid, CoveragePattern, PatternAnalysis};
@@ -90,8 +90,5 @@ fn type_literal_pattern(
 }
 
 fn unquote_string(raw: &str) -> String {
-    raw.strip_prefix('"')
-        .and_then(|value| value.strip_suffix('"'))
-        .unwrap_or(raw)
-        .to_owned()
+    decode_string_literal(raw).unwrap_or_else(|_| raw.to_owned())
 }

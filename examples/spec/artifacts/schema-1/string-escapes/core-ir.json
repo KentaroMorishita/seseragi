@@ -1,0 +1,236 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/string-escapes",
+  "functions": [
+    {
+      "symbol": "artifact/string-escapes::classify",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 104
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 46,
+            "end": 51
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "string",
+                "path": [],
+                "value": "line\nnext",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 58,
+                  "end": 70
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "matched",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 74,
+                "end": 83
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 58,
+              "end": 83
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "other",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 93,
+                "end": 100
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 88,
+              "end": 100
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 40,
+          "end": 104
+        }
+      }
+    },
+    {
+      "symbol": "artifact/string-escapes::stringEscapeResults",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 106,
+        "end": 341
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "string",
+            "value": "line\nnext",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 171,
+              "end": 183
+            }
+          },
+          {
+            "kind": "string",
+            "value": "tab\tvalue",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 189,
+              "end": 201
+            }
+          },
+          {
+            "kind": "string",
+            "value": "carriage\rreturn",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 207,
+              "end": 225
+            }
+          },
+          {
+            "kind": "string",
+            "value": "quote: \"Seseragi\"",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 231,
+              "end": 252
+            }
+          },
+          {
+            "kind": "string",
+            "value": "slash: \\",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 258,
+              "end": 269
+            }
+          },
+          {
+            "kind": "string",
+            "value": "lambda: λ",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 275,
+              "end": 293
+            }
+          },
+          {
+            "kind": "string",
+            "value": "nul:\u0000end",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 299,
+              "end": 310
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/string-escapes::classify",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "line\nnext",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 325,
+                  "end": 337
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 316,
+              "end": 337
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 165,
+          "end": 341
+        }
+      }
+    }
+  ]
+}

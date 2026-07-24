@@ -8,10 +8,17 @@
       "summary": "最小programから関数、data、Collectionまで順に動かします。",
       "samples": [
         "hello-world",
+        "strings-and-templates",
         "functions-and-pipelines",
         "data-and-patterns",
         "collections"
       ]
+    },
+    {
+      "id": "text-and-output",
+      "title": "文字列と出力",
+      "summary": "String escape、template、標準出力を小さなprogramで確認します。",
+      "samples": ["hello-world", "strings-and-templates"]
     },
     {
       "id": "data-and-types",

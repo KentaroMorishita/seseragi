@@ -3,8 +3,8 @@ use crate::{
     TypedTemplatePart, TypedType,
 };
 use seseragi_syntax::{
-    standard_operator, standard_trait_operator, ByteSpan, StandardOperator, StandardOperatorKind,
-    SurfaceExpr, SurfaceRecordItem, SurfaceTemplatePart,
+    decode_string_literal, standard_operator, standard_trait_operator, ByteSpan, StandardOperator,
+    StandardOperatorKind, SurfaceExpr, SurfaceRecordItem, SurfaceTemplatePart,
 };
 use std::collections::BTreeMap;
 
@@ -1032,8 +1032,5 @@ pub(super) fn named_type_is(type_ref: &TypedType, expected: &str) -> bool {
 }
 
 fn unquote_string(raw: &str) -> String {
-    raw.strip_prefix('"')
-        .and_then(|value| value.strip_suffix('"'))
-        .unwrap_or(raw)
-        .to_owned()
+    decode_string_literal(raw).unwrap_or_else(|_| raw.to_owned())
 }

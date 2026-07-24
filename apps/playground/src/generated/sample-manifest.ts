@@ -64,9 +64,13 @@ import sample15Guide from "../../../../examples/samples/stdin-greeting/guide.md?
 import sample15Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
 import sample15Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
 
-import sample16Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
-import sample16Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
-import sample16Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
+import sample16Source from "../../../../examples/samples/strings-and-templates/main.ssrg?raw"
+import sample16Guide from "../../../../examples/samples/strings-and-templates/guide.md?raw"
+import sample16Output from "../../../../examples/samples/strings-and-templates/stdout.txt?raw"
+
+import sample17Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
+import sample17Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
+import sample17Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
 
 export const generatedSamples: readonly GeneratedSample[] = [
   {
@@ -599,6 +603,38 @@ export const generatedSamples: readonly GeneratedSample[] = [
   },
   {
     definition: {
+      "id": "strings-and-templates",
+      "title": "Stringとtemplate",
+      "summary": "escapeとtemplate interpolationで文字列を安全に組み立てます。",
+      "kind": "lesson",
+      "difficulty": "beginner",
+      "topics": [
+        "String",
+        "escape",
+        "template"
+      ],
+      "capabilities": [
+        "console"
+      ],
+      "outputMode": "text",
+      "prerequisites": [
+        "hello-world"
+      ],
+      "featured": false,
+      "isNew": false,
+      "interactive": false,
+      "sourcePath": "examples/samples/strings-and-templates/main.ssrg",
+      "guidePath": "examples/samples/strings-and-templates/guide.md",
+      "expectedOutputPath": "examples/samples/strings-and-templates/stdout.txt",
+      "sourceHash": "sha256:46e3049dbf57c865573ea765837ab61b586cc74f17cf05af32bedf08bef3d5db"
+    },
+    source: sample16Source,
+    guide: sample16Guide,
+    stdin: "",
+    expectedOutput: (sample16Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    definition: {
       "id": "traits-and-instances",
       "title": "Traitとinstance",
       "summary": "型が満たす振る舞いをTraitで宣言し、instanceから選択します。",
@@ -624,10 +660,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/traits-and-instances/stdout.txt",
       "sourceHash": "sha256:03daac7021fa32f245dba88dee66f87ff1b00750e45d576548335e78429bdabd"
     },
-    source: sample16Source,
-    guide: sample16Guide,
+    source: sample17Source,
+    guide: sample17Guide,
     stdin: "",
-    expectedOutput: (sample16Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample17Output).replace(/\r?\n$/u, ""),
   }
 ]
 
@@ -639,9 +675,19 @@ export const generatedLearningPaths: readonly LearningPathDefinition[] =
       "summary": "最小programから関数、data、Collectionまで順に動かします。",
       "samples": [
         "hello-world",
+        "strings-and-templates",
         "functions-and-pipelines",
         "data-and-patterns",
         "collections"
+      ]
+    },
+    {
+      "id": "text-and-output",
+      "title": "文字列と出力",
+      "summary": "String escape、template、標準出力を小さなprogramで確認します。",
+      "samples": [
+        "hello-world",
+        "strings-and-templates"
       ]
     },
     {

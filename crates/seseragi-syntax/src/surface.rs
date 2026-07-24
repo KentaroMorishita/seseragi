@@ -373,10 +373,7 @@ impl SurfaceParser<'_> {
 }
 
 fn unquote(raw: &str) -> String {
-    raw.strip_prefix('"')
-        .and_then(|value| value.strip_suffix('"'))
-        .unwrap_or(raw)
-        .to_owned()
+    crate::decode_string_literal(raw).unwrap_or_else(|_| raw.to_owned())
 }
 
 #[cfg(test)]

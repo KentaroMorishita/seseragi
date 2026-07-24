@@ -1,0 +1,1 @@
+["line\nnext","tab\tvalue","carriage\rreturn","quote: \"Seseragi\"","slash: \\","lambda: λ","nul:\u0000end","matched"]

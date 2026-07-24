@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "strings-and-templates",
+  "title": "Stringとtemplate",
+  "summary": "escapeとtemplate interpolationで文字列を安全に組み立てます。",
+  "kind": "lesson",
+  "difficulty": "beginner",
+  "topics": ["String", "escape", "template"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["hello-world"],
+  "featured": false,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

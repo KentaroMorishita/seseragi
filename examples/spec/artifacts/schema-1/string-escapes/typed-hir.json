@@ -1,0 +1,310 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/string-escapes",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/string-escapes::classify",
+      "visibility": "private",
+      "origin": {
+        "start": 0,
+        "end": 104
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 12,
+            "end": 17
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 46,
+            "end": 51
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "string",
+              "value": "line\nnext",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 58,
+                "end": 70
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "matched",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 74,
+                "end": 83
+              }
+            },
+            "origin": {
+              "start": 58,
+              "end": 83
+            }
+          },
+          {
+            "pattern": {
+              "kind": "wildcard",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 88,
+                "end": 89
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "other",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 93,
+                "end": 100
+              }
+            },
+            "origin": {
+              "start": 88,
+              "end": 100
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 40,
+          "end": 104
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/string-escapes::stringEscapeResults",
+      "visibility": "public",
+      "origin": {
+        "start": 106,
+        "end": 341
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 133,
+            "end": 137
+          }
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "string",
+            "value": "line\nnext",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 171,
+              "end": 183
+            }
+          },
+          {
+            "kind": "string",
+            "value": "tab\tvalue",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 189,
+              "end": 201
+            }
+          },
+          {
+            "kind": "string",
+            "value": "carriage\rreturn",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 207,
+              "end": 225
+            }
+          },
+          {
+            "kind": "string",
+            "value": "quote: \"Seseragi\"",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 231,
+              "end": 252
+            }
+          },
+          {
+            "kind": "string",
+            "value": "slash: \\",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 258,
+              "end": 269
+            }
+          },
+          {
+            "kind": "string",
+            "value": "lambda: λ",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 275,
+              "end": 293
+            }
+          },
+          {
+            "kind": "string",
+            "value": "nul:\u0000end",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 299,
+              "end": 310
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/string-escapes::classify",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "line\nnext",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 325,
+                  "end": 337
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 316,
+              "end": 337
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 165,
+          "end": 341
+        }
+      }
+    }
+  ]
+}

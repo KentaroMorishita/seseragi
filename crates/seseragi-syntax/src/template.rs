@@ -15,11 +15,6 @@ pub(crate) struct TemplateScan {
     pub(crate) closed: bool,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub(crate) struct TemplateDecodeError {
-    pub(crate) range: Range<usize>,
-}
-
 pub(crate) fn template_end(source: &str, start: usize) -> usize {
     debug_assert!(source[start..].starts_with('`'));
     let mut cursor = start + 1;
@@ -100,86 +95,6 @@ pub(crate) fn scan_template(raw: &str) -> TemplateScan {
     TemplateScan { chunks, closed }
 }
 
-pub(crate) fn decode_template_text(raw: &str) -> Result<String, TemplateDecodeError> {
-    let mut decoded = String::new();
-    let mut cursor = 0;
-    while cursor < raw.len() {
-        if raw[cursor..].starts_with("\r\n") {
-            decoded.push('\n');
-            cursor += 2;
-            continue;
-        }
-        if !raw[cursor..].starts_with('\\') {
-            let character = raw[cursor..]
-                .chars()
-                .next()
-                .expect("cursor remains on a UTF-8 boundary");
-            if character.is_control() && character != '\n' {
-                return Err(TemplateDecodeError {
-                    range: cursor..cursor + character.len_utf8(),
-                });
-            }
-            decoded.push(character);
-            cursor += character.len_utf8();
-            continue;
-        }
-        let escape_start = cursor;
-        cursor += 1;
-        let Some(escaped) = raw[cursor..].chars().next() else {
-            return Err(TemplateDecodeError {
-                range: escape_start..raw.len(),
-            });
-        };
-        cursor += escaped.len_utf8();
-        match escaped {
-            '\\' => decoded.push('\\'),
-            '`' => decoded.push('`'),
-            'n' => decoded.push('\n'),
-            'r' => decoded.push('\r'),
-            't' => decoded.push('\t'),
-            '0' => decoded.push('\0'),
-            '$' if raw[cursor..].starts_with('{') => {
-                decoded.push_str("${");
-                cursor += 1;
-            }
-            'u' if raw[cursor..].starts_with('{') => {
-                cursor += 1;
-                let digits_start = cursor;
-                while cursor < raw.len() && raw.as_bytes()[cursor].is_ascii_hexdigit() {
-                    cursor += 1;
-                }
-                let escape_end = raw[cursor..]
-                    .find('}')
-                    .map_or(cursor, |offset| cursor + offset + 1);
-                if cursor == digits_start
-                    || cursor - digits_start > 6
-                    || !raw[cursor..].starts_with('}')
-                {
-                    return Err(TemplateDecodeError {
-                        range: escape_start..escape_end,
-                    });
-                }
-                let scalar = u32::from_str_radix(&raw[digits_start..cursor], 16).map_err(|_| {
-                    TemplateDecodeError {
-                        range: escape_start..cursor + 1,
-                    }
-                })?;
-                let character = char::from_u32(scalar).ok_or_else(|| TemplateDecodeError {
-                    range: escape_start..cursor + 1,
-                })?;
-                decoded.push(character);
-                cursor += 1;
-            }
-            _ => {
-                return Err(TemplateDecodeError {
-                    range: escape_start..cursor,
-                });
-            }
-        }
-    }
-    Ok(decoded)
-}
-
 fn interpolation_end(source: &str, start: usize) -> Option<(usize, usize)> {
     let mut cursor = start;
     let mut depth = 1usize;
@@ -248,6 +163,7 @@ fn advance_char(source: &str, cursor: &mut usize) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::literal::{decode_template_text, LiteralDecodeError};
 
     #[test]
     fn scans_nested_expressions_without_splitting_the_outer_template() {
@@ -291,11 +207,11 @@ mod tests {
     fn reports_the_exact_invalid_escape_range() {
         assert_eq!(
             decode_template_text("before \\q after"),
-            Err(TemplateDecodeError { range: 7..9 })
+            Err(LiteralDecodeError { range: 7..9 })
         );
         assert_eq!(
             decode_template_text("\\u{110000}"),
-            Err(TemplateDecodeError { range: 0..10 })
+            Err(LiteralDecodeError { range: 0..10 })
         );
     }
 }
