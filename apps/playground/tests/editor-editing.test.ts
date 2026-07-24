@@ -208,7 +208,7 @@ describe("Playground editor operations", () => {
       new URL("../src/styles.css", import.meta.url)
     ).text()
     expect(styles).toContain(".editor-host .ssrg-indent-space")
-    expect(styles).toContain("rgb(142 163 154 / 32%) 0 0.7px")
+    expect(styles).toContain("rgb(142 163 154 / 16%) 0 0.35px")
   })
 
   test("renders primary and secondary selections without underline shadows", async () => {
