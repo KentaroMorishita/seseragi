@@ -1,0 +1,1601 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/todo-workflow",
+  "moduleDependencies": [
+    {
+      "specifier": "std/array",
+      "module": "std/array",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "append",
+          "local": "arrays.append",
+          "canonical": "std/array::append",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "filter",
+          "local": "arrays.filter",
+          "canonical": "std/array::filter",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    }
+  ],
+  "structs": [
+    {
+      "symbol": "artifact/todo-workflow::Todo",
+      "name": "Todo",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 53,
+            "end": 55
+          }
+        },
+        {
+          "name": "title",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 64,
+            "end": 69
+          }
+        },
+        {
+          "name": "urgent",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 81,
+            "end": 87
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 37,
+        "end": 95
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "symbol": "artifact/todo-workflow::initialTodos",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 97,
+        "end": 241
+      },
+      "value": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "id",
+                "value": {
+                  "kind": "int64",
+                  "value": "1",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 144,
+                    "end": 145
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 140,
+                  "end": 145
+                }
+              },
+              {
+                "kind": "field",
+                "name": "title",
+                "value": {
+                  "kind": "string",
+                  "value": "Write notes",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 154,
+                    "end": 167
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 147,
+                  "end": 167
+                }
+              },
+              {
+                "kind": "field",
+                "name": "urgent",
+                "value": {
+                  "kind": "boolean",
+                  "value": false,
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 177,
+                    "end": 182
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 169,
+                  "end": 182
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Todo",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 133,
+              "end": 184
+            }
+          },
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "id",
+                "value": {
+                  "kind": "int64",
+                  "value": "2",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 199,
+                    "end": 200
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 195,
+                  "end": 200
+                }
+              },
+              {
+                "kind": "field",
+                "name": "title",
+                "value": {
+                  "kind": "string",
+                  "value": "Ship release",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 209,
+                    "end": 223
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 202,
+                  "end": 223
+                }
+              },
+              {
+                "kind": "field",
+                "name": "urgent",
+                "value": {
+                  "kind": "boolean",
+                  "value": true,
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 233,
+                    "end": 237
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 225,
+                  "end": 237
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Todo",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 188,
+              "end": 239
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Todo",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 129,
+          "end": 241
+        }
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/todo-workflow::addTodo",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 243,
+        "end": 334
+      },
+      "parameters": [
+        {
+          "id": "todo",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Todo",
+            "arguments": []
+          }
+        },
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Todo",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/array::append",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "variable",
+                "name": "todo",
+                "type": {
+                  "kind": "named",
+                  "name": "Todo",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 322,
+                  "end": 326
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Todo",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 321,
+              "end": 327
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Todo",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 328,
+              "end": 334
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Todo",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 307,
+          "end": 334
+        }
+      }
+    },
+    {
+      "symbol": "artifact/todo-workflow::keepTodo",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 336,
+        "end": 409
+      },
+      "parameters": [
+        {
+          "id": "removedId",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        {
+          "id": "todo",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Todo",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "!=",
+        "left": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "variable",
+            "name": "todo",
+            "type": {
+              "kind": "named",
+              "name": "Todo",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 389,
+              "end": 393
+            }
+          },
+          "field": "id",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 389,
+            "end": 396
+          }
+        },
+        "right": {
+          "kind": "variable",
+          "name": "removedId",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 400,
+            "end": 409
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Eq",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Eq"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 389,
+          "end": 409
+        }
+      }
+    },
+    {
+      "symbol": "artifact/todo-workflow::removeTodo",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 411,
+        "end": 509
+      },
+      "parameters": [
+        {
+          "id": "id",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Todo",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/array::filter",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/todo-workflow::keepTodo",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "id",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 499,
+                  "end": 501
+                }
+              }
+            ],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Todo",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 490,
+              "end": 501
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Todo",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 503,
+              "end": 509
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Todo",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 475,
+          "end": 509
+        }
+      }
+    },
+    {
+      "symbol": "artifact/todo-workflow::isUrgent",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 511,
+        "end": 557
+      },
+      "parameters": [
+        {
+          "id": "todo",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Todo",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "field-access",
+        "receiver": {
+          "kind": "variable",
+          "name": "todo",
+          "type": {
+            "kind": "named",
+            "name": "Todo",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 546,
+            "end": 550
+          }
+        },
+        "field": "urgent",
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 546,
+          "end": 557
+        }
+      }
+    },
+    {
+      "symbol": "artifact/todo-workflow::urgentTodos",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 559,
+        "end": 642
+      },
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Todo",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/array::filter",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "artifact/todo-workflow::isUrgent",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Todo",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 627,
+              "end": 635
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "values",
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Todo",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 636,
+              "end": 642
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Todo",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 613,
+          "end": 642
+        }
+      }
+    },
+    {
+      "symbol": "artifact/todo-workflow::renderTodo",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 644,
+        "end": 710
+      },
+      "parameters": [
+        {
+          "id": "todo",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Todo",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "variable",
+                "name": "todo",
+                "type": {
+                  "kind": "named",
+                  "name": "Todo",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 686,
+                  "end": 690
+                }
+              },
+              "field": "id",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 686,
+                "end": 693
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::Int>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 684,
+              "end": 694
+            }
+          },
+          {
+            "kind": "text",
+            "value": ": ",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 694,
+              "end": 696
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "variable",
+                "name": "todo",
+                "type": {
+                  "kind": "named",
+                  "name": "Todo",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 698,
+                  "end": 702
+                }
+              },
+              "field": "title",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 698,
+                "end": 708
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::String>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 696,
+              "end": 709
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 683,
+          "end": 710
+        }
+      }
+    },
+    {
+      "symbol": "artifact/todo-workflow::renderTodos",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 712,
+        "end": 794
+      },
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Todo",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::join",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": ", ",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 766,
+              "end": 770
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "std/prelude::Functor::map",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "artifact/todo-workflow::renderTodo",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Todo",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 777,
+                  "end": 787
+                }
+              },
+              {
+                "kind": "variable",
+                "name": "values",
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Todo",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 788,
+                  "end": 794
+                }
+              }
+            ],
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Functor",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/array::Functor"
+                }
+              }
+            ],
+            "traitDispatch": {
+              "traitIdentity": "std/prelude::Functor",
+              "method": "map"
+            },
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 773,
+              "end": 794
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Reducible"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 761,
+          "end": 794
+        }
+      }
+    },
+    {
+      "symbol": "artifact/todo-workflow::todoWorkflow",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 796,
+        "end": 1164
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "afterAdd",
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Todo",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/todo-workflow::addTodo",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "id",
+                      "value": {
+                        "kind": "int64",
+                        "value": "3",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 885,
+                          "end": 886
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 881,
+                        "end": 886
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "title",
+                      "value": {
+                        "kind": "string",
+                        "value": "Review docs",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 895,
+                          "end": 908
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 888,
+                        "end": 908
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "urgent",
+                      "value": {
+                        "kind": "boolean",
+                        "value": true,
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 918,
+                          "end": 922
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 910,
+                        "end": 922
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Todo",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 874,
+                    "end": 924
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "initialTodos",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Todo",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 926,
+                    "end": 938
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Todo",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 865,
+                "end": 938
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 847,
+              "end": 938
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "afterRemove",
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Todo",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/todo-workflow::removeTodo",
+              "arguments": [
+                {
+                  "kind": "int64",
+                  "value": "2",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 970,
+                    "end": 971
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "afterAdd",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Todo",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 972,
+                    "end": 980
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Todo",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 959,
+                "end": 980
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 939,
+              "end": 980
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "urgentOnly",
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Todo",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/todo-workflow::urgentTodos",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "afterRemove",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Todo",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1012,
+                    "end": 1023
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Todo",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1000,
+                "end": 1023
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 981,
+              "end": 1023
+            }
+          }
+        ],
+        "result": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "after add: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1034,
+                    "end": 1045
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/todo-workflow::renderTodos",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "afterAdd",
+                        "type": {
+                          "kind": "named",
+                          "name": "Array",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Todo",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1059,
+                          "end": 1067
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1047,
+                      "end": 1067
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1045,
+                    "end": 1068
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1033,
+                "end": 1069
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "after delete: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1076,
+                    "end": 1090
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/todo-workflow::renderTodos",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "afterRemove",
+                        "type": {
+                          "kind": "named",
+                          "name": "Array",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Todo",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1104,
+                          "end": 1115
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1092,
+                      "end": 1115
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1090,
+                    "end": 1116
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1075,
+                "end": 1117
+              }
+            },
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "urgent: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1124,
+                    "end": 1132
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "call",
+                    "callee": "artifact/todo-workflow::renderTodos",
+                    "arguments": [
+                      {
+                        "kind": "variable",
+                        "name": "urgentOnly",
+                        "type": {
+                          "kind": "named",
+                          "name": "Array",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Todo",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1146,
+                          "end": 1156
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1134,
+                      "end": 1156
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1132,
+                    "end": 1157
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1123,
+                "end": 1158
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1027,
+            "end": 1162
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 846,
+          "end": 1164
+        }
+      }
+    }
+  ]
+}

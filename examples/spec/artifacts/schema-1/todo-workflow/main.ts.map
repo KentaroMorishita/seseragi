@@ -1,0 +1,45 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/todo-workflow"
+  ],
+  "sourcesContent": [
+    "import * as arrays from \"std/array\"\n\nstruct Todo {\n  id: Int,\n  title: String,\n  urgent: Bool\n}\n\nlet initialTodos: Array<Todo> = [\n  Todo { id: 1, title: \"Write notes\", urgent: False },\n  Todo { id: 2, title: \"Ship release\", urgent: True }\n]\n\nfn addTodo todo: Todo -> values: Array<Todo> -> Array<Todo> =\n  arrays.append [todo] values\n\nfn keepTodo removedId: Int -> todo: Todo -> Bool =\n  todo.id != removedId\n\nfn removeTodo id: Int -> values: Array<Todo> -> Array<Todo> =\n  arrays.filter (keepTodo id) values\n\nfn isUrgent todo: Todo -> Bool =\n  todo.urgent\n\nfn urgentTodos values: Array<Todo> -> Array<Todo> =\n  arrays.filter isUrgent values\n\nfn renderTodo todo: Todo -> String =\n  `${todo.id}: ${todo.title}`\n\nfn renderTodos values: Array<Todo> -> String =\n  join \", \" $ map renderTodo values\n\npub fn todoWorkflow unit: Unit -> Array<String> = {\n  let afterAdd = addTodo (Todo { id: 3, title: \"Review docs\", urgent: True }) initialTodos\n  let afterRemove = removeTodo 2 afterAdd\n  let urgentOnly = urgentTodos afterRemove\n\n  [\n    `after add: ${renderTodos afterAdd}`,\n    `after delete: ${renderTodos afterRemove}`,\n    `urgent: ${renderTodos urgentOnly}`\n  ]\n}\n"
+  ],
+  "names": [
+    "Todo",
+    "initialTodos",
+    "addTodo",
+    "_ssrg_array_append",
+    "keepTodo",
+    "removeTodo",
+    "_ssrg_array_filter",
+    "keepTodo",
+    "isUrgent",
+    "urgentTodos",
+    "_ssrg_array_filter",
+    "renderTodo",
+    "intShow",
+    "stringShow",
+    "renderTodos",
+    "_ssrg_collection_join",
+    "arrayReducible",
+    "arrayFunctor",
+    "todoWorkflow",
+    "afterAdd",
+    "addTodo",
+    "afterRemove",
+    "removeTodo",
+    "urgentOnly",
+    "urgentTodos",
+    "stringShow",
+    "renderTodos",
+    "stringShow",
+    "renderTodos",
+    "stringShow",
+    "renderTodos"
+  ],
+  "mappings": ";;;;;AAEAA;;;;;;AAMAC;AAKAC;AAGAE;AAGAC;AAGAG;AAGAC;AAGAE;AAGAG;AAGAI"
+}

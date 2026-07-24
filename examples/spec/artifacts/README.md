@@ -349,6 +349,10 @@ user-defined Iterable / Reducible dictionary dispatchは`user-iterable-comprehen
 generic `sum`で集計します。`execution-schema-1/collection-report`と`examples/samples/collections`は、キャンセル行を除いた
 3件と合計4200を同じ2行のreportとして固定します。
 
+`schema-1/todo-workflow`はimmutableなTodo Arrayへのappend、idを受けるpredicateでの削除、urgent flagでの絞り込みを
+順に合成します。`execution-schema-1/todo-workflow`は各段階の一覧をactual JSONで固定し、`examples/samples/form-todo`は
+同じ操作をtyped browser eventとpure updateへ接続します。
+
 `schema-1/method-constraint-dispatch`はtrait method自身の`where Labeled<A>`をinstance-level constraintと分離し、
 method bodyではordered `parameter` evidence、call siteではprimary `Render<Badge>` dictionaryに続く
 `Labeled<Badge>` dictionaryとして運びます。生成TSは通常のmethod引数の後ろへcompiler-private evidence parameterを追加し、

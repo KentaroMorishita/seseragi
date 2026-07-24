@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "module": "artifact/todo-workflow",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.string",
+      "core.bool",
+      "core.array.append",
+      "core.array.filter",
+      "core.int64.show",
+      "core.string.show",
+      "core.array.reducible",
+      "core.collection.join",
+      "core.array.functor",
+      "core.unit"
+    ]
+  },
+  "exports": [
+    "todoWorkflow"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

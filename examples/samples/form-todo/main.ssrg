@@ -1,11 +1,25 @@
+import * as arrays from "std/array"
 import * as dom from "std/web/dom"
 import * as html from "std/web/html"
+
+struct Todo {
+  id: Int,
+  title: String,
+  note: String,
+  urgent: Bool
+}
+
+type Filter =
+  | All
+  | UrgentOnly
 
 struct Model {
   draft: String,
   note: String,
   urgent: Bool,
-  items: Array<String>,
+  nextId: Int,
+  filter: Filter,
+  items: Array<Todo>,
 }
 
 type Msg =
@@ -13,9 +27,18 @@ type Msg =
   | NoteChanged String
   | UrgentChanged Bool
   | Submitted
+  | Removed Int
+  | FilterChanged Filter
 
 let initialModel: Model =
-  Model { draft: "", note: "", urgent: False, items: [] }
+  Model {
+    draft: "",
+    note: "",
+    urgent: False,
+    nextId: 1,
+    filter: All,
+    items: []
+  }
 
 fn draftMessage event: html.InputEvent -> Msg =
   DraftChanged event.value
@@ -26,13 +49,25 @@ fn noteMessage event: html.InputEvent -> Msg =
 fn urgentMessage event: html.ChangeEvent -> Msg =
   UrgentChanged event.checked
 
-fn itemLabel model: Model -> String =
-  if model.urgent then
-    `Urgent: ${model.draft}`
-  else if model.note == "" then
-    model.draft
-  else
-    `${model.draft} — ${model.note}`
+fn newTodo model: Model -> Todo =
+  Todo {
+    id: model.nextId,
+    title: model.draft,
+    note: model.note,
+    urgent: model.urgent
+  }
+
+fn keepTodo removedId: Int -> todo: Todo -> Bool =
+  todo.id != removedId
+
+fn isUrgent todo: Todo -> Bool =
+  todo.urgent
+
+fn visibleItems filter: Filter -> items: Array<Todo> -> Array<Todo> =
+  match filter {
+    All -> items
+    UrgentOnly -> arrays.filter isUrgent items
+  }
 
 fn update message: Msg -> model: Model -> Model =
   match message {
@@ -44,31 +79,59 @@ fn update message: Msg -> model: Model -> Model =
         model
       else
         Model {
+          ...model,
           draft: "",
           note: "",
           urgent: False,
-          items: combine [model.items, [itemLabel model]]
+          nextId: model.nextId + 1,
+          items: arrays.append [newTodo model] model.items
         }
+    Removed id ->
+      Model { ...model, items: arrays.filter (keepTodo id) model.items }
+    FilterChanged filter ->
+      Model { ...model, filter }
   }
 
-fn itemRow item: String -> html.Html<Msg> =
-  html.p {
-    className: "rounded-xl bg-slate-100 px-4 py-3 text-slate-800",
-    children: item
+fn itemTitle todo: Todo -> String =
+  if todo.urgent then `Urgent: ${todo.title}` else todo.title
+
+fn itemRow todo: Todo -> html.Html<Msg> =
+  html.div {
+    className: "flex items-start justify-between gap-2 rounded-xl bg-slate-50 px-4 py-3",
+    children: [
+      html.div {
+        children: [
+          html.p {
+            className: "m-0 font-semibold text-slate-900",
+            children: itemTitle todo
+          },
+          html.p {
+            className: "mb-0 mt-2 text-sm text-slate-500",
+            children: todo.note
+          }
+        ]
+      },
+      html.button {
+        buttonType: "button",
+        onClick: Removed todo.id,
+        className: "rounded-lg border-0 bg-slate-900 px-3 py-2 text-sm font-semibold text-white",
+        children: "Delete"
+      }
+    ]
   }
 
 fn view model: Model -> html.Html<Msg> =
   html.main {
-    className: "min-h-screen bg-emerald-50 p-6 sm:p-10",
+    className: "min-h-screen bg-emerald-50 p-6 sm:p-12",
     children: html.section {
-      className: "mx-auto max-w-lg rounded-2xl bg-white p-6 shadow-lg sm:p-8",
+      className: "mx-auto max-w-lg rounded-2xl bg-white p-6 shadow-lg",
       children: [
         html.h1 {
-          className: "mb-2 mt-0 text-3xl font-bold text-slate-900",
+          className: "m-0 mb-2 text-3xl font-bold text-slate-900",
           children: "Typed form todo"
         },
         html.p {
-          className: "mb-6 mt-0 text-slate-600",
+          className: "m-0 mb-6 text-slate-500",
           children: "Input events become immutable Seseragi messages."
         },
         html.form {
@@ -87,7 +150,7 @@ fn view model: Model -> html.Html<Msg> =
               inputType: "text",
               required: True,
               onInput: draftMessage,
-              className: "mb-3 w-full rounded-xl border border-slate-300 px-4 py-3 text-base"
+              className: "mb-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-base"
             },
             html.label {
               htmlFor: "todo-note",
@@ -100,7 +163,7 @@ fn view model: Model -> html.Html<Msg> =
               value: model.note,
               placeholder: "Optional detail",
               onInput: noteMessage,
-              className: "mb-3 w-full rounded-xl border border-slate-300 px-4 py-3 text-base"
+              className: "mb-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-base"
             },
             html.label {
               className: "mb-4 flex items-center gap-2 text-slate-700",
@@ -115,7 +178,7 @@ fn view model: Model -> html.Html<Msg> =
               ]
             },
             html.p {
-              className: "mb-4 text-sm text-emerald-700",
+              className: "mb-4 text-sm text-emerald-800",
               children: `Live preview: ${model.draft}`
             },
             html.button {
@@ -127,14 +190,34 @@ fn view model: Model -> html.Html<Msg> =
           ]
         },
         html.div {
-          className: "mt-6 grid gap-2",
-          children: [itemRow item | item <- model.items]
+          className: "mt-6 flex gap-2",
+          children: [
+            html.button {
+              buttonType: "button",
+              onClick: FilterChanged All,
+              className: "rounded-lg border-0 bg-slate-900 px-3 py-2 text-sm font-semibold text-white",
+              children: "All"
+            },
+            html.button {
+              buttonType: "button",
+              onClick: FilterChanged UrgentOnly,
+              className: "rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800",
+              children: "Urgent"
+            }
+          ]
+        },
+        html.p {
+          className: "mb-2 mt-4 text-sm text-slate-500",
+          children: `${arrays.length (visibleItems model.filter model.items)} visible tasks`
+        },
+        html.div {
+          className: "grid gap-2",
+          children: [itemRow item | item <- visibleItems model.filter model.items]
         }
       ]
     }
   }
 
-// onSubmitはpage reloadを防ぎ、pureなupdateへSubmittedを渡します。
 pub effect fn main =
   dom.app {
     target: "#app",

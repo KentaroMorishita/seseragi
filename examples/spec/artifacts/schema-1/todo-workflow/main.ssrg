@@ -1,0 +1,45 @@
+import * as arrays from "std/array"
+
+struct Todo {
+  id: Int,
+  title: String,
+  urgent: Bool
+}
+
+let initialTodos: Array<Todo> = [
+  Todo { id: 1, title: "Write notes", urgent: False },
+  Todo { id: 2, title: "Ship release", urgent: True }
+]
+
+fn addTodo todo: Todo -> values: Array<Todo> -> Array<Todo> =
+  arrays.append [todo] values
+
+fn keepTodo removedId: Int -> todo: Todo -> Bool =
+  todo.id != removedId
+
+fn removeTodo id: Int -> values: Array<Todo> -> Array<Todo> =
+  arrays.filter (keepTodo id) values
+
+fn isUrgent todo: Todo -> Bool =
+  todo.urgent
+
+fn urgentTodos values: Array<Todo> -> Array<Todo> =
+  arrays.filter isUrgent values
+
+fn renderTodo todo: Todo -> String =
+  `${todo.id}: ${todo.title}`
+
+fn renderTodos values: Array<Todo> -> String =
+  join ", " $ map renderTodo values
+
+pub fn todoWorkflow unit: Unit -> Array<String> = {
+  let afterAdd = addTodo (Todo { id: 3, title: "Review docs", urgent: True }) initialTodos
+  let afterRemove = removeTodo 2 afterAdd
+  let urgentOnly = urgentTodos afterRemove
+
+  [
+    `after add: ${renderTodos afterAdd}`,
+    `after delete: ${renderTodos afterRemove}`,
+    `urgent: ${renderTodos urgentOnly}`
+  ]
+}

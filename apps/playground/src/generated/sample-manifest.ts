@@ -326,15 +326,16 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "form-todo",
-      "title": "Typed formでTodoを追加",
-      "summary": "input snapshot、submit、Signal更新を小さなTodo formでつなぎます。",
+      "title": "Todoを追加・削除・絞り込み",
+      "summary": "typed formとpure updateでTodoの追加、削除、urgent filterをつなぎます。",
       "kind": "showcase",
       "difficulty": "intermediate",
       "topics": [
         "form",
         "InputEvent",
         "ChangeEvent",
-        "typed Msg"
+        "typed Msg",
+        "filter"
       ],
       "capabilities": [
         "dom"
@@ -348,7 +349,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/form-todo/main.ssrg",
       "guidePath": "examples/samples/form-todo/guide.md",
-      "sourceHash": "sha256:2dce46445b146c1de940a598422e817fc622a9de018e5f754bbbf3a6c74eb492"
+      "sourceHash": "sha256:ae13bc498d1fbd0fb0a35c65813f6f2c22812a6419844bdfb9ff0a984a09acc2"
     },
     source: sample7Source,
     guide: sample7Guide,

@@ -1,0 +1,714 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/todo-workflow",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.string",
+    "core.bool",
+    "core.array.append",
+    "core.array.filter",
+    "core.int64.show",
+    "core.string.show",
+    "core.array.reducible",
+    "core.collection.join",
+    "core.array.functor",
+    "core.unit"
+  ],
+  "imports": [
+    {
+      "feature": "core.array.append",
+      "local": "_ssrg_array_append"
+    },
+    {
+      "feature": "core.array.filter",
+      "local": "_ssrg_array_filter"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.array.reducible",
+      "local": "_ssrg_array_reducible"
+    },
+    {
+      "feature": "core.collection.join",
+      "local": "_ssrg_collection_join"
+    },
+    {
+      "feature": "core.array.functor",
+      "local": "_ssrg_array_functor"
+    }
+  ],
+  "structs": [
+    {
+      "exported": false,
+      "name": "Todo",
+      "brand": "__ssrg$brand$Todo",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": {
+            "kind": "bigint"
+          }
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": {
+            "kind": "string"
+          }
+        },
+        {
+          "name": "urgent",
+          "optional": false,
+          "type": {
+            "kind": "boolean"
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 37,
+        "end": 95
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "initialTodos",
+      "type": {
+        "kind": "array",
+        "element": {
+          "kind": "reference",
+          "name": "Todo",
+          "arguments": []
+        }
+      },
+      "initializer": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "id",
+                "value": {
+                  "kind": "bigint",
+                  "value": "1"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "title",
+                "value": {
+                  "kind": "string",
+                  "value": "Write notes"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "urgent",
+                "value": {
+                  "kind": "boolean",
+                  "value": false
+                }
+              }
+            ],
+            "assertedType": {
+              "kind": "reference",
+              "name": "Todo",
+              "arguments": []
+            }
+          },
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "id",
+                "value": {
+                  "kind": "bigint",
+                  "value": "2"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "title",
+                "value": {
+                  "kind": "string",
+                  "value": "Ship release"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "urgent",
+                "value": {
+                  "kind": "boolean",
+                  "value": true
+                }
+              }
+            ],
+            "assertedType": {
+              "kind": "reference",
+              "name": "Todo",
+              "arguments": []
+            }
+          }
+        ],
+        "elementType": {
+          "kind": "reference",
+          "name": "Todo",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 97,
+        "end": 241
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "addTodo",
+      "parameters": [
+        {
+          "name": "todo",
+          "type": "Todo",
+          "implicit": false
+        },
+        {
+          "name": "values",
+          "type": "ReadonlyArray<Todo>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_array_append",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "identifier",
+                "name": "todo"
+              }
+            ],
+            "elementType": {
+              "kind": "reference",
+              "name": "Todo",
+              "arguments": []
+            }
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 243,
+        "end": 334
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "keepTodo",
+      "parameters": [
+        {
+          "name": "removedId",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "todo",
+          "type": "Todo",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "!==",
+        "left": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "identifier",
+            "name": "todo"
+          },
+          "field": "id"
+        },
+        "right": {
+          "kind": "identifier",
+          "name": "removedId"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 336,
+        "end": 409
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "removeTodo",
+      "parameters": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "values",
+          "type": "ReadonlyArray<Todo>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_array_filter",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "keepTodo",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "id"
+              }
+            ]
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 411,
+        "end": 509
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "isUrgent",
+      "parameters": [
+        {
+          "name": "todo",
+          "type": "Todo",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "field-access",
+        "receiver": {
+          "kind": "identifier",
+          "name": "todo"
+        },
+        "field": "urgent"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 511,
+        "end": 557
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "urgentTodos",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<Todo>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_array_filter",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "isUrgent"
+          },
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 559,
+        "end": 642
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderTodo",
+      "parameters": [
+        {
+          "name": "todo",
+          "type": "Todo",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "binary",
+          "operator": "+",
+          "left": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_show_intShow"
+            },
+            "method": "show",
+            "arguments": [
+              {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "identifier",
+                  "name": "todo"
+                },
+                "field": "id"
+              }
+            ]
+          },
+          "right": {
+            "kind": "string",
+            "value": ": "
+          }
+        },
+        "right": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_stringShow"
+          },
+          "method": "show",
+          "arguments": [
+            {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "identifier",
+                "name": "todo"
+              },
+              "field": "title"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 644,
+        "end": 710
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderTodos",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<Todo>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_join",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          },
+          {
+            "kind": "string",
+            "value": ", "
+          },
+          {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_array_functor"
+            },
+            "method": "map",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "renderTodo"
+              },
+              {
+                "kind": "identifier",
+                "name": "values"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 712,
+        "end": 794
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "todoWorkflow",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "afterAdd",
+            "type": {
+              "kind": "array",
+              "element": {
+                "kind": "reference",
+                "name": "Todo",
+                "arguments": []
+              }
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "addTodo",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "id",
+                      "value": {
+                        "kind": "bigint",
+                        "value": "3"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "title",
+                      "value": {
+                        "kind": "string",
+                        "value": "Review docs"
+                      }
+                    },
+                    {
+                      "kind": "field",
+                      "name": "urgent",
+                      "value": {
+                        "kind": "boolean",
+                        "value": true
+                      }
+                    }
+                  ],
+                  "assertedType": {
+                    "kind": "reference",
+                    "name": "Todo",
+                    "arguments": []
+                  }
+                },
+                {
+                  "kind": "identifier",
+                  "name": "initialTodos"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 847,
+              "end": 938
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "afterRemove",
+            "type": {
+              "kind": "array",
+              "element": {
+                "kind": "reference",
+                "name": "Todo",
+                "arguments": []
+              }
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "removeTodo",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "2"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "afterAdd"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 939,
+              "end": 980
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "urgentOnly",
+            "type": {
+              "kind": "array",
+              "element": {
+                "kind": "reference",
+                "name": "Todo",
+                "arguments": []
+              }
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "urgentTodos",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "afterRemove"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 981,
+              "end": 1023
+            }
+          }
+        ],
+        "result": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "after add: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "renderTodos",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "afterAdd"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "after delete: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "renderTodos",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "afterRemove"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "urgent: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "renderTodos",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "urgentOnly"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "elementType": {
+            "kind": "string"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 796,
+        "end": 1164
+      }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "module": "artifact/todo-workflow",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/array",
+      "module": "artifact/todo-workflow/std/array",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/todo-workflow/std/array::*",
+          "localName": "arrays"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/todo-workflow::todoWorkflow",
+      "namespace": "value",
+      "name": "todoWorkflow",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 796,
+        "end": 1164
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

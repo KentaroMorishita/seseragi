@@ -22,6 +22,7 @@
 | generic `Reducible<C, A>` / `sum`             | Lesson 04         | `schema-1/collection-sum` + `execution-schema-1/collection-sum`; `Reducible` / `Zero` / `Add` dictionaryでArray / List / Range / 空collectionを同じ実装から実行 | covered |
 | generic collection aggregates                | Lesson 04         | `schema-1/collection-aggregates` + `execution-schema-1/collection-aggregates`; `product` / `any` / `all`をArray / List / Range / 空collectionへ適用し、empty値とpredicate結果を実行 | covered |
 | Collectionの整形と集計                       | `collections` sample | `schema-1/collection-report` + `execution-schema-1/collection-report`; StructのArrayを一度filterし、mapした表示行をjoin、同じfiltered sourceをsumして2行のreportへ合成。CLIとPlaygroundの同名recipeも同じ出力を固定 | covered |
+| Todoの追加・削除・絞り込み                   | `form-todo` sample | `schema-1/todo-workflow` + `execution-schema-1/todo-workflow`; immutableなArrayへTodoをappendし、idによる削除とurgent filterを同じdomain関数で実行。Playgroundではtyped form、pure update、Delete / All / Urgent操作へ接続 | covered |
 | Array / List safe observation                 | Lesson 04         | `schema-1/collection-access` + `execution-schema-1/collection-access`; `length` / `isEmpty` / `get` / `head` / `tail`をArray / Listの通常・空・範囲外・負indexへ適用し、`Maybe`境界を実行 | covered |
 | Array / List transformation                   | Lesson 04         | `schema-1/collection-transform` + `execution-schema-1/collection-transform`; `filter` / `filterMap` / `flatMap`をArray / Listへ適用し、source順、`Nothing`除去、flatten順を実行 | covered |
 | Array / List find and slicing                 | Lesson 04         | `schema-1/collection-slice` + `execution-schema-1/collection-slice`; `find`の最初の一致と不一致、`take` / `drop`の負・範囲内・長さ超過countをArray / Listで実行 | covered |
@@ -85,7 +86,7 @@
 | closed deprecation metadata / tooling         | none              | `compile/deprecation-metadata.ssrg`            | covered |
 | JsonEncode / JsonDecode deriving              | Lesson 26         | codec wire / strict field fixtures             | partial |
 | pure Html props / children / SSR              | Lesson 27         | HTML escaping / props fixtures                 | partial |
-| typed form input / change / submit snapshots  | none              | `schema-1/web-form-events` + `form-todo` sample | covered |
+| typed form input / change / submit snapshots  | `form-todo` sample | `schema-1/web-form-events` + `form-todo` sample; input / textarea / checkbox / submitからtyped Msgを作り、Todoの追加・削除・urgent filterをpure updateへ接続 | covered |
 | Signal-driven DOM / event resource lifetime   | Lesson 30         | `projects/dom-*`                               | covered |
 | performance erasure / stack safety            | `local-functions` sample | `schema-1/self-tail-loop` + `execution-schema-1/self-tail-loop` + `project-schema-1/self-tail-loop` + `projects/performance-*`; direct self tail callをloop化し、module-level / local、`if` / `match` / pure blockのtail positionと100,000段actual executionを固定。相互再帰・non-tail recursionは一定stack保証の対象外 | partial |
 | benchmark discovery / baseline regression     | none              | `projects/benchmark-discovery`                 | covered |

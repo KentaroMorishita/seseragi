@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "case": "todo-workflow",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/todo-workflow",
+    "export": "todoWorkflow",
+    "compiledModule": "../../schema-1/todo-workflow/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.int64",
+      "core.string",
+      "core.bool",
+      "core.array.append",
+      "core.array.filter",
+      "core.int64.show",
+      "core.string.show",
+      "core.array.reducible",
+      "core.collection.join",
+      "core.array.functor",
+      "core.unit"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}
