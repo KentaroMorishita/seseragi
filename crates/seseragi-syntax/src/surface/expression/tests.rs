@@ -504,6 +504,61 @@ fn parses_nested_tuple_patterns_in_do_bindings() {
 }
 
 #[test]
+fn parses_array_and_list_rest_patterns() {
+    let array = first_body(
+        "fn sum values: Array<Int> -> Int = match values { [] -> 0; [head, ...tail] -> head }\n",
+    );
+    let SurfaceExpr::Match { arms, .. } = array else {
+        panic!("expected array match");
+    };
+    assert!(matches!(
+        &arms[0].pattern,
+        SurfacePattern::Array { elements, rest: None, .. } if elements.is_empty()
+    ));
+    assert!(matches!(
+        &arms[1].pattern,
+        SurfacePattern::Array {
+            elements,
+            rest: Some(rest),
+            ..
+        } if matches!(&elements[0], SurfacePattern::Name { name, .. } if name == "head")
+            && matches!(rest.as_ref(), SurfacePattern::Name { name, .. } if name == "tail")
+    ));
+
+    let list = first_body(
+        "fn sum values: List<Int> -> Int = match values { `[] -> 0; `[head, ...tail] -> head }\n",
+    );
+    let SurfaceExpr::Match { arms, .. } = list else {
+        panic!("expected list match");
+    };
+    assert!(matches!(
+        &arms[0].pattern,
+        SurfacePattern::List { elements, rest: None, .. } if elements.is_empty()
+    ));
+    assert!(matches!(
+        &arms[1].pattern,
+        SurfacePattern::List {
+            elements,
+            rest: Some(rest),
+            ..
+        } if matches!(&elements[0], SurfacePattern::Name { name, .. } if name == "head")
+            && matches!(rest.as_ref(), SurfacePattern::Name { name, .. } if name == "tail")
+    ));
+}
+
+#[test]
+fn rejects_non_final_or_non_binding_collection_rest_patterns() {
+    let body = first_body(
+        "fn invalid values: Array<Int> -> Int = match values { [...tail, value] -> 1; [...42] -> 2; _ -> 0 }\n",
+    );
+    let SurfaceExpr::Match { arms, .. } = body else {
+        panic!("expected array match");
+    };
+    assert!(matches!(arms[0].pattern, SurfacePattern::Error { .. }));
+    assert!(matches!(arms[1].pattern, SurfacePattern::Error { .. }));
+}
+
+#[test]
 fn distinguishes_constructor_patterns_from_bindings() {
     let body = first_body(
         "effect fn main = do { (Present value, Missing) <- readPair (); succeed value }\n",

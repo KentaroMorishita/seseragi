@@ -57,6 +57,18 @@ pub enum CoreDecisionTest {
         constructor: String,
         origin: SourceSpan,
     },
+    ArrayLength {
+        path: Vec<CoreDecisionProjection>,
+        length: usize,
+        minimum: bool,
+        origin: SourceSpan,
+    },
+    ListLength {
+        path: Vec<CoreDecisionProjection>,
+        length: usize,
+        minimum: bool,
+        origin: SourceSpan,
+    },
     Invalid {
         origin: SourceSpan,
     },
@@ -70,6 +82,10 @@ pub enum CoreDecisionTest {
 )]
 pub enum CoreDecisionProjection {
     TupleElement { index: usize },
+    ArrayElement { index: usize },
+    ArrayRest { start: usize },
+    ListElement { index: usize },
+    ListRest { start: usize },
     RecordField { name: String },
     AdtPayload,
 }
@@ -203,6 +219,54 @@ fn lower_pattern(
             for (index, element) in elements.into_iter().enumerate() {
                 path.push(CoreDecisionProjection::TupleElement { index });
                 lower_pattern(source, element, path, tests, bindings);
+                path.pop();
+            }
+        }
+        TypedPattern::Array {
+            elements,
+            rest,
+            origin,
+            ..
+        } => {
+            let length = elements.len();
+            tests.push(CoreDecisionTest::ArrayLength {
+                path: path.clone(),
+                length,
+                minimum: rest.is_some(),
+                origin: source_span(source, origin),
+            });
+            for (index, element) in elements.into_iter().enumerate() {
+                path.push(CoreDecisionProjection::ArrayElement { index });
+                lower_pattern(source, element, path, tests, bindings);
+                path.pop();
+            }
+            if let Some(rest) = rest {
+                path.push(CoreDecisionProjection::ArrayRest { start: length });
+                lower_pattern(source, *rest, path, tests, bindings);
+                path.pop();
+            }
+        }
+        TypedPattern::List {
+            elements,
+            rest,
+            origin,
+            ..
+        } => {
+            let length = elements.len();
+            tests.push(CoreDecisionTest::ListLength {
+                path: path.clone(),
+                length,
+                minimum: rest.is_some(),
+                origin: source_span(source, origin),
+            });
+            for (index, element) in elements.into_iter().enumerate() {
+                path.push(CoreDecisionProjection::ListElement { index });
+                lower_pattern(source, element, path, tests, bindings);
+                path.pop();
+            }
+            if let Some(rest) = rest {
+                path.push(CoreDecisionProjection::ListRest { start: length });
+                lower_pattern(source, *rest, path, tests, bindings);
                 path.pop();
             }
         }

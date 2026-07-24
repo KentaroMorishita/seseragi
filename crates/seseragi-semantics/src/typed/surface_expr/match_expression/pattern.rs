@@ -24,6 +24,14 @@ pub(super) enum CoveragePattern {
         argument: Option<Box<CoveragePattern>>,
     },
     Tuple(Vec<CoveragePattern>),
+    Array {
+        elements: Vec<CoveragePattern>,
+        has_rest: bool,
+    },
+    List {
+        elements: Vec<CoveragePattern>,
+        has_rest: bool,
+    },
     Record(Vec<(String, CoveragePattern)>),
     Invalid,
 }
@@ -46,6 +54,8 @@ fn coverage_is_irrefutable(pattern: &CoveragePattern) -> bool {
     match pattern {
         CoveragePattern::Any => true,
         CoveragePattern::Tuple(elements) => elements.iter().all(coverage_is_irrefutable),
+        CoveragePattern::Array { elements, has_rest }
+        | CoveragePattern::List { elements, has_rest } => *has_rest && elements.is_empty(),
         CoveragePattern::Record(fields) => fields
             .iter()
             .all(|(_, pattern)| coverage_is_irrefutable(pattern)),
@@ -109,6 +119,30 @@ pub(in crate::typed::surface_expr) fn type_pattern(
         SurfacePattern::Tuple { elements, span } => {
             type_tuple_pattern(elements, *span, expected, context)
         }
+        SurfacePattern::Array {
+            elements,
+            rest,
+            span,
+        } => type_collection_pattern(
+            CollectionPatternKind::Array,
+            elements,
+            rest.as_deref(),
+            *span,
+            expected,
+            context,
+        ),
+        SurfacePattern::List {
+            elements,
+            rest,
+            span,
+        } => type_collection_pattern(
+            CollectionPatternKind::List,
+            elements,
+            rest.as_deref(),
+            *span,
+            expected,
+            context,
+        ),
         SurfacePattern::Record { fields, span } => {
             type_record_pattern(fields, *span, expected, context)
         }
@@ -125,6 +159,105 @@ pub(in crate::typed::surface_expr) fn type_pattern(
             issues: Vec::new(),
             invalid: true,
         },
+    }
+}
+
+#[derive(Clone, Copy)]
+enum CollectionPatternKind {
+    Array,
+    List,
+}
+
+impl CollectionPatternKind {
+    fn name(self) -> &'static str {
+        match self {
+            Self::Array => "Array",
+            Self::List => "List",
+        }
+    }
+}
+
+fn type_collection_pattern(
+    kind: CollectionPatternKind,
+    elements: &[SurfacePattern],
+    rest: Option<&SurfacePattern>,
+    span: seseragi_syntax::ByteSpan,
+    expected: &SemanticValueType,
+    context: &PureExpressionContext<'_>,
+) -> PatternAnalysis {
+    let expected_element = match &expected.type_ref {
+        TypedType::Named { name, arguments }
+        | TypedType::ExternalNamed {
+            name, arguments, ..
+        } if name == kind.name() && arguments.len() == 1 => {
+            context.semantic_value_from_typed_type(&arguments[0])
+        }
+        _ => {
+            return invalid(
+                span,
+                format!(
+                    "{} pattern requires a {} scrutinee",
+                    kind.name(),
+                    kind.name()
+                ),
+            );
+        }
+    };
+    let mut children = elements
+        .iter()
+        .map(|pattern| type_pattern(pattern, &expected_element, context))
+        .collect::<Vec<_>>();
+    let rest_index = rest.map(|pattern| {
+        children.push(type_pattern(pattern, expected, context));
+        children.len() - 1
+    });
+    let mut locals = BTreeMap::new();
+    let mut issues = Vec::new();
+    let invalid = children.iter().any(|child| child.invalid);
+    for child in &children {
+        locals.extend(child.locals.clone());
+        issues.extend(child.issues.clone());
+    }
+    let typed_elements = children[..elements.len()]
+        .iter()
+        .map(|child| child.typed.clone())
+        .collect::<Vec<_>>();
+    let typed_rest = rest_index.map(|index| Box::new(children[index].typed.clone()));
+    let coverage_elements = children[..elements.len()]
+        .iter()
+        .map(|child| child.coverage.clone())
+        .collect::<Vec<_>>();
+    let has_rest = rest.is_some();
+    let typed = match kind {
+        CollectionPatternKind::Array => TypedPattern::Array {
+            elements: typed_elements,
+            rest: typed_rest,
+            type_ref: expected.type_ref.clone(),
+            origin: span,
+        },
+        CollectionPatternKind::List => TypedPattern::List {
+            elements: typed_elements,
+            rest: typed_rest,
+            type_ref: expected.type_ref.clone(),
+            origin: span,
+        },
+    };
+    let coverage = match kind {
+        CollectionPatternKind::Array => CoveragePattern::Array {
+            elements: coverage_elements,
+            has_rest,
+        },
+        CollectionPatternKind::List => CoveragePattern::List {
+            elements: coverage_elements,
+            has_rest,
+        },
+    };
+    PatternAnalysis {
+        typed,
+        coverage,
+        locals,
+        issues,
+        invalid,
     }
 }
 
@@ -307,6 +440,8 @@ fn pattern_span(pattern: &SurfacePattern) -> seseragi_syntax::ByteSpan {
         | SurfacePattern::Name { span, .. }
         | SurfacePattern::Constructor { span, .. }
         | SurfacePattern::Tuple { span, .. }
+        | SurfacePattern::Array { span, .. }
+        | SurfacePattern::List { span, .. }
         | SurfacePattern::Record { span, .. }
         | SurfacePattern::Struct { span, .. }
         | SurfacePattern::Error { span } => *span,

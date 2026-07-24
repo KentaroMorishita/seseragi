@@ -1523,6 +1523,14 @@ fn walk_pattern(pattern: &TypedPattern, visit: &mut impl FnMut(&TypedPattern)) {
                 walk_pattern(element, visit);
             }
         }
+        TypedPattern::Array { elements, rest, .. } | TypedPattern::List { elements, rest, .. } => {
+            for element in elements {
+                walk_pattern(element, visit);
+            }
+            if let Some(rest) = rest {
+                walk_pattern(rest, visit);
+            }
+        }
         TypedPattern::Record { fields, .. } => {
             for field in fields {
                 walk_pattern(&field.pattern, visit);
@@ -1616,6 +1624,12 @@ fn pattern_type(pattern: &TypedPattern) -> Option<(ByteSpan, &TypedType)> {
             type_ref, origin, ..
         }
         | TypedPattern::Tuple {
+            type_ref, origin, ..
+        }
+        | TypedPattern::Array {
+            type_ref, origin, ..
+        }
+        | TypedPattern::List {
             type_ref, origin, ..
         }
         | TypedPattern::Record {

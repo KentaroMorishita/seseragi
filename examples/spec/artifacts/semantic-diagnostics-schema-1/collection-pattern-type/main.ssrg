@@ -1,0 +1,11 @@
+fn wrongKind values: Array<Int> -> Int =
+  match values {
+    `[] -> 0
+    _ -> 1
+  }
+
+fn wrongElement values: Array<String> -> String =
+  match values {
+    [42, ...tail] -> "number"
+    _ -> "text"
+  }

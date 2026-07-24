@@ -20,6 +20,13 @@ pub(super) fn parse_pattern_range(tokens: &[Token], start: usize, end: usize) ->
     {
         return parse_parenthesized_pattern(tokens, first, last, span);
     }
+    if matches!(
+        tokens[first].kind,
+        TokenKind::PunctuationSquareLeft | TokenKind::PunctuationListLeft
+    ) && tokens[last].kind == TokenKind::PunctuationSquareRight
+    {
+        return parse_collection_pattern(tokens, first, last, span);
+    }
     if tokens[first].kind == TokenKind::PunctuationBraceLeft
         && tokens[last].kind == TokenKind::PunctuationBraceRight
     {
@@ -119,6 +126,81 @@ pub(super) fn parse_pattern_range(tokens: &[Token], start: usize, end: usize) ->
         },
         TokenKind::Wildcard => SurfacePattern::Wildcard { span },
         _ => SurfacePattern::Error { span },
+    }
+}
+
+fn parse_collection_pattern(
+    tokens: &[Token],
+    open: usize,
+    close: usize,
+    span: ByteSpan,
+) -> SurfacePattern {
+    let is_list = tokens[open].kind == TokenKind::PunctuationListLeft;
+    if significant_indices(tokens, open + 1, close).is_empty() {
+        return collection_pattern(is_list, Vec::new(), None, span);
+    }
+    let mut ranges = split_top_level_commas(tokens, open + 1, close);
+    if ranges
+        .last()
+        .is_some_and(|(start, end)| significant_indices(tokens, *start, *end).is_empty())
+    {
+        ranges.pop();
+    }
+    let mut elements = Vec::new();
+    let mut rest = None;
+    let range_count = ranges.len();
+    for (index, (start, end)) in ranges.into_iter().enumerate() {
+        let significant = significant_indices(tokens, start, end);
+        let Some(first) = significant.first().copied() else {
+            return SurfacePattern::Error { span };
+        };
+        if tokens[first].kind == TokenKind::PunctuationEllipsis {
+            if index + 1 != range_count || significant.len() < 2 || rest.is_some() {
+                return SurfacePattern::Error { span };
+            }
+            let rest_pattern = parse_pattern_range(tokens, first + 1, end);
+            if !matches!(
+                rest_pattern,
+                SurfacePattern::Name { .. } | SurfacePattern::Wildcard { .. }
+            ) {
+                return SurfacePattern::Error { span };
+            }
+            rest = Some(Box::new(rest_pattern));
+            continue;
+        }
+        if significant
+            .iter()
+            .any(|index| tokens[*index].kind == TokenKind::PunctuationEllipsis)
+        {
+            return SurfacePattern::Error { span };
+        }
+        let element = parse_pattern_range(tokens, start, end);
+        if matches!(element, SurfacePattern::Error { .. }) {
+            return SurfacePattern::Error { span };
+        }
+        elements.push(element);
+    }
+    collection_pattern(is_list, elements, rest, span)
+}
+
+fn collection_pattern(
+    is_list: bool,
+    elements: Vec<SurfacePattern>,
+    rest: Option<Box<SurfacePattern>>,
+    span: ByteSpan,
+) -> SurfacePattern {
+    if is_list {
+        SurfacePattern::List {
+            elements,
+            rest,
+            span,
+        }
+    } else {
+        SurfacePattern::Array {
+            elements,
+            rest,
+            span,
+        }
     }
 }
 

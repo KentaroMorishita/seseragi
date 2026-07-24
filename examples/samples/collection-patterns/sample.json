@@ -1,0 +1,19 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "collection-patterns",
+  "title": "Collection patternと再帰",
+  "summary": "ArrayとListを空・先頭・残りへ分け、同じ再帰処理を比較します。",
+  "kind": "lesson",
+  "difficulty": "intermediate",
+  "topics": ["Array", "List", "pattern", "rest", "recursion"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["local-functions", "collections"],
+  "featured": false,
+  "isNew": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

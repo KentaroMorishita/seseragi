@@ -21,6 +21,7 @@
       "samples": [
         "functions-and-pipelines",
         "local-functions",
+        "collection-patterns",
         "collections"
       ]
     },
@@ -45,7 +46,11 @@
       "id": "collection-recipes",
       "title": "Collection処理",
       "summary": "Range、内包表記、join、Monoidを日常的な処理として使います。",
-      "samples": ["functions-and-pipelines", "collections"]
+      "samples": [
+        "functions-and-pipelines",
+        "collections",
+        "collection-patterns"
+      ]
     },
     {
       "id": "effects-and-failure",

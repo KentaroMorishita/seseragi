@@ -722,6 +722,18 @@ pub enum SurfacePattern {
         elements: Vec<SurfacePattern>,
         span: ByteSpan,
     },
+    Array {
+        elements: Vec<SurfacePattern>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        rest: Option<Box<SurfacePattern>>,
+        span: ByteSpan,
+    },
+    List {
+        elements: Vec<SurfacePattern>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        rest: Option<Box<SurfacePattern>>,
+        span: ByteSpan,
+    },
     Record {
         fields: Vec<SurfaceRecordPatternField>,
         span: ByteSpan,
@@ -747,6 +759,8 @@ impl SurfacePattern {
             | Self::Wildcard { span }
             | Self::Constructor { span, .. }
             | Self::Tuple { span, .. }
+            | Self::Array { span, .. }
+            | Self::List { span, .. }
             | Self::Record { span, .. }
             | Self::Struct { span, .. }
             | Self::Error { span } => *span,

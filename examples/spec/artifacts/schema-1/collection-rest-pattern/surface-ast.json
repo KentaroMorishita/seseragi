@@ -1,0 +1,860 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "sumArray",
+      "nameSpan": {
+        "start": 3,
+        "end": 11
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 12,
+            "end": 18
+          },
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 26,
+                  "end": 29
+                }
+              }
+            ],
+            "span": {
+              "start": 20,
+              "end": 30
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 34,
+          "end": 37
+        }
+      },
+      "body": {
+        "kind": "block",
+        "items": [
+          {
+            "kind": "function",
+            "name": "loop",
+            "nameSpan": {
+              "start": 47,
+              "end": 51
+            },
+            "parameters": [
+              {
+                "name": "total",
+                "nameSpan": {
+                  "start": 52,
+                  "end": 57
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 59,
+                    "end": 62
+                  }
+                }
+              },
+              {
+                "name": "rest",
+                "nameSpan": {
+                  "start": 66,
+                  "end": 70
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "span": {
+                        "start": 78,
+                        "end": 81
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 72,
+                    "end": 82
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 86,
+                "end": 89
+              }
+            },
+            "value": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "name",
+                "name": "rest",
+                "span": {
+                  "start": 102,
+                  "end": 106
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "array",
+                    "elements": [],
+                    "span": {
+                      "start": 115,
+                      "end": 117
+                    }
+                  },
+                  "body": {
+                    "kind": "name",
+                    "name": "total",
+                    "span": {
+                      "start": 121,
+                      "end": 126
+                    }
+                  },
+                  "span": {
+                    "start": 115,
+                    "end": 126
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "name",
+                        "name": "head",
+                        "nameSpan": {
+                          "start": 134,
+                          "end": 138
+                        },
+                        "span": {
+                          "start": 134,
+                          "end": 138
+                        }
+                      }
+                    ],
+                    "rest": {
+                      "kind": "name",
+                      "name": "tail",
+                      "nameSpan": {
+                        "start": 143,
+                        "end": 147
+                      },
+                      "span": {
+                        "start": 143,
+                        "end": 147
+                      }
+                    },
+                    "span": {
+                      "start": 133,
+                      "end": 148
+                    }
+                  },
+                  "body": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "loop",
+                        "span": {
+                          "start": 152,
+                          "end": 156
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "binary",
+                          "operator": "+",
+                          "operatorSpan": {
+                            "start": 164,
+                            "end": 165
+                          },
+                          "left": {
+                            "kind": "name",
+                            "name": "total",
+                            "span": {
+                              "start": 158,
+                              "end": 163
+                            }
+                          },
+                          "right": {
+                            "kind": "name",
+                            "name": "head",
+                            "span": {
+                              "start": 166,
+                              "end": 170
+                            }
+                          },
+                          "span": {
+                            "start": 158,
+                            "end": 170
+                          }
+                        },
+                        "span": {
+                          "start": 157,
+                          "end": 171
+                        }
+                      },
+                      "span": {
+                        "start": 152,
+                        "end": 171
+                      }
+                    },
+                    "argument": {
+                      "kind": "name",
+                      "name": "tail",
+                      "span": {
+                        "start": 172,
+                        "end": 176
+                      }
+                    },
+                    "span": {
+                      "start": 152,
+                      "end": 176
+                    }
+                  },
+                  "span": {
+                    "start": 133,
+                    "end": 176
+                  }
+                }
+              ],
+              "span": {
+                "start": 96,
+                "end": 182
+              }
+            },
+            "span": {
+              "start": 41,
+              "end": 182
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "loop",
+              "span": {
+                "start": 186,
+                "end": 190
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "0",
+              "span": {
+                "start": 191,
+                "end": 192
+              }
+            },
+            "span": {
+              "start": 186,
+              "end": 192
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "values",
+            "span": {
+              "start": 193,
+              "end": 199
+            }
+          },
+          "span": {
+            "start": 186,
+            "end": 199
+          }
+        },
+        "span": {
+          "start": 40,
+          "end": 201
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 201
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "sumList",
+      "nameSpan": {
+        "start": 206,
+        "end": 213
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 214,
+            "end": 220
+          },
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 227,
+                  "end": 230
+                }
+              }
+            ],
+            "span": {
+              "start": 222,
+              "end": 231
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 235,
+          "end": 238
+        }
+      },
+      "body": {
+        "kind": "block",
+        "items": [
+          {
+            "kind": "function",
+            "name": "loop",
+            "nameSpan": {
+              "start": 248,
+              "end": 252
+            },
+            "parameters": [
+              {
+                "name": "total",
+                "nameSpan": {
+                  "start": 253,
+                  "end": 258
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 260,
+                    "end": 263
+                  }
+                }
+              },
+              {
+                "name": "rest",
+                "nameSpan": {
+                  "start": 267,
+                  "end": 271
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "span": {
+                        "start": 278,
+                        "end": 281
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 273,
+                    "end": 282
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 286,
+                "end": 289
+              }
+            },
+            "value": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "name",
+                "name": "rest",
+                "span": {
+                  "start": 302,
+                  "end": 306
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "list",
+                    "elements": [],
+                    "span": {
+                      "start": 315,
+                      "end": 318
+                    }
+                  },
+                  "body": {
+                    "kind": "name",
+                    "name": "total",
+                    "span": {
+                      "start": 322,
+                      "end": 327
+                    }
+                  },
+                  "span": {
+                    "start": 315,
+                    "end": 327
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "name",
+                        "name": "head",
+                        "nameSpan": {
+                          "start": 336,
+                          "end": 340
+                        },
+                        "span": {
+                          "start": 336,
+                          "end": 340
+                        }
+                      }
+                    ],
+                    "rest": {
+                      "kind": "name",
+                      "name": "tail",
+                      "nameSpan": {
+                        "start": 345,
+                        "end": 349
+                      },
+                      "span": {
+                        "start": 345,
+                        "end": 349
+                      }
+                    },
+                    "span": {
+                      "start": 334,
+                      "end": 350
+                    }
+                  },
+                  "body": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "loop",
+                        "span": {
+                          "start": 354,
+                          "end": 358
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "binary",
+                          "operator": "+",
+                          "operatorSpan": {
+                            "start": 366,
+                            "end": 367
+                          },
+                          "left": {
+                            "kind": "name",
+                            "name": "total",
+                            "span": {
+                              "start": 360,
+                              "end": 365
+                            }
+                          },
+                          "right": {
+                            "kind": "name",
+                            "name": "head",
+                            "span": {
+                              "start": 368,
+                              "end": 372
+                            }
+                          },
+                          "span": {
+                            "start": 360,
+                            "end": 372
+                          }
+                        },
+                        "span": {
+                          "start": 359,
+                          "end": 373
+                        }
+                      },
+                      "span": {
+                        "start": 354,
+                        "end": 373
+                      }
+                    },
+                    "argument": {
+                      "kind": "name",
+                      "name": "tail",
+                      "span": {
+                        "start": 374,
+                        "end": 378
+                      }
+                    },
+                    "span": {
+                      "start": 354,
+                      "end": 378
+                    }
+                  },
+                  "span": {
+                    "start": 334,
+                    "end": 378
+                  }
+                }
+              ],
+              "span": {
+                "start": 296,
+                "end": 384
+              }
+            },
+            "span": {
+              "start": 242,
+              "end": 384
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "loop",
+              "span": {
+                "start": 388,
+                "end": 392
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "0",
+              "span": {
+                "start": 393,
+                "end": 394
+              }
+            },
+            "span": {
+              "start": 388,
+              "end": 394
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "values",
+            "span": {
+              "start": 395,
+              "end": 401
+            }
+          },
+          "span": {
+            "start": 388,
+            "end": 401
+          }
+        },
+        "span": {
+          "start": 241,
+          "end": 403
+        }
+      },
+      "span": {
+        "start": 203,
+        "end": 403
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "collectionRestWorks",
+      "nameSpan": {
+        "start": 412,
+        "end": 431
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 432,
+            "end": 436
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 438,
+              "end": 442
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 446,
+          "end": 450
+        }
+      },
+      "body": {
+        "kind": "block",
+        "items": [
+          {
+            "kind": "let",
+            "name": "arrayTotal",
+            "nameSpan": {
+              "start": 461,
+              "end": 471
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "sumArray",
+                "span": {
+                  "start": 474,
+                  "end": 482
+                }
+              },
+              "argument": {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "integer",
+                    "raw": "1",
+                    "span": {
+                      "start": 484,
+                      "end": 485
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "raw": "2",
+                    "span": {
+                      "start": 487,
+                      "end": 488
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "raw": "3",
+                    "span": {
+                      "start": 490,
+                      "end": 491
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "raw": "4",
+                    "span": {
+                      "start": 493,
+                      "end": 494
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 483,
+                  "end": 495
+                }
+              },
+              "span": {
+                "start": 474,
+                "end": 495
+              }
+            },
+            "span": {
+              "start": 454,
+              "end": 495
+            }
+          },
+          {
+            "kind": "let",
+            "name": "listTotal",
+            "nameSpan": {
+              "start": 502,
+              "end": 511
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "sumList",
+                "span": {
+                  "start": 514,
+                  "end": 521
+                }
+              },
+              "argument": {
+                "kind": "list",
+                "elements": [
+                  {
+                    "kind": "integer",
+                    "raw": "1",
+                    "span": {
+                      "start": 524,
+                      "end": 525
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "raw": "2",
+                    "span": {
+                      "start": 527,
+                      "end": 528
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "raw": "3",
+                    "span": {
+                      "start": 530,
+                      "end": 531
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "raw": "4",
+                    "span": {
+                      "start": 533,
+                      "end": 534
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 522,
+                  "end": 535
+                }
+              },
+              "span": {
+                "start": 514,
+                "end": 535
+              }
+            },
+            "span": {
+              "start": 496,
+              "end": 535
+            }
+          }
+        ],
+        "result": {
+          "kind": "if",
+          "condition": {
+            "kind": "binary",
+            "operator": "==",
+            "operatorSpan": {
+              "start": 552,
+              "end": 554
+            },
+            "left": {
+              "kind": "name",
+              "name": "arrayTotal",
+              "span": {
+                "start": 541,
+                "end": 551
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "10",
+              "span": {
+                "start": 555,
+                "end": 557
+              }
+            },
+            "span": {
+              "start": 541,
+              "end": 557
+            }
+          },
+          "thenBranch": {
+            "kind": "binary",
+            "operator": "==",
+            "operatorSpan": {
+              "start": 573,
+              "end": 575
+            },
+            "left": {
+              "kind": "name",
+              "name": "listTotal",
+              "span": {
+                "start": 563,
+                "end": 572
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "10",
+              "span": {
+                "start": 576,
+                "end": 578
+              }
+            },
+            "span": {
+              "start": 563,
+              "end": 578
+            }
+          },
+          "elseBranch": {
+            "kind": "boolean",
+            "value": false,
+            "span": {
+              "start": 584,
+              "end": 589
+            }
+          },
+          "span": {
+            "start": 538,
+            "end": 589
+          }
+        },
+        "span": {
+          "start": 453,
+          "end": 591
+        }
+      },
+      "span": {
+        "start": 405,
+        "end": 591
+      }
+    }
+  ]
+}

@@ -499,6 +499,34 @@ fn lower_pattern(source: &str, pattern: TypedPattern) -> CorePattern {
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
+        TypedPattern::Array {
+            elements,
+            rest,
+            type_ref,
+            origin,
+        } => CorePattern::Array {
+            elements: elements
+                .into_iter()
+                .map(|element| lower_pattern(source, element))
+                .collect(),
+            rest: rest.map(|rest| Box::new(lower_pattern(source, *rest))),
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
+        TypedPattern::List {
+            elements,
+            rest,
+            type_ref,
+            origin,
+        } => CorePattern::List {
+            elements: elements
+                .into_iter()
+                .map(|element| lower_pattern(source, element))
+                .collect(),
+            rest: rest.map(|rest| Box::new(lower_pattern(source, *rest))),
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
         TypedPattern::Record {
             fields,
             type_ref,

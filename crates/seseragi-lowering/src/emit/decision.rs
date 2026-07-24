@@ -69,6 +69,24 @@ fn render_test(test: &TypeScriptDecisionTest) -> String {
             "{}.tag === {tag:?}",
             render_projection_path(SCRUTINEE_NAME, path)
         ),
+        TypeScriptDecisionTest::ArrayLength {
+            path,
+            length,
+            minimum,
+        } => format!(
+            "{}.length {} {length}",
+            render_projection_path(SCRUTINEE_NAME, path),
+            if *minimum { ">=" } else { "===" }
+        ),
+        TypeScriptDecisionTest::ListLength {
+            path,
+            length,
+            minimum,
+        } => render_list_length_test(
+            &render_projection_path(SCRUTINEE_NAME, path),
+            *length,
+            *minimum,
+        ),
         TypeScriptDecisionTest::Invalid => "false".to_owned(),
     }
 }
@@ -109,6 +127,16 @@ fn render_projection_path(root: &str, path: &[TypeScriptDecisionProjection]) -> 
             TypeScriptDecisionProjection::TupleElement { index } => {
                 format!("{value}[{index}]")
             }
+            TypeScriptDecisionProjection::ArrayElement { index } => {
+                format!("{value}[{index}]")
+            }
+            TypeScriptDecisionProjection::ArrayRest { start } => {
+                format!("{value}.slice({start})")
+            }
+            TypeScriptDecisionProjection::ListElement { index } => {
+                format!("{}.head", render_list_tail(&value, *index))
+            }
+            TypeScriptDecisionProjection::ListRest { start } => render_list_tail(&value, *start),
             TypeScriptDecisionProjection::RecordField { name } => {
                 format!("{value}[{name:?}]")
             }
@@ -116,9 +144,30 @@ fn render_projection_path(root: &str, path: &[TypeScriptDecisionProjection]) -> 
         })
 }
 
+fn render_list_length_test(value: &str, length: usize, minimum: bool) -> String {
+    let mut parts = (0..length)
+        .map(|index| format!("{}.tag === \"Cons\"", render_list_tail(value, index)))
+        .collect::<Vec<_>>();
+    if !minimum {
+        parts.push(format!(
+            "{}.tag === \"Empty\"",
+            render_list_tail(value, length)
+        ));
+    }
+    if parts.is_empty() {
+        "true".to_owned()
+    } else {
+        parts.join(" && ")
+    }
+}
+
+fn render_list_tail(value: &str, count: usize) -> String {
+    (0..count).fold(value.to_owned(), |value, _| format!("{value}.tail"))
+}
+
 #[cfg(test)]
 mod tests {
-    use super::render_projection_path;
+    use super::{render_list_length_test, render_projection_path};
     use crate::TypeScriptDecisionProjection;
 
     #[test]
@@ -132,6 +181,43 @@ mod tests {
                 ],
             ),
             "$value[1].value"
+        );
+    }
+
+    #[test]
+    fn renders_array_and_list_rest_projections() {
+        assert_eq!(
+            render_projection_path(
+                "$value",
+                &[TypeScriptDecisionProjection::ArrayRest { start: 2 }],
+            ),
+            "$value.slice(2)"
+        );
+        assert_eq!(
+            render_projection_path(
+                "$value",
+                &[TypeScriptDecisionProjection::ListElement { index: 2 }],
+            ),
+            "$value.tail.tail.head"
+        );
+        assert_eq!(
+            render_projection_path(
+                "$value",
+                &[TypeScriptDecisionProjection::ListRest { start: 2 }],
+            ),
+            "$value.tail.tail"
+        );
+    }
+
+    #[test]
+    fn renders_list_length_tests_without_measuring_the_list() {
+        assert_eq!(
+            render_list_length_test("$value", 0, false),
+            "$value.tag === \"Empty\""
+        );
+        assert_eq!(
+            render_list_length_test("$value", 2, true),
+            "$value.tag === \"Cons\" && $value.tail.tag === \"Cons\""
         );
     }
 }

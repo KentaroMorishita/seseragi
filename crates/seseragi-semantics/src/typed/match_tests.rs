@@ -241,6 +241,51 @@ fn types_structural_record_patterns_and_their_bindings() {
     ));
 }
 
+#[test]
+fn types_array_and_list_rest_patterns_as_exhaustive_matches() {
+    let typed = type_module(
+        "artifact/collection-pattern/main.ssrg",
+        "fn arrayHead values: Array<Int> -> Int = match values { [] -> 0; [head, ...tail] -> head }\n\
+         fn listHead values: List<Int> -> Int = match values { `[] -> 0; `[head, ...tail] -> head }\n",
+    );
+
+    for declaration in &typed.declarations {
+        let TypedDecl::Fn { body, .. } = declaration else {
+            panic!("expected function");
+        };
+        let TypedExpr::Match {
+            arms, exhaustive, ..
+        } = body
+        else {
+            panic!("expected match");
+        };
+        assert!(*exhaustive);
+        match &arms[1].pattern {
+            TypedPattern::Array {
+                elements,
+                rest: Some(rest),
+                ..
+            }
+            | TypedPattern::List {
+                elements,
+                rest: Some(rest),
+                ..
+            } => {
+                assert!(matches!(
+                    &elements[0],
+                    TypedPattern::Binding { name, type_ref, .. }
+                        if name == "head" && type_ref == &named("Int")
+                ));
+                assert!(matches!(
+                    rest.as_ref(),
+                    TypedPattern::Binding { name, .. } if name == "tail"
+                ));
+            }
+            pattern => panic!("expected collection rest pattern, received {pattern:?}"),
+        }
+    }
+}
+
 fn named(name: &str) -> TypedType {
     TypedType::Named {
         name: name.to_owned(),

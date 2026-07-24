@@ -284,6 +284,11 @@ direct self recursionを一つのpure entryでactual executionし、後続local 
 後続local functionへのforward referenceをcompile diagnosticとして固定します。相互再帰`rec` groupと
 一定host stackでのtail-call実行はこのcaseに含みません。
 
+`schema-1/collection-rest-pattern`はArrayの`[]` / `[head, ...tail]`とListの`` `[] `` /
+`` `[head, ...tail] ``をSurfaceAst、TypedHir、length testとelement / rest projectionを持つdecision IR、生成TypeScriptへ
+保持します。`execution-schema-1/collection-rest-pattern`は両Collectionをlocal self recursionで集約してactual resultを固定し、
+`semantic-diagnostics-schema-1/collection-pattern-type`はCollection種別と要素patternの不一致をcompile diagnosticで停止します。
+
 `schema-1/explicit-generic-struct`は明示constructionのnested `Marker<Array<String>>`をSurfaceAst / ResolvedAstへ保持し、
 空Array fieldへ明示contextを渡します。TypedHirと生成TypeScriptは`Marker<ReadonlyArray<string>>`を保持し、
 `execution-schema-1/explicit-generic-struct`が`Explicit generic Struct: ready`をactual outputで固定します。

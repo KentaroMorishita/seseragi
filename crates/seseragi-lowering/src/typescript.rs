@@ -464,6 +464,16 @@ pub enum TypeScriptDecisionTest {
         path: Vec<TypeScriptDecisionProjection>,
         tag: String,
     },
+    ArrayLength {
+        path: Vec<TypeScriptDecisionProjection>,
+        length: usize,
+        minimum: bool,
+    },
+    ListLength {
+        path: Vec<TypeScriptDecisionProjection>,
+        length: usize,
+        minimum: bool,
+    },
     Invalid,
 }
 
@@ -475,6 +485,10 @@ pub enum TypeScriptDecisionTest {
 )]
 pub enum TypeScriptDecisionProjection {
     TupleElement { index: usize },
+    ArrayElement { index: usize },
+    ArrayRest { start: usize },
+    ListElement { index: usize },
+    ListRest { start: usize },
     RecordField { name: String },
     AdtPayload,
 }

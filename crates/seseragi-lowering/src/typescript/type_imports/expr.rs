@@ -262,6 +262,26 @@ fn collect_pattern_type_imports(
                 collect_pattern_type_imports(element, bindings, requirements, imports);
             }
         }
+        CorePattern::Array {
+            elements,
+            rest,
+            type_ref,
+            ..
+        }
+        | CorePattern::List {
+            elements,
+            rest,
+            type_ref,
+            ..
+        } => {
+            collect_type_imports(type_ref, bindings, requirements, imports);
+            for element in elements {
+                collect_pattern_type_imports(element, bindings, requirements, imports);
+            }
+            if let Some(rest) = rest {
+                collect_pattern_type_imports(rest, bindings, requirements, imports);
+            }
+        }
         CorePattern::Record {
             fields, type_ref, ..
         } => {

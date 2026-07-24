@@ -1,0 +1,464 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/collection-rest-pattern",
+  "runtimeRequirements": [
+    "core.list",
+    "core.int64",
+    "core.int64.add",
+    "core.unit",
+    "core.list.from-array",
+    "core.bool"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.list.from-array",
+      "local": "_ssrg_list_from_array"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.list",
+      "local": "List"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "sumArray",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "local-function",
+            "name": "loop",
+            "parameters": [
+              {
+                "name": "total",
+                "type": "bigint",
+                "implicit": false
+              },
+              {
+                "name": "rest",
+                "type": "ReadonlyArray<bigint>",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "rest"
+              },
+              "scrutineeType": {
+                "kind": "array",
+                "element": {
+                  "kind": "bigint"
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "array-length",
+                      "path": [],
+                      "length": 0,
+                      "minimum": false
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "total"
+                  }
+                },
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "head",
+                      "type": {
+                        "kind": "bigint"
+                      },
+                      "path": [
+                        {
+                          "kind": "array-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "tail",
+                      "type": {
+                        "kind": "array",
+                        "element": {
+                          "kind": "bigint"
+                        }
+                      },
+                      "path": [
+                        {
+                          "kind": "array-rest",
+                          "start": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "loop",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_int64_add",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "total"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "head"
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "tail"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "bigint"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 41,
+              "end": 182
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "loop",
+          "arguments": [
+            {
+              "kind": "bigint",
+              "value": "0"
+            },
+            {
+              "kind": "identifier",
+              "name": "values"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 201
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "sumList",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "List<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "local-function",
+            "name": "loop",
+            "parameters": [
+              {
+                "name": "total",
+                "type": "bigint",
+                "implicit": false
+              },
+              {
+                "name": "rest",
+                "type": "List<bigint>",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "rest"
+              },
+              "scrutineeType": {
+                "kind": "list",
+                "element": {
+                  "kind": "bigint"
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "list-length",
+                      "path": [],
+                      "length": 0,
+                      "minimum": false
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "total"
+                  }
+                },
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "head",
+                      "type": {
+                        "kind": "bigint"
+                      },
+                      "path": [
+                        {
+                          "kind": "list-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "tail",
+                      "type": {
+                        "kind": "list",
+                        "element": {
+                          "kind": "bigint"
+                        }
+                      },
+                      "path": [
+                        {
+                          "kind": "list-rest",
+                          "start": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "loop",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_int64_add",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "total"
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "head"
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "tail"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "bigint"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 242,
+              "end": 384
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "loop",
+          "arguments": [
+            {
+              "kind": "bigint",
+              "value": "0"
+            },
+            {
+              "kind": "identifier",
+              "name": "values"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 203,
+        "end": 403
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "collectionRestWorks",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "arrayTotal",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "sumArray",
+              "arguments": [
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "bigint",
+                      "value": "1"
+                    },
+                    {
+                      "kind": "bigint",
+                      "value": "2"
+                    },
+                    {
+                      "kind": "bigint",
+                      "value": "3"
+                    },
+                    {
+                      "kind": "bigint",
+                      "value": "4"
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "bigint"
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 454,
+              "end": 495
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "listTotal",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "sumList",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_list_from_array",
+                  "arguments": [
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "bigint",
+                          "value": "1"
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "2"
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "3"
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "4"
+                        }
+                      ],
+                      "elementType": {
+                        "kind": "bigint"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 496,
+              "end": 535
+            }
+          }
+        ],
+        "result": {
+          "kind": "conditional",
+          "condition": {
+            "kind": "binary",
+            "operator": "===",
+            "left": {
+              "kind": "identifier",
+              "name": "arrayTotal"
+            },
+            "right": {
+              "kind": "bigint",
+              "value": "10"
+            }
+          },
+          "thenBranch": {
+            "kind": "binary",
+            "operator": "===",
+            "left": {
+              "kind": "identifier",
+              "name": "listTotal"
+            },
+            "right": {
+              "kind": "bigint",
+              "value": "10"
+            }
+          },
+          "elseBranch": {
+            "kind": "boolean",
+            "value": false
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 405,
+        "end": 591
+      }
+    }
+  ]
+}

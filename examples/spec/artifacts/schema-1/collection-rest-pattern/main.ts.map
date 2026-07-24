@@ -1,0 +1,34 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/collection-rest-pattern"
+  ],
+  "sourcesContent": [
+    "fn sumArray values: Array<Int> -> Int = {\n  fn loop total: Int -> rest: Array<Int> -> Int =\n    match rest {\n      [] -> total\n      [head, ...tail] -> loop (total + head) tail\n    }\n\n  loop 0 values\n}\n\nfn sumList values: List<Int> -> Int = {\n  fn loop total: Int -> rest: List<Int> -> Int =\n    match rest {\n      `[] -> total\n      `[head, ...tail] -> loop (total + head) tail\n    }\n\n  loop 0 values\n}\n\npub fn collectionRestWorks unit: Unit -> Bool = {\n  let arrayTotal = sumArray [1, 2, 3, 4]\n  let listTotal = sumList `[1, 2, 3, 4]\n  if arrayTotal == 10 then listTotal == 10 else False\n}\n"
+  ],
+  "names": [
+    "sumArray",
+    "loop",
+    "head",
+    "tail",
+    "loop",
+    "add",
+    "loop",
+    "sumList",
+    "loop",
+    "head",
+    "tail",
+    "loop",
+    "add",
+    "loop",
+    "collectionRestWorks",
+    "arrayTotal",
+    "sumArray",
+    "listTotal",
+    "sumList",
+    "fromArray"
+  ],
+  "mappings": ";;;AAAAA;AAUAO;AAUAO"
+}

@@ -113,6 +113,26 @@ fn lower_test(test: CoreDecisionTest) -> TypeScriptDecisionTest {
             path: path.into_iter().map(lower_projection).collect(),
             tag: local_name(&constructor),
         },
+        CoreDecisionTest::ArrayLength {
+            path,
+            length,
+            minimum,
+            ..
+        } => TypeScriptDecisionTest::ArrayLength {
+            path: path.into_iter().map(lower_projection).collect(),
+            length,
+            minimum,
+        },
+        CoreDecisionTest::ListLength {
+            path,
+            length,
+            minimum,
+            ..
+        } => TypeScriptDecisionTest::ListLength {
+            path: path.into_iter().map(lower_projection).collect(),
+            length,
+            minimum,
+        },
         CoreDecisionTest::Invalid { .. } => TypeScriptDecisionTest::Invalid,
     }
 }
@@ -121,6 +141,18 @@ fn lower_projection(projection: CoreDecisionProjection) -> TypeScriptDecisionPro
     match projection {
         CoreDecisionProjection::TupleElement { index } => {
             TypeScriptDecisionProjection::TupleElement { index }
+        }
+        CoreDecisionProjection::ArrayElement { index } => {
+            TypeScriptDecisionProjection::ArrayElement { index }
+        }
+        CoreDecisionProjection::ArrayRest { start } => {
+            TypeScriptDecisionProjection::ArrayRest { start }
+        }
+        CoreDecisionProjection::ListElement { index } => {
+            TypeScriptDecisionProjection::ListElement { index }
+        }
+        CoreDecisionProjection::ListRest { start } => {
+            TypeScriptDecisionProjection::ListRest { start }
         }
         CoreDecisionProjection::RecordField { name } => {
             TypeScriptDecisionProjection::RecordField { name }
@@ -138,6 +170,8 @@ fn core_pattern_type(pattern: &CorePattern) -> CoreType {
         | CorePattern::Wildcard { type_ref, .. }
         | CorePattern::Constructor { type_ref, .. }
         | CorePattern::Tuple { type_ref, .. }
+        | CorePattern::Array { type_ref, .. }
+        | CorePattern::List { type_ref, .. }
         | CorePattern::Record { type_ref, .. } => type_ref.clone(),
         CorePattern::Invalid { .. } => CoreType::Hole,
     }
@@ -188,6 +222,42 @@ fn lower_pattern(
             for (index, element) in elements.into_iter().enumerate() {
                 path.push(TypeScriptDecisionProjection::TupleElement { index });
                 lower_pattern(element, path, tests, bindings, imported_types);
+                path.pop();
+            }
+        }
+        CorePattern::Array { elements, rest, .. } => {
+            let length = elements.len();
+            tests.push(TypeScriptDecisionTest::ArrayLength {
+                path: path.clone(),
+                length,
+                minimum: rest.is_some(),
+            });
+            for (index, element) in elements.into_iter().enumerate() {
+                path.push(TypeScriptDecisionProjection::ArrayElement { index });
+                lower_pattern(element, path, tests, bindings, imported_types);
+                path.pop();
+            }
+            if let Some(rest) = rest {
+                path.push(TypeScriptDecisionProjection::ArrayRest { start: length });
+                lower_pattern(*rest, path, tests, bindings, imported_types);
+                path.pop();
+            }
+        }
+        CorePattern::List { elements, rest, .. } => {
+            let length = elements.len();
+            tests.push(TypeScriptDecisionTest::ListLength {
+                path: path.clone(),
+                length,
+                minimum: rest.is_some(),
+            });
+            for (index, element) in elements.into_iter().enumerate() {
+                path.push(TypeScriptDecisionProjection::ListElement { index });
+                lower_pattern(element, path, tests, bindings, imported_types);
+                path.pop();
+            }
+            if let Some(rest) = rest {
+                path.push(TypeScriptDecisionProjection::ListRest { start: length });
+                lower_pattern(*rest, path, tests, bindings, imported_types);
                 path.pop();
             }
         }

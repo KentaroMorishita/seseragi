@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "case": "collection-rest-pattern",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/collection-rest-pattern",
+    "export": "collectionRestWorks",
+    "compiledModule": "../../schema-1/collection-rest-pattern/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.list",
+      "core.int64",
+      "core.int64.add",
+      "core.unit",
+      "core.list.from-array",
+      "core.bool"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

@@ -219,3 +219,72 @@ fn lowers_record_patterns_to_named_field_projections() {
     );
     assert!(branches[1].tests.is_empty());
 }
+
+#[test]
+fn lowers_collection_rest_patterns_to_length_tests_and_tail_projections() {
+    let source = r#"pub fn arrayHead values: Array<Int> -> Int =
+  match values {
+    [] -> 0
+    [head, ...tail] -> head
+  }
+
+pub fn listHead values: List<Int> -> Int =
+  match values {
+    `[] -> 0
+    `[head, ...tail] -> head
+  }
+"#;
+    let module = lower_typed_module(type_module("artifact/collection-match/main.ssrg", source));
+
+    let CoreExpr::Decision {
+        branches: array_branches,
+        exhaustive: true,
+        ..
+    } = &module.functions[0].body
+    else {
+        panic!("expected exhaustive array decision");
+    };
+    assert!(matches!(
+        &array_branches[0].tests[0],
+        CoreDecisionTest::ArrayLength {
+            path,
+            length: 0,
+            minimum: false,
+            ..
+        } if path.is_empty()
+    ));
+    assert_eq!(
+        array_branches[1].bindings[0].path,
+        vec![CoreDecisionProjection::ArrayElement { index: 0 }]
+    );
+    assert_eq!(
+        array_branches[1].bindings[1].path,
+        vec![CoreDecisionProjection::ArrayRest { start: 1 }]
+    );
+
+    let CoreExpr::Decision {
+        branches: list_branches,
+        exhaustive: true,
+        ..
+    } = &module.functions[1].body
+    else {
+        panic!("expected exhaustive list decision");
+    };
+    assert!(matches!(
+        &list_branches[0].tests[0],
+        CoreDecisionTest::ListLength {
+            path,
+            length: 0,
+            minimum: false,
+            ..
+        } if path.is_empty()
+    ));
+    assert_eq!(
+        list_branches[1].bindings[0].path,
+        vec![CoreDecisionProjection::ListElement { index: 0 }]
+    );
+    assert_eq!(
+        list_branches[1].bindings[1].path,
+        vec![CoreDecisionProjection::ListRest { start: 1 }]
+    );
+}

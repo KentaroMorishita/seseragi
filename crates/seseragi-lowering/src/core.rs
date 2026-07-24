@@ -247,6 +247,22 @@ pub enum CorePattern {
         type_ref: CoreType,
         origin: SourceSpan,
     },
+    Array {
+        elements: Vec<CorePattern>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        rest: Option<Box<CorePattern>>,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
+    List {
+        elements: Vec<CorePattern>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        rest: Option<Box<CorePattern>>,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
     Record {
         fields: Vec<CoreRecordPatternField>,
         #[serde(rename = "type")]

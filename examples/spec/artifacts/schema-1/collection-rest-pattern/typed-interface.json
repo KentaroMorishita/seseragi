@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/collection-rest-pattern",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/collection-rest-pattern::collectionRestWorks",
+      "namespace": "value",
+      "name": "collectionRestWorks",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 405,
+        "end": 591
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

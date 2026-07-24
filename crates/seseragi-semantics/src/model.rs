@@ -660,6 +660,22 @@ pub enum TypedPattern {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    Array {
+        elements: Vec<TypedPattern>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        rest: Option<Box<TypedPattern>>,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
+    List {
+        elements: Vec<TypedPattern>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        rest: Option<Box<TypedPattern>>,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     Record {
         fields: Vec<TypedRecordPatternField>,
         #[serde(rename = "type")]

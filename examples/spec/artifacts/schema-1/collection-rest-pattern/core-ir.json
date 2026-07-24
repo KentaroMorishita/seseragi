@@ -1,0 +1,1063 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/collection-rest-pattern",
+  "externalTypeBindings": [
+    {
+      "spelling": "List",
+      "canonical": "std/prelude::List"
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/collection-rest-pattern::sumArray",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 201
+      },
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "local-function",
+            "name": "loop",
+            "parameters": [
+              {
+                "id": "total",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "rest",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "rest",
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 102,
+                  "end": 106
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "array-length",
+                      "path": [],
+                      "length": 0,
+                      "minimum": false,
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 115,
+                        "end": 117
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "total",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 121,
+                      "end": 126
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 115,
+                    "end": 126
+                  }
+                },
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "head",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "array-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 134,
+                        "end": 138
+                      }
+                    },
+                    {
+                      "name": "tail",
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "array-rest",
+                          "start": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 143,
+                        "end": 147
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "loop",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "+",
+                        "left": {
+                          "kind": "variable",
+                          "name": "total",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 158,
+                            "end": 163
+                          }
+                        },
+                        "right": {
+                          "kind": "variable",
+                          "name": "head",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 166,
+                            "end": 170
+                          }
+                        },
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Add",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/int::Add"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 158,
+                          "end": 170
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "tail",
+                        "type": {
+                          "kind": "named",
+                          "name": "Array",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 172,
+                          "end": 176
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 152,
+                      "end": 176
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 133,
+                    "end": 176
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 96,
+                "end": 182
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 41,
+              "end": 182
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "loop",
+          "arguments": [
+            {
+              "kind": "int64",
+              "value": "0",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 191,
+                "end": 192
+              }
+            },
+            {
+              "kind": "variable",
+              "name": "values",
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 193,
+                "end": 199
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 186,
+            "end": 199
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 40,
+          "end": 201
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-rest-pattern::sumList",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 203,
+        "end": 403
+      },
+      "parameters": [
+        {
+          "id": "values",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "local-function",
+            "name": "loop",
+            "parameters": [
+              {
+                "id": "total",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "rest",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "rest",
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 302,
+                  "end": 306
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "list-length",
+                      "path": [],
+                      "length": 0,
+                      "minimum": false,
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 315,
+                        "end": 318
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "total",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 322,
+                      "end": 327
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 315,
+                    "end": 327
+                  }
+                },
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "head",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "list-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 336,
+                        "end": 340
+                      }
+                    },
+                    {
+                      "name": "tail",
+                      "type": {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "path": [
+                        {
+                          "kind": "list-rest",
+                          "start": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 345,
+                        "end": 349
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "call",
+                    "callee": "loop",
+                    "arguments": [
+                      {
+                        "kind": "binary",
+                        "operator": "+",
+                        "left": {
+                          "kind": "variable",
+                          "name": "total",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 360,
+                            "end": 365
+                          }
+                        },
+                        "right": {
+                          "kind": "variable",
+                          "name": "head",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 368,
+                            "end": 372
+                          }
+                        },
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Add",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/int::Add"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 360,
+                          "end": 372
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "tail",
+                        "type": {
+                          "kind": "named",
+                          "name": "List",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 374,
+                          "end": 378
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 354,
+                      "end": 378
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 334,
+                    "end": 378
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 296,
+                "end": 384
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 242,
+              "end": 384
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "loop",
+          "arguments": [
+            {
+              "kind": "int64",
+              "value": "0",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 393,
+                "end": 394
+              }
+            },
+            {
+              "kind": "variable",
+              "name": "values",
+              "type": {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 395,
+                "end": 401
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 388,
+            "end": 401
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 241,
+          "end": 403
+        }
+      }
+    },
+    {
+      "symbol": "artifact/collection-rest-pattern::collectionRestWorks",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 405,
+        "end": 591
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "arrayTotal",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/collection-rest-pattern::sumArray",
+              "arguments": [
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "int64",
+                      "value": "1",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 484,
+                        "end": 485
+                      }
+                    },
+                    {
+                      "kind": "int64",
+                      "value": "2",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 487,
+                        "end": 488
+                      }
+                    },
+                    {
+                      "kind": "int64",
+                      "value": "3",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 490,
+                        "end": 491
+                      }
+                    },
+                    {
+                      "kind": "int64",
+                      "value": "4",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 493,
+                        "end": 494
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 483,
+                    "end": 495
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 474,
+                "end": 495
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 454,
+              "end": 495
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "listTotal",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/collection-rest-pattern::sumList",
+              "arguments": [
+                {
+                  "kind": "list",
+                  "elements": [
+                    {
+                      "kind": "int64",
+                      "value": "1",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 524,
+                        "end": 525
+                      }
+                    },
+                    {
+                      "kind": "int64",
+                      "value": "2",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 527,
+                        "end": 528
+                      }
+                    },
+                    {
+                      "kind": "int64",
+                      "value": "3",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 530,
+                        "end": 531
+                      }
+                    },
+                    {
+                      "kind": "int64",
+                      "value": "4",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 533,
+                        "end": 534
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "List",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 522,
+                    "end": 535
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 514,
+                "end": 535
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 496,
+              "end": 535
+            }
+          }
+        ],
+        "result": {
+          "kind": "if",
+          "condition": {
+            "kind": "binary",
+            "operator": "==",
+            "left": {
+              "kind": "variable",
+              "name": "arrayTotal",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 541,
+                "end": 551
+              }
+            },
+            "right": {
+              "kind": "int64",
+              "value": "10",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 555,
+                "end": 557
+              }
+            },
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/int::Eq"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 541,
+              "end": 557
+            }
+          },
+          "thenBranch": {
+            "kind": "binary",
+            "operator": "==",
+            "left": {
+              "kind": "variable",
+              "name": "listTotal",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 563,
+                "end": 572
+              }
+            },
+            "right": {
+              "kind": "int64",
+              "value": "10",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 576,
+                "end": 578
+              }
+            },
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/int::Eq"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 563,
+              "end": 578
+            }
+          },
+          "elseBranch": {
+            "kind": "boolean",
+            "value": false,
+            "origin": {
+              "source": "main.ssrg",
+              "start": 584,
+              "end": 589
+            }
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 538,
+            "end": 589
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 453,
+          "end": 591
+        }
+      }
+    }
+  ]
+}

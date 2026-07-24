@@ -447,6 +447,26 @@ fn collect_pattern_type_names(pattern: &CorePattern, references: &mut Referenced
                 collect_pattern_type_names(element, references);
             }
         }
+        CorePattern::Array {
+            elements,
+            rest,
+            type_ref,
+            ..
+        }
+        | CorePattern::List {
+            elements,
+            rest,
+            type_ref,
+            ..
+        } => {
+            collect_type_names(type_ref, references);
+            for element in elements {
+                collect_pattern_type_names(element, references);
+            }
+            if let Some(rest) = rest {
+                collect_pattern_type_names(rest, references);
+            }
+        }
         CorePattern::Record {
             fields, type_ref, ..
         } => {

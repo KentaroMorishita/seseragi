@@ -193,6 +193,10 @@ Listにはindex構文を提供しません。
 Array patternは `[first, second, ...rest]`、List patternは
 `` `[first, second, ...rest] `` と書きます。patternは先頭から照合し、`rest` は元と同じ
 collection型です。restを持たないpatternは長さも完全に一致しなければなりません。
+先頭patternの照合は指定要素数に比例します。Arrayの`rest`は残りのArrayを作るため残要素数に比例し、
+Listの`rest`は既存tailを共有するため指定要素数に比例します。このため、Arrayを
+`[head, ...tail]`で最後まで再帰する処理は二乗時間、Listを`` `[head, ...tail] ``で再帰する
+処理は線形時間です。大量のArray走査には`reduce`などの標準Collection APIを使います。
 
 ## 3.9 range と comprehension
 

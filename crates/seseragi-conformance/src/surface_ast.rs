@@ -401,6 +401,19 @@ fn validate_pattern(pattern: &Value, path: &str) -> Result<(), String> {
             }
             Ok(())
         }
+        "array" | "list" => {
+            let elements = pattern
+                .get("elements")
+                .and_then(Value::as_array)
+                .ok_or_else(|| format!("SurfaceAst {path}.elements must be an array"))?;
+            for (index, element) in elements.iter().enumerate() {
+                validate_pattern(element, &format!("{path}.elements[{index}]"))?;
+            }
+            if let Some(rest) = pattern.get("rest") {
+                validate_pattern(rest, &format!("{path}.rest"))?;
+            }
+            Ok(())
+        }
         "record" | "struct" => {
             if kind == "struct" {
                 pattern

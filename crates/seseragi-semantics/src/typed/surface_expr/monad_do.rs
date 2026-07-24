@@ -210,6 +210,8 @@ fn binding_pattern_issue(pattern: &SurfacePattern) -> MonadDoIssue {
             pattern: pattern.span(),
         },
         SurfacePattern::Tuple { .. }
+        | SurfacePattern::Array { .. }
+        | SurfacePattern::List { .. }
         | SurfacePattern::Record { .. }
         | SurfacePattern::Struct { .. }
         | SurfacePattern::Error { .. } => MonadDoIssue::UnsupportedBindPattern {

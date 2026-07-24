@@ -1,0 +1,1631 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/collection-rest-pattern",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "sumArray",
+      "nameSpan": {
+        "start": 3,
+        "end": 11
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 12,
+            "end": 18
+          },
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 26,
+                  "end": 29
+                }
+              }
+            ],
+            "span": {
+              "start": 20,
+              "end": 30
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 34,
+          "end": 37
+        }
+      },
+      "body": {
+        "kind": "block",
+        "items": [
+          {
+            "kind": "function",
+            "name": "loop",
+            "nameSpan": {
+              "start": 47,
+              "end": 51
+            },
+            "parameters": [
+              {
+                "name": "total",
+                "nameSpan": {
+                  "start": 52,
+                  "end": 57
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 59,
+                    "end": 62
+                  }
+                }
+              },
+              {
+                "name": "rest",
+                "nameSpan": {
+                  "start": 66,
+                  "end": 70
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "span": {
+                        "start": 78,
+                        "end": 81
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 72,
+                    "end": 82
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 86,
+                "end": 89
+              }
+            },
+            "value": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "name",
+                "name": "rest",
+                "span": {
+                  "start": 102,
+                  "end": 106
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "array",
+                    "elements": [],
+                    "span": {
+                      "start": 115,
+                      "end": 117
+                    }
+                  },
+                  "body": {
+                    "kind": "name",
+                    "name": "total",
+                    "span": {
+                      "start": 121,
+                      "end": 126
+                    }
+                  },
+                  "span": {
+                    "start": 115,
+                    "end": 126
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "name",
+                        "name": "head",
+                        "nameSpan": {
+                          "start": 134,
+                          "end": 138
+                        },
+                        "span": {
+                          "start": 134,
+                          "end": 138
+                        }
+                      }
+                    ],
+                    "rest": {
+                      "kind": "name",
+                      "name": "tail",
+                      "nameSpan": {
+                        "start": 143,
+                        "end": 147
+                      },
+                      "span": {
+                        "start": 143,
+                        "end": 147
+                      }
+                    },
+                    "span": {
+                      "start": 133,
+                      "end": 148
+                    }
+                  },
+                  "body": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "loop",
+                        "span": {
+                          "start": 152,
+                          "end": 156
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "binary",
+                          "operator": "+",
+                          "operatorSpan": {
+                            "start": 164,
+                            "end": 165
+                          },
+                          "left": {
+                            "kind": "name",
+                            "name": "total",
+                            "span": {
+                              "start": 158,
+                              "end": 163
+                            }
+                          },
+                          "right": {
+                            "kind": "name",
+                            "name": "head",
+                            "span": {
+                              "start": 166,
+                              "end": 170
+                            }
+                          },
+                          "span": {
+                            "start": 158,
+                            "end": 170
+                          }
+                        },
+                        "span": {
+                          "start": 157,
+                          "end": 171
+                        }
+                      },
+                      "span": {
+                        "start": 152,
+                        "end": 171
+                      }
+                    },
+                    "argument": {
+                      "kind": "name",
+                      "name": "tail",
+                      "span": {
+                        "start": 172,
+                        "end": 176
+                      }
+                    },
+                    "span": {
+                      "start": 152,
+                      "end": 176
+                    }
+                  },
+                  "span": {
+                    "start": 133,
+                    "end": 176
+                  }
+                }
+              ],
+              "span": {
+                "start": 96,
+                "end": 182
+              }
+            },
+            "span": {
+              "start": 41,
+              "end": 182
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "loop",
+              "span": {
+                "start": 186,
+                "end": 190
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "0",
+              "span": {
+                "start": 191,
+                "end": 192
+              }
+            },
+            "span": {
+              "start": 186,
+              "end": 192
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "values",
+            "span": {
+              "start": 193,
+              "end": 199
+            }
+          },
+          "span": {
+            "start": 186,
+            "end": 199
+          }
+        },
+        "span": {
+          "start": 40,
+          "end": 201
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 201
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "sumList",
+      "nameSpan": {
+        "start": 206,
+        "end": 213
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 214,
+            "end": 220
+          },
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 227,
+                  "end": 230
+                }
+              }
+            ],
+            "span": {
+              "start": 222,
+              "end": 231
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 235,
+          "end": 238
+        }
+      },
+      "body": {
+        "kind": "block",
+        "items": [
+          {
+            "kind": "function",
+            "name": "loop",
+            "nameSpan": {
+              "start": 248,
+              "end": 252
+            },
+            "parameters": [
+              {
+                "name": "total",
+                "nameSpan": {
+                  "start": 253,
+                  "end": 258
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 260,
+                    "end": 263
+                  }
+                }
+              },
+              {
+                "name": "rest",
+                "nameSpan": {
+                  "start": 267,
+                  "end": 271
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "span": {
+                        "start": 278,
+                        "end": 281
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 273,
+                    "end": 282
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 286,
+                "end": 289
+              }
+            },
+            "value": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "name",
+                "name": "rest",
+                "span": {
+                  "start": 302,
+                  "end": 306
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "list",
+                    "elements": [],
+                    "span": {
+                      "start": 315,
+                      "end": 318
+                    }
+                  },
+                  "body": {
+                    "kind": "name",
+                    "name": "total",
+                    "span": {
+                      "start": 322,
+                      "end": 327
+                    }
+                  },
+                  "span": {
+                    "start": 315,
+                    "end": 327
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "list",
+                    "elements": [
+                      {
+                        "kind": "name",
+                        "name": "head",
+                        "nameSpan": {
+                          "start": 336,
+                          "end": 340
+                        },
+                        "span": {
+                          "start": 336,
+                          "end": 340
+                        }
+                      }
+                    ],
+                    "rest": {
+                      "kind": "name",
+                      "name": "tail",
+                      "nameSpan": {
+                        "start": 345,
+                        "end": 349
+                      },
+                      "span": {
+                        "start": 345,
+                        "end": 349
+                      }
+                    },
+                    "span": {
+                      "start": 334,
+                      "end": 350
+                    }
+                  },
+                  "body": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "loop",
+                        "span": {
+                          "start": 354,
+                          "end": 358
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "binary",
+                          "operator": "+",
+                          "operatorSpan": {
+                            "start": 366,
+                            "end": 367
+                          },
+                          "left": {
+                            "kind": "name",
+                            "name": "total",
+                            "span": {
+                              "start": 360,
+                              "end": 365
+                            }
+                          },
+                          "right": {
+                            "kind": "name",
+                            "name": "head",
+                            "span": {
+                              "start": 368,
+                              "end": 372
+                            }
+                          },
+                          "span": {
+                            "start": 360,
+                            "end": 372
+                          }
+                        },
+                        "span": {
+                          "start": 359,
+                          "end": 373
+                        }
+                      },
+                      "span": {
+                        "start": 354,
+                        "end": 373
+                      }
+                    },
+                    "argument": {
+                      "kind": "name",
+                      "name": "tail",
+                      "span": {
+                        "start": 374,
+                        "end": 378
+                      }
+                    },
+                    "span": {
+                      "start": 354,
+                      "end": 378
+                    }
+                  },
+                  "span": {
+                    "start": 334,
+                    "end": 378
+                  }
+                }
+              ],
+              "span": {
+                "start": 296,
+                "end": 384
+              }
+            },
+            "span": {
+              "start": 242,
+              "end": 384
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "loop",
+              "span": {
+                "start": 388,
+                "end": 392
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "0",
+              "span": {
+                "start": 393,
+                "end": 394
+              }
+            },
+            "span": {
+              "start": 388,
+              "end": 394
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "values",
+            "span": {
+              "start": 395,
+              "end": 401
+            }
+          },
+          "span": {
+            "start": 388,
+            "end": 401
+          }
+        },
+        "span": {
+          "start": 241,
+          "end": 403
+        }
+      },
+      "span": {
+        "start": 203,
+        "end": 403
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "collectionRestWorks",
+      "nameSpan": {
+        "start": 412,
+        "end": 431
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 432,
+            "end": 436
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 438,
+              "end": 442
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 446,
+          "end": 450
+        }
+      },
+      "body": {
+        "kind": "block",
+        "items": [
+          {
+            "kind": "let",
+            "name": "arrayTotal",
+            "nameSpan": {
+              "start": 461,
+              "end": 471
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "sumArray",
+                "span": {
+                  "start": 474,
+                  "end": 482
+                }
+              },
+              "argument": {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "integer",
+                    "raw": "1",
+                    "span": {
+                      "start": 484,
+                      "end": 485
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "raw": "2",
+                    "span": {
+                      "start": 487,
+                      "end": 488
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "raw": "3",
+                    "span": {
+                      "start": 490,
+                      "end": 491
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "raw": "4",
+                    "span": {
+                      "start": 493,
+                      "end": 494
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 483,
+                  "end": 495
+                }
+              },
+              "span": {
+                "start": 474,
+                "end": 495
+              }
+            },
+            "span": {
+              "start": 454,
+              "end": 495
+            }
+          },
+          {
+            "kind": "let",
+            "name": "listTotal",
+            "nameSpan": {
+              "start": 502,
+              "end": 511
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "sumList",
+                "span": {
+                  "start": 514,
+                  "end": 521
+                }
+              },
+              "argument": {
+                "kind": "list",
+                "elements": [
+                  {
+                    "kind": "integer",
+                    "raw": "1",
+                    "span": {
+                      "start": 524,
+                      "end": 525
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "raw": "2",
+                    "span": {
+                      "start": 527,
+                      "end": 528
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "raw": "3",
+                    "span": {
+                      "start": 530,
+                      "end": 531
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "raw": "4",
+                    "span": {
+                      "start": 533,
+                      "end": 534
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 522,
+                  "end": 535
+                }
+              },
+              "span": {
+                "start": 514,
+                "end": 535
+              }
+            },
+            "span": {
+              "start": 496,
+              "end": 535
+            }
+          }
+        ],
+        "result": {
+          "kind": "if",
+          "condition": {
+            "kind": "binary",
+            "operator": "==",
+            "operatorSpan": {
+              "start": 552,
+              "end": 554
+            },
+            "left": {
+              "kind": "name",
+              "name": "arrayTotal",
+              "span": {
+                "start": 541,
+                "end": 551
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "10",
+              "span": {
+                "start": 555,
+                "end": 557
+              }
+            },
+            "span": {
+              "start": 541,
+              "end": 557
+            }
+          },
+          "thenBranch": {
+            "kind": "binary",
+            "operator": "==",
+            "operatorSpan": {
+              "start": 573,
+              "end": 575
+            },
+            "left": {
+              "kind": "name",
+              "name": "listTotal",
+              "span": {
+                "start": 563,
+                "end": 572
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "10",
+              "span": {
+                "start": 576,
+                "end": 578
+              }
+            },
+            "span": {
+              "start": 563,
+              "end": 578
+            }
+          },
+          "elseBranch": {
+            "kind": "boolean",
+            "value": false,
+            "span": {
+              "start": 584,
+              "end": 589
+            }
+          },
+          "span": {
+            "start": 538,
+            "end": 589
+          }
+        },
+        "span": {
+          "start": 453,
+          "end": 591
+        }
+      },
+      "span": {
+        "start": 405,
+        "end": 591
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 591
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 201
+      }
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "kind": "block",
+      "origin": {
+        "start": 40,
+        "end": 201
+      }
+    },
+    {
+      "id": 3,
+      "parent": 2,
+      "kind": "function",
+      "origin": {
+        "start": 41,
+        "end": 182
+      }
+    },
+    {
+      "id": 4,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 115,
+        "end": 126
+      }
+    },
+    {
+      "id": 5,
+      "parent": 3,
+      "kind": "match-arm",
+      "origin": {
+        "start": 133,
+        "end": 176
+      }
+    },
+    {
+      "id": 6,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 203,
+        "end": 403
+      }
+    },
+    {
+      "id": 7,
+      "parent": 6,
+      "kind": "block",
+      "origin": {
+        "start": 241,
+        "end": 403
+      }
+    },
+    {
+      "id": 8,
+      "parent": 7,
+      "kind": "function",
+      "origin": {
+        "start": 242,
+        "end": 384
+      }
+    },
+    {
+      "id": 9,
+      "parent": 8,
+      "kind": "match-arm",
+      "origin": {
+        "start": 315,
+        "end": 327
+      }
+    },
+    {
+      "id": 10,
+      "parent": 8,
+      "kind": "match-arm",
+      "origin": {
+        "start": 334,
+        "end": 378
+      }
+    },
+    {
+      "id": 11,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 405,
+        "end": 591
+      }
+    },
+    {
+      "id": 12,
+      "parent": 11,
+      "kind": "block",
+      "origin": {
+        "start": 453,
+        "end": 591
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "sumArray",
+      "canonical": "artifact/collection-rest-pattern::sumArray",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 3,
+        "end": 11
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "sumList",
+      "canonical": "artifact/collection-rest-pattern::sumList",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 206,
+        "end": 213
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "collectionRestWorks",
+      "canonical": "artifact/collection-rest-pattern::collectionRestWorks",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 412,
+        "end": 431
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Array",
+      "canonical": "std/prelude::Array",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "values",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 12,
+        "end": 18
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "loop",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 2,
+      "origin": {
+        "start": 47,
+        "end": 51
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "total",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 52,
+        "end": 57
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "rest",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 66,
+        "end": 70
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "head",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 5,
+      "origin": {
+        "start": 134,
+        "end": 138
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "tail",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 5,
+      "origin": {
+        "start": 143,
+        "end": 147
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "+",
+      "canonical": "std/prelude::+",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "List",
+      "canonical": "std/prelude::List",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "values",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 6,
+      "origin": {
+        "start": 214,
+        "end": 220
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "loop",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 7,
+      "origin": {
+        "start": 248,
+        "end": 252
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "total",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 8,
+      "origin": {
+        "start": 253,
+        "end": 258
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "rest",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 8,
+      "origin": {
+        "start": 267,
+        "end": 271
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "head",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 10,
+      "origin": {
+        "start": 336,
+        "end": 340
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "tail",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 10,
+      "origin": {
+        "start": 345,
+        "end": 349
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 11,
+      "origin": {
+        "start": 432,
+        "end": 436
+      }
+    },
+    {
+      "id": 21,
+      "spelling": "Bool",
+      "canonical": "std/prelude::Bool",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 22,
+      "spelling": "arrayTotal",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 12,
+      "origin": {
+        "start": 461,
+        "end": 471
+      }
+    },
+    {
+      "id": 23,
+      "spelling": "listTotal",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 12,
+      "origin": {
+        "start": 502,
+        "end": 511
+      }
+    },
+    {
+      "id": 24,
+      "spelling": "==",
+      "canonical": "std/prelude::==",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 20,
+        "end": 30
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 26,
+        "end": 29
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 34,
+        "end": 37
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 59,
+        "end": 62
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 72,
+        "end": 82
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 78,
+        "end": 81
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 86,
+        "end": 89
+      }
+    },
+    {
+      "spelling": "rest",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 102,
+        "end": 106
+      }
+    },
+    {
+      "spelling": "total",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 121,
+        "end": 126
+      }
+    },
+    {
+      "spelling": "loop",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 152,
+        "end": 156
+      }
+    },
+    {
+      "spelling": "total",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 158,
+        "end": 163
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 11,
+      "origin": {
+        "start": 164,
+        "end": 165
+      }
+    },
+    {
+      "spelling": "head",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 166,
+        "end": 170
+      }
+    },
+    {
+      "spelling": "tail",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 172,
+        "end": 176
+      }
+    },
+    {
+      "spelling": "loop",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 186,
+        "end": 190
+      }
+    },
+    {
+      "spelling": "values",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 193,
+        "end": 199
+      }
+    },
+    {
+      "spelling": "List",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 222,
+        "end": 231
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 227,
+        "end": 230
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 235,
+        "end": 238
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 260,
+        "end": 263
+      }
+    },
+    {
+      "spelling": "List",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 273,
+        "end": 282
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 278,
+        "end": 281
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 286,
+        "end": 289
+      }
+    },
+    {
+      "spelling": "rest",
+      "namespace": "value",
+      "target": 16,
+      "origin": {
+        "start": 302,
+        "end": 306
+      }
+    },
+    {
+      "spelling": "total",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 322,
+        "end": 327
+      }
+    },
+    {
+      "spelling": "loop",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 354,
+        "end": 358
+      }
+    },
+    {
+      "spelling": "total",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 360,
+        "end": 365
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 11,
+      "origin": {
+        "start": 366,
+        "end": 367
+      }
+    },
+    {
+      "spelling": "head",
+      "namespace": "value",
+      "target": 17,
+      "origin": {
+        "start": 368,
+        "end": 372
+      }
+    },
+    {
+      "spelling": "tail",
+      "namespace": "value",
+      "target": 18,
+      "origin": {
+        "start": 374,
+        "end": 378
+      }
+    },
+    {
+      "spelling": "loop",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 388,
+        "end": 392
+      }
+    },
+    {
+      "spelling": "values",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 395,
+        "end": 401
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 19,
+      "origin": {
+        "start": 438,
+        "end": 442
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 21,
+      "origin": {
+        "start": 446,
+        "end": 450
+      }
+    },
+    {
+      "spelling": "sumArray",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 474,
+        "end": 482
+      }
+    },
+    {
+      "spelling": "sumList",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 514,
+        "end": 521
+      }
+    },
+    {
+      "spelling": "arrayTotal",
+      "namespace": "value",
+      "target": 22,
+      "origin": {
+        "start": 541,
+        "end": 551
+      }
+    },
+    {
+      "spelling": "==",
+      "namespace": "operator",
+      "target": 24,
+      "origin": {
+        "start": 552,
+        "end": 554
+      }
+    },
+    {
+      "spelling": "listTotal",
+      "namespace": "value",
+      "target": 23,
+      "origin": {
+        "start": 563,
+        "end": 572
+      }
+    },
+    {
+      "spelling": "==",
+      "namespace": "operator",
+      "target": 24,
+      "origin": {
+        "start": 573,
+        "end": 575
+      }
+    }
+  ],
+  "issues": []
+}

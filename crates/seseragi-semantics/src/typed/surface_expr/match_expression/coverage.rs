@@ -107,6 +107,18 @@ fn witnesses(
     visiting: &mut BTreeSet<SymbolId>,
     hints: &[&CoveragePattern],
 ) -> Option<Vec<Witness>> {
+    if hints
+        .iter()
+        .any(|hint| matches!(hint, CoveragePattern::Array { .. }))
+    {
+        return collection_witnesses(false, hints);
+    }
+    if hints
+        .iter()
+        .any(|hint| matches!(hint, CoveragePattern::List { .. }))
+    {
+        return collection_witnesses(true, hints);
+    }
     match key {
         SemanticTypeKey::Invalid => None,
         SemanticTypeKey::Other => Some(
@@ -252,6 +264,33 @@ fn pattern_matches(pattern: &CoveragePattern, witness: &CoveragePattern) -> bool
                 .zip(witnesses)
                 .all(|(pattern, witness)| pattern_matches(pattern, witness))
         }
+        (
+            CoveragePattern::Array {
+                elements: patterns,
+                has_rest,
+            },
+            CoveragePattern::Array {
+                elements: witnesses,
+                has_rest: false,
+            },
+        )
+        | (
+            CoveragePattern::List {
+                elements: patterns,
+                has_rest,
+            },
+            CoveragePattern::List {
+                elements: witnesses,
+                has_rest: false,
+            },
+        ) if (*has_rest && patterns.len() <= witnesses.len())
+            || (!*has_rest && patterns.len() == witnesses.len()) =>
+        {
+            patterns
+                .iter()
+                .zip(witnesses)
+                .all(|(pattern, witness)| pattern_matches(pattern, witness))
+        }
         (CoveragePattern::Record(patterns), CoveragePattern::Record(witnesses)) => {
             patterns.iter().all(|(name, pattern)| {
                 witnesses
@@ -318,12 +357,91 @@ fn record_witnesses(hints: &[&CoveragePattern]) -> Option<Vec<Witness>> {
 fn hinted_witnesses(hints: &[&CoveragePattern]) -> Option<Vec<Witness>> {
     if hints
         .iter()
+        .any(|hint| matches!(hint, CoveragePattern::Array { .. }))
+    {
+        collection_witnesses(false, hints)
+    } else if hints
+        .iter()
+        .any(|hint| matches!(hint, CoveragePattern::List { .. }))
+    {
+        collection_witnesses(true, hints)
+    } else if hints
+        .iter()
         .any(|hint| matches!(hint, CoveragePattern::Record(_)))
     {
         record_witnesses(hints)
     } else {
         Some(scalar_witnesses(hints))
     }
+}
+
+fn collection_witnesses(is_list: bool, hints: &[&CoveragePattern]) -> Option<Vec<Witness>> {
+    let collection_hints = hints
+        .iter()
+        .filter_map(|hint| match (is_list, hint) {
+            (false, CoveragePattern::Array { elements, has_rest })
+            | (true, CoveragePattern::List { elements, has_rest }) => {
+                Some((elements.as_slice(), *has_rest))
+            }
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    let max_prefix = collection_hints
+        .iter()
+        .map(|(elements, _)| elements.len())
+        .max()
+        .unwrap_or(0);
+    let mut result = Vec::new();
+    for length in 0..=max_prefix.saturating_add(1) {
+        let matching = collection_hints
+            .iter()
+            .filter(|(elements, has_rest)| {
+                (*has_rest && elements.len() <= length) || (!*has_rest && elements.len() == length)
+            })
+            .copied()
+            .collect::<Vec<_>>();
+        let mut products = vec![(Vec::<CoveragePattern>::new(), Vec::<String>::new())];
+        for index in 0..length {
+            let element_hints = matching
+                .iter()
+                .filter_map(|(elements, _)| elements.get(index))
+                .collect::<Vec<_>>();
+            let children = hinted_witnesses(&element_hints)?;
+            let mut next = Vec::new();
+            for (patterns, labels) in &products {
+                for child in &children {
+                    let mut product_patterns = patterns.clone();
+                    product_patterns.push(child.pattern.clone());
+                    let mut product_labels = labels.clone();
+                    product_labels.push(child.label.clone());
+                    next.push((product_patterns, product_labels));
+                    if next.len() + result.len() > MAX_WITNESSES {
+                        return None;
+                    }
+                }
+            }
+            products = next;
+        }
+        for (elements, labels) in products {
+            let pattern = if is_list {
+                CoveragePattern::List {
+                    elements,
+                    has_rest: false,
+                }
+            } else {
+                CoveragePattern::Array {
+                    elements,
+                    has_rest: false,
+                }
+            };
+            let prefix = if is_list { "`" } else { "" };
+            result.push(Witness {
+                pattern,
+                label: format!("{prefix}[{}]", labels.join(", ")),
+            });
+        }
+    }
+    Some(result)
 }
 
 #[cfg(test)]

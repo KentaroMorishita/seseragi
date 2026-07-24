@@ -1,0 +1,27 @@
+fn sumArray values: Array<Int> -> Int = {
+  fn loop total: Int -> rest: Array<Int> -> Int =
+    match rest {
+      [] -> total
+      [head, ...tail] -> loop (total + head) tail
+    }
+
+  loop 0 values
+}
+
+fn sumList values: List<Int> -> Int = {
+  fn loop total: Int -> rest: List<Int> -> Int =
+    match rest {
+      `[] -> total
+      `[head, ...tail] -> loop (total + head) tail
+    }
+
+  loop 0 values
+}
+
+fn summary unit: Unit -> String = {
+  let arrayTotal = sumArray [1, 2, 3, 4]
+  let listTotal = sumList `[1, 2, 3, 4]
+  `Array total: ${arrayTotal} / List total: ${listTotal}`
+}
+
+pub effect fn main = println (summary ())

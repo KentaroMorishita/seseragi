@@ -225,6 +225,14 @@ fn collect_pattern_names(pattern: &CorePattern, names: &mut BTreeSet<String>) {
                 collect_pattern_names(element, names);
             }
         }
+        CorePattern::Array { elements, rest, .. } | CorePattern::List { elements, rest, .. } => {
+            for element in elements {
+                collect_pattern_names(element, names);
+            }
+            if let Some(rest) = rest {
+                collect_pattern_names(rest, names);
+            }
+        }
         CorePattern::Record { fields, .. } => {
             for field in fields {
                 collect_pattern_names(&field.pattern, names);
