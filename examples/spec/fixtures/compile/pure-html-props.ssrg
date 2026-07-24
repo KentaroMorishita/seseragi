@@ -1,9 +1,9 @@
 import * as html from "std/web/html"
 
-type Msg =
+type Action =
   | Clicked
 
-fn view -> html.Html<Msg> =
+fn view -> html.Html<Action> =
   html.div {
     id: "app",
     children: html.button {

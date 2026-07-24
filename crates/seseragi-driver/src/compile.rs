@@ -227,9 +227,9 @@ mod tests {
     fn compiles_standard_web_html_through_the_runtime_abi() {
         let source = r#"import * as html from "std/web/html"
 
-type Msg = | Confirm
+type Action = | Confirm
 
-fn page -> html.Html<Msg> =
+fn page -> html.Html<Action> =
   html.div {
     id: "app",
     className: "container",
@@ -262,18 +262,18 @@ fails ConsoleError =
     fn compiles_typed_form_event_snapshots_through_the_runtime_abi() {
         let source = r#"import * as html from "std/web/html"
 
-type Msg =
+type Action =
   | DraftChanged String
   | CheckedChanged Bool
   | Submitted
 
-fn draftMessage event: html.InputEvent -> Msg =
+fn draftAction event: html.InputEvent -> Action =
   DraftChanged event.value
 
-fn checkedMessage event: html.ChangeEvent -> Msg =
+fn checkedAction event: html.ChangeEvent -> Action =
   CheckedChanged event.checked
 
-pub fn view draft: String -> checked: Bool -> html.Html<Msg> =
+pub fn view draft: String -> checked: Bool -> html.Html<Action> =
   html.form {
     onSubmit: Submitted,
     children: [
@@ -285,12 +285,12 @@ pub fn view draft: String -> checked: Bool -> html.Html<Msg> =
         required: True,
         placeholder: "Type a task",
         inputType: "text",
-        onInput: draftMessage
+        onInput: draftAction
       },
       html.input {
         checked,
         inputType: "checkbox",
-        onChange: checkedMessage
+        onChange: checkedAction
       },
       html.button {
         buttonType: "submit",
@@ -329,9 +329,9 @@ pub fn view draft: String -> checked: Bool -> html.Html<Msg> =
     fn rejects_a_form_event_handler_with_the_wrong_shape_before_lowering() {
         let source = r#"import * as html from "std/web/html"
 
-type Msg = | Submitted
+type Action = | Submitted
 
-pub fn invalid -> html.Html<Msg> =
+pub fn invalid -> html.Html<Action> =
   html.input { onInput: Submitted }
 "#;
         let diagnostics = compile_module(CompileInput::new(
@@ -353,16 +353,16 @@ pub fn invalid -> html.Html<Msg> =
 import * as html from "std/web/html"
 
 type Mode = | Ready | Active
-type Msg = | Activate
+type Action = | Activate
 
 let initialMode: Mode = Ready
 
-fn update message: Msg -> mode: Mode -> Mode =
-  match message {
+fn update action: Action -> mode: Mode -> Mode =
+  match action {
     Activate -> Active
   }
 
-fn view mode: Mode -> html.Html<Msg> =
+fn view mode: Mode -> html.Html<Action> =
   match mode {
     Ready -> html.button { onClick: Activate, children: "Start" }
     Active -> html.p { children: "Active" }
@@ -497,9 +497,9 @@ pub effect fn main -> Unit =
     fn rejects_unsupported_html_children_before_lowering() {
         let source = r#"import * as html from "std/web/html"
 
-type Msg = | Confirm
+type Action = | Confirm
 
-pub fn invalid -> html.Html<Msg> =
+pub fn invalid -> html.Html<Action> =
   html.div { children: 42 }
 "#;
         let diagnostics = compile_module(CompileInput::new(

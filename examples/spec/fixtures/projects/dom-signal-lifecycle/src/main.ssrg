@@ -3,7 +3,7 @@ import * as effects from "std/effect"
 import * as html from "std/web/html"
 import * as signals from "std/signal"
 
-type Msg =
+type Action =
   | Increment
   | Stop
 
@@ -14,7 +14,7 @@ type AppError deriving Show =
   | DomOperationFailure dom.DomError
   | ConsoleFailure ConsoleError
 
-fn view count: Int -> html.Html<Msg> =
+fn view count: Int -> html.Html<Action> =
   html.div {
     children: [
       html.span { id: "count", children: show count },
@@ -23,9 +23,9 @@ fn view count: Int -> html.Html<Msg> =
     ]
   }
 
-fn dispatch count: MutableSignal<Int> -> message: Msg
+fn dispatch count: MutableSignal<Int> -> action: Action
   -> Task<DispatchError, Unit> =
-  match message {
+  match action {
     Increment -> signals.update (\value -> value + 1) count
     Stop -> effects.fail StopRequested
   }

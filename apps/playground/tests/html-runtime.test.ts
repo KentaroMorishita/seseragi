@@ -32,9 +32,9 @@ describe("HTML browser runtime", () => {
     )
   })
 
-  test("keeps click messages out of SSR and exposes them to the DOM adapter", () => {
-    const message = { tag: "Increment" } as const
-    const node = button({ onClick: message, children: "+1" })
+  test("keeps click actions out of SSR and exposes them to the DOM adapter", () => {
+    const action = { tag: "Increment" } as const
+    const node = button({ onClick: action, children: "+1" })
 
     expect(renderToString(node)).toBe('<button type="button">+1</button>')
     const rendered = renderForDom(node)
@@ -43,7 +43,7 @@ describe("HTML browser runtime", () => {
     )
     expect(rendered.eventHandlers.get("0")).toEqual({
       kind: "click",
-      message,
+      message: action,
     })
   })
 
@@ -87,7 +87,7 @@ describe("HTML browser runtime", () => {
   })
 
   test("snapshots input and change state exactly once", () => {
-    type SnapshotMessage =
+    type SnapshotAction =
       | Readonly<{ tag: "Input"; snapshot: InputEvent }>
       | Readonly<{ tag: "Change"; snapshot: ChangeEvent }>
     let valueReads = 0
@@ -103,7 +103,7 @@ describe("HTML browser runtime", () => {
       },
     }
     const rendered = renderForDom(
-      input<SnapshotMessage>({
+      input<SnapshotAction>({
         onInput: (event: InputEvent) => ({ tag: "Input", snapshot: event }),
         onChange: (event: ChangeEvent) => ({
           tag: "Change",
@@ -116,18 +116,18 @@ describe("HTML browser runtime", () => {
     expect(inputHandler).toBeDefined()
     expect(changeHandler).toBeDefined()
 
-    const inputMessage = messageFromDomEvent(inputHandler!, target)
-    const changeMessage = messageFromDomEvent(changeHandler!, target)
-    expect(inputMessage).toEqual({
+    const inputAction = messageFromDomEvent(inputHandler!, target)
+    const changeAction = messageFromDomEvent(changeHandler!, target)
+    expect(inputAction).toEqual({
       tag: "Input",
       snapshot: { value: "current" },
     })
-    expect(changeMessage).toEqual({
+    expect(changeAction).toEqual({
       tag: "Change",
       snapshot: { value: "current", checked: true },
     })
-    expect(Object.isFrozen(inputMessage.snapshot)).toBe(true)
-    expect(Object.isFrozen(changeMessage.snapshot)).toBe(true)
+    expect(Object.isFrozen(inputAction.snapshot)).toBe(true)
+    expect(Object.isFrozen(changeAction.snapshot)).toBe(true)
     expect(valueReads).toBe(2)
     expect(checkedReads).toBe(1)
   })

@@ -120,8 +120,8 @@
   "declarations": [
     {
       "kind": "adt",
-      "symbol": "artifact/web-html-components-style::Msg",
-      "name": "Msg",
+      "symbol": "artifact/web-html-components-style::Action",
+      "name": "Action",
       "visibility": "private",
       "opaque": false,
       "typeParameters": [],
@@ -134,19 +134,19 @@
             "constraints": [],
             "type": {
               "kind": "named",
-              "name": "Msg",
+              "name": "Action",
               "arguments": []
             }
           },
           "origin": {
-            "start": 53,
-            "end": 60
+            "start": 56,
+            "end": 63
           }
         }
       ],
       "origin": {
         "start": 38,
-        "end": 60
+        "end": 63
       }
     },
     {
@@ -154,8 +154,8 @@
       "symbol": "artifact/web-html-components-style::cardStyle",
       "visibility": "private",
       "origin": {
-        "start": 62,
-        "end": 259
+        "start": 65,
+        "end": 262
       },
       "scheme": {
         "typeParameters": [],
@@ -192,13 +192,13 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 122,
-                          "end": 140
+                          "start": 125,
+                          "end": 143
                         }
                       },
                       "origin": {
-                        "start": 110,
-                        "end": 140
+                        "start": 113,
+                        "end": 143
                       }
                     }
                   ],
@@ -217,13 +217,13 @@
                     ]
                   },
                   "origin": {
-                    "start": 108,
-                    "end": 142
+                    "start": 111,
+                    "end": 145
                   }
                 },
                 "origin": {
-                  "start": 97,
-                  "end": 142
+                  "start": 100,
+                  "end": 145
                 }
               },
               {
@@ -238,13 +238,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 165,
-                    "end": 171
+                    "start": 168,
+                    "end": 174
                   }
                 },
                 "origin": {
-                  "start": 148,
-                  "end": 171
+                  "start": 151,
+                  "end": 174
                 }
               },
               {
@@ -259,13 +259,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 188,
-                    "end": 208
+                    "start": 191,
+                    "end": 211
                   }
                 },
                 "origin": {
-                  "start": 177,
-                  "end": 208
+                  "start": 180,
+                  "end": 211
                 }
               },
               {
@@ -280,13 +280,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 228,
-                    "end": 234
+                    "start": 231,
+                    "end": 237
                   }
                 },
                 "origin": {
-                  "start": 214,
-                  "end": 234
+                  "start": 217,
+                  "end": 237
                 }
               },
               {
@@ -301,13 +301,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 249,
-                    "end": 255
+                    "start": 252,
+                    "end": 258
                   }
                 },
                 "origin": {
-                  "start": 240,
-                  "end": 255
+                  "start": 243,
+                  "end": 258
                 }
               }
             ],
@@ -367,8 +367,8 @@
               ]
             },
             "origin": {
-              "start": 91,
-              "end": 259
+              "start": 94,
+              "end": 262
             }
           }
         ],
@@ -447,8 +447,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 80,
-          "end": 259
+          "start": 83,
+          "end": 262
         }
       }
     },
@@ -457,8 +457,8 @@
       "symbol": "artifact/web-html-components-style::card",
       "visibility": "private",
       "origin": {
-        "start": 261,
-        "end": 648
+        "start": 264,
+        "end": 654
       },
       "scheme": {
         "typeParameters": [],
@@ -469,7 +469,7 @@
           "arguments": [
             {
               "kind": "named",
-              "name": "Msg",
+              "name": "Action",
               "arguments": []
             }
           ]
@@ -485,8 +485,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 269,
-            "end": 274
+            "start": 272,
+            "end": 277
           }
         },
         {
@@ -498,8 +498,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 286,
-            "end": 292
+            "start": 289,
+            "end": 295
           }
         }
       ],
@@ -522,13 +522,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 353,
-                    "end": 371
+                    "start": 359,
+                    "end": 377
                   }
                 },
                 "origin": {
-                  "start": 342,
-                  "end": 371
+                  "start": 348,
+                  "end": 377
                 }
               },
               {
@@ -541,13 +541,13 @@
                     "kind": "hole"
                   },
                   "origin": {
-                    "start": 384,
-                    "end": 393
+                    "start": 390,
+                    "end": 399
                   }
                 },
                 "origin": {
-                  "start": 377,
-                  "end": 393
+                  "start": 383,
+                  "end": 399
                 }
               },
               {
@@ -585,13 +585,13 @@
                                             "arguments": []
                                           },
                                           "origin": {
-                                            "start": 462,
-                                            "end": 471
+                                            "start": 468,
+                                            "end": 477
                                           }
                                         },
                                         "origin": {
-                                          "start": 455,
-                                          "end": 471
+                                          "start": 461,
+                                          "end": 477
                                         }
                                       },
                                       {
@@ -606,13 +606,13 @@
                                             "arguments": []
                                           },
                                           "origin": {
-                                            "start": 484,
-                                            "end": 487
+                                            "start": 490,
+                                            "end": 493
                                           }
                                         },
                                         "origin": {
-                                          "start": 473,
-                                          "end": 487
+                                          "start": 479,
+                                          "end": 493
                                         }
                                       }
                                     ],
@@ -639,8 +639,8 @@
                                       ]
                                     },
                                     "origin": {
-                                      "start": 453,
-                                      "end": 489
+                                      "start": 459,
+                                      "end": 495
                                     }
                                   }
                                 ],
@@ -686,13 +686,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 442,
-                                  "end": 489
+                                  "start": 448,
+                                  "end": 495
                                 }
                               },
                               "origin": {
-                                "start": 435,
-                                "end": 489
+                                "start": 441,
+                                "end": 495
                               }
                             },
                             {
@@ -707,13 +707,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 509,
-                                  "end": 514
+                                  "start": 515,
+                                  "end": 520
                                 }
                               },
                               "origin": {
-                                "start": 499,
-                                "end": 514
+                                "start": 505,
+                                "end": 520
                               }
                             }
                           ],
@@ -741,8 +741,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 425,
-                            "end": 522
+                            "start": 431,
+                            "end": 528
                           }
                         }
                       ],
@@ -758,7 +758,7 @@
                               },
                               {
                                 "kind": "named",
-                                "name": "Msg",
+                                "name": "Action",
                                 "arguments": []
                               }
                             ]
@@ -776,14 +776,14 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
                       },
                       "origin": {
-                        "start": 417,
-                        "end": 522
+                        "start": 423,
+                        "end": 528
                       }
                     },
                     {
@@ -815,13 +815,13 @@
                                             "arguments": []
                                           },
                                           "origin": {
-                                            "start": 574,
-                                            "end": 583
+                                            "start": 580,
+                                            "end": 589
                                           }
                                         },
                                         "origin": {
-                                          "start": 567,
-                                          "end": 583
+                                          "start": 573,
+                                          "end": 589
                                         }
                                       },
                                       {
@@ -836,13 +836,13 @@
                                             "arguments": []
                                           },
                                           "origin": {
-                                            "start": 599,
-                                            "end": 602
+                                            "start": 605,
+                                            "end": 608
                                           }
                                         },
                                         "origin": {
-                                          "start": 585,
-                                          "end": 602
+                                          "start": 591,
+                                          "end": 608
                                         }
                                       }
                                     ],
@@ -869,8 +869,8 @@
                                       ]
                                     },
                                     "origin": {
-                                      "start": 565,
-                                      "end": 604
+                                      "start": 571,
+                                      "end": 610
                                     }
                                   }
                                 ],
@@ -916,13 +916,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 554,
-                                  "end": 604
+                                  "start": 560,
+                                  "end": 610
                                 }
                               },
                               "origin": {
-                                "start": 547,
-                                "end": 604
+                                "start": 553,
+                                "end": 610
                               }
                             },
                             {
@@ -937,13 +937,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 624,
-                                  "end": 630
+                                  "start": 630,
+                                  "end": 636
                                 }
                               },
                               "origin": {
-                                "start": 614,
-                                "end": 630
+                                "start": 620,
+                                "end": 636
                               }
                             }
                           ],
@@ -971,8 +971,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 537,
-                            "end": 638
+                            "start": 543,
+                            "end": 644
                           }
                         }
                       ],
@@ -988,7 +988,7 @@
                               },
                               {
                                 "kind": "named",
-                                "name": "Msg",
+                                "name": "Action",
                                 "arguments": []
                               }
                             ]
@@ -1006,14 +1006,14 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
                       },
                       "origin": {
-                        "start": 530,
-                        "end": 638
+                        "start": 536,
+                        "end": 644
                       }
                     }
                   ],
@@ -1028,7 +1028,7 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
@@ -1036,13 +1036,13 @@
                     ]
                   },
                   "origin": {
-                    "start": 409,
-                    "end": 644
+                    "start": 415,
+                    "end": 650
                   }
                 },
                 "origin": {
-                  "start": 399,
-                  "end": 644
+                  "start": 405,
+                  "end": 650
                 }
               }
             ],
@@ -1063,7 +1063,7 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
@@ -1088,8 +1088,8 @@
               ]
             },
             "origin": {
-              "start": 336,
-              "end": 648
+              "start": 342,
+              "end": 654
             }
           }
         ],
@@ -1109,7 +1109,7 @@
                       "arguments": [
                         {
                           "kind": "named",
-                          "name": "Msg",
+                          "name": "Action",
                           "arguments": []
                         }
                       ]
@@ -1118,7 +1118,7 @@
                 },
                 {
                   "kind": "named",
-                  "name": "Msg",
+                  "name": "Action",
                   "arguments": []
                 }
               ]
@@ -1136,14 +1136,14 @@
           "arguments": [
             {
               "kind": "named",
-              "name": "Msg",
+              "name": "Action",
               "arguments": []
             }
           ]
         },
         "origin": {
-          "start": 323,
-          "end": 648
+          "start": 329,
+          "end": 654
         }
       }
     },
@@ -1152,8 +1152,8 @@
       "symbol": "artifact/web-html-components-style::page",
       "visibility": "private",
       "origin": {
-        "start": 650,
-        "end": 1022
+        "start": 656,
+        "end": 1031
       },
       "scheme": {
         "typeParameters": [],
@@ -1164,7 +1164,7 @@
           "arguments": [
             {
               "kind": "named",
-              "name": "Msg",
+              "name": "Action",
               "arguments": []
             }
           ]
@@ -1199,13 +1199,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 700,
-                    "end": 705
+                    "start": 709,
+                    "end": 714
                   }
                 },
                 "origin": {
-                  "start": 696,
-                  "end": 705
+                  "start": 705,
+                  "end": 714
                 }
               },
               {
@@ -1220,13 +1220,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 722,
-                    "end": 762
+                    "start": 731,
+                    "end": 771
                   }
                 },
                 "origin": {
-                  "start": 711,
-                  "end": 762
+                  "start": 720,
+                  "end": 771
                 }
               },
               {
@@ -1250,17 +1250,17 @@
                                 "name": "artifact/web-html-components-style::Confirm",
                                 "type": {
                                   "kind": "named",
-                                  "name": "Msg",
+                                  "name": "Action",
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 813,
-                                  "end": 820
+                                  "start": 822,
+                                  "end": 829
                                 }
                               },
                               "origin": {
-                                "start": 804,
-                                "end": 820
+                                "start": 813,
+                                "end": 829
                               }
                             },
                             {
@@ -1275,13 +1275,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 841,
-                                  "end": 900
+                                  "start": 850,
+                                  "end": 909
                                 }
                               },
                               "origin": {
-                                "start": 830,
-                                "end": 900
+                                "start": 839,
+                                "end": 909
                               }
                             },
                             {
@@ -1296,13 +1296,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 920,
-                                  "end": 941
+                                  "start": 929,
+                                  "end": 950
                                 }
                               },
                               "origin": {
-                                "start": 910,
-                                "end": 941
+                                "start": 919,
+                                "end": 950
                               }
                             }
                           ],
@@ -1330,15 +1330,15 @@
                                 "name": "onClick",
                                 "type": {
                                   "kind": "named",
-                                  "name": "Msg",
+                                  "name": "Action",
                                   "arguments": []
                                 }
                               }
                             ]
                           },
                           "origin": {
-                            "start": 794,
-                            "end": 949
+                            "start": 803,
+                            "end": 958
                           }
                         }
                       ],
@@ -1354,7 +1354,7 @@
                               },
                               {
                                 "kind": "named",
-                                "name": "Msg",
+                                "name": "Action",
                                 "arguments": []
                               }
                             ]
@@ -1372,14 +1372,14 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
                       },
                       "origin": {
-                        "start": 786,
-                        "end": 949
+                        "start": 795,
+                        "end": 958
                       }
                     },
                     {
@@ -1395,8 +1395,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 962,
-                            "end": 977
+                            "start": 971,
+                            "end": 986
                           }
                         },
                         {
@@ -1408,8 +1408,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 978,
-                            "end": 1012
+                            "start": 987,
+                            "end": 1021
                           }
                         }
                       ],
@@ -1420,14 +1420,14 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
                       },
                       "origin": {
-                        "start": 957,
-                        "end": 1012
+                        "start": 966,
+                        "end": 1021
                       }
                     }
                   ],
@@ -1442,7 +1442,7 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
@@ -1450,13 +1450,13 @@
                     ]
                   },
                   "origin": {
-                    "start": 778,
-                    "end": 1018
+                    "start": 787,
+                    "end": 1027
                   }
                 },
                 "origin": {
-                  "start": 768,
-                  "end": 1018
+                  "start": 777,
+                  "end": 1027
                 }
               }
             ],
@@ -1477,7 +1477,7 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
@@ -1504,8 +1504,8 @@
               ]
             },
             "origin": {
-              "start": 690,
-              "end": 1022
+              "start": 699,
+              "end": 1031
             }
           }
         ],
@@ -1525,7 +1525,7 @@
                       "arguments": [
                         {
                           "kind": "named",
-                          "name": "Msg",
+                          "name": "Action",
                           "arguments": []
                         }
                       ]
@@ -1534,7 +1534,7 @@
                 },
                 {
                   "kind": "named",
-                  "name": "Msg",
+                  "name": "Action",
                   "arguments": []
                 }
               ]
@@ -1552,14 +1552,14 @@
           "arguments": [
             {
               "kind": "named",
-              "name": "Msg",
+              "name": "Action",
               "arguments": []
             }
           ]
         },
         "origin": {
-          "start": 680,
-          "end": 1022
+          "start": 689,
+          "end": 1031
         }
       }
     },
@@ -1568,8 +1568,8 @@
       "symbol": "artifact/web-html-components-style::main",
       "visibility": "public",
       "origin": {
-        "start": 1024,
-        "end": 1126
+        "start": 1033,
+        "end": 1135
       },
       "parameters": [
         {
@@ -1653,8 +1653,8 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 1123,
-                      "end": 1125
+                      "start": 1132,
+                      "end": 1134
                     }
                   }
                 ],
@@ -1665,14 +1665,14 @@
                   "arguments": [
                     {
                       "kind": "named",
-                      "name": "Msg",
+                      "name": "Action",
                       "arguments": []
                     }
                   ]
                 },
                 "origin": {
-                  "start": 1118,
-                  "end": 1125
+                  "start": 1127,
+                  "end": 1134
                 }
               }
             ],
@@ -1682,14 +1682,14 @@
               "arguments": []
             },
             "origin": {
-              "start": 1097,
-              "end": 1126
+              "start": 1106,
+              "end": 1135
             }
           }
         ],
         "origin": {
-          "start": 1087,
-          "end": 1126
+          "start": 1096,
+          "end": 1135
         }
       }
     }

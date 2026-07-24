@@ -136,7 +136,7 @@ pub(crate) fn standard_module_instance(
 }
 
 fn into_children_instance(constraint: &TypedConstraint) -> Option<&'static str> {
-    let [children, message] = constraint.arguments.as_slice() else {
+    let [children, action] = constraint.arguments.as_slice() else {
         return None;
     };
 
@@ -146,16 +146,13 @@ fn into_children_instance(constraint: &TypedConstraint) -> Option<&'static str> 
     if named_leaf(children, "String") {
         return Some("std/web/html::IntoChildren<String>");
     }
-    if html_message(children).is_some_and(|html_message| html_message == message) {
+    if html_action(children).is_some_and(|html_action| html_action == action) {
         return Some("std/web/html::IntoChildren<Html>");
     }
-    if collection_html_message(children, "Array")
-        .is_some_and(|html_message| html_message == message)
-    {
+    if collection_html_action(children, "Array").is_some_and(|html_action| html_action == action) {
         return Some("std/web/html::IntoChildren<Array>");
     }
-    if collection_html_message(children, "List").is_some_and(|html_message| html_message == message)
-    {
+    if collection_html_action(children, "List").is_some_and(|html_action| html_action == action) {
         return Some("std/web/html::IntoChildren<List>");
     }
     None
@@ -192,7 +189,7 @@ fn named_leaf(type_ref: &TypedType, expected: &str) -> bool {
     matches!(type_ref, TypedType::Named { name, arguments } if name == expected && arguments.is_empty())
 }
 
-fn html_message(type_ref: &TypedType) -> Option<&TypedType> {
+fn html_action(type_ref: &TypedType) -> Option<&TypedType> {
     match type_ref {
         TypedType::ExternalNamed {
             canonical,
@@ -203,7 +200,7 @@ fn html_message(type_ref: &TypedType) -> Option<&TypedType> {
     }
 }
 
-fn collection_html_message<'a>(type_ref: &'a TypedType, collection: &str) -> Option<&'a TypedType> {
+fn collection_html_action<'a>(type_ref: &'a TypedType, collection: &str) -> Option<&'a TypedType> {
     let child = match type_ref {
         TypedType::Named { name, arguments } if name == collection => arguments.first(),
         TypedType::ExternalNamed {
@@ -211,7 +208,7 @@ fn collection_html_message<'a>(type_ref: &'a TypedType, collection: &str) -> Opt
         } if name == collection => arguments.first(),
         _ => None,
     }?;
-    html_message(child)
+    html_action(child)
 }
 
 #[cfg(test)]
@@ -222,7 +219,7 @@ mod tests {
     fn selects_only_the_declared_html_children_shapes() {
         let string = TypedConstraint {
             name: "IntoChildren".to_owned(),
-            arguments: vec![named("String"), named("Msg")],
+            arguments: vec![named("String"), named("Action")],
         };
         assert_eq!(
             standard_module_instance(Some(INTO_CHILDREN), &string),
@@ -231,7 +228,7 @@ mod tests {
 
         let invalid = TypedConstraint {
             name: "IntoChildren".to_owned(),
-            arguments: vec![named("Int"), named("Msg")],
+            arguments: vec![named("Int"), named("Action")],
         };
         assert_eq!(
             standard_module_instance(Some(INTO_CHILDREN), &invalid),

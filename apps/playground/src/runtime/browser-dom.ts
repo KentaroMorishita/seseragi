@@ -35,15 +35,15 @@ export type BrowserDom = Readonly<{
   readonly dispose: () => Promise<void>
 }>
 
-export type DomEventBindings<Message> = Readonly<{
-  readonly replace: (render: DomRender<Message>) => void
-  readonly handler: (id: string) => DomEventHandler<Message> | undefined
+export type DomEventBindings<Action> = Readonly<{
+  readonly replace: (render: DomRender<Action>) => void
+  readonly handler: (id: string) => DomEventHandler<Action> | undefined
 }>
 
-export function createDomEventBindings<Message>(): DomEventBindings<Message> {
-  let handlers: ReadonlyMap<string, DomEventHandler<Message>> = new Map()
+export function createDomEventBindings<Action>(): DomEventBindings<Action> {
+  let handlers: ReadonlyMap<string, DomEventHandler<Action>> = new Map()
   return Object.freeze({
-    replace(render: DomRender<Message>) {
+    replace(render: DomRender<Action>) {
       handlers = render.eventHandlers
     },
     handler(id: string) {
@@ -78,11 +78,11 @@ export function createBrowserDom(
       }
       return serviceSuccess(createDomTarget(target))
     },
-    run<Failure, Message>(
+    run<Failure, Action>(
       options: DomOptions,
       target: DomTarget,
-      dispatch: DomDispatch<Failure, Message>,
-      content: Signal<Html<Message>>
+      dispatch: DomDispatch<Failure, Action>,
+      content: Signal<Html<Action>>
     ): ServiceOperation<DomRuntimeError<Failure>, Unit> {
       const element = domTargetValue(target)
       if (!(element instanceof document.defaultView!.Element)) {
@@ -106,7 +106,7 @@ export function createBrowserDom(
           let announced = false
           let queuedEvents = 0
           let eventQueue = Promise.resolve()
-          const bindings = createDomEventBindings<Message>()
+          const bindings = createDomEventBindings<Action>()
 
           const finish = async (
             result: ServiceResult<DomRuntimeError<Failure>, undefined>
@@ -125,7 +125,7 @@ export function createBrowserDom(
             resolve(result)
           }
 
-          const enqueue = (message: Message): void => {
+          const enqueue = (action: Action): void => {
             if (settled) return
             if (queuedEvents >= options.eventCapacity) {
               void finish(
@@ -143,7 +143,7 @@ export function createBrowserDom(
             eventQueue = eventQueue
               .then(async () => {
                 if (settled) return
-                const result = await dispatch(message)
+                const result = await dispatch(action)
                 if (result.kind === "failure") {
                   await finish(
                     serviceFailure({
@@ -189,7 +189,7 @@ export function createBrowserDom(
           const dispose = () => finish(serviceSuccess(unit))
           disposers.add(dispose)
 
-          const render = (tree: Html<Message>) => {
+          const render = (tree: Html<Action>) => {
             if (settled) return
             const focus = captureFocusedControl(element, document)
             const snapshot = renderForDom(tree)

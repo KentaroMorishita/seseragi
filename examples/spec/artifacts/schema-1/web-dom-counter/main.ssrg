@@ -6,7 +6,7 @@ type Mode =
   | Focusing
   | Resting
 
-type Msg =
+type Action =
   | StartFocus
   | TakeBreak
   | Reset
@@ -54,7 +54,7 @@ fn title mode: Mode -> String =
 
 fn guidance mode: Mode -> String =
   match mode {
-    Ready -> "Pick a mode and let a typed message update the Signal."
+    Ready -> "Pick a mode and let a typed action update the Signal."
     Focusing -> "One task. No tab hopping. You have got this."
     Resting -> "Look away from the screen and take a slow breath."
   }
@@ -93,8 +93,8 @@ fn badgeStyle mode: Mode -> html.Style =
     padding: "6px 12px"
   }
 
-fn actionStyle message: Msg -> html.Style =
-  match message {
+fn actionStyle action: Action -> html.Style =
+  match action {
     StartFocus ->
       html.style { backgroundColor: "#059669", color: "#ffffff" }
     TakeBreak ->
@@ -103,19 +103,19 @@ fn actionStyle message: Msg -> html.Style =
       html.style { backgroundColor: "#f1f5f9", color: "#334155" }
   }
 
-fn action id: String
+fn actionButton id: String
   -> text: String
-  -> message: Msg
-  -> html.Html<Msg> =
+  -> action: Action
+  -> html.Html<Action> =
   html.button {
     id,
-    onClick: message,
+    onClick: action,
     className: "w-full rounded-xl border-0 px-4 py-3 font-semibold transition hover:shadow-lg",
-    style: actionStyle message,
+    style: actionStyle action,
     children: text
   }
 
-fn view mode: Mode -> html.Html<Msg> =
+fn view mode: Mode -> html.Html<Action> =
   html.main {
     style: pageStyle,
     children: [
@@ -154,9 +154,9 @@ fn view mode: Mode -> html.Html<Msg> =
           html.div {
             className: "mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3",
             children: [
-              action "focus" "Start focus" StartFocus,
-              action "break" "Take a break" TakeBreak,
-              action "reset" "Reset the flow" Reset
+              actionButton "focus" "Start focus" StartFocus,
+              actionButton "break" "Take a break" TakeBreak,
+              actionButton "reset" "Reset the flow" Reset
             ]
           }
         ]
@@ -164,8 +164,8 @@ fn view mode: Mode -> html.Html<Msg> =
     ]
   }
 
-fn update message: Msg -> mode: Mode -> Mode =
-  match message {
+fn update action: Action -> mode: Mode -> Mode =
+  match action {
     StartFocus -> Focusing
     TakeBreak -> Resting
     Reset -> Ready

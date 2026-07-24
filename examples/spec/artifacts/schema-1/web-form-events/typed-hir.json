@@ -132,8 +132,8 @@
   "declarations": [
     {
       "kind": "adt",
-      "symbol": "artifact/web-form-events::Msg",
-      "name": "Msg",
+      "symbol": "artifact/web-form-events::Action",
+      "name": "Action",
       "visibility": "private",
       "opaque": false,
       "typeParameters": [],
@@ -158,14 +158,14 @@
               },
               "result": {
                 "kind": "named",
-                "name": "Msg",
+                "name": "Action",
                 "arguments": []
               }
             }
           },
           "origin": {
-            "start": 53,
-            "end": 65
+            "start": 56,
+            "end": 68
           }
         },
         {
@@ -188,14 +188,14 @@
               },
               "result": {
                 "kind": "named",
-                "name": "Msg",
+                "name": "Action",
                 "arguments": []
               }
             }
           },
           "origin": {
-            "start": 77,
-            "end": 91
+            "start": 80,
+            "end": 94
           }
         },
         {
@@ -206,35 +206,35 @@
             "constraints": [],
             "type": {
               "kind": "named",
-              "name": "Msg",
+              "name": "Action",
               "arguments": []
             }
           },
           "origin": {
-            "start": 101,
-            "end": 110
+            "start": 104,
+            "end": 113
           }
         }
       ],
       "origin": {
         "start": 38,
-        "end": 110
+        "end": 113
       }
     },
     {
       "kind": "fn",
-      "symbol": "artifact/web-form-events::draftMessage",
+      "symbol": "artifact/web-form-events::draftAction",
       "visibility": "private",
       "origin": {
-        "start": 112,
-        "end": 186
+        "start": 115,
+        "end": 191
       },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
         "type": {
           "kind": "named",
-          "name": "Msg",
+          "name": "Action",
           "arguments": []
         }
       },
@@ -249,8 +249,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 128,
-            "end": 133
+            "start": 130,
+            "end": 135
           }
         }
       ],
@@ -270,8 +270,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 175,
-                "end": 180
+                "start": 180,
+                "end": 185
               }
             },
             "field": "value",
@@ -281,36 +281,36 @@
               "arguments": []
             },
             "origin": {
-              "start": 175,
-              "end": 186
+              "start": 180,
+              "end": 191
             }
           }
         ],
         "type": {
           "kind": "named",
-          "name": "Msg",
+          "name": "Action",
           "arguments": []
         },
         "origin": {
-          "start": 162,
-          "end": 186
+          "start": 167,
+          "end": 191
         }
       }
     },
     {
       "kind": "fn",
-      "symbol": "artifact/web-form-events::checkedMessage",
+      "symbol": "artifact/web-form-events::checkedAction",
       "visibility": "private",
       "origin": {
-        "start": 188,
-        "end": 269
+        "start": 193,
+        "end": 276
       },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
         "type": {
           "kind": "named",
-          "name": "Msg",
+          "name": "Action",
           "arguments": []
         }
       },
@@ -325,8 +325,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 206,
-            "end": 211
+            "start": 210,
+            "end": 215
           }
         }
       ],
@@ -346,8 +346,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 256,
-                "end": 261
+                "start": 263,
+                "end": 268
               }
             },
             "field": "checked",
@@ -357,19 +357,19 @@
               "arguments": []
             },
             "origin": {
-              "start": 256,
-              "end": 269
+              "start": 263,
+              "end": 276
             }
           }
         ],
         "type": {
           "kind": "named",
-          "name": "Msg",
+          "name": "Action",
           "arguments": []
         },
         "origin": {
-          "start": 241,
-          "end": 269
+          "start": 248,
+          "end": 276
         }
       }
     },
@@ -378,8 +378,8 @@
       "symbol": "artifact/web-form-events::view",
       "visibility": "public",
       "origin": {
-        "start": 271,
-        "end": 992
+        "start": 278,
+        "end": 999
       },
       "scheme": {
         "typeParameters": [],
@@ -390,7 +390,7 @@
           "arguments": [
             {
               "kind": "named",
-              "name": "Msg",
+              "name": "Action",
               "arguments": []
             }
           ]
@@ -406,8 +406,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 283,
-            "end": 288
+            "start": 290,
+            "end": 295
           }
         },
         {
@@ -419,8 +419,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 300,
-            "end": 307
+            "start": 307,
+            "end": 314
           }
         }
       ],
@@ -439,17 +439,17 @@
                   "name": "artifact/web-form-events::Submitted",
                   "type": {
                     "kind": "named",
-                    "name": "Msg",
+                    "name": "Action",
                     "arguments": []
                   },
                   "origin": {
-                    "start": 362,
-                    "end": 371
+                    "start": 372,
+                    "end": 381
                   }
                 },
                 "origin": {
-                  "start": 352,
-                  "end": 371
+                  "start": 362,
+                  "end": 381
                 }
               },
               {
@@ -477,13 +477,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 417,
-                                  "end": 424
+                                  "start": 427,
+                                  "end": 434
                                 }
                               },
                               "origin": {
-                                "start": 408,
-                                "end": 424
+                                "start": 418,
+                                "end": 434
                               }
                             },
                             {
@@ -498,13 +498,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 436,
-                                  "end": 443
+                                  "start": 446,
+                                  "end": 453
                                 }
                               },
                               "origin": {
-                                "start": 426,
-                                "end": 443
+                                "start": 436,
+                                "end": 453
                               }
                             }
                           ],
@@ -531,8 +531,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 406,
-                            "end": 445
+                            "start": 416,
+                            "end": 455
                           }
                         }
                       ],
@@ -548,7 +548,7 @@
                               },
                               {
                                 "kind": "named",
-                                "name": "Msg",
+                                "name": "Action",
                                 "arguments": []
                               }
                             ]
@@ -566,14 +566,14 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
                       },
                       "origin": {
-                        "start": 395,
-                        "end": 445
+                        "start": 405,
+                        "end": 455
                       }
                     },
                     {
@@ -595,13 +595,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 478,
-                                  "end": 485
+                                  "start": 488,
+                                  "end": 495
                                 }
                               },
                               "origin": {
-                                "start": 474,
-                                "end": 485
+                                "start": 484,
+                                "end": 495
                               }
                             },
                             {
@@ -616,13 +616,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 501,
-                                  "end": 508
+                                  "start": 511,
+                                  "end": 518
                                 }
                               },
                               "origin": {
-                                "start": 495,
-                                "end": 508
+                                "start": 505,
+                                "end": 518
                               }
                             },
                             {
@@ -637,13 +637,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 525,
-                                  "end": 530
+                                  "start": 535,
+                                  "end": 540
                                 }
                               },
                               "origin": {
-                                "start": 518,
-                                "end": 530
+                                "start": 528,
+                                "end": 540
                               }
                             },
                             {
@@ -658,13 +658,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 550,
-                                  "end": 554
+                                  "start": 560,
+                                  "end": 564
                                 }
                               },
                               "origin": {
-                                "start": 540,
-                                "end": 554
+                                "start": 550,
+                                "end": 564
                               }
                             },
                             {
@@ -679,13 +679,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 577,
-                                  "end": 590
+                                  "start": 587,
+                                  "end": 600
                                 }
                               },
                               "origin": {
-                                "start": 564,
-                                "end": 590
+                                "start": 574,
+                                "end": 600
                               }
                             },
                             {
@@ -700,13 +700,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 611,
-                                  "end": 617
+                                  "start": 621,
+                                  "end": 627
                                 }
                               },
                               "origin": {
-                                "start": 600,
-                                "end": 617
+                                "start": 610,
+                                "end": 627
                               }
                             },
                             {
@@ -714,7 +714,7 @@
                               "name": "onInput",
                               "value": {
                                 "kind": "variable",
-                                "name": "artifact/web-form-events::draftMessage",
+                                "name": "artifact/web-form-events::draftAction",
                                 "type": {
                                   "kind": "function",
                                   "parameter": {
@@ -725,18 +725,18 @@
                                   },
                                   "result": {
                                     "kind": "named",
-                                    "name": "Msg",
+                                    "name": "Action",
                                     "arguments": []
                                   }
                                 },
                                 "origin": {
-                                  "start": 636,
-                                  "end": 648
+                                  "start": 646,
+                                  "end": 657
                                 }
                               },
                               "origin": {
-                                "start": 627,
-                                "end": 648
+                                "start": 637,
+                                "end": 657
                               }
                             }
                           ],
@@ -780,7 +780,7 @@
                                   },
                                   "result": {
                                     "kind": "named",
-                                    "name": "Msg",
+                                    "name": "Action",
                                     "arguments": []
                                   }
                                 }
@@ -812,8 +812,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 464,
-                            "end": 656
+                            "start": 474,
+                            "end": 665
                           }
                         }
                       ],
@@ -824,14 +824,14 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
                       },
                       "origin": {
-                        "start": 453,
-                        "end": 656
+                        "start": 463,
+                        "end": 665
                       }
                     },
                     {
@@ -853,13 +853,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 694,
-                                  "end": 701
+                                  "start": 703,
+                                  "end": 710
                                 }
                               },
                               "origin": {
-                                "start": 688,
-                                "end": 701
+                                "start": 697,
+                                "end": 710
                               }
                             },
                             {
@@ -874,13 +874,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 718,
-                                  "end": 720
+                                  "start": 727,
+                                  "end": 729
                                 }
                               },
                               "origin": {
-                                "start": 711,
-                                "end": 720
+                                "start": 720,
+                                "end": 729
                               }
                             },
                             {
@@ -888,7 +888,7 @@
                               "name": "onInput",
                               "value": {
                                 "kind": "variable",
-                                "name": "artifact/web-form-events::draftMessage",
+                                "name": "artifact/web-form-events::draftAction",
                                 "type": {
                                   "kind": "function",
                                   "parameter": {
@@ -899,18 +899,18 @@
                                   },
                                   "result": {
                                     "kind": "named",
-                                    "name": "Msg",
+                                    "name": "Action",
                                     "arguments": []
                                   }
                                 },
                                 "origin": {
-                                  "start": 739,
-                                  "end": 751
+                                  "start": 748,
+                                  "end": 759
                                 }
                               },
                               "origin": {
-                                "start": 730,
-                                "end": 751
+                                "start": 739,
+                                "end": 759
                               }
                             }
                           ],
@@ -938,7 +938,7 @@
                                   },
                                   "result": {
                                     "kind": "named",
-                                    "name": "Msg",
+                                    "name": "Action",
                                     "arguments": []
                                   }
                                 }
@@ -954,8 +954,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 678,
-                            "end": 759
+                            "start": 687,
+                            "end": 767
                           }
                         }
                       ],
@@ -966,14 +966,14 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
                       },
                       "origin": {
-                        "start": 664,
-                        "end": 759
+                        "start": 673,
+                        "end": 767
                       }
                     },
                     {
@@ -995,13 +995,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 788,
-                                  "end": 795
+                                  "start": 796,
+                                  "end": 803
                                 }
                               },
                               "origin": {
-                                "start": 788,
-                                "end": 795
+                                "start": 796,
+                                "end": 803
                               }
                             },
                             {
@@ -1016,13 +1016,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 816,
-                                  "end": 826
+                                  "start": 824,
+                                  "end": 834
                                 }
                               },
                               "origin": {
-                                "start": 805,
-                                "end": 826
+                                "start": 813,
+                                "end": 834
                               }
                             },
                             {
@@ -1030,7 +1030,7 @@
                               "name": "onChange",
                               "value": {
                                 "kind": "variable",
-                                "name": "artifact/web-form-events::checkedMessage",
+                                "name": "artifact/web-form-events::checkedAction",
                                 "type": {
                                   "kind": "function",
                                   "parameter": {
@@ -1041,18 +1041,18 @@
                                   },
                                   "result": {
                                     "kind": "named",
-                                    "name": "Msg",
+                                    "name": "Action",
                                     "arguments": []
                                   }
                                 },
                                 "origin": {
-                                  "start": 846,
-                                  "end": 860
+                                  "start": 854,
+                                  "end": 867
                                 }
                               },
                               "origin": {
-                                "start": 836,
-                                "end": 860
+                                "start": 844,
+                                "end": 867
                               }
                             }
                           ],
@@ -1088,7 +1088,7 @@
                                   },
                                   "result": {
                                     "kind": "named",
-                                    "name": "Msg",
+                                    "name": "Action",
                                     "arguments": []
                                   }
                                 }
@@ -1096,8 +1096,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 778,
-                            "end": 868
+                            "start": 786,
+                            "end": 875
                           }
                         }
                       ],
@@ -1108,14 +1108,14 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
                       },
                       "origin": {
-                        "start": 767,
-                        "end": 868
+                        "start": 775,
+                        "end": 875
                       }
                     },
                     {
@@ -1137,13 +1137,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 910,
-                                  "end": 918
+                                  "start": 917,
+                                  "end": 925
                                 }
                               },
                               "origin": {
-                                "start": 898,
-                                "end": 918
+                                "start": 905,
+                                "end": 925
                               }
                             },
                             {
@@ -1161,8 +1161,8 @@
                                     "arguments": []
                                   },
                                   "origin": {
-                                    "start": 938,
-                                    "end": 943
+                                    "start": 945,
+                                    "end": 950
                                   }
                                 },
                                 "right": {
@@ -1174,8 +1174,8 @@
                                     "arguments": []
                                   },
                                   "origin": {
-                                    "start": 947,
-                                    "end": 949
+                                    "start": 954,
+                                    "end": 956
                                   }
                                 },
                                 "evidence": [
@@ -1202,13 +1202,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 938,
-                                  "end": 949
+                                  "start": 945,
+                                  "end": 956
                                 }
                               },
                               "origin": {
-                                "start": 928,
-                                "end": 949
+                                "start": 935,
+                                "end": 956
                               }
                             },
                             {
@@ -1223,13 +1223,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 969,
-                                  "end": 974
+                                  "start": 976,
+                                  "end": 981
                                 }
                               },
                               "origin": {
-                                "start": 959,
-                                "end": 974
+                                "start": 966,
+                                "end": 981
                               }
                             }
                           ],
@@ -1264,8 +1264,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 888,
-                            "end": 982
+                            "start": 895,
+                            "end": 989
                           }
                         }
                       ],
@@ -1281,7 +1281,7 @@
                               },
                               {
                                 "kind": "named",
-                                "name": "Msg",
+                                "name": "Action",
                                 "arguments": []
                               }
                             ]
@@ -1299,14 +1299,14 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
                       },
                       "origin": {
-                        "start": 876,
-                        "end": 982
+                        "start": 883,
+                        "end": 989
                       }
                     }
                   ],
@@ -1321,7 +1321,7 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
@@ -1329,13 +1329,13 @@
                     ]
                   },
                   "origin": {
-                    "start": 387,
-                    "end": 988
+                    "start": 397,
+                    "end": 995
                   }
                 },
                 "origin": {
-                  "start": 377,
-                  "end": 988
+                  "start": 387,
+                  "end": 995
                 }
               }
             ],
@@ -1356,7 +1356,7 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
@@ -1368,15 +1368,15 @@
                   "name": "onSubmit",
                   "type": {
                     "kind": "named",
-                    "name": "Msg",
+                    "name": "Action",
                     "arguments": []
                   }
                 }
               ]
             },
             "origin": {
-              "start": 346,
-              "end": 992
+              "start": 356,
+              "end": 999
             }
           }
         ],
@@ -1396,7 +1396,7 @@
                       "arguments": [
                         {
                           "kind": "named",
-                          "name": "Msg",
+                          "name": "Action",
                           "arguments": []
                         }
                       ]
@@ -1405,7 +1405,7 @@
                 },
                 {
                   "kind": "named",
-                  "name": "Msg",
+                  "name": "Action",
                   "arguments": []
                 }
               ]
@@ -1423,14 +1423,14 @@
           "arguments": [
             {
               "kind": "named",
-              "name": "Msg",
+              "name": "Action",
               "arguments": []
             }
           ]
         },
         "origin": {
-          "start": 336,
-          "end": 992
+          "start": 346,
+          "end": 999
         }
       }
     }

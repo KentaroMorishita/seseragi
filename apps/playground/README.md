@@ -17,7 +17,7 @@ sampleは`examples/spec`のcanonical sourceを直接bundleし、WASM compileとb
 
 公開catalogはcompilerの内部fixtureを網羅する一覧ではなく、言語を段階的に試せる代表sampleへ絞ります。
 各sampleの目的と主要conceptはeditor上の`Guide` overlayから確認でき、説明のためにworkspaceの表示行を
-増やしません。interactive sampleはtyped messageとSignalで状態を更新し、同じpreview iframeで
+増やしません。interactive sampleはtyped ActionとSignalで状態を更新し、同じpreview iframeで
 browser DOMまで実行します。
 
 通常のinteractive sampleは`dom.app { target, initial, update, view }`を使います。Signal生成、query、default options、
@@ -25,7 +25,7 @@ mount lifecycle、portableなerror変換は標準helperが所有し、effectful 
 低レベルの`dom.query` / `dom.run`へ降ります。
 
 formは`onInput` / `onChange`からnative Eventそのものではなく、immutableな`InputEvent` / `ChangeEvent` snapshotを
-typed Msgへ変換します。`onSubmit`はbrowser navigationより先に`preventDefault`されます。controlled inputと
+typed Actionへ変換します。`onSubmit`はbrowser navigationより先に`preventDefault`されます。controlled inputと
 textareaはstableな`id`を使うと、Signal更新による再render後もfocusとselectionを維持します。
 
 ## HTML preview

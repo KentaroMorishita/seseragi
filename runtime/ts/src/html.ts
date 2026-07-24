@@ -1,36 +1,36 @@
 const HTML_NODE = Symbol("seseragi.html")
 const STYLE = Symbol("seseragi.style")
 
-type PhantomMessage<Message> = {
-  readonly __message?: Message
+type PhantomAction<Action> = {
+  readonly __action?: Action
 }
 
-type TextNode<Message> = PhantomMessage<Message> &
+type TextNode<Action> = PhantomAction<Action> &
   Readonly<{
     readonly [HTML_NODE]: "text"
     readonly value: string
   }>
 
-type FragmentNode<Message> = PhantomMessage<Message> &
+type FragmentNode<Action> = PhantomAction<Action> &
   Readonly<{
     readonly [HTML_NODE]: "fragment"
-    readonly children: ReadonlyArray<Html<Message>>
+    readonly children: ReadonlyArray<Html<Action>>
   }>
 
-type ElementNode<Message> = PhantomMessage<Message> &
+type ElementNode<Action> = PhantomAction<Action> &
   Readonly<{
     readonly [HTML_NODE]: "element"
     readonly tag: string
     readonly props: Readonly<Record<string, unknown>>
-    readonly children: ReadonlyArray<Html<Message>>
+    readonly children: ReadonlyArray<Html<Action>>
     readonly voidElement: boolean
   }>
 
-/** Immutable pure HTML tree. The message parameter is a compile-time phantom. */
-export type Html<Message> =
-  | TextNode<Message>
-  | FragmentNode<Message>
-  | ElementNode<Message>
+/** Immutable pure HTML tree. The action parameter is a compile-time phantom. */
+export type Html<Action> =
+  | TextNode<Action>
+  | FragmentNode<Action>
+  | ElementNode<Action>
 
 /** Immutable text-input snapshot. It never exposes the host DOM event. */
 export type InputEvent = Readonly<{
@@ -43,21 +43,21 @@ export type ChangeEvent = Readonly<{
   readonly checked: boolean
 }>
 
-export type DomEventHandler<Message> =
-  | Readonly<{ readonly kind: "click"; readonly message: Message }>
+export type DomEventHandler<Action> =
+  | Readonly<{ readonly kind: "click"; readonly message: Action }>
   | Readonly<{
       readonly kind: "input"
-      readonly map: (event: InputEvent) => Message
+      readonly map: (event: InputEvent) => Action
     }>
   | Readonly<{
       readonly kind: "change"
-      readonly map: (event: ChangeEvent) => Message
+      readonly map: (event: ChangeEvent) => Action
     }>
-  | Readonly<{ readonly kind: "submit"; readonly message: Message }>
+  | Readonly<{ readonly kind: "submit"; readonly message: Action }>
 
-export type DomRender<Message> = Readonly<{
+export type DomRender<Action> = Readonly<{
   readonly html: string
-  readonly eventHandlers: ReadonlyMap<string, DomEventHandler<Message>>
+  readonly eventHandlers: ReadonlyMap<string, DomEventHandler<Action>>
 }>
 
 /** Immutable serialized inline style created from a checked Seseragi record. */
@@ -87,40 +87,40 @@ export function style(declarations: unknown): Style {
   })
 }
 
-export function text<Message = never>(value: string): Html<Message> {
+export function text<Action = never>(value: string): Html<Action> {
   return Object.freeze({ [HTML_NODE]: "text", value } as const)
 }
 
-export function fragment<Message = never>(children: unknown): Html<Message> {
+export function fragment<Action = never>(children: unknown): Html<Action> {
   return Object.freeze({
     [HTML_NODE]: "fragment",
-    children: normalizeChildren<Message>(children),
+    children: normalizeChildren<Action>(children),
   } as const)
 }
 
-// Seseragi has already checked the message type before lowering. When a
+// Seseragi has already checked the action type before lowering. When a
 // constructor call has no TypeScript inference site, `never` keeps the pure
-// tree safely usable at any checked Html<Message> boundary.
+// tree safely usable at any checked Html<Action> boundary.
 type TagFunction = {
-  <Message>(
-    props: Readonly<{ onClick: Message }> & Readonly<Record<string, unknown>>
-  ): Html<Message>
-  <Message>(
-    props: Readonly<{ onSubmit: Message }> & Readonly<Record<string, unknown>>
-  ): Html<Message>
-  <Message>(
-    props: Readonly<{ onInput: (event: InputEvent) => Message }> &
+  <Action>(
+    props: Readonly<{ onClick: Action }> & Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{ onSubmit: Action }> & Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{ onInput: (event: InputEvent) => Action }> &
       Readonly<Record<string, unknown>>
-  ): Html<Message>
-  <Message>(
-    props: Readonly<{ onChange: (event: ChangeEvent) => Message }> &
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{ onChange: (event: ChangeEvent) => Action }> &
       Readonly<Record<string, unknown>>
-  ): Html<Message>
-  <Message = never>(props: unknown): Html<Message>
+  ): Html<Action>
+  <Action = never>(props: unknown): Html<Action>
 }
 
 function tag(name: string): TagFunction {
-  return <Message>(props: unknown): Html<Message> => element(name, props, false)
+  return <Action>(props: unknown): Html<Action> => element(name, props, false)
 }
 
 export const div = tag("div")
@@ -134,16 +134,16 @@ export const button = tag("button")
 export const form = tag("form")
 export const label = tag("label")
 
-export function input<Message = never>(props: unknown): Html<Message> {
+export function input<Action = never>(props: unknown): Html<Action> {
   return element("input", props, true)
 }
 
-export function textarea<Message = never>(props: unknown): Html<Message> {
+export function textarea<Action = never>(props: unknown): Html<Action> {
   const record = expectProps(props)
   return element("textarea", { ...record, children: record.value ?? "" }, false)
 }
 
-export function renderToString<Message>(value: Html<Message>): string {
+export function renderToString<Action>(value: Html<Action>): string {
   switch (value[HTML_NODE]) {
     case "text":
       return escapeText(value.value)
@@ -158,24 +158,22 @@ export function renderToString<Message>(value: Html<Message>): string {
   }
 }
 
-export function renderDocument<Message>(value: Html<Message>): string {
+export function renderDocument<Action>(value: Html<Action>): string {
   return `<!doctype html>${renderToString(value)}`
 }
 
 /** Runtime-internal DOM adapter snapshot. SSR output never includes markers. */
-export function renderForDom<Message>(
-  value: Html<Message>
-): DomRender<Message> {
-  const eventHandlers = new Map<string, DomEventHandler<Message>>()
+export function renderForDom<Action>(value: Html<Action>): DomRender<Action> {
+  const eventHandlers = new Map<string, DomEventHandler<Action>>()
   return Object.freeze({
     html: renderDomNode(value, eventHandlers),
     eventHandlers,
   })
 }
 
-function renderDomNode<Message>(
-  value: Html<Message>,
-  eventHandlers: Map<string, DomEventHandler<Message>>
+function renderDomNode<Action>(
+  value: Html<Action>,
+  eventHandlers: Map<string, DomEventHandler<Action>>
 ): string {
   switch (value[HTML_NODE]) {
     case "text":
@@ -196,52 +194,52 @@ function renderDomNode<Message>(
   }
 }
 
-function registerDomEvents<Message>(
+function registerDomEvents<Action>(
   props: Readonly<Record<string, unknown>>,
-  eventHandlers: Map<string, DomEventHandler<Message>>
+  eventHandlers: Map<string, DomEventHandler<Action>>
 ): Readonly<Record<string, string>> {
   const markers: Record<string, string> = {}
   const register = (
-    kind: DomEventHandler<Message>["kind"],
-    handler: DomEventHandler<Message>
+    kind: DomEventHandler<Action>["kind"],
+    handler: DomEventHandler<Action>
   ): void => {
     const id = String(eventHandlers.size)
     eventHandlers.set(id, Object.freeze(handler))
     markers[kind] = id
   }
   if (Object.hasOwn(props, "onClick")) {
-    register("click", { kind: "click", message: props.onClick as Message })
+    register("click", { kind: "click", message: props.onClick as Action })
   }
   if (Object.hasOwn(props, "onInput")) {
     register("input", {
       kind: "input",
-      map: expectEventMapper<InputEvent, Message>("onInput", props.onInput),
+      map: expectEventMapper<InputEvent, Action>("onInput", props.onInput),
     })
   }
   if (Object.hasOwn(props, "onChange")) {
     register("change", {
       kind: "change",
-      map: expectEventMapper<ChangeEvent, Message>("onChange", props.onChange),
+      map: expectEventMapper<ChangeEvent, Action>("onChange", props.onChange),
     })
   }
   if (Object.hasOwn(props, "onSubmit")) {
     register("submit", {
       kind: "submit",
-      message: props.onSubmit as Message,
+      message: props.onSubmit as Action,
     })
   }
   return markers
 }
 
-function element<Message>(
+function element<Action>(
   name: string,
   value: unknown,
   voidElement: boolean
-): Html<Message> {
+): Html<Action> {
   const props = expectProps(value)
   const children = voidElement
-    ? (Object.freeze([]) as ReadonlyArray<Html<Message>>)
-    : normalizeChildren<Message>(props.children)
+    ? (Object.freeze([]) as ReadonlyArray<Html<Action>>)
+    : normalizeChildren<Action>(props.children)
   return Object.freeze({
     [HTML_NODE]: "element",
     tag: name,
@@ -251,23 +249,23 @@ function element<Message>(
   } as const)
 }
 
-function normalizeChildren<Message>(
+function normalizeChildren<Action>(
   value: unknown
-): ReadonlyArray<Html<Message>> {
+): ReadonlyArray<Html<Action>> {
   if (value === undefined) return Object.freeze([])
-  if (typeof value === "string") return Object.freeze([text<Message>(value)])
-  if (isHtml<Message>(value)) return Object.freeze([value])
+  if (typeof value === "string") return Object.freeze([text<Action>(value)])
+  if (isHtml<Action>(value)) return Object.freeze([value])
   if (Array.isArray(value)) {
-    if (!value.every((child) => isHtml<Message>(child))) {
+    if (!value.every((child) => isHtml<Action>(child))) {
       throw new TypeError("HTML child arrays may contain only Html values")
     }
-    return Object.freeze([...value]) as ReadonlyArray<Html<Message>>
+    return Object.freeze([...value]) as ReadonlyArray<Html<Action>>
   }
   if (isList(value)) {
-    const children: Html<Message>[] = []
+    const children: Html<Action>[] = []
     let cursor: ListValue = value
     while (cursor.tag === "Cons") {
-      if (!isHtml<Message>(cursor.head)) {
+      if (!isHtml<Action>(cursor.head)) {
         throw new TypeError("HTML child lists may contain only Html values")
       }
       children.push(cursor.head)
@@ -321,10 +319,10 @@ function renderAttributes(
   return attributes.length === 0 ? "" : ` ${attributes.join(" ")}`
 }
 
-export function messageFromDomEvent<Message>(
-  handler: DomEventHandler<Message>,
+export function messageFromDomEvent<Action>(
+  handler: DomEventHandler<Action>,
   target: unknown
-): Message {
+): Action {
   switch (handler.kind) {
     case "click":
     case "submit":
@@ -384,14 +382,14 @@ function escapeAttribute(value: string): string {
   return escapeText(value).replaceAll('"', "&quot;").replaceAll("'", "&#39;")
 }
 
-function expectEventMapper<Event, Message>(
+function expectEventMapper<Event, Action>(
   name: string,
   value: unknown
-): (event: Event) => Message {
+): (event: Event) => Action {
   if (typeof value !== "function") {
     throw new TypeError(`HTML event ${name} must be a function`)
   }
-  return value as (event: Event) => Message
+  return value as (event: Event) => Action
 }
 
 function eventTargetString(name: string, target: unknown): string {
@@ -449,7 +447,7 @@ function isStyle(value: unknown): value is Style {
   return typeof value === "object" && value !== null && STYLE in value
 }
 
-function isHtml<Message>(value: unknown): value is Html<Message> {
+function isHtml<Action>(value: unknown): value is Html<Action> {
   return typeof value === "object" && value !== null && HTML_NODE in value
 }
 

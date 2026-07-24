@@ -54,7 +54,7 @@
   "adts": [
     {
       "exported": false,
-      "name": "Msg",
+      "name": "Action",
       "typeParameters": [],
       "variants": [
         {
@@ -66,8 +66,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 53,
-            "end": 65
+            "start": 56,
+            "end": 68
           }
         },
         {
@@ -79,8 +79,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 77,
-            "end": 91
+            "start": 80,
+            "end": 94
           }
         },
         {
@@ -89,15 +89,15 @@
           "tag": "Submitted",
           "origin": {
             "source": "main.ssrg",
-            "start": 101,
-            "end": 110
+            "start": 104,
+            "end": 113
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 38,
-        "end": 110
+        "end": 113
       }
     }
   ],
@@ -105,7 +105,7 @@
     {
       "kind": "const-function",
       "exported": false,
-      "name": "draftMessage",
+      "name": "draftAction",
       "parameters": [
         {
           "name": "event",
@@ -129,14 +129,14 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 112,
-        "end": 186
+        "start": 115,
+        "end": 191
       }
     },
     {
       "kind": "const-function",
       "exported": false,
-      "name": "checkedMessage",
+      "name": "checkedAction",
       "parameters": [
         {
           "name": "event",
@@ -160,8 +160,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 188,
-        "end": 269
+        "start": 193,
+        "end": 276
       }
     },
     {
@@ -288,7 +288,7 @@
                               "name": "onInput",
                               "value": {
                                 "kind": "identifier",
-                                "name": "draftMessage"
+                                "name": "draftAction"
                               }
                             }
                           ]
@@ -323,7 +323,7 @@
                               "name": "onInput",
                               "value": {
                                 "kind": "identifier",
-                                "name": "draftMessage"
+                                "name": "draftAction"
                               }
                             }
                           ]
@@ -358,7 +358,7 @@
                               "name": "onChange",
                               "value": {
                                 "kind": "identifier",
-                                "name": "checkedMessage"
+                                "name": "checkedAction"
                               }
                             }
                           ]
@@ -415,7 +415,7 @@
                     "arguments": [
                       {
                         "kind": "reference",
-                        "name": "Msg",
+                        "name": "Action",
                         "arguments": []
                       }
                     ]
@@ -428,8 +428,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 271,
-        "end": 992
+        "start": 278,
+        "end": 999
       }
     }
   ]

@@ -216,8 +216,8 @@
       }
     },
     {
-      "symbol": "artifact/web-dom-counter::Msg",
-      "name": "Msg",
+      "symbol": "artifact/web-dom-counter::Action",
+      "name": "Action",
       "visibility": "private",
       "opaque": false,
       "typeParameters": [],
@@ -227,8 +227,8 @@
           "name": "StartFocus",
           "origin": {
             "source": "main.ssrg",
-            "start": 136,
-            "end": 146
+            "start": 139,
+            "end": 149
           }
         },
         {
@@ -236,8 +236,8 @@
           "name": "TakeBreak",
           "origin": {
             "source": "main.ssrg",
-            "start": 151,
-            "end": 160
+            "start": 154,
+            "end": 163
           }
         },
         {
@@ -245,15 +245,15 @@
           "name": "Reset",
           "origin": {
             "source": "main.ssrg",
-            "start": 165,
-            "end": 170
+            "start": 168,
+            "end": 173
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 121,
-        "end": 170
+        "end": 173
       }
     }
   ],
@@ -263,8 +263,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 172,
-        "end": 201
+        "start": 175,
+        "end": 204
       },
       "value": {
         "kind": "variable",
@@ -276,8 +276,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 196,
-          "end": 201
+          "start": 199,
+          "end": 204
         }
       }
     },
@@ -286,8 +286,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 203,
-        "end": 363
+        "start": 206,
+        "end": 366
       },
       "value": {
         "kind": "call",
@@ -304,14 +304,14 @@
                   "value": "linear-gradient(135deg, #d1fae5 0%, #f8fafc 48%, #dbeafe 100%)",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 250,
-                    "end": 314
+                    "start": 253,
+                    "end": 317
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 238,
-                  "end": 314
+                  "start": 241,
+                  "end": 317
                 }
               },
               {
@@ -322,14 +322,14 @@
                   "value": "100vh",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 331,
-                    "end": 338
+                    "start": 334,
+                    "end": 341
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 320,
-                  "end": 338
+                  "start": 323,
+                  "end": 341
                 }
               },
               {
@@ -340,14 +340,14 @@
                   "value": "32px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 353,
-                    "end": 359
+                    "start": 356,
+                    "end": 362
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 344,
-                  "end": 359
+                  "start": 347,
+                  "end": 362
                 }
               }
             ],
@@ -383,8 +383,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 232,
-              "end": 363
+              "start": 235,
+              "end": 366
             }
           }
         ],
@@ -439,8 +439,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 221,
-          "end": 363
+          "start": 224,
+          "end": 366
         }
       }
     },
@@ -449,8 +449,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 365,
-        "end": 605
+        "start": 368,
+        "end": 608
       },
       "value": {
         "kind": "call",
@@ -473,14 +473,14 @@
                         "value": "0 24px 64px #0f172a24",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 425,
-                          "end": 448
+                          "start": 428,
+                          "end": 451
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 413,
-                        "end": 448
+                        "start": 416,
+                        "end": 451
                       }
                     }
                   ],
@@ -500,14 +500,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 411,
-                    "end": 450
+                    "start": 414,
+                    "end": 453
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 400,
-                  "end": 450
+                  "start": 403,
+                  "end": 453
                 }
               },
               {
@@ -518,14 +518,14 @@
                   "value": "#ffffff",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 473,
-                    "end": 482
+                    "start": 476,
+                    "end": 485
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 456,
-                  "end": 482
+                  "start": 459,
+                  "end": 485
                 }
               },
               {
@@ -536,14 +536,14 @@
                   "value": "1px solid #ffffffcc",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 496,
-                    "end": 517
+                    "start": 499,
+                    "end": 520
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 488,
-                  "end": 517
+                  "start": 491,
+                  "end": 520
                 }
               },
               {
@@ -554,14 +554,14 @@
                   "value": "28px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 537,
-                    "end": 543
+                    "start": 540,
+                    "end": 546
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 523,
-                  "end": 543
+                  "start": 526,
+                  "end": 546
                 }
               },
               {
@@ -572,14 +572,14 @@
                   "value": "var(--card-shadow)",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 560,
-                    "end": 580
+                    "start": 563,
+                    "end": 583
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 549,
-                  "end": 580
+                  "start": 552,
+                  "end": 583
                 }
               },
               {
@@ -590,14 +590,14 @@
                   "value": "32px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 595,
-                    "end": 601
+                    "start": 598,
+                    "end": 604
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 586,
-                  "end": 601
+                  "start": 589,
+                  "end": 604
                 }
               }
             ],
@@ -666,8 +666,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 394,
-              "end": 605
+              "start": 397,
+              "end": 608
             }
           }
         ],
@@ -755,8 +755,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 383,
-          "end": 605
+          "start": 386,
+          "end": 608
         }
       }
     },
@@ -765,8 +765,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 607,
-        "end": 744
+        "start": 610,
+        "end": 747
       },
       "value": {
         "kind": "call",
@@ -783,14 +783,14 @@
                   "value": "#e2e8f0",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 660,
-                    "end": 669
+                    "start": 663,
+                    "end": 672
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 643,
-                  "end": 669
+                  "start": 646,
+                  "end": 672
                 }
               },
               {
@@ -801,14 +801,14 @@
                   "value": "999px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 689,
-                    "end": 696
+                    "start": 692,
+                    "end": 699
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 675,
-                  "end": 696
+                  "start": 678,
+                  "end": 699
                 }
               },
               {
@@ -819,14 +819,14 @@
                   "value": "10px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 710,
-                    "end": 716
+                    "start": 713,
+                    "end": 719
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 702,
-                  "end": 716
+                  "start": 705,
+                  "end": 719
                 }
               },
               {
@@ -837,14 +837,14 @@
                   "value": "hidden",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 732,
-                    "end": 740
+                    "start": 735,
+                    "end": 743
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 722,
-                  "end": 740
+                  "start": 725,
+                  "end": 743
                 }
               }
             ],
@@ -888,8 +888,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 637,
-              "end": 744
+              "start": 640,
+              "end": 747
             }
           }
         ],
@@ -952,8 +952,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 626,
-          "end": 744
+          "start": 629,
+          "end": 747
         }
       }
     }
@@ -964,8 +964,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 746,
-        "end": 864
+        "start": 749,
+        "end": 867
       },
       "parameters": [
         {
@@ -990,8 +990,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 786,
-            "end": 790
+            "start": 789,
+            "end": 793
           }
         },
         "scrutineeType": {
@@ -1008,8 +1008,8 @@
                 "constructor": "artifact/web-dom-counter::Ready",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 797,
-                  "end": 802
+                  "start": 800,
+                  "end": 805
                 }
               }
             ],
@@ -1018,14 +1018,14 @@
               "value": "READY",
               "origin": {
                 "source": "main.ssrg",
-                "start": 806,
-                "end": 813
+                "start": 809,
+                "end": 816
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 797,
-              "end": 813
+              "start": 800,
+              "end": 816
             }
           },
           {
@@ -1036,8 +1036,8 @@
                 "constructor": "artifact/web-dom-counter::Focusing",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 818,
-                  "end": 826
+                  "start": 821,
+                  "end": 829
                 }
               }
             ],
@@ -1046,14 +1046,14 @@
               "value": "FOCUS",
               "origin": {
                 "source": "main.ssrg",
-                "start": 830,
-                "end": 837
+                "start": 833,
+                "end": 840
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 818,
-              "end": 837
+              "start": 821,
+              "end": 840
             }
           },
           {
@@ -1063,14 +1063,14 @@
               "value": "BREAK",
               "origin": {
                 "source": "main.ssrg",
-                "start": 853,
-                "end": 860
+                "start": 856,
+                "end": 863
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 842,
-              "end": 860
+              "start": 845,
+              "end": 863
             }
           }
         ],
@@ -1082,8 +1082,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 780,
-          "end": 864
+          "start": 783,
+          "end": 867
         }
       }
     },
@@ -1092,8 +1092,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 866,
-        "end": 1026
+        "start": 869,
+        "end": 1029
       },
       "parameters": [
         {
@@ -1118,8 +1118,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 906,
-            "end": 910
+            "start": 909,
+            "end": 913
           }
         },
         "scrutineeType": {
@@ -1136,8 +1136,8 @@
                 "constructor": "artifact/web-dom-counter::Ready",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 917,
-                  "end": 922
+                  "start": 920,
+                  "end": 925
                 }
               }
             ],
@@ -1146,14 +1146,14 @@
               "value": "Choose your rhythm",
               "origin": {
                 "source": "main.ssrg",
-                "start": 926,
-                "end": 946
+                "start": 929,
+                "end": 949
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 917,
-              "end": 946
+              "start": 920,
+              "end": 949
             }
           },
           {
@@ -1164,8 +1164,8 @@
                 "constructor": "artifact/web-dom-counter::Focusing",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 951,
-                  "end": 959
+                  "start": 954,
+                  "end": 962
                 }
               }
             ],
@@ -1174,14 +1174,14 @@
               "value": "Deep work in progress",
               "origin": {
                 "source": "main.ssrg",
-                "start": 963,
-                "end": 986
+                "start": 966,
+                "end": 989
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 951,
-              "end": 986
+              "start": 954,
+              "end": 989
             }
           },
           {
@@ -1191,14 +1191,14 @@
               "value": "Pause with purpose",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1002,
-                "end": 1022
+                "start": 1005,
+                "end": 1025
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 991,
-              "end": 1022
+              "start": 994,
+              "end": 1025
             }
           }
         ],
@@ -1210,8 +1210,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 900,
-          "end": 1026
+          "start": 903,
+          "end": 1029
         }
       }
     },
@@ -1220,8 +1220,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 1028,
-        "end": 1281
+        "start": 1031,
+        "end": 1283
       },
       "parameters": [
         {
@@ -1246,8 +1246,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 1071,
-            "end": 1075
+            "start": 1074,
+            "end": 1078
           }
         },
         "scrutineeType": {
@@ -1264,24 +1264,24 @@
                 "constructor": "artifact/web-dom-counter::Ready",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1082,
-                  "end": 1087
+                  "start": 1085,
+                  "end": 1090
                 }
               }
             ],
             "value": {
               "kind": "string",
-              "value": "Pick a mode and let a typed message update the Signal.",
+              "value": "Pick a mode and let a typed action update the Signal.",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1091,
-                "end": 1147
+                "start": 1094,
+                "end": 1149
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1082,
-              "end": 1147
+              "start": 1085,
+              "end": 1149
             }
           },
           {
@@ -1292,8 +1292,8 @@
                 "constructor": "artifact/web-dom-counter::Focusing",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1152,
-                  "end": 1160
+                  "start": 1154,
+                  "end": 1162
                 }
               }
             ],
@@ -1302,14 +1302,14 @@
               "value": "One task. No tab hopping. You have got this.",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1164,
-                "end": 1210
+                "start": 1166,
+                "end": 1212
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1152,
-              "end": 1210
+              "start": 1154,
+              "end": 1212
             }
           },
           {
@@ -1319,14 +1319,14 @@
               "value": "Look away from the screen and take a slow breath.",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1226,
-                "end": 1277
+                "start": 1228,
+                "end": 1279
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1215,
-              "end": 1277
+              "start": 1217,
+              "end": 1279
             }
           }
         ],
@@ -1338,8 +1338,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 1065,
-          "end": 1281
+          "start": 1068,
+          "end": 1283
         }
       }
     },
@@ -1348,8 +1348,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 1283,
-        "end": 1408
+        "start": 1285,
+        "end": 1410
       },
       "parameters": [
         {
@@ -1374,8 +1374,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 1324,
-            "end": 1328
+            "start": 1326,
+            "end": 1330
           }
         },
         "scrutineeType": {
@@ -1392,8 +1392,8 @@
                 "constructor": "artifact/web-dom-counter::Ready",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1335,
-                  "end": 1340
+                  "start": 1337,
+                  "end": 1342
                 }
               }
             ],
@@ -1402,14 +1402,14 @@
               "value": "#475569",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1344,
-                "end": 1353
+                "start": 1346,
+                "end": 1355
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1335,
-              "end": 1353
+              "start": 1337,
+              "end": 1355
             }
           },
           {
@@ -1420,8 +1420,8 @@
                 "constructor": "artifact/web-dom-counter::Focusing",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1358,
-                  "end": 1366
+                  "start": 1360,
+                  "end": 1368
                 }
               }
             ],
@@ -1430,14 +1430,14 @@
               "value": "#059669",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1370,
-                "end": 1379
+                "start": 1372,
+                "end": 1381
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1358,
-              "end": 1379
+              "start": 1360,
+              "end": 1381
             }
           },
           {
@@ -1447,14 +1447,14 @@
               "value": "#2563eb",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1395,
-                "end": 1404
+                "start": 1397,
+                "end": 1406
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1384,
-              "end": 1404
+              "start": 1386,
+              "end": 1406
             }
           }
         ],
@@ -1466,8 +1466,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 1318,
-          "end": 1408
+          "start": 1320,
+          "end": 1410
         }
       }
     },
@@ -1476,8 +1476,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 1410,
-        "end": 1525
+        "start": 1412,
+        "end": 1527
       },
       "parameters": [
         {
@@ -1502,8 +1502,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 1453,
-            "end": 1457
+            "start": 1455,
+            "end": 1459
           }
         },
         "scrutineeType": {
@@ -1520,8 +1520,8 @@
                 "constructor": "artifact/web-dom-counter::Ready",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1464,
-                  "end": 1469
+                  "start": 1466,
+                  "end": 1471
                 }
               }
             ],
@@ -1530,14 +1530,14 @@
               "value": "18%",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1473,
-                "end": 1478
+                "start": 1475,
+                "end": 1480
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1464,
-              "end": 1478
+              "start": 1466,
+              "end": 1480
             }
           },
           {
@@ -1548,8 +1548,8 @@
                 "constructor": "artifact/web-dom-counter::Focusing",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1483,
-                  "end": 1491
+                  "start": 1485,
+                  "end": 1493
                 }
               }
             ],
@@ -1558,14 +1558,14 @@
               "value": "82%",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1495,
-                "end": 1500
+                "start": 1497,
+                "end": 1502
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1483,
-              "end": 1500
+              "start": 1485,
+              "end": 1502
             }
           },
           {
@@ -1575,14 +1575,14 @@
               "value": "46%",
               "origin": {
                 "source": "main.ssrg",
-                "start": 1516,
-                "end": 1521
+                "start": 1518,
+                "end": 1523
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1505,
-              "end": 1521
+              "start": 1507,
+              "end": 1523
             }
           }
         ],
@@ -1594,8 +1594,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 1447,
-          "end": 1525
+          "start": 1449,
+          "end": 1527
         }
       }
     },
@@ -1604,8 +1604,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 1527,
-        "end": 1729
+        "start": 1529,
+        "end": 1731
       },
       "parameters": [
         {
@@ -1642,8 +1642,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1614,
-                        "end": 1618
+                        "start": 1616,
+                        "end": 1620
                       }
                     }
                   ],
@@ -1654,14 +1654,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1607,
-                    "end": 1618
+                    "start": 1609,
+                    "end": 1620
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1590,
-                  "end": 1618
+                  "start": 1592,
+                  "end": 1620
                 }
               },
               {
@@ -1672,14 +1672,14 @@
                   "value": "999px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1638,
-                    "end": 1645
+                    "start": 1640,
+                    "end": 1647
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1624,
-                  "end": 1645
+                  "start": 1626,
+                  "end": 1647
                 }
               },
               {
@@ -1690,14 +1690,14 @@
                   "value": "100%",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1659,
-                    "end": 1665
+                    "start": 1661,
+                    "end": 1667
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1651,
-                  "end": 1665
+                  "start": 1653,
+                  "end": 1667
                 }
               },
               {
@@ -1708,14 +1708,14 @@
                   "value": "all 240ms ease",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1683,
-                    "end": 1699
+                    "start": 1685,
+                    "end": 1701
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1671,
-                  "end": 1699
+                  "start": 1673,
+                  "end": 1701
                 }
               },
               {
@@ -1735,8 +1735,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1721,
-                        "end": 1725
+                        "start": 1723,
+                        "end": 1727
                       }
                     }
                   ],
@@ -1747,14 +1747,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1712,
-                    "end": 1725
+                    "start": 1714,
+                    "end": 1727
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1705,
-                  "end": 1725
+                  "start": 1707,
+                  "end": 1727
                 }
               }
             ],
@@ -1806,8 +1806,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1584,
-              "end": 1729
+              "start": 1586,
+              "end": 1731
             }
           }
         ],
@@ -1878,8 +1878,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 1573,
-          "end": 1729
+          "start": 1575,
+          "end": 1731
         }
       }
     },
@@ -1888,8 +1888,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 1731,
-        "end": 1971
+        "start": 1733,
+        "end": 1973
       },
       "parameters": [
         {
@@ -1926,8 +1926,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1815,
-                        "end": 1819
+                        "start": 1817,
+                        "end": 1821
                       }
                     }
                   ],
@@ -1938,14 +1938,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1808,
-                    "end": 1819
+                    "start": 1810,
+                    "end": 1821
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1791,
-                  "end": 1819
+                  "start": 1793,
+                  "end": 1821
                 }
               },
               {
@@ -1956,14 +1956,14 @@
                   "value": "999px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1839,
-                    "end": 1846
+                    "start": 1841,
+                    "end": 1848
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1825,
-                  "end": 1846
+                  "start": 1827,
+                  "end": 1848
                 }
               },
               {
@@ -1974,14 +1974,14 @@
                   "value": "#ffffff",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1859,
-                    "end": 1868
+                    "start": 1861,
+                    "end": 1870
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1852,
-                  "end": 1868
+                  "start": 1854,
+                  "end": 1870
                 }
               },
               {
@@ -1992,14 +1992,14 @@
                   "value": "12px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1884,
-                    "end": 1890
+                    "start": 1886,
+                    "end": 1892
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1874,
-                  "end": 1890
+                  "start": 1876,
+                  "end": 1892
                 }
               },
               {
@@ -2010,14 +2010,14 @@
                   "value": "700",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1908,
-                    "end": 1913
+                    "start": 1910,
+                    "end": 1915
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1896,
-                  "end": 1913
+                  "start": 1898,
+                  "end": 1915
                 }
               },
               {
@@ -2028,14 +2028,14 @@
                   "value": "0.12em",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1934,
-                    "end": 1942
+                    "start": 1936,
+                    "end": 1944
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1919,
-                  "end": 1942
+                  "start": 1921,
+                  "end": 1944
                 }
               },
               {
@@ -2046,14 +2046,14 @@
                   "value": "6px 12px",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1957,
-                    "end": 1967
+                    "start": 1959,
+                    "end": 1969
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1948,
-                  "end": 1967
+                  "start": 1950,
+                  "end": 1969
                 }
               }
             ],
@@ -2121,8 +2121,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1785,
-              "end": 1971
+              "start": 1787,
+              "end": 1973
             }
           }
         ],
@@ -2209,8 +2209,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 1774,
-          "end": 1971
+          "start": 1776,
+          "end": 1973
         }
       }
     },
@@ -2219,16 +2219,16 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 1973,
-        "end": 2284
+        "start": 1975,
+        "end": 2287
       },
       "parameters": [
         {
-          "id": "message",
+          "id": "action",
           "kind": "named",
           "type": {
             "kind": "named",
-            "name": "Msg",
+            "name": "Action",
             "arguments": []
           }
         }
@@ -2237,21 +2237,21 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "variable",
-          "name": "message",
+          "name": "action",
           "type": {
             "kind": "named",
-            "name": "Msg",
+            "name": "Action",
             "arguments": []
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 2025,
-            "end": 2032
+            "start": 2029,
+            "end": 2035
           }
         },
         "scrutineeType": {
           "kind": "named",
-          "name": "Msg",
+          "name": "Action",
           "arguments": []
         },
         "branches": [
@@ -2263,8 +2263,8 @@
                 "constructor": "artifact/web-dom-counter::StartFocus",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2039,
-                  "end": 2049
+                  "start": 2042,
+                  "end": 2052
                 }
               }
             ],
@@ -2283,14 +2283,14 @@
                         "value": "#059669",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 2089,
-                          "end": 2098
+                          "start": 2092,
+                          "end": 2101
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2072,
-                        "end": 2098
+                        "start": 2075,
+                        "end": 2101
                       }
                     },
                     {
@@ -2301,14 +2301,14 @@
                         "value": "#ffffff",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 2107,
-                          "end": 2116
+                          "start": 2110,
+                          "end": 2119
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2100,
-                        "end": 2116
+                        "start": 2103,
+                        "end": 2119
                       }
                     }
                   ],
@@ -2336,8 +2336,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2070,
-                    "end": 2118
+                    "start": 2073,
+                    "end": 2121
                   }
                 }
               ],
@@ -2384,14 +2384,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 2059,
-                "end": 2118
+                "start": 2062,
+                "end": 2121
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 2039,
-              "end": 2118
+              "start": 2042,
+              "end": 2121
             }
           },
           {
@@ -2402,8 +2402,8 @@
                 "constructor": "artifact/web-dom-counter::TakeBreak",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2123,
-                  "end": 2132
+                  "start": 2126,
+                  "end": 2135
                 }
               }
             ],
@@ -2422,14 +2422,14 @@
                         "value": "#2563eb",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 2172,
-                          "end": 2181
+                          "start": 2175,
+                          "end": 2184
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2155,
-                        "end": 2181
+                        "start": 2158,
+                        "end": 2184
                       }
                     },
                     {
@@ -2440,14 +2440,14 @@
                         "value": "#ffffff",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 2190,
-                          "end": 2199
+                          "start": 2193,
+                          "end": 2202
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2183,
-                        "end": 2199
+                        "start": 2186,
+                        "end": 2202
                       }
                     }
                   ],
@@ -2475,8 +2475,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2153,
-                    "end": 2201
+                    "start": 2156,
+                    "end": 2204
                   }
                 }
               ],
@@ -2523,14 +2523,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 2142,
-                "end": 2201
+                "start": 2145,
+                "end": 2204
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 2123,
-              "end": 2201
+              "start": 2126,
+              "end": 2204
             }
           },
           {
@@ -2550,14 +2550,14 @@
                         "value": "#f1f5f9",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 2251,
-                          "end": 2260
+                          "start": 2254,
+                          "end": 2263
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2234,
-                        "end": 2260
+                        "start": 2237,
+                        "end": 2263
                       }
                     },
                     {
@@ -2568,14 +2568,14 @@
                         "value": "#334155",
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 2269,
-                          "end": 2278
+                          "start": 2272,
+                          "end": 2281
                         }
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2262,
-                        "end": 2278
+                        "start": 2265,
+                        "end": 2281
                       }
                     }
                   ],
@@ -2603,8 +2603,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2232,
-                    "end": 2280
+                    "start": 2235,
+                    "end": 2283
                   }
                 }
               ],
@@ -2651,14 +2651,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 2221,
-                "end": 2280
+                "start": 2224,
+                "end": 2283
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 2206,
-              "end": 2280
+              "start": 2209,
+              "end": 2283
             }
           }
         ],
@@ -2671,18 +2671,18 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 2019,
-          "end": 2284
+          "start": 2023,
+          "end": 2287
         }
       }
     },
     {
-      "symbol": "artifact/web-dom-counter::action",
+      "symbol": "artifact/web-dom-counter::actionButton",
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 2286,
-        "end": 2561
+        "start": 2289,
+        "end": 2573
       },
       "parameters": [
         {
@@ -2704,11 +2704,11 @@
           }
         },
         {
-          "id": "message",
+          "id": "action",
           "kind": "named",
           "type": {
             "kind": "named",
-            "name": "Msg",
+            "name": "Action",
             "arguments": []
           }
         }
@@ -2733,14 +2733,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2385,
-                    "end": 2387
+                    "start": 2399,
+                    "end": 2401
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2385,
-                  "end": 2387
+                  "start": 2399,
+                  "end": 2401
                 }
               },
               {
@@ -2748,22 +2748,22 @@
                 "name": "onClick",
                 "value": {
                   "kind": "variable",
-                  "name": "message",
+                  "name": "action",
                   "type": {
                     "kind": "named",
-                    "name": "Msg",
+                    "name": "Action",
                     "arguments": []
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2402,
-                    "end": 2409
+                    "start": 2416,
+                    "end": 2422
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2393,
-                  "end": 2409
+                  "start": 2407,
+                  "end": 2422
                 }
               },
               {
@@ -2774,14 +2774,14 @@
                   "value": "w-full rounded-xl border-0 px-4 py-3 font-semibold transition hover:shadow-lg",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2426,
-                    "end": 2505
+                    "start": 2439,
+                    "end": 2518
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2415,
-                  "end": 2505
+                  "start": 2428,
+                  "end": 2518
                 }
               },
               {
@@ -2793,16 +2793,16 @@
                   "arguments": [
                     {
                       "kind": "variable",
-                      "name": "message",
+                      "name": "action",
                       "type": {
                         "kind": "named",
-                        "name": "Msg",
+                        "name": "Action",
                         "arguments": []
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2530,
-                        "end": 2537
+                        "start": 2543,
+                        "end": 2549
                       }
                     }
                   ],
@@ -2814,14 +2814,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2518,
-                    "end": 2537
+                    "start": 2531,
+                    "end": 2549
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2511,
-                  "end": 2537
+                  "start": 2524,
+                  "end": 2549
                 }
               },
               {
@@ -2837,14 +2837,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2553,
-                    "end": 2557
+                    "start": 2565,
+                    "end": 2569
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2543,
-                  "end": 2557
+                  "start": 2555,
+                  "end": 2569
                 }
               }
             ],
@@ -2880,7 +2880,7 @@
                   "name": "onClick",
                   "type": {
                     "kind": "named",
-                    "name": "Msg",
+                    "name": "Action",
                     "arguments": []
                   }
                 },
@@ -2897,8 +2897,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 2379,
-              "end": 2561
+              "start": 2393,
+              "end": 2573
             }
           }
         ],
@@ -2914,7 +2914,7 @@
                 },
                 {
                   "kind": "named",
-                  "name": "Msg",
+                  "name": "Action",
                   "arguments": []
                 }
               ]
@@ -2932,15 +2932,15 @@
           "arguments": [
             {
               "kind": "named",
-              "name": "Msg",
+              "name": "Action",
               "arguments": []
             }
           ]
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 2367,
-          "end": 2561
+          "start": 2381,
+          "end": 2573
         }
       }
     },
@@ -2949,8 +2949,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 2563,
-        "end": 3946
+        "start": 2575,
+        "end": 3979
       },
       "parameters": [
         {
@@ -2981,14 +2981,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2627,
-                    "end": 2636
+                    "start": 2642,
+                    "end": 2651
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2620,
-                  "end": 2636
+                  "start": 2635,
+                  "end": 2651
                 }
               },
               {
@@ -3012,14 +3012,14 @@
                                 "value": "mx-auto max-w-lg",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 2694,
-                                  "end": 2712
+                                  "start": 2709,
+                                  "end": 2727
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 2683,
-                                "end": 2712
+                                "start": 2698,
+                                "end": 2727
                               }
                             },
                             {
@@ -3033,14 +3033,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 2729,
-                                  "end": 2738
+                                  "start": 2744,
+                                  "end": 2753
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 2722,
-                                "end": 2738
+                                "start": 2737,
+                                "end": 2753
                               }
                             },
                             {
@@ -3064,14 +3064,14 @@
                                               "value": "mb-6 flex items-center justify-between",
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 2804,
-                                                "end": 2844
+                                                "start": 2819,
+                                                "end": 2859
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 2793,
-                                              "end": 2844
+                                              "start": 2808,
+                                              "end": 2859
                                             }
                                           },
                                           {
@@ -3104,8 +3104,8 @@
                                                                 },
                                                                 "origin": {
                                                                   "source": "main.ssrg",
-                                                                  "start": 2930,
-                                                                  "end": 2934
+                                                                  "start": 2945,
+                                                                  "end": 2949
                                                                 }
                                                               }
                                                             ],
@@ -3117,14 +3117,14 @@
                                                             },
                                                             "origin": {
                                                               "source": "main.ssrg",
-                                                              "start": 2919,
-                                                              "end": 2934
+                                                              "start": 2934,
+                                                              "end": 2949
                                                             }
                                                           },
                                                           "origin": {
                                                             "source": "main.ssrg",
-                                                            "start": 2912,
-                                                            "end": 2934
+                                                            "start": 2927,
+                                                            "end": 2949
                                                           }
                                                         },
                                                         {
@@ -3144,8 +3144,8 @@
                                                                 },
                                                                 "origin": {
                                                                   "source": "main.ssrg",
-                                                                  "start": 2968,
-                                                                  "end": 2972
+                                                                  "start": 2983,
+                                                                  "end": 2987
                                                                 }
                                                               }
                                                             ],
@@ -3156,14 +3156,14 @@
                                                             },
                                                             "origin": {
                                                               "source": "main.ssrg",
-                                                              "start": 2962,
-                                                              "end": 2972
+                                                              "start": 2977,
+                                                              "end": 2987
                                                             }
                                                           },
                                                           "origin": {
                                                             "source": "main.ssrg",
-                                                            "start": 2952,
-                                                            "end": 2972
+                                                            "start": 2967,
+                                                            "end": 2987
                                                           }
                                                         }
                                                       ],
@@ -3192,8 +3192,8 @@
                                                       },
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 2894,
-                                                        "end": 2988
+                                                        "start": 2909,
+                                                        "end": 3003
                                                       }
                                                     }
                                                   ],
@@ -3209,7 +3209,7 @@
                                                           },
                                                           {
                                                             "kind": "named",
-                                                            "name": "Msg",
+                                                            "name": "Action",
                                                             "arguments": []
                                                           }
                                                         ]
@@ -3227,15 +3227,15 @@
                                                     "arguments": [
                                                       {
                                                         "kind": "named",
-                                                        "name": "Msg",
+                                                        "name": "Action",
                                                         "arguments": []
                                                       }
                                                     ]
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 2884,
-                                                    "end": 2988
+                                                    "start": 2899,
+                                                    "end": 3003
                                                   }
                                                 },
                                                 {
@@ -3253,14 +3253,14 @@
                                                             "value": "text-sm font-semibold text-slate-500",
                                                             "origin": {
                                                               "source": "main.ssrg",
-                                                              "start": 3043,
-                                                              "end": 3081
+                                                              "start": 3058,
+                                                              "end": 3096
                                                             }
                                                           },
                                                           "origin": {
                                                             "source": "main.ssrg",
-                                                            "start": 3032,
-                                                            "end": 3081
+                                                            "start": 3047,
+                                                            "end": 3096
                                                           }
                                                         },
                                                         {
@@ -3271,14 +3271,14 @@
                                                             "value": "SESERAGI FLOW",
                                                             "origin": {
                                                               "source": "main.ssrg",
-                                                              "start": 3109,
-                                                              "end": 3124
+                                                              "start": 3124,
+                                                              "end": 3139
                                                             }
                                                           },
                                                           "origin": {
                                                             "source": "main.ssrg",
-                                                            "start": 3099,
-                                                            "end": 3124
+                                                            "start": 3114,
+                                                            "end": 3139
                                                           }
                                                         }
                                                       ],
@@ -3306,8 +3306,8 @@
                                                       },
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3014,
-                                                        "end": 3140
+                                                        "start": 3029,
+                                                        "end": 3155
                                                       }
                                                     }
                                                   ],
@@ -3323,7 +3323,7 @@
                                                           },
                                                           {
                                                             "kind": "named",
-                                                            "name": "Msg",
+                                                            "name": "Action",
                                                             "arguments": []
                                                           }
                                                         ]
@@ -3341,15 +3341,15 @@
                                                     "arguments": [
                                                       {
                                                         "kind": "named",
-                                                        "name": "Msg",
+                                                        "name": "Action",
                                                         "arguments": []
                                                       }
                                                     ]
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 3004,
-                                                    "end": 3140
+                                                    "start": 3019,
+                                                    "end": 3155
                                                   }
                                                 }
                                               ],
@@ -3364,7 +3364,7 @@
                                                     "arguments": [
                                                       {
                                                         "kind": "named",
-                                                        "name": "Msg",
+                                                        "name": "Action",
                                                         "arguments": []
                                                       }
                                                     ]
@@ -3373,14 +3373,14 @@
                                               },
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 2868,
-                                                "end": 3154
+                                                "start": 2883,
+                                                "end": 3169
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 2858,
-                                              "end": 3154
+                                              "start": 2873,
+                                              "end": 3169
                                             }
                                           }
                                         ],
@@ -3401,7 +3401,7 @@
                                                     "arguments": [
                                                       {
                                                         "kind": "named",
-                                                        "name": "Msg",
+                                                        "name": "Action",
                                                         "arguments": []
                                                       }
                                                     ]
@@ -3421,8 +3421,8 @@
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 2779,
-                                          "end": 3166
+                                          "start": 2794,
+                                          "end": 3181
                                         }
                                       }
                                     ],
@@ -3442,7 +3442,7 @@
                                                   "arguments": [
                                                     {
                                                       "kind": "named",
-                                                      "name": "Msg",
+                                                      "name": "Action",
                                                       "arguments": []
                                                     }
                                                   ]
@@ -3451,7 +3451,7 @@
                                             },
                                             {
                                               "kind": "named",
-                                              "name": "Msg",
+                                              "name": "Action",
                                               "arguments": []
                                             }
                                           ]
@@ -3469,15 +3469,15 @@
                                       "arguments": [
                                         {
                                           "kind": "named",
-                                          "name": "Msg",
+                                          "name": "Action",
                                           "arguments": []
                                         }
                                       ]
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 2770,
-                                      "end": 3166
+                                      "start": 2785,
+                                      "end": 3181
                                     }
                                   },
                                   {
@@ -3495,14 +3495,14 @@
                                               "value": "m-0 text-3xl font-bold text-slate-900 sm:text-4xl",
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3211,
-                                                "end": 3262
+                                                "start": 3226,
+                                                "end": 3277
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3200,
-                                              "end": 3262
+                                              "start": 3215,
+                                              "end": 3277
                                             }
                                           },
                                           {
@@ -3522,8 +3522,8 @@
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 3292,
-                                                    "end": 3296
+                                                    "start": 3307,
+                                                    "end": 3311
                                                   }
                                                 }
                                               ],
@@ -3534,14 +3534,14 @@
                                               },
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3286,
-                                                "end": 3296
+                                                "start": 3301,
+                                                "end": 3311
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3276,
-                                              "end": 3296
+                                              "start": 3291,
+                                              "end": 3311
                                             }
                                           }
                                         ],
@@ -3569,8 +3569,8 @@
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 3186,
-                                          "end": 3308
+                                          "start": 3201,
+                                          "end": 3323
                                         }
                                       }
                                     ],
@@ -3586,7 +3586,7 @@
                                             },
                                             {
                                               "kind": "named",
-                                              "name": "Msg",
+                                              "name": "Action",
                                               "arguments": []
                                             }
                                           ]
@@ -3604,15 +3604,15 @@
                                       "arguments": [
                                         {
                                           "kind": "named",
-                                          "name": "Msg",
+                                          "name": "Action",
                                           "arguments": []
                                         }
                                       ]
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 3178,
-                                      "end": 3308
+                                      "start": 3193,
+                                      "end": 3323
                                     }
                                   },
                                   {
@@ -3630,14 +3630,14 @@
                                               "value": "mb-6 mt-4 text-lg text-slate-700",
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3352,
-                                                "end": 3386
+                                                "start": 3367,
+                                                "end": 3401
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3341,
-                                              "end": 3386
+                                              "start": 3356,
+                                              "end": 3401
                                             }
                                           },
                                           {
@@ -3657,8 +3657,8 @@
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 3419,
-                                                    "end": 3423
+                                                    "start": 3434,
+                                                    "end": 3438
                                                   }
                                                 }
                                               ],
@@ -3669,14 +3669,14 @@
                                               },
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3410,
-                                                "end": 3423
+                                                "start": 3425,
+                                                "end": 3438
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3400,
-                                              "end": 3423
+                                              "start": 3415,
+                                              "end": 3438
                                             }
                                           }
                                         ],
@@ -3704,8 +3704,8 @@
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 3327,
-                                          "end": 3435
+                                          "start": 3342,
+                                          "end": 3450
                                         }
                                       }
                                     ],
@@ -3721,7 +3721,7 @@
                                             },
                                             {
                                               "kind": "named",
-                                              "name": "Msg",
+                                              "name": "Action",
                                               "arguments": []
                                             }
                                           ]
@@ -3739,15 +3739,15 @@
                                       "arguments": [
                                         {
                                           "kind": "named",
-                                          "name": "Msg",
+                                          "name": "Action",
                                           "arguments": []
                                         }
                                       ]
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 3320,
-                                      "end": 3435
+                                      "start": 3335,
+                                      "end": 3450
                                     }
                                   },
                                   {
@@ -3768,14 +3768,14 @@
                                               },
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3477,
-                                                "end": 3487
+                                                "start": 3492,
+                                                "end": 3502
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3470,
-                                              "end": 3487
+                                              "start": 3485,
+                                              "end": 3502
                                             }
                                           },
                                           {
@@ -3805,8 +3805,8 @@
                                                             },
                                                             "origin": {
                                                               "source": "main.ssrg",
-                                                              "start": 3557,
-                                                              "end": 3561
+                                                              "start": 3572,
+                                                              "end": 3576
                                                             }
                                                           }
                                                         ],
@@ -3818,14 +3818,14 @@
                                                         },
                                                         "origin": {
                                                           "source": "main.ssrg",
-                                                          "start": 3543,
-                                                          "end": 3561
+                                                          "start": 3558,
+                                                          "end": 3576
                                                         }
                                                       },
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3536,
-                                                        "end": 3561
+                                                        "start": 3551,
+                                                        "end": 3576
                                                       }
                                                     },
                                                     {
@@ -3836,14 +3836,14 @@
                                                         "value": "",
                                                         "origin": {
                                                           "source": "main.ssrg",
-                                                          "start": 3587,
-                                                          "end": 3589
+                                                          "start": 3602,
+                                                          "end": 3604
                                                         }
                                                       },
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3577,
-                                                        "end": 3589
+                                                        "start": 3592,
+                                                        "end": 3604
                                                       }
                                                     }
                                                   ],
@@ -3872,8 +3872,8 @@
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 3520,
-                                                    "end": 3603
+                                                    "start": 3535,
+                                                    "end": 3618
                                                   }
                                                 }
                                               ],
@@ -3889,7 +3889,7 @@
                                                       },
                                                       {
                                                         "kind": "named",
-                                                        "name": "Msg",
+                                                        "name": "Action",
                                                         "arguments": []
                                                       }
                                                     ]
@@ -3907,21 +3907,21 @@
                                                 "arguments": [
                                                   {
                                                     "kind": "named",
-                                                    "name": "Msg",
+                                                    "name": "Action",
                                                     "arguments": []
                                                   }
                                                 ]
                                               },
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3511,
-                                                "end": 3603
+                                                "start": 3526,
+                                                "end": 3618
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3501,
-                                              "end": 3603
+                                              "start": 3516,
+                                              "end": 3618
                                             }
                                           }
                                         ],
@@ -3938,7 +3938,7 @@
                                                 "arguments": [
                                                   {
                                                     "kind": "named",
-                                                    "name": "Msg",
+                                                    "name": "Action",
                                                     "arguments": []
                                                   }
                                                 ]
@@ -3954,8 +3954,8 @@
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 3456,
-                                          "end": 3615
+                                          "start": 3471,
+                                          "end": 3630
                                         }
                                       }
                                     ],
@@ -3971,14 +3971,14 @@
                                               "arguments": [
                                                 {
                                                   "kind": "named",
-                                                  "name": "Msg",
+                                                  "name": "Action",
                                                   "arguments": []
                                                 }
                                               ]
                                             },
                                             {
                                               "kind": "named",
-                                              "name": "Msg",
+                                              "name": "Action",
                                               "arguments": []
                                             }
                                           ]
@@ -3996,15 +3996,15 @@
                                       "arguments": [
                                         {
                                           "kind": "named",
-                                          "name": "Msg",
+                                          "name": "Action",
                                           "arguments": []
                                         }
                                       ]
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 3447,
-                                      "end": 3615
+                                      "start": 3462,
+                                      "end": 3630
                                     }
                                   },
                                   {
@@ -4022,14 +4022,14 @@
                                               "value": "mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3",
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3661,
-                                                "end": 3705
+                                                "start": 3676,
+                                                "end": 3720
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3650,
-                                              "end": 3705
+                                              "start": 3665,
+                                              "end": 3720
                                             }
                                           },
                                           {
@@ -4040,15 +4040,15 @@
                                               "elements": [
                                                 {
                                                   "kind": "call",
-                                                  "callee": "artifact/web-dom-counter::action",
+                                                  "callee": "artifact/web-dom-counter::actionButton",
                                                   "arguments": [
                                                     {
                                                       "kind": "string",
                                                       "value": "focus",
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3752,
-                                                        "end": 3759
+                                                        "start": 3773,
+                                                        "end": 3780
                                                       }
                                                     },
                                                     {
@@ -4056,8 +4056,8 @@
                                                       "value": "Start focus",
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3760,
-                                                        "end": 3773
+                                                        "start": 3781,
+                                                        "end": 3794
                                                       }
                                                     },
                                                     {
@@ -4065,13 +4065,13 @@
                                                       "name": "artifact/web-dom-counter::StartFocus",
                                                       "type": {
                                                         "kind": "named",
-                                                        "name": "Msg",
+                                                        "name": "Action",
                                                         "arguments": []
                                                       },
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3774,
-                                                        "end": 3784
+                                                        "start": 3795,
+                                                        "end": 3805
                                                       }
                                                     }
                                                   ],
@@ -4082,28 +4082,28 @@
                                                     "arguments": [
                                                       {
                                                         "kind": "named",
-                                                        "name": "Msg",
+                                                        "name": "Action",
                                                         "arguments": []
                                                       }
                                                     ]
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 3745,
-                                                    "end": 3784
+                                                    "start": 3760,
+                                                    "end": 3805
                                                   }
                                                 },
                                                 {
                                                   "kind": "call",
-                                                  "callee": "artifact/web-dom-counter::action",
+                                                  "callee": "artifact/web-dom-counter::actionButton",
                                                   "arguments": [
                                                     {
                                                       "kind": "string",
                                                       "value": "break",
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3807,
-                                                        "end": 3814
+                                                        "start": 3834,
+                                                        "end": 3841
                                                       }
                                                     },
                                                     {
@@ -4111,8 +4111,8 @@
                                                       "value": "Take a break",
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3815,
-                                                        "end": 3829
+                                                        "start": 3842,
+                                                        "end": 3856
                                                       }
                                                     },
                                                     {
@@ -4120,13 +4120,13 @@
                                                       "name": "artifact/web-dom-counter::TakeBreak",
                                                       "type": {
                                                         "kind": "named",
-                                                        "name": "Msg",
+                                                        "name": "Action",
                                                         "arguments": []
                                                       },
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3830,
-                                                        "end": 3839
+                                                        "start": 3857,
+                                                        "end": 3866
                                                       }
                                                     }
                                                   ],
@@ -4137,28 +4137,28 @@
                                                     "arguments": [
                                                       {
                                                         "kind": "named",
-                                                        "name": "Msg",
+                                                        "name": "Action",
                                                         "arguments": []
                                                       }
                                                     ]
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 3800,
-                                                    "end": 3839
+                                                    "start": 3821,
+                                                    "end": 3866
                                                   }
                                                 },
                                                 {
                                                   "kind": "call",
-                                                  "callee": "artifact/web-dom-counter::action",
+                                                  "callee": "artifact/web-dom-counter::actionButton",
                                                   "arguments": [
                                                     {
                                                       "kind": "string",
                                                       "value": "reset",
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3862,
-                                                        "end": 3869
+                                                        "start": 3895,
+                                                        "end": 3902
                                                       }
                                                     },
                                                     {
@@ -4166,8 +4166,8 @@
                                                       "value": "Reset the flow",
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3870,
-                                                        "end": 3886
+                                                        "start": 3903,
+                                                        "end": 3919
                                                       }
                                                     },
                                                     {
@@ -4175,13 +4175,13 @@
                                                       "name": "artifact/web-dom-counter::Reset",
                                                       "type": {
                                                         "kind": "named",
-                                                        "name": "Msg",
+                                                        "name": "Action",
                                                         "arguments": []
                                                       },
                                                       "origin": {
                                                         "source": "main.ssrg",
-                                                        "start": 3887,
-                                                        "end": 3892
+                                                        "start": 3920,
+                                                        "end": 3925
                                                       }
                                                     }
                                                   ],
@@ -4192,15 +4192,15 @@
                                                     "arguments": [
                                                       {
                                                         "kind": "named",
-                                                        "name": "Msg",
+                                                        "name": "Action",
                                                         "arguments": []
                                                       }
                                                     ]
                                                   },
                                                   "origin": {
                                                     "source": "main.ssrg",
-                                                    "start": 3855,
-                                                    "end": 3892
+                                                    "start": 3882,
+                                                    "end": 3925
                                                   }
                                                 }
                                               ],
@@ -4215,7 +4215,7 @@
                                                     "arguments": [
                                                       {
                                                         "kind": "named",
-                                                        "name": "Msg",
+                                                        "name": "Action",
                                                         "arguments": []
                                                       }
                                                     ]
@@ -4224,14 +4224,14 @@
                                               },
                                               "origin": {
                                                 "source": "main.ssrg",
-                                                "start": 3729,
-                                                "end": 3906
+                                                "start": 3744,
+                                                "end": 3939
                                               }
                                             },
                                             "origin": {
                                               "source": "main.ssrg",
-                                              "start": 3719,
-                                              "end": 3906
+                                              "start": 3734,
+                                              "end": 3939
                                             }
                                           }
                                         ],
@@ -4252,7 +4252,7 @@
                                                     "arguments": [
                                                       {
                                                         "kind": "named",
-                                                        "name": "Msg",
+                                                        "name": "Action",
                                                         "arguments": []
                                                       }
                                                     ]
@@ -4272,8 +4272,8 @@
                                         },
                                         "origin": {
                                           "source": "main.ssrg",
-                                          "start": 3636,
-                                          "end": 3918
+                                          "start": 3651,
+                                          "end": 3951
                                         }
                                       }
                                     ],
@@ -4293,7 +4293,7 @@
                                                   "arguments": [
                                                     {
                                                       "kind": "named",
-                                                      "name": "Msg",
+                                                      "name": "Action",
                                                       "arguments": []
                                                     }
                                                   ]
@@ -4302,7 +4302,7 @@
                                             },
                                             {
                                               "kind": "named",
-                                              "name": "Msg",
+                                              "name": "Action",
                                               "arguments": []
                                             }
                                           ]
@@ -4320,15 +4320,15 @@
                                       "arguments": [
                                         {
                                           "kind": "named",
-                                          "name": "Msg",
+                                          "name": "Action",
                                           "arguments": []
                                         }
                                       ]
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 3627,
-                                      "end": 3918
+                                      "start": 3642,
+                                      "end": 3951
                                     }
                                   }
                                 ],
@@ -4343,7 +4343,7 @@
                                       "arguments": [
                                         {
                                           "kind": "named",
-                                          "name": "Msg",
+                                          "name": "Action",
                                           "arguments": []
                                         }
                                       ]
@@ -4352,14 +4352,14 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 2758,
-                                  "end": 3928
+                                  "start": 2773,
+                                  "end": 3961
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 2748,
-                                "end": 3928
+                                "start": 2763,
+                                "end": 3961
                               }
                             }
                           ],
@@ -4380,7 +4380,7 @@
                                       "arguments": [
                                         {
                                           "kind": "named",
-                                          "name": "Msg",
+                                          "name": "Action",
                                           "arguments": []
                                         }
                                       ]
@@ -4406,8 +4406,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 2673,
-                            "end": 3936
+                            "start": 2688,
+                            "end": 3969
                           }
                         }
                       ],
@@ -4427,7 +4427,7 @@
                                     "arguments": [
                                       {
                                         "kind": "named",
-                                        "name": "Msg",
+                                        "name": "Action",
                                         "arguments": []
                                       }
                                     ]
@@ -4436,7 +4436,7 @@
                               },
                               {
                                 "kind": "named",
-                                "name": "Msg",
+                                "name": "Action",
                                 "arguments": []
                               }
                             ]
@@ -4454,15 +4454,15 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 2660,
-                        "end": 3936
+                        "start": 2675,
+                        "end": 3969
                       }
                     }
                   ],
@@ -4477,7 +4477,7 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
@@ -4486,14 +4486,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 2652,
-                    "end": 3942
+                    "start": 2667,
+                    "end": 3975
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 2642,
-                  "end": 3942
+                  "start": 2657,
+                  "end": 3975
                 }
               }
             ],
@@ -4514,7 +4514,7 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Msg",
+                            "name": "Action",
                             "arguments": []
                           }
                         ]
@@ -4532,8 +4532,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 2614,
-              "end": 3946
+              "start": 2629,
+              "end": 3979
             }
           }
         ],
@@ -4553,7 +4553,7 @@
                       "arguments": [
                         {
                           "kind": "named",
-                          "name": "Msg",
+                          "name": "Action",
                           "arguments": []
                         }
                       ]
@@ -4562,7 +4562,7 @@
                 },
                 {
                   "kind": "named",
-                  "name": "Msg",
+                  "name": "Action",
                   "arguments": []
                 }
               ]
@@ -4580,15 +4580,15 @@
           "arguments": [
             {
               "kind": "named",
-              "name": "Msg",
+              "name": "Action",
               "arguments": []
             }
           ]
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 2604,
-          "end": 3946
+          "start": 2619,
+          "end": 3979
         }
       }
     },
@@ -4597,16 +4597,16 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 3948,
-        "end": 4087
+        "start": 3981,
+        "end": 4121
       },
       "parameters": [
         {
-          "id": "message",
+          "id": "action",
           "kind": "named",
           "type": {
             "kind": "named",
-            "name": "Msg",
+            "name": "Action",
             "arguments": []
           }
         },
@@ -4624,21 +4624,21 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "variable",
-          "name": "message",
+          "name": "action",
           "type": {
             "kind": "named",
-            "name": "Msg",
+            "name": "Action",
             "arguments": []
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 4003,
-            "end": 4010
+            "start": 4038,
+            "end": 4044
           }
         },
         "scrutineeType": {
           "kind": "named",
-          "name": "Msg",
+          "name": "Action",
           "arguments": []
         },
         "branches": [
@@ -4650,8 +4650,8 @@
                 "constructor": "artifact/web-dom-counter::StartFocus",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 4017,
-                  "end": 4027
+                  "start": 4051,
+                  "end": 4061
                 }
               }
             ],
@@ -4665,14 +4665,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 4031,
-                "end": 4039
+                "start": 4065,
+                "end": 4073
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 4017,
-              "end": 4039
+              "start": 4051,
+              "end": 4073
             }
           },
           {
@@ -4683,8 +4683,8 @@
                 "constructor": "artifact/web-dom-counter::TakeBreak",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 4044,
-                  "end": 4053
+                  "start": 4078,
+                  "end": 4087
                 }
               }
             ],
@@ -4698,14 +4698,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 4057,
-                "end": 4064
+                "start": 4091,
+                "end": 4098
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 4044,
-              "end": 4064
+              "start": 4078,
+              "end": 4098
             }
           },
           {
@@ -4720,14 +4720,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 4078,
-                "end": 4083
+                "start": 4112,
+                "end": 4117
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 4069,
-              "end": 4083
+              "start": 4103,
+              "end": 4117
             }
           }
         ],
@@ -4739,8 +4739,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 3997,
-          "end": 4087
+          "start": 4032,
+          "end": 4121
         }
       }
     },
@@ -4749,8 +4749,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 4089,
-        "end": 4192
+        "start": 4123,
+        "end": 4226
       },
       "parameters": [
         {
@@ -4778,14 +4778,14 @@
                   "value": "#app",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 4134,
-                    "end": 4140
+                    "start": 4168,
+                    "end": 4174
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 4126,
-                  "end": 4140
+                  "start": 4160,
+                  "end": 4174
                 }
               },
               {
@@ -4801,14 +4801,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 4155,
-                    "end": 4166
+                    "start": 4189,
+                    "end": 4200
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 4146,
-                  "end": 4166
+                  "start": 4180,
+                  "end": 4200
                 }
               },
               {
@@ -4821,7 +4821,7 @@
                     "kind": "function",
                     "parameter": {
                       "kind": "named",
-                      "name": "Msg",
+                      "name": "Action",
                       "arguments": []
                     },
                     "result": {
@@ -4840,14 +4840,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 4172,
-                    "end": 4178
+                    "start": 4206,
+                    "end": 4212
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 4172,
-                  "end": 4178
+                  "start": 4206,
+                  "end": 4212
                 }
               },
               {
@@ -4870,7 +4870,7 @@
                       "arguments": [
                         {
                           "kind": "named",
-                          "name": "Msg",
+                          "name": "Action",
                           "arguments": []
                         }
                       ]
@@ -4878,14 +4878,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 4184,
-                    "end": 4188
+                    "start": 4218,
+                    "end": 4222
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 4184,
-                  "end": 4188
+                  "start": 4218,
+                  "end": 4222
                 }
               }
             ],
@@ -4915,7 +4915,7 @@
                     "kind": "function",
                     "parameter": {
                       "kind": "named",
-                      "name": "Msg",
+                      "name": "Action",
                       "arguments": []
                     },
                     "result": {
@@ -4949,7 +4949,7 @@
                       "arguments": [
                         {
                           "kind": "named",
-                          "name": "Msg",
+                          "name": "Action",
                           "arguments": []
                         }
                       ]
@@ -4960,8 +4960,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 4120,
-              "end": 4192
+              "start": 4154,
+              "end": 4226
             }
           }
         ],
@@ -4998,8 +4998,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 4112,
-          "end": 4192
+          "start": 4146,
+          "end": 4226
         }
       }
     }

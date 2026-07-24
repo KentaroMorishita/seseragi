@@ -38,17 +38,17 @@ export type DomRuntimeError<Failure> =
   | Readonly<{ readonly tag: "DomFailure"; readonly value: DomError }>
   | Readonly<{ readonly tag: "DispatchFailure"; readonly value: Failure }>
 
-export type DomDispatch<Failure, Message> = (
-  message: Message
+export type DomDispatch<Failure, Action> = (
+  action: Action
 ) => Promise<EffectResult<Failure, Unit>>
 
 export type Dom = {
   readonly query: (selector: string) => ServiceOperation<DomError, DomTarget>
-  readonly run: <Failure, Message>(
+  readonly run: <Failure, Action>(
     options: DomOptions,
     target: DomTarget,
-    dispatch: DomDispatch<Failure, Message>,
-    content: Signal<Html<Message>>
+    dispatch: DomDispatch<Failure, Action>,
+    content: Signal<Html<Action>>
   ) => ServiceOperation<DomRuntimeError<Failure>, Unit>
 }
 
@@ -56,11 +56,11 @@ export type DomEnvironment = {
   readonly dom: Dom
 }
 
-export type DomApp<State, Message> = Readonly<{
+export type DomApp<State, Action> = Readonly<{
   readonly target: string
   readonly initial: NoInfer<State>
-  readonly update: (message: Message) => (state: State) => State
-  readonly view: (state: State) => Html<Message>
+  readonly update: (action: Action) => (state: State) => State
+  readonly view: (state: State) => Html<Action>
 }>
 
 export function defaultOptions(_unit: Unit): DomOptions {
@@ -75,17 +75,17 @@ export function query(
   )
 }
 
-export function run<Failure, Message>(
+export function run<Failure, Action>(
   options: DomOptions,
   target: DomTarget,
-  dispatch: (message: Message) => Effect<{}, Failure, Unit>,
-  content: Signal<Html<Message>>
+  dispatch: (action: Action) => Effect<{}, Failure, Unit>,
+  content: Signal<Html<Action>>
 ): Effect<DomEnvironment, DomRuntimeError<Failure>, Unit> {
   return serviceEffect((environment: DomEnvironment) =>
     environment.dom.run(
       options,
       target,
-      (message) => runEffect(dispatch(message), environment),
+      (action) => runEffect(dispatch(action), environment),
       content
     )
   )
@@ -98,8 +98,8 @@ export function run<Failure, Message>(
  * failures. This helper owns the standard setup and presents portable String
  * failures so a compact executable main can infer its complete Effect type.
  */
-export function app<State, Message>(
-  config: DomApp<State, Message>
+export function app<State, Action>(
+  config: DomApp<State, Action>
 ): Effect<DomEnvironment, string, Unit> {
   return flatMap(makeSignal(config.initial), (state) => {
     const content = mapSignal(config.view, state)
@@ -114,7 +114,7 @@ export function app<State, Message>(
           run(
             defaultOptions(unit),
             target,
-            (message) => updateSignal(config.update(message), state),
+            (action) => updateSignal(config.update(action), state),
             content
           )
         )

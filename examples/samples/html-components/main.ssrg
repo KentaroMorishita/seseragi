@@ -1,6 +1,6 @@
 import * as html from "std/web/html"
 
-type Msg =
+type Action =
   | OpenProfile
 
 // Styleは値として再利用でき、variablesはCSS custom propertyになります。
@@ -14,7 +14,7 @@ let cardStyle =
   }
 
 // 通常のpure関数を、そのままHTML componentとして使えます。
-fn card title: String -> detail: String -> html.Html<Msg> =
+fn card title: String -> detail: String -> html.Html<Action> =
   html.section {
     className: "mx-auto max-w-xl",
     style: cardStyle,
@@ -30,7 +30,7 @@ fn card title: String -> detail: String -> html.Html<Msg> =
     ]
   }
 
-fn page -> html.Html<Msg> =
+fn page -> html.Html<Action> =
   html.main {
     id: "app",
     className: "min-h-screen bg-emerald-50 p-8 sm:p-12",

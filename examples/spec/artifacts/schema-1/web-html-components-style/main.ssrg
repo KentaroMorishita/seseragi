@@ -1,6 +1,6 @@
 import * as html from "std/web/html"
 
-type Msg =
+type Action =
   | Confirm
 
 let cardStyle =
@@ -12,7 +12,7 @@ let cardStyle =
     padding: "24px"
   }
 
-fn card title: String -> detail: String -> html.Html<Msg> =
+fn card title: String -> detail: String -> html.Html<Action> =
   html.section {
     className: "mx-auto max-w-xl",
     style: cardStyle,
@@ -28,7 +28,7 @@ fn card title: String -> detail: String -> html.Html<Msg> =
     ]
   }
 
-fn page -> html.Html<Msg> =
+fn page -> html.Html<Action> =
   html.main {
     id: "app",
     className: "min-h-screen bg-emerald-50 p-8 sm:p-12",

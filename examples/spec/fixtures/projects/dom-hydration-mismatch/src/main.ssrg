@@ -17,7 +17,7 @@ fn strictOptions -> DomOptions = {
   }
 }
 
-fn ignore<Msg> message: Msg -> Task<Never, Unit> =
+fn ignore<Action> action: Action -> Task<Never, Unit> =
   effects.succeed ()
 
 fn report result: Either<dom.DomError, dom.DomMount<Never>>

@@ -23,24 +23,24 @@ import {
 import type { Signal } from "../../../runtime/ts/src/signal"
 
 type Mode = "Ready" | "Active"
-type Msg = "Activate"
+type Action = "Activate"
 
 describe("high-level DOM app runtime", () => {
-  test("owns Signal setup and applies messages through a pure reducer", async () => {
+  test("owns Signal setup and applies actions through a pure reducer", async () => {
     const snapshots: string[] = []
     const service: Dom = {
       query(selector) {
         expect(selector).toBe("#app")
         return serviceSuccess(createDomTarget({ selector }))
       },
-      async run<Failure, Message>(
+      async run<Failure, Action>(
         _options: DomOptions,
         _target: DomTarget,
-        dispatch: DomDispatch<Failure, Message>,
-        content: Signal<Html<Message>>
+        dispatch: DomDispatch<Failure, Action>,
+        content: Signal<Html<Action>>
       ): Promise<Awaited<ServiceOperation<DomRuntimeError<Failure>, Unit>>> {
         snapshots.push(renderToString(content.current()))
-        const result = await dispatch("Activate" as Message)
+        const result = await dispatch("Activate" as Action)
         if (result.kind === "failure") {
           return serviceFailure({
             tag: "DispatchFailure",
@@ -53,14 +53,14 @@ describe("high-level DOM app runtime", () => {
     }
 
     const result = await run(
-      app<Mode, Msg>({
+      app<Mode, Action>({
         target: "#app",
         initial: "Ready",
-        update: (message) => (_mode) =>
-          message === "Activate" ? "Active" : "Ready",
+        update: (action) => (_mode) =>
+          action === "Activate" ? "Active" : "Ready",
         view: (mode) =>
           mode === "Ready"
-            ? button({ onClick: "Activate" as Msg, children: "Start" })
+            ? button({ onClick: "Activate" as Action, children: "Start" })
             : p({ children: "Active" }),
       }),
       { dom: service }
@@ -87,10 +87,10 @@ describe("high-level DOM app runtime", () => {
     }
 
     const result = await run(
-      app<Mode, Msg>({
+      app<Mode, Action>({
         target: "#missing",
         initial: "Ready",
-        update: (_message) => (mode) => mode,
+        update: (_action) => (mode) => mode,
         view: (_mode) => p({ children: "unused" }),
       }),
       { dom: service }

@@ -1,17 +1,17 @@
 import * as html from "std/web/html"
 
-type Msg =
+type Action =
   | DraftChanged String
   | CheckedChanged Bool
   | Submitted
 
-fn draftMessage event: html.InputEvent -> Msg =
+fn draftAction event: html.InputEvent -> Action =
   DraftChanged event.value
 
-fn checkedMessage event: html.ChangeEvent -> Msg =
+fn checkedAction event: html.ChangeEvent -> Action =
   CheckedChanged event.checked
 
-pub fn view draft: String -> checked: Bool -> html.Html<Msg> =
+pub fn view draft: String -> checked: Bool -> html.Html<Action> =
   html.form {
     onSubmit: Submitted,
     children: [
@@ -23,17 +23,17 @@ pub fn view draft: String -> checked: Bool -> html.Html<Msg> =
         required: True,
         placeholder: "Type a task",
         inputType: "text",
-        onInput: draftMessage
+        onInput: draftAction
       },
       html.textarea {
         name: "notes",
         value: "",
-        onInput: draftMessage
+        onInput: draftAction
       },
       html.input {
         checked,
         inputType: "checkbox",
-        onChange: checkedMessage
+        onChange: checkedAction
       },
       html.button {
         buttonType: "submit",

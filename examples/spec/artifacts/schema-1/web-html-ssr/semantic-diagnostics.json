@@ -10,15 +10,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 73,
-        "end": 87
+        "start": 76,
+        "end": 93
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 62,
-            "end": 295
+            "start": 65,
+            "end": 301
           }
         }
       ],
@@ -26,8 +26,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 62,
-            "end": 295
+            "start": 65,
+            "end": 301
           }
         }
       ],
@@ -46,15 +46,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 92,
-        "end": 100
+        "start": 98,
+        "end": 106
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 62,
-            "end": 295
+            "start": 65,
+            "end": 301
           }
         }
       ],
@@ -62,8 +62,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 62,
-            "end": 295
+            "start": 65,
+            "end": 301
           }
         }
       ],
@@ -82,15 +82,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 168,
-        "end": 174
+        "start": 174,
+        "end": 180
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 62,
-            "end": 295
+            "start": 65,
+            "end": 301
           }
         }
       ],
@@ -98,8 +98,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 62,
-            "end": 295
+            "start": 65,
+            "end": 301
           }
         }
       ],
@@ -118,15 +118,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 215,
-        "end": 226
+        "start": 221,
+        "end": 232
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 62,
-            "end": 295
+            "start": 65,
+            "end": 301
           }
         }
       ],
@@ -134,8 +134,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 62,
-            "end": 295
+            "start": 65,
+            "end": 301
           }
         }
       ],
@@ -154,15 +154,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 370,
-        "end": 389
+        "start": 376,
+        "end": 395
       },
       "related": [
         {
           "message": "effect function body",
           "primary": {
-            "start": 297,
-            "end": 399
+            "start": 303,
+            "end": 405
           }
         }
       ],
@@ -170,8 +170,8 @@
         {
           "message": "effect function body",
           "primary": {
-            "start": 297,
-            "end": 399
+            "start": 303,
+            "end": 405
           }
         }
       ],

@@ -64,7 +64,7 @@
   "adts": [
     {
       "exported": false,
-      "name": "Msg",
+      "name": "Action",
       "typeParameters": [],
       "variants": [
         {
@@ -73,15 +73,15 @@
           "tag": "Confirm",
           "origin": {
             "source": "main.ssrg",
-            "start": 53,
-            "end": 60
+            "start": 56,
+            "end": 63
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 38,
-        "end": 60
+        "end": 63
       }
     }
   ],
@@ -157,8 +157,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 62,
-        "end": 259
+        "start": 65,
+        "end": 262
       }
     }
   ],
@@ -315,7 +315,7 @@
                     "arguments": [
                       {
                         "kind": "reference",
-                        "name": "Msg",
+                        "name": "Action",
                         "arguments": []
                       }
                     ]
@@ -328,8 +328,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 261,
-        "end": 648
+        "start": 264,
+        "end": 654
       }
     },
     {
@@ -428,7 +428,7 @@
                     "arguments": [
                       {
                         "kind": "reference",
-                        "name": "Msg",
+                        "name": "Action",
                         "arguments": []
                       }
                     ]
@@ -441,8 +441,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 650,
-        "end": 1022
+        "start": 656,
+        "end": 1031
       }
     },
     {
@@ -479,8 +479,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1024,
-        "end": 1126
+        "start": 1033,
+        "end": 1135
       }
     }
   ]

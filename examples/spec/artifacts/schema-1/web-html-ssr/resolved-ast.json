@@ -25,27 +25,27 @@
     {
       "kind": "type",
       "visibility": "private",
-      "name": "Msg",
+      "name": "Action",
       "nameSpan": {
         "start": 43,
-        "end": 46
+        "end": 49
       },
       "variants": [
         {
           "name": "Confirm",
           "nameSpan": {
-            "start": 53,
-            "end": 60
+            "start": 56,
+            "end": 63
           },
           "span": {
-            "start": 51,
-            "end": 60
+            "start": 54,
+            "end": 63
           }
         }
       ],
       "span": {
         "start": 38,
-        "end": 60
+        "end": 63
       }
     },
     {
@@ -53,8 +53,8 @@
       "visibility": "private",
       "name": "page",
       "nameSpan": {
-        "start": 65,
-        "end": 69
+        "start": 68,
+        "end": 72
       },
       "parameters": [],
       "returnType": {
@@ -63,16 +63,16 @@
         "arguments": [
           {
             "kind": "named",
-            "name": "Msg",
+            "name": "Action",
             "span": {
-              "start": 83,
-              "end": 86
+              "start": 86,
+              "end": 92
             }
           }
         ],
         "span": {
-          "start": 73,
-          "end": 87
+          "start": 76,
+          "end": 93
         }
       },
       "body": {
@@ -83,18 +83,18 @@
             "kind": "name",
             "name": "html",
             "span": {
-              "start": 92,
-              "end": 96
+              "start": 98,
+              "end": 102
             }
           },
           "field": "div",
           "fieldSpan": {
-            "start": 97,
-            "end": 100
+            "start": 103,
+            "end": 106
           },
           "span": {
-            "start": 92,
-            "end": 100
+            "start": 98,
+            "end": 106
           }
         },
         "argument": {
@@ -104,48 +104,48 @@
               "kind": "field",
               "name": "id",
               "nameSpan": {
-                "start": 107,
-                "end": 109
+                "start": 113,
+                "end": 115
               },
               "value": {
                 "kind": "string",
                 "raw": "\"app\"",
                 "span": {
-                  "start": 111,
-                  "end": 116
+                  "start": 117,
+                  "end": 122
                 }
               },
               "span": {
-                "start": 107,
-                "end": 116
+                "start": 113,
+                "end": 122
               }
             },
             {
               "kind": "field",
               "name": "className",
               "nameSpan": {
-                "start": 122,
-                "end": 131
+                "start": 128,
+                "end": 137
               },
               "value": {
                 "kind": "string",
                 "raw": "\"container\"",
                 "span": {
-                  "start": 133,
-                  "end": 144
+                  "start": 139,
+                  "end": 150
                 }
               },
               "span": {
-                "start": 122,
-                "end": 144
+                "start": 128,
+                "end": 150
               }
             },
             {
               "kind": "field",
               "name": "children",
               "nameSpan": {
-                "start": 150,
-                "end": 158
+                "start": 156,
+                "end": 164
               },
               "value": {
                 "kind": "array",
@@ -158,18 +158,18 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 168,
-                          "end": 172
+                          "start": 174,
+                          "end": 178
                         }
                       },
                       "field": "p",
                       "fieldSpan": {
-                        "start": 173,
-                        "end": 174
+                        "start": 179,
+                        "end": 180
                       },
                       "span": {
-                        "start": 168,
-                        "end": 174
+                        "start": 174,
+                        "end": 180
                       }
                     },
                     "argument": {
@@ -179,31 +179,31 @@
                           "kind": "field",
                           "name": "children",
                           "nameSpan": {
-                            "start": 177,
-                            "end": 185
+                            "start": 183,
+                            "end": 191
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"Hello <Seseragi>\"",
                             "span": {
-                              "start": 187,
-                              "end": 205
+                              "start": 193,
+                              "end": 211
                             }
                           },
                           "span": {
-                            "start": 177,
-                            "end": 205
+                            "start": 183,
+                            "end": 211
                           }
                         }
                       ],
                       "span": {
-                        "start": 175,
-                        "end": 207
+                        "start": 181,
+                        "end": 213
                       }
                     },
                     "span": {
-                      "start": 168,
-                      "end": 207
+                      "start": 174,
+                      "end": 213
                     }
                   },
                   {
@@ -214,18 +214,18 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 215,
-                          "end": 219
+                          "start": 221,
+                          "end": 225
                         }
                       },
                       "field": "button",
                       "fieldSpan": {
-                        "start": 220,
-                        "end": 226
+                        "start": 226,
+                        "end": 232
                       },
                       "span": {
-                        "start": 215,
-                        "end": 226
+                        "start": 221,
+                        "end": 232
                       }
                     },
                     "argument": {
@@ -235,78 +235,78 @@
                           "kind": "field",
                           "name": "onClick",
                           "nameSpan": {
-                            "start": 237,
-                            "end": 244
+                            "start": 243,
+                            "end": 250
                           },
                           "value": {
                             "kind": "name",
                             "name": "Confirm",
                             "span": {
-                              "start": 246,
-                              "end": 253
+                              "start": 252,
+                              "end": 259
                             }
                           },
                           "span": {
-                            "start": 237,
-                            "end": 253
+                            "start": 243,
+                            "end": 259
                           }
                         },
                         {
                           "kind": "field",
                           "name": "children",
                           "nameSpan": {
-                            "start": 263,
-                            "end": 271
+                            "start": 269,
+                            "end": 277
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"OK\"",
                             "span": {
-                              "start": 273,
-                              "end": 277
+                              "start": 279,
+                              "end": 283
                             }
                           },
                           "span": {
-                            "start": 263,
-                            "end": 277
+                            "start": 269,
+                            "end": 283
                           }
                         }
                       ],
                       "span": {
-                        "start": 227,
-                        "end": 285
+                        "start": 233,
+                        "end": 291
                       }
                     },
                     "span": {
-                      "start": 215,
-                      "end": 285
+                      "start": 221,
+                      "end": 291
                     }
                   }
                 ],
                 "span": {
-                  "start": 160,
-                  "end": 291
+                  "start": 166,
+                  "end": 297
                 }
               },
               "span": {
-                "start": 150,
-                "end": 291
+                "start": 156,
+                "end": 297
               }
             }
           ],
           "span": {
-            "start": 101,
-            "end": 295
+            "start": 107,
+            "end": 301
           }
         },
         "span": {
-          "start": 92,
-          "end": 295
+          "start": 98,
+          "end": 301
         }
       },
       "span": {
-        "start": 62,
-        "end": 295
+        "start": 65,
+        "end": 301
       }
     },
     {
@@ -314,15 +314,15 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 311,
-        "end": 315
+        "start": 317,
+        "end": 321
       },
       "returnType": {
         "kind": "named",
         "name": "Unit",
         "span": {
-          "start": 319,
-          "end": 323
+          "start": 325,
+          "end": 329
         }
       },
       "requirements": [
@@ -330,8 +330,8 @@
           "kind": "shorthand",
           "name": "Console",
           "span": {
-            "start": 329,
-            "end": 336
+            "start": 335,
+            "end": 342
           }
         }
       ],
@@ -339,8 +339,8 @@
         "kind": "named",
         "name": "ConsoleError",
         "span": {
-          "start": 343,
-          "end": 355
+          "start": 349,
+          "end": 361
         }
       },
       "body": {
@@ -349,8 +349,8 @@
           "kind": "name",
           "name": "println",
           "span": {
-            "start": 360,
-            "end": 367
+            "start": 366,
+            "end": 373
           }
         },
         "argument": {
@@ -361,18 +361,18 @@
               "kind": "name",
               "name": "html",
               "span": {
-                "start": 370,
-                "end": 374
+                "start": 376,
+                "end": 380
               }
             },
             "field": "renderToString",
             "fieldSpan": {
-              "start": 375,
-              "end": 389
+              "start": 381,
+              "end": 395
             },
             "span": {
-              "start": 370,
-              "end": 389
+              "start": 376,
+              "end": 395
             }
           },
           "argument": {
@@ -383,40 +383,40 @@
                 "kind": "name",
                 "name": "page",
                 "span": {
-                  "start": 391,
-                  "end": 395
+                  "start": 397,
+                  "end": 401
                 }
               },
               "argument": {
                 "kind": "unit",
                 "span": {
-                  "start": 396,
-                  "end": 398
+                  "start": 402,
+                  "end": 404
                 }
               },
               "span": {
-                "start": 391,
-                "end": 398
+                "start": 397,
+                "end": 404
               }
             },
             "span": {
-              "start": 390,
-              "end": 399
+              "start": 396,
+              "end": 405
             }
           },
           "span": {
-            "start": 370,
-            "end": 399
+            "start": 376,
+            "end": 405
           }
         },
         "span": {
-          "start": 360,
-          "end": 399
+          "start": 366,
+          "end": 405
         }
       },
       "span": {
-        "start": 297,
-        "end": 399
+        "start": 303,
+        "end": 405
       }
     }
   ],
@@ -426,7 +426,7 @@
       "kind": "module",
       "origin": {
         "start": 38,
-        "end": 399
+        "end": 405
       }
     },
     {
@@ -435,7 +435,7 @@
       "kind": "declaration",
       "origin": {
         "start": 38,
-        "end": 60
+        "end": 63
       }
     },
     {
@@ -443,8 +443,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 62,
-        "end": 295
+        "start": 65,
+        "end": 301
       }
     },
     {
@@ -452,22 +452,22 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 297,
-        "end": 399
+        "start": 303,
+        "end": 405
       }
     }
   ],
   "symbols": [
     {
       "id": 0,
-      "spelling": "Msg",
-      "canonical": "artifact/web-html-ssr::Msg",
+      "spelling": "Action",
+      "canonical": "artifact/web-html-ssr::Action",
       "namespace": "type",
       "kind": "type",
       "scope": 0,
       "origin": {
         "start": 43,
-        "end": 46
+        "end": 49
       }
     },
     {
@@ -478,8 +478,8 @@
       "kind": "constructor",
       "scope": 0,
       "origin": {
-        "start": 53,
-        "end": 60
+        "start": 56,
+        "end": 63
       }
     },
     {
@@ -490,8 +490,8 @@
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 65,
-        "end": 69
+        "start": 68,
+        "end": 72
       }
     },
     {
@@ -502,8 +502,8 @@
       "kind": "effect-function",
       "scope": 0,
       "origin": {
-        "start": 311,
-        "end": 315
+        "start": 317,
+        "end": 321
       }
     },
     {
@@ -560,41 +560,41 @@
       "spelling": "html.Html",
       "namespace": "type",
       "origin": {
-        "start": 73,
-        "end": 87
+        "start": 76,
+        "end": 93
       }
     },
     {
-      "spelling": "Msg",
+      "spelling": "Action",
       "namespace": "type",
       "target": 0,
       "origin": {
-        "start": 83,
-        "end": 86
+        "start": 86,
+        "end": 92
       }
     },
     {
       "spelling": "html.div",
       "namespace": "value",
       "origin": {
-        "start": 92,
-        "end": 100
+        "start": 98,
+        "end": 106
       }
     },
     {
       "spelling": "html.p",
       "namespace": "value",
       "origin": {
-        "start": 168,
-        "end": 174
+        "start": 174,
+        "end": 180
       }
     },
     {
       "spelling": "html.button",
       "namespace": "value",
       "origin": {
-        "start": 215,
-        "end": 226
+        "start": 221,
+        "end": 232
       }
     },
     {
@@ -602,8 +602,8 @@
       "namespace": "value",
       "target": 1,
       "origin": {
-        "start": 246,
-        "end": 253
+        "start": 252,
+        "end": 259
       }
     },
     {
@@ -611,8 +611,8 @@
       "namespace": "type",
       "target": 5,
       "origin": {
-        "start": 319,
-        "end": 323
+        "start": 325,
+        "end": 329
       }
     },
     {
@@ -620,8 +620,8 @@
       "namespace": "type",
       "target": 6,
       "origin": {
-        "start": 343,
-        "end": 355
+        "start": 349,
+        "end": 361
       }
     },
     {
@@ -629,16 +629,16 @@
       "namespace": "value",
       "target": 7,
       "origin": {
-        "start": 360,
-        "end": 367
+        "start": 366,
+        "end": 373
       }
     },
     {
       "spelling": "html.renderToString",
       "namespace": "value",
       "origin": {
-        "start": 370,
-        "end": 389
+        "start": 376,
+        "end": 395
       }
     },
     {
@@ -646,8 +646,8 @@
       "namespace": "value",
       "target": 2,
       "origin": {
-        "start": 391,
-        "end": 395
+        "start": 397,
+        "end": 401
       }
     }
   ],
@@ -656,40 +656,40 @@
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 73,
-        "end": 87
+        "start": 76,
+        "end": 93
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 92,
-        "end": 100
+        "start": 98,
+        "end": 106
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 168,
-        "end": 174
+        "start": 174,
+        "end": 180
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 215,
-        "end": 226
+        "start": 221,
+        "end": 232
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 370,
-        "end": 389
+        "start": 376,
+        "end": 395
       }
     }
   ]

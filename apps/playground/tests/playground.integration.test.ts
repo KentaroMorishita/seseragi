@@ -246,9 +246,12 @@ describe("Playground sample catalog", () => {
     )
     expect(
       formItems.find((item) => item.name === "input")?.signature
-    ).toContain("onInput?: InputEvent -> Msg")
+    ).toContain("onInput?: InputEvent -> Action")
     expect(formItems.find((item) => item.name === "form")?.signature).toContain(
-      "onSubmit?: Msg"
+      "onSubmit?: Action"
+    )
+    expect(formItems.map((item) => item.signature).join("\n")).not.toMatch(
+      /\bMsg\b/
     )
   })
 

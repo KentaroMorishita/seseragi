@@ -5,7 +5,7 @@
   "summary": "typed formとpure updateでTodoの追加、削除、urgent filterをつなぎます。",
   "kind": "showcase",
   "difficulty": "intermediate",
-  "topics": ["form", "InputEvent", "ChangeEvent", "typed Msg", "filter"],
+  "topics": ["form", "InputEvent", "ChangeEvent", "typed Action", "filter"],
   "capabilities": ["dom"],
   "outputMode": "html",
   "prerequisites": ["interactive-app"],

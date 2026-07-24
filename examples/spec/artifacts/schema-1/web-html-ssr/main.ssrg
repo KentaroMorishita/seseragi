@@ -1,9 +1,9 @@
 import * as html from "std/web/html"
 
-type Msg =
+type Action =
   | Confirm
 
-fn page -> html.Html<Msg> =
+fn page -> html.Html<Action> =
   html.div {
     id: "app",
     className: "container",

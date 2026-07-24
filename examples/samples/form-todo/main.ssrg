@@ -22,7 +22,7 @@ struct Model {
   items: Array<Todo>,
 }
 
-type Msg =
+type Action =
   | DraftChanged String
   | NoteChanged String
   | UrgentChanged Bool
@@ -40,13 +40,13 @@ let initialModel: Model =
     items: []
   }
 
-fn draftMessage event: html.InputEvent -> Msg =
+fn draftAction event: html.InputEvent -> Action =
   DraftChanged event.value
 
-fn noteMessage event: html.InputEvent -> Msg =
+fn noteAction event: html.InputEvent -> Action =
   NoteChanged event.value
 
-fn urgentMessage event: html.ChangeEvent -> Msg =
+fn urgentAction event: html.ChangeEvent -> Action =
   UrgentChanged event.checked
 
 fn newTodo model: Model -> Todo =
@@ -69,8 +69,8 @@ fn visibleItems filter: Filter -> items: Array<Todo> -> Array<Todo> =
     UrgentOnly -> arrays.filter isUrgent items
   }
 
-fn update message: Msg -> model: Model -> Model =
-  match message {
+fn update action: Action -> model: Model -> Model =
+  match action {
     DraftChanged value -> Model { ...model, draft: value }
     NoteChanged value -> Model { ...model, note: value }
     UrgentChanged checked -> Model { ...model, urgent: checked }
@@ -95,7 +95,7 @@ fn update message: Msg -> model: Model -> Model =
 fn itemTitle todo: Todo -> String =
   if todo.urgent then `Urgent: ${todo.title}` else todo.title
 
-fn itemRow todo: Todo -> html.Html<Msg> =
+fn itemRow todo: Todo -> html.Html<Action> =
   html.div {
     className: "flex items-start justify-between gap-2 rounded-xl bg-slate-50 px-4 py-3",
     children: [
@@ -120,7 +120,7 @@ fn itemRow todo: Todo -> html.Html<Msg> =
     ]
   }
 
-fn view model: Model -> html.Html<Msg> =
+fn view model: Model -> html.Html<Action> =
   html.main {
     className: "min-h-screen bg-emerald-50 p-6 sm:p-12",
     children: html.section {
@@ -149,7 +149,7 @@ fn view model: Model -> html.Html<Msg> =
               placeholder: "Ship the next slice",
               inputType: "text",
               required: True,
-              onInput: draftMessage,
+              onInput: draftAction,
               className: "mb-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-base"
             },
             html.label {
@@ -162,7 +162,7 @@ fn view model: Model -> html.Html<Msg> =
               name: "note",
               value: model.note,
               placeholder: "Optional detail",
-              onInput: noteMessage,
+              onInput: noteAction,
               className: "mb-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-base"
             },
             html.label {
@@ -172,7 +172,7 @@ fn view model: Model -> html.Html<Msg> =
                   name: "urgent",
                   inputType: "checkbox",
                   checked: model.urgent,
-                  onChange: urgentMessage
+                  onChange: urgentAction
                 },
                 html.text "Mark as urgent"
               ]

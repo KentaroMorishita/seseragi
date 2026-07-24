@@ -121,7 +121,7 @@
     },
     {
       "exported": false,
-      "name": "Msg",
+      "name": "Action",
       "typeParameters": [],
       "variants": [
         {
@@ -130,8 +130,8 @@
           "tag": "StartFocus",
           "origin": {
             "source": "main.ssrg",
-            "start": 136,
-            "end": 146
+            "start": 139,
+            "end": 149
           }
         },
         {
@@ -140,8 +140,8 @@
           "tag": "TakeBreak",
           "origin": {
             "source": "main.ssrg",
-            "start": 151,
-            "end": 160
+            "start": 154,
+            "end": 163
           }
         },
         {
@@ -150,15 +150,15 @@
           "tag": "Reset",
           "origin": {
             "source": "main.ssrg",
-            "start": 165,
-            "end": 170
+            "start": 168,
+            "end": 173
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 121,
-        "end": 170
+        "end": 173
       }
     }
   ],
@@ -178,8 +178,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 172,
-        "end": 201
+        "start": 175,
+        "end": 204
       }
     },
     {
@@ -228,8 +228,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 203,
-        "end": 363
+        "start": 206,
+        "end": 366
       }
     },
     {
@@ -311,8 +311,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 365,
-        "end": 605
+        "start": 368,
+        "end": 608
       }
     },
     {
@@ -369,8 +369,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 607,
-        "end": 744
+        "start": 610,
+        "end": 747
       }
     }
   ],
@@ -438,8 +438,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 746,
-        "end": 864
+        "start": 749,
+        "end": 867
       }
     },
     {
@@ -505,8 +505,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 866,
-        "end": 1026
+        "start": 869,
+        "end": 1029
       }
     },
     {
@@ -542,7 +542,7 @@
             ],
             "value": {
               "kind": "string",
-              "value": "Pick a mode and let a typed message update the Signal."
+              "value": "Pick a mode and let a typed action update the Signal."
             }
           },
           {
@@ -572,8 +572,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1028,
-        "end": 1281
+        "start": 1031,
+        "end": 1283
       }
     },
     {
@@ -639,8 +639,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1283,
-        "end": 1408
+        "start": 1285,
+        "end": 1410
       }
     },
     {
@@ -706,8 +706,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1410,
-        "end": 1525
+        "start": 1412,
+        "end": 1527
       }
     },
     {
@@ -786,8 +786,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1527,
-        "end": 1729
+        "start": 1529,
+        "end": 1731
       }
     },
     {
@@ -876,8 +876,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1731,
-        "end": 1971
+        "start": 1733,
+        "end": 1973
       }
     },
     {
@@ -886,8 +886,8 @@
       "name": "actionStyle",
       "parameters": [
         {
-          "name": "message",
-          "type": "Msg",
+          "name": "action",
+          "type": "Action",
           "implicit": false
         }
       ],
@@ -895,11 +895,11 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "identifier",
-          "name": "message"
+          "name": "action"
         },
         "scrutineeType": {
           "kind": "reference",
-          "name": "Msg",
+          "name": "Action",
           "arguments": []
         },
         "branches": [
@@ -1014,14 +1014,14 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1973,
-        "end": 2284
+        "start": 1975,
+        "end": 2287
       }
     },
     {
       "kind": "const-function",
       "exported": false,
-      "name": "action",
+      "name": "actionButton",
       "parameters": [
         {
           "name": "id",
@@ -1034,8 +1034,8 @@
           "implicit": false
         },
         {
-          "name": "message",
-          "type": "Msg",
+          "name": "action",
+          "type": "Action",
           "implicit": false
         }
       ],
@@ -1059,7 +1059,7 @@
                 "name": "onClick",
                 "value": {
                   "kind": "identifier",
-                  "name": "message"
+                  "name": "action"
                 }
               },
               {
@@ -1079,7 +1079,7 @@
                   "arguments": [
                     {
                       "kind": "identifier",
-                      "name": "message"
+                      "name": "action"
                     }
                   ]
                 }
@@ -1098,8 +1098,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 2286,
-        "end": 2561
+        "start": 2289,
+        "end": 2573
       }
     },
     {
@@ -1257,7 +1257,7 @@
                                                 "arguments": [
                                                   {
                                                     "kind": "reference",
-                                                    "name": "Msg",
+                                                    "name": "Action",
                                                     "arguments": []
                                                   }
                                                 ]
@@ -1413,7 +1413,7 @@
                                               "elements": [
                                                 {
                                                   "kind": "call",
-                                                  "callee": "action",
+                                                  "callee": "actionButton",
                                                   "arguments": [
                                                     {
                                                       "kind": "string",
@@ -1431,7 +1431,7 @@
                                                 },
                                                 {
                                                   "kind": "call",
-                                                  "callee": "action",
+                                                  "callee": "actionButton",
                                                   "arguments": [
                                                     {
                                                       "kind": "string",
@@ -1449,7 +1449,7 @@
                                                 },
                                                 {
                                                   "kind": "call",
-                                                  "callee": "action",
+                                                  "callee": "actionButton",
                                                   "arguments": [
                                                     {
                                                       "kind": "string",
@@ -1472,7 +1472,7 @@
                                                 "arguments": [
                                                   {
                                                     "kind": "reference",
-                                                    "name": "Msg",
+                                                    "name": "Action",
                                                     "arguments": []
                                                   }
                                                 ]
@@ -1490,7 +1490,7 @@
                                   "arguments": [
                                     {
                                       "kind": "reference",
-                                      "name": "Msg",
+                                      "name": "Action",
                                       "arguments": []
                                     }
                                   ]
@@ -1508,7 +1508,7 @@
                     "arguments": [
                       {
                         "kind": "reference",
-                        "name": "Msg",
+                        "name": "Action",
                         "arguments": []
                       }
                     ]
@@ -1521,8 +1521,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 2563,
-        "end": 3946
+        "start": 2575,
+        "end": 3979
       }
     },
     {
@@ -1531,8 +1531,8 @@
       "name": "update",
       "parameters": [
         {
-          "name": "message",
-          "type": "Msg",
+          "name": "action",
+          "type": "Action",
           "implicit": false
         },
         {
@@ -1545,11 +1545,11 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "identifier",
-          "name": "message"
+          "name": "action"
         },
         "scrutineeType": {
           "kind": "reference",
-          "name": "Msg",
+          "name": "Action",
           "arguments": []
         },
         "branches": [
@@ -1595,8 +1595,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 3948,
-        "end": 4087
+        "start": 3981,
+        "end": 4121
       }
     },
     {
@@ -1655,8 +1655,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 4089,
-        "end": 4192
+        "start": 4123,
+        "end": 4226
       }
     }
   ]

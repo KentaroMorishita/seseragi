@@ -5956,11 +5956,11 @@
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
-      "signature": "app<State, Msg> arg1: ({target: String, initial: State, update: Msg -> State -> State, view: State -> Html<Msg>}) -> Effect<{dom: Dom}, String, Unit>",
+      "signature": "app<State, Action> arg1: ({target: String, initial: State, update: Action -> State -> State, view: State -> Html<Action>}) -> Effect<{dom: Dom}, String, Unit>",
       "description": "Mounts a typed state-update-view application into a DOM target.",
       "typeParameters": [
         "State",
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },
@@ -5992,10 +5992,10 @@
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
-      "signature": "run<Msg> arg1: DomOptions -> arg2: DomTarget -> arg3: (Msg -> Effect<{}, Never, Unit>) -> arg4: Signal<Html<Msg>> -> Effect<{dom: Dom}, DomRuntimeError<Never>, Unit>",
+      "signature": "run<Action> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Never, Unit>) -> arg4: Signal<Html<Action>> -> Effect<{dom: Dom}, DomRuntimeError<Never>, Unit>",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },
@@ -6133,7 +6133,7 @@
       "description": "Type or trait from the standard HTML surface.",
       "typeParameters": [
         "C",
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },
@@ -6167,14 +6167,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "button<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -6183,14 +6183,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "div<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "div<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -6199,14 +6199,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "form<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "form<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, onSubmit?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a typed form whose onSubmit message prevents native page reload.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -6215,14 +6215,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "fragment<Msg, C> arg1: C -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "fragment<Action, C> arg1: C -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -6231,14 +6231,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "h1<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "h1<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -6247,14 +6247,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "h2<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "h2<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -6263,10 +6263,10 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+      "signature": "input<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
       "description": "Creates a controlled input with typed input and change event snapshots.",
       "typeParameters": [
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },
@@ -6276,14 +6276,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "label<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "label<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a label connected through the htmlFor prop.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -6292,14 +6292,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "main<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "main<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -6308,14 +6308,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "p<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "p<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -6324,10 +6324,10 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "renderDocument<Msg> arg1: Html<Msg> -> String",
+      "signature": "renderDocument<Action> arg1: Html<Action> -> String",
       "description": "Renders typed HTML as a complete document string.",
       "typeParameters": [
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },
@@ -6337,10 +6337,10 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "renderToString<Msg> arg1: Html<Msg> -> String",
+      "signature": "renderToString<Action> arg1: Html<Action> -> String",
       "description": "Renders typed HTML to an escaped fragment string.",
       "typeParameters": [
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },
@@ -6350,14 +6350,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "section<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "section<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -6366,14 +6366,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "span<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "span<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -6397,10 +6397,10 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "text<Msg> arg1: String -> Html<Msg>",
+      "signature": "text<Action> arg1: String -> Html<Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },
@@ -6410,10 +6410,10 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "textarea<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+      "signature": "textarea<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
       "description": "Creates a controlled textarea with typed input and change snapshots.",
       "typeParameters": [
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },

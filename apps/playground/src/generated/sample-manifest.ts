@@ -334,7 +334,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
         "form",
         "InputEvent",
         "ChangeEvent",
-        "typed Msg",
+        "typed Action",
         "filter"
       ],
       "capabilities": [
@@ -349,7 +349,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/form-todo/main.ssrg",
       "guidePath": "examples/samples/form-todo/guide.md",
-      "sourceHash": "sha256:ae13bc498d1fbd0fb0a35c65813f6f2c22812a6419844bdfb9ff0a984a09acc2"
+      "sourceHash": "sha256:02fef5bdf5b81ef5887b9f40a23794a97685f788f65a2f25ec48007ce242e439"
     },
     source: sample7Source,
     guide: sample7Guide,
@@ -477,7 +477,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/html-components/main.ssrg",
       "guidePath": "examples/samples/html-components/guide.md",
       "expectedOutputPath": "examples/samples/html-components/stdout.html",
-      "sourceHash": "sha256:c455ee9edfa200241da203dd06dd0ab5aaef18173cd5ad2a6808d514d505bfda"
+      "sourceHash": "sha256:b7ae5c66e90db19e76b45542be1a73743b8be5195fcdc98ddf6318f31bbd42bf"
     },
     source: sample11Source,
     guide: sample11Guide,
@@ -522,11 +522,11 @@ export const generatedSamples: readonly GeneratedSample[] = [
     definition: {
       "id": "interactive-app",
       "title": "Interactive Web App",
-      "summary": "pure reducer、typed Msg、Signal、DOM mountを小さなWeb appに統合します。",
+      "summary": "pure reducer、typed Action、Signal、DOM mountを小さなWeb appに統合します。",
       "kind": "showcase",
       "difficulty": "advanced",
       "topics": [
-        "typed Msg",
+        "typed Action",
         "pure reducer",
         "Signal",
         "dom.app"
@@ -544,7 +544,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/interactive-app/main.ssrg",
       "guidePath": "examples/samples/interactive-app/guide.md",
-      "sourceHash": "sha256:2863a4350ca66cd87d35b0a059b8a5aa75daf8953649959a84896f4bdd5d9967"
+      "sourceHash": "sha256:a492a5e9a94ea9cd331ad661b5de640db98b182b0148b583838303c82517b545"
     },
     source: sample13Source,
     guide: sample13Guide,

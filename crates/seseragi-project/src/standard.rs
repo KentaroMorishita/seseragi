@@ -249,13 +249,13 @@ fn web_dom_interface() -> ModuleInterface {
         function_export(
             "std/web/dom",
             "run",
-            ["Msg"],
+            ["Action"],
             Vec::new(),
             vec![
                 named("DomOptions"),
                 named("DomTarget"),
                 function_type(
-                    vec![named("Msg")],
+                    vec![named("Action")],
                     effect(record([]), named("Never"), named("Unit")),
                 ),
                 external_type(
@@ -268,7 +268,7 @@ fn web_dom_interface() -> ModuleInterface {
                         "std/web/html::Html",
                         "std/web/html",
                         "Html",
-                        vec![named("Msg")],
+                        vec![named("Action")],
                     )],
                 ),
             ],
@@ -281,14 +281,14 @@ fn web_dom_interface() -> ModuleInterface {
         function_export(
             "std/web/dom",
             "app",
-            ["State", "Msg"],
+            ["State", "Action"],
             Vec::new(),
             vec![record([
                 required("target", named("String")),
                 required("initial", named("State")),
                 required(
                     "update",
-                    function_type(vec![named("Msg"), named("State")], named("State")),
+                    function_type(vec![named("Action"), named("State")], named("State")),
                 ),
                 required(
                     "view",
@@ -299,7 +299,7 @@ fn web_dom_interface() -> ModuleInterface {
                             "std/web/html::Html",
                             "std/web/html",
                             "Html",
-                            vec![named("Msg")],
+                            vec![named("Action")],
                         ),
                     ),
                 ),
@@ -345,7 +345,7 @@ fn web_html_interface() -> ModuleInterface {
                 required("checked", named("Bool")),
             ],
         ),
-        trait_export("std/web/html", "IntoChildren", ["C", "Msg"]),
+        trait_export("std/web/html", "IntoChildren", ["C", "Action"]),
         trait_export("std/web/html", "StyleRecord", ["R"]),
         function_export(
             "std/web/html",
@@ -362,10 +362,10 @@ fn web_html_interface() -> ModuleInterface {
         function_export(
             "std/web/html",
             "text",
-            ["Msg"],
+            ["Action"],
             Vec::new(),
             vec![named("String")],
-            html(named("Msg")),
+            html(named("Action")),
         ),
         constrained_html_function("fragment", fragment_parameter()),
     ];
@@ -378,26 +378,26 @@ fn web_html_interface() -> ModuleInterface {
     exports.push(function_export(
         "std/web/html",
         "input",
-        ["Msg"],
+        ["Action"],
         Vec::new(),
         vec![input_props()],
-        html(named("Msg")),
+        html(named("Action")),
     ));
     exports.push(function_export(
         "std/web/html",
         "textarea",
-        ["Msg"],
+        ["Action"],
         Vec::new(),
         vec![textarea_props()],
-        html(named("Msg")),
+        html(named("Action")),
     ));
     for renderer in ["renderToString", "renderDocument"] {
         exports.push(function_export(
             "std/web/html",
             renderer,
-            ["Msg"],
+            ["Action"],
             Vec::new(),
-            vec![html(named("Msg"))],
+            vec![html(named("Action"))],
             named("String"),
         ));
     }
@@ -551,14 +551,14 @@ fn constrained_html_function(name: &str, parameter: InterfaceType) -> InterfaceE
     function_export(
         "std/web/html",
         name,
-        ["Msg", "C"],
+        ["Action", "C"],
         vec![InterfaceConstraint {
             name: "IntoChildren".to_owned(),
             trait_identity: Some("std/web/html::trait(IntoChildren)".to_owned()),
-            arguments: vec![named("C"), named("Msg")],
+            arguments: vec![named("C"), named("Action")],
         }],
         vec![parameter],
-        html(named("Msg")),
+        html(named("Action")),
     )
 }
 
@@ -574,7 +574,7 @@ fn element_props() -> InterfaceType {
         optional("hidden", named("Bool")),
         optional("key", named("String")),
         optional("style", named("Style")),
-        optional("onClick", named("Msg")),
+        optional("onClick", named("Action")),
         required("children", named("C")),
     ])
 }
@@ -589,7 +589,7 @@ fn button_props() -> InterfaceType {
         optional("style", named("Style")),
         optional("disabled", named("Bool")),
         optional("buttonType", named("String")),
-        optional("onClick", named("Msg")),
+        optional("onClick", named("Action")),
         required("children", named("C")),
     ])
 }
@@ -602,8 +602,8 @@ fn form_props() -> InterfaceType {
         optional("hidden", named("Bool")),
         optional("key", named("String")),
         optional("style", named("Style")),
-        optional("onClick", named("Msg")),
-        optional("onSubmit", named("Msg")),
+        optional("onClick", named("Action")),
+        optional("onSubmit", named("Action")),
         required("children", named("C")),
     ])
 }
@@ -617,7 +617,7 @@ fn label_props() -> InterfaceType {
         optional("key", named("String")),
         optional("style", named("Style")),
         optional("htmlFor", named("String")),
-        optional("onClick", named("Msg")),
+        optional("onClick", named("Action")),
         required("children", named("C")),
     ])
 }
@@ -639,11 +639,11 @@ fn input_props() -> InterfaceType {
         optional("inputType", named("String")),
         optional(
             "onInput",
-            function_type(vec![html_event_type("InputEvent")], named("Msg")),
+            function_type(vec![html_event_type("InputEvent")], named("Action")),
         ),
         optional(
             "onChange",
-            function_type(vec![html_event_type("ChangeEvent")], named("Msg")),
+            function_type(vec![html_event_type("ChangeEvent")], named("Action")),
         ),
     ])
 }
@@ -663,11 +663,11 @@ fn textarea_props() -> InterfaceType {
         optional("placeholder", named("String")),
         optional(
             "onInput",
-            function_type(vec![html_event_type("InputEvent")], named("Msg")),
+            function_type(vec![html_event_type("InputEvent")], named("Action")),
         ),
         optional(
             "onChange",
-            function_type(vec![html_event_type("ChangeEvent")], named("Msg")),
+            function_type(vec![html_event_type("ChangeEvent")], named("Action")),
         ),
     ])
 }
@@ -758,10 +758,10 @@ fn function_export<const N: usize>(
     }
 }
 
-fn html(message: InterfaceType) -> InterfaceType {
+fn html(action: InterfaceType) -> InterfaceType {
     InterfaceType::Named {
         name: "Html".to_owned(),
-        arguments: vec![message],
+        arguments: vec![action],
     }
 }
 

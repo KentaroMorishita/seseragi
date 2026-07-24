@@ -39,10 +39,7 @@ describe("live analysis scheduling", () => {
   })
 
   test("drops an older asynchronous result after a newer revision wins", async () => {
-    const resolvers = new Map<
-      string,
-      (analysis: AnalysisDocument) => void
-    >()
+    const resolvers = new Map<string, (analysis: AnalysisDocument) => void>()
     const applied: string[] = []
     const controller = createLiveAnalysis({
       delayMs: 0,

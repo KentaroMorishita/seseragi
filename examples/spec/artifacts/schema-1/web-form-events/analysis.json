@@ -11,16 +11,16 @@
   "symbols": [
     {
       "id": 0,
-      "identity": "artifact/web-form-events::Msg",
-      "name": "Msg",
+      "identity": "artifact/web-form-events::Action",
+      "name": "Action",
       "module": "artifact/web-form-events",
       "namespace": "type",
       "kind": "type",
       "definition": {
         "start": 43,
-        "end": 46
+        "end": 49
       },
-      "typeName": "Msg"
+      "typeName": "Action"
     },
     {
       "id": 1,
@@ -30,10 +30,10 @@
       "namespace": "value",
       "kind": "constructor",
       "definition": {
-        "start": 53,
-        "end": 65
+        "start": 56,
+        "end": 68
       },
-      "typeName": "String -> Msg",
+      "typeName": "String -> Action",
       "callable": {
         "identity": "artifact/web-form-events::DraftChanged",
         "name": "DraftChanged",
@@ -45,9 +45,9 @@
             "type": "String"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "DraftChanged arg1: String -> Msg",
+        "signature": "DraftChanged arg1: String -> Action",
         "remainingParameters": []
       }
     },
@@ -59,10 +59,10 @@
       "namespace": "value",
       "kind": "constructor",
       "definition": {
-        "start": 77,
-        "end": 91
+        "start": 80,
+        "end": 94
       },
-      "typeName": "Bool -> Msg",
+      "typeName": "Bool -> Action",
       "callable": {
         "identity": "artifact/web-form-events::CheckedChanged",
         "name": "CheckedChanged",
@@ -74,9 +74,9 @@
             "type": "Bool"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "CheckedChanged arg1: Bool -> Msg",
+        "signature": "CheckedChanged arg1: Bool -> Action",
         "remainingParameters": []
       }
     },
@@ -88,26 +88,26 @@
       "namespace": "value",
       "kind": "constructor",
       "definition": {
-        "start": 101,
-        "end": 110
+        "start": 104,
+        "end": 113
       },
-      "typeName": "Msg"
+      "typeName": "Action"
     },
     {
       "id": 4,
-      "identity": "artifact/web-form-events::draftMessage",
-      "name": "draftMessage",
+      "identity": "artifact/web-form-events::draftAction",
+      "name": "draftAction",
       "module": "artifact/web-form-events",
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 115,
-        "end": 127
+        "start": 118,
+        "end": 129
       },
-      "typeName": "html.InputEvent -> Msg",
+      "typeName": "html.InputEvent -> Action",
       "callable": {
-        "identity": "artifact/web-form-events::draftMessage",
-        "name": "draftMessage",
+        "identity": "artifact/web-form-events::draftAction",
+        "name": "draftAction",
         "module": "artifact/web-form-events",
         "typeParameters": [],
         "parameters": [
@@ -116,27 +116,27 @@
             "type": "html.InputEvent"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "draftMessage event: html.InputEvent -> Msg",
+        "signature": "draftAction event: html.InputEvent -> Action",
         "remainingParameters": []
       }
     },
     {
       "id": 5,
-      "identity": "artifact/web-form-events::checkedMessage",
-      "name": "checkedMessage",
+      "identity": "artifact/web-form-events::checkedAction",
+      "name": "checkedAction",
       "module": "artifact/web-form-events",
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 191,
-        "end": 205
+        "start": 196,
+        "end": 209
       },
-      "typeName": "html.ChangeEvent -> Msg",
+      "typeName": "html.ChangeEvent -> Action",
       "callable": {
-        "identity": "artifact/web-form-events::checkedMessage",
-        "name": "checkedMessage",
+        "identity": "artifact/web-form-events::checkedAction",
+        "name": "checkedAction",
         "module": "artifact/web-form-events",
         "typeParameters": [],
         "parameters": [
@@ -145,9 +145,9 @@
             "type": "html.ChangeEvent"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "checkedMessage event: html.ChangeEvent -> Msg",
+        "signature": "checkedAction event: html.ChangeEvent -> Action",
         "remainingParameters": []
       }
     },
@@ -159,10 +159,10 @@
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 278,
-        "end": 282
+        "start": 285,
+        "end": 289
       },
-      "typeName": "String -> Bool -> html.Html<Msg>",
+      "typeName": "String -> Bool -> html.Html<Action>",
       "callable": {
         "identity": "artifact/web-form-events::view",
         "name": "view",
@@ -178,9 +178,9 @@
             "type": "Bool"
           }
         ],
-        "result": "html.Html<Msg>",
+        "result": "html.Html<Action>",
         "constraints": [],
-        "signature": "view draft: String -> checked: Bool -> html.Html<Msg>",
+        "signature": "view draft: String -> checked: Bool -> html.Html<Action>",
         "remainingParameters": []
       }
     },
@@ -290,8 +290,8 @@
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 128,
-        "end": 133
+        "start": 130,
+        "end": 135
       },
       "typeName": "html.InputEvent"
     },
@@ -303,8 +303,8 @@
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 206,
-        "end": 211
+        "start": 210,
+        "end": 215
       },
       "typeName": "html.ChangeEvent"
     },
@@ -316,8 +316,8 @@
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 283,
-        "end": 288
+        "start": 290,
+        "end": 295
       },
       "typeName": "String"
     },
@@ -329,8 +329,8 @@
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 300,
-        "end": 307
+        "start": 307,
+        "end": 314
       },
       "typeName": "Bool"
     },
@@ -345,26 +345,26 @@
         "start": 12,
         "end": 16
       },
-      "typeName": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg>",
+      "typeName": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, onSubmit?: Action, children: C} -> Html<Action>",
       "callable": {
         "identity": "std/web/html::form",
         "name": "form",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg",
+          "Action",
           "C"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, onSubmit?: Action, children: C}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [
-          "IntoChildren<C, Msg>"
+          "IntoChildren<C, Action>"
         ],
-        "signature": "form<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "signature": "form<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, onSubmit?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
       },
       "description": "Creates a typed form whose onSubmit message prevents native page reload."
@@ -380,26 +380,26 @@
         "start": 12,
         "end": 16
       },
-      "typeName": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg>",
+      "typeName": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Action, children: C} -> Html<Action>",
       "callable": {
         "identity": "std/web/html::label",
         "name": "label",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg",
+          "Action",
           "C"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Action, children: C}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [
-          "IntoChildren<C, Msg>"
+          "IntoChildren<C, Action>"
         ],
-        "signature": "label<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "signature": "label<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
       },
       "description": "Creates a label connected through the htmlFor prop."
@@ -415,23 +415,23 @@
         "start": 12,
         "end": 16
       },
-      "typeName": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+      "typeName": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
       "callable": {
         "identity": "std/web/html::input",
         "name": "input",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg"
+          "Action"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [],
-        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "signature": "input<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
         "remainingParameters": []
       },
       "description": "Creates a controlled input with typed input and change event snapshots."
@@ -447,23 +447,23 @@
         "start": 12,
         "end": 16
       },
-      "typeName": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+      "typeName": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
       "callable": {
         "identity": "std/web/html::textarea",
         "name": "textarea",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg"
+          "Action"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [],
-        "signature": "textarea<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "signature": "textarea<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
         "remainingParameters": []
       },
       "description": "Creates a controlled textarea with typed input and change snapshots."
@@ -479,26 +479,26 @@
         "start": 12,
         "end": 16
       },
-      "typeName": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg>",
+      "typeName": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Action, children: C} -> Html<Action>",
       "callable": {
         "identity": "std/web/html::button",
         "name": "button",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg",
+          "Action",
           "C"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Action, children: C}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [
-          "IntoChildren<C, Msg>"
+          "IntoChildren<C, Action>"
         ],
-        "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "signature": "button<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
       }
     },
@@ -519,49 +519,49 @@
     {
       "range": {
         "start": 43,
-        "end": 46
+        "end": 49
       },
       "symbol": 0
     },
     {
       "range": {
-        "start": 53,
-        "end": 65
+        "start": 56,
+        "end": 68
       },
       "symbol": 1
     },
     {
       "range": {
-        "start": 77,
-        "end": 91
+        "start": 80,
+        "end": 94
       },
       "symbol": 2
     },
     {
       "range": {
-        "start": 101,
-        "end": 110
+        "start": 104,
+        "end": 113
       },
       "symbol": 3
     },
     {
       "range": {
-        "start": 115,
-        "end": 127
+        "start": 118,
+        "end": 129
       },
       "symbol": 4
     },
     {
       "range": {
-        "start": 191,
-        "end": 205
+        "start": 196,
+        "end": 209
       },
       "symbol": 5
     },
     {
       "range": {
-        "start": 278,
-        "end": 282
+        "start": 285,
+        "end": 289
       },
       "symbol": 6
     },
@@ -574,225 +574,225 @@
     },
     {
       "range": {
-        "start": 128,
-        "end": 133
+        "start": 130,
+        "end": 135
       },
       "symbol": 15
     },
     {
       "range": {
-        "start": 206,
-        "end": 211
-      },
-      "symbol": 16
-    },
-    {
-      "range": {
-        "start": 283,
-        "end": 288
-      },
-      "symbol": 17
-    },
-    {
-      "range": {
-        "start": 300,
-        "end": 307
-      },
-      "symbol": 18
-    },
-    {
-      "range": {
-        "start": 66,
-        "end": 72
-      },
-      "symbol": 13
-    },
-    {
-      "range": {
-        "start": 92,
-        "end": 96
-      },
-      "symbol": 14
-    },
-    {
-      "range": {
-        "start": 135,
-        "end": 150
-      },
-      "symbol": 11
-    },
-    {
-      "range": {
-        "start": 154,
-        "end": 157
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 162,
-        "end": 174
-      },
-      "symbol": 1
-    },
-    {
-      "range": {
-        "start": 175,
-        "end": 180
-      },
-      "symbol": 15
-    },
-    {
-      "range": {
-        "start": 213,
-        "end": 229
-      },
-      "symbol": 12
-    },
-    {
-      "range": {
-        "start": 233,
-        "end": 236
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 241,
-        "end": 255
-      },
-      "symbol": 2
-    },
-    {
-      "range": {
-        "start": 256,
-        "end": 261
+        "start": 210,
+        "end": 215
       },
       "symbol": 16
     },
     {
       "range": {
         "start": 290,
-        "end": 296
-      },
-      "symbol": 13
-    },
-    {
-      "range": {
-        "start": 309,
-        "end": 313
-      },
-      "symbol": 14
-    },
-    {
-      "range": {
-        "start": 317,
-        "end": 331
-      },
-      "symbol": 9
-    },
-    {
-      "range": {
-        "start": 327,
-        "end": 330
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 336,
-        "end": 345
-      },
-      "symbol": 19
-    },
-    {
-      "range": {
-        "start": 362,
-        "end": 371
-      },
-      "symbol": 3
-    },
-    {
-      "range": {
-        "start": 395,
-        "end": 405
-      },
-      "symbol": 20
-    },
-    {
-      "range": {
-        "start": 453,
-        "end": 463
-      },
-      "symbol": 21
-    },
-    {
-      "range": {
-        "start": 525,
-        "end": 530
+        "end": 295
       },
       "symbol": 17
     },
     {
       "range": {
-        "start": 636,
-        "end": 648
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 664,
-        "end": 677
-      },
-      "symbol": 22
-    },
-    {
-      "range": {
-        "start": 739,
-        "end": 751
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 767,
-        "end": 777
-      },
-      "symbol": 21
-    },
-    {
-      "range": {
-        "start": 788,
-        "end": 795
+        "start": 307,
+        "end": 314
       },
       "symbol": 18
     },
     {
       "range": {
-        "start": 846,
-        "end": 860
+        "start": 69,
+        "end": 75
       },
-      "symbol": 5
+      "symbol": 13
     },
     {
       "range": {
-        "start": 876,
-        "end": 887
+        "start": 95,
+        "end": 99
       },
-      "symbol": 23
+      "symbol": 14
     },
     {
       "range": {
-        "start": 938,
-        "end": 943
+        "start": 137,
+        "end": 152
+      },
+      "symbol": 11
+    },
+    {
+      "range": {
+        "start": 156,
+        "end": 162
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 167,
+        "end": 179
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 180,
+        "end": 185
+      },
+      "symbol": 15
+    },
+    {
+      "range": {
+        "start": 217,
+        "end": 233
+      },
+      "symbol": 12
+    },
+    {
+      "range": {
+        "start": 237,
+        "end": 243
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 248,
+        "end": 262
+      },
+      "symbol": 2
+    },
+    {
+      "range": {
+        "start": 263,
+        "end": 268
+      },
+      "symbol": 16
+    },
+    {
+      "range": {
+        "start": 297,
+        "end": 303
+      },
+      "symbol": 13
+    },
+    {
+      "range": {
+        "start": 316,
+        "end": 320
+      },
+      "symbol": 14
+    },
+    {
+      "range": {
+        "start": 324,
+        "end": 341
+      },
+      "symbol": 9
+    },
+    {
+      "range": {
+        "start": 334,
+        "end": 340
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 346,
+        "end": 355
+      },
+      "symbol": 19
+    },
+    {
+      "range": {
+        "start": 372,
+        "end": 381
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 405,
+        "end": 415
+      },
+      "symbol": 20
+    },
+    {
+      "range": {
+        "start": 463,
+        "end": 473
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 535,
+        "end": 540
       },
       "symbol": 17
     },
     {
       "range": {
-        "start": 944,
-        "end": 946
+        "start": 646,
+        "end": 657
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 673,
+        "end": 686
+      },
+      "symbol": 22
+    },
+    {
+      "range": {
+        "start": 748,
+        "end": 759
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 775,
+        "end": 785
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 796,
+        "end": 803
+      },
+      "symbol": 18
+    },
+    {
+      "range": {
+        "start": 854,
+        "end": 867
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 883,
+        "end": 894
+      },
+      "symbol": 23
+    },
+    {
+      "range": {
+        "start": 945,
+        "end": 950
+      },
+      "symbol": 17
+    },
+    {
+      "range": {
+        "start": 951,
+        "end": 953
       },
       "symbol": 24
     }
@@ -801,434 +801,434 @@
     {
       "range": {
         "start": 43,
-        "end": 46
+        "end": 49
       },
-      "type": "Msg"
+      "type": "Action"
     },
     {
       "range": {
-        "start": 53,
-        "end": 65
+        "start": 56,
+        "end": 68
       },
-      "type": "String -> Msg"
+      "type": "String -> Action"
     },
     {
       "range": {
-        "start": 77,
-        "end": 91
+        "start": 80,
+        "end": 94
       },
-      "type": "Bool -> Msg"
+      "type": "Bool -> Action"
     },
     {
       "range": {
-        "start": 101,
-        "end": 110
+        "start": 104,
+        "end": 113
       },
-      "type": "Msg"
+      "type": "Action"
     },
     {
       "range": {
-        "start": 115,
-        "end": 127
+        "start": 118,
+        "end": 129
       },
-      "type": "html.InputEvent -> Msg"
+      "type": "html.InputEvent -> Action"
     },
     {
       "range": {
-        "start": 128,
-        "end": 133
+        "start": 130,
+        "end": 135
       },
       "type": "html.InputEvent"
     },
     {
       "range": {
-        "start": 154,
-        "end": 157
+        "start": 156,
+        "end": 162
       },
-      "type": "Msg"
+      "type": "Action"
     },
     {
       "range": {
-        "start": 162,
-        "end": 174
+        "start": 167,
+        "end": 179
       },
-      "type": "String -> Msg"
+      "type": "String -> Action"
     },
     {
       "range": {
-        "start": 162,
-        "end": 186
+        "start": 167,
+        "end": 191
       },
-      "type": "Msg"
+      "type": "Action"
     },
     {
       "range": {
-        "start": 175,
-        "end": 180
+        "start": 180,
+        "end": 185
       },
       "type": "html.InputEvent"
     },
     {
       "range": {
-        "start": 175,
-        "end": 186
+        "start": 180,
+        "end": 191
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 191,
-        "end": 205
+        "start": 196,
+        "end": 209
       },
-      "type": "html.ChangeEvent -> Msg"
+      "type": "html.ChangeEvent -> Action"
     },
     {
       "range": {
-        "start": 206,
-        "end": 211
-      },
-      "type": "html.ChangeEvent"
-    },
-    {
-      "range": {
-        "start": 233,
-        "end": 236
-      },
-      "type": "Msg"
-    },
-    {
-      "range": {
-        "start": 241,
-        "end": 255
-      },
-      "type": "Bool -> Msg"
-    },
-    {
-      "range": {
-        "start": 241,
-        "end": 269
-      },
-      "type": "Msg"
-    },
-    {
-      "range": {
-        "start": 256,
-        "end": 261
+        "start": 210,
+        "end": 215
       },
       "type": "html.ChangeEvent"
     },
     {
       "range": {
-        "start": 256,
-        "end": 269
+        "start": 237,
+        "end": 243
+      },
+      "type": "Action"
+    },
+    {
+      "range": {
+        "start": 248,
+        "end": 262
+      },
+      "type": "Bool -> Action"
+    },
+    {
+      "range": {
+        "start": 248,
+        "end": 276
+      },
+      "type": "Action"
+    },
+    {
+      "range": {
+        "start": 263,
+        "end": 268
+      },
+      "type": "html.ChangeEvent"
+    },
+    {
+      "range": {
+        "start": 263,
+        "end": 276
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 278,
-        "end": 282
+        "start": 285,
+        "end": 289
       },
-      "type": "String -> Bool -> html.Html<Msg>"
+      "type": "String -> Bool -> html.Html<Action>"
     },
     {
       "range": {
-        "start": 283,
-        "end": 288
+        "start": 290,
+        "end": 295
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 300,
-        "end": 307
+        "start": 307,
+        "end": 314
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 327,
-        "end": 330
+        "start": 334,
+        "end": 340
       },
-      "type": "Msg"
-    },
-    {
-      "range": {
-        "start": 336,
-        "end": 345
-      },
-      "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg>"
-    },
-    {
-      "range": {
-        "start": 336,
-        "end": 992
-      },
-      "type": "html.Html<Msg>"
+      "type": "Action"
     },
     {
       "range": {
         "start": 346,
-        "end": 992
+        "end": 355
       },
-      "type": "{children: Array<html.Html<Msg>>, onSubmit: Msg}"
+      "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, onSubmit?: Action, children: C} -> Html<Action>"
     },
     {
       "range": {
-        "start": 362,
-        "end": 371
+        "start": 346,
+        "end": 999
       },
-      "type": "Msg"
+      "type": "html.Html<Action>"
     },
     {
       "range": {
-        "start": 387,
-        "end": 988
+        "start": 356,
+        "end": 999
       },
-      "type": "Array<html.Html<Msg>>"
+      "type": "{children: Array<html.Html<Action>>, onSubmit: Action}"
     },
     {
       "range": {
-        "start": 395,
-        "end": 405
+        "start": 372,
+        "end": 381
       },
-      "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg>"
+      "type": "Action"
     },
     {
       "range": {
-        "start": 395,
-        "end": 445
+        "start": 397,
+        "end": 995
       },
-      "type": "html.Html<Msg>"
+      "type": "Array<html.Html<Action>>"
     },
     {
       "range": {
-        "start": 406,
-        "end": 445
+        "start": 405,
+        "end": 415
+      },
+      "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Action, children: C} -> Html<Action>"
+    },
+    {
+      "range": {
+        "start": 405,
+        "end": 455
+      },
+      "type": "html.Html<Action>"
+    },
+    {
+      "range": {
+        "start": 416,
+        "end": 455
       },
       "type": "{children: String, htmlFor: String}"
     },
     {
       "range": {
-        "start": 417,
-        "end": 424
+        "start": 427,
+        "end": 434
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 436,
-        "end": 443
+        "start": 446,
+        "end": 453
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 453,
-        "end": 463
+        "start": 463,
+        "end": 473
       },
-      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>"
+      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>"
     },
     {
       "range": {
-        "start": 453,
-        "end": 656
+        "start": 463,
+        "end": 665
       },
-      "type": "html.Html<Msg>"
+      "type": "html.Html<Action>"
     },
     {
       "range": {
-        "start": 464,
-        "end": 656
+        "start": 474,
+        "end": 665
       },
-      "type": "{id: String, inputType: String, name: String, onInput: html.InputEvent -> Msg, placeholder: String, required: Bool, value: String}"
+      "type": "{id: String, inputType: String, name: String, onInput: html.InputEvent -> Action, placeholder: String, required: Bool, value: String}"
     },
     {
       "range": {
-        "start": 478,
-        "end": 485
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 501,
-        "end": 508
+        "start": 488,
+        "end": 495
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 525,
-        "end": 530
+        "start": 511,
+        "end": 518
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 550,
-        "end": 554
+        "start": 535,
+        "end": 540
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 560,
+        "end": 564
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 577,
-        "end": 590
+        "start": 587,
+        "end": 600
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 611,
-        "end": 617
+        "start": 621,
+        "end": 627
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 636,
-        "end": 648
+        "start": 646,
+        "end": 657
       },
-      "type": "html.InputEvent -> Msg"
+      "type": "html.InputEvent -> Action"
     },
     {
       "range": {
-        "start": 664,
-        "end": 677
+        "start": 673,
+        "end": 686
       },
-      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>"
+      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>"
     },
     {
       "range": {
-        "start": 664,
+        "start": 673,
+        "end": 767
+      },
+      "type": "html.Html<Action>"
+    },
+    {
+      "range": {
+        "start": 687,
+        "end": 767
+      },
+      "type": "{name: String, onInput: html.InputEvent -> Action, value: String}"
+    },
+    {
+      "range": {
+        "start": 703,
+        "end": 710
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 727,
+        "end": 729
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 748,
         "end": 759
       },
-      "type": "html.Html<Msg>"
+      "type": "html.InputEvent -> Action"
     },
     {
       "range": {
-        "start": 678,
-        "end": 759
+        "start": 775,
+        "end": 785
       },
-      "type": "{name: String, onInput: html.InputEvent -> Msg, value: String}"
+      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>"
     },
     {
       "range": {
-        "start": 694,
-        "end": 701
+        "start": 775,
+        "end": 875
       },
-      "type": "String"
+      "type": "html.Html<Action>"
     },
     {
       "range": {
-        "start": 718,
-        "end": 720
+        "start": 786,
+        "end": 875
       },
-      "type": "String"
+      "type": "{checked: Bool, inputType: String, onChange: html.ChangeEvent -> Action}"
     },
     {
       "range": {
-        "start": 739,
-        "end": 751
-      },
-      "type": "html.InputEvent -> Msg"
-    },
-    {
-      "range": {
-        "start": 767,
-        "end": 777
-      },
-      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>"
-    },
-    {
-      "range": {
-        "start": 767,
-        "end": 868
-      },
-      "type": "html.Html<Msg>"
-    },
-    {
-      "range": {
-        "start": 778,
-        "end": 868
-      },
-      "type": "{checked: Bool, inputType: String, onChange: html.ChangeEvent -> Msg}"
-    },
-    {
-      "range": {
-        "start": 788,
-        "end": 795
+        "start": 796,
+        "end": 803
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 816,
-        "end": 826
+        "start": 824,
+        "end": 834
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 846,
-        "end": 860
+        "start": 854,
+        "end": 867
       },
-      "type": "html.ChangeEvent -> Msg"
+      "type": "html.ChangeEvent -> Action"
     },
     {
       "range": {
-        "start": 876,
-        "end": 887
+        "start": 883,
+        "end": 894
       },
-      "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg>"
+      "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Action, children: C} -> Html<Action>"
     },
     {
       "range": {
-        "start": 876,
-        "end": 982
+        "start": 883,
+        "end": 989
       },
-      "type": "html.Html<Msg>"
+      "type": "html.Html<Action>"
     },
     {
       "range": {
-        "start": 888,
-        "end": 982
+        "start": 895,
+        "end": 989
       },
       "type": "{buttonType: String, children: String, disabled: Bool}"
     },
     {
       "range": {
-        "start": 910,
-        "end": 918
+        "start": 917,
+        "end": 925
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 938,
-        "end": 943
+        "start": 945,
+        "end": 950
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 938,
-        "end": 949
+        "start": 945,
+        "end": 956
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 947,
-        "end": 949
+        "start": 954,
+        "end": 956
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 969,
-        "end": 974
+        "start": 976,
+        "end": 981
       },
       "type": "String"
     }
@@ -1236,8 +1236,8 @@
   "callableOccurrences": [
     {
       "range": {
-        "start": 53,
-        "end": 65
+        "start": 56,
+        "end": 68
       },
       "callable": {
         "identity": "artifact/web-form-events::DraftChanged",
@@ -1250,16 +1250,16 @@
             "type": "String"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "DraftChanged arg1: String -> Msg",
+        "signature": "DraftChanged arg1: String -> Action",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 77,
-        "end": 91
+        "start": 80,
+        "end": 94
       },
       "callable": {
         "identity": "artifact/web-form-events::CheckedChanged",
@@ -1272,20 +1272,20 @@
             "type": "Bool"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "CheckedChanged arg1: Bool -> Msg",
+        "signature": "CheckedChanged arg1: Bool -> Action",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 115,
-        "end": 127
+        "start": 118,
+        "end": 129
       },
       "callable": {
-        "identity": "artifact/web-form-events::draftMessage",
-        "name": "draftMessage",
+        "identity": "artifact/web-form-events::draftAction",
+        "name": "draftAction",
         "module": "artifact/web-form-events",
         "typeParameters": [],
         "parameters": [
@@ -1294,20 +1294,20 @@
             "type": "html.InputEvent"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "draftMessage event: html.InputEvent -> Msg",
+        "signature": "draftAction event: html.InputEvent -> Action",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 191,
-        "end": 205
+        "start": 196,
+        "end": 209
       },
       "callable": {
-        "identity": "artifact/web-form-events::checkedMessage",
-        "name": "checkedMessage",
+        "identity": "artifact/web-form-events::checkedAction",
+        "name": "checkedAction",
         "module": "artifact/web-form-events",
         "typeParameters": [],
         "parameters": [
@@ -1316,16 +1316,16 @@
             "type": "html.ChangeEvent"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "checkedMessage event: html.ChangeEvent -> Msg",
+        "signature": "checkedAction event: html.ChangeEvent -> Action",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 278,
-        "end": 282
+        "start": 285,
+        "end": 289
       },
       "callable": {
         "identity": "artifact/web-form-events::view",
@@ -1342,16 +1342,16 @@
             "type": "Bool"
           }
         ],
-        "result": "html.Html<Msg>",
+        "result": "html.Html<Action>",
         "constraints": [],
-        "signature": "view draft: String -> checked: Bool -> html.Html<Msg>",
+        "signature": "view draft: String -> checked: Bool -> html.Html<Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 162,
-        "end": 174
+        "start": 167,
+        "end": 179
       },
       "callable": {
         "identity": "artifact/web-form-events::DraftChanged",
@@ -1364,16 +1364,16 @@
             "type": "String"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "DraftChanged arg1: String -> Msg",
+        "signature": "DraftChanged arg1: String -> Action",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 241,
-        "end": 255
+        "start": 248,
+        "end": 262
       },
       "callable": {
         "identity": "artifact/web-form-events::CheckedChanged",
@@ -1386,98 +1386,98 @@
             "type": "Bool"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "CheckedChanged arg1: Bool -> Msg",
+        "signature": "CheckedChanged arg1: Bool -> Action",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 336,
-        "end": 345
+        "start": 346,
+        "end": 355
       },
       "callable": {
         "identity": "std/web/html::form",
         "name": "form",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg",
+          "Action",
           "C"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, onSubmit?: Action, children: C}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [
-          "IntoChildren<C, Msg>"
+          "IntoChildren<C, Action>"
         ],
-        "signature": "form<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "signature": "form<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, onSubmit?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 395,
-        "end": 405
+        "start": 405,
+        "end": 415
       },
       "callable": {
         "identity": "std/web/html::label",
         "name": "label",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg",
+          "Action",
           "C"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Action, children: C}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [
-          "IntoChildren<C, Msg>"
+          "IntoChildren<C, Action>"
         ],
-        "signature": "label<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "signature": "label<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 453,
-        "end": 463
+        "start": 463,
+        "end": 473
       },
       "callable": {
         "identity": "std/web/html::input",
         "name": "input",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg"
+          "Action"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [],
-        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "signature": "input<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 636,
-        "end": 648
+        "start": 646,
+        "end": 657
       },
       "callable": {
-        "identity": "artifact/web-form-events::draftMessage",
-        "name": "draftMessage",
+        "identity": "artifact/web-form-events::draftAction",
+        "name": "draftAction",
         "module": "artifact/web-form-events",
         "typeParameters": [],
         "parameters": [
@@ -1486,44 +1486,44 @@
             "type": "html.InputEvent"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "draftMessage event: html.InputEvent -> Msg",
+        "signature": "draftAction event: html.InputEvent -> Action",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 664,
-        "end": 677
+        "start": 673,
+        "end": 686
       },
       "callable": {
         "identity": "std/web/html::textarea",
         "name": "textarea",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg"
+          "Action"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [],
-        "signature": "textarea<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "signature": "textarea<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 739,
-        "end": 751
+        "start": 748,
+        "end": 759
       },
       "callable": {
-        "identity": "artifact/web-form-events::draftMessage",
-        "name": "draftMessage",
+        "identity": "artifact/web-form-events::draftAction",
+        "name": "draftAction",
         "module": "artifact/web-form-events",
         "typeParameters": [],
         "parameters": [
@@ -1532,44 +1532,44 @@
             "type": "html.InputEvent"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "draftMessage event: html.InputEvent -> Msg",
+        "signature": "draftAction event: html.InputEvent -> Action",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 767,
-        "end": 777
+        "start": 775,
+        "end": 785
       },
       "callable": {
         "identity": "std/web/html::input",
         "name": "input",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg"
+          "Action"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [],
-        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "signature": "input<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 846,
-        "end": 860
+        "start": 854,
+        "end": 867
       },
       "callable": {
-        "identity": "artifact/web-form-events::checkedMessage",
-        "name": "checkedMessage",
+        "identity": "artifact/web-form-events::checkedAction",
+        "name": "checkedAction",
         "module": "artifact/web-form-events",
         "typeParameters": [],
         "parameters": [
@@ -1578,43 +1578,43 @@
             "type": "html.ChangeEvent"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "checkedMessage event: html.ChangeEvent -> Msg",
+        "signature": "checkedAction event: html.ChangeEvent -> Action",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 876,
-        "end": 887
+        "start": 883,
+        "end": 894
       },
       "callable": {
         "identity": "std/web/html::button",
         "name": "button",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg",
+          "Action",
           "C"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Action, children: C}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [
-          "IntoChildren<C, Msg>"
+          "IntoChildren<C, Action>"
         ],
-        "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "signature": "button<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 162,
-        "end": 186
+        "start": 167,
+        "end": 191
       },
       "callable": {
         "identity": "artifact/web-form-events::DraftChanged",
@@ -1627,16 +1627,16 @@
             "type": "String"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "DraftChanged arg1: String -> Msg",
+        "signature": "DraftChanged arg1: String -> Action",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 241,
-        "end": 269
+        "start": 248,
+        "end": 276
       },
       "callable": {
         "identity": "artifact/web-form-events::CheckedChanged",
@@ -1649,162 +1649,162 @@
             "type": "Bool"
           }
         ],
-        "result": "Msg",
+        "result": "Action",
         "constraints": [],
-        "signature": "CheckedChanged arg1: Bool -> Msg",
+        "signature": "CheckedChanged arg1: Bool -> Action",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 336,
-        "end": 992
+        "start": 346,
+        "end": 999
       },
       "callable": {
         "identity": "std/web/html::form",
         "name": "form",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg",
+          "Action",
           "C"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, onSubmit?: Action, children: C}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [
-          "IntoChildren<C, Msg>"
+          "IntoChildren<C, Action>"
         ],
-        "signature": "form<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "signature": "form<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, onSubmit?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 395,
-        "end": 445
+        "start": 405,
+        "end": 455
       },
       "callable": {
         "identity": "std/web/html::label",
         "name": "label",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg",
+          "Action",
           "C"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Action, children: C}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [
-          "IntoChildren<C, Msg>"
+          "IntoChildren<C, Action>"
         ],
-        "signature": "label<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "signature": "label<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 453,
-        "end": 656
+        "start": 463,
+        "end": 665
       },
       "callable": {
         "identity": "std/web/html::input",
         "name": "input",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg"
+          "Action"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [],
-        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "signature": "input<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 664,
-        "end": 759
+        "start": 673,
+        "end": 767
       },
       "callable": {
         "identity": "std/web/html::textarea",
         "name": "textarea",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg"
+          "Action"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [],
-        "signature": "textarea<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "signature": "textarea<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 767,
-        "end": 868
+        "start": 775,
+        "end": 875
       },
       "callable": {
         "identity": "std/web/html::input",
         "name": "input",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg"
+          "Action"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [],
-        "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+        "signature": "input<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 876,
-        "end": 982
+        "start": 883,
+        "end": 989
       },
       "callable": {
         "identity": "std/web/html::button",
         "name": "button",
         "module": "std/web/html",
         "typeParameters": [
-          "Msg",
+          "Action",
           "C"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Action, children: C}"
           }
         ],
-        "result": "Html<Msg>",
+        "result": "Html<Action>",
         "constraints": [
-          "IntoChildren<C, Msg>"
+          "IntoChildren<C, Action>"
         ],
-        "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+        "signature": "button<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
       }
     }
@@ -2429,11 +2429,11 @@
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
-      "signature": "app<State, Msg> arg1: ({target: String, initial: State, update: Msg -> State -> State, view: State -> Html<Msg>}) -> Effect<{dom: Dom}, String, Unit>",
+      "signature": "app<State, Action> arg1: ({target: String, initial: State, update: Action -> State -> State, view: State -> Html<Action>}) -> Effect<{dom: Dom}, String, Unit>",
       "description": "Mounts a typed state-update-view application into a DOM target.",
       "typeParameters": [
         "State",
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },
@@ -2465,10 +2465,10 @@
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
-      "signature": "run<Msg> arg1: DomOptions -> arg2: DomTarget -> arg3: (Msg -> Effect<{}, Never, Unit>) -> arg4: Signal<Html<Msg>> -> Effect<{dom: Dom}, DomRuntimeError<Never>, Unit>",
+      "signature": "run<Action> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Never, Unit>) -> arg4: Signal<Html<Action>> -> Effect<{dom: Dom}, DomRuntimeError<Never>, Unit>",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },
@@ -2606,7 +2606,7 @@
       "description": "Type or trait from the standard HTML surface.",
       "typeParameters": [
         "C",
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },
@@ -2640,14 +2640,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "button<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "button<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -2656,14 +2656,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "div<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "div<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -2672,14 +2672,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "form<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, onSubmit?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "form<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, onSubmit?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a typed form whose onSubmit message prevents native page reload.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -2688,14 +2688,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "fragment<Msg, C> arg1: C -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "fragment<Action, C> arg1: C -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -2704,14 +2704,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "h1<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "h1<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -2720,14 +2720,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "h2<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "h2<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -2736,10 +2736,10 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "input<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+      "signature": "input<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
       "description": "Creates a controlled input with typed input and change event snapshots.",
       "typeParameters": [
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },
@@ -2749,14 +2749,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "label<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "label<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a label connected through the htmlFor prop.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -2765,14 +2765,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "main<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "main<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -2781,14 +2781,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "p<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "p<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -2797,10 +2797,10 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "renderDocument<Msg> arg1: Html<Msg> -> String",
+      "signature": "renderDocument<Action> arg1: Html<Action> -> String",
       "description": "Renders typed HTML as a complete document string.",
       "typeParameters": [
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },
@@ -2810,10 +2810,10 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "renderToString<Msg> arg1: Html<Msg> -> String",
+      "signature": "renderToString<Action> arg1: Html<Action> -> String",
       "description": "Renders typed HTML to an escaped fragment string.",
       "typeParameters": [
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },
@@ -2823,14 +2823,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "section<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "section<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -2839,14 +2839,14 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "span<Msg, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Msg, children: C} -> Html<Msg> where IntoChildren<C, Msg>",
+      "signature": "span<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg",
+        "Action",
         "C"
       ],
       "constraints": [
-        "IntoChildren<C, Msg>"
+        "IntoChildren<C, Action>"
       ]
     },
     {
@@ -2870,10 +2870,10 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "text<Msg> arg1: String -> Html<Msg>",
+      "signature": "text<Action> arg1: String -> Html<Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },
@@ -2883,10 +2883,10 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "textarea<Msg> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Msg, onChange?: ChangeEvent -> Msg}) -> Html<Msg>",
+      "signature": "textarea<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
       "description": "Creates a controlled textarea with typed input and change snapshots.",
       "typeParameters": [
-        "Msg"
+        "Action"
       ],
       "constraints": []
     },

@@ -29,8 +29,8 @@
       "visibility": "public",
       "declarationKind": "effect-function",
       "declaration": {
-        "start": 297,
-        "end": 399
+        "start": 303,
+        "end": 405
       },
       "scheme": {
         "typeParameters": [],

@@ -86,7 +86,7 @@
 | closed deprecation metadata / tooling         | none              | `compile/deprecation-metadata.ssrg`            | covered |
 | JsonEncode / JsonDecode deriving              | Lesson 26         | codec wire / strict field fixtures             | partial |
 | pure Html props / children / SSR              | Lesson 27         | HTML escaping / props fixtures                 | partial |
-| typed form input / change / submit snapshots  | `form-todo` sample | `schema-1/web-form-events` + `form-todo` sample; input / textarea / checkbox / submitからtyped Msgを作り、Todoの追加・削除・urgent filterをpure updateへ接続 | covered |
+| typed form input / change / submit snapshots  | `form-todo` sample | `schema-1/web-form-events` + `form-todo` sample; input / textarea / checkbox / submitからtyped Actionを作り、Todoの追加・削除・urgent filterをpure updateへ接続 | covered |
 | Signal-driven DOM / event resource lifetime   | Lesson 30         | `projects/dom-*`                               | covered |
 | performance erasure / stack safety            | `local-functions` sample | `schema-1/self-tail-loop` + `execution-schema-1/self-tail-loop` + `project-schema-1/self-tail-loop` + `projects/performance-*`; direct self tail callをloop化し、module-level / local、`if` / `match` / pure blockのtail positionと100,000段actual executionを固定。相互再帰・non-tail recursionは一定stack保証の対象外 | partial |
 | benchmark discovery / baseline regression     | none              | `projects/benchmark-discovery`                 | covered |
