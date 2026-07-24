@@ -45,7 +45,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | collection、text、number、JSON             | 初稿あり      | Range / Array execution、persistent List traversalあり、他は境界fixture不足 | Array / `Range<Int>`のreduce・comprehensionとArray / ListのPrelude Monadまで部分実装 |
 | Bytes、Decimal、Regex、timezone            | 初稿あり      | lessonあり、fixture不足                    | 未着手             |
 | filesystem、process、HTTP                  | 初稿あり      | cleanup・shutdown・body stream fixtureあり | 未着手             |
-| pure HTML、SSR、DOM、hydration             | 初稿あり      | SSR / component / style / interactive DOM / typed form fixtureあり | SSR、function component、inline style、browser DOM runtime、input / change snapshotとform submitまで部分実装。hydrationは未着手 |
+| pure HTML、SSR、DOM、hydration             | 初稿あり      | SSR / component / style / interactive DOM / typed form fixtureあり | SSR、function component、inline style、browser DOM runtime、input / change snapshot、IME compositionとform submitまで部分実装。hydrationは未着手 |
 | 性能モデル、最適化境界                     | 初稿あり      | shape・profile差分・stack fixtureあり      | 未着手             |
 | diagnostics、formatter、LSP                | 縦slice進行中 | diagnostic fixture + stdio / CLI integration | LSP-1とformatter-0を実装              |
 | syntax highlight                           | token契約あり | spec preview拡張あり                       | 仮実装あり         |
@@ -466,6 +466,11 @@ immutable snapshot化し、`onSubmit`を同期的に`preventDefault`してから
 listenerはrenderごとに増やさずhandler tableだけを交換し、controlled input / textareaはstable `id`からfocusと
 selectionを復元します。`schema-1/web-form-events`、runtime unit test、`Typed formでTodoを追加` sampleで
 compiler interface、lowering、runtime ABI、Reference、browser interactionを固定します。
+IME compositionは`compositionstart` / `compositionupdate` / `compositionend`とnative `InputEvent.isComposing`を
+browser adapter内部で調停します。composition中のinputとcontrolled rerenderを保留し、browserごとの最終input順序を
+吸収して確定valueを一度だけActionへ変換します。公開`InputEvent { value }` ABIは維持し、未確定のままsubmitされた場合は
+Input Actionをsource順にcommitしてからSubmit ActionをFIFOへ流します。runtime event-order testと`form-todo` sampleで
+input / textareaの同じ契約を固定しました。
 2026-07-14にVercel Git buildの成功、`application/wasm` asset配信、本番UIからのlesson 01実行を
 <https://seseragi.vercel.app/>で確認しました。
 local custom traitのvertical sliceは`Traitバッジ`としてsample catalogにも追加し、同じWASM driverとbrowser runtimeで

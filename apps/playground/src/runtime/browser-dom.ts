@@ -1,34 +1,35 @@
 import {
   createDomTarget,
-  domTargetValue,
   type Dom,
   type DomDispatch,
   type DomError,
   type DomOptions,
   type DomRuntimeError,
   type DomTarget,
+  domTargetValue,
 } from "../../../../runtime/ts/src/dom"
-import { unit, type Unit } from "../../../../runtime/ts/src/effect"
+import { type Unit, unit } from "../../../../runtime/ts/src/effect"
 import {
-  domEventPreventsDefault,
   type DomEventHandler,
   type DomRender,
+  domEventPreventsDefault,
   type Html,
   messageFromDomEvent,
   renderForDom,
 } from "../../../../runtime/ts/src/html"
 import {
-  serviceFailure,
-  serviceSuccess,
   type ServiceOperation,
   type ServiceResult,
+  serviceFailure,
+  serviceSuccess,
 } from "../../../../runtime/ts/src/service"
 import {
   type Signal,
-  subscribe,
   type Subscription,
+  subscribe,
   unsubscribe,
 } from "../../../../runtime/ts/src/signal"
+import { createImeInputCoordinator } from "./ime-input"
 
 export type BrowserDom = Readonly<{
   readonly service: Dom
@@ -106,7 +107,10 @@ export function createBrowserDom(
           let announced = false
           let queuedEvents = 0
           let eventQueue = Promise.resolve()
+          let deferredTree: Html<Action> | undefined
           const bindings = createDomEventBindings<Action>()
+          const ime = createImeInputCoordinator<HTMLElement>()
+          const imeTimers = new Map<HTMLElement, number>()
 
           const finish = async (
             result: ServiceResult<DomRuntimeError<Failure>, undefined>
@@ -118,6 +122,11 @@ export function createBrowserDom(
             if (subscription !== undefined) {
               await unsubscribe(subscription)({})
             }
+            for (const timer of imeTimers.values()) {
+              document.defaultView!.clearTimeout(timer)
+            }
+            imeTimers.clear()
+            ime.reset()
             for (const [kind, listener] of listeners) {
               element.removeEventListener(kind, listener)
             }
@@ -125,7 +134,7 @@ export function createBrowserDom(
             resolve(result)
           }
 
-          const enqueue = (action: Action): void => {
+          const enqueue = (action: Action, after?: () => void): void => {
             if (settled) return
             if (queuedEvents >= options.eventCapacity) {
               void finish(
@@ -151,7 +160,9 @@ export function createBrowserDom(
                       value: result.error,
                     })
                   )
+                  return
                 }
+                after?.()
               })
               .catch(reject)
               .finally(() => {
@@ -159,10 +170,76 @@ export function createBrowserDom(
               })
           }
 
-          const listeners = (
-            ["click", "input", "change", "submit"] as const
-          ).map((kind) => {
-            const listener = (event: Event): void => {
+          const listeners: Array<readonly [string, EventListener]> = []
+          const listen = (kind: string, listener: EventListener): void => {
+            element.addEventListener(kind, listener)
+            listeners.push([kind, listener])
+          }
+
+          const inputHandler = (
+            control: HTMLElement
+          ): DomEventHandler<Action> | undefined => {
+            const id = control.getAttribute("data-ssrg-event-input")
+            if (id === null) return undefined
+            const handler = bindings.handler(id)
+            return handler?.kind === "input" ? handler : undefined
+          }
+
+          const flushDeferredRender = (): void => {
+            if (ime.busy() || deferredTree === undefined) return
+            const tree = deferredTree
+            deferredTree = undefined
+            render(tree)
+          }
+
+          const dispatchInput = (
+            control: HTMLElement,
+            after?: () => void
+          ): void => {
+            const handler = inputHandler(control)
+            if (handler === undefined) {
+              after?.()
+              return
+            }
+            try {
+              enqueue(messageFromDomEvent(handler, control), after)
+            } catch (error) {
+              reject(error)
+            }
+          }
+
+          const scheduleCompositionCommit = (control: HTMLElement): void => {
+            if (imeTimers.has(control)) return
+            const timer = document.defaultView!.setTimeout(() => {
+              imeTimers.delete(control)
+              if (!ime.finalize(control)) return
+              dispatchInput(control, flushDeferredRender)
+            }, 0)
+            imeTimers.set(control, timer)
+          }
+
+          const commitCompositions = (): void => {
+            const controls = [...ime.targets()].sort((left, right) => {
+              if (left === right) return 0
+              return left.compareDocumentPosition(right) &
+                document.defaultView!.Node.DOCUMENT_POSITION_FOLLOWING
+                ? -1
+                : 1
+            })
+            for (const control of controls) {
+              const timer = imeTimers.get(control)
+              if (timer !== undefined) {
+                document.defaultView!.clearTimeout(timer)
+                imeTimers.delete(control)
+              }
+              if (!ime.commit(control)) continue
+              if (!ime.finalize(control)) continue
+              dispatchInput(control)
+            }
+          }
+
+          for (const kind of ["click", "input", "change", "submit"] as const) {
+            const listener: EventListener = (event: Event): void => {
               if (settled) return
               const eventTarget = event.target
               if (!(eventTarget instanceof document.defaultView!.Element))
@@ -175,22 +252,65 @@ export function createBrowserDom(
               if (id === null) return
               const handler = bindings.handler(id)
               if (handler === undefined || handler.kind !== kind) return
+              if (
+                kind === "input" &&
+                !ime.input(matched, nativeInputIsComposing(event))
+              ) {
+                return
+              }
+              if (kind === "submit" && ime.busy()) commitCompositions()
               if (domEventPreventsDefault(handler)) event.preventDefault()
               try {
-                enqueue(messageFromDomEvent(handler, matched))
+                enqueue(
+                  messageFromDomEvent(handler, matched),
+                  kind === "submit" ? flushDeferredRender : undefined
+                )
               } catch (error) {
                 reject(error)
               }
             }
-            element.addEventListener(kind, listener)
-            return [kind, listener] as const
-          })
+            listen(kind, listener)
+          }
+
+          for (const kind of [
+            "compositionstart",
+            "compositionupdate",
+            "compositionend",
+          ] as const) {
+            const listener: EventListener = (event: Event): void => {
+              if (settled) return
+              const eventTarget = event.target
+              if (!(eventTarget instanceof document.defaultView!.Element))
+                return
+              const matched = eventTarget.closest<HTMLElement>(
+                "[data-ssrg-event-input]"
+              )
+              if (
+                matched === null ||
+                !element.contains(matched) ||
+                inputHandler(matched) === undefined
+              ) {
+                return
+              }
+              if (kind === "compositionstart") ime.start(matched)
+              if (kind === "compositionupdate") ime.update(matched)
+              if (kind === "compositionend" && ime.end(matched)) {
+                scheduleCompositionCommit(matched)
+              }
+            }
+            listen(kind, listener)
+          }
 
           const dispose = () => finish(serviceSuccess(unit))
           disposers.add(dispose)
 
           const render = (tree: Html<Action>) => {
             if (settled) return
+            if (ime.busy()) {
+              deferredTree = tree
+              return
+            }
+            deferredTree = undefined
             const focus = captureFocusedControl(element, document)
             const snapshot = renderForDom(tree)
             bindings.replace(snapshot)
@@ -287,4 +407,10 @@ function restoreFocusedControl(
   } catch {
     // Checked controls do not expose a text selection.
   }
+}
+
+function nativeInputIsComposing(event: Event): boolean {
+  return (
+    (event as Event & { readonly isComposing?: unknown }).isComposing === true
+  )
 }

@@ -244,8 +244,24 @@ opaque struct ChangeEvent {
 ```
 
 `onInput`はtext inputとtextareaの現在valueを一度だけ読み、`InputEvent`をmapperへ渡します。`onChange`は同じ時点の
-valueとcheckedを一度ずつ読み、`ChangeEvent`をmapperへ渡します。browser固有の`InputEvent` classは要求しないため、
-iOS Safariを含む通常のbubbleする`input` / `change` eventを同じcontractで処理します。
+valueとcheckedを一度ずつ読み、`ChangeEvent`をmapperへ渡します。公開snapshotはbrowser固有のevent objectや
+`isComposing`を露出せず、iOS Safariを含む通常のbubbleする`input` / `change` eventを同じcontractで処理します。
+
+### 13.4.1 IME composition
+
+text inputとtextareaの`onInput`は日本語IMEなどのcompositionをruntime内で透過的に処理します。利用者が
+composition eventを個別に配線する必要はありません。
+
+- `compositionstart`から`compositionend`までは途中の`input`をActionへ変換しない。
+- native `InputEvent.isComposing`がtrueなら、`compositionstart`を先に観測できないbrowserでもcomposition中として扱う。
+- `compositionend`の前後に最終`input`が発生するbrowser差を同じsessionへまとめ、確定したvalueを一度だけActionへ変換する。
+- composition中と確定待ちの間はcontrolled rerenderを保留し、active control、native composition、caret、selectionを保持する。
+- 外部Signal更新と競合した場合は最新treeだけを保留し、native確定valueのActionを先にdispatchしてからrenderする。
+- handler tableとDOM markerは確定まで同じsnapshotを使い、確定後のrenderで同時に更新する。
+- composition中にsubmitされた場合は、未確定controlの最終Input Actionをsource順にqueueへ入れてからSubmit Actionをdispatchする。
+
+通常の英数字入力、paste、delete、autofillはcomposition sessionを作らず、従来どおり各`input`を直ちにActionへ
+変換します。公開`InputEvent { value }`は維持し、`isComposing`はruntime内部の制御情報だけに使います。
 
 `onSubmit: action`を持つformは、Actionをqueueへ入れる前に同期的に`preventDefault`します。handlerがないformの
 native submitは変更しません。SSRは`onInput`、`onChange`、`onSubmit`をattributeへ出力しません。
@@ -430,7 +446,7 @@ initial treeのkey・prop・void-element invariantは既存DOMを変更する前
 残しません。
 
 appはpure reducerで完結する通常のapplication向けconvenienceです。内部でMutableSignalを一つ作り、viewをmapし、
-targetのquery、defaultOptionsによるrun、messageごとのSignal更新を所有します。query / runtime failureは実行可能な
+targetのquery、defaultOptionsによるrun、ActionごとのSignal更新を所有します。query / runtime failureは実行可能な
 compact mainがそのまま推論できるString failureへ正規化します。effectful dispatch、custom options、mount後の値や
 終了理由が必要なprogramはquery / runまたはmount / awaitMount / unmountを直接使います。appはcompiler構文ではなく
 `std/web/dom`の通常関数であり、StateやActionごとのcompiler hardcodeを持ちません。

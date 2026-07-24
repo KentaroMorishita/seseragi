@@ -26,7 +26,8 @@ mount lifecycle、portableなerror変換は標準helperが所有し、effectful 
 
 formは`onInput` / `onChange`からnative Eventそのものではなく、immutableな`InputEvent` / `ChangeEvent` snapshotを
 typed Actionへ変換します。`onSubmit`はbrowser navigationより先に`preventDefault`されます。controlled inputと
-textareaはstableな`id`を使うと、Signal更新による再render後もfocusとselectionを維持します。
+textareaはstableな`id`を使うと、Signal更新による再render後もfocusとselectionを維持します。日本語IMEなどの
+composition中はrerenderを保留し、browserごとのevent順序差を吸収して確定valueだけを一度Actionへ変換します。
 
 ## HTML preview
 

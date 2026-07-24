@@ -132,7 +132,7 @@ fn view model: Model -> html.Html<Action> =
         },
         html.p {
           className: "m-0 mb-6 text-slate-500",
-          children: "Input events become immutable Seseragi messages."
+          children: "Input events become immutable Seseragi actions."
         },
         html.form {
           onSubmit: Submitted,

@@ -1,10 +1,11 @@
 import { describe, expect, test } from "bun:test"
-import { createDomEventBindings } from "../src/runtime/browser-dom"
 import {
   button,
+  type ChangeEvent,
   div,
   domEventPreventsDefault,
   form,
+  type InputEvent,
   input,
   label,
   messageFromDomEvent,
@@ -12,9 +13,9 @@ import {
   renderToString,
   style,
   textarea,
-  type ChangeEvent,
-  type InputEvent,
 } from "../../../runtime/ts/src/html"
+import { createDomEventBindings } from "../src/runtime/browser-dom"
+import { createImeInputCoordinator } from "../src/runtime/ime-input"
 
 describe("HTML browser runtime", () => {
   test("serializes record styles and CSS variables with escaping", () => {
@@ -168,5 +169,69 @@ describe("HTML browser runtime", () => {
       value: "new:draft",
     })
     expect(current).not.toBe(first)
+  })
+})
+
+describe("IME input coordination", () => {
+  test("commits Japanese conversion values exactly once", () => {
+    for (const expected of ["日本語", "ひらがな", "カタカナ", "ＡＢＣ１２３"]) {
+      const ime = createImeInputCoordinator<{ value: string }>()
+      const control = { value: "" }
+      const actions: string[] = []
+
+      ime.start(control)
+      control.value = expected.slice(0, 1)
+      expect(ime.input(control, true)).toBe(false)
+      control.value = expected
+      expect(ime.end(control)).toBe(true)
+      expect(ime.input(control, false)).toBe(false)
+      if (ime.finalize(control)) actions.push(control.value)
+      expect(actions).toEqual([expected])
+      expect(ime.finalize(control)).toBe(false)
+    }
+  })
+
+  test("coalesces composition input before and after compositionend", () => {
+    const ime = createImeInputCoordinator<object>()
+    const input = {}
+
+    ime.start(input)
+    expect(ime.input(input, true)).toBe(false)
+    ime.update(input)
+    expect(ime.input(input, false)).toBe(false)
+    expect(ime.end(input)).toBe(true)
+    expect(ime.busy()).toBe(true)
+    expect(ime.input(input, false)).toBe(false)
+    expect(ime.finalize(input)).toBe(true)
+    expect(ime.finalize(input)).toBe(false)
+    expect(ime.busy()).toBe(false)
+    expect(ime.input(input, false)).toBe(true)
+  })
+
+  test("uses native isComposing when compositionstart is absent", () => {
+    const ime = createImeInputCoordinator<object>()
+    const textarea = {}
+
+    expect(ime.input(textarea, true)).toBe(false)
+    expect(ime.input(textarea, false)).toBe(false)
+    expect(ime.end(textarea)).toBe(true)
+    expect(ime.finalize(textarea)).toBe(true)
+    expect(ime.busy()).toBe(false)
+  })
+
+  test("commits an unfinished composition before submit", () => {
+    const ime = createImeInputCoordinator<object>()
+    const input = {}
+    const textarea = {}
+
+    ime.start(input)
+    ime.start(textarea)
+    expect(ime.targets()).toEqual([input, textarea])
+    expect(ime.commit(input)).toBe(true)
+    expect(ime.finalize(input)).toBe(true)
+    expect(ime.commit(input)).toBe(false)
+    expect(ime.targets()).toEqual([textarea])
+    ime.reset()
+    expect(ime.busy()).toBe(false)
   })
 })
