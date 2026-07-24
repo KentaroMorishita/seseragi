@@ -22,7 +22,6 @@ fn totalSales values: Array<Sale> -> Int =
   sum [sale.amount | sale <- values]
 
 fn report values: Array<Sale> -> String = {
-  // The same filtered values feed both formatting and aggregation.
   let completedSales = arrays.filter completed values
   let lines = map renderSale completedSales
   let total = totalSales completedSales
@@ -33,5 +32,5 @@ fn report values: Array<Sale> -> String = {
   ]
 }
 
-pub effect fn main =
-  report sales |> println
+pub fn collectionReport unit: Unit -> String =
+  report sales

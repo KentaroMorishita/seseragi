@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "case": "collection-report",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/collection-report",
+    "export": "collectionReport",
+    "compiledModule": "../../schema-1/collection-report/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.string",
+      "core.int64",
+      "core.bool",
+      "core.string.show",
+      "core.int64.show",
+      "core.array.reducible",
+      "core.int64.zero-dictionary",
+      "core.int64.add-dictionary",
+      "core.collection.sum",
+      "core.array.comprehend",
+      "core.array.filter",
+      "core.array.functor",
+      "core.collection.join",
+      "core.unit"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

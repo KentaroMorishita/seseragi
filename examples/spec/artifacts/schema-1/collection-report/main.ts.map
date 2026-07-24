@@ -1,0 +1,41 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/collection-report"
+  ],
+  "sourcesContent": [
+    "import * as arrays from \"std/array\"\n\nstruct Sale {\n  item: String,\n  amount: Int\n}\n\nlet sales: Array<Sale> = [\n  Sale { item: \"Book\", amount: 2400 },\n  Sale { item: \"Pen\", amount: 600 },\n  Sale { item: \"Cancelled\", amount: 0 },\n  Sale { item: \"Notebook\", amount: 1200 }\n]\n\nfn completed sale: Sale -> Bool =\n  sale.amount > 0\n\nfn renderSale sale: Sale -> String =\n  `${sale.item}: ${sale.amount}`\n\nfn totalSales values: Array<Sale> -> Int =\n  sum [sale.amount | sale <- values]\n\nfn report values: Array<Sale> -> String = {\n  let completedSales = arrays.filter completed values\n  let lines = map renderSale completedSales\n  let total = totalSales completedSales\n\n  join \"\\n\" [\n    `Completed: ${join \", \" lines}`,\n    `Total: ${total}`\n  ]\n}\n\npub fn collectionReport unit: Unit -> String =\n  report sales\n"
+  ],
+  "names": [
+    "Sale",
+    "sales",
+    "completed",
+    "renderSale",
+    "stringShow",
+    "intShow",
+    "totalSales",
+    "_ssrg_collection_sum",
+    "arrayReducible",
+    "intZero",
+    "intAdd",
+    "_ssrg_array_comprehend",
+    "report",
+    "completedSales",
+    "_ssrg_array_filter",
+    "lines",
+    "arrayFunctor",
+    "total",
+    "totalSales",
+    "_ssrg_collection_join",
+    "arrayReducible",
+    "stringShow",
+    "_ssrg_collection_join",
+    "arrayReducible",
+    "intShow",
+    "collectionReport",
+    "report"
+  ],
+  "mappings": ";;;;;;AAEAA;;;;;AAKAC;AAOAC;AAGAC;AAGAG;AAGAM;AAWAa"
+}

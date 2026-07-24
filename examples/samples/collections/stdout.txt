@@ -1,6 +1,2 @@
-[#2 / #4 / #6 / #8]
-24
-yes
-yes
-4
-9
+Completed: Book: 2400, Pen: 600, Notebook: 1200
+Total: 4200

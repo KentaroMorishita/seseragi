@@ -1,9 +1,3 @@
-Array、List、Rangeをconcrete型ごとの別APIへ分けず、genericな集約で処理するrecipeです。
+一つの`completedSales`を`map`による表示行と、genericな`sum`による合計の両方へ使うrecipeです。`join`は行内の区切りと改行を組み立て、0円のキャンセル行は`filter`で一度だけ除外します。
 
-- `product`は`one ()`からsource順に乗算します。
-- `any`と`all`は結果が決まった時点で走査を止めます。
-- `join`と`combine`はStringを読みやすく組み立てます。
-- `std/array`と`std/list`は、長さや先頭要素を型安全に読み取ります。
-- 見つからないかもしれない`find`は`Maybe`で受け取り、`match`で扱います。
-- `filterMap`は変換と絞り込みを一度に行い、`Nothing`だけを除きます。
-- `toList`と`toArray`は要素順を保ったまま表現を切り替えます。
+`filter`と`map`は`std/array`の型を保つ変換です。一方、`sum`と`join`は`Reducible`を通るgeneric APIなので、同じ考え方をListやRangeにも使えます。

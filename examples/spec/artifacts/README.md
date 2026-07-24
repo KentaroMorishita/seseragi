@@ -345,6 +345,10 @@ user-defined Iterable / Reducible dictionary dispatchは`user-iterable-comprehen
 `execution-schema-1/fizzbuzz`は数値、Fizz、Buzz、FizzBuzzの全30要素とsource順をactual JSONで固定します。
 同じ分類関数を使う`examples/samples/fizzbuzz`はeffectful `for`で各行を順次Consoleへ出力し、CLIとPlaygroundで実行します。
 
+`schema-1/collection-report`はStructのArrayを一度filterし、mapした表示行をgeneric `join`、同じfiltered sourceの金額を
+generic `sum`で集計します。`execution-schema-1/collection-report`と`examples/samples/collections`は、キャンセル行を除いた
+3件と合計4200を同じ2行のreportとして固定します。
+
 `schema-1/method-constraint-dispatch`はtrait method自身の`where Labeled<A>`をinstance-level constraintと分離し、
 method bodyではordered `parameter` evidence、call siteではprimary `Render<Badge>` dictionaryに続く
 `Labeled<Badge>` dictionaryとして運びます。生成TSは通常のmethod引数の後ろへcompiler-private evidence parameterを追加し、

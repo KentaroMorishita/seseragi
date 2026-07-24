@@ -1,0 +1,607 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/collection-report",
+  "runtimeRequirements": [
+    "core.string",
+    "core.int64",
+    "core.bool",
+    "core.string.show",
+    "core.int64.show",
+    "core.array.reducible",
+    "core.int64.zero-dictionary",
+    "core.int64.add-dictionary",
+    "core.collection.sum",
+    "core.array.comprehend",
+    "core.array.filter",
+    "core.array.functor",
+    "core.collection.join",
+    "core.unit"
+  ],
+  "imports": [
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.array.reducible",
+      "local": "_ssrg_array_reducible"
+    },
+    {
+      "feature": "core.int64.zero-dictionary",
+      "local": "_ssrg_int_zero"
+    },
+    {
+      "feature": "core.int64.add-dictionary",
+      "local": "_ssrg_int_add"
+    },
+    {
+      "feature": "core.collection.sum",
+      "local": "_ssrg_collection_sum"
+    },
+    {
+      "feature": "core.array.comprehend",
+      "local": "_ssrg_array_comprehend"
+    },
+    {
+      "feature": "core.array.filter",
+      "local": "_ssrg_array_filter"
+    },
+    {
+      "feature": "core.array.functor",
+      "local": "_ssrg_array_functor"
+    },
+    {
+      "feature": "core.collection.join",
+      "local": "_ssrg_collection_join"
+    }
+  ],
+  "structs": [
+    {
+      "exported": false,
+      "name": "Sale",
+      "brand": "__ssrg$brand$Sale",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "item",
+          "optional": false,
+          "type": {
+            "kind": "string"
+          }
+        },
+        {
+          "name": "amount",
+          "optional": false,
+          "type": {
+            "kind": "bigint"
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 37,
+        "end": 82
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "sales",
+      "type": {
+        "kind": "array",
+        "element": {
+          "kind": "reference",
+          "name": "Sale",
+          "arguments": []
+        }
+      },
+      "initializer": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "item",
+                "value": {
+                  "kind": "string",
+                  "value": "Book"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "amount",
+                "value": {
+                  "kind": "bigint",
+                  "value": "2400"
+                }
+              }
+            ],
+            "assertedType": {
+              "kind": "reference",
+              "name": "Sale",
+              "arguments": []
+            }
+          },
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "item",
+                "value": {
+                  "kind": "string",
+                  "value": "Pen"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "amount",
+                "value": {
+                  "kind": "bigint",
+                  "value": "600"
+                }
+              }
+            ],
+            "assertedType": {
+              "kind": "reference",
+              "name": "Sale",
+              "arguments": []
+            }
+          },
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "item",
+                "value": {
+                  "kind": "string",
+                  "value": "Cancelled"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "amount",
+                "value": {
+                  "kind": "bigint",
+                  "value": "0"
+                }
+              }
+            ],
+            "assertedType": {
+              "kind": "reference",
+              "name": "Sale",
+              "arguments": []
+            }
+          },
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "item",
+                "value": {
+                  "kind": "string",
+                  "value": "Notebook"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "amount",
+                "value": {
+                  "kind": "bigint",
+                  "value": "1200"
+                }
+              }
+            ],
+            "assertedType": {
+              "kind": "reference",
+              "name": "Sale",
+              "arguments": []
+            }
+          }
+        ],
+        "elementType": {
+          "kind": "reference",
+          "name": "Sale",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 84,
+        "end": 271
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "completed",
+      "parameters": [
+        {
+          "name": "sale",
+          "type": "Sale",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": ">",
+        "left": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "identifier",
+            "name": "sale"
+          },
+          "field": "amount"
+        },
+        "right": {
+          "kind": "bigint",
+          "value": "0"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 273,
+        "end": 324
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderSale",
+      "parameters": [
+        {
+          "name": "sale",
+          "type": "Sale",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "binary",
+          "operator": "+",
+          "left": {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_show_stringShow"
+            },
+            "method": "show",
+            "arguments": [
+              {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "identifier",
+                  "name": "sale"
+                },
+                "field": "item"
+              }
+            ]
+          },
+          "right": {
+            "kind": "string",
+            "value": ": "
+          }
+        },
+        "right": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_intShow"
+          },
+          "method": "show",
+          "arguments": [
+            {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "identifier",
+                "name": "sale"
+              },
+              "field": "amount"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 326,
+        "end": 395
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "totalSales",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<Sale>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_collection_sum",
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_array_reducible"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_int_zero"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_int_add"
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_array_comprehend",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "values"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "sale",
+                "body": {
+                  "kind": "boolean",
+                  "value": true
+                }
+              },
+              {
+                "kind": "lambda",
+                "parameter": "sale",
+                "body": {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "sale"
+                  },
+                  "field": "amount"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 397,
+        "end": 476
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "report",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<Sale>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "completedSales",
+            "type": {
+              "kind": "array",
+              "element": {
+                "kind": "reference",
+                "name": "Sale",
+                "arguments": []
+              }
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_array_filter",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "completed"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "values"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 521,
+              "end": 575
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "lines",
+            "type": {
+              "kind": "array",
+              "element": {
+                "kind": "string"
+              }
+            },
+            "initializer": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_array_functor"
+              },
+              "method": "map",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "renderSale"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "completedSales"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 576,
+              "end": 619
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "total",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "totalSales",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "completedSales"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 620,
+              "end": 659
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_collection_join",
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_array_reducible"
+            },
+            {
+              "kind": "string",
+              "value": "\n"
+            },
+            {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "Completed: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_collection_join",
+                        "arguments": [
+                          {
+                            "kind": "runtime-reference",
+                            "name": "_ssrg_array_reducible"
+                          },
+                          {
+                            "kind": "string",
+                            "value": ", "
+                          },
+                          {
+                            "kind": "identifier",
+                            "name": "lines"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "Total: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "total"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "elementType": {
+                "kind": "string"
+              }
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 478,
+        "end": 739
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "collectionReport",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "report",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "sales"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 741,
+        "end": 802
+      }
+    }
+  ]
+}

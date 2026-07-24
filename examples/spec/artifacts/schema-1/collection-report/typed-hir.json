@@ -1,0 +1,1421 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/collection-report",
+  "moduleDependencies": [
+    {
+      "specifier": "std/array",
+      "module": "std/array",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "filter",
+          "local": "arrays.filter",
+          "canonical": "std/array::filter",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "struct",
+      "symbol": "artifact/collection-report::Sale",
+      "name": "Sale",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "item",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 53,
+            "end": 57
+          }
+        },
+        {
+          "name": "amount",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 69,
+            "end": 75
+          }
+        }
+      ],
+      "origin": {
+        "start": 37,
+        "end": 82
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/collection-report::sales",
+      "visibility": "private",
+      "origin": {
+        "start": 84,
+        "end": 271
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Sale",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "item",
+                "value": {
+                  "kind": "string",
+                  "value": "Book",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 126,
+                    "end": 132
+                  }
+                },
+                "origin": {
+                  "start": 120,
+                  "end": 132
+                }
+              },
+              {
+                "kind": "field",
+                "name": "amount",
+                "value": {
+                  "kind": "integer",
+                  "value": "2400",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 142,
+                    "end": 146
+                  }
+                },
+                "origin": {
+                  "start": 134,
+                  "end": 146
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Sale",
+              "arguments": []
+            },
+            "origin": {
+              "start": 113,
+              "end": 148
+            }
+          },
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "item",
+                "value": {
+                  "kind": "string",
+                  "value": "Pen",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 165,
+                    "end": 170
+                  }
+                },
+                "origin": {
+                  "start": 159,
+                  "end": 170
+                }
+              },
+              {
+                "kind": "field",
+                "name": "amount",
+                "value": {
+                  "kind": "integer",
+                  "value": "600",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 180,
+                    "end": 183
+                  }
+                },
+                "origin": {
+                  "start": 172,
+                  "end": 183
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Sale",
+              "arguments": []
+            },
+            "origin": {
+              "start": 152,
+              "end": 185
+            }
+          },
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "item",
+                "value": {
+                  "kind": "string",
+                  "value": "Cancelled",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 202,
+                    "end": 213
+                  }
+                },
+                "origin": {
+                  "start": 196,
+                  "end": 213
+                }
+              },
+              {
+                "kind": "field",
+                "name": "amount",
+                "value": {
+                  "kind": "integer",
+                  "value": "0",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 223,
+                    "end": 224
+                  }
+                },
+                "origin": {
+                  "start": 215,
+                  "end": 224
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Sale",
+              "arguments": []
+            },
+            "origin": {
+              "start": 189,
+              "end": 226
+            }
+          },
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "item",
+                "value": {
+                  "kind": "string",
+                  "value": "Notebook",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 243,
+                    "end": 253
+                  }
+                },
+                "origin": {
+                  "start": 237,
+                  "end": 253
+                }
+              },
+              {
+                "kind": "field",
+                "name": "amount",
+                "value": {
+                  "kind": "integer",
+                  "value": "1200",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 263,
+                    "end": 267
+                  }
+                },
+                "origin": {
+                  "start": 255,
+                  "end": 267
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Sale",
+              "arguments": []
+            },
+            "origin": {
+              "start": 230,
+              "end": 269
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Sale",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 109,
+          "end": 271
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-report::completed",
+      "visibility": "private",
+      "origin": {
+        "start": 273,
+        "end": 324
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "sale",
+          "type": {
+            "kind": "named",
+            "name": "Sale",
+            "arguments": []
+          },
+          "origin": {
+            "start": 286,
+            "end": 290
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": ">",
+        "left": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "variable",
+            "name": "sale",
+            "type": {
+              "kind": "named",
+              "name": "Sale",
+              "arguments": []
+            },
+            "origin": {
+              "start": 309,
+              "end": 313
+            }
+          },
+          "field": "amount",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 309,
+            "end": 320
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "value": "0",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 323,
+            "end": 324
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "start": 309,
+          "end": 324
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-report::renderSale",
+      "visibility": "private",
+      "origin": {
+        "start": 326,
+        "end": 395
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "sale",
+          "type": {
+            "kind": "named",
+            "name": "Sale",
+            "arguments": []
+          },
+          "origin": {
+            "start": 340,
+            "end": 344
+          }
+        }
+      ],
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "variable",
+                "name": "sale",
+                "type": {
+                  "kind": "named",
+                  "name": "Sale",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 368,
+                  "end": 372
+                }
+              },
+              "field": "item",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 368,
+                "end": 377
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::String>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "start": 366,
+              "end": 378
+            }
+          },
+          {
+            "kind": "text",
+            "value": ": ",
+            "origin": {
+              "start": 378,
+              "end": 380
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "variable",
+                "name": "sale",
+                "type": {
+                  "kind": "named",
+                  "name": "Sale",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 382,
+                  "end": 386
+                }
+              },
+              "field": "amount",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 382,
+                "end": 393
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "Show<std/prelude::Int>"
+              }
+            },
+            "traitIdentity": "std/prelude::Show",
+            "origin": {
+              "start": 380,
+              "end": 394
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 365,
+          "end": 395
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-report::totalSales",
+      "visibility": "private",
+      "origin": {
+        "start": 397,
+        "end": 476
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Sale",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 411,
+            "end": 417
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::sum",
+        "arguments": [
+          {
+            "kind": "array-comprehension",
+            "element": {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "variable",
+                "name": "sale",
+                "type": {
+                  "kind": "named",
+                  "name": "Sale",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 447,
+                  "end": 451
+                }
+              },
+              "field": "amount",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 447,
+                "end": 458
+              }
+            },
+            "clauses": [
+              {
+                "kind": "generator",
+                "pattern": {
+                  "kind": "binding",
+                  "symbol": 17,
+                  "name": "sale",
+                  "type": {
+                    "kind": "named",
+                    "name": "Sale",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 461,
+                    "end": 465
+                  }
+                },
+                "source": {
+                  "kind": "variable",
+                  "name": "values",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Sale",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 469,
+                    "end": 475
+                  }
+                },
+                "evidence": {
+                  "constraint": {
+                    "name": "Iterable",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Sale",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Sale",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/array::Iterable"
+                  }
+                },
+                "origin": {
+                  "start": 461,
+                  "end": 475
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 446,
+              "end": 476
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Reducible",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Reducible"
+            }
+          },
+          {
+            "constraint": {
+              "name": "Zero",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Zero"
+            }
+          },
+          {
+            "constraint": {
+              "name": "Add",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Add"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 442,
+          "end": 476
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-report::report",
+      "visibility": "private",
+      "origin": {
+        "start": 478,
+        "end": 739
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Sale",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 488,
+            "end": 494
+          }
+        }
+      ],
+      "body": {
+        "kind": "block",
+        "statements": [
+          {
+            "kind": "let",
+            "name": "completedSales",
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Sale",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/array::filter",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/collection-report::completed",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Sale",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "start": 559,
+                    "end": 568
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "values",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Sale",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 569,
+                    "end": 575
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Sale",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 545,
+                "end": 575
+              }
+            },
+            "origin": {
+              "start": 521,
+              "end": 575
+            }
+          },
+          {
+            "kind": "let",
+            "name": "lines",
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Functor::map",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/collection-report::renderSale",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Sale",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "start": 594,
+                    "end": 604
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "completedSales",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Sale",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 605,
+                    "end": 619
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Functor",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/array::Functor"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Functor",
+                "method": "map"
+              },
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 590,
+                "end": 619
+              }
+            },
+            "origin": {
+              "start": 576,
+              "end": 619
+            }
+          },
+          {
+            "kind": "let",
+            "name": "total",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/collection-report::totalSales",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "completedSales",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Sale",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 645,
+                    "end": 659
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 634,
+                "end": 659
+              }
+            },
+            "origin": {
+              "start": 620,
+              "end": 659
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "std/prelude::join",
+          "arguments": [
+            {
+              "kind": "string",
+              "value": "\n",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 668,
+                "end": 672
+              }
+            },
+            {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "template",
+                  "parts": [
+                    {
+                      "kind": "text",
+                      "value": "Completed: ",
+                      "origin": {
+                        "start": 680,
+                        "end": 691
+                      }
+                    },
+                    {
+                      "kind": "interpolation",
+                      "value": {
+                        "kind": "call",
+                        "callee": "std/prelude::join",
+                        "arguments": [
+                          {
+                            "kind": "string",
+                            "value": ", ",
+                            "type": {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 698,
+                              "end": 702
+                            }
+                          },
+                          {
+                            "kind": "variable",
+                            "name": "lines",
+                            "type": {
+                              "kind": "named",
+                              "name": "Array",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "start": 703,
+                              "end": 708
+                            }
+                          }
+                        ],
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Reducible",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Array",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/array::Reducible"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 693,
+                          "end": 708
+                        }
+                      },
+                      "evidence": {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::String>"
+                        }
+                      },
+                      "traitIdentity": "std/prelude::Show",
+                      "origin": {
+                        "start": 691,
+                        "end": 709
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 679,
+                    "end": 710
+                  }
+                },
+                {
+                  "kind": "template",
+                  "parts": [
+                    {
+                      "kind": "text",
+                      "value": "Total: ",
+                      "origin": {
+                        "start": 717,
+                        "end": 724
+                      }
+                    },
+                    {
+                      "kind": "interpolation",
+                      "value": {
+                        "kind": "variable",
+                        "name": "total",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 726,
+                          "end": 731
+                        }
+                      },
+                      "evidence": {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Int>"
+                        }
+                      },
+                      "traitIdentity": "std/prelude::Show",
+                      "origin": {
+                        "start": 724,
+                        "end": 732
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 716,
+                    "end": 733
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 673,
+                "end": 737
+              }
+            }
+          ],
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Reducible",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/array::Reducible"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 663,
+            "end": 737
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 520,
+          "end": 739
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/collection-report::collectionReport",
+      "visibility": "public",
+      "origin": {
+        "start": 741,
+        "end": 802
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 765,
+            "end": 769
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/collection-report::report",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "sales",
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Sale",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 797,
+              "end": 802
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 790,
+          "end": 802
+        }
+      }
+    }
+  ]
+}

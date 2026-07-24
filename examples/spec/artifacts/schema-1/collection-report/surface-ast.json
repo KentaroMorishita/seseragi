@@ -1,0 +1,1035 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "imports": [
+    {
+      "specifier": "std/array",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 7,
+            "end": 8
+          },
+          "alias": "arrays",
+          "aliasSpan": {
+            "start": 12,
+            "end": 18
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 35
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "struct",
+      "visibility": "private",
+      "name": "Sale",
+      "nameSpan": {
+        "start": 44,
+        "end": 48
+      },
+      "fields": [
+        {
+          "name": "item",
+          "nameSpan": {
+            "start": 53,
+            "end": 57
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 59,
+              "end": 65
+            }
+          }
+        },
+        {
+          "name": "amount",
+          "nameSpan": {
+            "start": 69,
+            "end": 75
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 77,
+              "end": 80
+            }
+          }
+        }
+      ],
+      "span": {
+        "start": 37,
+        "end": 82
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "sales",
+      "nameSpan": {
+        "start": 88,
+        "end": 93
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Sale",
+            "span": {
+              "start": 101,
+              "end": 105
+            }
+          }
+        ],
+        "span": {
+          "start": 95,
+          "end": 106
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "struct",
+            "name": "Sale",
+            "nameSpan": {
+              "start": 113,
+              "end": 117
+            },
+            "items": [
+              {
+                "kind": "field",
+                "name": "item",
+                "nameSpan": {
+                  "start": 120,
+                  "end": 124
+                },
+                "value": {
+                  "kind": "string",
+                  "raw": "\"Book\"",
+                  "span": {
+                    "start": 126,
+                    "end": 132
+                  }
+                },
+                "span": {
+                  "start": 120,
+                  "end": 132
+                }
+              },
+              {
+                "kind": "field",
+                "name": "amount",
+                "nameSpan": {
+                  "start": 134,
+                  "end": 140
+                },
+                "value": {
+                  "kind": "integer",
+                  "raw": "2400",
+                  "span": {
+                    "start": 142,
+                    "end": 146
+                  }
+                },
+                "span": {
+                  "start": 134,
+                  "end": 146
+                }
+              }
+            ],
+            "span": {
+              "start": 113,
+              "end": 148
+            }
+          },
+          {
+            "kind": "struct",
+            "name": "Sale",
+            "nameSpan": {
+              "start": 152,
+              "end": 156
+            },
+            "items": [
+              {
+                "kind": "field",
+                "name": "item",
+                "nameSpan": {
+                  "start": 159,
+                  "end": 163
+                },
+                "value": {
+                  "kind": "string",
+                  "raw": "\"Pen\"",
+                  "span": {
+                    "start": 165,
+                    "end": 170
+                  }
+                },
+                "span": {
+                  "start": 159,
+                  "end": 170
+                }
+              },
+              {
+                "kind": "field",
+                "name": "amount",
+                "nameSpan": {
+                  "start": 172,
+                  "end": 178
+                },
+                "value": {
+                  "kind": "integer",
+                  "raw": "600",
+                  "span": {
+                    "start": 180,
+                    "end": 183
+                  }
+                },
+                "span": {
+                  "start": 172,
+                  "end": 183
+                }
+              }
+            ],
+            "span": {
+              "start": 152,
+              "end": 185
+            }
+          },
+          {
+            "kind": "struct",
+            "name": "Sale",
+            "nameSpan": {
+              "start": 189,
+              "end": 193
+            },
+            "items": [
+              {
+                "kind": "field",
+                "name": "item",
+                "nameSpan": {
+                  "start": 196,
+                  "end": 200
+                },
+                "value": {
+                  "kind": "string",
+                  "raw": "\"Cancelled\"",
+                  "span": {
+                    "start": 202,
+                    "end": 213
+                  }
+                },
+                "span": {
+                  "start": 196,
+                  "end": 213
+                }
+              },
+              {
+                "kind": "field",
+                "name": "amount",
+                "nameSpan": {
+                  "start": 215,
+                  "end": 221
+                },
+                "value": {
+                  "kind": "integer",
+                  "raw": "0",
+                  "span": {
+                    "start": 223,
+                    "end": 224
+                  }
+                },
+                "span": {
+                  "start": 215,
+                  "end": 224
+                }
+              }
+            ],
+            "span": {
+              "start": 189,
+              "end": 226
+            }
+          },
+          {
+            "kind": "struct",
+            "name": "Sale",
+            "nameSpan": {
+              "start": 230,
+              "end": 234
+            },
+            "items": [
+              {
+                "kind": "field",
+                "name": "item",
+                "nameSpan": {
+                  "start": 237,
+                  "end": 241
+                },
+                "value": {
+                  "kind": "string",
+                  "raw": "\"Notebook\"",
+                  "span": {
+                    "start": 243,
+                    "end": 253
+                  }
+                },
+                "span": {
+                  "start": 237,
+                  "end": 253
+                }
+              },
+              {
+                "kind": "field",
+                "name": "amount",
+                "nameSpan": {
+                  "start": 255,
+                  "end": 261
+                },
+                "value": {
+                  "kind": "integer",
+                  "raw": "1200",
+                  "span": {
+                    "start": 263,
+                    "end": 267
+                  }
+                },
+                "span": {
+                  "start": 255,
+                  "end": 267
+                }
+              }
+            ],
+            "span": {
+              "start": 230,
+              "end": 269
+            }
+          }
+        ],
+        "span": {
+          "start": 109,
+          "end": 271
+        }
+      },
+      "span": {
+        "start": 84,
+        "end": 271
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "completed",
+      "nameSpan": {
+        "start": 276,
+        "end": 285
+      },
+      "parameters": [
+        {
+          "name": "sale",
+          "nameSpan": {
+            "start": 286,
+            "end": 290
+          },
+          "type": {
+            "kind": "named",
+            "name": "Sale",
+            "span": {
+              "start": 292,
+              "end": 296
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 300,
+          "end": 304
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": ">",
+        "operatorSpan": {
+          "start": 321,
+          "end": 322
+        },
+        "left": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "sale",
+            "span": {
+              "start": 309,
+              "end": 313
+            }
+          },
+          "field": "amount",
+          "fieldSpan": {
+            "start": 314,
+            "end": 320
+          },
+          "span": {
+            "start": 309,
+            "end": 320
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "raw": "0",
+          "span": {
+            "start": 323,
+            "end": 324
+          }
+        },
+        "span": {
+          "start": 309,
+          "end": 324
+        }
+      },
+      "span": {
+        "start": 273,
+        "end": 324
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "renderSale",
+      "nameSpan": {
+        "start": 329,
+        "end": 339
+      },
+      "parameters": [
+        {
+          "name": "sale",
+          "nameSpan": {
+            "start": 340,
+            "end": 344
+          },
+          "type": {
+            "kind": "named",
+            "name": "Sale",
+            "span": {
+              "start": 346,
+              "end": 350
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 354,
+          "end": 360
+        }
+      },
+      "body": {
+        "kind": "template",
+        "parts": [
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "member",
+              "receiver": {
+                "kind": "name",
+                "name": "sale",
+                "span": {
+                  "start": 368,
+                  "end": 372
+                }
+              },
+              "field": "item",
+              "fieldSpan": {
+                "start": 373,
+                "end": 377
+              },
+              "span": {
+                "start": 368,
+                "end": 377
+              }
+            },
+            "span": {
+              "start": 366,
+              "end": 378
+            }
+          },
+          {
+            "kind": "text",
+            "value": ": ",
+            "span": {
+              "start": 378,
+              "end": 380
+            }
+          },
+          {
+            "kind": "interpolation",
+            "value": {
+              "kind": "member",
+              "receiver": {
+                "kind": "name",
+                "name": "sale",
+                "span": {
+                  "start": 382,
+                  "end": 386
+                }
+              },
+              "field": "amount",
+              "fieldSpan": {
+                "start": 387,
+                "end": 393
+              },
+              "span": {
+                "start": 382,
+                "end": 393
+              }
+            },
+            "span": {
+              "start": 380,
+              "end": 394
+            }
+          }
+        ],
+        "span": {
+          "start": 365,
+          "end": 395
+        }
+      },
+      "span": {
+        "start": 326,
+        "end": 395
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "totalSales",
+      "nameSpan": {
+        "start": 400,
+        "end": 410
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 411,
+            "end": 417
+          },
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Sale",
+                "span": {
+                  "start": 425,
+                  "end": 429
+                }
+              }
+            ],
+            "span": {
+              "start": 419,
+              "end": 430
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 434,
+          "end": 437
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "sum",
+          "span": {
+            "start": 442,
+            "end": 445
+          }
+        },
+        "argument": {
+          "kind": "arrayComprehension",
+          "element": {
+            "kind": "member",
+            "receiver": {
+              "kind": "name",
+              "name": "sale",
+              "span": {
+                "start": 447,
+                "end": 451
+              }
+            },
+            "field": "amount",
+            "fieldSpan": {
+              "start": 452,
+              "end": 458
+            },
+            "span": {
+              "start": 447,
+              "end": 458
+            }
+          },
+          "clauses": [
+            {
+              "kind": "generator",
+              "pattern": {
+                "kind": "name",
+                "name": "sale",
+                "nameSpan": {
+                  "start": 461,
+                  "end": 465
+                },
+                "span": {
+                  "start": 461,
+                  "end": 465
+                }
+              },
+              "source": {
+                "kind": "name",
+                "name": "values",
+                "span": {
+                  "start": 469,
+                  "end": 475
+                }
+              },
+              "span": {
+                "start": 461,
+                "end": 475
+              }
+            }
+          ],
+          "span": {
+            "start": 446,
+            "end": 476
+          }
+        },
+        "span": {
+          "start": 442,
+          "end": 476
+        }
+      },
+      "span": {
+        "start": 397,
+        "end": 476
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "report",
+      "nameSpan": {
+        "start": 481,
+        "end": 487
+      },
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 488,
+            "end": 494
+          },
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Sale",
+                "span": {
+                  "start": 502,
+                  "end": 506
+                }
+              }
+            ],
+            "span": {
+              "start": 496,
+              "end": 507
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 511,
+          "end": 517
+        }
+      },
+      "body": {
+        "kind": "block",
+        "items": [
+          {
+            "kind": "let",
+            "name": "completedSales",
+            "nameSpan": {
+              "start": 528,
+              "end": 542
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "arrays",
+                    "span": {
+                      "start": 545,
+                      "end": 551
+                    }
+                  },
+                  "field": "filter",
+                  "fieldSpan": {
+                    "start": 552,
+                    "end": 558
+                  },
+                  "span": {
+                    "start": 545,
+                    "end": 558
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "completed",
+                  "span": {
+                    "start": 559,
+                    "end": 568
+                  }
+                },
+                "span": {
+                  "start": 545,
+                  "end": 568
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "values",
+                "span": {
+                  "start": 569,
+                  "end": 575
+                }
+              },
+              "span": {
+                "start": 545,
+                "end": 575
+              }
+            },
+            "span": {
+              "start": 521,
+              "end": 575
+            }
+          },
+          {
+            "kind": "let",
+            "name": "lines",
+            "nameSpan": {
+              "start": 582,
+              "end": 587
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "map",
+                  "span": {
+                    "start": 590,
+                    "end": 593
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "renderSale",
+                  "span": {
+                    "start": 594,
+                    "end": 604
+                  }
+                },
+                "span": {
+                  "start": 590,
+                  "end": 604
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "completedSales",
+                "span": {
+                  "start": 605,
+                  "end": 619
+                }
+              },
+              "span": {
+                "start": 590,
+                "end": 619
+              }
+            },
+            "span": {
+              "start": 576,
+              "end": 619
+            }
+          },
+          {
+            "kind": "let",
+            "name": "total",
+            "nameSpan": {
+              "start": 626,
+              "end": 631
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "totalSales",
+                "span": {
+                  "start": 634,
+                  "end": 644
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "completedSales",
+                "span": {
+                  "start": 645,
+                  "end": 659
+                }
+              },
+              "span": {
+                "start": 634,
+                "end": 659
+              }
+            },
+            "span": {
+              "start": 620,
+              "end": 659
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "join",
+              "span": {
+                "start": 663,
+                "end": 667
+              }
+            },
+            "argument": {
+              "kind": "string",
+              "raw": "\"\\n\"",
+              "span": {
+                "start": 668,
+                "end": 672
+              }
+            },
+            "span": {
+              "start": 663,
+              "end": 672
+            }
+          },
+          "argument": {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "template",
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "Completed: ",
+                    "span": {
+                      "start": 680,
+                      "end": 691
+                    }
+                  },
+                  {
+                    "kind": "interpolation",
+                    "value": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "name",
+                          "name": "join",
+                          "span": {
+                            "start": 693,
+                            "end": 697
+                          }
+                        },
+                        "argument": {
+                          "kind": "string",
+                          "raw": "\", \"",
+                          "span": {
+                            "start": 698,
+                            "end": 702
+                          }
+                        },
+                        "span": {
+                          "start": 693,
+                          "end": 702
+                        }
+                      },
+                      "argument": {
+                        "kind": "name",
+                        "name": "lines",
+                        "span": {
+                          "start": 703,
+                          "end": 708
+                        }
+                      },
+                      "span": {
+                        "start": 693,
+                        "end": 708
+                      }
+                    },
+                    "span": {
+                      "start": 691,
+                      "end": 709
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 679,
+                  "end": 710
+                }
+              },
+              {
+                "kind": "template",
+                "parts": [
+                  {
+                    "kind": "text",
+                    "value": "Total: ",
+                    "span": {
+                      "start": 717,
+                      "end": 724
+                    }
+                  },
+                  {
+                    "kind": "interpolation",
+                    "value": {
+                      "kind": "name",
+                      "name": "total",
+                      "span": {
+                        "start": 726,
+                        "end": 731
+                      }
+                    },
+                    "span": {
+                      "start": 724,
+                      "end": 732
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 716,
+                  "end": 733
+                }
+              }
+            ],
+            "span": {
+              "start": 673,
+              "end": 737
+            }
+          },
+          "span": {
+            "start": 663,
+            "end": 737
+          }
+        },
+        "span": {
+          "start": 520,
+          "end": 739
+        }
+      },
+      "span": {
+        "start": 478,
+        "end": 739
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "collectionReport",
+      "nameSpan": {
+        "start": 748,
+        "end": 764
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 765,
+            "end": 769
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 771,
+              "end": 775
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 779,
+          "end": 785
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "report",
+          "span": {
+            "start": 790,
+            "end": 796
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "sales",
+          "span": {
+            "start": 797,
+            "end": 802
+          }
+        },
+        "span": {
+          "start": 790,
+          "end": 802
+        }
+      },
+      "span": {
+        "start": 741,
+        "end": 802
+      }
+    }
+  ]
+}

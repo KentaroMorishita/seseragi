@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "module": "artifact/collection-report",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.string",
+      "core.int64",
+      "core.bool",
+      "core.string.show",
+      "core.int64.show",
+      "core.array.reducible",
+      "core.int64.zero-dictionary",
+      "core.int64.add-dictionary",
+      "core.collection.sum",
+      "core.array.comprehend",
+      "core.array.filter",
+      "core.array.functor",
+      "core.collection.join",
+      "core.unit"
+    ]
+  },
+  "exports": [
+    "collectionReport"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

@@ -127,26 +127,24 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "collections",
-      "title": "Collectionを組み立てる",
-      "summary": "Array、List、Rangeをgenericな集約と安全な参照で処理します。",
+      "title": "Collectionを整形・集計",
+      "summary": "filterしたArrayを表示用に整形し、genericなsumとjoinでreportにします。",
       "kind": "recipe",
-      "difficulty": "beginner",
+      "difficulty": "intermediate",
       "topics": [
         "Collection",
         "Array",
-        "List",
-        "Maybe",
-        "Range",
-        "filterMap",
-        "product",
-        "any"
+        "filter",
+        "map",
+        "sum",
+        "join"
       ],
       "capabilities": [
         "console"
       ],
       "outputMode": "text",
       "prerequisites": [
-        "functions-and-pipelines"
+        "data-and-patterns"
       ],
       "featured": true,
       "isNew": false,
@@ -154,7 +152,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/collections/main.ssrg",
       "guidePath": "examples/samples/collections/guide.md",
       "expectedOutputPath": "examples/samples/collections/stdout.txt",
-      "sourceHash": "sha256:7f816829a2832e2453b3c8b96f567d4e0f76f9116784f9983cfe03493de2f9b5"
+      "sourceHash": "sha256:2df7640388d7be0053041e1216e4d9b53e4850972accb00426d1ab90e4827a13"
     },
     source: sample1Source,
     guide: sample1Guide,
@@ -871,6 +869,7 @@ export const generatedLearningPaths: readonly LearningPathDefinition[] =
       "summary": "Range、内包表記、join、Monoidを日常的な処理として使います。",
       "samples": [
         "functions-and-pipelines",
+        "data-and-patterns",
         "collections",
         "collection-patterns"
       ]

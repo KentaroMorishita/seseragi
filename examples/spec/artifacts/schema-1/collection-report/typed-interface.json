@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/collection-report",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/array",
+      "module": "std/array",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/array::*",
+          "localName": "arrays"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/collection-report::collectionReport",
+      "namespace": "value",
+      "name": "collectionReport",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 741,
+        "end": 802
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

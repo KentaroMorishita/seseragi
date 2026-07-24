@@ -1,0 +1,1 @@
+"Completed: Book: 2400, Pen: 600, Notebook: 1200\nTotal: 4200"

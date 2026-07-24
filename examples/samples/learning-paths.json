@@ -50,6 +50,7 @@
       "summary": "Range、内包表記、join、Monoidを日常的な処理として使います。",
       "samples": [
         "functions-and-pipelines",
+        "data-and-patterns",
         "collections",
         "collection-patterns"
       ]
