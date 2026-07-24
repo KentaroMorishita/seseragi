@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "case": "fibonacci-sequence",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/fibonacci-sequence",
+    "export": "fibonacciLines",
+    "compiledModule": "../../schema-1/fibonacci-sequence/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.int64",
+      "core.bool",
+      "core.int64.subtract",
+      "core.int64.add",
+      "core.unit",
+      "core.string",
+      "core.int64.show",
+      "core.range.comprehend",
+      "core.range",
+      "core.range.inclusive"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

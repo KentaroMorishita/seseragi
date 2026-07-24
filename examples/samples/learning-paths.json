@@ -22,6 +22,7 @@
       "samples": [
         "functions-and-pipelines",
         "local-functions",
+        "fibonacci-sequence",
         "collection-patterns",
         "collections"
       ]

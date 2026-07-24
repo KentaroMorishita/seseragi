@@ -1,0 +1,259 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/fibonacci-sequence",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.bool",
+    "core.int64.subtract",
+    "core.int64.add",
+    "core.unit",
+    "core.string",
+    "core.int64.show",
+    "core.range.comprehend",
+    "core.range",
+    "core.range.inclusive"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.subtract",
+      "local": "_ssrg_int64_subtract"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.range.comprehend",
+      "local": "_ssrg_range_comprehend"
+    },
+    {
+      "feature": "core.range.inclusive",
+      "local": "_ssrg_range_inclusive"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "fibonacci",
+      "parameters": [
+        {
+          "name": "index",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "local-function",
+            "name": "loop",
+            "parameters": [
+              {
+                "name": "remaining",
+                "type": "bigint",
+                "implicit": false
+              },
+              {
+                "name": "current",
+                "type": "bigint",
+                "implicit": false
+              },
+              {
+                "name": "next",
+                "type": "bigint",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "conditional",
+              "condition": {
+                "kind": "binary",
+                "operator": "===",
+                "left": {
+                  "kind": "identifier",
+                  "name": "remaining"
+                },
+                "right": {
+                  "kind": "bigint",
+                  "value": "0"
+                }
+              },
+              "thenBranch": {
+                "kind": "identifier",
+                "name": "current"
+              },
+              "elseBranch": {
+                "kind": "call",
+                "callee": "loop",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_subtract",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "remaining"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "identifier",
+                    "name": "next"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_add",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "current"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "next"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 34,
+              "end": 196
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "loop",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "index"
+            },
+            {
+              "kind": "bigint",
+              "value": "0"
+            },
+            {
+              "kind": "bigint",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 216
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "fibonacciLines",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_range_comprehend",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_range_inclusive",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "0"
+              },
+              {
+                "kind": "bigint",
+                "value": "10"
+              }
+            ]
+          },
+          {
+            "kind": "lambda",
+            "parameter": "index",
+            "body": {
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": "index",
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_intShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "index"
+                    }
+                  ]
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ": "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_intShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "fibonacci",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "index"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 218,
+        "end": 322
+      }
+    }
+  ]
+}

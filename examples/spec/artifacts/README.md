@@ -286,6 +286,11 @@ direct self recursionを一つのpure entryでactual executionし、後続local 
 loopへlowerし、100,000段を一定のhost call stackで実行します。`project-schema-1/self-tail-loop`は同じ生成物を
 closed TypeScript typecheckとactual executionへ通します。
 
+`schema-1/fibonacci-sequence`はpure block内のlocal accumulatorをdirect self tail recursionとしてlowerし、
+0..=10のRange comprehensionからFibonacci列をsource順のStringへ変換します。
+`execution-schema-1/fibonacci-sequence`は全11行をactual JSONで固定し、同名Playground sampleは同じ関数を
+effectful `for`で順次Consoleへ出力します。
+
 `schema-1/collection-rest-pattern`はArrayの`[]` / `[head, ...tail]`とListの`` `[] `` /
 `` `[head, ...tail] ``をSurfaceAst、TypedHir、length testとelement / rest projectionを持つdecision IR、生成TypeScriptへ
 保持します。`execution-schema-1/collection-rest-pattern`は両Collectionをlocal self recursionで集約してactual resultを固定し、

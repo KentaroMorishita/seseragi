@@ -1,0 +1,15 @@
+fn fibonacci index: Int -> Int = {
+  // The accumulator form keeps the recursive call in tail position.
+  fn loop remaining: Int -> current: Int -> next: Int -> Int =
+    if remaining == 0 then
+      current
+    else
+      loop (remaining - 1) next (current + next)
+
+  loop index 0 1
+}
+
+pub effect fn main =
+  for index <- 0..=10 {
+    println `${index}: ${fibonacci index}`
+  }

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "module": "artifact/fibonacci-sequence",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.bool",
+      "core.int64.subtract",
+      "core.int64.add",
+      "core.unit",
+      "core.string",
+      "core.int64.show",
+      "core.range.comprehend",
+      "core.range",
+      "core.range.inclusive"
+    ]
+  },
+  "exports": [
+    "fibonacciLines"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

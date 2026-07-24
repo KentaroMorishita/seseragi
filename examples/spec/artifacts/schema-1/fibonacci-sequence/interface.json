@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "module": "artifact/fibonacci-sequence",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/fibonacci-sequence::fibonacciLines",
+      "namespace": "value",
+      "name": "fibonacciLines",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 218,
+        "end": 322
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

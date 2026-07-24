@@ -1,0 +1,6 @@
+import { subtract as _ssrg_int64_subtract, add as _ssrg_int64_add } from "@seseragi/runtime/int64"
+import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
+import { collectMap as _ssrg_range_comprehend, inclusive as _ssrg_range_inclusive } from "@seseragi/runtime/range"
+
+const fibonacci = (index: bigint) => (() => { const loop = (remaining: bigint) => (current: bigint) => (next: bigint) => { const $ssrg$tail = Symbol(); while (true) { const $ssrg$result = remaining === 0n ? current : ({ [$ssrg$tail]: [_ssrg_int64_subtract(remaining, 1n), next, _ssrg_int64_add(current, next)] } as never); const $ssrg$tailResult: unknown = $ssrg$result; if (typeof $ssrg$tailResult === "object" && $ssrg$tailResult !== null && $ssrg$tail in $ssrg$tailResult) { const $ssrg$arguments = ($ssrg$tailResult as { readonly [$ssrg$tail]: readonly [bigint, bigint, bigint] })[$ssrg$tail]; remaining = $ssrg$arguments[0]; current = $ssrg$arguments[1]; next = $ssrg$arguments[2]; continue; } return $ssrg$result; } }; return loop(index)(0n)(1n); })()
+export const fibonacciLines = (unit: undefined) => _ssrg_range_comprehend(_ssrg_range_inclusive(0n, 10n), (index) => true, (index) => _ssrg_show_intShow["show"](index) + ": " + _ssrg_show_intShow["show"](fibonacci(index)))

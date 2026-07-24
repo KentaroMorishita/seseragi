@@ -1,0 +1,961 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/fibonacci-sequence",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "fibonacci",
+      "nameSpan": {
+        "start": 3,
+        "end": 12
+      },
+      "parameters": [
+        {
+          "name": "index",
+          "nameSpan": {
+            "start": 13,
+            "end": 18
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 20,
+              "end": 23
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 27,
+          "end": 30
+        }
+      },
+      "body": {
+        "kind": "block",
+        "items": [
+          {
+            "kind": "function",
+            "name": "loop",
+            "nameSpan": {
+              "start": 40,
+              "end": 44
+            },
+            "parameters": [
+              {
+                "name": "remaining",
+                "nameSpan": {
+                  "start": 45,
+                  "end": 54
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 56,
+                    "end": 59
+                  }
+                }
+              },
+              {
+                "name": "current",
+                "nameSpan": {
+                  "start": 63,
+                  "end": 70
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 72,
+                    "end": 75
+                  }
+                }
+              },
+              {
+                "name": "next",
+                "nameSpan": {
+                  "start": 79,
+                  "end": 83
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 85,
+                    "end": 88
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 92,
+                "end": 95
+              }
+            },
+            "value": {
+              "kind": "if",
+              "condition": {
+                "kind": "binary",
+                "operator": "==",
+                "operatorSpan": {
+                  "start": 115,
+                  "end": 117
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "remaining",
+                  "span": {
+                    "start": 105,
+                    "end": 114
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "raw": "0",
+                  "span": {
+                    "start": 118,
+                    "end": 119
+                  }
+                },
+                "span": {
+                  "start": 105,
+                  "end": 119
+                }
+              },
+              "thenBranch": {
+                "kind": "name",
+                "name": "current",
+                "span": {
+                  "start": 131,
+                  "end": 138
+                }
+              },
+              "elseBranch": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "loop",
+                      "span": {
+                        "start": 154,
+                        "end": 158
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "binary",
+                        "operator": "-",
+                        "operatorSpan": {
+                          "start": 170,
+                          "end": 171
+                        },
+                        "left": {
+                          "kind": "name",
+                          "name": "remaining",
+                          "span": {
+                            "start": 160,
+                            "end": 169
+                          }
+                        },
+                        "right": {
+                          "kind": "integer",
+                          "raw": "1",
+                          "span": {
+                            "start": 172,
+                            "end": 173
+                          }
+                        },
+                        "span": {
+                          "start": 160,
+                          "end": 173
+                        }
+                      },
+                      "span": {
+                        "start": 159,
+                        "end": 174
+                      }
+                    },
+                    "span": {
+                      "start": 154,
+                      "end": 174
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "next",
+                    "span": {
+                      "start": 175,
+                      "end": 179
+                    }
+                  },
+                  "span": {
+                    "start": 154,
+                    "end": 179
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "operatorSpan": {
+                      "start": 189,
+                      "end": 190
+                    },
+                    "left": {
+                      "kind": "name",
+                      "name": "current",
+                      "span": {
+                        "start": 181,
+                        "end": 188
+                      }
+                    },
+                    "right": {
+                      "kind": "name",
+                      "name": "next",
+                      "span": {
+                        "start": 191,
+                        "end": 195
+                      }
+                    },
+                    "span": {
+                      "start": 181,
+                      "end": 195
+                    }
+                  },
+                  "span": {
+                    "start": 180,
+                    "end": 196
+                  }
+                },
+                "span": {
+                  "start": 154,
+                  "end": 196
+                }
+              },
+              "span": {
+                "start": 102,
+                "end": 196
+              }
+            },
+            "span": {
+              "start": 34,
+              "end": 196
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "loop",
+                "span": {
+                  "start": 200,
+                  "end": 204
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "index",
+                "span": {
+                  "start": 205,
+                  "end": 210
+                }
+              },
+              "span": {
+                "start": 200,
+                "end": 210
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "0",
+              "span": {
+                "start": 211,
+                "end": 212
+              }
+            },
+            "span": {
+              "start": 200,
+              "end": 212
+            }
+          },
+          "argument": {
+            "kind": "integer",
+            "raw": "1",
+            "span": {
+              "start": 213,
+              "end": 214
+            }
+          },
+          "span": {
+            "start": 200,
+            "end": 214
+          }
+        },
+        "span": {
+          "start": 33,
+          "end": 216
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 216
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "fibonacciLines",
+      "nameSpan": {
+        "start": 225,
+        "end": 239
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 240,
+            "end": 244
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 246,
+              "end": 250
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 260,
+              "end": 266
+            }
+          }
+        ],
+        "span": {
+          "start": 254,
+          "end": 267
+        }
+      },
+      "body": {
+        "kind": "arrayComprehension",
+        "element": {
+          "kind": "template",
+          "parts": [
+            {
+              "kind": "interpolation",
+              "value": {
+                "kind": "name",
+                "name": "index",
+                "span": {
+                  "start": 276,
+                  "end": 281
+                }
+              },
+              "span": {
+                "start": 274,
+                "end": 282
+              }
+            },
+            {
+              "kind": "text",
+              "value": ": ",
+              "span": {
+                "start": 282,
+                "end": 284
+              }
+            },
+            {
+              "kind": "interpolation",
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "fibonacci",
+                  "span": {
+                    "start": 286,
+                    "end": 295
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "index",
+                  "span": {
+                    "start": 296,
+                    "end": 301
+                  }
+                },
+                "span": {
+                  "start": 286,
+                  "end": 301
+                }
+              },
+              "span": {
+                "start": 284,
+                "end": 302
+              }
+            }
+          ],
+          "span": {
+            "start": 273,
+            "end": 303
+          }
+        },
+        "clauses": [
+          {
+            "kind": "generator",
+            "pattern": {
+              "kind": "name",
+              "name": "index",
+              "nameSpan": {
+                "start": 306,
+                "end": 311
+              },
+              "span": {
+                "start": 306,
+                "end": 311
+              }
+            },
+            "source": {
+              "kind": "binary",
+              "operator": "..=",
+              "operatorSpan": {
+                "start": 316,
+                "end": 319
+              },
+              "left": {
+                "kind": "integer",
+                "raw": "0",
+                "span": {
+                  "start": 315,
+                  "end": 316
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "raw": "10",
+                "span": {
+                  "start": 319,
+                  "end": 321
+                }
+              },
+              "span": {
+                "start": 315,
+                "end": 321
+              }
+            },
+            "span": {
+              "start": 306,
+              "end": 321
+            }
+          }
+        ],
+        "span": {
+          "start": 272,
+          "end": 322
+        }
+      },
+      "span": {
+        "start": 218,
+        "end": 322
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 322
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 216
+      }
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "kind": "block",
+      "origin": {
+        "start": 33,
+        "end": 216
+      }
+    },
+    {
+      "id": 3,
+      "parent": 2,
+      "kind": "function",
+      "origin": {
+        "start": 34,
+        "end": 196
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 218,
+        "end": 322
+      }
+    },
+    {
+      "id": 5,
+      "parent": 4,
+      "kind": "comprehension",
+      "origin": {
+        "start": 306,
+        "end": 321
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "fibonacci",
+      "canonical": "artifact/fibonacci-sequence::fibonacci",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 3,
+        "end": 12
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "fibonacciLines",
+      "canonical": "artifact/fibonacci-sequence::fibonacciLines",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 225,
+        "end": 239
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "index",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 13,
+        "end": 18
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "loop",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 2,
+      "origin": {
+        "start": 40,
+        "end": 44
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "remaining",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 45,
+        "end": 54
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "current",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 63,
+        "end": 70
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "next",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 79,
+        "end": 83
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "==",
+      "canonical": "std/prelude::==",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "-",
+      "canonical": "std/prelude::-",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "+",
+      "canonical": "std/prelude::+",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 240,
+        "end": 244
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "Array",
+      "canonical": "std/prelude::Array",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "index",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 5,
+      "origin": {
+        "start": 306,
+        "end": 311
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 20,
+        "end": 23
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 27,
+        "end": 30
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 56,
+        "end": 59
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 72,
+        "end": 75
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 85,
+        "end": 88
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 92,
+        "end": 95
+      }
+    },
+    {
+      "spelling": "remaining",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 105,
+        "end": 114
+      }
+    },
+    {
+      "spelling": "==",
+      "namespace": "operator",
+      "target": 8,
+      "origin": {
+        "start": 115,
+        "end": 117
+      }
+    },
+    {
+      "spelling": "current",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 131,
+        "end": 138
+      }
+    },
+    {
+      "spelling": "loop",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 154,
+        "end": 158
+      }
+    },
+    {
+      "spelling": "remaining",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 160,
+        "end": 169
+      }
+    },
+    {
+      "spelling": "-",
+      "namespace": "operator",
+      "target": 9,
+      "origin": {
+        "start": 170,
+        "end": 171
+      }
+    },
+    {
+      "spelling": "next",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 175,
+        "end": 179
+      }
+    },
+    {
+      "spelling": "current",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 181,
+        "end": 188
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 10,
+      "origin": {
+        "start": 189,
+        "end": 190
+      }
+    },
+    {
+      "spelling": "next",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 191,
+        "end": 195
+      }
+    },
+    {
+      "spelling": "loop",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 200,
+        "end": 204
+      }
+    },
+    {
+      "spelling": "index",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 205,
+        "end": 210
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 11,
+      "origin": {
+        "start": 246,
+        "end": 250
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 13,
+      "origin": {
+        "start": 254,
+        "end": 267
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 260,
+        "end": 266
+      }
+    },
+    {
+      "spelling": "..=",
+      "namespace": "operator",
+      "origin": {
+        "start": 316,
+        "end": 319
+      }
+    },
+    {
+      "spelling": "index",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 276,
+        "end": 281
+      }
+    },
+    {
+      "spelling": "fibonacci",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 286,
+        "end": 295
+      }
+    },
+    {
+      "spelling": "index",
+      "namespace": "value",
+      "target": 15,
+      "origin": {
+        "start": 296,
+        "end": 301
+      }
+    }
+  ],
+  "issues": []
+}

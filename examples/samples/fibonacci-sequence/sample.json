@@ -1,0 +1,19 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "fibonacci-sequence",
+  "title": "Fibonacci列を順に出力",
+  "summary": "Tail recursionでFibonacci数を求め、Rangeの順序どおりに出力します。",
+  "kind": "recipe",
+  "difficulty": "intermediate",
+  "topics": ["local function", "tail recursion", "Range", "effectful for"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["local-functions"],
+  "featured": false,
+  "isNew": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

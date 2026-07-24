@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/fibonacci-sequence"
+  ],
+  "sourcesContent": [
+    "fn fibonacci index: Int -> Int = {\n  fn loop remaining: Int -> current: Int -> next: Int -> Int =\n    if remaining == 0 then\n      current\n    else\n      loop (remaining - 1) next (current + next)\n\n  loop index 0 1\n}\n\npub fn fibonacciLines unit: Unit -> Array<String> =\n  [`${index}: ${fibonacci index}` | index <- 0..=10]\n"
+  ],
+  "names": [
+    "fibonacci",
+    "loop",
+    "loop",
+    "subtract",
+    "add",
+    "loop",
+    "fibonacciLines",
+    "_ssrg_range_comprehend",
+    "inclusive",
+    "intShow",
+    "intShow",
+    "fibonacci"
+  ],
+  "mappings": ";;;;AAAAA;AAUAM"
+}

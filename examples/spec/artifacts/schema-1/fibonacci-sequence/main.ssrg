@@ -1,0 +1,12 @@
+fn fibonacci index: Int -> Int = {
+  fn loop remaining: Int -> current: Int -> next: Int -> Int =
+    if remaining == 0 then
+      current
+    else
+      loop (remaining - 1) next (current + next)
+
+  loop index 0 1
+}
+
+pub fn fibonacciLines unit: Unit -> Array<String> =
+  [`${index}: ${fibonacci index}` | index <- 0..=10]
