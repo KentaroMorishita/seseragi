@@ -1,6 +1,6 @@
 use crate::source_span;
 use seseragi_semantics::{
-    TypedCallEvidence, TypedComprehensionClause, TypedDoStatement, TypedExpr,
+    TypedBlockStatement, TypedCallEvidence, TypedComprehensionClause, TypedDoStatement, TypedExpr,
     TypedMonadDoStatement, TypedParameter, TypedPattern, TypedRecordValueItem, TypedTemplatePart,
 };
 
@@ -39,6 +39,19 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
             arguments: lower_exprs(source, arguments),
             origin: source_span(source, origin),
         },
+        TypedExpr::Block {
+            statements,
+            result,
+            origin,
+            ..
+        } => CoreExpr::Sequence {
+            statements: statements
+                .into_iter()
+                .map(|statement| lower_block_statement(source, statement))
+                .collect(),
+            result: Box::new(lower_expr(source, *result)),
+            origin: source_span(source, origin),
+        },
         TypedExpr::DoBlock {
             statements,
             result,
@@ -59,6 +72,42 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
             }
         }
         expr => lower_expr(source, expr),
+    }
+}
+
+fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> CoreStatement {
+    match statement {
+        TypedBlockStatement::Let {
+            name,
+            type_ref,
+            value,
+            origin,
+        } => CoreStatement::PureLet {
+            name,
+            type_ref: lower_typed_type(type_ref),
+            value: lower_expr(source, value),
+            origin: source_span(source, origin),
+        },
+        TypedBlockStatement::Function {
+            name,
+            type_parameters,
+            type_constructor_parameters,
+            constraints,
+            parameters,
+            body,
+            origin,
+        } => CoreStatement::LocalFunction {
+            name,
+            type_parameters,
+            type_constructor_parameters,
+            constraints: constraints
+                .into_iter()
+                .map(super::instances::lower_constraint)
+                .collect(),
+            parameters: parameters.iter().map(lower_parameter).collect(),
+            body: lower_expr(source, body),
+            origin: source_span(source, origin),
+        },
     }
 }
 
@@ -295,6 +344,19 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             failure: lower_typed_type(effect.failure),
             success: lower_typed_type(effect.success),
             arguments: lower_exprs(source, arguments),
+            origin: source_span(source, origin),
+        },
+        TypedExpr::Block {
+            statements,
+            result,
+            origin,
+            ..
+        } => CoreExpr::Sequence {
+            statements: statements
+                .into_iter()
+                .map(|statement| lower_block_statement(source, statement))
+                .collect(),
+            result: Box::new(lower_expr(source, *result)),
             origin: source_span(source, origin),
         },
         TypedExpr::DoBlock {

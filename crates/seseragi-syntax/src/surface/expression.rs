@@ -3,6 +3,7 @@ use crate::surface_model::{ByteSpan, SurfaceExpr, SurfaceInfixStep, SurfaceLambd
 use crate::token::{Token, TokenKind};
 
 mod array;
+mod block;
 mod do_block;
 mod effectful_for;
 mod match_expression;
@@ -319,7 +320,15 @@ impl ExpressionParser<'_> {
             TokenKind::KeywordMatch => match_expression::parse(self, token),
             TokenKind::KeywordDo => self.parse_do(token),
             TokenKind::PunctuationParenLeft => parenthesized::parse(self, token),
-            TokenKind::PunctuationBraceLeft => record::parse(self, token),
+            TokenKind::PunctuationBraceLeft => {
+                let contents = self.cursor;
+                if let Some(record) = record::parse(self, token) {
+                    Some(record)
+                } else {
+                    self.cursor = contents;
+                    block::parse(self, token)
+                }
+            }
             TokenKind::PunctuationListLeft | TokenKind::PunctuationSquareLeft => {
                 array::parse(self, token)
             }
@@ -622,7 +631,7 @@ fn trait_method_application(
     }
 }
 
-fn find_matching_brace(tokens: &[Token], open: usize, end: usize) -> Option<usize> {
+pub(super) fn find_matching_brace(tokens: &[Token], open: usize, end: usize) -> Option<usize> {
     let mut depth = 0usize;
     for index in open..end {
         match tokens.get(index)?.kind {

@@ -198,6 +198,7 @@ fn collect_expr(expr: &CoreExpr, imported: &mut BTreeSet<(String, String)>) {
                     CoreStatement::Effect { value }
                     | CoreStatement::PureLet { value, .. }
                     | CoreStatement::Bind { value, .. } => collect_expr(value, imported),
+                    CoreStatement::LocalFunction { body, .. } => collect_expr(body, imported),
                 }
             }
             collect_expr(result, imported);

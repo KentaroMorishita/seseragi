@@ -1,6 +1,7 @@
 use super::{ByteRange, Diagnostic, DiagnosticFix, DiagnosticSeverity, RelatedDiagnostic};
 use crate::{
-    SurfaceComprehensionClause, SurfaceDecl, SurfaceDoItem, SurfaceExpr, SurfaceTemplatePart,
+    SurfaceBlockItem, SurfaceComprehensionClause, SurfaceDecl, SurfaceDoItem, SurfaceExpr,
+    SurfaceTemplatePart,
 };
 use std::collections::BTreeSet;
 
@@ -111,6 +112,16 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
                 }
                 collect_expression_errors(&arm.body, errors);
             }
+        }
+        SurfaceExpr::Block { items, result, .. } => {
+            for item in items {
+                let value = match item {
+                    SurfaceBlockItem::Let { value, .. }
+                    | SurfaceBlockItem::Function { value, .. } => value,
+                };
+                collect_expression_errors(value, errors);
+            }
+            collect_expression_errors(result, errors);
         }
         SurfaceExpr::Do { items, result, .. } => {
             for item in items {

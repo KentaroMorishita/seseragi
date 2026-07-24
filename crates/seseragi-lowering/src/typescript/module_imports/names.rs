@@ -169,6 +169,18 @@ fn collect_local_expr_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
                         names.insert(safe_identifier(name));
                         collect_local_expr_names(value, names);
                     }
+                    CoreStatement::LocalFunction {
+                        name,
+                        parameters,
+                        body,
+                        ..
+                    } => {
+                        names.insert(safe_identifier(name));
+                        for parameter in parameters {
+                            names.insert(safe_identifier(&parameter.id));
+                        }
+                        collect_local_expr_names(body, names);
+                    }
                 }
             }
             collect_local_expr_names(result, names);

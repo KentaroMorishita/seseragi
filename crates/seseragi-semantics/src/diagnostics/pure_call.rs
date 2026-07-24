@@ -110,6 +110,34 @@ pub(super) fn call_diagnostic(
                 type_label(&actual)
             ),
         ),
+        PureCallIssue::LocalBindingTypeMismatch {
+            binding,
+            expected,
+            actual,
+        } => (
+            "SES-T0101",
+            "let.type-mismatch",
+            binding,
+            format!(
+                "local binding declares {}, value produces {}",
+                type_label(&expected),
+                type_label(&actual)
+            ),
+        ),
+        PureCallIssue::LocalFunctionBodyTypeMismatch {
+            body,
+            expected,
+            actual,
+        } => (
+            "SES-T0101",
+            "function.return-type-mismatch",
+            body,
+            format!(
+                "local function declares {}, body produces {}",
+                type_label(&expected),
+                type_label(&actual)
+            ),
+        ),
         PureCallIssue::EffectfulForBodyNotEffect { body, actual } => (
             "SES-T0101",
             "for.body-not-effect",
@@ -192,6 +220,33 @@ mod tests {
         assert_eq!(artifact.diagnostics.len(), 1);
         assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
         assert_eq!(artifact.diagnostics[0].message_key, "expression.invalid");
+    }
+
+    #[test]
+    fn reports_a_local_binding_type_mismatch() {
+        let artifact = semantic_diagnostics(
+            "local-binding-mismatch.ssrg",
+            "fn broken -> Int = {\n  let label: String = 42\n  0\n}\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(artifact.diagnostics[0].message_key, "let.type-mismatch");
+    }
+
+    #[test]
+    fn reports_a_local_function_return_type_mismatch() {
+        let artifact = semantic_diagnostics(
+            "local-function-mismatch.ssrg",
+            "fn broken -> Int = {\n  fn label -> String = 42\n  0\n}\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
+        assert_eq!(
+            artifact.diagnostics[0].message_key,
+            "function.return-type-mismatch"
+        );
     }
 
     #[test]

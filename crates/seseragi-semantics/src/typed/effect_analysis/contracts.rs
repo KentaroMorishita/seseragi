@@ -59,6 +59,18 @@ fn collect_failures(expression: &TypedExpr, failures: &mut Vec<EffectFailureOrig
             }
             collect_failures(result, failures);
         }
+        TypedExpr::Block {
+            statements, result, ..
+        } => {
+            for statement in statements {
+                let value = match statement {
+                    crate::TypedBlockStatement::Let { value, .. } => value,
+                    crate::TypedBlockStatement::Function { body, .. } => body,
+                };
+                collect_failures(value, failures);
+            }
+            collect_failures(result, failures);
+        }
         TypedExpr::Match {
             scrutinee, arms, ..
         } => {

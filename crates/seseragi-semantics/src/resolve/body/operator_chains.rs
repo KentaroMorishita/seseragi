@@ -1,7 +1,7 @@
 use crate::ResolveIssue;
 use seseragi_syntax::{
-    ByteSpan, SurfaceComprehensionClause, SurfaceDecl, SurfaceDoItem, SurfaceExpr,
-    SurfaceImplMember, SurfaceInfixStep, SurfaceRecordItem, SurfaceTemplatePart,
+    ByteSpan, SurfaceBlockItem, SurfaceComprehensionClause, SurfaceDecl, SurfaceDoItem,
+    SurfaceExpr, SurfaceImplMember, SurfaceInfixStep, SurfaceRecordItem, SurfaceTemplatePart,
 };
 use std::collections::BTreeMap;
 
@@ -292,6 +292,17 @@ fn normalize_expression(
                 }
                 normalize_expression(&mut arm.body, custom, issues);
             }
+        }
+        SurfaceExpr::Block { items, result, .. } => {
+            for item in items {
+                match item {
+                    SurfaceBlockItem::Let { value, .. }
+                    | SurfaceBlockItem::Function { value, .. } => {
+                        normalize_expression(value, custom, issues);
+                    }
+                }
+            }
+            normalize_expression(result, custom, issues);
         }
         SurfaceExpr::Do { items, result, .. } => {
             for item in items {

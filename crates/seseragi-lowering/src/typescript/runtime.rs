@@ -359,6 +359,22 @@ fn collect_statement_runtime_requirements(
         | CoreStatement::Bind { value, .. } => {
             collect_expr_runtime_requirements(value, requirements);
         }
+        CoreStatement::LocalFunction {
+            constraints,
+            parameters,
+            body,
+            ..
+        } => {
+            for constraint in constraints {
+                for argument in &constraint.arguments {
+                    collect_type_runtime_requirement(argument, requirements);
+                }
+            }
+            for parameter in parameters {
+                collect_type_runtime_requirement(&parameter.type_ref, requirements);
+            }
+            collect_expr_runtime_requirements(body, requirements);
+        }
     }
 }
 
@@ -821,6 +837,9 @@ fn collect_statement_runtime_imports(
         | CoreStatement::PureLet { value, .. }
         | CoreStatement::Bind { value, .. } => {
             collect_expr_runtime_imports(value, imports);
+        }
+        CoreStatement::LocalFunction { body, .. } => {
+            collect_expr_runtime_imports(body, imports);
         }
     }
 }

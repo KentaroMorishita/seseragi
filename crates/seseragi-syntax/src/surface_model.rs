@@ -504,6 +504,11 @@ pub enum SurfaceExpr {
         arms: Vec<SurfaceMatchArm>,
         span: ByteSpan,
     },
+    Block {
+        items: Vec<SurfaceBlockItem>,
+        result: Box<SurfaceExpr>,
+        span: ByteSpan,
+    },
     Do {
         items: Vec<SurfaceDoItem>,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -545,11 +550,41 @@ impl SurfaceExpr {
             | Self::InfixChain { span, .. }
             | Self::If { span, .. }
             | Self::Match { span, .. }
+            | Self::Block { span, .. }
             | Self::Do { span, .. }
             | Self::Grouped { span, .. }
             | Self::Error { span } => *span,
         }
     }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase"
+)]
+pub enum SurfaceBlockItem {
+    Let {
+        name: String,
+        name_span: ByteSpan,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        type_ref: Option<TypeRef>,
+        value: SurfaceExpr,
+        span: ByteSpan,
+    },
+    Function {
+        name: String,
+        name_span: ByteSpan,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<TypeParameter>,
+        parameters: Vec<SurfaceParameter>,
+        return_type: TypeRef,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraints: Vec<SurfaceConstraint>,
+        value: SurfaceExpr,
+        span: ByteSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/local-function",
+  "runtimeRequirements": [
+    "core.unit",
+    "core.int64",
+    "core.bool",
+    "core.int64.add",
+    "core.int64.subtract"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.int64.subtract",
+      "local": "_ssrg_int64_subtract"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "localFunctionWorks",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "offset",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "bigint",
+              "value": "2"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 48,
+              "end": 70
+            }
+          },
+          {
+            "kind": "local-function",
+            "name": "identity",
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "name": "value",
+                "type": "A",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "identifier",
+              "name": "value"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 71,
+              "end": 110
+            }
+          },
+          {
+            "kind": "local-function",
+            "name": "countdown",
+            "parameters": [
+              {
+                "name": "current",
+                "type": "bigint",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "conditional",
+              "condition": {
+                "kind": "binary",
+                "operator": "===",
+                "left": {
+                  "kind": "identifier",
+                  "name": "current"
+                },
+                "right": {
+                  "kind": "bigint",
+                  "value": "0"
+                }
+              },
+              "thenBranch": {
+                "kind": "call",
+                "callee": "identity",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_add",
+                    "arguments": [
+                      {
+                        "kind": "bigint",
+                        "value": "40"
+                      },
+                      {
+                        "kind": "identifier",
+                        "name": "offset"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "elseBranch": {
+                "kind": "call",
+                "callee": "countdown",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int64_subtract",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "current"
+                      },
+                      {
+                        "kind": "bigint",
+                        "value": "1"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 111,
+              "end": 241
+            }
+          }
+        ],
+        "result": {
+          "kind": "binary",
+          "operator": "===",
+          "left": {
+            "kind": "call",
+            "callee": "countdown",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "3"
+              }
+            ]
+          },
+          "right": {
+            "kind": "bigint",
+            "value": "42"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 264
+      }
+    }
+  ]
+}

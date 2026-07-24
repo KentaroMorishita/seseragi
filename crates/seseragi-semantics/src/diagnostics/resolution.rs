@@ -126,4 +126,20 @@ mod tests {
             "instance declaration"
         );
     }
+
+    #[test]
+    fn keeps_later_local_functions_out_of_an_earlier_function_scope() {
+        let artifact = crate::semantic_diagnostics(
+            "artifact/local-forward-reference/main.ssrg",
+            "fn broken value: Int -> Int = {\n\
+               fn even current: Int -> Int = odd current\n\
+               fn odd current: Int -> Int = current\n\
+               even value\n\
+             }\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-N0001");
+        assert_eq!(artifact.diagnostics[0].message_key, "name.unresolved");
+    }
 }

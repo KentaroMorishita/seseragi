@@ -1,0 +1,10 @@
+fn mismatched unit: Unit -> Int = {
+  let label: String = 42
+  0
+}
+
+fn forwardReference value: Int -> Int = {
+  fn first current: Int -> Int = second current
+  fn second current: Int -> Int = current
+  first value
+}

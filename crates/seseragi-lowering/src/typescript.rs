@@ -503,6 +503,16 @@ pub enum TypeScriptStatement {
         initializer: TypeScriptExpr,
         origin: SourceSpan,
     },
+    LocalFunction {
+        name: String,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<String>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraints: Vec<TypeScriptInstanceConstraint>,
+        parameters: Vec<TypeScriptParameter>,
+        body: TypeScriptExpr,
+        origin: SourceSpan,
+    },
 }
 
 pub fn lower_core_module_to_typescript_ir(module: CoreModule) -> TypeScriptModule {

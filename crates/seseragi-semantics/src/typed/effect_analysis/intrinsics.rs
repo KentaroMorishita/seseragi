@@ -53,6 +53,18 @@ fn collect_intrinsic_issues(
             }
             collect_intrinsic_issues(result, resolution, issues);
         }
+        TypedExpr::Block {
+            statements, result, ..
+        } => {
+            for statement in statements {
+                let value = match statement {
+                    crate::TypedBlockStatement::Let { value, .. } => value,
+                    crate::TypedBlockStatement::Function { body, .. } => body,
+                };
+                collect_intrinsic_issues(value, resolution, issues);
+            }
+            collect_intrinsic_issues(result, resolution, issues);
+        }
         TypedExpr::Match {
             scrutinee, arms, ..
         } => {

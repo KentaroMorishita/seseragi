@@ -986,6 +986,41 @@ fn lower_core_statement_to_typescript(
             initializer: lower_core_expr_to_typescript(value, imported_values, imported_types),
             origin,
         },
+        CoreStatement::LocalFunction {
+            name,
+            type_parameters,
+            type_constructor_parameters,
+            constraints,
+            parameters,
+            body,
+            origin,
+        } => TypeScriptStatement::LocalFunction {
+            name: safe_identifier(&name),
+            type_parameters,
+            constraints: constraints
+                .into_iter()
+                .map(|constraint| super::TypeScriptInstanceConstraint {
+                    name: constraint.name,
+                    arguments: constraint
+                        .arguments
+                        .iter()
+                        .map(|argument| type_ref_from_core_type(argument, imported_types))
+                        .collect(),
+                })
+                .collect(),
+            parameters: parameters
+                .into_iter()
+                .map(|parameter| {
+                    lower_core_parameter_to_typescript(
+                        parameter,
+                        imported_types,
+                        &type_constructor_parameters,
+                    )
+                })
+                .collect(),
+            body: lower_core_expr_to_typescript(body, imported_values, imported_types),
+            origin,
+        },
     }
 }
 
@@ -1042,5 +1077,6 @@ fn statement_contains_await(statement: &TypeScriptStatement) -> bool {
         | TypeScriptStatement::Const { initializer, .. } => {
             typescript_expr_contains_await(initializer)
         }
+        TypeScriptStatement::LocalFunction { body, .. } => typescript_expr_contains_await(body),
     }
 }

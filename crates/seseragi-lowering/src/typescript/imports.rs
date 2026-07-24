@@ -206,6 +206,9 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
                     | TypeScriptStatement::Const { initializer, .. } => {
                         rewrite_expr(initializer, renames);
                     }
+                    TypeScriptStatement::LocalFunction { body, .. } => {
+                        rewrite_expr(body, renames);
+                    }
                 }
             }
             rewrite_expr(result, renames);
@@ -222,6 +225,9 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
                     TypeScriptStatement::PureLet { initializer, .. }
                     | TypeScriptStatement::Const { initializer, .. } => {
                         rewrite_expr(initializer, renames);
+                    }
+                    TypeScriptStatement::LocalFunction { body, .. } => {
+                        rewrite_expr(body, renames);
                     }
                 }
             }

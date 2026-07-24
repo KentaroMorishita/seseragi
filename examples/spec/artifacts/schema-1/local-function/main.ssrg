@@ -1,0 +1,13 @@
+pub fn localFunctionWorks unit: Unit -> Bool = {
+  let offset: Int = 2
+
+  fn identity<A> value: A -> A = value
+
+  fn countdown current: Int -> Int =
+    if current == 0 then
+      identity (40 + offset)
+    else
+      countdown (current - 1)
+
+  countdown 3 == 42
+}

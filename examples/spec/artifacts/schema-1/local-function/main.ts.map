@@ -1,0 +1,23 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/local-function"
+  ],
+  "sourcesContent": [
+    "pub fn localFunctionWorks unit: Unit -> Bool = {\n  let offset: Int = 2\n\n  fn identity<A> value: A -> A = value\n\n  fn countdown current: Int -> Int =\n    if current == 0 then\n      identity (40 + offset)\n    else\n      countdown (current - 1)\n\n  countdown 3 == 42\n}\n"
+  ],
+  "names": [
+    "localFunctionWorks",
+    "offset",
+    "identity",
+    "countdown",
+    "identity",
+    "add",
+    "countdown",
+    "subtract",
+    "countdown"
+  ],
+  "mappings": ";;AAAAA"
+}

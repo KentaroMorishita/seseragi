@@ -43,34 +43,38 @@ import sample9Output from "../../../../examples/samples/impl-and-operators/stdou
 import sample10Source from "../../../../examples/samples/interactive-app/main.ssrg?raw"
 import sample10Guide from "../../../../examples/samples/interactive-app/guide.md?raw"
 
-import sample11Source from "../../../../examples/samples/newtypes/main.ssrg?raw"
-import sample11Guide from "../../../../examples/samples/newtypes/guide.md?raw"
-import sample11Output from "../../../../examples/samples/newtypes/stdout.txt?raw"
+import sample11Source from "../../../../examples/samples/local-functions/main.ssrg?raw"
+import sample11Guide from "../../../../examples/samples/local-functions/guide.md?raw"
+import sample11Output from "../../../../examples/samples/local-functions/stdout.txt?raw"
 
-import sample12Source from "../../../../examples/samples/records/main.ssrg?raw"
-import sample12Guide from "../../../../examples/samples/records/guide.md?raw"
-import sample12Output from "../../../../examples/samples/records/stdout.txt?raw"
+import sample12Source from "../../../../examples/samples/newtypes/main.ssrg?raw"
+import sample12Guide from "../../../../examples/samples/newtypes/guide.md?raw"
+import sample12Output from "../../../../examples/samples/newtypes/stdout.txt?raw"
 
-import sample13Source from "../../../../examples/samples/signal-composition/main.ssrg?raw"
-import sample13Guide from "../../../../examples/samples/signal-composition/guide.md?raw"
-import sample13Output from "../../../../examples/samples/signal-composition/stdout.txt?raw"
+import sample13Source from "../../../../examples/samples/records/main.ssrg?raw"
+import sample13Guide from "../../../../examples/samples/records/guide.md?raw"
+import sample13Output from "../../../../examples/samples/records/stdout.txt?raw"
 
-import sample14Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
-import sample14Guide from "../../../../examples/samples/signal-state/guide.md?raw"
-import sample14Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
+import sample14Source from "../../../../examples/samples/signal-composition/main.ssrg?raw"
+import sample14Guide from "../../../../examples/samples/signal-composition/guide.md?raw"
+import sample14Output from "../../../../examples/samples/signal-composition/stdout.txt?raw"
 
-import sample15Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
-import sample15Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
-import sample15Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
-import sample15Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
+import sample15Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
+import sample15Guide from "../../../../examples/samples/signal-state/guide.md?raw"
+import sample15Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
 
-import sample16Source from "../../../../examples/samples/strings-and-templates/main.ssrg?raw"
-import sample16Guide from "../../../../examples/samples/strings-and-templates/guide.md?raw"
-import sample16Output from "../../../../examples/samples/strings-and-templates/stdout.txt?raw"
+import sample16Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
+import sample16Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
+import sample16Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
+import sample16Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
 
-import sample17Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
-import sample17Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
-import sample17Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
+import sample17Source from "../../../../examples/samples/strings-and-templates/main.ssrg?raw"
+import sample17Guide from "../../../../examples/samples/strings-and-templates/guide.md?raw"
+import sample17Output from "../../../../examples/samples/strings-and-templates/stdout.txt?raw"
+
+import sample18Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
+import sample18Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
+import sample18Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
 
 export const generatedSamples: readonly GeneratedSample[] = [
   {
@@ -437,6 +441,40 @@ export const generatedSamples: readonly GeneratedSample[] = [
   },
   {
     definition: {
+      "id": "local-functions",
+      "title": "Local functionと再帰",
+      "summary": "Pure blockで値をcaptureし、generic関数とself recursionを組み立てます。",
+      "kind": "lesson",
+      "difficulty": "intermediate",
+      "topics": [
+        "local function",
+        "scope",
+        "capture",
+        "recursion",
+        "generic"
+      ],
+      "capabilities": [
+        "console"
+      ],
+      "outputMode": "text",
+      "prerequisites": [
+        "functions-and-pipelines"
+      ],
+      "featured": false,
+      "isNew": true,
+      "interactive": false,
+      "sourcePath": "examples/samples/local-functions/main.ssrg",
+      "guidePath": "examples/samples/local-functions/guide.md",
+      "expectedOutputPath": "examples/samples/local-functions/stdout.txt",
+      "sourceHash": "sha256:d418d557fca24bd3ba7bf7b89ad70e0c539219219ac4487ac6ff8ed0cafe7b47"
+    },
+    source: sample11Source,
+    guide: sample11Guide,
+    stdin: "",
+    expectedOutput: (sample11Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    definition: {
       "id": "newtypes",
       "title": "newtypeで境界を作る",
       "summary": "実行時コストを増やさず、Intと混ざらないdomainのIDを作ります。",
@@ -462,10 +500,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/newtypes/stdout.txt",
       "sourceHash": "sha256:4430fa5c93a95eafdad6327c9d95f45ba87cd4b22454d5ee308dfac65e0f6a70"
     },
-    source: sample11Source,
-    guide: sample11Guide,
+    source: sample12Source,
+    guide: sample12Guide,
     stdin: "",
-    expectedOutput: (sample11Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample12Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -494,10 +532,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/records/stdout.txt",
       "sourceHash": "sha256:d67ae4c83dffcd5c02fe2f804ea557ae0ccf4a5583994188b807595c9d82e9c6"
     },
-    source: sample12Source,
-    guide: sample12Guide,
+    source: sample13Source,
+    guide: sample13Guide,
     stdin: "",
-    expectedOutput: (sample12Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample13Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -528,10 +566,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/signal-composition/stdout.txt",
       "sourceHash": "sha256:5d6b5fc596611dab1aa875e23b4cf9a8004424649cdcf05390ed7a5de41e2173"
     },
-    source: sample13Source,
-    guide: sample13Guide,
+    source: sample14Source,
+    guide: sample14Guide,
     stdin: "",
-    expectedOutput: (sample13Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample14Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -560,10 +598,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/signal-state/stdout.txt",
       "sourceHash": "sha256:cd45873a5ad6e094ce6e89fbe637615b245d09c7994b8079e415783657532cd7"
     },
-    source: sample14Source,
-    guide: sample14Guide,
+    source: sample15Source,
+    guide: sample15Guide,
     stdin: "",
-    expectedOutput: (sample14Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample15Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -596,10 +634,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/stdin-greeting/stdout.txt",
       "sourceHash": "sha256:b1f464858872ecc67efa5cff266c409d4b07d3d349ba2804bb77570c4580f23f"
     },
-    source: sample15Source,
-    guide: sample15Guide,
-    stdin: sample15Stdin,
-    expectedOutput: (sample15Output).replace(/\r?\n$/u, ""),
+    source: sample16Source,
+    guide: sample16Guide,
+    stdin: sample16Stdin,
+    expectedOutput: (sample16Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -628,10 +666,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/strings-and-templates/stdout.txt",
       "sourceHash": "sha256:46e3049dbf57c865573ea765837ab61b586cc74f17cf05af32bedf08bef3d5db"
     },
-    source: sample16Source,
-    guide: sample16Guide,
+    source: sample17Source,
+    guide: sample17Guide,
     stdin: "",
-    expectedOutput: (sample16Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample17Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -660,10 +698,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "expectedOutputPath": "examples/samples/traits-and-instances/stdout.txt",
       "sourceHash": "sha256:03daac7021fa32f245dba88dee66f87ff1b00750e45d576548335e78429bdabd"
     },
-    source: sample17Source,
-    guide: sample17Guide,
+    source: sample18Source,
+    guide: sample18Guide,
     stdin: "",
-    expectedOutput: (sample17Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample18Output).replace(/\r?\n$/u, ""),
   }
 ]
 
@@ -678,6 +716,16 @@ export const generatedLearningPaths: readonly LearningPathDefinition[] =
         "strings-and-templates",
         "functions-and-pipelines",
         "data-and-patterns",
+        "collections"
+      ]
+    },
+    {
+      "id": "functions-and-recursion",
+      "title": "関数と再帰",
+      "summary": "関数合成からlocal scope、self recursion、Collection処理へ進みます。",
+      "samples": [
+        "functions-and-pipelines",
+        "local-functions",
         "collections"
       ]
     },

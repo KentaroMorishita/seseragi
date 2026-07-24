@@ -1,8 +1,8 @@
 use super::{expression, Resolver};
 use crate::{ScopeKind, SymbolKind, SymbolNamespace};
 use seseragi_syntax::{
-    ModuleInterface, SurfaceConstraint, SurfaceDecl, SurfaceImplMember, SurfaceMethod,
-    SurfaceModule,
+    ModuleInterface, SurfaceBlockItem, SurfaceConstraint, SurfaceDecl, SurfaceImplMember,
+    SurfaceMethod, SurfaceModule,
 };
 
 mod types;
@@ -106,6 +106,31 @@ pub(super) fn register_module_declarations(resolver: &mut Resolver, declarations
             SurfaceDecl::Impl { .. } | SurfaceDecl::Instance { .. } => {}
         }
     }
+}
+
+pub(super) fn resolve_local_function(
+    resolver: &mut Resolver,
+    parent: crate::ScopeId,
+    function: &SurfaceBlockItem,
+) {
+    let SurfaceBlockItem::Function {
+        type_parameters,
+        parameters,
+        return_type,
+        constraints,
+        value,
+        span,
+        ..
+    } = function
+    else {
+        return;
+    };
+    let scope = resolver.new_scope(parent, ScopeKind::Function, *span);
+    register_type_parameters(resolver, scope, type_parameters, *span);
+    register_parameters(resolver, scope, parameters);
+    resolve_type_ref(resolver, scope, return_type);
+    resolve_constraints(resolver, scope, constraints);
+    expression::resolve_expression(resolver, scope, value);
 }
 
 pub(super) fn register_imports(

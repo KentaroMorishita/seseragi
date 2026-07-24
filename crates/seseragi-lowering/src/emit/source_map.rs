@@ -378,6 +378,10 @@ fn collect_statement_names(
             names.push(name.clone());
             collect_expr_names(initializer, helper_names, names);
         }
+        TypeScriptStatement::LocalFunction { name, body, .. } => {
+            names.push(name.clone());
+            collect_expr_names(body, helper_names, names);
+        }
     }
 }
 

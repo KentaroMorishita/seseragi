@@ -121,6 +121,9 @@ fn collect_expr_value_symbols(expr: &CoreExpr, values: &mut BTreeSet<String>) {
                     | CoreStatement::Bind { value, .. } => {
                         collect_expr_value_symbols(value, values);
                     }
+                    CoreStatement::LocalFunction { body, .. } => {
+                        collect_expr_value_symbols(body, values);
+                    }
                 }
             }
             collect_expr_value_symbols(result, values);
@@ -368,6 +371,22 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
                     } => {
                         collect_type_names(type_ref, references);
                         collect_expr_type_names(value, references);
+                    }
+                    CoreStatement::LocalFunction {
+                        constraints,
+                        parameters,
+                        body,
+                        ..
+                    } => {
+                        for constraint in constraints {
+                            for argument in &constraint.arguments {
+                                collect_type_names(argument, references);
+                            }
+                        }
+                        for parameter in parameters {
+                            collect_type_names(&parameter.type_ref, references);
+                        }
+                        collect_expr_type_names(body, references);
                     }
                 }
             }

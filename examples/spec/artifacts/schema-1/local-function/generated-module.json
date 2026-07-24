@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "module": "artifact/local-function",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.unit",
+      "core.int64",
+      "core.bool",
+      "core.int64.add",
+      "core.int64.subtract"
+    ]
+  },
+  "exports": [
+    "localFunctionWorks"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

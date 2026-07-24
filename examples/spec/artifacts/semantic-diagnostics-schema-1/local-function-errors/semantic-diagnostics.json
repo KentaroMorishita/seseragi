@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "let.type-mismatch",
+      "message": "Expression type does not match the expected type",
+      "primary": {
+        "start": 42,
+        "end": 47
+      },
+      "related": [
+        {
+          "message": "local binding declares String, value produces Int",
+          "primary": {
+            "start": 0,
+            "end": 66
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "local binding declares String, value produces Int",
+          "primary": {
+            "start": 0,
+            "end": 66
+          }
+        }
+      ],
+      "notes": [
+        "Seseragi does not insert an implicit conversion between these types."
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d2",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 143,
+        "end": 149
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 68,
+            "end": 215
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 68,
+            "end": 215
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

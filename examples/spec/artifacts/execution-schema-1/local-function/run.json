@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "case": "local-function",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/local-function",
+    "export": "localFunctionWorks",
+    "compiledModule": "../../schema-1/local-function/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.unit",
+      "core.int64",
+      "core.bool",
+      "core.int64.add",
+      "core.int64.subtract"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

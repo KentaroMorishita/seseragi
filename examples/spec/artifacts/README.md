@@ -276,6 +276,14 @@ operation-only standard traitのdictionary ABIは独立した後続gateです。
 spread update、generic `unwrap`はStruct patternとmember substitutionを通り、生成TypeScriptはnominal brandを保った
 `Box<bigint>`を出力します。`execution-schema-1/generic-struct`とPlaygroundの`Generic Structの推論`が42のactual outputを固定します。
 
+`schema-1/local-function`はpure block内のsequential `let` / `fn`をSurfaceAstから生成TypeScriptまで保持し、
+local functionが前方のlexical bindingをcaptureし、自身を再帰呼び出しできることを固定します。generic local functionも
+top-level functionと同じcallable具体化を使います。`execution-schema-1/local-function`はcapture、generic call、
+direct self recursionを一つのpure entryでactual executionし、後続local functionのforward referenceはresolver diagnosticで
+停止します。`semantic-diagnostics-schema-1/local-function-errors`はlocal `let`のannotation mismatchと
+後続local functionへのforward referenceをcompile diagnosticとして固定します。相互再帰`rec` groupと
+一定host stackでのtail-call実行はこのcaseに含みません。
+
 `schema-1/explicit-generic-struct`は明示constructionのnested `Marker<Array<String>>`をSurfaceAst / ResolvedAstへ保持し、
 空Array fieldへ明示contextを渡します。TypedHirと生成TypeScriptは`Marker<ReadonlyArray<string>>`を保持し、
 `execution-schema-1/explicit-generic-struct`が`Explicit generic Struct: ready`をactual outputで固定します。

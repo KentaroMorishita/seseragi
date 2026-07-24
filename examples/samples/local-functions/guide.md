@@ -1,0 +1,1 @@
+Pure blockの中では、先に置いた`let`を後続のlocal functionから参照できます。local functionは自身のbodyから再帰呼び出しでき、generic parameterもtop-level関数と同じように型付けされます。後に宣言する関数は前の関数からは見えません。

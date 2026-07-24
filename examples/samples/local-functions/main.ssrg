@@ -1,0 +1,17 @@
+fn finalScore base: Int -> Int = {
+  let bonus: Int = 2
+
+  // Local functions can capture earlier values and call themselves.
+  fn identity<A> value: A -> A = value
+
+  fn countdown current: Int -> Int =
+    if current == 0 then
+      identity (base + bonus)
+    else
+      countdown (current - 1)
+
+  countdown 3
+}
+
+pub effect fn main =
+  println $ `Final score: ${finalScore 40}`

@@ -1,0 +1,721 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/local-function",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "localFunctionWorks",
+      "nameSpan": {
+        "start": 7,
+        "end": 25
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 26,
+            "end": 30
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 32,
+              "end": 36
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 40,
+          "end": 44
+        }
+      },
+      "body": {
+        "kind": "block",
+        "items": [
+          {
+            "kind": "let",
+            "name": "offset",
+            "nameSpan": {
+              "start": 55,
+              "end": 61
+            },
+            "typeRef": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 63,
+                "end": 66
+              }
+            },
+            "value": {
+              "kind": "integer",
+              "raw": "2",
+              "span": {
+                "start": 69,
+                "end": 70
+              }
+            },
+            "span": {
+              "start": 48,
+              "end": 70
+            }
+          },
+          {
+            "kind": "function",
+            "name": "identity",
+            "nameSpan": {
+              "start": 77,
+              "end": 85
+            },
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "name": "value",
+                "nameSpan": {
+                  "start": 89,
+                  "end": 94
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "span": {
+                    "start": 96,
+                    "end": 97
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 101,
+                "end": 102
+              }
+            },
+            "value": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 105,
+                "end": 110
+              }
+            },
+            "span": {
+              "start": 71,
+              "end": 110
+            }
+          },
+          {
+            "kind": "function",
+            "name": "countdown",
+            "nameSpan": {
+              "start": 117,
+              "end": 126
+            },
+            "parameters": [
+              {
+                "name": "current",
+                "nameSpan": {
+                  "start": 127,
+                  "end": 134
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 136,
+                    "end": 139
+                  }
+                }
+              }
+            ],
+            "returnType": {
+              "kind": "named",
+              "name": "Int",
+              "span": {
+                "start": 143,
+                "end": 146
+              }
+            },
+            "value": {
+              "kind": "if",
+              "condition": {
+                "kind": "binary",
+                "operator": "==",
+                "operatorSpan": {
+                  "start": 164,
+                  "end": 166
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "current",
+                  "span": {
+                    "start": 156,
+                    "end": 163
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "raw": "0",
+                  "span": {
+                    "start": 167,
+                    "end": 168
+                  }
+                },
+                "span": {
+                  "start": 156,
+                  "end": 168
+                }
+              },
+              "thenBranch": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "identity",
+                  "span": {
+                    "start": 180,
+                    "end": 188
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "operatorSpan": {
+                      "start": 193,
+                      "end": 194
+                    },
+                    "left": {
+                      "kind": "integer",
+                      "raw": "40",
+                      "span": {
+                        "start": 190,
+                        "end": 192
+                      }
+                    },
+                    "right": {
+                      "kind": "name",
+                      "name": "offset",
+                      "span": {
+                        "start": 195,
+                        "end": 201
+                      }
+                    },
+                    "span": {
+                      "start": 190,
+                      "end": 201
+                    }
+                  },
+                  "span": {
+                    "start": 189,
+                    "end": 202
+                  }
+                },
+                "span": {
+                  "start": 180,
+                  "end": 202
+                }
+              },
+              "elseBranch": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "countdown",
+                  "span": {
+                    "start": 218,
+                    "end": 227
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "-",
+                    "operatorSpan": {
+                      "start": 237,
+                      "end": 238
+                    },
+                    "left": {
+                      "kind": "name",
+                      "name": "current",
+                      "span": {
+                        "start": 229,
+                        "end": 236
+                      }
+                    },
+                    "right": {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 239,
+                        "end": 240
+                      }
+                    },
+                    "span": {
+                      "start": 229,
+                      "end": 240
+                    }
+                  },
+                  "span": {
+                    "start": 228,
+                    "end": 241
+                  }
+                },
+                "span": {
+                  "start": 218,
+                  "end": 241
+                }
+              },
+              "span": {
+                "start": 153,
+                "end": 241
+              }
+            },
+            "span": {
+              "start": 111,
+              "end": 241
+            }
+          }
+        ],
+        "result": {
+          "kind": "binary",
+          "operator": "==",
+          "operatorSpan": {
+            "start": 257,
+            "end": 259
+          },
+          "left": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "countdown",
+              "span": {
+                "start": 245,
+                "end": 254
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "3",
+              "span": {
+                "start": 255,
+                "end": 256
+              }
+            },
+            "span": {
+              "start": 245,
+              "end": 256
+            }
+          },
+          "right": {
+            "kind": "integer",
+            "raw": "42",
+            "span": {
+              "start": 260,
+              "end": 262
+            }
+          },
+          "span": {
+            "start": 245,
+            "end": 262
+          }
+        },
+        "span": {
+          "start": 47,
+          "end": 264
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 264
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 264
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 264
+      }
+    },
+    {
+      "id": 2,
+      "parent": 1,
+      "kind": "block",
+      "origin": {
+        "start": 47,
+        "end": 264
+      }
+    },
+    {
+      "id": 3,
+      "parent": 2,
+      "kind": "function",
+      "origin": {
+        "start": 71,
+        "end": 110
+      }
+    },
+    {
+      "id": 4,
+      "parent": 2,
+      "kind": "function",
+      "origin": {
+        "start": 111,
+        "end": 241
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "localFunctionWorks",
+      "canonical": "artifact/local-function::localFunctionWorks",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 7,
+        "end": 25
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 26,
+        "end": 30
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Bool",
+      "canonical": "std/prelude::Bool",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "offset",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 2,
+      "origin": {
+        "start": 55,
+        "end": 61
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "identity",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 2,
+      "origin": {
+        "start": 77,
+        "end": 85
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 3,
+      "origin": {
+        "start": 71,
+        "end": 110
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 89,
+        "end": 94
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "countdown",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 2,
+      "origin": {
+        "start": 117,
+        "end": 126
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "current",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 127,
+        "end": 134
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "==",
+      "canonical": "std/prelude::==",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "+",
+      "canonical": "std/prelude::+",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "-",
+      "canonical": "std/prelude::-",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 32,
+        "end": 36
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 40,
+        "end": 44
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 63,
+        "end": 66
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 96,
+        "end": 97
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 101,
+        "end": 102
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 105,
+        "end": 110
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 136,
+        "end": 139
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 143,
+        "end": 146
+      }
+    },
+    {
+      "spelling": "current",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 156,
+        "end": 163
+      }
+    },
+    {
+      "spelling": "==",
+      "namespace": "operator",
+      "target": 11,
+      "origin": {
+        "start": 164,
+        "end": 166
+      }
+    },
+    {
+      "spelling": "identity",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 180,
+        "end": 188
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 12,
+      "origin": {
+        "start": 193,
+        "end": 194
+      }
+    },
+    {
+      "spelling": "offset",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 195,
+        "end": 201
+      }
+    },
+    {
+      "spelling": "countdown",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 218,
+        "end": 227
+      }
+    },
+    {
+      "spelling": "current",
+      "namespace": "value",
+      "target": 10,
+      "origin": {
+        "start": 229,
+        "end": 236
+      }
+    },
+    {
+      "spelling": "-",
+      "namespace": "operator",
+      "target": 13,
+      "origin": {
+        "start": 237,
+        "end": 238
+      }
+    },
+    {
+      "spelling": "countdown",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 245,
+        "end": 254
+      }
+    },
+    {
+      "spelling": "==",
+      "namespace": "operator",
+      "target": 11,
+      "origin": {
+        "start": 257,
+        "end": 259
+      }
+    }
+  ],
+  "issues": []
+}

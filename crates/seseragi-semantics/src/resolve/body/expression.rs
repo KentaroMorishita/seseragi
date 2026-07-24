@@ -1,7 +1,7 @@
 use super::Resolver;
 use crate::{ScopeId, ScopeKind, SymbolNamespace};
 use seseragi_syntax::{
-    SurfaceComprehensionClause, SurfaceDoItem, SurfaceExpr, SurfaceTemplatePart,
+    SurfaceBlockItem, SurfaceComprehensionClause, SurfaceDoItem, SurfaceExpr, SurfaceTemplatePart,
 };
 
 use super::declarations::resolve_type_ref;
@@ -203,6 +203,55 @@ pub(super) fn resolve_expression(
                 }
                 resolve_expression(resolver, arm_scope, &arm.body);
             }
+        }
+        SurfaceExpr::Block {
+            items,
+            result,
+            span,
+        } => {
+            let block_scope = resolver.new_scope(scope, ScopeKind::Block, *span);
+            for item in items {
+                match item {
+                    SurfaceBlockItem::Let {
+                        name,
+                        name_span,
+                        type_ref,
+                        value,
+                        ..
+                    } => {
+                        if let Some(type_ref) = type_ref {
+                            resolve_type_ref(resolver, block_scope, type_ref);
+                        }
+                        resolve_expression(resolver, block_scope, value);
+                        resolver.register(
+                            block_scope,
+                            SymbolNamespace::Value,
+                            crate::SymbolKind::Let,
+                            name,
+                            None,
+                            *name_span,
+                        );
+                    }
+                    function @ SurfaceBlockItem::Function {
+                        name, name_span, ..
+                    } => {
+                        resolver.register(
+                            block_scope,
+                            SymbolNamespace::Value,
+                            crate::SymbolKind::Function,
+                            name,
+                            None,
+                            *name_span,
+                        );
+                        super::declarations::resolve_local_function(
+                            resolver,
+                            block_scope,
+                            function,
+                        );
+                    }
+                }
+            }
+            resolve_expression(resolver, block_scope, result);
         }
         SurfaceExpr::Do {
             items,

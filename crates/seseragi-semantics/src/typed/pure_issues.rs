@@ -40,6 +40,16 @@ pub(crate) enum PureCallIssue {
         expected: TypedType,
         actual: TypedType,
     },
+    LocalBindingTypeMismatch {
+        binding: ByteSpan,
+        expected: TypedType,
+        actual: TypedType,
+    },
+    LocalFunctionBodyTypeMismatch {
+        body: ByteSpan,
+        expected: TypedType,
+        actual: TypedType,
+    },
     EffectfulForBodyNotEffect {
         body: ByteSpan,
         actual: TypedType,

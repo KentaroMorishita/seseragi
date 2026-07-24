@@ -538,6 +538,13 @@ pub enum TypedExpr {
         arguments: Vec<TypedExpr>,
         origin: ByteSpan,
     },
+    Block {
+        statements: Vec<TypedBlockStatement>,
+        result: Box<TypedExpr>,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     DoBlock {
         statements: Vec<TypedDoStatement>,
         result: Box<TypedExpr>,
@@ -672,6 +679,34 @@ pub struct TypedRecordPatternField {
     pub optional: bool,
     pub pattern: TypedPattern,
     pub origin: ByteSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypedBlockStatement {
+    Let {
+        name: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        value: TypedExpr,
+        origin: ByteSpan,
+    },
+    Function {
+        name: String,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<String>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_constructor_parameters: Vec<String>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraints: Vec<TypedConstraint>,
+        parameters: Vec<TypedParameter>,
+        body: TypedExpr,
+        origin: ByteSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

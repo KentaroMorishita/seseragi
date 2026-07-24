@@ -1,0 +1,413 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/local-function",
+  "functions": [
+    {
+      "symbol": "artifact/local-function::localFunctionWorks",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 264
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "offset",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "int64",
+              "value": "2",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 69,
+                "end": 70
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 48,
+              "end": 70
+            }
+          },
+          {
+            "kind": "local-function",
+            "name": "identity",
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 105,
+                "end": 110
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 71,
+              "end": 110
+            }
+          },
+          {
+            "kind": "local-function",
+            "name": "countdown",
+            "parameters": [
+              {
+                "id": "current",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "if",
+              "condition": {
+                "kind": "binary",
+                "operator": "==",
+                "left": {
+                  "kind": "variable",
+                  "name": "current",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 156,
+                    "end": 163
+                  }
+                },
+                "right": {
+                  "kind": "int64",
+                  "value": "0",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 167,
+                    "end": 168
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Eq",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/int::Eq"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 156,
+                  "end": 168
+                }
+              },
+              "thenBranch": {
+                "kind": "call",
+                "callee": "identity",
+                "arguments": [
+                  {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "int64",
+                      "value": "40",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 190,
+                        "end": 192
+                      }
+                    },
+                    "right": {
+                      "kind": "variable",
+                      "name": "offset",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 195,
+                        "end": 201
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Add",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Add"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 190,
+                      "end": 201
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 180,
+                  "end": 202
+                }
+              },
+              "elseBranch": {
+                "kind": "call",
+                "callee": "countdown",
+                "arguments": [
+                  {
+                    "kind": "binary",
+                    "operator": "-",
+                    "left": {
+                      "kind": "variable",
+                      "name": "current",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 229,
+                        "end": 236
+                      }
+                    },
+                    "right": {
+                      "kind": "int64",
+                      "value": "1",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 239,
+                        "end": 240
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Sub",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Sub"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 229,
+                      "end": 240
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 218,
+                  "end": 241
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 153,
+                "end": 241
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 111,
+              "end": 241
+            }
+          }
+        ],
+        "result": {
+          "kind": "binary",
+          "operator": "==",
+          "left": {
+            "kind": "call",
+            "callee": "countdown",
+            "arguments": [
+              {
+                "kind": "int64",
+                "value": "3",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 255,
+                  "end": 256
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 245,
+              "end": 256
+            }
+          },
+          "right": {
+            "kind": "int64",
+            "value": "42",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 260,
+              "end": 262
+            }
+          },
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Eq",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/int::Eq"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 245,
+            "end": 262
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 47,
+          "end": 264
+        }
+      }
+    }
+  ]
+}

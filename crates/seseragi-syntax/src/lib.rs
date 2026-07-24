@@ -34,8 +34,8 @@ pub use standard_operator::{
     StandardTraitOperator,
 };
 pub use surface::{
-    parse_surface_ast, ByteSpan, SurfaceComprehensionClause, SurfaceConstraint, SurfaceDecl,
-    SurfaceDoItem, SurfaceExpr, SurfaceImplMember, SurfaceImport, SurfaceImportItem,
+    parse_surface_ast, ByteSpan, SurfaceBlockItem, SurfaceComprehensionClause, SurfaceConstraint,
+    SurfaceDecl, SurfaceDoItem, SurfaceExpr, SurfaceImplMember, SurfaceImport, SurfaceImportItem,
     SurfaceInfixStep, SurfaceLambdaParameter, SurfaceMatchArm, SurfaceMethod, SurfaceModule,
     SurfaceParameter, SurfacePattern, SurfaceRecordItem, SurfaceRecordPatternField,
     SurfaceRequirement, SurfaceTemplatePart, SurfaceVariant, TypeParameter, TypeRef, Visibility,

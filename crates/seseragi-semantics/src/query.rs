@@ -1446,6 +1446,18 @@ fn walk_expression(expression: &TypedExpr, visit: &mut impl FnMut(&TypedExpr)) {
                 walk_expression(&arm.body, visit);
             }
         }
+        TypedExpr::Block {
+            statements, result, ..
+        } => {
+            for statement in statements {
+                let value = match statement {
+                    crate::TypedBlockStatement::Let { value, .. } => value,
+                    crate::TypedBlockStatement::Function { body, .. } => body,
+                };
+                walk_expression(value, visit);
+            }
+            walk_expression(result, visit);
+        }
         TypedExpr::DoBlock {
             statements, result, ..
         } => {
@@ -1549,6 +1561,7 @@ fn expression_origin(expression: &TypedExpr) -> ByteSpan {
         | TypedExpr::Match { origin, .. }
         | TypedExpr::EffectCall { origin, .. }
         | TypedExpr::EffectInvoke { origin, .. }
+        | TypedExpr::Block { origin, .. }
         | TypedExpr::DoBlock { origin, .. }
         | TypedExpr::MonadDo { origin, .. } => *origin,
     }
@@ -1575,6 +1588,7 @@ fn expression_type(expression: &TypedExpr) -> Option<TypedType> {
         | TypedExpr::Binary { type_ref, .. }
         | TypedExpr::If { type_ref, .. }
         | TypedExpr::Match { type_ref, .. }
+        | TypedExpr::Block { type_ref, .. }
         | TypedExpr::MonadDo { type_ref, .. } => type_ref.clone(),
         TypedExpr::EffectCall { effect, .. } | TypedExpr::EffectInvoke { effect, .. } => {
             effect_type(effect)

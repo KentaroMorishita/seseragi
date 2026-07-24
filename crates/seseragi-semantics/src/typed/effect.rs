@@ -89,6 +89,18 @@ fn collect_effect_contract(
             }
             collect_effect_contract(result, requirements, failure);
         }
+        TypedExpr::Block {
+            statements, result, ..
+        } => {
+            for statement in statements {
+                let value = match statement {
+                    crate::TypedBlockStatement::Let { value, .. } => value,
+                    crate::TypedBlockStatement::Function { body, .. } => body,
+                };
+                collect_effect_contract(value, requirements, failure);
+            }
+            collect_effect_contract(result, requirements, failure);
+        }
         TypedExpr::Match {
             scrutinee, arms, ..
         } => {

@@ -13,6 +13,7 @@ pub enum ScopeKind {
     Declaration,
     Function,
     Lambda,
+    Block,
     DoBlock,
     MatchArm,
     Comprehension,

@@ -456,6 +456,18 @@ pub enum CoreStatement {
         value: CoreExpr,
         origin: SourceSpan,
     },
+    LocalFunction {
+        name: String,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<String>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_constructor_parameters: Vec<String>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraints: Vec<CoreInstanceConstraint>,
+        parameters: Vec<CoreParameter>,
+        body: CoreExpr,
+        origin: SourceSpan,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

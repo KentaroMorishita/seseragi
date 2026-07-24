@@ -240,6 +240,7 @@ fn typed_expr_type(expression: &TypedExpr) -> TypedType {
         | TypedExpr::Binary { type_ref, .. }
         | TypedExpr::If { type_ref, .. }
         | TypedExpr::Match { type_ref, .. }
+        | TypedExpr::Block { type_ref, .. }
         | TypedExpr::MonadDo { type_ref, .. } => type_ref.clone(),
         TypedExpr::DoBlock { result, .. } => typed_expr_type(result),
         TypedExpr::EffectCall { effect, .. } | TypedExpr::EffectInvoke { effect, .. } => {

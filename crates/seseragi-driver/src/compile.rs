@@ -146,6 +146,65 @@ mod tests {
     }
 
     #[test]
+    fn compiles_local_functions_with_lexical_capture() {
+        let source = "fn calculate base: Int -> Int = {\n\
+                      let offset: Int = 2\n\
+                      fn add value: Int -> Int = value + offset\n\
+                      add base\n\
+                      }\n";
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/local-function",
+            source,
+        ))
+        .expect("local function and its capture should compile");
+
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("const offset: bigint = 2n"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("const add = (value: bigint) =>"));
+        assert!(compiled.generated.typescript.matches("offset").count() >= 2);
+        assert!(compiled.generated.typescript.contains("add(base)"));
+    }
+
+    #[test]
+    fn compiles_generic_and_self_recursive_local_functions() {
+        let source = "fn countdown start: Int -> Int = {\n\
+                      fn identity<A> value: A -> A = value\n\
+                      fn loop current: Int -> Int =\n\
+                        if current == 0 then identity current else loop (current - 1)\n\
+                      loop start\n\
+                      }\n";
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/local-recursion",
+            source,
+        ))
+        .expect("generic and self-recursive local functions should compile");
+
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("const identity = <A,>"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("const loop = (current: bigint) =>"));
+        assert!(
+            compiled
+                .generated
+                .typescript
+                .contains("loop(_ssrg_int64_subtract(current, 1n))"),
+            "{}",
+            compiled.generated.typescript
+        );
+    }
+
+    #[test]
     fn stops_non_binary_custom_operator_declarations_before_lowering() {
         let source = "operator infixl 4 <^> value: Int -> Int = value\n";
         let diagnostics = compile_module(CompileInput::new(

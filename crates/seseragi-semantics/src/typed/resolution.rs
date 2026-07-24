@@ -2,7 +2,10 @@ use crate::{
     ExternalTypeBinding, ResolvedModule, ResolvedSymbol, SymbolId, SymbolKind, SymbolNamespace,
     TypedModuleDependency, TypedParameter, TypedType,
 };
-use seseragi_syntax::{ByteSpan, SurfaceDecl, SurfaceImplMember, SurfaceRequirement, TypeRef};
+use seseragi_syntax::{
+    ByteSpan, SurfaceBlockItem, SurfaceComprehensionClause, SurfaceDecl, SurfaceDoItem,
+    SurfaceExpr, SurfaceImplMember, SurfaceRequirement, SurfaceTemplatePart, TypeRef,
+};
 use std::collections::{BTreeMap, BTreeSet};
 
 use super::functions::TopLevelPureFunction;
@@ -218,13 +221,15 @@ impl<'a> TypedResolution<'a> {
                     TypedParameter::ImplicitUnit { .. } => return None,
                 };
                 let symbol = self.declaration_symbol(origin, SymbolKind::Parameter)?;
-                Some((
-                    symbol.id,
-                    SemanticValueType {
-                        type_ref,
-                        key: self.semantic_value_key(symbol.id),
-                    },
-                ))
+                let key = self
+                    .semantic_values
+                    .get(&symbol.id)
+                    .cloned()
+                    .unwrap_or_else(|| {
+                        self.semantic_types
+                            .key_from_typed_type(self.resolved, &type_ref)
+                    });
+                Some((symbol.id, SemanticValueType { type_ref, key }))
             })
             .collect()
     }
@@ -459,6 +464,11 @@ fn collect_callables(
             _ => {}
         }
     }
+    for declaration in &resolved.declarations {
+        for body in declaration_bodies(declaration) {
+            collect_local_callables(body, resolved, semantic_types, &mut callables);
+        }
+    }
     for (constructor, signature) in semantic_types.constructor_signatures() {
         callables.insert(
             constructor,
@@ -540,6 +550,217 @@ fn collect_callables(
         }
     }
     callables
+}
+
+fn declaration_bodies(declaration: &SurfaceDecl) -> Vec<&SurfaceExpr> {
+    match declaration {
+        SurfaceDecl::Let { body, .. }
+        | SurfaceDecl::Fn { body, .. }
+        | SurfaceDecl::EffectFn { body, .. }
+        | SurfaceDecl::Operator { body, .. } => body.iter().collect(),
+        SurfaceDecl::Instance { methods, .. } | SurfaceDecl::Trait { methods, .. } => methods
+            .iter()
+            .filter_map(|method| method.body.as_ref())
+            .collect(),
+        SurfaceDecl::Impl { members, .. } => members
+            .iter()
+            .filter_map(|member| match member {
+                SurfaceImplMember::Method { method, .. } => method.body.as_ref(),
+                SurfaceImplMember::Operator { body, .. } => body.as_ref(),
+            })
+            .collect(),
+        SurfaceDecl::Newtype { .. }
+        | SurfaceDecl::Alias { .. }
+        | SurfaceDecl::Type { .. }
+        | SurfaceDecl::Struct { .. } => Vec::new(),
+    }
+}
+
+fn collect_local_callables(
+    expression: &SurfaceExpr,
+    resolved: &ResolvedModule,
+    semantic_types: &SemanticTypeCatalog,
+    callables: &mut BTreeMap<SymbolId, TopLevelPureFunction>,
+) {
+    match expression {
+        SurfaceExpr::Block { items, result, .. } => {
+            for item in items {
+                match item {
+                    SurfaceBlockItem::Let { value, .. } => {
+                        collect_local_callables(value, resolved, semantic_types, callables);
+                    }
+                    SurfaceBlockItem::Function {
+                        name_span,
+                        type_parameters,
+                        parameters,
+                        return_type,
+                        constraints,
+                        value,
+                        ..
+                    } => {
+                        if let Some(symbol) = resolved.symbols.iter().find(|symbol| {
+                            symbol.kind == SymbolKind::Function && symbol.origin == *name_span
+                        }) {
+                            let (parameters, semantic_parameters) =
+                                callable_parameter_types(parameters, resolved, semantic_types);
+                            callables.insert(
+                                symbol.id,
+                                TopLevelPureFunction {
+                                    symbol: symbol.spelling.clone(),
+                                    trait_identity: None,
+                                    trait_method: None,
+                                    type_parameters: type_parameters.clone(),
+                                    constraints: constraints
+                                        .iter()
+                                        .map(|constraint| crate::TypedConstraint {
+                                            name: constraint.name.clone(),
+                                            arguments: constraint
+                                                .arguments
+                                                .iter()
+                                                .map(|argument| {
+                                                    semantic_typed_type_from_type_ref(
+                                                        argument,
+                                                        resolved,
+                                                        semantic_types,
+                                                    )
+                                                })
+                                                .collect(),
+                                        })
+                                        .collect(),
+                                    constraint_identities: constraints
+                                        .iter()
+                                        .map(|constraint| {
+                                            constraint_identity(resolved, constraint.name_span)
+                                        })
+                                        .collect(),
+                                    parameters,
+                                    semantic_parameters,
+                                    result: semantic_typed_type_from_type_ref(
+                                        return_type,
+                                        resolved,
+                                        semantic_types,
+                                    ),
+                                    semantic_result: semantic_types
+                                        .key_from_type_ref(resolved, return_type),
+                                },
+                            );
+                        }
+                        collect_local_callables(value, resolved, semantic_types, callables);
+                    }
+                }
+            }
+            collect_local_callables(result, resolved, semantic_types, callables);
+        }
+        SurfaceExpr::Template { parts, .. } => {
+            for part in parts {
+                if let SurfaceTemplatePart::Interpolation { value, .. } = part {
+                    collect_local_callables(value, resolved, semantic_types, callables);
+                }
+            }
+        }
+        SurfaceExpr::Member { receiver, .. }
+        | SurfaceExpr::Prefix {
+            operand: receiver, ..
+        }
+        | SurfaceExpr::Grouped {
+            value: receiver, ..
+        }
+        | SurfaceExpr::Lambda { body: receiver, .. } => {
+            collect_local_callables(receiver, resolved, semantic_types, callables);
+        }
+        SurfaceExpr::Application {
+            function, argument, ..
+        } => {
+            collect_local_callables(function, resolved, semantic_types, callables);
+            collect_local_callables(argument, resolved, semantic_types, callables);
+        }
+        SurfaceExpr::Assignment { target, value, .. }
+        | SurfaceExpr::Binary {
+            left: target,
+            right: value,
+            ..
+        } => {
+            collect_local_callables(target, resolved, semantic_types, callables);
+            collect_local_callables(value, resolved, semantic_types, callables);
+        }
+        SurfaceExpr::EffectfulFor { source, body, .. } => {
+            collect_local_callables(source, resolved, semantic_types, callables);
+            collect_local_callables(body, resolved, semantic_types, callables);
+        }
+        SurfaceExpr::Tuple { elements, .. }
+        | SurfaceExpr::Array { elements, .. }
+        | SurfaceExpr::List { elements, .. } => {
+            for element in elements {
+                collect_local_callables(element, resolved, semantic_types, callables);
+            }
+        }
+        SurfaceExpr::Record { items, .. } | SurfaceExpr::Struct { items, .. } => {
+            for item in items {
+                collect_local_callables(item.value(), resolved, semantic_types, callables);
+            }
+        }
+        SurfaceExpr::ArrayComprehension {
+            element, clauses, ..
+        }
+        | SurfaceExpr::ListComprehension {
+            element, clauses, ..
+        } => {
+            collect_local_callables(element, resolved, semantic_types, callables);
+            for clause in clauses {
+                let value = match clause {
+                    SurfaceComprehensionClause::Generator { source, .. } => source,
+                    SurfaceComprehensionClause::Guard { condition, .. } => condition,
+                };
+                collect_local_callables(value, resolved, semantic_types, callables);
+            }
+        }
+        SurfaceExpr::InfixChain { first, steps, .. } => {
+            collect_local_callables(first, resolved, semantic_types, callables);
+            for step in steps {
+                collect_local_callables(&step.operand, resolved, semantic_types, callables);
+            }
+        }
+        SurfaceExpr::If {
+            condition,
+            then_branch,
+            else_branch,
+            ..
+        } => {
+            collect_local_callables(condition, resolved, semantic_types, callables);
+            collect_local_callables(then_branch, resolved, semantic_types, callables);
+            collect_local_callables(else_branch, resolved, semantic_types, callables);
+        }
+        SurfaceExpr::Match {
+            scrutinee, arms, ..
+        } => {
+            collect_local_callables(scrutinee, resolved, semantic_types, callables);
+            for arm in arms {
+                if let Some(guard) = &arm.guard {
+                    collect_local_callables(guard, resolved, semantic_types, callables);
+                }
+                collect_local_callables(&arm.body, resolved, semantic_types, callables);
+            }
+        }
+        SurfaceExpr::Do { items, result, .. } => {
+            for item in items {
+                let value = match item {
+                    SurfaceDoItem::Bind { value, .. }
+                    | SurfaceDoItem::Let { value, .. }
+                    | SurfaceDoItem::Expression { value, .. } => value,
+                };
+                collect_local_callables(value, resolved, semantic_types, callables);
+            }
+            if let Some(result) = result {
+                collect_local_callables(result, resolved, semantic_types, callables);
+            }
+        }
+        SurfaceExpr::Unit { .. }
+        | SurfaceExpr::Integer { .. }
+        | SurfaceExpr::String { .. }
+        | SurfaceExpr::Boolean { .. }
+        | SurfaceExpr::Name { .. }
+        | SurfaceExpr::Error { .. } => {}
+    }
 }
 
 fn callable_parameter_types(

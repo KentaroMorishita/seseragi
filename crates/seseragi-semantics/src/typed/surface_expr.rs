@@ -18,6 +18,7 @@ use super::TypedResolution;
 pub(crate) mod application;
 mod array;
 mod binary;
+mod block;
 mod comprehension;
 mod conditional;
 pub(crate) mod effectful_for;
@@ -93,6 +94,23 @@ impl<'a> PureExpressionContext<'a> {
         self.resolution
             .declaration_symbol(origin, SymbolKind::Parameter)
             .map(|symbol| symbol.id)
+    }
+
+    pub(super) fn declaration_symbol(
+        &self,
+        origin: ByteSpan,
+        kind: SymbolKind,
+    ) -> Option<SymbolId> {
+        self.resolution
+            .declaration_symbol(origin, kind)
+            .map(|symbol| symbol.id)
+    }
+
+    pub(super) fn parameter_locals(
+        &self,
+        parameters: &[TypedParameter],
+    ) -> BTreeMap<SymbolId, SemanticValueType> {
+        self.resolution.parameter_types(parameters)
     }
 
     pub(super) fn callable(&self, target: SymbolId) -> Option<&TopLevelPureFunction> {
@@ -520,6 +538,7 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
         SurfaceExpr::Match { arms, .. } => arms
             .first()
             .and_then(|arm| surface_expression_type_hint(&arm.body)),
+        SurfaceExpr::Block { result, .. } => surface_expression_type_hint(result),
         SurfaceExpr::Name { .. }
         | SurfaceExpr::Member { .. }
         | SurfaceExpr::Application { .. }
@@ -660,6 +679,11 @@ pub(super) fn type_surface_expression(
             arms,
             span,
         } => match_expression::type_match(scrutinee, arms, *span, context),
+        SurfaceExpr::Block {
+            items,
+            result,
+            span,
+        } => block::type_block(items, result, *span, context),
         SurfaceExpr::Do {
             items,
             result,
@@ -687,6 +711,15 @@ fn recovery_hole_origin(expression: &TypedExpr) -> Option<ByteSpan> {
         TypedExpr::FieldAccess { receiver, .. }
         | TypedExpr::OptionalFieldAccess { receiver, .. }
         | TypedExpr::Lambda { body: receiver, .. } => recovery_hole_origin(receiver),
+        TypedExpr::Block {
+            statements, result, ..
+        } => statements
+            .iter()
+            .find_map(|statement| match statement {
+                crate::TypedBlockStatement::Let { value, .. } => recovery_hole_origin(value),
+                crate::TypedBlockStatement::Function { body, .. } => recovery_hole_origin(body),
+            })
+            .or_else(|| recovery_hole_origin(result)),
         TypedExpr::Call { arguments, .. }
         | TypedExpr::Tuple {
             elements: arguments,

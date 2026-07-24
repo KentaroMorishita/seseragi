@@ -15,6 +15,16 @@
       ]
     },
     {
+      "id": "functions-and-recursion",
+      "title": "関数と再帰",
+      "summary": "関数合成からlocal scope、self recursion、Collection処理へ進みます。",
+      "samples": [
+        "functions-and-pipelines",
+        "local-functions",
+        "collections"
+      ]
+    },
+    {
       "id": "text-and-output",
       "title": "文字列と出力",
       "summary": "String escape、template、標準出力を小さなprogramで確認します。",

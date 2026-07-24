@@ -137,11 +137,40 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
             validate_child(expression, "elseBranch", path)
         }
         "match" => validate_match(expression, path),
+        "block" => validate_block(expression, path),
         "do" => validate_do(expression, path),
         other => Err(format!(
             "SurfaceAst {path} has unknown expression kind {other}"
         )),
     }
+}
+
+fn validate_block(expression: &Value, path: &str) -> Result<(), String> {
+    let items = expression
+        .get("items")
+        .and_then(Value::as_array)
+        .ok_or_else(|| format!("SurfaceAst {path}.items must be an array"))?;
+    for (index, item) in items.iter().enumerate() {
+        let item_path = format!("{path}.items[{index}]");
+        require_span(item, &item_path)?;
+        item.get("name")
+            .and_then(Value::as_str)
+            .ok_or_else(|| format!("SurfaceAst {item_path}.name must be a string"))?;
+        let name_span = item
+            .get("nameSpan")
+            .ok_or_else(|| format!("SurfaceAst {item_path}.nameSpan is required"))?;
+        require_span_value(name_span, &format!("{item_path}.nameSpan"))?;
+        match item.get("kind").and_then(Value::as_str) {
+            Some("let" | "function") => validate_child(item, "value", &item_path)?,
+            Some(other) => {
+                return Err(format!(
+                    "SurfaceAst {item_path} has unknown block item kind {other}"
+                ));
+            }
+            None => return Err(format!("SurfaceAst {item_path}.kind must be a string")),
+        }
+    }
+    validate_child(expression, "result", path)
 }
 
 fn validate_infix_chain(expression: &Value, path: &str) -> Result<(), String> {
@@ -473,6 +502,63 @@ mod tests {
         });
 
         assert!(validate_surface_ast(&module).is_ok());
+    }
+
+    #[test]
+    fn accepts_a_pure_block_with_local_declarations() {
+        let module = json!({
+            "declarations": [{
+                "kind": "fn",
+                "body": {
+                    "kind": "block",
+                    "items": [
+                        {
+                            "kind": "let",
+                            "name": "offset",
+                            "nameSpan": { "start": 1, "end": 7 },
+                            "value": { "kind": "integer", "span": { "start": 10, "end": 11 } },
+                            "span": { "start": 0, "end": 11 }
+                        },
+                        {
+                            "kind": "function",
+                            "name": "add",
+                            "nameSpan": { "start": 15, "end": 18 },
+                            "value": { "kind": "name", "span": { "start": 20, "end": 26 } },
+                            "span": { "start": 12, "end": 26 }
+                        }
+                    ],
+                    "result": { "kind": "name", "span": { "start": 27, "end": 30 } },
+                    "span": { "start": 0, "end": 31 }
+                }
+            }]
+        });
+
+        assert!(validate_surface_ast(&module).is_ok());
+    }
+
+    #[test]
+    fn rejects_unknown_pure_block_item_kinds() {
+        let module = json!({
+            "declarations": [{
+                "kind": "fn",
+                "body": {
+                    "kind": "block",
+                    "items": [{
+                        "kind": "mystery",
+                        "name": "value",
+                        "nameSpan": { "start": 1, "end": 6 },
+                        "value": { "kind": "integer", "span": { "start": 9, "end": 10 } },
+                        "span": { "start": 0, "end": 10 }
+                    }],
+                    "result": { "kind": "name", "span": { "start": 11, "end": 16 } },
+                    "span": { "start": 0, "end": 17 }
+                }
+            }]
+        });
+
+        assert!(validate_surface_ast(&module)
+            .unwrap_err()
+            .contains("unknown block item kind mystery"));
     }
 
     #[test]

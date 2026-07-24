@@ -1,0 +1,19 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "local-functions",
+  "title": "Local functionと再帰",
+  "summary": "Pure blockで値をcaptureし、generic関数とself recursionを組み立てます。",
+  "kind": "lesson",
+  "difficulty": "intermediate",
+  "topics": ["local function", "scope", "capture", "recursion", "generic"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["functions-and-pipelines"],
+  "featured": false,
+  "isNew": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

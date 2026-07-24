@@ -512,6 +512,20 @@ fn render_monad_sequence(
             render_typescript_type(type_ref),
             render_typescript_expr(initializer)
         ),
+        TypeScriptStatement::LocalFunction {
+            name,
+            type_parameters,
+            constraints,
+            parameters,
+            body,
+            ..
+        } => {
+            let parameters = evidence_parameters(parameters, 0, constraints.len());
+            format!(
+                "(() => {{ const {name} = {}; return {continuation}; }})()",
+                render_function_body(type_parameters, &parameters, body, false)
+            )
+        }
     }
 }
 
@@ -545,6 +559,20 @@ fn render_effect_sequence(statements: &[TypeScriptStatement], result: &TypeScrip
             render_typescript_expr(initializer),
             render_typescript_type(type_ref)
         ),
+        TypeScriptStatement::LocalFunction {
+            name,
+            type_parameters,
+            constraints,
+            parameters,
+            body,
+            ..
+        } => {
+            let parameters = evidence_parameters(parameters, 0, constraints.len());
+            format!(
+                "(() => {{ const {name} = {}; return {continuation}; }})()",
+                render_function_body(type_parameters, &parameters, body, false)
+            )
+        }
     }
 }
 const ERASED_EVIDENCE_TYPE: &str = "Readonly<Record<string, (...args: any[]) => any>>";

@@ -92,7 +92,7 @@ fn expression_or_error(tokens: &[Token], start: usize, end: usize, error_at: usi
     })
 }
 
-fn split_segments(tokens: &[Token], start: usize, end: usize) -> Vec<(usize, usize)> {
+pub(super) fn split_segments(tokens: &[Token], start: usize, end: usize) -> Vec<(usize, usize)> {
     let mut segments = Vec::new();
     let mut segment_start = start;
     let mut brace_depth = 0usize;
@@ -147,6 +147,10 @@ fn segment_is_complete(tokens: &[Token], start: usize, end: usize) -> bool {
             .find(|index| tokens[*index].kind == TokenKind::OperatorEquals)
             .is_some_and(|equals| parse_expression_range(tokens, equals + 1, end).is_some());
     }
+    if tokens[first].kind == TokenKind::KeywordFn {
+        return top_level_token(tokens, start, end, TokenKind::OperatorEquals)
+            .is_some_and(|equals| parse_expression_range(tokens, equals + 1, end).is_some());
+    }
     parse_expression_range(tokens, start, end).is_some()
 }
 
@@ -188,7 +192,7 @@ fn push_non_empty_segment(
     segments.push((start, end));
 }
 
-fn significant_indices(tokens: &[Token], start: usize, end: usize) -> Vec<usize> {
+pub(super) fn significant_indices(tokens: &[Token], start: usize, end: usize) -> Vec<usize> {
     (start..end)
         .filter(|index| {
             tokens.get(*index).is_some_and(|token| {

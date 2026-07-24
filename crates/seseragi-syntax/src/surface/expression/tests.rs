@@ -1,7 +1,8 @@
 use super::*;
 use crate::surface::parse_surface_ast;
 use crate::surface_model::{
-    SurfaceDecl, SurfaceDoItem, SurfacePattern, SurfaceRecordItem, SurfaceRecordPatternField,
+    SurfaceBlockItem, SurfaceDecl, SurfaceDoItem, SurfacePattern, SurfaceRecordItem,
+    SurfaceRecordPatternField,
 };
 
 fn first_body(source: &str) -> SurfaceExpr {
@@ -101,6 +102,43 @@ fn parses_record_literals_with_explicit_and_shorthand_fields() {
         SurfaceRecordItem::Field { name, value: SurfaceExpr::Name { name: value, .. }, .. }
             if name == "score" && value == "score"
     ));
+}
+
+#[test]
+fn parses_pure_blocks_with_sequential_local_declarations() {
+    let body = first_body(
+        "fn calculate base: Int -> Int = {\n\
+           let offset: Int = 2\n\
+           fn add value: Int -> Int = value + offset\n\
+           add base\n\
+         }\n",
+    );
+
+    let SurfaceExpr::Block { items, result, .. } = body else {
+        panic!("expected pure block");
+    };
+    assert!(matches!(
+        items.as_slice(),
+        [
+            SurfaceBlockItem::Let { name: offset, .. },
+            SurfaceBlockItem::Function { name: add, .. }
+        ] if offset == "offset" && add == "add"
+    ));
+    assert!(matches!(
+        result.as_ref(),
+        SurfaceExpr::Application { function, argument, .. }
+            if matches!(function.as_ref(), SurfaceExpr::Name { name, .. } if name == "add")
+                && matches!(argument.as_ref(), SurfaceExpr::Name { name, .. } if name == "base")
+    ));
+}
+
+#[test]
+fn keeps_record_literals_distinct_from_pure_blocks() {
+    let record = first_body("fn profile name: String -> { name: String } = { name: name }\n");
+    assert!(matches!(record, SurfaceExpr::Record { .. }));
+
+    let block = first_body("fn identity value: Int -> Int = { value }\n");
+    assert!(matches!(block, SurfaceExpr::Block { items, .. } if items.is_empty()));
 }
 
 #[test]

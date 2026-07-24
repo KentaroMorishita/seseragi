@@ -181,6 +181,27 @@ pub(super) fn collect_expr_type_imports(
                         collect_type_imports(type_ref, bindings, requirements, imports);
                         value
                     }
+                    CoreStatement::LocalFunction {
+                        constraints,
+                        parameters,
+                        body,
+                        ..
+                    } => {
+                        for constraint in constraints {
+                            for argument in &constraint.arguments {
+                                collect_type_imports(argument, bindings, requirements, imports);
+                            }
+                        }
+                        for parameter in parameters {
+                            collect_type_imports(
+                                &parameter.type_ref,
+                                bindings,
+                                requirements,
+                                imports,
+                            );
+                        }
+                        body
+                    }
                 };
                 collect_expr_type_imports(value, bindings, requirements, imports);
             }
