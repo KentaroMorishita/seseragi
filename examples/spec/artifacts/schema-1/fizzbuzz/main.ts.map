@@ -1,0 +1,22 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/fizzbuzz"
+  ],
+  "sourcesContent": [
+    "fn fizzBuzz number: Int -> String =\n  match (number % 3, number % 5) {\n    (0, 0) -> \"FizzBuzz\"\n    (0, _) -> \"Fizz\"\n    (_, 0) -> \"Buzz\"\n    _ -> `${number}`\n  }\n\npub fn fizzBuzzValues unit: Unit -> Array<String> =\n  [fizzBuzz number | number <- 1..=30]\n"
+  ],
+  "names": [
+    "fizzBuzz",
+    "remainder",
+    "remainder",
+    "intShow",
+    "fizzBuzzValues",
+    "_ssrg_range_comprehend",
+    "inclusive",
+    "fizzBuzz"
+  ],
+  "mappings": ";;;;AAAAA;AAQAI"
+}

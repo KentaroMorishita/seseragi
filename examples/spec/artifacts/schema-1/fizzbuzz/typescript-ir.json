@@ -1,0 +1,244 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/fizzbuzz",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.string",
+    "core.int64.remainder",
+    "core.int64.show",
+    "core.unit",
+    "core.range.comprehend",
+    "core.range",
+    "core.range.inclusive"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.remainder",
+      "local": "_ssrg_int64_remainder"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.range.comprehend",
+      "local": "_ssrg_range_comprehend"
+    },
+    {
+      "feature": "core.range.inclusive",
+      "local": "_ssrg_range_inclusive"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "fizzBuzz",
+      "parameters": [
+        {
+          "name": "number",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_remainder",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "number"
+                },
+                {
+                  "kind": "bigint",
+                  "value": "3"
+                }
+              ]
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_remainder",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "number"
+                },
+                {
+                  "kind": "bigint",
+                  "value": "5"
+                }
+              ]
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "bigint"
+            },
+            {
+              "kind": "bigint"
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "value": "0"
+              },
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "value": "0"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "FizzBuzz"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "value": "0"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Fizz"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "bigint-equals",
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "value": "0"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Buzz"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_intShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "number"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 162
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "fizzBuzzValues",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_range_comprehend",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_range_inclusive",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "1"
+              },
+              {
+                "kind": "bigint",
+                "value": "30"
+              }
+            ]
+          },
+          {
+            "kind": "lambda",
+            "parameter": "number",
+            "body": {
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": "number",
+            "body": {
+              "kind": "call",
+              "callee": "fizzBuzz",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "number"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 164,
+        "end": 254
+      }
+    }
+  ]
+}

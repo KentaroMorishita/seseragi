@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "case": "fizzbuzz",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/fizzbuzz",
+    "export": "fizzBuzzValues",
+    "compiledModule": "../../schema-1/fizzbuzz/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.int64",
+      "core.string",
+      "core.int64.remainder",
+      "core.int64.show",
+      "core.unit",
+      "core.range.comprehend",
+      "core.range",
+      "core.range.inclusive"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

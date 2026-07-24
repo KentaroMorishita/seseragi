@@ -1,0 +1,19 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "fizzbuzz",
+  "title": "FizzBuzzを順に出力",
+  "summary": "Tuple patternとRangeを組み合わせ、分類した値を順番に出力します。",
+  "kind": "recipe",
+  "difficulty": "intermediate",
+  "topics": ["match", "tuple", "Range", "effectful for"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["data-and-patterns"],
+  "featured": false,
+  "isNew": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

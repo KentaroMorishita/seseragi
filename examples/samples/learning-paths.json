@@ -11,6 +11,7 @@
         "strings-and-templates",
         "functions-and-pipelines",
         "data-and-patterns",
+        "fizzbuzz",
         "collections"
       ]
     },
