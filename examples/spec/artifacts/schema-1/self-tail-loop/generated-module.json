@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "module": "artifact/self-tail-loop",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.bool",
+      "core.int64.subtract",
+      "core.int64.add",
+      "core.unit"
+    ]
+  },
+  "exports": [
+    "selfTailLoopWorks"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

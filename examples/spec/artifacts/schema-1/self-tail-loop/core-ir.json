@@ -1,0 +1,346 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/self-tail-loop",
+  "functions": [
+    {
+      "symbol": "artifact/self-tail-loop::sumTo",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 126
+      },
+      "parameters": [
+        {
+          "id": "current",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        {
+          "id": "total",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "binary",
+          "operator": "<=",
+          "left": {
+            "kind": "variable",
+            "name": "current",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 50,
+              "end": 57
+            }
+          },
+          "right": {
+            "kind": "int64",
+            "value": "0",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 61,
+              "end": 62
+            }
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 50,
+            "end": 62
+          }
+        },
+        "thenBranch": {
+          "kind": "variable",
+          "name": "total",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 72,
+            "end": 77
+          }
+        },
+        "elseBranch": {
+          "kind": "call",
+          "callee": "artifact/self-tail-loop::sumTo",
+          "arguments": [
+            {
+              "kind": "binary",
+              "operator": "-",
+              "left": {
+                "kind": "variable",
+                "name": "current",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 96,
+                  "end": 103
+                }
+              },
+              "right": {
+                "kind": "int64",
+                "value": "1",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 106,
+                  "end": 107
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Sub",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Sub"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 96,
+                "end": 107
+              }
+            },
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "variable",
+                "name": "total",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 110,
+                  "end": 115
+                }
+              },
+              "right": {
+                "kind": "variable",
+                "name": "current",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 118,
+                  "end": 125
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 110,
+                "end": 125
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 89,
+            "end": 126
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 47,
+          "end": 126
+        }
+      }
+    },
+    {
+      "symbol": "artifact/self-tail-loop::selfTailLoopWorks",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 128,
+        "end": 204
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "left": {
+          "kind": "call",
+          "callee": "artifact/self-tail-loop::sumTo",
+          "arguments": [
+            {
+              "kind": "int64",
+              "value": "100000",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 182,
+                "end": 188
+              }
+            },
+            {
+              "kind": "int64",
+              "value": "0",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 189,
+                "end": 190
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 176,
+            "end": 190
+          }
+        },
+        "right": {
+          "kind": "int64",
+          "value": "5000050000",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 194,
+            "end": 204
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Eq",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::Eq"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 176,
+          "end": 204
+        }
+      }
+    }
+  ]
+}

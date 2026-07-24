@@ -498,6 +498,63 @@ type Internal =
     }
 
     #[test]
+    fn lowers_direct_self_tail_calls_to_a_constant_stack_loop() {
+        let source = "\
+pub fn sum current: Int -> total: Int -> Int =
+  if current == 0 then total else sum (current - 1) (total + current)
+";
+        let typed = type_module("artifact/self-tail-loop/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert!(bundle.typescript.contains("const $ssrg$tail = Symbol();"));
+        assert!(bundle.typescript.contains("while (true)"));
+        assert!(bundle.typescript.contains(
+            "({ [$ssrg$tail]: [_ssrg_int64_subtract(current, 1n), _ssrg_int64_add(total, current)] } as never)"
+        ));
+        assert!(bundle
+            .typescript
+            .contains("current = $ssrg$arguments[0]; total = $ssrg$arguments[1]; continue;"));
+    }
+
+    #[test]
+    fn lowers_local_match_tail_calls_but_leaves_non_tail_calls_recursive() {
+        let source = "\
+fn fibonacci current: Int -> Int =
+  if current <= 1 then current else fibonacci (current - 1) + fibonacci (current - 2)
+
+pub fn listLength values: List<Int> -> Int = {
+  fn loop remaining: List<Int> -> total: Int -> Int =
+    match remaining {
+      `[] -> total
+      `[_, ...rest] -> loop rest (total + 1)
+    }
+
+  loop values 0
+}
+";
+        let typed = type_module("artifact/local-match-tail-loop/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert_eq!(
+            bundle
+                .typescript
+                .matches("const $ssrg$tail = Symbol();")
+                .count(),
+            1
+        );
+        assert!(bundle
+            .typescript
+            .contains("fibonacci(_ssrg_int64_subtract(current, 1n))"));
+        assert!(bundle
+            .typescript
+            .contains("({ [$ssrg$tail]: [rest, _ssrg_int64_add(total, 1n)] } as never)"));
+    }
+
+    #[test]
     fn lowers_integer_add_function_to_checked_runtime_call() {
         let source = "pub fn add x: Int -> y: Int -> Int = x + y\n";
         let typed = type_module("artifact/add-fn/main.ssrg", source);

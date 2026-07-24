@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "module": "artifact/self-tail-loop",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/self-tail-loop::selfTailLoopWorks",
+      "namespace": "value",
+      "name": "selfTailLoopWorks",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 128,
+        "end": 204
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

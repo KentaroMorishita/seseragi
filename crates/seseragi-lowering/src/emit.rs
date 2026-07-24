@@ -142,7 +142,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                 }
                 let parameters = evidence_parameters(parameters, 0, constraints.len());
                 let rendered_body =
-                    render_function_body(type_parameters, &parameters, body, *is_async);
+                    render_function_body(type_parameters, &parameters, body, *is_async, Some(name));
                 output.push_str(&format!("const {name} = {rendered_body}\n",));
             }
         }
@@ -268,8 +268,14 @@ fn render_function_body(
     parameters: &[crate::TypeScriptParameter],
     body: &TypeScriptExpr,
     is_async: bool,
+    self_name: Option<&str>,
 ) -> String {
-    let rendered_body = render_typescript_expr(body);
+    let rendered_body = self_name
+        .filter(|name| contains_direct_self_tail_call(body, name, parameters.len()))
+        .map_or_else(
+            || render_typescript_expr(body),
+            |name| render_tail_recursive_body(body, name, parameters),
+        );
     let Some((last, leading)) = parameters.split_last() else {
         return rendered_body;
     };
@@ -291,6 +297,96 @@ fn render_function_body(
         rendered
     } else {
         format!("{generic_prefix}{rendered}")
+    }
+}
+
+fn contains_direct_self_tail_call(expr: &TypeScriptExpr, self_name: &str, arity: usize) -> bool {
+    match expr {
+        TypeScriptExpr::Call { callee, arguments } => {
+            callee == self_name && arguments.len() == arity
+        }
+        TypeScriptExpr::Conditional {
+            then_branch,
+            else_branch,
+            ..
+        } => {
+            contains_direct_self_tail_call(then_branch, self_name, arity)
+                || contains_direct_self_tail_call(else_branch, self_name, arity)
+        }
+        TypeScriptExpr::Decision { branches, .. } => branches
+            .iter()
+            .any(|branch| contains_direct_self_tail_call(&branch.value, self_name, arity)),
+        TypeScriptExpr::Sequence { result, .. } => {
+            contains_direct_self_tail_call(result, self_name, arity)
+        }
+        _ => false,
+    }
+}
+
+fn render_tail_recursive_body(
+    body: &TypeScriptExpr,
+    self_name: &str,
+    parameters: &[crate::TypeScriptParameter],
+) -> String {
+    let rendered_body = render_tail_position_expr(body, self_name, parameters.len());
+    let argument_types = parameters
+        .iter()
+        .map(|parameter| parameter.type_name.as_str())
+        .collect::<Vec<_>>()
+        .join(", ");
+    let assignments = parameters
+        .iter()
+        .enumerate()
+        .map(|(index, parameter)| format!("{} = $ssrg$arguments[{index}];", parameter.name))
+        .collect::<Vec<_>>()
+        .join(" ");
+    format!(
+        "{{ const $ssrg$tail = Symbol(); while (true) {{ const $ssrg$result = {rendered_body}; const $ssrg$tailResult: unknown = $ssrg$result; if (typeof $ssrg$tailResult === \"object\" && $ssrg$tailResult !== null && $ssrg$tail in $ssrg$tailResult) {{ const $ssrg$arguments = ($ssrg$tailResult as {{ readonly [$ssrg$tail]: readonly [{argument_types}] }})[$ssrg$tail]; {assignments} continue; }} return $ssrg$result; }} }}"
+    )
+}
+
+fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usize) -> String {
+    match expr {
+        TypeScriptExpr::Call { callee, arguments }
+            if callee == self_name && arguments.len() == arity =>
+        {
+            format!(
+                "({{ [$ssrg$tail]: [{}] }} as never)",
+                arguments
+                    .iter()
+                    .map(render_typescript_expr)
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            )
+        }
+        TypeScriptExpr::Conditional {
+            condition,
+            then_branch,
+            else_branch,
+        } => format!(
+            "{} ? {} : {}",
+            render_typescript_expr(condition),
+            render_tail_position_expr(then_branch, self_name, arity),
+            render_tail_position_expr(else_branch, self_name, arity)
+        ),
+        TypeScriptExpr::Decision {
+            scrutinee,
+            scrutinee_type,
+            branches,
+            type_ref,
+        } => decision::render_decision_with_value_renderer(
+            scrutinee,
+            scrutinee_type,
+            branches,
+            type_ref,
+            &|value| render_tail_position_expr(value, self_name, arity),
+        ),
+        TypeScriptExpr::Sequence { statements, result } => {
+            render_effect_sequence_with_result_renderer(statements, result, &|value| {
+                render_tail_position_expr(value, self_name, arity)
+            })
+        }
+        _ => render_typescript_expr(expr),
     }
 }
 
@@ -523,17 +619,25 @@ fn render_monad_sequence(
             let parameters = evidence_parameters(parameters, 0, constraints.len());
             format!(
                 "(() => {{ const {name} = {}; return {continuation}; }})()",
-                render_function_body(type_parameters, &parameters, body, false)
+                render_function_body(type_parameters, &parameters, body, false, Some(name))
             )
         }
     }
 }
 
 fn render_effect_sequence(statements: &[TypeScriptStatement], result: &TypeScriptExpr) -> String {
+    render_effect_sequence_with_result_renderer(statements, result, &render_typescript_expr)
+}
+
+fn render_effect_sequence_with_result_renderer(
+    statements: &[TypeScriptStatement],
+    result: &TypeScriptExpr,
+    render_result: &dyn Fn(&TypeScriptExpr) -> String,
+) -> String {
     let Some((statement, rest)) = statements.split_first() else {
-        return render_typescript_expr(result);
+        return render_result(result);
     };
-    let continuation = render_effect_sequence(rest, result);
+    let continuation = render_effect_sequence_with_result_renderer(rest, result, render_result);
     match statement {
         TypeScriptStatement::Effect { value } => format!(
             "_ssrg_effect_flatMap({}, () => {continuation})",
@@ -570,7 +674,7 @@ fn render_effect_sequence(statements: &[TypeScriptStatement], result: &TypeScrip
             let parameters = evidence_parameters(parameters, 0, constraints.len());
             format!(
                 "(() => {{ const {name} = {}; return {continuation}; }})()",
-                render_function_body(type_parameters, &parameters, body, false)
+                render_function_body(type_parameters, &parameters, body, false, Some(name))
             )
         }
     }

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "case": "self-tail-loop",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/self-tail-loop",
+    "export": "selfTailLoopWorks",
+    "compiledModule": "../../schema-1/self-tail-loop/generated-module.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.int64",
+      "core.bool",
+      "core.int64.subtract",
+      "core.int64.add",
+      "core.unit"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

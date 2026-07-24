@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "kind": "closed-compile",
+  "expectedOrder": ["fixture/self-tail-loop::main"],
+  "modules": [
+    {
+      "id": "fixture/self-tail-loop::main",
+      "source": "src/main.ssrg",
+      "output": "dist/self-tail-loop/main.js",
+      "artifacts": "artifacts/main",
+      "imports": []
+    }
+  ]
+}

@@ -505,7 +505,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/local-functions/main.ssrg",
       "guidePath": "examples/samples/local-functions/guide.md",
       "expectedOutputPath": "examples/samples/local-functions/stdout.txt",
-      "sourceHash": "sha256:d418d557fca24bd3ba7bf7b89ad70e0c539219219ac4487ac6ff8ed0cafe7b47"
+      "sourceHash": "sha256:1374c5ee9b9f938735e0b3c0cb43f6958a8808e08fdf754f4d4a4f7cae117c2a"
     },
     source: sample12Source,
     guide: sample12Guide,

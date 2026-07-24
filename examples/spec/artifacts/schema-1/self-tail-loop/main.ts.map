@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/self-tail-loop"
+  ],
+  "sourcesContent": [
+    "fn sumTo current: Int -> total: Int -> Int =\n  if current <= 0 then\n    total\n  else\n    sumTo (current - 1) (total + current)\n\npub fn selfTailLoopWorks unit: Unit -> Bool =\n  sumTo 100000 0 == 5000050000\n"
+  ],
+  "names": [
+    "sumTo",
+    "sumTo",
+    "subtract",
+    "add",
+    "selfTailLoopWorks",
+    "sumTo"
+  ],
+  "mappings": ";;AAAAA;AAMAI"
+}

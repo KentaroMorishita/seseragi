@@ -1,0 +1,611 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/self-tail-loop",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "sumTo",
+      "nameSpan": {
+        "start": 3,
+        "end": 8
+      },
+      "parameters": [
+        {
+          "name": "current",
+          "nameSpan": {
+            "start": 9,
+            "end": 16
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 18,
+              "end": 21
+            }
+          }
+        },
+        {
+          "name": "total",
+          "nameSpan": {
+            "start": 25,
+            "end": 30
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 32,
+              "end": 35
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 39,
+          "end": 42
+        }
+      },
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "binary",
+          "operator": "<=",
+          "operatorSpan": {
+            "start": 58,
+            "end": 60
+          },
+          "left": {
+            "kind": "name",
+            "name": "current",
+            "span": {
+              "start": 50,
+              "end": 57
+            }
+          },
+          "right": {
+            "kind": "integer",
+            "raw": "0",
+            "span": {
+              "start": 61,
+              "end": 62
+            }
+          },
+          "span": {
+            "start": 50,
+            "end": 62
+          }
+        },
+        "thenBranch": {
+          "kind": "name",
+          "name": "total",
+          "span": {
+            "start": 72,
+            "end": 77
+          }
+        },
+        "elseBranch": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "sumTo",
+              "span": {
+                "start": 89,
+                "end": 94
+              }
+            },
+            "argument": {
+              "kind": "grouped",
+              "value": {
+                "kind": "binary",
+                "operator": "-",
+                "operatorSpan": {
+                  "start": 104,
+                  "end": 105
+                },
+                "left": {
+                  "kind": "name",
+                  "name": "current",
+                  "span": {
+                    "start": 96,
+                    "end": 103
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "raw": "1",
+                  "span": {
+                    "start": 106,
+                    "end": 107
+                  }
+                },
+                "span": {
+                  "start": 96,
+                  "end": 107
+                }
+              },
+              "span": {
+                "start": 95,
+                "end": 108
+              }
+            },
+            "span": {
+              "start": 89,
+              "end": 108
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "operatorSpan": {
+                "start": 116,
+                "end": 117
+              },
+              "left": {
+                "kind": "name",
+                "name": "total",
+                "span": {
+                  "start": 110,
+                  "end": 115
+                }
+              },
+              "right": {
+                "kind": "name",
+                "name": "current",
+                "span": {
+                  "start": 118,
+                  "end": 125
+                }
+              },
+              "span": {
+                "start": 110,
+                "end": 125
+              }
+            },
+            "span": {
+              "start": 109,
+              "end": 126
+            }
+          },
+          "span": {
+            "start": 89,
+            "end": 126
+          }
+        },
+        "span": {
+          "start": 47,
+          "end": 126
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 126
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "selfTailLoopWorks",
+      "nameSpan": {
+        "start": 135,
+        "end": 152
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 153,
+            "end": 157
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 159,
+              "end": 163
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 167,
+          "end": 171
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "==",
+        "operatorSpan": {
+          "start": 191,
+          "end": 193
+        },
+        "left": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "sumTo",
+              "span": {
+                "start": 176,
+                "end": 181
+              }
+            },
+            "argument": {
+              "kind": "integer",
+              "raw": "100000",
+              "span": {
+                "start": 182,
+                "end": 188
+              }
+            },
+            "span": {
+              "start": 176,
+              "end": 188
+            }
+          },
+          "argument": {
+            "kind": "integer",
+            "raw": "0",
+            "span": {
+              "start": 189,
+              "end": 190
+            }
+          },
+          "span": {
+            "start": 176,
+            "end": 190
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "raw": "5000050000",
+          "span": {
+            "start": 194,
+            "end": 204
+          }
+        },
+        "span": {
+          "start": 176,
+          "end": 204
+        }
+      },
+      "span": {
+        "start": 128,
+        "end": 204
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 204
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 126
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 128,
+        "end": 204
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "sumTo",
+      "canonical": "artifact/self-tail-loop::sumTo",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 3,
+        "end": 8
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "selfTailLoopWorks",
+      "canonical": "artifact/self-tail-loop::selfTailLoopWorks",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 135,
+        "end": 152
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "current",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 9,
+        "end": 16
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "total",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 25,
+        "end": 30
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "<=",
+      "canonical": "std/prelude::<=",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "-",
+      "canonical": "std/prelude::-",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "+",
+      "canonical": "std/prelude::+",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 153,
+        "end": 157
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "Bool",
+      "canonical": "std/prelude::Bool",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "==",
+      "canonical": "std/prelude::==",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 18,
+        "end": 21
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 32,
+        "end": 35
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 39,
+        "end": 42
+      }
+    },
+    {
+      "spelling": "current",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 50,
+        "end": 57
+      }
+    },
+    {
+      "spelling": "<=",
+      "namespace": "operator",
+      "target": 5,
+      "origin": {
+        "start": 58,
+        "end": 60
+      }
+    },
+    {
+      "spelling": "total",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 72,
+        "end": 77
+      }
+    },
+    {
+      "spelling": "sumTo",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 89,
+        "end": 94
+      }
+    },
+    {
+      "spelling": "current",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 96,
+        "end": 103
+      }
+    },
+    {
+      "spelling": "-",
+      "namespace": "operator",
+      "target": 6,
+      "origin": {
+        "start": 104,
+        "end": 105
+      }
+    },
+    {
+      "spelling": "total",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 110,
+        "end": 115
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 7,
+      "origin": {
+        "start": 116,
+        "end": 117
+      }
+    },
+    {
+      "spelling": "current",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 118,
+        "end": 125
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 159,
+        "end": 163
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 167,
+        "end": 171
+      }
+    },
+    {
+      "spelling": "sumTo",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 176,
+        "end": 181
+      }
+    },
+    {
+      "spelling": "==",
+      "namespace": "operator",
+      "target": 11,
+      "origin": {
+        "start": 191,
+        "end": 193
+      }
+    }
+  ],
+  "issues": []
+}

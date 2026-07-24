@@ -1,0 +1,138 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/self-tail-loop::main",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.bool",
+    "core.int64.subtract",
+    "core.int64.add",
+    "core.unit"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.subtract",
+      "local": "_ssrg_int64_subtract"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "sumTo",
+      "parameters": [
+        {
+          "name": "current",
+          "type": "bigint",
+          "implicit": false
+        },
+        {
+          "name": "total",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "conditional",
+        "condition": {
+          "kind": "binary",
+          "operator": "<=",
+          "left": {
+            "kind": "identifier",
+            "name": "current"
+          },
+          "right": {
+            "kind": "bigint",
+            "value": "0"
+          }
+        },
+        "thenBranch": {
+          "kind": "identifier",
+          "name": "total"
+        },
+        "elseBranch": {
+          "kind": "call",
+          "callee": "sumTo",
+          "arguments": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_subtract",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "current"
+                },
+                {
+                  "kind": "bigint",
+                  "value": "1"
+                }
+              ]
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_add",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "total"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "current"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 126
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "selfTailLoopWorks",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "===",
+        "left": {
+          "kind": "call",
+          "callee": "sumTo",
+          "arguments": [
+            {
+              "kind": "bigint",
+              "value": "100000"
+            },
+            {
+              "kind": "bigint",
+              "value": "0"
+            }
+          ]
+        },
+        "right": {
+          "kind": "bigint",
+          "value": "5000050000"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 128,
+        "end": 204
+      }
+    }
+  ]
+}

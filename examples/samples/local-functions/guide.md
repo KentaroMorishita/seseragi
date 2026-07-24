@@ -1,1 +1,3 @@
 Pure blockの中では、先に置いた`let`を後続のlocal functionから参照できます。local functionは自身のbodyから再帰呼び出しでき、generic parameterもtop-level関数と同じように型付けされます。後に宣言する関数は前の関数からは見えません。
+
+同じ関数を最終式から直接呼ぶtail recursionはloopへlowerされるため、入力件数に比例してhost call stackを増やしません。相互再帰や、再帰結果へ演算を加えるnon-tail recursionはこの保証の対象外です。

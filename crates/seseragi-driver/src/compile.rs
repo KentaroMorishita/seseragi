@@ -198,10 +198,11 @@ mod tests {
             compiled
                 .generated
                 .typescript
-                .contains("loop(_ssrg_int64_subtract(current, 1n))"),
+                .contains("({ [$ssrg$tail]: [_ssrg_int64_subtract(current, 1n)] } as never)"),
             "{}",
             compiled.generated.typescript
         );
+        assert!(compiled.generated.typescript.contains("while (true)"));
     }
 
     #[test]

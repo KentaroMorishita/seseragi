@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "kind": "pure-project-execution",
+  "target": "node-process",
+  "entry": {
+    "module": "fixture/self-tail-loop::main",
+    "export": "selfTailLoopWorks"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.int64",
+      "core.bool",
+      "core.int64.subtract",
+      "core.int64.add",
+      "core.unit"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "execution.stdout.txt",
+    "stderr": "execution.stderr.txt"
+  }
+}

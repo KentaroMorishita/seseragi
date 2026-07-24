@@ -1,0 +1,8 @@
+fn sumTo current: Int -> total: Int -> Int =
+  if current <= 0 then
+    total
+  else
+    sumTo (current - 1) (total + current)
+
+pub fn selfTailLoopWorks unit: Unit -> Bool =
+  sumTo 100000 0 == 5000050000

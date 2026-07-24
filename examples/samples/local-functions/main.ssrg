@@ -4,13 +4,14 @@ fn finalScore base: Int -> Int = {
   // Local functions can capture earlier values and call themselves.
   fn identity<A> value: A -> A = value
 
+  // A direct self call in tail position runs with constant host stack.
   fn countdown current: Int -> Int =
     if current == 0 then
       identity (base + bonus)
     else
       countdown (current - 1)
 
-  countdown 3
+  countdown 100000
 }
 
 pub effect fn main =
