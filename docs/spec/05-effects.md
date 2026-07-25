@@ -175,7 +175,7 @@ parameterを書かない宣言にも1.4の匿名Unit parameter規則を適用し
 effect fn initialize -> Unit = succeed ()
 ```
 
-この型は `Unit -> Task<Never, Unit>` であり、呼び出しは `initialize ()` です。
+この型は `Unit -> Task<Unit>` であり、呼び出しは `initialize ()` です。
 
 `with Console` は標準serviceが宣言するcanonical requirement名を使う糖衣で、ここでは
 `{ console: Console }` へ展開します。標準serviceにcanonical名がない場合や、同じservice型を
@@ -240,7 +240,7 @@ compilerが自動生成することはありません。
 
 唯一、`Effect<R, Never, A>` は回復可能なfailureを生成できないため、必要な位置で
 `Effect<R, E, A>` へ暗黙にfailure wideningできます。これによりRefやSignalなどの
-`Task<Never, _>` をfallibleなEffectと同じdo blockで合成できます。`Never` 以外のerror型同士には
+`Task<_>` をfallibleなEffectと同じdo blockで合成できます。`Never` 以外のerror型同士には
 このcoercionを適用せず、common unionも推論しません。
 
 `recover` はfailure channelだけを扱います。defectとcancellationは捕捉しません。
@@ -250,14 +250,15 @@ compilerが自動生成することはありません。
 環境serviceを要求しないEffectをTaskと呼びます。
 
 ```seseragi
-alias Task<E, A> = Effect<{}, E, A>
+alias Task<A> = Effect<{}, Never, A>
 ```
 
-Taskは独立した実行意味論を持たず、Effectの特殊化です。`Task<E, _>` に対する
-Functor、Applicative、Monad操作は `Effect<{}, E, _>` のinstanceです。
+Taskは独立した実行意味論、型identity、runtime ABIを持たない透明aliasです。`Task<_>` に対する
+Functor、Applicative、Monad操作は `Effect<{}, Never, _>` のinstanceです。environmentは不要でも
+回復可能なfailureを持つ計算は `Effect<{}, E, A>` と書きます。
 
 ```seseragi
-fn loadProfile id: UserId -> Task<HttpError, Profile> =
+fn loadProfile id: UserId -> Effect<{}, HttpError, Profile> =
   do {
     user <- fetchUser id
     fetchProfile user
@@ -367,14 +368,14 @@ MutableSignal<A>  setできるsource signal。Signal<A>としても使える
 持つことはできますが、現在値を暗黙に読むことはできません。
 
 ```seseragi
-fn make<A> initial: A -> Task<Never, MutableSignal<A>>
-fn read<A> signal: Signal<A> -> Task<Never, A>
-fn set<A> value: A -> signal: MutableSignal<A> -> Task<Never, Unit>
-fn update<A> f: (A -> A) -> signal: MutableSignal<A> -> Task<Never, Unit>
+fn make<A> initial: A -> Task<MutableSignal<A>>
+fn read<A> signal: Signal<A> -> Task<A>
+fn set<A> value: A -> signal: MutableSignal<A> -> Task<Unit>
+fn update<A> f: (A -> A) -> signal: MutableSignal<A> -> Task<Unit>
 
 fn planSet<A> value: A -> signal: MutableSignal<A> -> SignalChange
 fn planUpdate<A> f: (A -> A) -> signal: MutableSignal<A> -> SignalChange
-fn transaction changes: Array<SignalChange> -> Task<Never, Unit>
+fn transaction changes: Array<SignalChange> -> Task<Unit>
 ```
 
 `SignalChange` は `std/signal` が公開するstandard opaque typeです。異なるvalue型のchangeを同じArrayへ
@@ -434,7 +435,7 @@ do {
 ```
 
 `*source` は `Signal.read source` へdesugarし、`source: Signal<A>`または
-`MutableSignal<A>`に対して型 `Task<Never, A>` を持ちます。`A`を直接返すpureなdereferenceでは
+`MutableSignal<A>`に対して型 `Task<A>` を持ちます。`A`を直接返すpureなdereferenceでは
 ありません。したがって、通常のpure式でSignalの現在値が暗黙に変化することはありません。
 二項の`*`は乗算のままで、prefix位置の`*`だけがSignal readです。
 
@@ -447,7 +448,7 @@ do {
 }
 ```
 
-`target := value` は `Signal.set value target` へdesugarし、型は `Task<Never, Unit>` です。
+`target := value` は `Signal.set value target` へdesugarし、型は `Task<Unit>` です。
 通常変数やstruct fieldへの代入には使えません。Signalの現在値を暗黙に読み込まないため、
 現在値に基づく更新はatomicな `update` を使います。
 
@@ -458,7 +459,7 @@ fn subscribe<R, A>
   observer: (A -> Effect<R, Never, Unit>)
   -> signal: Signal<A>
   -> Effect<R, Never, Subscription>
-fn unsubscribe subscription: Subscription -> Task<Never, Unit>
+fn unsubscribe subscription: Subscription -> Task<Unit>
 ```
 
 subscribe成功時、observerを現在値で一度呼び、その後の更新を順番に通知します。同じSignalの

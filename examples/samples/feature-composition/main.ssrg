@@ -15,7 +15,7 @@ fn increment state: CounterState -> CounterState =
 
 fn counterAction state: MutableSignal<CounterState>
   -> action: CounterAction
-  -> Effect<{}, Never, Unit> =
+  -> Task<Unit> =
   match action {
     Increment -> signals.update increment state
   }
@@ -23,7 +23,7 @@ fn counterAction state: MutableSignal<CounterState>
 fn counterView label: String
   -> state: MutableSignal<CounterState>
   -> current: CounterState
-  -> html.Html<Effect<{}, Never, Unit>> =
+  -> html.Html<Task<Unit>> =
   html.section {
     key: label,
     className: "rounded-2xl border border-slate-200 bg-white p-6 shadow-sm",
@@ -43,7 +43,7 @@ fn counterView label: String
 
 // constructorを呼んだ時点で、各Counter専用のlocal stateが一度だけ作られます。
 effect fn createCounter label: String
-  -> Signal<html.Html<Effect<{}, Never, Unit>>>
+  -> Signal<html.Html<Task<Unit>>>
 fails Never =
   do {
     state <- signals.make $ CounterState { count: 0 }
@@ -73,12 +73,12 @@ fn updateLayout action: LayoutAction -> state: LayoutState -> LayoutState =
 
 fn layoutAction state: MutableSignal<LayoutState>
   -> action: LayoutAction
-  -> Effect<{}, Never, Unit> =
+  -> Task<Unit> =
   signals.update (updateLayout action) state
 
 fn control label: String
-  -> action: Effect<{}, Never, Unit>
-  -> html.Html<Effect<{}, Never, Unit>> =
+  -> action: Task<Unit>
+  -> html.Html<Task<Unit>> =
   html.button {
     onClick: action,
     className: "rounded-xl border border-emerald-200 bg-white px-4 py-3 font-semibold text-emerald-800",
@@ -87,7 +87,7 @@ fn control label: String
 
 fn controls state: MutableSignal<LayoutState>
   -> current: LayoutState
-  -> html.Html<Effect<{}, Never, Unit>> =
+  -> html.Html<Task<Unit>> =
   html.section {
     className: "rounded-2xl bg-emerald-50 p-6",
     children: [
@@ -104,36 +104,36 @@ fn controls state: MutableSignal<LayoutState>
     ]
   }
 
-fn hidden -> html.Html<Effect<{}, Never, Unit>> =
+fn hidden -> html.Html<Task<Unit>> =
   html.section {
     className: "rounded-2xl border border-slate-200 bg-slate-50 p-6",
     children: "First feature is outside the HTML tree."
   }
 
-fn selectFirst first: Signal<html.Html<Effect<{}, Never, Unit>>>
-  -> replacement: Signal<html.Html<Effect<{}, Never, Unit>>>
+fn selectFirst first: Signal<html.Html<Task<Unit>>>
+  -> replacement: Signal<html.Html<Task<Unit>>>
   -> layout: LayoutState
-  -> Signal<html.Html<Effect<{}, Never, Unit>>> =
+  -> Signal<html.Html<Task<Unit>>> =
   if layout.showFirst
   then if layout.replacement then replacement else first
   else signals.constant $ hidden ()
 
-fn heading -> html.Html<Effect<{}, Never, Unit>> =
+fn heading -> html.Html<Task<Unit>> =
   html.h1 {
     className: "mb-2 text-3xl font-bold text-slate-900 sm:text-4xl",
     children: "Feature composition"
   }
 
-fn summary -> html.Html<Effect<{}, Never, Unit>> =
+fn summary -> html.Html<Task<Unit>> =
   html.p {
     className: "mb-6 text-lg text-slate-700",
     children: "Private state stays with each constructed feature."
   }
 
 fn featureGrid layout: LayoutState
-  -> first: html.Html<Effect<{}, Never, Unit>>
-  -> second: html.Html<Effect<{}, Never, Unit>>
-  -> html.Html<Effect<{}, Never, Unit>> =
+  -> first: html.Html<Task<Unit>>
+  -> second: html.Html<Task<Unit>>
+  -> html.Html<Task<Unit>> =
   html.section {
     className: "mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2",
     children:
@@ -141,10 +141,10 @@ fn featureGrid layout: LayoutState
   }
 
 fn body layout: LayoutState
-  -> panel: html.Html<Effect<{}, Never, Unit>>
-  -> first: html.Html<Effect<{}, Never, Unit>>
-  -> second: html.Html<Effect<{}, Never, Unit>>
-  -> html.Html<Effect<{}, Never, Unit>> =
+  -> panel: html.Html<Task<Unit>>
+  -> first: html.Html<Task<Unit>>
+  -> second: html.Html<Task<Unit>>
+  -> html.Html<Task<Unit>> =
   html.section {
     className: "mx-auto max-w-2xl",
     children: [
@@ -156,18 +156,18 @@ fn body layout: LayoutState
   }
 
 fn page layout: LayoutState
-  -> panel: html.Html<Effect<{}, Never, Unit>>
-  -> first: html.Html<Effect<{}, Never, Unit>>
-  -> second: html.Html<Effect<{}, Never, Unit>>
-  -> html.Html<Effect<{}, Never, Unit>> =
+  -> panel: html.Html<Task<Unit>>
+  -> first: html.Html<Task<Unit>>
+  -> second: html.Html<Task<Unit>>
+  -> html.Html<Task<Unit>> =
   html.main {
     className: "min-h-screen bg-slate-50 p-8 sm:p-12",
     children: body layout panel first second
   }
 
-fn perform action: Effect<{}, Never, Unit> -> Effect<{}, Never, Unit> = action
+fn perform action: Task<Unit> -> Task<Unit> = action
 
-effect fn mount content: Signal<html.Html<Effect<{}, Never, Unit>>> -> Unit
+effect fn mount content: Signal<html.Html<Task<Unit>>> -> Unit
 with dom: dom.Dom
 fails String =
   do {

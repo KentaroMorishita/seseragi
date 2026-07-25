@@ -1,0 +1,2278 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/type-aliases",
+  "externalTypeBindings": [
+    {
+      "spelling": "Console",
+      "canonical": "std/prelude::Console"
+    },
+    {
+      "spelling": "Effect",
+      "canonical": "std/prelude::Effect"
+    },
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    },
+    {
+      "spelling": "MutableSignal",
+      "canonical": "std/signal::MutableSignal",
+      "provider": {
+        "module": "std/signal",
+        "export": "MutableSignal"
+      }
+    },
+    {
+      "spelling": "Style",
+      "canonical": "std/web/html::Style",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Style"
+      }
+    },
+    {
+      "spelling": "html.Html",
+      "canonical": "std/web/html::Html",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Html"
+      }
+    },
+    {
+      "spelling": "Signal",
+      "canonical": "std/signal::Signal",
+      "provider": {
+        "module": "std/signal",
+        "export": "Signal"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Html",
+          "local": "html.Html",
+          "canonical": "std/web/html::Html",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "button",
+          "local": "html.button",
+          "canonical": "std/web/html::button",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 37,
+        "end": 74
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "MutableSignal",
+          "local": "MutableSignal",
+          "canonical": "std/signal::MutableSignal",
+          "origin": {
+            "start": 84,
+            "end": 97
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "Signal",
+          "local": "Signal",
+          "canonical": "std/signal::Signal",
+          "origin": {
+            "start": 99,
+            "end": 105
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "update",
+          "local": "signals.update",
+          "canonical": "std/signal::update",
+          "origin": {
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "map",
+          "local": "signals.map",
+          "canonical": "std/signal::map",
+          "origin": {
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "make",
+          "local": "signals.make",
+          "canonical": "std/signal::make",
+          "origin": {
+            "start": 49,
+            "end": 56
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 75,
+        "end": 125
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "MutableSignal",
+          "local": "MutableSignal",
+          "canonical": "std/signal::MutableSignal",
+          "origin": {
+            "start": 84,
+            "end": 97
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "Signal",
+          "local": "Signal",
+          "canonical": "std/signal::Signal",
+          "origin": {
+            "start": 99,
+            "end": 105
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "update",
+          "local": "signals.update",
+          "canonical": "std/signal::update",
+          "origin": {
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "map",
+          "local": "signals.map",
+          "canonical": "std/signal::map",
+          "origin": {
+            "start": 49,
+            "end": 56
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "make",
+          "local": "signals.make",
+          "canonical": "std/signal::make",
+          "origin": {
+            "start": 49,
+            "end": 56
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "alias",
+      "symbol": "artifact/type-aliases::UserId",
+      "name": "UserId",
+      "visibility": "private",
+      "typeParameters": [],
+      "target": {
+        "kind": "named",
+        "name": "Int",
+        "arguments": []
+      },
+      "origin": {
+        "start": 127,
+        "end": 145
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "artifact/type-aliases::Pair",
+      "name": "Pair",
+      "visibility": "private",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          },
+          {
+            "name": "right",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        ]
+      },
+      "origin": {
+        "start": 146,
+        "end": 183
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "artifact/type-aliases::AppEnv",
+      "name": "AppEnv",
+      "visibility": "private",
+      "typeParameters": [],
+      "target": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "console",
+            "type": {
+              "kind": "named",
+              "name": "Console",
+              "arguments": []
+            }
+          }
+        ]
+      },
+      "origin": {
+        "start": 184,
+        "end": 219
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "artifact/type-aliases::Mapper",
+      "name": "Mapper",
+      "visibility": "private",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "B",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "start": 220,
+        "end": 247
+      }
+    },
+    {
+      "kind": "adt",
+      "symbol": "artifact/type-aliases::AppError",
+      "name": "AppError",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/type-aliases::AppFailed",
+          "name": "AppFailed",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "AppError",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 269,
+            "end": 278
+          }
+        }
+      ],
+      "origin": {
+        "start": 249,
+        "end": 278
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "artifact/type-aliases::App",
+      "name": "App",
+      "visibility": "private",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "start": 280,
+        "end": 322
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "artifact/type-aliases::Failure",
+      "name": "Failure",
+      "visibility": "private",
+      "typeParameters": [],
+      "target": {
+        "kind": "named",
+        "name": "AppError",
+        "arguments": []
+      },
+      "origin": {
+        "start": 323,
+        "end": 347
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "artifact/type-aliases::AppResult",
+      "name": "AppResult",
+      "visibility": "private",
+      "typeParameters": [],
+      "target": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "start": 348,
+        "end": 387
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "artifact/type-aliases::Cell",
+      "name": "Cell",
+      "visibility": "private",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "external-named",
+        "name": "MutableSignal",
+        "canonical": "std/signal::MutableSignal",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "start": 388,
+        "end": 420
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "artifact/type-aliases::View",
+      "name": "View",
+      "visibility": "private",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "external-named",
+        "name": "Signal",
+        "canonical": "std/signal::Signal",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "start": 421,
+        "end": 446
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/type-aliases::userId",
+      "visibility": "private",
+      "origin": {
+        "start": 448,
+        "end": 486
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 458,
+            "end": 463
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "value",
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 481,
+          "end": 486
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/type-aliases::pair",
+      "visibility": "private",
+      "origin": {
+        "start": 488,
+        "end": 552
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "left",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            },
+            {
+              "name": "right",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 499,
+            "end": 504
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "left",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "start": 531,
+                "end": 536
+              }
+            },
+            "origin": {
+              "start": 525,
+              "end": 536
+            }
+          },
+          {
+            "kind": "field",
+            "name": "right",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "start": 545,
+                "end": 550
+              }
+            },
+            "origin": {
+              "start": 538,
+              "end": 550
+            }
+          }
+        ],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "left",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            },
+            {
+              "name": "right",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 523,
+          "end": 552
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/type-aliases::apply",
+      "visibility": "private",
+      "origin": {
+        "start": 554,
+        "end": 629
+      },
+      "scheme": {
+        "typeParameters": [
+          "A",
+          "B"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "B",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "transform",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "B",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 569,
+            "end": 578
+          }
+        },
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 596,
+            "end": 601
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "transform",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            },
+            "origin": {
+              "start": 624,
+              "end": 629
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "B",
+          "arguments": []
+        },
+        "origin": {
+          "start": 614,
+          "end": 629
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/type-aliases::failure",
+      "visibility": "private",
+      "origin": {
+        "start": 711,
+        "end": 756
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          },
+          "origin": {
+            "start": 722,
+            "end": 727
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "value",
+        "type": {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        },
+        "origin": {
+          "start": 751,
+          "end": 756
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/type-aliases::result",
+      "visibility": "private",
+      "origin": {
+        "start": 758,
+        "end": 817
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "AppError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 768,
+            "end": 773
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "value",
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "AppError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 812,
+          "end": 817
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/type-aliases::increment",
+      "visibility": "private",
+      "origin": {
+        "start": 819,
+        "end": 914
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "state",
+          "type": {
+            "kind": "external-named",
+            "name": "MutableSignal",
+            "canonical": "std/signal::MutableSignal",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 832,
+            "end": 837
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/signal::update",
+        "arguments": [
+          {
+            "kind": "lambda",
+            "parameter": {
+              "kind": "named",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 884,
+                "end": 889
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 898,
+                  "end": 903
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "value": "1",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 906,
+                  "end": 907
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 898,
+                "end": 907
+              }
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 883,
+              "end": 907
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "state",
+            "type": {
+              "kind": "external-named",
+              "name": "MutableSignal",
+              "canonical": "std/signal::MutableSignal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 909,
+              "end": 914
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 867,
+          "end": 914
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/type-aliases::view",
+      "visibility": "private",
+      "origin": {
+        "start": 916,
+        "end": 1064
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "state",
+          "type": {
+            "kind": "external-named",
+            "name": "MutableSignal",
+            "canonical": "std/signal::MutableSignal",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 924,
+            "end": 929
+          }
+        },
+        {
+          "kind": "named",
+          "name": "current",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 946,
+            "end": 953
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::button",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "onClick",
+                "value": {
+                  "kind": "call",
+                  "callee": "artifact/type-aliases::increment",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "state",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "MutableSignal",
+                        "canonical": "std/signal::MutableSignal",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1027,
+                        "end": 1032
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1017,
+                    "end": 1032
+                  }
+                },
+                "origin": {
+                  "start": 1008,
+                  "end": 1032
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "template",
+                  "parts": [
+                    {
+                      "kind": "interpolation",
+                      "value": {
+                        "kind": "variable",
+                        "name": "current",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1051,
+                          "end": 1058
+                        }
+                      },
+                      "evidence": {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Int>"
+                        }
+                      },
+                      "traitIdentity": "std/prelude::Show",
+                      "origin": {
+                        "start": 1049,
+                        "end": 1059
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1048,
+                    "end": 1060
+                  }
+                },
+                "origin": {
+                  "start": 1038,
+                  "end": 1060
+                }
+              }
+            ],
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onClick",
+                  "type": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "start": 1002,
+              "end": 1064
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "IntoChildren",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/web/html::IntoChildren<String>"
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 990,
+          "end": 1064
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/type-aliases::content",
+      "visibility": "private",
+      "origin": {
+        "start": 1066,
+        "end": 1159
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "external-named",
+          "name": "Signal",
+          "canonical": "std/signal::Signal",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "html.Html",
+              "canonical": "std/web/html::Html",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "state",
+          "type": {
+            "kind": "external-named",
+            "name": "MutableSignal",
+            "canonical": "std/signal::MutableSignal",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 1077,
+            "end": 1082
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/signal::map",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/type-aliases::view",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "state",
+                "type": {
+                  "kind": "external-named",
+                  "name": "MutableSignal",
+                  "canonical": "std/signal::MutableSignal",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1147,
+                  "end": 1152
+                }
+              }
+            ],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "external-named",
+                "name": "html.Html",
+                "canonical": "std/web/html::Html",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "start": 1142,
+              "end": 1152
+            }
+          },
+          {
+            "kind": "variable",
+            "name": "state",
+            "type": {
+              "kind": "external-named",
+              "name": "MutableSignal",
+              "canonical": "std/signal::MutableSignal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 1154,
+              "end": 1159
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "Signal",
+          "canonical": "std/signal::Signal",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "html.Html",
+              "canonical": "std/web/html::Html",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 1129,
+          "end": 1159
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/type-aliases::compact",
+      "visibility": "private",
+      "origin": {
+        "start": 1161,
+        "end": 1191
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "named",
+          "name": "Never",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/effect::succeed",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": []
+          },
+          "failure": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [],
+        "origin": {
+          "start": 1181,
+          "end": 1191
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/type-aliases::main",
+      "visibility": "public",
+      "origin": {
+        "start": 1193,
+        "end": 1473
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "state",
+            "type": {
+              "kind": "external-named",
+              "name": "MutableSignal",
+              "canonical": "std/signal::MutableSignal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::make",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "41",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1287,
+                    "end": 1289
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1274,
+                "end": 1289
+              }
+            },
+            "origin": {
+              "start": 1265,
+              "end": 1289
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "artifact/type-aliases::increment",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "state",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1304,
+                    "end": 1309
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1294,
+                "end": 1309
+              }
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "rendered",
+            "type": {
+              "kind": "external-named",
+              "name": "Signal",
+              "canonical": "std/signal::Signal",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.Html",
+                  "canonical": "std/web/html::Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/type-aliases::content",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "state",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1337,
+                    "end": 1342
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1329,
+                "end": 1342
+              }
+            },
+            "origin": {
+              "start": 1314,
+              "end": 1342
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "current",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::read",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "state",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1359,
+                    "end": 1364
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1358,
+                "end": 1364
+              }
+            },
+            "origin": {
+              "start": 1347,
+              "end": 1364
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "values",
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "left",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "right",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/type-aliases::pair",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/type-aliases::apply",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "artifact/type-aliases::userId",
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      },
+                      "origin": {
+                        "start": 1395,
+                        "end": 1401
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "current",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1402,
+                        "end": 1409
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1389,
+                    "end": 1409
+                  }
+                }
+              ],
+              "type": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "left",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "name": "right",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1382,
+                "end": 1409
+              }
+            },
+            "origin": {
+              "start": 1369,
+              "end": 1409
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "aliases: ",
+                  "origin": {
+                    "start": 1425,
+                    "end": 1434
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "variable",
+                      "name": "values",
+                      "type": {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "left",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          },
+                          {
+                            "name": "right",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1436,
+                        "end": 1442
+                      }
+                    },
+                    "field": "left",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1436,
+                      "end": 1447
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "start": 1434,
+                    "end": 1448
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": ", signal: ",
+                  "origin": {
+                    "start": 1448,
+                    "end": 1458
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "current",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1460,
+                      "end": 1467
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "start": 1458,
+                    "end": 1468
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1424,
+                "end": 1469
+              }
+            }
+          ],
+          "origin": {
+            "start": 1414,
+            "end": 1469
+          }
+        },
+        "origin": {
+          "start": 1256,
+          "end": 1473
+        }
+      }
+    }
+  ]
+}

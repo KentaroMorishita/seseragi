@@ -354,6 +354,11 @@ fn collect_symbol_metadata(
     let mut callables = BTreeMap::new();
     for declaration in &typed.declarations {
         match declaration {
+            TypedDecl::Alias { symbol, target, .. } => {
+                if let Some(id) = symbol_by_canonical(resolved, symbol) {
+                    types.insert(id, target.clone());
+                }
+            }
             TypedDecl::Adt {
                 symbol,
                 name,
@@ -816,6 +821,20 @@ fn local_symbol_in_range(
 pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
     let mut items = Vec::new();
 
+    items.push(AnalysisReferenceItem {
+        identity: "std/prelude::Task".to_owned(),
+        name: "Task".to_owned(),
+        module: "std/prelude".to_owned(),
+        category: "Effect".to_owned(),
+        kind: "alias".to_owned(),
+        signature: Some("alias Task<A> = Effect<{}, Never, A>".to_owned()),
+        description: standard_description("std/prelude::Task")
+            .expect("Task has standard Reference documentation")
+            .to_owned(),
+        type_parameters: vec!["A".to_owned()],
+        constraints: Vec::new(),
+    });
+
     for (name, callable) in standard_reference_callables() {
         let callable = finish_callable(
             callable.symbol.clone(),
@@ -1230,6 +1249,9 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/prelude::Monoid::empty" => "Returns the identity value for a Monoid.",
         "std/prelude::Maybe" => "Represents an optional value as Nothing or Just.",
         "std/prelude::Either" => "Represents either a typed failure or a success value.",
+        "std/prelude::Task" => {
+            "Transparent alias for an Effect with no environment and no recoverable failure."
+        }
         "std/prelude::Nothing" => "Constructs an empty Maybe value.",
         "std/prelude::Just" => "Constructs a present Maybe value.",
         "std/prelude::Left" => "Constructs the failure side of Either.",
@@ -1332,7 +1354,7 @@ fn collect_typed_occurrences(
             TypedDecl::Fn { body, .. } | TypedDecl::EffectFn { body, .. } => {
                 walk_expression(body, &mut collect)
             }
-            TypedDecl::Adt { .. } | TypedDecl::Struct { .. } => {}
+            TypedDecl::Alias { .. } | TypedDecl::Adt { .. } | TypedDecl::Struct { .. } => {}
         }
     }
     for instance in &typed.instances {
@@ -1348,7 +1370,7 @@ fn collect_typed_occurrences(
         let expression = match declaration {
             TypedDecl::Let { value, .. } => Some(value),
             TypedDecl::Fn { body, .. } | TypedDecl::EffectFn { body, .. } => Some(body),
-            TypedDecl::Adt { .. } | TypedDecl::Struct { .. } => None,
+            TypedDecl::Alias { .. } | TypedDecl::Adt { .. } | TypedDecl::Struct { .. } => None,
         };
         if let Some(expression) = expression {
             walk_patterns(expression, &mut |pattern| {

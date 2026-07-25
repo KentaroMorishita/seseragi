@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0601",
+      "severity": "Error",
+      "messageKey": "alias.arity-mismatch",
+      "message": "Type alias was used with the wrong number of arguments",
+      "primary": {
+        "start": 60,
+        "end": 77
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Add or remove type arguments so the alias application matches its declaration."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

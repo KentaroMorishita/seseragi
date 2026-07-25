@@ -100,12 +100,22 @@ mod tests {
         assert!(visible.contains(&"add"));
         assert!(visible.contains(&"addOne"));
 
-        for expected in ["join", "sum", "forEach", "map"] {
+        for expected in ["join", "sum", "forEach", "map", "Task"] {
             assert!(analysis
                 .standard_library_catalog()
                 .iter()
                 .any(|item| item.name == expected));
         }
+        let task = analysis
+            .standard_library_catalog()
+            .iter()
+            .find(|item| item.name == "Task")
+            .expect("Task is available from the Prelude Reference catalog");
+        assert_eq!(
+            task.signature.as_deref(),
+            Some("alias Task<A> = Effect<{}, Never, A>")
+        );
+        assert_eq!(task.type_parameters, ["A"]);
     }
 
     #[test]
@@ -137,5 +147,33 @@ mod tests {
         assert_eq!(analysis.symbol_at(member).unwrap().name, "div");
         assert!(definition.start < member);
         assert!(definition.end > definition.start);
+    }
+
+    #[test]
+    fn alias_queries_preserve_the_source_name_and_definition() {
+        let source = concat!(
+            "alias UserId = Int\n",
+            "fn reveal value: UserId -> Int = value\n",
+        );
+        let analysis = analyze_module(CompileInput::new("main.ssrg", "analysis/alias", source));
+        assert!(analysis.diagnostics.diagnostics.is_empty());
+
+        let usage = source.rfind("UserId").unwrap();
+        let symbol = analysis.symbol_at(usage).expect("alias usage is queryable");
+        assert_eq!(symbol.name, "UserId");
+        assert_eq!(symbol.kind, "type");
+        assert_eq!(symbol.type_name.as_deref(), Some("Int"));
+        assert_eq!(analysis.definition_of(usage), Some(symbol.definition));
+        assert_eq!(
+            &source[symbol.definition.start..symbol.definition.end],
+            "UserId"
+        );
+
+        let visible = analysis
+            .visible_symbols(source.len())
+            .into_iter()
+            .map(|symbol| symbol.name.as_str())
+            .collect::<Vec<_>>();
+        assert!(visible.contains(&"UserId"));
     }
 }

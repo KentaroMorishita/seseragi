@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "case": "type-aliases",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/type-aliases",
+    "export": "main",
+    "compiledModule": "../../schema-1/type-aliases/generated-module.json",
+    "typedInterface": "../../schema-1/type-aliases/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "signal.mutable-type",
+      "effect.core.type",
+      "web.html.type",
+      "signal.type",
+      "core.adt",
+      "core.int64",
+      "core.either",
+      "signal.update",
+      "core.unit",
+      "core.int64.add",
+      "web.html.button",
+      "core.string",
+      "core.int64.show",
+      "signal.map",
+      "effect.core.succeed",
+      "effect.core.flatMap",
+      "signal.make",
+      "signal.read",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["aliases: 42, signal: 42"],
+        "stdout": "aliases: 42, signal: 42\n"
+      }
+    ]
+  }
+}

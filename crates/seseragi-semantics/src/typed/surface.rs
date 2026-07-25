@@ -6,7 +6,7 @@ use super::effect::typed_effect_from_surface;
 use super::effect_body::typed_effect_body;
 use super::functions::typed_parameters_from_surface;
 use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
-use super::type_ref::{inferred_type_from_expr, typed_type_from_type_ref};
+use super::type_ref::inferred_type_from_expr;
 use super::TypedResolution;
 
 pub(crate) fn typed_decls_from_surface(
@@ -66,11 +66,11 @@ pub(crate) fn typed_decls_from_surface(
                                 arguments: constraint
                                     .arguments
                                     .iter()
-                                    .map(typed_type_from_type_ref)
+                                    .map(|argument| expanded_type(resolution, argument))
                                     .collect(),
                             })
                             .collect(),
-                        type_ref: typed_type_from_type_ref(&method.return_type),
+                        type_ref: expanded_type(resolution, &method.return_type),
                     },
                     parameters: typed_parameters,
                     body,
@@ -116,7 +116,7 @@ pub(crate) fn typed_decl_from_surface(
                     constraints: Vec::new(),
                     type_ref: type_ref
                         .as_ref()
-                        .map(typed_type_from_type_ref)
+                        .map(|type_ref| expanded_type(resolution, type_ref))
                         .unwrap_or_else(|| inferred_type_from_expr(&value)),
                 },
                 value,
@@ -146,6 +146,7 @@ pub(crate) fn typed_decl_from_surface(
                 failure.as_ref(),
                 inferred_contract,
                 &body,
+                resolution,
             );
             Some(TypedDecl::EffectFn {
                 symbol: declaration_symbol(
@@ -205,11 +206,11 @@ pub(crate) fn typed_decl_from_surface(
                             arguments: constraint
                                 .arguments
                                 .iter()
-                                .map(typed_type_from_type_ref)
+                                .map(|argument| expanded_type(resolution, argument))
                                 .collect(),
                         })
                         .collect(),
-                    type_ref: typed_type_from_type_ref(&return_type),
+                    type_ref: expanded_type(resolution, &return_type),
                 },
                 parameters: typed_parameters,
                 body,
@@ -263,11 +264,11 @@ pub(crate) fn typed_decl_from_surface(
                             arguments: constraint
                                 .arguments
                                 .iter()
-                                .map(typed_type_from_type_ref)
+                                .map(|argument| expanded_type(resolution, argument))
                                 .collect(),
                         })
                         .collect(),
-                    type_ref: typed_type_from_type_ref(&return_type),
+                    type_ref: expanded_type(resolution, &return_type),
                 },
                 parameters: typed_parameters,
                 body,
@@ -348,17 +349,40 @@ pub(crate) fn typed_decl_from_surface(
                 .into_iter()
                 .map(|field| TypedStructField {
                     name: field.name,
-                    type_ref: typed_type_from_type_ref(&field.type_ref),
+                    type_ref: expanded_type(resolution, &field.type_ref),
                     origin: field.name_span,
                 })
                 .collect(),
             origin: span,
         }),
-        SurfaceDecl::Alias { .. } | SurfaceDecl::Trait { .. } | SurfaceDecl::Instance { .. } => {
-            None
-        }
+        SurfaceDecl::Alias {
+            visibility,
+            name,
+            name_span,
+            type_parameters,
+            target,
+            span,
+        } => Some(TypedDecl::Alias {
+            symbol: declaration_symbol(resolution, name_span, SymbolKind::Type, &name),
+            name,
+            visibility,
+            type_parameters: type_parameters
+                .into_iter()
+                .map(|parameter| parameter.name)
+                .collect(),
+            target: expanded_type(resolution, &target),
+            origin: span,
+        }),
+        SurfaceDecl::Trait { .. } | SurfaceDecl::Instance { .. } => None,
         SurfaceDecl::Impl { .. } => unreachable!("impl declarations expand before this point"),
     }
+}
+
+fn expanded_type(
+    resolution: &TypedResolution<'_>,
+    type_ref: &seseragi_syntax::TypeRef,
+) -> TypedType {
+    resolution.semantic_value_from_type_ref(type_ref).type_ref
 }
 
 fn declaration_symbol(

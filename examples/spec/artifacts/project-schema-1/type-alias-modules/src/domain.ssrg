@@ -1,0 +1,4 @@
+pub alias Pair<A> = { left: A, right: A }
+
+pub fn duplicate<A> value: A -> Pair<A> =
+  { left: value, right: value }

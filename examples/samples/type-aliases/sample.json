@@ -1,0 +1,19 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "type-aliases",
+  "title": "型aliasとTask",
+  "summary": "透明なgeneric aliasと標準Taskを、Signal更新まで実行して確認します。",
+  "kind": "lesson",
+  "difficulty": "intermediate",
+  "topics": ["type alias", "generics", "Task", "Signal"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["generic-structs", "effects-and-do"],
+  "featured": false,
+  "isNew": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

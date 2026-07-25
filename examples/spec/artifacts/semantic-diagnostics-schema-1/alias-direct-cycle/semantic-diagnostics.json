@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0602",
+      "severity": "Error",
+      "messageKey": "alias.cycle",
+      "message": "Type alias expands recursively into itself",
+      "primary": {
+        "start": 6,
+        "end": 10
+      },
+      "related": [],
+      "labels": [],
+      "notes": [
+        "Type aliases are transparent and therefore cannot define recursive types."
+      ],
+      "helps": [
+        "Break the expansion cycle, or use an ADT, struct, or newtype for recursive data."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

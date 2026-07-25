@@ -1,0 +1,15 @@
+{
+  "version": 3,
+  "file": "dist/type-alias-modules/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/type-alias-modules::domain"
+  ],
+  "sourcesContent": [
+    "pub alias Pair<A> = { left: A, right: A }\n\npub fn duplicate<A> value: A -> Pair<A> =\n  { left: value, right: value }\n"
+  ],
+  "names": [
+    "duplicate"
+  ],
+  "mappings": "AAEAA"
+}

@@ -1,0 +1,668 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/type-aliases",
+  "runtimeRequirements": [
+    "signal.mutable-type",
+    "effect.core.type",
+    "web.html.type",
+    "signal.type",
+    "core.adt",
+    "core.int64",
+    "core.either",
+    "signal.update",
+    "core.unit",
+    "core.int64.add",
+    "web.html.button",
+    "core.string",
+    "core.int64.show",
+    "signal.map",
+    "effect.core.succeed",
+    "effect.core.flatMap",
+    "signal.make",
+    "signal.read",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "signal.update",
+      "local": "_ssrg_signal_update"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "web.html.button",
+      "local": "_ssrg_html_button"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "signal.map",
+      "local": "_ssrg_signal_map"
+    },
+    {
+      "feature": "effect.core.succeed",
+      "local": "_ssrg_effect_succeed"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "signal.make",
+      "local": "_ssrg_signal_make"
+    },
+    {
+      "feature": "signal.read",
+      "local": "_ssrg_signal_read"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "signal.mutable-type",
+      "local": "MutableSignal"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "web.html.type",
+      "local": "Html"
+    },
+    {
+      "feature": "signal.type",
+      "local": "Signal"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "AppError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "AppFailed",
+          "tag": "AppFailed",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 269,
+            "end": 278
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 249,
+        "end": 278
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "userId",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "value"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 448,
+        "end": 486
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "pair",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "left",
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          },
+          {
+            "kind": "field",
+            "name": "right",
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 488,
+        "end": 552
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "apply",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "parameters": [
+        {
+          "name": "transform",
+          "type": "(argument: A) => B",
+          "implicit": false
+        },
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "transform",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 554,
+        "end": 629
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "failure",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "AppError",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "value"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 711,
+        "end": 756
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "result",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Left\"; readonly value: AppError } | { readonly tag: \"Right\"; readonly value: bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "value"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 758,
+        "end": 817
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "increment",
+      "parameters": [
+        {
+          "name": "state",
+          "type": "MutableSignal<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_signal_update",
+        "arguments": [
+          {
+            "kind": "lambda",
+            "parameter": "value: bigint",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_add",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                },
+                {
+                  "kind": "bigint",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "identifier",
+            "name": "state"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 819,
+        "end": 914
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "view",
+      "parameters": [
+        {
+          "name": "state",
+          "type": "MutableSignal<bigint>",
+          "implicit": false
+        },
+        {
+          "name": "current",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_button",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "onClick",
+                "value": {
+                  "kind": "call",
+                  "callee": "increment",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "state"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_intShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "current"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 916,
+        "end": 1064
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "content",
+      "parameters": [
+        {
+          "name": "state",
+          "type": "MutableSignal<bigint>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_signal_map",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "view",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "state"
+              }
+            ]
+          },
+          {
+            "kind": "identifier",
+            "name": "state"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1066,
+        "end": 1159
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "compact",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_effect_succeed",
+        "arguments": [
+          {
+            "kind": "undefined"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1161,
+        "end": 1191
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "const",
+            "name": "state",
+            "type": {
+              "kind": "reference",
+              "name": "MutableSignal",
+              "arguments": [
+                {
+                  "kind": "bigint"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "type-application-call",
+              "callee": "_ssrg_signal_make",
+              "typeArguments": [
+                {
+                  "kind": "bigint"
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "41"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1265,
+              "end": 1289
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "increment",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "state"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "rendered",
+            "type": {
+              "kind": "reference",
+              "name": "Signal",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Html",
+                  "arguments": [
+                    {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": []
+                        },
+                        {
+                          "kind": "never"
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "content",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "state"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1314,
+              "end": 1342
+            }
+          },
+          {
+            "kind": "const",
+            "name": "current",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_signal_read",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "state"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1347,
+              "end": 1364
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "values",
+            "type": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "left",
+                  "optional": false,
+                  "type": {
+                    "kind": "bigint"
+                  }
+                },
+                {
+                  "name": "right",
+                  "optional": false,
+                  "type": {
+                    "kind": "bigint"
+                  }
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "pair",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "apply",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "userId"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "current"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1369,
+              "end": 1409
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "aliases: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "field-access",
+                        "receiver": {
+                          "kind": "identifier",
+                          "name": "values"
+                        },
+                        "field": "left"
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ", signal: "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_intShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "current"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1193,
+        "end": 1473
+      }
+    }
+  ]
+}

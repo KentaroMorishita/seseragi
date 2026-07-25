@@ -37,7 +37,13 @@
       "id": "data-and-types",
       "title": "データと型",
       "summary": "Record、generic Struct、newtypeでdomainの境界を作ります。",
-      "samples": ["data-and-patterns", "records", "generic-structs", "newtypes"]
+      "samples": [
+        "data-and-patterns",
+        "records",
+        "generic-structs",
+        "type-aliases",
+        "newtypes"
+      ]
     },
     {
       "id": "collection-recipes",

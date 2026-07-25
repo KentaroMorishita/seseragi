@@ -3,8 +3,8 @@ use seseragi_syntax::{SurfaceRequirement, TypeRef};
 
 use super::type_ref::{
     application_argument_type_from_expr, effect_from_value_type, inferred_type_from_expr,
-    typed_type_from_type_ref,
 };
+use super::TypedResolution;
 
 pub(crate) fn typed_effect_from_surface(
     return_type: &Option<TypeRef>,
@@ -12,22 +12,24 @@ pub(crate) fn typed_effect_from_surface(
     failure: Option<&TypeRef>,
     inferred_contract: bool,
     body: &TypedExpr,
+    resolution: &TypedResolution<'_>,
 ) -> TypedEffect {
     if inferred_contract {
         return infer_compact_effect(body);
     }
 
-    explicit_effect(return_type, requirements, failure)
+    explicit_effect(return_type, requirements, failure, resolution)
 }
 
 fn explicit_effect(
     return_type: &Option<TypeRef>,
     requirements: &[SurfaceRequirement],
     failure: Option<&TypeRef>,
+    resolution: &TypedResolution<'_>,
 ) -> TypedEffect {
     let success = return_type
         .as_ref()
-        .map(typed_type_from_type_ref)
+        .map(|type_ref| resolution.semantic_value_from_type_ref(type_ref).type_ref)
         .unwrap_or_else(unit_type);
 
     TypedEffect {
@@ -35,11 +37,11 @@ fn explicit_effect(
             closed: true,
             fields: requirements
                 .iter()
-                .map(explicit_environment_field)
+                .map(|requirement| explicit_environment_field(requirement, resolution))
                 .collect(),
         },
         failure: failure
-            .map(typed_type_from_type_ref)
+            .map(|type_ref| resolution.semantic_value_from_type_ref(type_ref).type_ref)
             .unwrap_or_else(|| named_type("Never")),
         success,
     }
@@ -164,13 +166,16 @@ fn widen_failure_from_never(current: &mut TypedType, candidate: TypedType) {
     }
 }
 
-fn explicit_environment_field(requirement: &SurfaceRequirement) -> TypedRecordField {
+fn explicit_environment_field(
+    requirement: &SurfaceRequirement,
+    resolution: &TypedResolution<'_>,
+) -> TypedRecordField {
     match requirement {
         SurfaceRequirement::Shorthand { name, .. } => environment_field(&lower_first(name), name),
         SurfaceRequirement::Field { name, type_ref, .. } => TypedRecordField {
             name: name.clone(),
             optional: false,
-            type_ref: typed_type_from_type_ref(type_ref),
+            type_ref: resolution.semantic_value_from_type_ref(type_ref).type_ref,
         },
     }
 }

@@ -104,6 +104,11 @@ impl Diagnostic {
             "match.non-exhaustive" => "This match does not cover every possible value".to_owned(),
             "parser.expected-expression" => "Expected an expression here".to_owned(),
             "parser.error" => "Could not parse this syntax".to_owned(),
+            "alias.arity-mismatch" => {
+                "Type alias was used with the wrong number of arguments".to_owned()
+            }
+            "alias.cycle" => "Type alias expands recursively into itself".to_owned(),
+            "alias.private-type-exposure" => "Public type alias exposes a private type".to_owned(),
             _ => humanize_message_key(&self.message_key),
         }
     }
@@ -116,6 +121,10 @@ impl Diagnostic {
         match self.message_key.as_str() {
             "instance.missing" => vec![
                 "Trait instances are selected from the current lexical and import scope."
+                    .to_owned(),
+            ],
+            "alias.cycle" => vec![
+                "Type aliases are transparent and therefore cannot define recursive types."
                     .to_owned(),
             ],
             "call.argument-type-mismatch"
@@ -148,6 +157,15 @@ impl Diagnostic {
             }
             "instance.missing" => {
                 "Define or import a matching instance, or use a type with an available instance."
+            }
+            "alias.arity-mismatch" => {
+                "Add or remove type arguments so the alias application matches its declaration."
+            }
+            "alias.cycle" => {
+                "Break the expansion cycle, or use an ADT, struct, or newtype for recursive data."
+            }
+            "alias.private-type-exposure" => {
+                "Make the exposed type public, or keep the alias private."
             }
             "record.field-unresolved" | "struct.field-unresolved" => {
                 "Check the field spelling and the type of the value being accessed."

@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/type-alias-modules::domain",
+  "source": "domain.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/type-alias-modules::domain::Pair",
+      "namespace": "type",
+      "name": "Pair",
+      "visibility": "public",
+      "declarationKind": "alias",
+      "declaration": {
+        "start": 0,
+        "end": 41
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Pair",
+          "arity": 1
+        }
+      },
+      "representation": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          },
+          {
+            "name": "right",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "fixture/type-alias-modules::domain::duplicate",
+      "namespace": "value",
+      "name": "duplicate",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 43,
+        "end": 116
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "left",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "right",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

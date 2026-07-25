@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/type-alias-modules::main",
+  "runtimeRequirements": [
+    "core.string",
+    "core.unit",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/type-alias-modules::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "duplicate",
+          "local": "duplicate",
+          "sourceLocal": "duplicate",
+          "canonical": "fixture/type-alias-modules::domain::duplicate",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 50,
+            "end": 59
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 34
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "swap",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly \"left\": A; readonly \"right\": A }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "left",
+            "value": {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "field": "right"
+            }
+          },
+          {
+            "kind": "field",
+            "name": "right",
+            "value": {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "field": "left"
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 79,
+        "end": 167
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "message",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly \"left\": string; readonly \"right\": string }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "field-access",
+        "receiver": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "field": "left"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 169,
+        "end": 222
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "message",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "swap",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "duplicate",
+                    "arguments": [
+                      {
+                        "kind": "string",
+                        "value": "Imported alias"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 224,
+        "end": 300
+      }
+    }
+  ]
+}

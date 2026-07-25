@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0603",
+      "severity": "Error",
+      "messageKey": "alias.private-type-exposure",
+      "message": "Public type alias exposes a private type",
+      "primary": {
+        "start": 52,
+        "end": 58
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Make the exposed type public, or keep the alias private."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+import * as domain from "./domain"
+import { Pair, duplicate } from "./domain"
+
+fn swap<A> value: Pair<A> -> domain.Pair<A> =
+  { left: value.right, right: value.left }
+
+fn message value: Pair<String> -> String = value.left
+
+pub effect fn main =
+  println $ message $ swap $ duplicate "Imported alias"

@@ -103,3 +103,35 @@ fn exposes_expected_actual_types_and_a_spelling_fix() {
     assert_eq!(field.fixes.len(), 1);
     assert_eq!(field.fixes[0].edits[0].replacement, "name");
 }
+
+#[test]
+fn presents_type_alias_failures_as_actionable_diagnostics() {
+    let cases = [
+        (
+            "alias-arity.ssrg",
+            "alias Pair<A> = { left: A, right: A }\npub fn broken value: Pair<Int, String> -> Int = 0\n",
+            "SES-T0601",
+            "alias.arity-mismatch",
+        ),
+        (
+            "alias-cycle.ssrg",
+            "alias First = Second\nalias Second = First\n",
+            "SES-T0602",
+            "alias.cycle",
+        ),
+        (
+            "alias-private.ssrg",
+            "struct Secret { value: Int }\npub alias Public = Secret\n",
+            "SES-T0603",
+            "alias.private-type-exposure",
+        ),
+    ];
+
+    for (source_name, source, code, message_key) in cases {
+        let diagnostic = first_diagnostic(source_name, source);
+        assert_eq!(diagnostic.code, code);
+        assert_eq!(diagnostic.message_key, message_key);
+        assert_ne!(diagnostic.message(), diagnostic.message_key);
+        assert!(!diagnostic.helps().is_empty());
+    }
+}

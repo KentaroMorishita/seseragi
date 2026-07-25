@@ -190,6 +190,72 @@ mod tests {
     use seseragi_syntax::Visibility;
 
     #[test]
+    fn expands_user_aliases_and_task_in_typed_hir() {
+        let typed = type_module(
+            "artifact/type-aliases/main.ssrg",
+            "alias UserId = Int\n\
+             alias Pair<A> = { left: A, right: A }\n\
+             pub alias Work<A> = Task<A>\n\
+             pub fn userId value: UserId -> UserId = value\n\
+             pub fn pair value: Int -> Pair<Int> = { left: value, right: value }\n\
+             pub fn work value: Work<Int> -> Task<Int> = value\n\
+             effect fn compact = succeed 1\n",
+        );
+
+        let aliases = typed
+            .declarations
+            .iter()
+            .filter(|declaration| matches!(declaration, TypedDecl::Alias { .. }))
+            .count();
+        assert_eq!(aliases, 3);
+        let work = typed
+            .declarations
+            .iter()
+            .find_map(|declaration| match declaration {
+                TypedDecl::Fn { symbol, scheme, .. } if symbol.ends_with("::work") => {
+                    Some(&scheme.type_ref)
+                }
+                _ => None,
+            })
+            .expect("work function exists");
+        assert!(matches!(
+            work,
+            TypedType::Named { name, arguments }
+                if name == "Effect"
+                    && arguments.len() == 3
+                    && matches!(&arguments[0], TypedType::Record { fields, .. } if fields.is_empty())
+                    && matches!(&arguments[1], TypedType::Named { name, .. } if name == "Never")
+                    && matches!(&arguments[2], TypedType::Named { name, .. } if name == "Int")
+        ));
+        let compact = typed
+            .declarations
+            .iter()
+            .find_map(|declaration| match declaration {
+                TypedDecl::EffectFn { symbol, effect, .. } if symbol.ends_with("::compact") => {
+                    Some(effect)
+                }
+                _ => None,
+            })
+            .expect("compact effect function exists");
+        assert!(matches!(
+            &compact.environment,
+            TypedType::Record { closed: true, fields } if fields.is_empty()
+        ));
+        assert!(matches!(
+            &compact.failure,
+            TypedType::Named { name, arguments } if name == "Never" && arguments.is_empty()
+        ));
+        assert_eq!(compact.success, work_arguments(work)[2]);
+    }
+
+    fn work_arguments(type_ref: &TypedType) -> &[TypedType] {
+        match type_ref {
+            TypedType::Named { name, arguments } if name == "Effect" => arguments,
+            _ => panic!("expected canonical Effect type, received {type_ref:?}"),
+        }
+    }
+
+    #[test]
     fn types_generic_inherent_method_calls_as_static_function_calls() {
         let typed = type_module(
             "artifact/inherent-method/main.ssrg",

@@ -91,6 +91,10 @@ import sample22Source from "../../../../examples/samples/traits-and-instances/ma
 import sample22Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
 import sample22Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
 
+import sample23Source from "../../../../examples/samples/type-aliases/main.ssrg?raw"
+import sample23Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
+import sample23Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
+
 export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
@@ -286,7 +290,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/feature-composition/main.ssrg",
       "guidePath": "examples/samples/feature-composition/guide.md",
-      "sourceHash": "sha256:d0fe456d81421207ea1d26ecc047fdc7da2ab9ddcdc9d2b5127188e689ddbe4f"
+      "sourceHash": "sha256:8c654035864f28d3d043d3a85b66018c19ac4f5c4ceba6a83cfe9e0810cbb1a5"
     },
     source: sample5Source,
     guide: sample5Guide,
@@ -851,6 +855,40 @@ export const generatedSamples: readonly GeneratedSample[] = [
     guide: sample22Guide,
     stdin: "",
     expectedOutput: (sample22Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    definition: {
+      "id": "type-aliases",
+      "title": "型aliasとTask",
+      "summary": "透明なgeneric aliasと標準Taskを、Signal更新まで実行して確認します。",
+      "kind": "lesson",
+      "difficulty": "intermediate",
+      "topics": [
+        "type alias",
+        "generics",
+        "Task",
+        "Signal"
+      ],
+      "capabilities": [
+        "console"
+      ],
+      "outputMode": "text",
+      "prerequisites": [
+        "generic-structs",
+        "effects-and-do"
+      ],
+      "featured": false,
+      "isNew": true,
+      "interactive": false,
+      "sourcePath": "examples/samples/type-aliases/main.ssrg",
+      "guidePath": "examples/samples/type-aliases/guide.md",
+      "expectedOutputPath": "examples/samples/type-aliases/stdout.txt",
+      "sourceHash": "sha256:c89a8a56c1f1838f176daee75a07baa0a63ef7de697edc601d22ca38d0dd45d9"
+    },
+    source: sample23Source,
+    guide: sample23Guide,
+    stdin: "",
+    expectedOutput: (sample23Output).replace(/\r?\n$/u, ""),
   }
 ]
 
@@ -898,6 +936,7 @@ export const generatedLearningPaths: readonly LearningPathDefinition[] =
         "data-and-patterns",
         "records",
         "generic-structs",
+        "type-aliases",
         "newtypes"
       ]
     },

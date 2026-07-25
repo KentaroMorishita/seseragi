@@ -1,7 +1,6 @@
 use crate::{SymbolKind, SymbolNamespace, TypedAdtVariant, TypedDecl, TypedScheme, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceVariant, TypeRef, Visibility};
 
-use super::type_ref::typed_type_from_type_ref;
 use super::TypedResolution;
 
 pub(super) struct AdtDeclInput {
@@ -64,7 +63,10 @@ fn typed_variant(
     {
         return None;
     }
-    let payload = variant.payload.as_ref().map(typed_type_from_type_ref);
+    let payload = variant
+        .payload
+        .as_ref()
+        .map(|payload| resolution.semantic_value_from_type_ref(payload).type_ref);
     let type_ref = payload.as_ref().map_or_else(
         || result.clone(),
         |payload| TypedType::Function {

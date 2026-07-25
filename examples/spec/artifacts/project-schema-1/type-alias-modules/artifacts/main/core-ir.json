@@ -1,0 +1,505 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/type-alias-modules::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/type-alias-modules::domain",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Pair",
+          "local": "Pair",
+          "canonical": "fixture/type-alias-modules::domain::Pair",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 44,
+            "end": 48
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "duplicate",
+          "local": "duplicate",
+          "canonical": "fixture/type-alias-modules::domain::duplicate",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 50,
+            "end": 59
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "Pair",
+          "local": "domain.Pair",
+          "canonical": "fixture/type-alias-modules::domain::Pair",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "./domain",
+      "module": "fixture/type-alias-modules::domain",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 35,
+        "end": 77
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Pair",
+          "local": "Pair",
+          "canonical": "fixture/type-alias-modules::domain::Pair",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 44,
+            "end": 48
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "duplicate",
+          "local": "duplicate",
+          "canonical": "fixture/type-alias-modules::domain::duplicate",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 50,
+            "end": 59
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "Pair",
+          "local": "domain.Pair",
+          "canonical": "fixture/type-alias-modules::domain::Pair",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/type-alias-modules::main::swap",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 79,
+        "end": 167
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "left",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "right",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "left",
+            "value": {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 135,
+                  "end": 140
+                }
+              },
+              "field": "right",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 135,
+                "end": 146
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 129,
+              "end": 146
+            }
+          },
+          {
+            "kind": "field",
+            "name": "right",
+            "value": {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 155,
+                  "end": 160
+                }
+              },
+              "field": "left",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 155,
+                "end": 165
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 148,
+              "end": 165
+            }
+          }
+        ],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "left",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            },
+            {
+              "name": "right",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 127,
+          "end": 167
+        }
+      }
+    },
+    {
+      "symbol": "fixture/type-alias-modules::main::message",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 169,
+        "end": 222
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "left",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "right",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "field-access",
+        "receiver": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "left",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "right",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 212,
+            "end": 217
+          }
+        },
+        "field": "left",
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 212,
+          "end": 222
+        }
+      }
+    },
+    {
+      "symbol": "fixture/type-alias-modules::main::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 224,
+        "end": 300
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/type-alias-modules::main::message",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "fixture/type-alias-modules::main::swap",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "fixture/type-alias-modules::domain::duplicate",
+                    "arguments": [
+                      {
+                        "kind": "string",
+                        "value": "Imported alias",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 284,
+                          "end": 300
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "left",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        },
+                        {
+                          "name": "right",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 274,
+                      "end": 300
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 267,
+                  "end": 300
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 257,
+              "end": 300
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 247,
+          "end": 300
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/type-alias-modules::domain",
+  "functions": [
+    {
+      "symbol": "fixture/type-alias-modules::domain::duplicate",
+      "visibility": "public",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 43,
+        "end": 116
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "left",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 95,
+                "end": 100
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 89,
+              "end": 100
+            }
+          },
+          {
+            "kind": "field",
+            "name": "right",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 109,
+                "end": 114
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 102,
+              "end": 114
+            }
+          }
+        ],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "left",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            },
+            {
+              "name": "right",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "source": "domain.ssrg",
+          "start": 87,
+          "end": 116
+        }
+      }
+    }
+  ]
+}

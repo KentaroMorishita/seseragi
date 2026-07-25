@@ -17,11 +17,11 @@ fn strictOptions -> DomOptions = {
   }
 }
 
-fn ignore<Action> action: Action -> Task<Never, Unit> =
+fn ignore<Action> action: Action -> Task<Unit> =
   effects.succeed ()
 
 fn report result: Either<dom.DomError, dom.DomMount<Never>>
-  -> Task<ConsoleError, Unit> =
+  -> Effect<{}, ConsoleError, Unit> =
   match result {
     Left (dom.HydrationMismatch _) -> println "mismatch"
     Left _ -> println "unexpected dom error"

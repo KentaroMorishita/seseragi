@@ -405,6 +405,7 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
                 | "Range"
                 | "Iterator"
                 | "Effect"
+                | "Task"
                 | "Console"
                 | "ConsoleError"
                 | "Stdin"
@@ -453,7 +454,7 @@ pub(crate) fn type_constructor_arity(spelling: &str) -> Option<u32> {
         return Some(sum_type.type_parameters.len() as u32);
     }
     match spelling {
-        "Array" | "List" | "Range" | "Iterator" => Some(1),
+        "Array" | "List" | "Range" | "Iterator" | "Task" => Some(1),
         "Effect" => Some(3),
         name if is_standalone_symbol(SymbolNamespace::Type, name) => Some(0),
         _ => None,

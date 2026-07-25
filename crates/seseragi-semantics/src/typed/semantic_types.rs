@@ -2,8 +2,7 @@ use crate::{ResolvedModule, ScopeKind, SymbolId, SymbolKind, SymbolNamespace, Ty
 use seseragi_syntax::{SurfaceDecl, TypeRef};
 use std::collections::{BTreeMap, BTreeSet};
 
-use super::type_ref::typed_type_from_type_ref;
-
+mod aliases;
 mod constructors;
 mod imports;
 mod prelude;
@@ -213,6 +212,7 @@ pub(crate) struct SemanticTypeCatalog {
     adts: BTreeMap<SymbolId, SemanticAdt>,
     structs: BTreeMap<SymbolId, SemanticStruct>,
     constructors: BTreeMap<SymbolId, SymbolId>,
+    aliases: aliases::AliasCatalog,
 }
 
 impl SemanticTypeCatalog {
@@ -321,7 +321,10 @@ impl SemanticTypeCatalog {
             .map(|(owner, ..)| *owner)
             .collect::<BTreeSet<_>>();
 
-        let mut catalog = Self::default();
+        let mut catalog = Self {
+            aliases: aliases::AliasCatalog::new(resolved),
+            ..Self::default()
+        };
         for (owner, name, parameters, parameter_names) in declarations.values() {
             catalog.adts.insert(
                 *owner,
@@ -342,11 +345,12 @@ impl SemanticTypeCatalog {
                 .map(|field| SemanticStructField {
                     name: field.name.clone(),
                     type_ref: SemanticValueType {
-                        type_ref: typed_type_from_type_ref(&field.type_ref),
+                        type_ref: catalog.aliases.expand(resolved, &field.type_ref),
                         key: semantic_key_from_type_ref(
                             resolved,
                             &owners,
                             &struct_owners,
+                            &catalog.aliases,
                             &field.type_ref,
                         ),
                     },
@@ -401,8 +405,14 @@ impl SemanticTypeCatalog {
                     continue;
                 };
                 let payload = payload.map(|payload| SemanticValueType {
-                    type_ref: typed_type_from_type_ref(payload),
-                    key: semantic_key_from_type_ref(resolved, &owners, &struct_owners, payload),
+                    type_ref: catalog.aliases.expand(resolved, payload),
+                    key: semantic_key_from_type_ref(
+                        resolved,
+                        &owners,
+                        &struct_owners,
+                        &catalog.aliases,
+                        payload,
+                    ),
                 });
                 catalog.constructors.insert(symbol.id, owner);
                 semantic_variants.push(SemanticVariant {
@@ -427,9 +437,20 @@ impl SemanticTypeCatalog {
         resolved: &ResolvedModule,
         type_ref: &TypeRef,
     ) -> SemanticTypeKey {
+        if self.aliases.expands(resolved, type_ref) {
+            return self.key_from_typed_type(resolved, &self.aliases.expand(resolved, type_ref));
+        }
         let owners = self.adts.keys().copied().collect::<BTreeSet<_>>();
         let struct_owners = self.structs.keys().copied().collect::<BTreeSet<_>>();
-        semantic_key_from_type_ref(resolved, &owners, &struct_owners, type_ref)
+        semantic_key_from_type_ref(resolved, &owners, &struct_owners, &self.aliases, type_ref)
+    }
+
+    pub(crate) fn expand_type_ref(
+        &self,
+        resolved: &ResolvedModule,
+        type_ref: &TypeRef,
+    ) -> TypedType {
+        self.aliases.expand(resolved, type_ref)
     }
 
     pub(crate) fn key_from_typed_type(
@@ -545,8 +566,13 @@ fn semantic_key_from_type_ref(
     resolved: &ResolvedModule,
     owners: &BTreeSet<SymbolId>,
     struct_owners: &BTreeSet<SymbolId>,
+    aliases: &aliases::AliasCatalog,
     type_ref: &TypeRef,
 ) -> SemanticTypeKey {
+    if aliases.expands(resolved, type_ref) {
+        let expanded = aliases.expand(resolved, type_ref);
+        return semantic_key_from_expanded_type(resolved, owners, struct_owners, &expanded);
+    }
     match type_ref {
         TypeRef::Named {
             arguments, span, ..
@@ -571,11 +597,12 @@ fn semantic_key_from_type_ref(
                         arguments: arguments
                             .iter()
                             .map(|argument| SemanticValueType {
-                                type_ref: typed_type_from_type_ref(argument),
+                                type_ref: aliases.expand(resolved, argument),
                                 key: semantic_key_from_type_ref(
                                     resolved,
                                     owners,
                                     struct_owners,
+                                    aliases,
                                     argument,
                                 ),
                             })
@@ -588,11 +615,12 @@ fn semantic_key_from_type_ref(
                         arguments: arguments
                             .iter()
                             .map(|argument| SemanticValueType {
-                                type_ref: typed_type_from_type_ref(argument),
+                                type_ref: aliases.expand(resolved, argument),
                                 key: semantic_key_from_type_ref(
                                     resolved,
                                     owners,
                                     struct_owners,
+                                    aliases,
                                     argument,
                                 ),
                             })
@@ -614,11 +642,12 @@ fn semantic_key_from_type_ref(
                         arguments: arguments
                             .iter()
                             .map(|argument| SemanticValueType {
-                                type_ref: typed_type_from_type_ref(argument),
+                                type_ref: aliases.expand(resolved, argument),
                                 key: semantic_key_from_type_ref(
                                     resolved,
                                     owners,
                                     struct_owners,
+                                    aliases,
                                     argument,
                                 ),
                             })
@@ -634,10 +663,65 @@ fn semantic_key_from_type_ref(
         TypeRef::Tuple { elements, .. } => SemanticTypeKey::Tuple(
             elements
                 .iter()
-                .map(|element| semantic_key_from_type_ref(resolved, owners, struct_owners, element))
+                .map(|element| {
+                    semantic_key_from_type_ref(resolved, owners, struct_owners, aliases, element)
+                })
                 .collect(),
         ),
         TypeRef::Hole { .. } => SemanticTypeKey::Invalid,
         TypeRef::Record { .. } | TypeRef::Function { .. } => SemanticTypeKey::Other,
+    }
+}
+
+fn semantic_key_from_expanded_type(
+    resolved: &ResolvedModule,
+    owners: &BTreeSet<SymbolId>,
+    struct_owners: &BTreeSet<SymbolId>,
+    type_ref: &TypedType,
+) -> SemanticTypeKey {
+    match type_ref {
+        TypedType::Named { name, arguments } => {
+            let owner = resolved.symbols.iter().find_map(|symbol| {
+                (symbol.kind == SymbolKind::Type && symbol.spelling == *name).then_some(symbol.id)
+            });
+            let arguments = arguments
+                .iter()
+                .map(|argument| SemanticValueType {
+                    type_ref: argument.clone(),
+                    key: semantic_key_from_expanded_type(resolved, owners, struct_owners, argument),
+                })
+                .collect::<Vec<_>>();
+            match owner {
+                Some(owner) if owners.contains(&owner) => SemanticTypeKey::Adt { owner, arguments },
+                Some(owner) if struct_owners.contains(&owner) => {
+                    SemanticTypeKey::Struct { owner, arguments }
+                }
+                _ => SemanticTypeKey::Other,
+            }
+        }
+        TypedType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } => SemanticTypeKey::ExternalNominal {
+            canonical: canonical.clone(),
+            arguments: arguments
+                .iter()
+                .map(|argument| SemanticValueType {
+                    type_ref: argument.clone(),
+                    key: semantic_key_from_expanded_type(resolved, owners, struct_owners, argument),
+                })
+                .collect(),
+        },
+        TypedType::Tuple { elements } => SemanticTypeKey::Tuple(
+            elements
+                .iter()
+                .map(|element| {
+                    semantic_key_from_expanded_type(resolved, owners, struct_owners, element)
+                })
+                .collect(),
+        ),
+        TypedType::Hole => SemanticTypeKey::Invalid,
+        TypedType::Record { .. } | TypedType::Function { .. } => SemanticTypeKey::Other,
     }
 }

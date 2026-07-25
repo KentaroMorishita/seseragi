@@ -124,13 +124,13 @@ task fn fetchJson url: String -> Js.Unknown
 宣言された最後の型はsuccess値です。Seseragiから見える型は自動的に次へなります。
 
 ```text
-readFile  : String -> Task<Js.Error, String>
-fetchJson : String -> Task<Js.Error, Js.Unknown>
+readFile  : String -> Effect<{}, Js.Error, String>
+fetchJson : String -> Effect<{}, Js.Error, Js.Unknown>
 ```
 
 adapterは関数呼び出し時の同期throwと、戻り値がPromiseLikeならrejectionを捕捉します。
-同期値なら即座に成功したTaskへ変換します。Taskをrunするまで対象関数は呼びません。
-task-load moduleでは同じTask error channelがmodule load failureも扱います。`Js.Error` metadataは
+同期値なら即座に成功したEffectへ変換します。Effectをrunするまで対象関数は呼びません。
+task-load moduleでは同じEffect error channelがmodule load failureも扱います。`Js.Error` metadataは
 ModuleLoad、BindingLookup、SynchronousThrow、PromiseRejectionを区別し、diagnosticとcross-language stackでphaseを
 失いません。
 
@@ -299,7 +299,7 @@ cancellationをforeign signatureから推測しません。
 - nominal structはreadonly objectと非公開 `unique symbol` brand。
 - ADTは `tag` を持つdiscriminated union。
 - `Maybe` と `Either` もADTとして公開し、nullやthrowへ暗黙変換しない。
-- `Task<E, A>` は `Promise<Either<E, A>>` として公開する。
+- `Task<A>` は `Promise<A>`、`Effect<{}, E, A>` は `Promise<Either<E, A>>` として公開する。
 - opaque型はconstructorとfieldを公開せず、brandされたopaque型として出力する。
 
 ```seseragi

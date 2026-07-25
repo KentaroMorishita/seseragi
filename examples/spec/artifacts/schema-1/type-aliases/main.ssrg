@@ -1,0 +1,59 @@
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+
+alias UserId = Int
+alias Pair<A> = { left: A, right: A }
+alias AppEnv = { console: Console }
+alias Mapper<A, B> = A -> B
+
+type AppError =
+  | AppFailed
+
+alias App<A> = Effect<AppEnv, AppError, A>
+alias Failure = AppError
+alias AppResult = Either<AppError, Int>
+alias Cell<A> = MutableSignal<A>
+alias View<A> = Signal<A>
+
+fn userId value: UserId -> Int = value
+
+fn pair<A> value: A -> Pair<A> =
+  { left: value, right: value }
+
+fn apply<A, B> transform: Mapper<A, B> -> value: A -> B =
+  transform value
+
+fn app<A> effect: App<A> -> Effect<{ console: Console }, AppError, A> = effect
+
+fn failure value: Failure -> AppError = value
+
+fn result value: AppResult -> Either<AppError, Int> = value
+
+fn increment state: Cell<Int> -> Task<Unit> =
+  signals.update (\value: Int -> value + 1) state
+
+fn view state: Cell<Int>
+  -> current: Int
+  -> html.Html<Task<Unit>> =
+  html.button {
+    onClick: increment state,
+    children: `${current}`
+  }
+
+fn content state: Cell<Int> -> View<html.Html<Task<Unit>>> =
+  signals.map (view state) state
+
+effect fn compact = succeed ()
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    state <- signals.make 41
+    increment state
+    let rendered = content state
+    current <- *state
+    let values = pair $ apply userId current
+    println $ `aliases: ${values.left}, signal: ${current}`
+  }

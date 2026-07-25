@@ -19,7 +19,11 @@ pub(super) fn export_scheme_type_bindings(
     provider: &ModuleInterface,
     export: &InterfaceExport,
 ) -> Option<Vec<ExternalTypeBinding>> {
-    if !has_callable_scheme(export) && export.declaration_kind.as_deref() != Some("trait") {
+    let is_alias = export.declaration_kind.as_deref() == Some("alias");
+    if !has_callable_scheme(export)
+        && export.declaration_kind.as_deref() != Some("trait")
+        && !is_alias
+    {
         return None;
     }
     let candidates = provider_candidates(provider);
@@ -30,6 +34,15 @@ pub(super) fn export_scheme_type_bindings(
         .map(|parameter| parameter.name.clone())
         .collect::<BTreeSet<_>>();
     let mut bindings = Vec::new();
+    if is_alias {
+        collect_bindings(
+            export.representation.as_ref()?,
+            &type_parameters,
+            &candidates,
+            &mut bindings,
+        )?;
+        return Some(bindings);
+    }
     if export.declaration_kind.as_deref() != Some("trait") {
         collect_bindings(
             &export.scheme.type_ref,

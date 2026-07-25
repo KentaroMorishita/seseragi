@@ -1515,7 +1515,7 @@
       "id": "web.dom.run",
       "kind": "runtime-helper",
       "typescript": "function",
-      "boundary": "DomOptions -> DomTarget -> (Msg -> Task<Never, Unit>) -> Signal<Html<Msg>> -> Effect<{ dom: Dom }, DomRuntimeError<Never>, Unit>",
+      "boundary": "DomOptions -> DomTarget -> (Msg -> Task<Unit>) -> Signal<Html<Msg>> -> Effect<{ dom: Dom }, DomRuntimeError<Never>, Unit>",
       "import": { "module": "@seseragi/runtime/dom", "export": "run" }
     },
     {

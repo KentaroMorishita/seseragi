@@ -24,6 +24,27 @@ pub(crate) fn typed_interface_from_modules(
             export.namespace != "value" || export.declaration_kind.as_deref() == Some("constructor")
         })
         .collect::<Vec<_>>();
+    for declaration in &typed.declarations {
+        let TypedDecl::Alias {
+            symbol,
+            visibility,
+            target,
+            ..
+        } = declaration
+        else {
+            continue;
+        };
+        if *visibility != Visibility::Public {
+            continue;
+        }
+        if let Some(export) = exports.iter_mut().find(|export| {
+            export.namespace == "type"
+                && export.declaration_kind.as_deref() == Some("alias")
+                && export.symbol == *symbol
+        }) {
+            export.representation = Some(types.convert(target));
+        }
+    }
     exports.extend(
         typed
             .declarations
@@ -124,7 +145,7 @@ fn typed_value_export(
     types: &InterfaceTypes<'_>,
 ) -> Option<InterfaceExport> {
     match declaration {
-        TypedDecl::Adt { .. } => None,
+        TypedDecl::Alias { .. } | TypedDecl::Adt { .. } => None,
         TypedDecl::Let {
             symbol,
             visibility,

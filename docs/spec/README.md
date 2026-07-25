@@ -63,7 +63,7 @@ Seseragiが保証する意味を記述します。
 ### Effectと状態
 
 - `Effect<R, E, A>`
-- `Task<E, A> = Effect<{}, E, A>`
+- `Task<A> = Effect<{}, Never, A>`
 - typed error、environment service、resource、cancellation、parallelism
 - Signal / MutableSignal、transaction、glitch-free propagation、subscription lifetime
 - Ref、Stream、Fiberなどの標準runtime abstraction

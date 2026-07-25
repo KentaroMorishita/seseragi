@@ -1304,6 +1304,13 @@ direct / facade越しproviderで接続済みですが、imported instance solver
 trait namespaceとunresolved polymorphic constrained valueが必要です。standard evidenceはruntime dictionaryが実在する
 `Show<Int>` / `Show<String>`をfactory引数へ接続し、operation-only traitをmaterialize済みとは数えません。
 
+type aliasは`AliasCatalog`がlocal declaration、imported interface、Prelude `Task<A>`を一つの展開経路へ集約します。
+型引数をcapture-avoiding substitutionした`TypedType`をsemantic comparisonへ渡し、nested generic argumentを含めて
+正規型を共有します。TypedHirにはsource identityとtargetを持つ`TypedDecl::Alias`を残しますが、CoreIrへはlowerせず、
+GeneratedModuleとruntime representationを増やしません。公開aliasは展開後representationとgeneric schemeをinterfaceへ
+保存し、consumer側のcanonical import bindingへlocalizeします。diagnostic passは同じResolvedAst referenceを使ってarity、
+local alias graphのcycle、public interfaceのprivate nominal露出を検査します。
+
 project resolverはpackage identityの文法をdriverへ再実装しません。driverのmodule IDはopaqueな入力とし、NFC、root tag、
 dependency export map、symlink / case衝突はP2-1の唯一の所有者が決めます。これによりmodule graph追加時にAST、resolver、
 TypedHir、CoreIr、runtime ABIを一斉に作り直す経路を避けます。

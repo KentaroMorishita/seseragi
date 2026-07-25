@@ -487,6 +487,12 @@ constraint付きgeneric local instanceも`Constraint付きinstance`として追�
 local constrained functionとtrait method固有constraintもsample catalogへ追加し、通常のvalue引数に続く
 compiler-private dictionary parameterと、primary method dictionaryに続くordered evidenceを同じWASM実行で確認できます。
 
+userland type aliasはconcrete / generic、record、function、ADT、imported type、Effectを透明に展開し、
+`pub alias`をmodule interface越しに利用できます。型identity、互換性、loweringでは展開後の正規型を使い、
+TypedHirとtoolingは元のalias宣言名・spanを保持します。arity、direct / indirect cycle、public aliasからの
+private nominal露出は専用diagnosticでbackend前に停止します。Preludeの`Task<A>`は
+`Effect<{}, Never, A>`へ正規化され、専用runtime ABIを持ちません。
+
 Formatter-0は`seseragi-formatter`へline layout責務を分離し、`seseragi-driver::format_module`をCLI / LSP /
 playgroundが再利用できるpublic entrypointにしました。`seseragi format`はfile I/Oだけ、`--check`は差分判定だけを
 所有します。syntax errorはcompilerと同じsource range付きdiagnosticsを返し、recovery nodeをformatter都合で

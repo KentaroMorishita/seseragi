@@ -1,0 +1,48 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/type-aliases"
+  ],
+  "sourcesContent": [
+    "import * as html from \"std/web/html\"\nimport * as signals from \"std/signal\"\nimport { MutableSignal, Signal } from \"std/signal\"\n\nalias UserId = Int\nalias Pair<A> = { left: A, right: A }\nalias AppEnv = { console: Console }\nalias Mapper<A, B> = A -> B\n\ntype AppError =\n  | AppFailed\n\nalias App<A> = Effect<AppEnv, AppError, A>\nalias Failure = AppError\nalias AppResult = Either<AppError, Int>\nalias Cell<A> = MutableSignal<A>\nalias View<A> = Signal<A>\n\nfn userId value: UserId -> Int = value\n\nfn pair<A> value: A -> Pair<A> =\n  { left: value, right: value }\n\nfn apply<A, B> transform: Mapper<A, B> -> value: A -> B =\n  transform value\n\nfn app<A> effect: App<A> -> Effect<{ console: Console }, AppError, A> = effect\n\nfn failure value: Failure -> AppError = value\n\nfn result value: AppResult -> Either<AppError, Int> = value\n\nfn increment state: Cell<Int> -> Task<Unit> =\n  signals.update (\\value: Int -> value + 1) state\n\nfn view state: Cell<Int>\n  -> current: Int\n  -> html.Html<Task<Unit>> =\n  html.button {\n    onClick: increment state,\n    children: `${current}`\n  }\n\nfn content state: Cell<Int> -> View<html.Html<Task<Unit>>> =\n  signals.map (view state) state\n\neffect fn compact = succeed ()\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    state <- signals.make 41\n    increment state\n    let rendered = content state\n    current <- *state\n    let values = pair $ apply userId current\n    println $ `aliases: ${values.left}, signal: ${current}`\n  }\n"
+  ],
+  "names": [
+    "AppError",
+    "AppFailed",
+    "userId",
+    "pair",
+    "apply",
+    "transform",
+    "failure",
+    "result",
+    "increment",
+    "update",
+    "add",
+    "view",
+    "button",
+    "increment",
+    "intShow",
+    "content",
+    "map",
+    "view",
+    "compact",
+    "succeed",
+    "main",
+    "state",
+    "make",
+    "increment",
+    "rendered",
+    "content",
+    "current",
+    "read",
+    "values",
+    "pair",
+    "apply",
+    "println",
+    "intShow",
+    "intShow"
+  ],
+  "mappings": ";;;;;;;AASAA;;AACIC;AAQJC;AAEAC;AAGAC;AAKAE;AAEAC;AAEAC;AAGAG;AAQAI;AAGAG;AAEAE"
+}

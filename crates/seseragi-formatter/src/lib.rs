@@ -138,4 +138,25 @@ mod tests {
         assert!(!formatted.changed);
         assert_eq!(formatted.text, source);
     }
+
+    #[test]
+    fn canonicalizes_alias_layout_without_changing_its_type_structure() {
+        let source = concat!(
+            "pub alias Pair<A> = { left: A, right: A }  \r\n",
+            "\r\n",
+            "alias TaskResult<A> =\r\n",
+            "      Effect<{}, Never, A>\r\n",
+        );
+        let expected = concat!(
+            "pub alias Pair<A> = { left: A, right: A }\n",
+            "\n",
+            "alias TaskResult<A> =\n",
+            "  Effect<{}, Never, A>\n",
+        );
+
+        let first = format(source);
+        assert!(first.changed);
+        assert_eq!(first.text, expected);
+        assert!(!format(&first.text).changed);
+    }
 }

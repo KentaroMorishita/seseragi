@@ -541,6 +541,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
 
     for declaration in module.declarations {
         match declaration {
+            TypedDecl::Alias { .. } => {}
             TypedDecl::Adt {
                 symbol,
                 name,

@@ -1,0 +1,5 @@
+struct Secret {
+  value: Int,
+}
+
+pub alias Leaked = Secret

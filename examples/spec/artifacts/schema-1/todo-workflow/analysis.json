@@ -3622,6 +3622,19 @@
       "constraints": []
     },
     {
+      "identity": "std/prelude::Task",
+      "name": "Task",
+      "module": "std/prelude",
+      "category": "Effect",
+      "kind": "alias",
+      "signature": "alias Task<A> = Effect<{}, Never, A>",
+      "description": "Transparent alias for an Effect with no environment and no recoverable failure.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::fail",
       "name": "fail",
       "module": "std/effect",

@@ -55,7 +55,7 @@ top-levelには次だけを書けます。
 `alias`、`struct`、`trait`、custom `operator`、`foreign` blockだけを他moduleから参照できます。
 
 ```seseragi
-pub fn findUser id: UserId -> Task<FindError, Maybe<User>> = ...
+pub fn findUser id: UserId -> Effect<{}, FindError, Maybe<User>> = ...
 ```
 
 公開 `let` と公開関数は完全な型注釈を必要とします。公開型の署名からprivate型を参照

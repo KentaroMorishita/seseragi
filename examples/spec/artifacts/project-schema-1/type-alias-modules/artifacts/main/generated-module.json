@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "module": "fixture/type-alias-modules::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.string",
+      "core.unit",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/type-alias-modules/main.ts",
+    "sourceMap": "dist/type-alias-modules/main.ts.map"
+  }
+}

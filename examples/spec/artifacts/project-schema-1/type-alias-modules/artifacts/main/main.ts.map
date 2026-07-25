@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "file": "dist/type-alias-modules/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/type-alias-modules::main"
+  ],
+  "sourcesContent": [
+    "import * as domain from \"./domain\"\nimport { Pair, duplicate } from \"./domain\"\n\nfn swap<A> value: Pair<A> -> domain.Pair<A> =\n  { left: value.right, right: value.left }\n\nfn message value: Pair<String> -> String = value.left\n\npub effect fn main =\n  println $ message $ swap $ duplicate \"Imported alias\"\n"
+  ],
+  "names": [
+    "swap",
+    "message",
+    "main",
+    "println",
+    "message",
+    "swap",
+    "duplicate"
+  ],
+  "mappings": ";;;AAGAA;AAGAC;AAEAC"
+}

@@ -1647,11 +1647,11 @@ type FiberExit<E, A> =
 
 fn fork<R, E, A> effect: Effect<R, E, A>
   -> Effect<R, Never, Fiber<E, A>>
-fn await<E, A> fiber: Fiber<E, A> -> Task<Never, FiberExit<E, A>>
-fn poll<E, A> fiber: Fiber<E, A> -> Task<Never, Maybe<FiberExit<E, A>>>
-fn join<E, A> fiber: Fiber<E, A> -> Task<E, A>
-fn interrupt<E, A> fiber: Fiber<E, A> -> Task<Never, Unit>
-fn yieldNow -> Task<Never, Unit>
+fn await<E, A> fiber: Fiber<E, A> -> Task<FiberExit<E, A>>
+fn poll<E, A> fiber: Fiber<E, A> -> Task<Maybe<FiberExit<E, A>>>
+fn join<E, A> fiber: Fiber<E, A> -> Effect<{}, E, A>
+fn interrupt<E, A> fiber: Fiber<E, A> -> Task<Unit>
+fn yieldNow -> Task<Unit>
 
 fn race<R, E, A>
   left: Effect<R, E, A>
@@ -1721,12 +1721,12 @@ failureやcancellationとして観測しません。途中終了と入力順が�
 ### `std/ref`
 
 ```seseragi
-fn make<A> initial: A -> Task<Never, Ref<A>>
-fn get<A> reference: Ref<A> -> Task<Never, A>
-fn set<A> value: A -> reference: Ref<A> -> Task<Never, Unit>
-fn update<A> f: (A -> A) -> reference: Ref<A> -> Task<Never, Unit>
+fn make<A> initial: A -> Task<Ref<A>>
+fn get<A> reference: Ref<A> -> Task<A>
+fn set<A> value: A -> reference: Ref<A> -> Task<Unit>
+fn update<A> f: (A -> A) -> reference: Ref<A> -> Task<Unit>
 fn modify<A, B>
-  f: (A -> (B, A)) -> reference: Ref<A> -> Task<Never, B>
+  f: (A -> (B, A)) -> reference: Ref<A> -> Task<B>
 ```
 
 Refはstandard opaque typeで、全operationはlinearizableです。update/modifyのpure callbackはatomic
@@ -1736,14 +1736,14 @@ section内で一度だけ呼び、Effectを返せません。Refはsubscriberを
 ### `std/deferred`
 
 ```seseragi
-fn make<E, A> -> Task<Never, Deferred<E, A>>
-fn await<E, A> deferred: Deferred<E, A> -> Task<E, A>
+fn make<E, A> -> Task<Deferred<E, A>>
+fn await<E, A> deferred: Deferred<E, A> -> Effect<{}, E, A>
 fn poll<E, A> deferred: Deferred<E, A>
-  -> Task<Never, Maybe<Either<E, A>>>
+  -> Task<Maybe<Either<E, A>>>
 fn complete<E, A>
-  result: Either<E, A> -> deferred: Deferred<E, A> -> Task<Never, Bool>
-fn succeed<E, A> value: A -> deferred: Deferred<E, A> -> Task<Never, Bool>
-fn fail<E, A> error: E -> deferred: Deferred<E, A> -> Task<Never, Bool>
+  result: Either<E, A> -> deferred: Deferred<E, A> -> Task<Bool>
+fn succeed<E, A> value: A -> deferred: Deferred<E, A> -> Task<Bool>
+fn fail<E, A> error: E -> deferred: Deferred<E, A> -> Task<Bool>
 ```
 
 Deferredは一度だけ完了するstandard opaque typeです。最初のcompleteだけTrueを返して全waiterを登録順に
@@ -1759,16 +1759,16 @@ type QueueCreateError deriving Eq, Show =
 type QueueClosed deriving Eq, Show =
   | QueueClosed
 
-fn bounded<A> capacity: Int -> Task<QueueCreateError, Queue<A>>
-fn unbounded<A> -> Task<Never, Queue<A>>
-fn offer<A> value: A -> queue: Queue<A> -> Task<QueueClosed, Unit>
-fn take<A> queue: Queue<A> -> Task<QueueClosed, A>
+fn bounded<A> capacity: Int -> Effect<{}, QueueCreateError, Queue<A>>
+fn unbounded<A> -> Task<Queue<A>>
+fn offer<A> value: A -> queue: Queue<A> -> Effect<{}, QueueClosed, Unit>
+fn take<A> queue: Queue<A> -> Effect<{}, QueueClosed, A>
 fn tryOffer<A>
-  value: A -> queue: Queue<A> -> Task<Never, Either<QueueClosed, Bool>>
+  value: A -> queue: Queue<A> -> Task<Either<QueueClosed, Bool>>
 fn tryTake<A>
-  queue: Queue<A> -> Task<Never, Either<QueueClosed, Maybe<A>>>
-fn size<A> queue: Queue<A> -> Task<Never, Int>
-fn close<A> queue: Queue<A> -> Task<Never, Unit>
+  queue: Queue<A> -> Task<Either<QueueClosed, Maybe<A>>>
+fn size<A> queue: Queue<A> -> Task<Int>
+fn close<A> queue: Queue<A> -> Task<Unit>
 ```
 
 QueueはFIFOのstandard opaque typeです。boundedは正capacityだけを受理します。offerは空きができるまで、
@@ -1786,14 +1786,14 @@ Right True、満杯ならRight False、closedならLeftです。tryTakeも待た
 type SemaphoreCreateError deriving Eq, Show =
   | NonPositivePermits Int
 
-fn make permits: Int -> Task<SemaphoreCreateError, Semaphore>
-fn acquire semaphore: Semaphore -> Task<Never, Permit>
-fn release permit: Permit -> Task<Never, Unit>
+fn make permits: Int -> Effect<{}, SemaphoreCreateError, Semaphore>
+fn acquire semaphore: Semaphore -> Task<Permit>
+fn release permit: Permit -> Task<Unit>
 fn withPermit<R, E, A>
   semaphore: Semaphore
   -> effect: Effect<R, E, A>
   -> Effect<R, E, A>
-fn available semaphore: Semaphore -> Task<Never, Int>
+fn available semaphore: Semaphore -> Task<Int>
 ```
 
 SemaphoreとPermitはstandard opaque typeです。makeは正permit数だけを受理します。acquire waiterは
@@ -2702,13 +2702,13 @@ fn suite name: String -> children: Array<Test> -> Test
 fn skip reason: String -> child: Test -> Test
 fn timeout duration: Duration -> child: Test -> Test
 
-fn equal<A> expected: A -> actual: A -> Task<TestFailure, Unit>
+fn equal<A> expected: A -> actual: A -> Effect<{}, TestFailure, Unit>
 where Eq<A>, Debug<A>
-fn notEqual<A> unexpected: A -> actual: A -> Task<TestFailure, Unit>
+fn notEqual<A> unexpected: A -> actual: A -> Effect<{}, TestFailure, Unit>
 where Eq<A>, Debug<A>
-fn isTrue actual: Bool -> Task<TestFailure, Unit>
-fn isFalse actual: Bool -> Task<TestFailure, Unit>
-fn fail message: String -> Task<TestFailure, Unit>
+fn isTrue actual: Bool -> Effect<{}, TestFailure, Unit>
+fn isFalse actual: Bool -> Effect<{}, TestFailure, Unit>
+fn fail message: String -> Effect<{}, TestFailure, Unit>
 fn expectFailure<R, E, A>
   predicate: (E -> Bool)
   -> effect: Effect<R, E, A>

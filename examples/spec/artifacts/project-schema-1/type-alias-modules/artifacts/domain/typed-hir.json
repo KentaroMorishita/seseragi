@@ -1,0 +1,168 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/type-alias-modules::domain",
+  "declarations": [
+    {
+      "kind": "alias",
+      "symbol": "fixture/type-alias-modules::domain::Pair",
+      "name": "Pair",
+      "visibility": "public",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          },
+          {
+            "name": "right",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        ]
+      },
+      "origin": {
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/type-alias-modules::domain::duplicate",
+      "visibility": "public",
+      "origin": {
+        "start": 43,
+        "end": 116
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "left",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            },
+            {
+              "name": "right",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 63,
+            "end": 68
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "left",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "start": 95,
+                "end": 100
+              }
+            },
+            "origin": {
+              "start": 89,
+              "end": 100
+            }
+          },
+          {
+            "kind": "field",
+            "name": "right",
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "start": 109,
+                "end": 114
+              }
+            },
+            "origin": {
+              "start": 102,
+              "end": 114
+            }
+          }
+        ],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "left",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            },
+            {
+              "name": "right",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 87,
+          "end": 116
+        }
+      }
+    }
+  ]
+}

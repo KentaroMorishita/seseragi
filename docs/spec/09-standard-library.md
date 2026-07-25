@@ -223,7 +223,7 @@ Boolに対する `&&`, `||`, `!` は型クラス演算ではなく、言語組�
 - `Array`
 - `List`
 - `NonEmptyList`
-- `Effect<R, E, _>`。`Task<E, _>` はそのaliasとして同じinstanceを使う
+- `Effect<R, E, _>`。`Task<_>` は `Effect<{}, Never, _>` のaliasとして同じinstanceを使う
 - `Signal`
 - `Stream<R, E, _>`
 - `Validation<E, _>`
@@ -276,7 +276,7 @@ fn recover<R, E, F, A>
   -> effect: Effect<R, E, A>
   -> Effect<R, F, A>
 fn provide<R, E, A>
-  environment: R -> effect: Effect<R, E, A> -> Task<E, A>
+  environment: R -> effect: Effect<R, E, A> -> Effect<{}, E, A>
 fn parallel<R, E, A>
   effects: Array<Effect<R, E, A>> -> Effect<R, E, Array<A>>
 fn forEach<C, R, E, A>

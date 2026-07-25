@@ -35,7 +35,7 @@ Seseragi は静的型付きです。すべての式は実行前に型を持ち�
 Maybe<A>          欠如する可能性のある値
 Either<E, A>      Eで失敗したかAで成功した同期的な結果
 Effect<R, E, A>   environment Rを要求し、Eで失敗しうる遅延計算
-Task<E, A>        Effect<{}, E, A>のalias
+Task<A>           Effect<{}, Never, A>の透明alias
 Array<A>          不変の連続列
 List<A>           不変の連結リスト
 Range<A>          Aの有限な順序付きrange。range literalはRange<Int>
@@ -407,6 +407,15 @@ aliasは型へ別名を付けますが、新しいnominal型を作りません�
 alias利用時は型引数の個数を検査し、宣言parameterを引数でcapture-avoiding substitution
 してから型検査します。直接・間接を問わず、aliasの循環はコンパイルエラーです。
 値を区別したい場合はnewtype、struct、ADTのいずれかを使います。
+
+alias右辺にはrecord、function、ADT、imported type、Effectを含む通常の型を記述できます。
+型identityと互換性判定はaliasを再帰的に展開した正規型で行い、loweringとruntimeにはalias専用の
+representationを残しません。一方、hover、completion、definition jumpなどのtoolingは宣言spanと
+sourceで使われたalias名を保持します。
+
+private aliasはmodule interfaceへ公開しません。`pub alias`はtype parameterと展開後の型をinterfaceへ
+保存し、import先でも同じ透明性を持ちます。ただし、展開先へprivateなstruct、ADT、newtypeが含まれる
+public aliasは、そのprivate型をmodule外へ漏らすためコンパイルエラーです。
 
 ## 2.18 newtype
 

@@ -8,8 +8,8 @@ pub foreign "typescript" from "analytics" {
   }
 }
 
-fn count values: Array<Float> -> Task<Js.Error, Float> =
+fn count values: Array<Float> -> Effect<{}, Js.Error, Float> =
   metrics.count values
 
-fn label value: Float -> Task<Js.Error, String> =
+fn label value: Float -> Effect<{}, Js.Error, String> =
   metrics.format.label value

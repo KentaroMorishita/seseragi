@@ -1,0 +1,559 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/type-alias-modules::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/type-alias-modules::domain",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Pair",
+          "local": "Pair",
+          "canonical": "fixture/type-alias-modules::domain::Pair",
+          "origin": {
+            "start": 44,
+            "end": 48
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "duplicate",
+          "local": "duplicate",
+          "canonical": "fixture/type-alias-modules::domain::duplicate",
+          "origin": {
+            "start": 50,
+            "end": 59
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "Pair",
+          "local": "domain.Pair",
+          "canonical": "fixture/type-alias-modules::domain::Pair",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "./domain",
+      "module": "fixture/type-alias-modules::domain",
+      "origin": {
+        "start": 35,
+        "end": 77
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Pair",
+          "local": "Pair",
+          "canonical": "fixture/type-alias-modules::domain::Pair",
+          "origin": {
+            "start": 44,
+            "end": 48
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "duplicate",
+          "local": "duplicate",
+          "canonical": "fixture/type-alias-modules::domain::duplicate",
+          "origin": {
+            "start": 50,
+            "end": 59
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "Pair",
+          "local": "domain.Pair",
+          "canonical": "fixture/type-alias-modules::domain::Pair",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/type-alias-modules::main::swap",
+      "visibility": "private",
+      "origin": {
+        "start": 79,
+        "end": 167
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "left",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            },
+            {
+              "name": "right",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "left",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "right",
+                "type": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "start": 90,
+            "end": 95
+          }
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "left",
+            "value": {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 135,
+                  "end": 140
+                }
+              },
+              "field": "right",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "start": 135,
+                "end": 146
+              }
+            },
+            "origin": {
+              "start": 129,
+              "end": 146
+            }
+          },
+          {
+            "kind": "field",
+            "name": "right",
+            "value": {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 155,
+                  "end": 160
+                }
+              },
+              "field": "left",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "origin": {
+                "start": 155,
+                "end": 165
+              }
+            },
+            "origin": {
+              "start": 148,
+              "end": 165
+            }
+          }
+        ],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "left",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            },
+            {
+              "name": "right",
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 127,
+          "end": 167
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/type-alias-modules::main::message",
+      "visibility": "private",
+      "origin": {
+        "start": 169,
+        "end": 222
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "left",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "right",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "start": 180,
+            "end": 185
+          }
+        }
+      ],
+      "body": {
+        "kind": "field-access",
+        "receiver": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "left",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "right",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "start": 212,
+            "end": 217
+          }
+        },
+        "field": "left",
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 212,
+          "end": 222
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "fixture/type-alias-modules::main::main",
+      "visibility": "public",
+      "origin": {
+        "start": 224,
+        "end": 300
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/prelude::println",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "fixture/type-alias-modules::main::message",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "fixture/type-alias-modules::main::swap",
+                "arguments": [
+                  {
+                    "kind": "call",
+                    "callee": "fixture/type-alias-modules::domain::duplicate",
+                    "arguments": [
+                      {
+                        "kind": "string",
+                        "value": "Imported alias",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 284,
+                          "end": 300
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "left",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        },
+                        {
+                          "name": "right",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 274,
+                      "end": 300
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 267,
+                  "end": 300
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 257,
+              "end": 300
+            }
+          }
+        ],
+        "origin": {
+          "start": 247,
+          "end": 300
+        }
+      }
+    }
+  ]
+}

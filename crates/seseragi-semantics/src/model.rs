@@ -95,6 +95,14 @@ pub struct TypedModuleInterface {
     rename_all_fields = "camelCase"
 )]
 pub enum TypedDecl {
+    Alias {
+        symbol: String,
+        name: String,
+        visibility: Visibility,
+        type_parameters: Vec<String>,
+        target: TypedType,
+        origin: ByteSpan,
+    },
     Adt {
         symbol: String,
         name: String,

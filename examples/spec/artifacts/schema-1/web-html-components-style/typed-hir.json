@@ -464,8 +464,9 @@
         "typeParameters": [],
         "constraints": [],
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "html.Html",
+          "canonical": "std/web/html::Html",
           "arguments": [
             {
               "kind": "named",
@@ -1159,8 +1160,9 @@
         "typeParameters": [],
         "constraints": [],
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "html.Html",
+          "canonical": "std/web/html::Html",
           "arguments": [
             {
               "kind": "named",

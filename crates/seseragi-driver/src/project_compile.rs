@@ -346,6 +346,54 @@ mod tests {
     }
 
     #[test]
+    fn expands_imported_public_aliases_without_runtime_edges() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module(
+                "fixture/alias::main".to_owned(),
+                [("./domain".to_owned(), "fixture/alias::domain".to_owned())],
+            )
+            .unwrap();
+        graph
+            .add_module("fixture/alias::domain".to_owned(), [])
+            .unwrap();
+
+        let project = compile_project(
+            graph,
+            [
+                ProjectModuleInput::new(
+                    "domain.ssrg",
+                    "fixture/alias::domain",
+                    "pub alias Pair<A> = { left: A, right: A }\n\npub fn pair<A> value: A -> Pair<A> = { left: value, right: value }\n",
+                    "dist/alias/domain.js",
+                ),
+                ProjectModuleInput::new(
+                    "main.ssrg",
+                    "fixture/alias::main",
+                    "import { Pair, pair } from \"./domain\"\n\npub fn duplicate value: Int -> Pair<Int> = pair value\n",
+                    "dist/alias/main.js",
+                ),
+            ],
+        )
+        .unwrap();
+
+        let domain = project.modules.get("fixture/alias::domain").unwrap();
+        let alias = domain
+            .typed_interface
+            .exports
+            .iter()
+            .find(|export| export.name == "Pair")
+            .unwrap();
+        assert!(matches!(
+            alias.representation,
+            Some(seseragi_syntax::InterfaceType::Record { .. })
+        ));
+        let main = project.modules.get("fixture/alias::main").unwrap();
+        assert!(main.generated.typescript.contains("pair(value)"));
+        assert!(!main.generated.typescript.contains("type Pair"));
+    }
+
+    #[test]
     fn rejects_a_graph_input_with_parse_errors_before_linking() {
         let mut graph = ModuleGraph::new();
         graph

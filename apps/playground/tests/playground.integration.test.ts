@@ -228,9 +228,16 @@ describe("Playground sample catalog", () => {
     ).toEqual([{ name: "right", type: "Int" }])
     expect(
       analysis.standardLibrary
-        .filter((item) => ["join", "sum", "forEach", "map"].includes(item.name))
+        .filter((item) =>
+          ["join", "sum", "forEach", "map", "Task"].includes(item.name)
+        )
         .map((item) => item.name)
-    ).toEqual(expect.arrayContaining(["join", "sum", "forEach", "map"]))
+    ).toEqual(
+      expect.arrayContaining(["join", "sum", "forEach", "map", "Task"])
+    )
+    expect(
+      analysis.standardLibrary.find((item) => item.name === "Task")?.signature
+    ).toBe("alias Task<A> = Effect<{}, Never, A>")
     const formItems = analysis.standardLibrary.filter(
       (item) => item.module === "std/web/html"
     )
@@ -349,12 +356,19 @@ describe("Playground sample catalog", () => {
     )
 
     expect(sample?.interactive).toBe(true)
-    expect(sample?.source).toContain(
-      "Signal<html.Html<Effect<{}, Never, Unit>>>"
-    )
+    expect(sample?.source).toContain("Signal<html.Html<Task<Unit>>>")
+    expect(sample?.source).not.toContain("Effect<{}, Never, Unit>")
     expect(sample?.source).toContain("signals.switchMap")
     expect(sample?.source).toContain("effect fn mount")
     expect(sample?.source).not.toContain("type RootAction")
+  })
+
+  test("shows transparent user aliases and Task in the learning catalog", () => {
+    const sample = samples.find((candidate) => candidate.id === "type-aliases")
+
+    expect(sample?.source).toContain("alias Pair<A>")
+    expect(sample?.source).toContain("Task<Unit>")
+    expect(sample?.expectedOutput).toBe("user: 42, signal: 42")
   })
 
   test("returns structured diagnostics for invalid source", async () => {

@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/type-alias-modules::domain",
+  "runtimeRequirements": [],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "duplicate",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "left",
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          },
+          {
+            "kind": "field",
+            "name": "right",
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 43,
+        "end": 116
+      }
+    }
+  ]
+}

@@ -94,7 +94,7 @@ Uint8Array                      -> Bytes
 ```
 
 mutable arrayを不変Arrayとして参照共有しません。`Js.MutableArray<T>` からsnapshotを取る
-明示関数は `Task<Js.Error, Array<T>>` を返します。
+明示関数は `Effect<{}, Js.Error, Array<T>>` を返します。
 
 Uint8Arrayはgenerated wrapperが呼び出しの両方向でcopyするBytes bindingを生成します。Node Bufferや
 ArrayBuffer、DataView、ほかのtyped arrayを名前の類似だけでBytesへ変換しません。設定で明示選択した

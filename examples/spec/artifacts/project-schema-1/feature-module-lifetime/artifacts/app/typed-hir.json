@@ -1141,8 +1141,9 @@
         "typeParameters": [],
         "constraints": [],
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "html.Html",
+          "canonical": "std/web/html::Html",
           "arguments": [
             {
               "kind": "named",
@@ -2248,8 +2249,9 @@
         "typeParameters": [],
         "constraints": [],
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "html.Html",
+          "canonical": "std/web/html::Html",
           "arguments": [
             {
               "kind": "named",
@@ -2419,12 +2421,14 @@
         "typeParameters": [],
         "constraints": [],
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "Signal",
+          "canonical": "std/signal::Signal",
           "arguments": [
             {
-              "kind": "named",
+              "kind": "external-named",
               "name": "html.Html",
+              "canonical": "std/web/html::Html",
               "arguments": [
                 {
                   "kind": "named",
@@ -2883,8 +2887,9 @@
         "typeParameters": [],
         "constraints": [],
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "html.Html",
+          "canonical": "std/web/html::Html",
           "arguments": [
             {
               "kind": "named",
@@ -3689,8 +3694,9 @@
             {
               "name": "dom",
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "dom.Dom",
+                "canonical": "std/web/dom::Dom",
                 "arguments": []
               }
             }

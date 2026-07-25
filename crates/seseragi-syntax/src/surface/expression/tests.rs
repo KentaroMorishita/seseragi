@@ -389,7 +389,7 @@ fn parses_tuple_values_without_losing_grouped_expressions() {
 
 #[test]
 fn parses_signal_read_and_assignment_with_fixed_precedence() {
-    let read = first_body("pub fn snapshot source: Signal<Int> -> Task<Never, Int> = *source\n");
+    let read = first_body("pub fn snapshot source: Signal<Int> -> Task<Int> = *source\n");
     assert!(matches!(
         read,
         SurfaceExpr::Prefix {
@@ -400,9 +400,8 @@ fn parses_signal_read_and_assignment_with_fixed_precedence() {
             && matches!(*operand, SurfaceExpr::Name { ref name, .. } if name == "source")
     ));
 
-    let assignment = first_body(
-        "pub fn replace target: MutableSignal<Int> -> Task<Never, Unit> = target := 1 + 2\n",
-    );
+    let assignment =
+        first_body("pub fn replace target: MutableSignal<Int> -> Task<Unit> = target := 1 + 2\n");
     assert!(matches!(
         assignment,
         SurfaceExpr::Assignment { target, value, .. }

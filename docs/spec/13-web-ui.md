@@ -449,8 +449,8 @@ fn mount<R, E, Action>
   -> content: Signal<Html<Action>>
   -> Effect<R & { dom: Dom }, DomError, DomMount<E>>
 fn awaitMount<E> mount: DomMount<E>
-  -> Task<DomRuntimeError<E>, Unit>
-fn unmount<E> mount: DomMount<E> -> Task<Never, Unit>
+  -> Effect<{}, DomRuntimeError<E>, Unit>
+fn unmount<E> mount: DomMount<E> -> Task<Unit>
 fn run<R, E, Action>
   options: DomOptions
   -> target: DomTarget

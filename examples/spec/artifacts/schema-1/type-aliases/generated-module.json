@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "module": "artifact/type-aliases",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "signal.mutable-type",
+      "effect.core.type",
+      "web.html.type",
+      "signal.type",
+      "core.adt",
+      "core.int64",
+      "core.either",
+      "signal.update",
+      "core.unit",
+      "core.int64.add",
+      "web.html.button",
+      "core.string",
+      "core.int64.show",
+      "signal.map",
+      "effect.core.succeed",
+      "effect.core.flatMap",
+      "signal.make",
+      "signal.read",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

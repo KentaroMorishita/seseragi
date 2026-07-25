@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "module": "artifact/type-aliases",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/web/html",
+      "module": "artifact/type-aliases/std/web/html",
+      "origin": {
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/type-aliases/std/web/html::*",
+          "localName": "html"
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "artifact/type-aliases/std/signal",
+      "origin": {
+        "start": 37,
+        "end": 74
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/type-aliases/std/signal::*",
+          "localName": "signals"
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "artifact/type-aliases/std/signal",
+      "origin": {
+        "start": 75,
+        "end": 125
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "name": "MutableSignal",
+          "symbol": "artifact/type-aliases/std/signal::MutableSignal"
+        },
+        {
+          "namespace": "value",
+          "name": "Signal",
+          "symbol": "artifact/type-aliases/std/signal::Signal"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/type-aliases::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declaration": {
+        "start": 1193,
+        "end": 1473
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

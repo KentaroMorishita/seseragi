@@ -3,6 +3,7 @@ use seseragi_syntax::{
     lex, parse_diagnostics, Diagnostic, DiagnosticArtifact, SurfaceDecl, SurfaceImplMember, Token,
 };
 
+mod aliases;
 mod array;
 mod conditional;
 mod effect;
@@ -53,6 +54,7 @@ pub(crate) fn semantic_diagnostics_from_resolved(
     }
     traits::collect_trait_diagnostics(resolved, &resolution, &mut diagnostics);
     impl_blocks::collect_impl_diagnostics(resolved, &resolution, &mut diagnostics);
+    aliases::collect_alias_diagnostics(resolved, &mut diagnostics);
     resolution::collect_resolution_diagnostics(resolved, &mut diagnostics);
     let primary_diagnostics = diagnostics
         .iter()

@@ -24,7 +24,7 @@ fn view count: Int -> html.Html<Action> =
   }
 
 fn dispatch count: MutableSignal<Int> -> action: Action
-  -> Task<DispatchError, Unit> =
+  -> Effect<{}, DispatchError, Unit> =
   match action {
     Increment -> signals.update (\value -> value + 1) count
     Stop -> effects.fail StopRequested
