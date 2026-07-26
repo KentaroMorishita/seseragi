@@ -303,10 +303,12 @@ describe("Playground sample catalog", () => {
     expect(html).toContain(
       'sandbox="allow-forms allow-same-origin allow-scripts"'
     )
+    expect(html).toContain('referrerpolicy="no-referrer"')
     expect(main).toContain("createPreviewDocument(html)")
     expect(main).toContain("prepareInteractivePreview()")
     expect(previewDocument).toContain("script-src 'none'")
     expect(previewDocument).toContain("form-action 'none'")
+    expect(previewDocument).toContain("img-src 'self' https: data: blob:")
   })
 
   for (const sample of samples) {
