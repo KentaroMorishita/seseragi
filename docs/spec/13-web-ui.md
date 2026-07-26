@@ -80,10 +80,19 @@ alias ElementProps<Action, C> = {
   draggable?: Bool,
   contentEditable?: Bool,
   onClick?: Action,
+  preventClickDefault?: Bool,
+  stopClickPropagation?: Bool,
   onFocus?: Action,
   onBlur?: Action,
-  onKeyDown?: KeyboardEvent -> Action,
-  onKeyUp?: KeyboardEvent -> Action,
+  onKeyDown?: KeyboardEvent -> EventAction<Action>,
+  onKeyUp?: KeyboardEvent -> EventAction<Action>,
+  onMouseDown?: MouseEvent -> EventAction<Action>,
+  onMouseUp?: MouseEvent -> EventAction<Action>,
+  onPointerDown?: PointerEvent -> EventAction<Action>,
+  onPointerUp?: PointerEvent -> EventAction<Action>,
+  onDoubleClick?: MouseEvent -> EventAction<Action>,
+  onContextMenu?: MouseEvent -> EventAction<Action>,
+  onScroll?: ScrollEvent -> EventAction<Action>,
   children: C
 }
 
@@ -104,10 +113,19 @@ alias ButtonProps<Action, C> = {
   disabled?: Bool,
   buttonType?: String,
   onClick?: Action,
+  preventClickDefault?: Bool,
+  stopClickPropagation?: Bool,
   onFocus?: Action,
   onBlur?: Action,
-  onKeyDown?: KeyboardEvent -> Action,
-  onKeyUp?: KeyboardEvent -> Action,
+  onKeyDown?: KeyboardEvent -> EventAction<Action>,
+  onKeyUp?: KeyboardEvent -> EventAction<Action>,
+  onMouseDown?: MouseEvent -> EventAction<Action>,
+  onMouseUp?: MouseEvent -> EventAction<Action>,
+  onPointerDown?: PointerEvent -> EventAction<Action>,
+  onPointerUp?: PointerEvent -> EventAction<Action>,
+  onDoubleClick?: MouseEvent -> EventAction<Action>,
+  onContextMenu?: MouseEvent -> EventAction<Action>,
+  onScroll?: ScrollEvent -> EventAction<Action>,
   children: C
 }
 
@@ -125,6 +143,9 @@ alias InputProps<Action> = {
   dir?: String,
   draggable?: Bool,
   contentEditable?: Bool,
+  onClick?: Action,
+  preventClickDefault?: Bool,
+  stopClickPropagation?: Bool,
   value?: String,
   checked?: Bool,
   name?: String,
@@ -136,8 +157,15 @@ alias InputProps<Action> = {
   onChange?: ChangeEvent -> Action,
   onFocus?: Action,
   onBlur?: Action,
-  onKeyDown?: KeyboardEvent -> Action,
-  onKeyUp?: KeyboardEvent -> Action
+  onKeyDown?: KeyboardEvent -> EventAction<Action>,
+  onKeyUp?: KeyboardEvent -> EventAction<Action>,
+  onMouseDown?: MouseEvent -> EventAction<Action>,
+  onMouseUp?: MouseEvent -> EventAction<Action>,
+  onPointerDown?: PointerEvent -> EventAction<Action>,
+  onPointerUp?: PointerEvent -> EventAction<Action>,
+  onDoubleClick?: MouseEvent -> EventAction<Action>,
+  onContextMenu?: MouseEvent -> EventAction<Action>,
+  onScroll?: ScrollEvent -> EventAction<Action>
 }
 
 alias TextareaProps<Action> = {
@@ -154,6 +182,9 @@ alias TextareaProps<Action> = {
   dir?: String,
   draggable?: Bool,
   contentEditable?: Bool,
+  onClick?: Action,
+  preventClickDefault?: Bool,
+  stopClickPropagation?: Bool,
   value?: String,
   name?: String,
   disabled?: Bool,
@@ -163,8 +194,15 @@ alias TextareaProps<Action> = {
   onChange?: ChangeEvent -> Action,
   onFocus?: Action,
   onBlur?: Action,
-  onKeyDown?: KeyboardEvent -> Action,
-  onKeyUp?: KeyboardEvent -> Action
+  onKeyDown?: KeyboardEvent -> EventAction<Action>,
+  onKeyUp?: KeyboardEvent -> EventAction<Action>,
+  onMouseDown?: MouseEvent -> EventAction<Action>,
+  onMouseUp?: MouseEvent -> EventAction<Action>,
+  onPointerDown?: PointerEvent -> EventAction<Action>,
+  onPointerUp?: PointerEvent -> EventAction<Action>,
+  onDoubleClick?: MouseEvent -> EventAction<Action>,
+  onContextMenu?: MouseEvent -> EventAction<Action>,
+  onScroll?: ScrollEvent -> EventAction<Action>
 }
 
 alias FormProps<Action, C> = {
@@ -182,10 +220,19 @@ alias FormProps<Action, C> = {
   draggable?: Bool,
   contentEditable?: Bool,
   onClick?: Action,
+  preventClickDefault?: Bool,
+  stopClickPropagation?: Bool,
   onFocus?: Action,
   onBlur?: Action,
-  onKeyDown?: KeyboardEvent -> Action,
-  onKeyUp?: KeyboardEvent -> Action,
+  onKeyDown?: KeyboardEvent -> EventAction<Action>,
+  onKeyUp?: KeyboardEvent -> EventAction<Action>,
+  onMouseDown?: MouseEvent -> EventAction<Action>,
+  onMouseUp?: MouseEvent -> EventAction<Action>,
+  onPointerDown?: PointerEvent -> EventAction<Action>,
+  onPointerUp?: PointerEvent -> EventAction<Action>,
+  onDoubleClick?: MouseEvent -> EventAction<Action>,
+  onContextMenu?: MouseEvent -> EventAction<Action>,
+  onScroll?: ScrollEvent -> EventAction<Action>,
   onSubmit?: Action,
   children: C
 }
@@ -206,10 +253,19 @@ alias LabelProps<Action, C> = {
   contentEditable?: Bool,
   htmlFor?: String,
   onClick?: Action,
+  preventClickDefault?: Bool,
+  stopClickPropagation?: Bool,
   onFocus?: Action,
   onBlur?: Action,
-  onKeyDown?: KeyboardEvent -> Action,
-  onKeyUp?: KeyboardEvent -> Action,
+  onKeyDown?: KeyboardEvent -> EventAction<Action>,
+  onKeyUp?: KeyboardEvent -> EventAction<Action>,
+  onMouseDown?: MouseEvent -> EventAction<Action>,
+  onMouseUp?: MouseEvent -> EventAction<Action>,
+  onPointerDown?: PointerEvent -> EventAction<Action>,
+  onPointerUp?: PointerEvent -> EventAction<Action>,
+  onDoubleClick?: MouseEvent -> EventAction<Action>,
+  onContextMenu?: MouseEvent -> EventAction<Action>,
+  onScroll?: ScrollEvent -> EventAction<Action>,
   children: C
 }
 
@@ -231,10 +287,19 @@ alias AnchorProps<Action, C> = {
   target?: LinkTarget,
   rel?: String,
   onClick?: Action,
+  preventClickDefault?: Bool,
+  stopClickPropagation?: Bool,
   onFocus?: Action,
   onBlur?: Action,
-  onKeyDown?: KeyboardEvent -> Action,
-  onKeyUp?: KeyboardEvent -> Action,
+  onKeyDown?: KeyboardEvent -> EventAction<Action>,
+  onKeyUp?: KeyboardEvent -> EventAction<Action>,
+  onMouseDown?: MouseEvent -> EventAction<Action>,
+  onMouseUp?: MouseEvent -> EventAction<Action>,
+  onPointerDown?: PointerEvent -> EventAction<Action>,
+  onPointerUp?: PointerEvent -> EventAction<Action>,
+  onDoubleClick?: MouseEvent -> EventAction<Action>,
+  onContextMenu?: MouseEvent -> EventAction<Action>,
+  onScroll?: ScrollEvent -> EventAction<Action>,
   children: C
 }
 
@@ -333,12 +398,60 @@ opaque struct KeyboardEvent {
   metaKey: Bool,
   shiftKey: Bool
 }
+
+opaque struct MouseEvent {
+  button: Int,
+  clientX: Float,
+  clientY: Float,
+  altKey: Bool,
+  controlKey: Bool,
+  metaKey: Bool,
+  shiftKey: Bool
+}
+
+opaque struct PointerEvent {
+  pointerId: Int,
+  pointerType: String,
+  isPrimary: Bool,
+  button: Int,
+  clientX: Float,
+  clientY: Float,
+  pressure: Float,
+  altKey: Bool,
+  controlKey: Bool,
+  metaKey: Bool,
+  shiftKey: Bool
+}
+
+opaque struct ScrollEvent {
+  scrollLeft: Float,
+  scrollTop: Float
+}
+
+type EventAction<Action> =
+  | IgnoreEvent
+  | Dispatch Action
+  | DispatchPreventDefault Action
+  | DispatchStopPropagation Action
+  | DispatchPreventDefaultAndStop Action
 ```
 
 `onFocus: action`と`onBlur: action`は、bubbleする`focusin` / `focusout`をruntime内で正規化してActionをqueueへ
-渡します。`onKeyDown`と`onKeyUp`のmapperは、native keyboard eventから一度だけ読み取った`KeyboardEvent`を受け取り
-Actionを返します。snapshotはhost DOM Eventを保持せず、currentTarget、prototype、mutable fieldを公開しません。
-Actionとして`Task<Unit>`を使う場合も同じ契約です。SSRはこれらのhandlerをattributeへ出力しません。
+渡します。`onKeyDown`と`onKeyUp`のmapperは、native keyboard eventから一度だけ読み取った`KeyboardEvent`を受け取り、
+`EventAction<Action>`を返します。`onMouseDown`、`onMouseUp`、`onDoubleClick`、`onContextMenu`は`MouseEvent`、
+`onPointerDown`と`onPointerUp`は`PointerEvent`、`onScroll`はeventのcurrent targetから読んだ`ScrollEvent`を同じ契約で
+mapperへ渡します。snapshotはhost DOM Eventを保持せず、currentTarget、prototype、mutable fieldを公開しません。
+
+`pointerType`はbrowserのPointer Events contractを保った`"mouse"`、`"touch"`、`"pen"`を通常値とします。runtimeは
+pointer eventをmouse eventへ合成し直さず、同じpointer snapshot contractをdesktop browserとiOS Safariで使います。
+pointer eventを提供しないbrowserではpointer handlerは発火せず、click / mouse handlerのcontractは独立して維持します。
+scroll eventはbubbleしないためDOM rootのcapture listenerで観測しますが、mapperへ渡すoffsetはmarkerを持つcurrent targetの値です。
+
+event mapperはnative listener内で同期的に一度だけ評価します。結果が`IgnoreEvent`ならbrowser制御もAction dispatchも行いません。
+ほかのconstructorでは、指定された`preventDefault`、`stopPropagation`の順に同期実行してからActionをqueueへ入れます。
+`onClick: action`は互換性のため直接Actionを受け取り、`preventClickDefault`と`stopClickPropagation`の省略値はfalseです。
+これらのclick制御fieldは`onClick`が存在するときだけ使います。`onSubmit`は従来どおり常にdefaultを同期的に防ぎます。
+Actionとして`Task<Unit>`を使う場合も同じ契約です。SSRはevent handlerや制御fieldをattributeへ出力しません。
 
 ## 13.5 safe tag、attribute、style、URL
 

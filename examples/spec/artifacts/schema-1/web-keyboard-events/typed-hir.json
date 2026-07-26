@@ -29,6 +29,38 @@
       }
     },
     {
+      "spelling": "html.EventAction",
+      "canonical": "std/web/html::EventAction",
+      "provider": {
+        "module": "std/web/html",
+        "export": "EventAction"
+      }
+    },
+    {
+      "spelling": "MouseEvent",
+      "canonical": "std/web/html::MouseEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "MouseEvent"
+      }
+    },
+    {
+      "spelling": "PointerEvent",
+      "canonical": "std/web/html::PointerEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "PointerEvent"
+      }
+    },
+    {
+      "spelling": "ScrollEvent",
+      "canonical": "std/web/html::ScrollEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "ScrollEvent"
+      }
+    },
+    {
       "spelling": "html.Html",
       "canonical": "std/web/html::Html",
       "provider": {
@@ -61,6 +93,36 @@
           "imported": "KeyboardEvent",
           "local": "html.KeyboardEvent",
           "canonical": "std/web/html::KeyboardEvent",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "EventAction",
+          "local": "html.EventAction",
+          "canonical": "std/web/html::EventAction",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "IgnoreEvent",
+          "local": "html.IgnoreEvent",
+          "canonical": "std/web/html::IgnoreEvent",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Dispatch",
+          "local": "html.Dispatch",
+          "canonical": "std/web/html::Dispatch",
           "origin": {
             "start": 12,
             "end": 16
@@ -181,15 +243,22 @@
       "visibility": "private",
       "origin": {
         "start": 114,
-        "end": 228
+        "end": 262
       },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
         "type": {
-          "kind": "named",
-          "name": "Action",
-          "arguments": []
+          "kind": "external-named",
+          "name": "html.EventAction",
+          "canonical": "std/web/html::EventAction",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
         }
       },
       "parameters": [
@@ -209,52 +278,12 @@
         }
       ],
       "body": {
-        "kind": "if",
-        "condition": {
-          "kind": "field-access",
-          "receiver": {
-            "kind": "variable",
-            "name": "event",
-            "type": {
-              "kind": "external-named",
-              "name": "html.KeyboardEvent",
-              "canonical": "std/web/html::KeyboardEvent",
-              "arguments": []
-            },
-            "origin": {
-              "start": 170,
-              "end": 175
-            }
-          },
-          "field": "controlKey",
-          "type": {
-            "kind": "named",
-            "name": "Bool",
-            "arguments": []
-          },
-          "origin": {
-            "start": 170,
-            "end": 186
-          }
-        },
-        "thenBranch": {
-          "kind": "variable",
-          "name": "artifact/web-keyboard-events::ControlKey",
-          "type": {
-            "kind": "named",
-            "name": "Action",
-            "arguments": []
-          },
-          "origin": {
-            "start": 192,
-            "end": 202
-          }
-        },
-        "elseBranch": {
-          "kind": "call",
-          "callee": "artifact/web-keyboard-events::KeyPressed",
-          "arguments": [
-            {
+        "kind": "call",
+        "callee": "std/web/html::Dispatch",
+        "arguments": [
+          {
+            "kind": "if",
+            "condition": {
               "kind": "field-access",
               "receiver": {
                 "kind": "variable",
@@ -266,40 +295,101 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 219,
-                  "end": 224
+                  "start": 203,
+                  "end": 208
                 }
               },
-              "field": "key",
+              "field": "controlKey",
               "type": {
                 "kind": "named",
-                "name": "String",
+                "name": "Bool",
                 "arguments": []
               },
               "origin": {
-                "start": 219,
-                "end": 228
+                "start": 203,
+                "end": 219
               }
+            },
+            "thenBranch": {
+              "kind": "variable",
+              "name": "artifact/web-keyboard-events::ControlKey",
+              "type": {
+                "kind": "named",
+                "name": "Action",
+                "arguments": []
+              },
+              "origin": {
+                "start": 225,
+                "end": 235
+              }
+            },
+            "elseBranch": {
+              "kind": "call",
+              "callee": "artifact/web-keyboard-events::KeyPressed",
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "variable",
+                    "name": "event",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "html.KeyboardEvent",
+                      "canonical": "std/web/html::KeyboardEvent",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 252,
+                      "end": 257
+                    }
+                  },
+                  "field": "key",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 252,
+                    "end": 261
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Action",
+                "arguments": []
+              },
+              "origin": {
+                "start": 241,
+                "end": 261
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            },
+            "origin": {
+              "start": 200,
+              "end": 261
             }
-          ],
-          "type": {
-            "kind": "named",
-            "name": "Action",
-            "arguments": []
-          },
-          "origin": {
-            "start": 208,
-            "end": 228
           }
-        },
+        ],
         "type": {
           "kind": "named",
-          "name": "Action",
-          "arguments": []
+          "name": "html.EventAction",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
         },
         "origin": {
-          "start": 167,
-          "end": 228
+          "start": 185,
+          "end": 262
         }
       }
     },
@@ -308,30 +398,37 @@
       "symbol": "artifact/web-keyboard-events::taskKey",
       "visibility": "private",
       "origin": {
-        "start": 230,
-        "end": 313
+        "start": 264,
+        "end": 379
       },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
         "type": {
-          "kind": "named",
-          "name": "Effect",
+          "kind": "external-named",
+          "name": "html.EventAction",
+          "canonical": "std/web/html::EventAction",
           "arguments": [
             {
-              "kind": "record",
-              "closed": true,
-              "fields": []
-            },
-            {
               "kind": "named",
-              "name": "Never",
-              "arguments": []
-            },
-            {
-              "kind": "named",
-              "name": "Unit",
-              "arguments": []
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
             }
           ]
         }
@@ -362,8 +459,8 @@
             ]
           },
           "origin": {
-            "start": 241,
-            "end": 247
+            "start": 275,
+            "end": 281
           }
         },
         {
@@ -376,38 +473,135 @@
             "arguments": []
           },
           "origin": {
-            "start": 263,
-            "end": 268
+            "start": 297,
+            "end": 302
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::Dispatch",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "action",
+            "type": {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 373,
+              "end": 379
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "html.EventAction",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 359,
+          "end": 379
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/web-keyboard-events::ignoreKey",
+      "visibility": "private",
+      "origin": {
+        "start": 381,
+        "end": 468
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "external-named",
+          "name": "html.EventAction",
+          "canonical": "std/web/html::EventAction",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "event",
+          "type": {
+            "kind": "external-named",
+            "name": "html.KeyboardEvent",
+            "canonical": "std/web/html::KeyboardEvent",
+            "arguments": []
+          },
+          "origin": {
+            "start": 394,
+            "end": 399
           }
         }
       ],
       "body": {
         "kind": "variable",
-        "name": "action",
+        "name": "std/web/html::IgnoreEvent",
         "type": {
           "kind": "named",
-          "name": "Effect",
+          "name": "html.EventAction",
           "arguments": [
             {
-              "kind": "record",
-              "closed": true,
-              "fields": []
-            },
-            {
               "kind": "named",
-              "name": "Never",
-              "arguments": []
-            },
-            {
-              "kind": "named",
-              "name": "Unit",
+              "name": "Action",
               "arguments": []
             }
           ]
         },
         "origin": {
-          "start": 307,
-          "end": 313
+          "start": 452,
+          "end": 468
         }
       }
     },
@@ -416,8 +610,8 @@
       "symbol": "artifact/web-keyboard-events::view",
       "visibility": "public",
       "origin": {
-        "start": 315,
-        "end": 521
+        "start": 470,
+        "end": 676
       },
       "scheme": {
         "typeParameters": [],
@@ -464,13 +658,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 374,
-                    "end": 391
+                    "start": 529,
+                    "end": 546
                   }
                 },
                 "origin": {
-                  "start": 370,
-                  "end": 391
+                  "start": 525,
+                  "end": 546
                 }
               },
               {
@@ -485,13 +679,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 406,
-                    "end": 413
+                    "start": 561,
+                    "end": 568
                   }
                 },
                 "origin": {
-                  "start": 397,
-                  "end": 413
+                  "start": 552,
+                  "end": 568
                 }
               },
               {
@@ -506,13 +700,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 427,
-                    "end": 434
+                    "start": 582,
+                    "end": 589
                   }
                 },
                 "origin": {
-                  "start": 419,
-                  "end": 434
+                  "start": 574,
+                  "end": 589
                 }
               },
               {
@@ -530,19 +724,26 @@
                       "arguments": []
                     },
                     "result": {
-                      "kind": "named",
-                      "name": "Action",
-                      "arguments": []
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
                     }
                   },
                   "origin": {
-                    "start": 451,
-                    "end": 460
+                    "start": 606,
+                    "end": 615
                   }
                 },
                 "origin": {
-                  "start": 440,
-                  "end": 460
+                  "start": 595,
+                  "end": 615
                 }
               },
               {
@@ -550,7 +751,7 @@
                 "name": "onKeyUp",
                 "value": {
                   "kind": "variable",
-                  "name": "artifact/web-keyboard-events::keyAction",
+                  "name": "artifact/web-keyboard-events::ignoreKey",
                   "type": {
                     "kind": "function",
                     "parameter": {
@@ -560,19 +761,26 @@
                       "arguments": []
                     },
                     "result": {
-                      "kind": "named",
-                      "name": "Action",
-                      "arguments": []
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
                     }
                   },
                   "origin": {
-                    "start": 475,
-                    "end": 484
+                    "start": 630,
+                    "end": 639
                   }
                 },
                 "origin": {
-                  "start": 466,
-                  "end": 484
+                  "start": 621,
+                  "end": 639
                 }
               },
               {
@@ -587,13 +795,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 500,
-                    "end": 517
+                    "start": 655,
+                    "end": 672
                   }
                 },
                 "origin": {
-                  "start": 490,
-                  "end": 517
+                  "start": 645,
+                  "end": 672
                 }
               }
             ],
@@ -644,9 +852,16 @@
                       "arguments": []
                     },
                     "result": {
-                      "kind": "named",
-                      "name": "Action",
-                      "arguments": []
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
                     }
                   }
                 },
@@ -661,17 +876,24 @@
                       "arguments": []
                     },
                     "result": {
-                      "kind": "named",
-                      "name": "Action",
-                      "arguments": []
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
                     }
                   }
                 }
               ]
             },
             "origin": {
-              "start": 364,
-              "end": 521
+              "start": 519,
+              "end": 676
             }
           }
         ],
@@ -711,8 +933,8 @@
           ]
         },
         "origin": {
-          "start": 352,
-          "end": 521
+          "start": 507,
+          "end": 676
         }
       }
     },
@@ -721,8 +943,8 @@
       "symbol": "artifact/web-keyboard-events::taskView",
       "visibility": "public",
       "origin": {
-        "start": 523,
-        "end": 686
+        "start": 678,
+        "end": 841
       },
       "scheme": {
         "typeParameters": [],
@@ -782,8 +1004,8 @@
             ]
           },
           "origin": {
-            "start": 539,
-            "end": 545
+            "start": 694,
+            "end": 700
           }
         }
       ],
@@ -822,13 +1044,13 @@
                     ]
                   },
                   "origin": {
-                    "start": 614,
-                    "end": 620
+                    "start": 769,
+                    "end": 775
                   }
                 },
                 "origin": {
-                  "start": 605,
-                  "end": 620
+                  "start": 760,
+                  "end": 775
                 }
               },
               {
@@ -863,8 +1085,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 645,
-                        "end": 651
+                        "start": 800,
+                        "end": 806
                       }
                     }
                   ],
@@ -877,35 +1099,42 @@
                       "arguments": []
                     },
                     "result": {
-                      "kind": "named",
-                      "name": "Effect",
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
                       "arguments": [
                         {
-                          "kind": "record",
-                          "closed": true,
-                          "fields": []
-                        },
-                        {
                           "kind": "named",
-                          "name": "Never",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Unit",
-                          "arguments": []
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          ]
                         }
                       ]
                     }
                   },
                   "origin": {
-                    "start": 637,
-                    "end": 651
+                    "start": 792,
+                    "end": 806
                   }
                 },
                 "origin": {
-                  "start": 626,
-                  "end": 651
+                  "start": 781,
+                  "end": 806
                 }
               },
               {
@@ -920,13 +1149,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 667,
-                    "end": 682
+                    "start": 822,
+                    "end": 837
                   }
                 },
                 "origin": {
-                  "start": 657,
-                  "end": 682
+                  "start": 812,
+                  "end": 837
                 }
               }
             ],
@@ -977,23 +1206,30 @@
                       "arguments": []
                     },
                     "result": {
-                      "kind": "named",
-                      "name": "Effect",
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
                       "arguments": [
                         {
-                          "kind": "record",
-                          "closed": true,
-                          "fields": []
-                        },
-                        {
                           "kind": "named",
-                          "name": "Never",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Unit",
-                          "arguments": []
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          ]
                         }
                       ]
                     }
@@ -1002,8 +1238,8 @@
               ]
             },
             "origin": {
-              "start": 599,
-              "end": 686
+              "start": 754,
+              "end": 841
             }
           }
         ],
@@ -1075,8 +1311,8 @@
           ]
         },
         "origin": {
-          "start": 587,
-          "end": 686
+          "start": 742,
+          "end": 841
         }
       }
     }

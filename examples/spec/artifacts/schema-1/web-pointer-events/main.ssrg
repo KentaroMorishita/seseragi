@@ -1,0 +1,31 @@
+import * as html from "std/web/html"
+
+type Action =
+  | Clicked
+  | MouseButton Int
+  | PointerKind String
+  | Scrolled
+
+fn mouseAction event: html.MouseEvent -> html.EventAction<Action> =
+  html.DispatchPreventDefault (MouseButton event.button)
+
+fn pointerAction event: html.PointerEvent -> html.EventAction<Action> =
+  html.DispatchStopPropagation (PointerKind event.pointerType)
+
+fn scrollAction event: html.ScrollEvent -> html.EventAction<Action> =
+  html.DispatchPreventDefaultAndStop Scrolled
+
+pub fn view -> html.Html<Action> =
+  html.div {
+    onClick: Clicked,
+    preventClickDefault: True,
+    stopClickPropagation: True,
+    onMouseDown: mouseAction,
+    onMouseUp: mouseAction,
+    onPointerDown: pointerAction,
+    onPointerUp: pointerAction,
+    onDoubleClick: mouseAction,
+    onContextMenu: mouseAction,
+    onScroll: scrollAction,
+    children: "Pointer target"
+  }

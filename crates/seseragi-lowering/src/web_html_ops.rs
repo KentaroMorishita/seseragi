@@ -104,6 +104,27 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
     operation!("summary", "web.html.summary", "_ssrg_html_summary"),
     operation!("dialog", "web.html.dialog", "_ssrg_html_dialog"),
     operation!(
+        "IgnoreEvent",
+        "web.html.event.ignore",
+        "_ssrg_html_IgnoreEvent"
+    ),
+    operation!("Dispatch", "web.html.event.dispatch", "_ssrg_html_Dispatch"),
+    operation!(
+        "DispatchPreventDefault",
+        "web.html.event.dispatch-prevent-default",
+        "_ssrg_html_DispatchPreventDefault"
+    ),
+    operation!(
+        "DispatchStopPropagation",
+        "web.html.event.dispatch-stop-propagation",
+        "_ssrg_html_DispatchStopPropagation"
+    ),
+    operation!(
+        "DispatchPreventDefaultAndStop",
+        "web.html.event.dispatch-prevent-default-and-stop",
+        "_ssrg_html_DispatchPreventDefaultAndStop"
+    ),
+    operation!(
         "InvalidTagName",
         "web.html.error.invalid-tag-name",
         "_ssrg_html_InvalidTagName"

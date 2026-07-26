@@ -1,0 +1,29 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/web-pointer-events"
+  ],
+  "sourcesContent": [
+    "import * as html from \"std/web/html\"\n\ntype Action =\n  | Clicked\n  | MouseButton Int\n  | PointerKind String\n  | Scrolled\n\nfn mouseAction event: html.MouseEvent -> html.EventAction<Action> =\n  html.DispatchPreventDefault (MouseButton event.button)\n\nfn pointerAction event: html.PointerEvent -> html.EventAction<Action> =\n  html.DispatchStopPropagation (PointerKind event.pointerType)\n\nfn scrollAction event: html.ScrollEvent -> html.EventAction<Action> =\n  html.DispatchPreventDefaultAndStop Scrolled\n\npub fn view -> html.Html<Action> =\n  html.div {\n    onClick: Clicked,\n    preventClickDefault: True,\n    stopClickPropagation: True,\n    onMouseDown: mouseAction,\n    onMouseUp: mouseAction,\n    onPointerDown: pointerAction,\n    onPointerUp: pointerAction,\n    onDoubleClick: mouseAction,\n    onContextMenu: mouseAction,\n    onScroll: scrollAction,\n    children: \"Pointer target\"\n  }\n"
+  ],
+  "names": [
+    "Action",
+    "Clicked",
+    "MouseButton",
+    "PointerKind",
+    "Scrolled",
+    "mouseAction",
+    "DispatchPreventDefault",
+    "MouseButton",
+    "pointerAction",
+    "DispatchStopPropagation",
+    "PointerKind",
+    "scrollAction",
+    "DispatchPreventDefaultAndStop",
+    "view",
+    "div"
+  ],
+  "mappings": ";;AAEAA;;;;;AACIC;AACAC;AACAC;AACAC;AAEJC;AAGAG;AAGAG;AAGAE"
+}

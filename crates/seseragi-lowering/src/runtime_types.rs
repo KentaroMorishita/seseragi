@@ -104,6 +104,30 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "KeyboardEvent",
     },
     RuntimeTypeImport {
+        canonical: "std/web/html::MouseEvent",
+        runtime_feature: "web.html.mouse-event-type",
+        module: "@seseragi/runtime/html",
+        export_name: "MouseEvent",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/html::PointerEvent",
+        runtime_feature: "web.html.pointer-event-type",
+        module: "@seseragi/runtime/html",
+        export_name: "PointerEvent",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/html::ScrollEvent",
+        runtime_feature: "web.html.scroll-event-type",
+        module: "@seseragi/runtime/html",
+        export_name: "ScrollEvent",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/html::EventAction",
+        runtime_feature: "web.html.event-action-type",
+        module: "@seseragi/runtime/html",
+        export_name: "EventAction",
+    },
+    RuntimeTypeImport {
         canonical: "std/web/dom::Dom",
         runtime_feature: "web.dom.service",
         module: "@seseragi/runtime/dom",

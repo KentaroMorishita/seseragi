@@ -16,6 +16,10 @@ import {
   customTag,
   details,
   dialog,
+  Dispatch,
+  DispatchPreventDefault,
+  DispatchPreventDefaultAndStop,
+  DispatchStopPropagation,
   div,
   domEventPreventsDefault,
   em,
@@ -33,9 +37,11 @@ import {
   hr,
   html as htmlTag,
   img,
+  IgnoreEvent,
   type InputEvent,
   input,
   type KeyboardEvent,
+  type MouseEvent,
   label,
   legend,
   li,
@@ -46,10 +52,13 @@ import {
   ol,
   option,
   picture,
+  type PointerEvent,
   pre,
   renderForDom,
   renderDocument,
   renderToString,
+  resolveDomEvent,
+  type ScrollEvent,
   select,
   small,
   source,
@@ -69,6 +78,7 @@ import {
   video,
 } from "../../../runtime/ts/src/html"
 import {
+  applyDomEventResolution,
   BROWSER_DOM_EVENT_BINDINGS,
   createDomEventBindings,
 } from "../src/runtime/browser-dom"
@@ -285,6 +295,8 @@ describe("HTML browser runtime", () => {
     expect(rendered.eventHandlers.get("0")).toEqual({
       kind: "click",
       message: action,
+      preventDefault: false,
+      stopPropagation: false,
     })
   })
 
@@ -467,11 +479,10 @@ describe("HTML browser runtime", () => {
       button<Action>({
         onFocus: { tag: "Focused" },
         onBlur: { tag: "Blurred" },
-        onKeyDown: (keyboard: KeyboardEvent) => ({
-          tag: "KeyDown",
-          keyboard,
-        }),
-        onKeyUp: (keyboard: KeyboardEvent) => ({ tag: "KeyUp", keyboard }),
+        onKeyDown: (keyboard: KeyboardEvent) =>
+          Dispatch({ tag: "KeyDown", keyboard }),
+        onKeyUp: (keyboard: KeyboardEvent) =>
+          Dispatch({ tag: "KeyUp", keyboard }),
         children: "Keyboard target",
       })
     )
@@ -546,18 +557,207 @@ describe("HTML browser runtime", () => {
     expect(BROWSER_DOM_EVENT_BINDINGS).toContainEqual({
       nativeKind: "focusin",
       handlerKind: "focus",
+      capture: false,
     })
     expect(BROWSER_DOM_EVENT_BINDINGS).toContainEqual({
       nativeKind: "focusout",
       handlerKind: "blur",
+      capture: false,
     })
     expect(BROWSER_DOM_EVENT_BINDINGS).toContainEqual({
       nativeKind: "keydown",
       handlerKind: "keydown",
+      capture: false,
     })
     expect(BROWSER_DOM_EVENT_BINDINGS).toContainEqual({
       nativeKind: "keyup",
       handlerKind: "keyup",
+      capture: false,
+    })
+  })
+
+  test("snapshots mouse, pointer, and scroll events without host references", () => {
+    type Action = Readonly<{
+      readonly tag: string
+      readonly snapshot: MouseEvent | PointerEvent | ScrollEvent
+    }>
+    const rendered = renderForDom(
+      div<Action>({
+        onMouseDown: (snapshot: MouseEvent) =>
+          DispatchPreventDefault({ tag: "Mouse", snapshot }),
+        onPointerDown: (snapshot: PointerEvent) =>
+          DispatchStopPropagation({ tag: "Pointer", snapshot }),
+        onScroll: (snapshot: ScrollEvent) =>
+          DispatchPreventDefaultAndStop({ tag: "Scroll", snapshot }),
+        children: "Events",
+      })
+    )
+
+    const mouse = resolveDomEvent(
+      rendered.eventHandlers.get("0")!,
+      {},
+      {
+        button: 2,
+        clientX: 12.5,
+        clientY: 24.25,
+        altKey: true,
+        ctrlKey: false,
+        metaKey: false,
+        shiftKey: true,
+      }
+    )
+    expect(mouse).toEqual({
+      kind: "dispatch",
+      action: {
+        tag: "Mouse",
+        snapshot: {
+          button: 2n,
+          clientX: 12.5,
+          clientY: 24.25,
+          altKey: true,
+          controlKey: false,
+          metaKey: false,
+          shiftKey: true,
+        },
+      },
+      preventDefault: true,
+      stopPropagation: false,
+    })
+    if (mouse.kind !== "dispatch") throw new Error("expected mouse dispatch")
+    expect(Object.isFrozen(mouse.action.snapshot)).toBe(true)
+
+    for (const pointerType of ["mouse", "touch", "pen"]) {
+      const pointer = resolveDomEvent(
+        rendered.eventHandlers.get("1")!,
+        {},
+        {
+          pointerId: 7,
+          pointerType,
+          isPrimary: true,
+          button: 0,
+          clientX: 3,
+          clientY: 4,
+          pressure: pointerType === "mouse" ? 0 : 0.5,
+          altKey: false,
+          ctrlKey: true,
+          metaKey: false,
+          shiftKey: false,
+        }
+      )
+      expect(pointer.kind).toBe("dispatch")
+      if (pointer.kind !== "dispatch") continue
+      expect(pointer.action.snapshot).toMatchObject({
+        pointerId: 7n,
+        pointerType,
+        isPrimary: true,
+        button: 0n,
+      })
+      expect(Object.isFrozen(pointer.action.snapshot)).toBe(true)
+      expect(pointer.stopPropagation).toBe(true)
+    }
+
+    const scroll = resolveDomEvent(rendered.eventHandlers.get("2")!, {
+      scrollLeft: 8.5,
+      scrollTop: 144,
+    })
+    expect(scroll).toMatchObject({
+      kind: "dispatch",
+      action: {
+        tag: "Scroll",
+        snapshot: { scrollLeft: 8.5, scrollTop: 144 },
+      },
+      preventDefault: true,
+      stopPropagation: true,
+    })
+    expect(rendered.html).toContain('data-ssrg-event-mousedown="0"')
+    expect(rendered.html).toContain('data-ssrg-event-pointerdown="1"')
+    expect(rendered.html).toContain('data-ssrg-event-scroll="2"')
+  })
+
+  test("applies event controls before enqueue and can ignore an event", () => {
+    const order: string[] = []
+    const rendered = renderForDom(
+      div<string>({
+        onContextMenu: () => {
+          order.push("mapper")
+          return DispatchPreventDefaultAndStop("Open menu")
+        },
+        onDoubleClick: () => IgnoreEvent,
+        children: "Controlled",
+      })
+    )
+    const resolution = resolveDomEvent(
+      rendered.eventHandlers.get("1")!,
+      {},
+      {
+        button: 2,
+        clientX: 0,
+        clientY: 0,
+        altKey: false,
+        ctrlKey: false,
+        metaKey: false,
+        shiftKey: false,
+      }
+    )
+    applyDomEventResolution(
+      {
+        preventDefault: () => order.push("preventDefault"),
+        stopPropagation: () => order.push("stopPropagation"),
+      },
+      resolution,
+      (action) => order.push(`enqueue:${action}`)
+    )
+    expect(order).toEqual([
+      "mapper",
+      "preventDefault",
+      "stopPropagation",
+      "enqueue:Open menu",
+    ])
+
+    const ignored = resolveDomEvent(
+      rendered.eventHandlers.get("0")!,
+      {},
+      {
+        button: 0,
+        clientX: 0,
+        clientY: 0,
+        altKey: false,
+        ctrlKey: false,
+        metaKey: false,
+        shiftKey: false,
+      }
+    )
+    applyDomEventResolution(
+      {
+        preventDefault: () => order.push("unexpected preventDefault"),
+        stopPropagation: () => order.push("unexpected stopPropagation"),
+      },
+      ignored,
+      () => order.push("unexpected enqueue")
+    )
+    expect(ignored.kind).toBe("ignore")
+    expect(order).toHaveLength(4)
+  })
+
+  test("captures scroll events and preserves click control compatibility", () => {
+    expect(BROWSER_DOM_EVENT_BINDINGS).toContainEqual({
+      nativeKind: "scroll",
+      handlerKind: "scroll",
+      capture: true,
+    })
+    const rendered = renderForDom(
+      button({
+        onClick: "Navigate",
+        preventClickDefault: true,
+        stopClickPropagation: true,
+        children: "Open",
+      })
+    )
+    expect(resolveDomEvent(rendered.eventHandlers.get("0")!, {})).toEqual({
+      kind: "dispatch",
+      action: "Navigate",
+      preventDefault: true,
+      stopPropagation: true,
     })
   })
 

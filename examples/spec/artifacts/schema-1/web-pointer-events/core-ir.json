@@ -1,0 +1,1112 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/web-pointer-events",
+  "externalTypeBindings": [
+    {
+      "spelling": "Style",
+      "canonical": "std/web/html::Style",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Style"
+      }
+    },
+    {
+      "spelling": "Attribute",
+      "canonical": "std/web/html::Attribute",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Attribute"
+      }
+    },
+    {
+      "spelling": "KeyboardEvent",
+      "canonical": "std/web/html::KeyboardEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "KeyboardEvent"
+      }
+    },
+    {
+      "spelling": "html.EventAction",
+      "canonical": "std/web/html::EventAction",
+      "provider": {
+        "module": "std/web/html",
+        "export": "EventAction"
+      }
+    },
+    {
+      "spelling": "html.MouseEvent",
+      "canonical": "std/web/html::MouseEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "MouseEvent"
+      }
+    },
+    {
+      "spelling": "html.PointerEvent",
+      "canonical": "std/web/html::PointerEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "PointerEvent"
+      }
+    },
+    {
+      "spelling": "html.ScrollEvent",
+      "canonical": "std/web/html::ScrollEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "ScrollEvent"
+      }
+    },
+    {
+      "spelling": "html.Html",
+      "canonical": "std/web/html::Html",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Html"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Html",
+          "local": "html.Html",
+          "canonical": "std/web/html::Html",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "MouseEvent",
+          "local": "html.MouseEvent",
+          "canonical": "std/web/html::MouseEvent",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "PointerEvent",
+          "local": "html.PointerEvent",
+          "canonical": "std/web/html::PointerEvent",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "ScrollEvent",
+          "local": "html.ScrollEvent",
+          "canonical": "std/web/html::ScrollEvent",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "EventAction",
+          "local": "html.EventAction",
+          "canonical": "std/web/html::EventAction",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "DispatchPreventDefault",
+          "local": "html.DispatchPreventDefault",
+          "canonical": "std/web/html::DispatchPreventDefault",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "DispatchStopPropagation",
+          "local": "html.DispatchStopPropagation",
+          "canonical": "std/web/html::DispatchStopPropagation",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "DispatchPreventDefaultAndStop",
+          "local": "html.DispatchPreventDefaultAndStop",
+          "canonical": "std/web/html::DispatchPreventDefaultAndStop",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "div",
+          "local": "html.div",
+          "canonical": "std/web/html::div",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        }
+      ]
+    }
+  ],
+  "adts": [
+    {
+      "symbol": "artifact/web-pointer-events::Action",
+      "name": "Action",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/web-pointer-events::Clicked",
+          "name": "Clicked",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 56,
+            "end": 63
+          }
+        },
+        {
+          "symbol": "artifact/web-pointer-events::MouseButton",
+          "name": "MouseButton",
+          "payload": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 68,
+            "end": 79
+          }
+        },
+        {
+          "symbol": "artifact/web-pointer-events::PointerKind",
+          "name": "PointerKind",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 88,
+            "end": 99
+          }
+        },
+        {
+          "symbol": "artifact/web-pointer-events::Scrolled",
+          "name": "Scrolled",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 111,
+            "end": 119
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 38,
+        "end": 119
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/web-pointer-events::mouseAction",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 121,
+        "end": 245
+      },
+      "parameters": [
+        {
+          "id": "event",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "html.MouseEvent",
+            "canonical": "std/web/html::MouseEvent",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::DispatchPreventDefault",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/web-pointer-events::MouseButton",
+            "arguments": [
+              {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "variable",
+                  "name": "event",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "html.MouseEvent",
+                    "canonical": "std/web/html::MouseEvent",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 232,
+                    "end": 237
+                  }
+                },
+                "field": "button",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 232,
+                  "end": 244
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 220,
+              "end": 244
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "html.EventAction",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 191,
+          "end": 245
+        }
+      }
+    },
+    {
+      "symbol": "artifact/web-pointer-events::pointerAction",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 247,
+        "end": 381
+      },
+      "parameters": [
+        {
+          "id": "event",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "html.PointerEvent",
+            "canonical": "std/web/html::PointerEvent",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::DispatchStopPropagation",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/web-pointer-events::PointerKind",
+            "arguments": [
+              {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "variable",
+                  "name": "event",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "html.PointerEvent",
+                    "canonical": "std/web/html::PointerEvent",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 363,
+                    "end": 368
+                  }
+                },
+                "field": "pointerType",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 363,
+                  "end": 380
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 351,
+              "end": 380
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "html.EventAction",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 321,
+          "end": 381
+        }
+      }
+    },
+    {
+      "symbol": "artifact/web-pointer-events::scrollAction",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 383,
+        "end": 498
+      },
+      "parameters": [
+        {
+          "id": "event",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "html.ScrollEvent",
+            "canonical": "std/web/html::ScrollEvent",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::DispatchPreventDefaultAndStop",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "artifact/web-pointer-events::Scrolled",
+            "type": {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 490,
+              "end": 498
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "html.EventAction",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 455,
+          "end": 498
+        }
+      }
+    },
+    {
+      "symbol": "artifact/web-pointer-events::view",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 500,
+        "end": 883
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::div",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "onClick",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-pointer-events::Clicked",
+                  "type": {
+                    "kind": "named",
+                    "name": "Action",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 561,
+                    "end": 568
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 552,
+                  "end": 568
+                }
+              },
+              {
+                "kind": "field",
+                "name": "preventClickDefault",
+                "value": {
+                  "kind": "boolean",
+                  "value": true,
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 595,
+                    "end": 599
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 574,
+                  "end": 599
+                }
+              },
+              {
+                "kind": "field",
+                "name": "stopClickPropagation",
+                "value": {
+                  "kind": "boolean",
+                  "value": true,
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 627,
+                    "end": 631
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 605,
+                  "end": 631
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onMouseDown",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-pointer-events::mouseAction",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 650,
+                    "end": 661
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 637,
+                  "end": 661
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onMouseUp",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-pointer-events::mouseAction",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 678,
+                    "end": 689
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 667,
+                  "end": 689
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onPointerDown",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-pointer-events::pointerAction",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.PointerEvent",
+                      "canonical": "std/web/html::PointerEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 710,
+                    "end": 723
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 695,
+                  "end": 723
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onPointerUp",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-pointer-events::pointerAction",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.PointerEvent",
+                      "canonical": "std/web/html::PointerEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 742,
+                    "end": 755
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 729,
+                  "end": 755
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onDoubleClick",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-pointer-events::mouseAction",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 776,
+                    "end": 787
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 761,
+                  "end": 787
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onContextMenu",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-pointer-events::mouseAction",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 808,
+                    "end": 819
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 793,
+                  "end": 819
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onScroll",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-pointer-events::scrollAction",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.ScrollEvent",
+                      "canonical": "std/web/html::ScrollEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 835,
+                    "end": 847
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 825,
+                  "end": 847
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "string",
+                  "value": "Pointer target",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 863,
+                    "end": 879
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 853,
+                  "end": 879
+                }
+              }
+            ],
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onClick",
+                  "type": {
+                    "kind": "named",
+                    "name": "Action",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onContextMenu",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onDoubleClick",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onMouseDown",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onMouseUp",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.MouseEvent",
+                      "canonical": "std/web/html::MouseEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onPointerDown",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.PointerEvent",
+                      "canonical": "std/web/html::PointerEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onPointerUp",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.PointerEvent",
+                      "canonical": "std/web/html::PointerEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "onScroll",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.ScrollEvent",
+                      "canonical": "std/web/html::ScrollEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "external-named",
+                      "name": "html.EventAction",
+                      "canonical": "std/web/html::EventAction",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "preventClickDefault",
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "stopClickPropagation",
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 546,
+              "end": 883
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "IntoChildren",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Action",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/web/html::IntoChildren<String>"
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 537,
+          "end": 883
+        }
+      }
+    }
+  ]
+}

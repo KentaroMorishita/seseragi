@@ -116,85 +116,129 @@
       ],
       "returnType": {
         "kind": "named",
-        "name": "Action",
+        "name": "html.EventAction",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Action",
+            "span": {
+              "start": 173,
+              "end": 179
+            }
+          }
+        ],
         "span": {
           "start": 156,
-          "end": 162
+          "end": 180
         }
       },
       "body": {
-        "kind": "if",
-        "condition": {
+        "kind": "application",
+        "function": {
           "kind": "member",
           "receiver": {
             "kind": "name",
-            "name": "event",
+            "name": "html",
             "span": {
-              "start": 170,
-              "end": 175
+              "start": 185,
+              "end": 189
             }
           },
-          "field": "controlKey",
+          "field": "Dispatch",
           "fieldSpan": {
-            "start": 176,
-            "end": 186
+            "start": 190,
+            "end": 198
           },
           "span": {
-            "start": 170,
-            "end": 186
+            "start": 185,
+            "end": 198
           }
         },
-        "thenBranch": {
-          "kind": "name",
-          "name": "ControlKey",
-          "span": {
-            "start": 192,
-            "end": 202
-          }
-        },
-        "elseBranch": {
-          "kind": "application",
-          "function": {
-            "kind": "name",
-            "name": "KeyPressed",
-            "span": {
-              "start": 208,
-              "end": 218
-            }
-          },
-          "argument": {
-            "kind": "member",
-            "receiver": {
-              "kind": "name",
-              "name": "event",
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "if",
+            "condition": {
+              "kind": "member",
+              "receiver": {
+                "kind": "name",
+                "name": "event",
+                "span": {
+                  "start": 203,
+                  "end": 208
+                }
+              },
+              "field": "controlKey",
+              "fieldSpan": {
+                "start": 209,
+                "end": 219
+              },
               "span": {
-                "start": 219,
-                "end": 224
+                "start": 203,
+                "end": 219
               }
             },
-            "field": "key",
-            "fieldSpan": {
-              "start": 225,
-              "end": 228
+            "thenBranch": {
+              "kind": "name",
+              "name": "ControlKey",
+              "span": {
+                "start": 225,
+                "end": 235
+              }
+            },
+            "elseBranch": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "KeyPressed",
+                "span": {
+                  "start": 241,
+                  "end": 251
+                }
+              },
+              "argument": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "event",
+                  "span": {
+                    "start": 252,
+                    "end": 257
+                  }
+                },
+                "field": "key",
+                "fieldSpan": {
+                  "start": 258,
+                  "end": 261
+                },
+                "span": {
+                  "start": 252,
+                  "end": 261
+                }
+              },
+              "span": {
+                "start": 241,
+                "end": 261
+              }
             },
             "span": {
-              "start": 219,
-              "end": 228
+              "start": 200,
+              "end": 261
             }
           },
           "span": {
-            "start": 208,
-            "end": 228
+            "start": 199,
+            "end": 262
           }
         },
         "span": {
-          "start": 167,
-          "end": 228
+          "start": 185,
+          "end": 262
         }
       },
       "span": {
         "start": 114,
-        "end": 228
+        "end": 262
       }
     },
     {
@@ -202,15 +246,15 @@
       "visibility": "private",
       "name": "taskKey",
       "nameSpan": {
-        "start": 233,
-        "end": 240
+        "start": 267,
+        "end": 274
       },
       "parameters": [
         {
           "name": "action",
           "nameSpan": {
-            "start": 241,
-            "end": 247
+            "start": 275,
+            "end": 281
           },
           "type": {
             "kind": "named",
@@ -220,62 +264,167 @@
                 "kind": "named",
                 "name": "Unit",
                 "span": {
-                  "start": 254,
-                  "end": 258
+                  "start": 288,
+                  "end": 292
                 }
               }
             ],
             "span": {
-              "start": 249,
-              "end": 259
+              "start": 283,
+              "end": 293
             }
           }
         },
         {
           "name": "event",
           "nameSpan": {
-            "start": 263,
-            "end": 268
+            "start": 297,
+            "end": 302
           },
           "type": {
             "kind": "named",
             "name": "html.KeyboardEvent",
             "span": {
-              "start": 270,
-              "end": 288
+              "start": 304,
+              "end": 322
             }
           }
         }
       ],
       "returnType": {
         "kind": "named",
-        "name": "Task",
+        "name": "html.EventAction",
         "arguments": [
           {
             "kind": "named",
-            "name": "Unit",
+            "name": "Task",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Unit",
+                "span": {
+                  "start": 348,
+                  "end": 352
+                }
+              }
+            ],
             "span": {
-              "start": 297,
-              "end": 301
+              "start": 343,
+              "end": 353
             }
           }
         ],
         "span": {
-          "start": 292,
-          "end": 302
+          "start": 326,
+          "end": 354
         }
       },
       "body": {
-        "kind": "name",
-        "name": "action",
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "html",
+            "span": {
+              "start": 359,
+              "end": 363
+            }
+          },
+          "field": "Dispatch",
+          "fieldSpan": {
+            "start": 364,
+            "end": 372
+          },
+          "span": {
+            "start": 359,
+            "end": 372
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "action",
+          "span": {
+            "start": 373,
+            "end": 379
+          }
+        },
         "span": {
-          "start": 307,
-          "end": 313
+          "start": 359,
+          "end": 379
         }
       },
       "span": {
-        "start": 230,
-        "end": 313
+        "start": 264,
+        "end": 379
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "ignoreKey",
+      "nameSpan": {
+        "start": 384,
+        "end": 393
+      },
+      "parameters": [
+        {
+          "name": "event",
+          "nameSpan": {
+            "start": 394,
+            "end": 399
+          },
+          "type": {
+            "kind": "named",
+            "name": "html.KeyboardEvent",
+            "span": {
+              "start": 401,
+              "end": 419
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "html.EventAction",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Action",
+            "span": {
+              "start": 440,
+              "end": 446
+            }
+          }
+        ],
+        "span": {
+          "start": 423,
+          "end": 447
+        }
+      },
+      "body": {
+        "kind": "member",
+        "receiver": {
+          "kind": "name",
+          "name": "html",
+          "span": {
+            "start": 452,
+            "end": 456
+          }
+        },
+        "field": "IgnoreEvent",
+        "fieldSpan": {
+          "start": 457,
+          "end": 468
+        },
+        "span": {
+          "start": 452,
+          "end": 468
+        }
+      },
+      "span": {
+        "start": 381,
+        "end": 468
       }
     },
     {
@@ -283,8 +432,8 @@
       "visibility": "public",
       "name": "view",
       "nameSpan": {
-        "start": 322,
-        "end": 326
+        "start": 477,
+        "end": 481
       },
       "parameters": [],
       "returnType": {
@@ -295,14 +444,14 @@
             "kind": "named",
             "name": "Action",
             "span": {
-              "start": 340,
-              "end": 346
+              "start": 495,
+              "end": 501
             }
           }
         ],
         "span": {
-          "start": 330,
-          "end": 347
+          "start": 485,
+          "end": 502
         }
       },
       "body": {
@@ -313,18 +462,18 @@
             "kind": "name",
             "name": "html",
             "span": {
-              "start": 352,
-              "end": 356
+              "start": 507,
+              "end": 511
             }
           },
           "field": "button",
           "fieldSpan": {
-            "start": 357,
-            "end": 363
+            "start": 512,
+            "end": 518
           },
           "span": {
-            "start": 352,
-            "end": 363
+            "start": 507,
+            "end": 518
           }
         },
         "argument": {
@@ -334,136 +483,136 @@
               "kind": "field",
               "name": "id",
               "nameSpan": {
-                "start": 370,
-                "end": 372
+                "start": 525,
+                "end": 527
               },
               "value": {
                 "kind": "string",
                 "raw": "\"keyboard-target\"",
                 "span": {
-                  "start": 374,
-                  "end": 391
+                  "start": 529,
+                  "end": 546
                 }
               },
               "span": {
-                "start": 370,
-                "end": 391
+                "start": 525,
+                "end": 546
               }
             },
             {
               "kind": "field",
               "name": "onFocus",
               "nameSpan": {
-                "start": 397,
-                "end": 404
+                "start": 552,
+                "end": 559
               },
               "value": {
                 "kind": "name",
                 "name": "Focused",
                 "span": {
-                  "start": 406,
-                  "end": 413
+                  "start": 561,
+                  "end": 568
                 }
               },
               "span": {
-                "start": 397,
-                "end": 413
+                "start": 552,
+                "end": 568
               }
             },
             {
               "kind": "field",
               "name": "onBlur",
               "nameSpan": {
-                "start": 419,
-                "end": 425
+                "start": 574,
+                "end": 580
               },
               "value": {
                 "kind": "name",
                 "name": "Blurred",
                 "span": {
-                  "start": 427,
-                  "end": 434
+                  "start": 582,
+                  "end": 589
                 }
               },
               "span": {
-                "start": 419,
-                "end": 434
+                "start": 574,
+                "end": 589
               }
             },
             {
               "kind": "field",
               "name": "onKeyDown",
               "nameSpan": {
-                "start": 440,
-                "end": 449
+                "start": 595,
+                "end": 604
               },
               "value": {
                 "kind": "name",
                 "name": "keyAction",
                 "span": {
-                  "start": 451,
-                  "end": 460
+                  "start": 606,
+                  "end": 615
                 }
               },
               "span": {
-                "start": 440,
-                "end": 460
+                "start": 595,
+                "end": 615
               }
             },
             {
               "kind": "field",
               "name": "onKeyUp",
               "nameSpan": {
-                "start": 466,
-                "end": 473
+                "start": 621,
+                "end": 628
               },
               "value": {
                 "kind": "name",
-                "name": "keyAction",
+                "name": "ignoreKey",
                 "span": {
-                  "start": 475,
-                  "end": 484
+                  "start": 630,
+                  "end": 639
                 }
               },
               "span": {
-                "start": 466,
-                "end": 484
+                "start": 621,
+                "end": 639
               }
             },
             {
               "kind": "field",
               "name": "children",
               "nameSpan": {
-                "start": 490,
-                "end": 498
+                "start": 645,
+                "end": 653
               },
               "value": {
                 "kind": "string",
                 "raw": "\"Keyboard target\"",
                 "span": {
-                  "start": 500,
-                  "end": 517
+                  "start": 655,
+                  "end": 672
                 }
               },
               "span": {
-                "start": 490,
-                "end": 517
+                "start": 645,
+                "end": 672
               }
             }
           ],
           "span": {
-            "start": 364,
-            "end": 521
+            "start": 519,
+            "end": 676
           }
         },
         "span": {
-          "start": 352,
-          "end": 521
+          "start": 507,
+          "end": 676
         }
       },
       "span": {
-        "start": 315,
-        "end": 521
+        "start": 470,
+        "end": 676
       }
     },
     {
@@ -471,15 +620,15 @@
       "visibility": "public",
       "name": "taskView",
       "nameSpan": {
-        "start": 530,
-        "end": 538
+        "start": 685,
+        "end": 693
       },
       "parameters": [
         {
           "name": "action",
           "nameSpan": {
-            "start": 539,
-            "end": 545
+            "start": 694,
+            "end": 700
           },
           "type": {
             "kind": "named",
@@ -489,14 +638,14 @@
                 "kind": "named",
                 "name": "Unit",
                 "span": {
-                  "start": 552,
-                  "end": 556
+                  "start": 707,
+                  "end": 711
                 }
               }
             ],
             "span": {
-              "start": 547,
-              "end": 557
+              "start": 702,
+              "end": 712
             }
           }
         }
@@ -513,20 +662,20 @@
                 "kind": "named",
                 "name": "Unit",
                 "span": {
-                  "start": 576,
-                  "end": 580
+                  "start": 731,
+                  "end": 735
                 }
               }
             ],
             "span": {
-              "start": 571,
-              "end": 581
+              "start": 726,
+              "end": 736
             }
           }
         ],
         "span": {
-          "start": 561,
-          "end": 582
+          "start": 716,
+          "end": 737
         }
       },
       "body": {
@@ -537,18 +686,18 @@
             "kind": "name",
             "name": "html",
             "span": {
-              "start": 587,
-              "end": 591
+              "start": 742,
+              "end": 746
             }
           },
           "field": "button",
           "fieldSpan": {
-            "start": 592,
-            "end": 598
+            "start": 747,
+            "end": 753
           },
           "span": {
-            "start": 587,
-            "end": 598
+            "start": 742,
+            "end": 753
           }
         },
         "argument": {
@@ -558,28 +707,28 @@
               "kind": "field",
               "name": "onFocus",
               "nameSpan": {
-                "start": 605,
-                "end": 612
+                "start": 760,
+                "end": 767
               },
               "value": {
                 "kind": "name",
                 "name": "action",
                 "span": {
-                  "start": 614,
-                  "end": 620
+                  "start": 769,
+                  "end": 775
                 }
               },
               "span": {
-                "start": 605,
-                "end": 620
+                "start": 760,
+                "end": 775
               }
             },
             {
               "kind": "field",
               "name": "onKeyDown",
               "nameSpan": {
-                "start": 626,
-                "end": 635
+                "start": 781,
+                "end": 790
               },
               "value": {
                 "kind": "application",
@@ -587,62 +736,62 @@
                   "kind": "name",
                   "name": "taskKey",
                   "span": {
-                    "start": 637,
-                    "end": 644
+                    "start": 792,
+                    "end": 799
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "action",
                   "span": {
-                    "start": 645,
-                    "end": 651
+                    "start": 800,
+                    "end": 806
                   }
                 },
                 "span": {
-                  "start": 637,
-                  "end": 651
+                  "start": 792,
+                  "end": 806
                 }
               },
               "span": {
-                "start": 626,
-                "end": 651
+                "start": 781,
+                "end": 806
               }
             },
             {
               "kind": "field",
               "name": "children",
               "nameSpan": {
-                "start": 657,
-                "end": 665
+                "start": 812,
+                "end": 820
               },
               "value": {
                 "kind": "string",
                 "raw": "\"Effect target\"",
                 "span": {
-                  "start": 667,
-                  "end": 682
+                  "start": 822,
+                  "end": 837
                 }
               },
               "span": {
-                "start": 657,
-                "end": 682
+                "start": 812,
+                "end": 837
               }
             }
           ],
           "span": {
-            "start": 599,
-            "end": 686
+            "start": 754,
+            "end": 841
           }
         },
         "span": {
-          "start": 587,
-          "end": 686
+          "start": 742,
+          "end": 841
         }
       },
       "span": {
-        "start": 523,
-        "end": 686
+        "start": 678,
+        "end": 841
       }
     }
   ],
@@ -652,7 +801,7 @@
       "kind": "module",
       "origin": {
         "start": 38,
-        "end": 686
+        "end": 841
       }
     },
     {
@@ -670,7 +819,7 @@
       "kind": "function",
       "origin": {
         "start": 114,
-        "end": 228
+        "end": 262
       }
     },
     {
@@ -678,8 +827,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 230,
-        "end": 313
+        "start": 264,
+        "end": 379
       }
     },
     {
@@ -687,8 +836,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 315,
-        "end": 521
+        "start": 381,
+        "end": 468
       }
     },
     {
@@ -696,8 +845,17 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 523,
-        "end": 686
+        "start": 470,
+        "end": 676
+      }
+    },
+    {
+      "id": 6,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 678,
+        "end": 841
       }
     }
   ],
@@ -782,36 +940,48 @@
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 233,
-        "end": 240
+        "start": 267,
+        "end": 274
       }
     },
     {
       "id": 7,
+      "spelling": "ignoreKey",
+      "canonical": "artifact/web-keyboard-events::ignoreKey",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 384,
+        "end": 393
+      }
+    },
+    {
+      "id": 8,
       "spelling": "view",
       "canonical": "artifact/web-keyboard-events::view",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 322,
-        "end": 326
+        "start": 477,
+        "end": 481
       }
     },
     {
-      "id": 8,
+      "id": 9,
       "spelling": "taskView",
       "canonical": "artifact/web-keyboard-events::taskView",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 530,
-        "end": 538
+        "start": 685,
+        "end": 693
       }
     },
     {
-      "id": 9,
+      "id": 10,
       "spelling": "html",
       "canonical": "artifact/web-keyboard-events/std/web/html::*",
       "namespace": "module",
@@ -823,7 +993,7 @@
       }
     },
     {
-      "id": 10,
+      "id": 11,
       "spelling": "String",
       "canonical": "std/prelude::String",
       "namespace": "type",
@@ -835,7 +1005,7 @@
       }
     },
     {
-      "id": 11,
+      "id": 12,
       "spelling": "event",
       "namespace": "value",
       "kind": "parameter",
@@ -846,7 +1016,7 @@
       }
     },
     {
-      "id": 12,
+      "id": 13,
       "spelling": "Task",
       "canonical": "std/prelude::Task",
       "namespace": "type",
@@ -858,7 +1028,7 @@
       }
     },
     {
-      "id": 13,
+      "id": 14,
       "spelling": "Unit",
       "canonical": "std/prelude::Unit",
       "namespace": "type",
@@ -870,36 +1040,47 @@
       }
     },
     {
-      "id": 14,
+      "id": 15,
       "spelling": "action",
       "namespace": "value",
       "kind": "parameter",
       "scope": 3,
       "origin": {
-        "start": 241,
-        "end": 247
+        "start": 275,
+        "end": 281
       }
     },
     {
-      "id": 15,
+      "id": 16,
       "spelling": "event",
       "namespace": "value",
       "kind": "parameter",
       "scope": 3,
       "origin": {
-        "start": 263,
-        "end": 268
+        "start": 297,
+        "end": 302
       }
     },
     {
-      "id": 16,
+      "id": 17,
+      "spelling": "event",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 394,
+        "end": 399
+      }
+    },
+    {
+      "id": 18,
       "spelling": "action",
       "namespace": "value",
       "kind": "parameter",
-      "scope": 5,
+      "scope": 6,
       "origin": {
-        "start": 539,
-        "end": 545
+        "start": 694,
+        "end": 700
       }
     }
   ],
@@ -907,7 +1088,7 @@
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 10,
+      "target": 11,
       "origin": {
         "start": 91,
         "end": 97
@@ -922,21 +1103,37 @@
       }
     },
     {
+      "spelling": "html.EventAction",
+      "namespace": "type",
+      "origin": {
+        "start": 156,
+        "end": 180
+      }
+    },
+    {
       "spelling": "Action",
       "namespace": "type",
       "target": 0,
       "origin": {
-        "start": 156,
-        "end": 162
+        "start": 173,
+        "end": 179
+      }
+    },
+    {
+      "spelling": "html.Dispatch",
+      "namespace": "value",
+      "origin": {
+        "start": 185,
+        "end": 198
       }
     },
     {
       "spelling": "event",
       "namespace": "value",
-      "target": 11,
+      "target": 12,
       "origin": {
-        "start": 170,
-        "end": 175
+        "start": 203,
+        "end": 208
       }
     },
     {
@@ -944,8 +1141,8 @@
       "namespace": "value",
       "target": 4,
       "origin": {
-        "start": 192,
-        "end": 202
+        "start": 225,
+        "end": 235
       }
     },
     {
@@ -953,78 +1150,102 @@
       "namespace": "value",
       "target": 3,
       "origin": {
-        "start": 208,
-        "end": 218
+        "start": 241,
+        "end": 251
       }
     },
     {
       "spelling": "event",
       "namespace": "value",
-      "target": 11,
+      "target": 12,
       "origin": {
-        "start": 219,
-        "end": 224
+        "start": 252,
+        "end": 257
       }
     },
     {
       "spelling": "Task",
       "namespace": "type",
-      "target": 12,
+      "target": 13,
       "origin": {
-        "start": 249,
-        "end": 259
+        "start": 283,
+        "end": 293
       }
     },
     {
       "spelling": "Unit",
       "namespace": "type",
-      "target": 13,
+      "target": 14,
       "origin": {
-        "start": 254,
-        "end": 258
+        "start": 288,
+        "end": 292
       }
     },
     {
       "spelling": "html.KeyboardEvent",
       "namespace": "type",
       "origin": {
-        "start": 270,
-        "end": 288
+        "start": 304,
+        "end": 322
+      }
+    },
+    {
+      "spelling": "html.EventAction",
+      "namespace": "type",
+      "origin": {
+        "start": 326,
+        "end": 354
       }
     },
     {
       "spelling": "Task",
       "namespace": "type",
-      "target": 12,
+      "target": 13,
       "origin": {
-        "start": 292,
-        "end": 302
+        "start": 343,
+        "end": 353
       }
     },
     {
       "spelling": "Unit",
       "namespace": "type",
-      "target": 13,
+      "target": 14,
       "origin": {
-        "start": 297,
-        "end": 301
+        "start": 348,
+        "end": 352
+      }
+    },
+    {
+      "spelling": "html.Dispatch",
+      "namespace": "value",
+      "origin": {
+        "start": 359,
+        "end": 372
       }
     },
     {
       "spelling": "action",
       "namespace": "value",
-      "target": 14,
+      "target": 15,
       "origin": {
-        "start": 307,
-        "end": 313
+        "start": 373,
+        "end": 379
       }
     },
     {
-      "spelling": "html.Html",
+      "spelling": "html.KeyboardEvent",
       "namespace": "type",
       "origin": {
-        "start": 330,
-        "end": 347
+        "start": 401,
+        "end": 419
+      }
+    },
+    {
+      "spelling": "html.EventAction",
+      "namespace": "type",
+      "origin": {
+        "start": 423,
+        "end": 447
       }
     },
     {
@@ -1032,16 +1253,41 @@
       "namespace": "type",
       "target": 0,
       "origin": {
-        "start": 340,
-        "end": 346
+        "start": 440,
+        "end": 446
+      }
+    },
+    {
+      "spelling": "html.IgnoreEvent",
+      "namespace": "value",
+      "origin": {
+        "start": 452,
+        "end": 468
+      }
+    },
+    {
+      "spelling": "html.Html",
+      "namespace": "type",
+      "origin": {
+        "start": 485,
+        "end": 502
+      }
+    },
+    {
+      "spelling": "Action",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 495,
+        "end": 501
       }
     },
     {
       "spelling": "html.button",
       "namespace": "value",
       "origin": {
-        "start": 352,
-        "end": 363
+        "start": 507,
+        "end": 518
       }
     },
     {
@@ -1049,8 +1295,8 @@
       "namespace": "value",
       "target": 1,
       "origin": {
-        "start": 406,
-        "end": 413
+        "start": 561,
+        "end": 568
       }
     },
     {
@@ -1058,8 +1304,8 @@
       "namespace": "value",
       "target": 2,
       "origin": {
-        "start": 427,
-        "end": 434
+        "start": 582,
+        "end": 589
       }
     },
     {
@@ -1067,78 +1313,78 @@
       "namespace": "value",
       "target": 5,
       "origin": {
-        "start": 451,
-        "end": 460
+        "start": 606,
+        "end": 615
       }
     },
     {
-      "spelling": "keyAction",
+      "spelling": "ignoreKey",
       "namespace": "value",
-      "target": 5,
+      "target": 7,
       "origin": {
-        "start": 475,
-        "end": 484
+        "start": 630,
+        "end": 639
       }
     },
     {
       "spelling": "Task",
       "namespace": "type",
-      "target": 12,
+      "target": 13,
       "origin": {
-        "start": 547,
-        "end": 557
+        "start": 702,
+        "end": 712
       }
     },
     {
       "spelling": "Unit",
       "namespace": "type",
-      "target": 13,
+      "target": 14,
       "origin": {
-        "start": 552,
-        "end": 556
+        "start": 707,
+        "end": 711
       }
     },
     {
       "spelling": "html.Html",
       "namespace": "type",
       "origin": {
-        "start": 561,
-        "end": 582
+        "start": 716,
+        "end": 737
       }
     },
     {
       "spelling": "Task",
       "namespace": "type",
-      "target": 12,
+      "target": 13,
       "origin": {
-        "start": 571,
-        "end": 581
+        "start": 726,
+        "end": 736
       }
     },
     {
       "spelling": "Unit",
       "namespace": "type",
-      "target": 13,
+      "target": 14,
       "origin": {
-        "start": 576,
-        "end": 580
+        "start": 731,
+        "end": 735
       }
     },
     {
       "spelling": "html.button",
       "namespace": "value",
       "origin": {
-        "start": 587,
-        "end": 598
+        "start": 742,
+        "end": 753
       }
     },
     {
       "spelling": "action",
       "namespace": "value",
-      "target": 16,
+      "target": 18,
       "origin": {
-        "start": 614,
-        "end": 620
+        "start": 769,
+        "end": 775
       }
     },
     {
@@ -1146,17 +1392,17 @@
       "namespace": "value",
       "target": 6,
       "origin": {
-        "start": 637,
-        "end": 644
+        "start": 792,
+        "end": 799
       }
     },
     {
       "spelling": "action",
       "namespace": "value",
-      "target": 16,
+      "target": 18,
       "origin": {
-        "start": 645,
-        "end": 651
+        "start": 800,
+        "end": 806
       }
     }
   ],
@@ -1173,40 +1419,96 @@
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 270,
-        "end": 288
+        "start": 156,
+        "end": 180
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 330,
-        "end": 347
+        "start": 185,
+        "end": 198
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 352,
-        "end": 363
+        "start": 304,
+        "end": 322
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 561,
-        "end": 582
+        "start": 326,
+        "end": 354
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 587,
-        "end": 598
+        "start": 359,
+        "end": 372
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 401,
+        "end": 419
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 423,
+        "end": 447
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 452,
+        "end": 468
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 485,
+        "end": 502
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 507,
+        "end": 518
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 716,
+        "end": 737
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 742,
+        "end": 753
       }
     }
   ]

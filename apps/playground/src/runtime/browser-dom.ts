@@ -11,11 +11,12 @@ import {
 import { type Unit, unit } from "../../../../runtime/ts/src/effect"
 import {
   type DomEventHandler,
+  type DomEventResolution,
   type DomRender,
-  domEventPreventsDefault,
   type Html,
   messageFromDomEvent,
   renderForDom,
+  resolveDomEvent,
 } from "../../../../runtime/ts/src/html"
 import {
   type ServiceOperation,
@@ -42,15 +43,76 @@ export type DomEventBindings<Action> = Readonly<{
 }>
 
 export const BROWSER_DOM_EVENT_BINDINGS = Object.freeze([
-  Object.freeze({ nativeKind: "click", handlerKind: "click" }),
-  Object.freeze({ nativeKind: "focusin", handlerKind: "focus" }),
-  Object.freeze({ nativeKind: "focusout", handlerKind: "blur" }),
-  Object.freeze({ nativeKind: "keydown", handlerKind: "keydown" }),
-  Object.freeze({ nativeKind: "keyup", handlerKind: "keyup" }),
-  Object.freeze({ nativeKind: "input", handlerKind: "input" }),
-  Object.freeze({ nativeKind: "change", handlerKind: "change" }),
-  Object.freeze({ nativeKind: "submit", handlerKind: "submit" }),
+  Object.freeze({ nativeKind: "click", handlerKind: "click", capture: false }),
+  Object.freeze({
+    nativeKind: "focusin",
+    handlerKind: "focus",
+    capture: false,
+  }),
+  Object.freeze({
+    nativeKind: "focusout",
+    handlerKind: "blur",
+    capture: false,
+  }),
+  Object.freeze({
+    nativeKind: "keydown",
+    handlerKind: "keydown",
+    capture: false,
+  }),
+  Object.freeze({ nativeKind: "keyup", handlerKind: "keyup", capture: false }),
+  Object.freeze({
+    nativeKind: "mousedown",
+    handlerKind: "mousedown",
+    capture: false,
+  }),
+  Object.freeze({
+    nativeKind: "mouseup",
+    handlerKind: "mouseup",
+    capture: false,
+  }),
+  Object.freeze({
+    nativeKind: "pointerdown",
+    handlerKind: "pointerdown",
+    capture: false,
+  }),
+  Object.freeze({
+    nativeKind: "pointerup",
+    handlerKind: "pointerup",
+    capture: false,
+  }),
+  Object.freeze({
+    nativeKind: "dblclick",
+    handlerKind: "dblclick",
+    capture: false,
+  }),
+  Object.freeze({
+    nativeKind: "contextmenu",
+    handlerKind: "contextmenu",
+    capture: false,
+  }),
+  Object.freeze({ nativeKind: "scroll", handlerKind: "scroll", capture: true }),
+  Object.freeze({ nativeKind: "input", handlerKind: "input", capture: false }),
+  Object.freeze({
+    nativeKind: "change",
+    handlerKind: "change",
+    capture: false,
+  }),
+  Object.freeze({
+    nativeKind: "submit",
+    handlerKind: "submit",
+    capture: false,
+  }),
 ] as const)
+
+export function applyDomEventResolution<Action>(
+  event: Pick<Event, "preventDefault" | "stopPropagation">,
+  resolution: DomEventResolution<Action>,
+  enqueue: (action: Action) => void
+): void {
+  if (resolution.preventDefault) event.preventDefault()
+  if (resolution.stopPropagation) event.stopPropagation()
+  if (resolution.kind === "dispatch") enqueue(resolution.action)
+}
 
 export function createDomEventBindings<Action>(): DomEventBindings<Action> {
   let handlers: ReadonlyMap<string, DomEventHandler<Action>> = new Map()
@@ -138,8 +200,8 @@ export function createBrowserDom(
             }
             imeTimers.clear()
             ime.reset()
-            for (const [kind, listener] of listeners) {
-              element.removeEventListener(kind, listener)
+            for (const [kind, listener, capture] of listeners) {
+              element.removeEventListener(kind, listener, capture)
             }
             element.replaceChildren()
             resolve(result)
@@ -181,10 +243,14 @@ export function createBrowserDom(
               })
           }
 
-          const listeners: Array<readonly [string, EventListener]> = []
-          const listen = (kind: string, listener: EventListener): void => {
-            element.addEventListener(kind, listener)
-            listeners.push([kind, listener])
+          const listeners: Array<readonly [string, EventListener, boolean]> = []
+          const listen = (
+            kind: string,
+            listener: EventListener,
+            capture = false
+          ): void => {
+            element.addEventListener(kind, listener, capture)
+            listeners.push([kind, listener, capture])
           }
 
           const inputHandler = (
@@ -252,6 +318,7 @@ export function createBrowserDom(
           for (const {
             nativeKind,
             handlerKind,
+            capture,
           } of BROWSER_DOM_EVENT_BINDINGS) {
             const listener: EventListener = (event: Event): void => {
               if (settled) return
@@ -273,17 +340,19 @@ export function createBrowserDom(
                 return
               }
               if (handlerKind === "submit" && ime.busy()) commitCompositions()
-              if (domEventPreventsDefault(handler)) event.preventDefault()
               try {
-                enqueue(
-                  messageFromDomEvent(handler, matched, event),
-                  handlerKind === "submit" ? flushDeferredRender : undefined
+                const resolution = resolveDomEvent(handler, matched, event)
+                applyDomEventResolution(event, resolution, (action) =>
+                  enqueue(
+                    action,
+                    handlerKind === "submit" ? flushDeferredRender : undefined
+                  )
                 )
               } catch (error) {
                 reject(error)
               }
             }
-            listen(nativeKind, listener)
+            listen(nativeKind, listener, capture)
           }
 
           for (const kind of [

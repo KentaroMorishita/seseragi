@@ -56,6 +56,38 @@
       }
     },
     {
+      "spelling": "EventAction",
+      "canonical": "std/web/html::EventAction",
+      "provider": {
+        "module": "std/web/html",
+        "export": "EventAction"
+      }
+    },
+    {
+      "spelling": "MouseEvent",
+      "canonical": "std/web/html::MouseEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "MouseEvent"
+      }
+    },
+    {
+      "spelling": "PointerEvent",
+      "canonical": "std/web/html::PointerEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "PointerEvent"
+      }
+    },
+    {
+      "spelling": "ScrollEvent",
+      "canonical": "std/web/html::ScrollEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "ScrollEvent"
+      }
+    },
+    {
       "spelling": "dom.Dom",
       "canonical": "std/web/dom::Dom",
       "provider": {

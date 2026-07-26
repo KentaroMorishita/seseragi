@@ -57,6 +57,38 @@
       }
     },
     {
+      "spelling": "EventAction",
+      "canonical": "std/web/html::EventAction",
+      "provider": {
+        "module": "std/web/html",
+        "export": "EventAction"
+      }
+    },
+    {
+      "spelling": "MouseEvent",
+      "canonical": "std/web/html::MouseEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "MouseEvent"
+      }
+    },
+    {
+      "spelling": "PointerEvent",
+      "canonical": "std/web/html::PointerEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "PointerEvent"
+      }
+    },
+    {
+      "spelling": "ScrollEvent",
+      "canonical": "std/web/html::ScrollEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "ScrollEvent"
+      }
+    },
+    {
       "spelling": "Signal",
       "canonical": "std/signal::Signal",
       "provider": {
@@ -487,7 +519,7 @@
               "symbol": "fixture/feature-module-composition::todo/feature::DraftChanged",
               "argument": {
                 "kind": "binding",
-                "symbol": 39,
+                "symbol": 49,
                 "name": "value",
                 "type": {
                   "kind": "named",

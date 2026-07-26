@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "module": "artifact/web-pointer-events",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/web/html",
+      "module": "artifact/web-pointer-events/std/web/html",
+      "origin": {
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/web-pointer-events/std/web/html::*",
+          "localName": "html"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/web-pointer-events::view",
+      "namespace": "value",
+      "name": "view",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 500,
+        "end": 883
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "html.Html",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Action",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

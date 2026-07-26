@@ -1324,6 +1324,29 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/web/html::KeyboardEvent" => {
             "Immutable keyboard snapshot containing key identity, repeat state, and modifier keys."
         }
+        "std/web/html::MouseEvent" => {
+            "Immutable mouse snapshot containing button, coordinates, and modifier keys."
+        }
+        "std/web/html::PointerEvent" => {
+            "Immutable pointer snapshot distinguishing mouse, touch, and pen input."
+        }
+        "std/web/html::ScrollEvent" => {
+            "Immutable scroll snapshot containing the current element offsets."
+        }
+        "std/web/html::EventAction" => {
+            "Explicit event outcome describing dispatch, default prevention, and propagation control."
+        }
+        "std/web/html::IgnoreEvent" => "Ignores an event without dispatch or browser control.",
+        "std/web/html::Dispatch" => "Dispatches an Action without controlling the browser event.",
+        "std/web/html::DispatchPreventDefault" => {
+            "Prevents the browser default before dispatching an Action."
+        }
+        "std/web/html::DispatchStopPropagation" => {
+            "Stops event propagation before dispatching an Action."
+        }
+        "std/web/html::DispatchPreventDefaultAndStop" => {
+            "Prevents the browser default and stops propagation before dispatching an Action."
+        }
         "std/web/html::form" => {
             "Creates a typed form whose onSubmit message prevents native page reload."
         }

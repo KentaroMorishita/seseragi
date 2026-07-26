@@ -10,15 +10,15 @@
       "messageKey": "record.access-on-non-record",
       "message": "Record access on non record",
       "primary": {
-        "start": 170,
-        "end": 175
+        "start": 203,
+        "end": 208
       },
       "related": [
         {
           "message": "field access requires a record, received html.KeyboardEvent",
           "primary": {
             "start": 114,
-            "end": 228
+            "end": 262
           }
         }
       ],
@@ -27,7 +27,7 @@
           "message": "field access requires a record, received html.KeyboardEvent",
           "primary": {
             "start": 114,
-            "end": 228
+            "end": 262
           }
         }
       ],
@@ -52,7 +52,7 @@
           "message": "pure function body",
           "primary": {
             "start": 114,
-            "end": 228
+            "end": 262
           }
         }
       ],
@@ -61,7 +61,7 @@
           "message": "pure function body",
           "primary": {
             "start": 114,
-            "end": 228
+            "end": 262
           }
         }
       ],
@@ -80,15 +80,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 270,
-        "end": 288
+        "start": 156,
+        "end": 180
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 230,
-            "end": 313
+            "start": 114,
+            "end": 262
           }
         }
       ],
@@ -96,8 +96,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 230,
-            "end": 313
+            "start": 114,
+            "end": 262
           }
         }
       ],
@@ -116,15 +116,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 330,
-        "end": 347
+        "start": 185,
+        "end": 198
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 315,
-            "end": 521
+            "start": 114,
+            "end": 262
           }
         }
       ],
@@ -132,8 +132,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 315,
-            "end": 521
+            "start": 114,
+            "end": 262
           }
         }
       ],
@@ -152,15 +152,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 352,
-        "end": 363
+        "start": 304,
+        "end": 322
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 315,
-            "end": 521
+            "start": 264,
+            "end": 379
           }
         }
       ],
@@ -168,8 +168,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 315,
-            "end": 521
+            "start": 264,
+            "end": 379
           }
         }
       ],
@@ -188,15 +188,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 561,
-        "end": 582
+        "start": 326,
+        "end": 354
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 523,
-            "end": 686
+            "start": 264,
+            "end": 379
           }
         }
       ],
@@ -204,8 +204,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 523,
-            "end": 686
+            "start": 264,
+            "end": 379
           }
         }
       ],
@@ -224,15 +224,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 587,
-        "end": 598
+        "start": 359,
+        "end": 372
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 523,
-            "end": 686
+            "start": 264,
+            "end": 379
           }
         }
       ],
@@ -240,8 +240,260 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 523,
-            "end": 686
+            "start": 264,
+            "end": 379
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d8",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 401,
+        "end": 419
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 381,
+            "end": 468
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 381,
+            "end": 468
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d9",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 423,
+        "end": 447
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 381,
+            "end": 468
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 381,
+            "end": 468
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d10",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 452,
+        "end": 468
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 381,
+            "end": 468
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 381,
+            "end": 468
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d11",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 485,
+        "end": 502
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 470,
+            "end": 676
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 470,
+            "end": 676
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d12",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 507,
+        "end": 518
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 470,
+            "end": 676
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 470,
+            "end": 676
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d13",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 716,
+        "end": 737
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 678,
+            "end": 841
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 678,
+            "end": 841
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d14",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 742,
+        "end": 753
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 678,
+            "end": 841
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 678,
+            "end": 841
           }
         }
       ],

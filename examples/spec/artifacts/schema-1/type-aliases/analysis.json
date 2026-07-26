@@ -568,6 +568,211 @@
     },
     {
       "id": 30,
+      "identity": "std/web/html::MouseEvent",
+      "name": "MouseEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Immutable mouse snapshot containing button, coordinates, and modifier keys."
+    },
+    {
+      "id": 31,
+      "identity": "std/web/html::PointerEvent",
+      "name": "PointerEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Immutable pointer snapshot distinguishing mouse, touch, and pen input."
+    },
+    {
+      "id": 32,
+      "identity": "std/web/html::ScrollEvent",
+      "name": "ScrollEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Immutable scroll snapshot containing the current element offsets."
+    },
+    {
+      "id": 33,
+      "identity": "std/web/html::EventAction::Action",
+      "name": "Action",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 34,
+      "identity": "std/web/html::EventAction",
+      "name": "EventAction",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Explicit event outcome describing dispatch, default prevention, and propagation control."
+    },
+    {
+      "id": 35,
+      "identity": "std/web/html::IgnoreEvent",
+      "name": "IgnoreEvent",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Ignores an event without dispatch or browser control."
+    },
+    {
+      "id": 36,
+      "identity": "std/web/html::Dispatch",
+      "name": "Dispatch",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "Action -> EventAction<Action>",
+      "callable": {
+        "identity": "std/web/html::Dispatch",
+        "name": "Dispatch",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Action"
+          }
+        ],
+        "result": "EventAction<Action>",
+        "constraints": [],
+        "signature": "Dispatch<Action> arg1: Action -> EventAction<Action>",
+        "remainingParameters": []
+      },
+      "description": "Dispatches an Action without controlling the browser event."
+    },
+    {
+      "id": 37,
+      "identity": "std/web/html::DispatchPreventDefault",
+      "name": "DispatchPreventDefault",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "Action -> EventAction<Action>",
+      "callable": {
+        "identity": "std/web/html::DispatchPreventDefault",
+        "name": "DispatchPreventDefault",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Action"
+          }
+        ],
+        "result": "EventAction<Action>",
+        "constraints": [],
+        "signature": "DispatchPreventDefault<Action> arg1: Action -> EventAction<Action>",
+        "remainingParameters": []
+      },
+      "description": "Prevents the browser default before dispatching an Action."
+    },
+    {
+      "id": 38,
+      "identity": "std/web/html::DispatchStopPropagation",
+      "name": "DispatchStopPropagation",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "Action -> EventAction<Action>",
+      "callable": {
+        "identity": "std/web/html::DispatchStopPropagation",
+        "name": "DispatchStopPropagation",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Action"
+          }
+        ],
+        "result": "EventAction<Action>",
+        "constraints": [],
+        "signature": "DispatchStopPropagation<Action> arg1: Action -> EventAction<Action>",
+        "remainingParameters": []
+      },
+      "description": "Stops event propagation before dispatching an Action."
+    },
+    {
+      "id": 39,
+      "identity": "std/web/html::DispatchPreventDefaultAndStop",
+      "name": "DispatchPreventDefaultAndStop",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "Action -> EventAction<Action>",
+      "callable": {
+        "identity": "std/web/html::DispatchPreventDefaultAndStop",
+        "name": "DispatchPreventDefaultAndStop",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Action"
+          }
+        ],
+        "result": "EventAction<Action>",
+        "constraints": [],
+        "signature": "DispatchPreventDefaultAndStop<Action> arg1: Action -> EventAction<Action>",
+        "remainingParameters": []
+      },
+      "description": "Prevents the browser default and stops propagation before dispatching an Action."
+    },
+    {
+      "id": 40,
       "identity": "std/web/html::HtmlBuildError",
       "name": "HtmlBuildError",
       "module": "std/web/html",
@@ -580,7 +785,7 @@
       "description": "Describes a rejected custom HTML tag or attribute name."
     },
     {
-      "id": 31,
+      "id": 41,
       "identity": "std/web/html::InvalidTagName",
       "name": "InvalidTagName",
       "module": "std/web/html",
@@ -610,7 +815,7 @@
       "description": "Reports a rejected custom-element name."
     },
     {
-      "id": 32,
+      "id": 42,
       "identity": "std/web/html::InvalidAttributeName",
       "name": "InvalidAttributeName",
       "module": "std/web/html",
@@ -640,7 +845,7 @@
       "description": "Reports an invalid custom attribute spelling."
     },
     {
-      "id": 33,
+      "id": 43,
       "identity": "std/web/html::ReservedAttributeName",
       "name": "ReservedAttributeName",
       "module": "std/web/html",
@@ -670,7 +875,7 @@
       "description": "Reports a custom attribute that collides with typed or runtime-owned props."
     },
     {
-      "id": 34,
+      "id": 44,
       "identity": "std/signal::*",
       "name": "signals",
       "module": "std/signal",
@@ -682,7 +887,7 @@
       }
     },
     {
-      "id": 35,
+      "id": 45,
       "identity": "std/signal::Signal::T0",
       "name": "T0",
       "module": "std/signal",
@@ -694,7 +899,7 @@
       }
     },
     {
-      "id": 36,
+      "id": 46,
       "identity": "std/signal::Signal",
       "name": "Signal",
       "module": "std/signal",
@@ -706,7 +911,7 @@
       }
     },
     {
-      "id": 37,
+      "id": 47,
       "identity": "std/signal::MutableSignal::T0",
       "name": "T0",
       "module": "std/signal",
@@ -718,7 +923,7 @@
       }
     },
     {
-      "id": 38,
+      "id": 48,
       "identity": "std/signal::MutableSignal",
       "name": "MutableSignal",
       "module": "std/signal",
@@ -730,7 +935,7 @@
       }
     },
     {
-      "id": 39,
+      "id": 49,
       "identity": "std/signal::SignalChange",
       "name": "SignalChange",
       "module": "std/signal",
@@ -742,7 +947,7 @@
       }
     },
     {
-      "id": 40,
+      "id": 50,
       "identity": "std/signal::Subscription",
       "name": "Subscription",
       "module": "std/signal",
@@ -754,7 +959,7 @@
       }
     },
     {
-      "id": 41,
+      "id": 51,
       "identity": "std/prelude::Int",
       "name": "Int",
       "module": "std/prelude",
@@ -766,8 +971,8 @@
       }
     },
     {
-      "id": 42,
-      "identity": "artifact/type-aliases::local(42)",
+      "id": 52,
+      "identity": "artifact/type-aliases::local(52)",
       "name": "A",
       "module": "artifact/type-aliases",
       "namespace": "type",
@@ -778,7 +983,7 @@
       }
     },
     {
-      "id": 43,
+      "id": 53,
       "identity": "std/prelude::Console",
       "name": "Console",
       "module": "std/prelude",
@@ -790,8 +995,8 @@
       }
     },
     {
-      "id": 44,
-      "identity": "artifact/type-aliases::local(44)",
+      "id": 54,
+      "identity": "artifact/type-aliases::local(54)",
       "name": "A",
       "module": "artifact/type-aliases",
       "namespace": "type",
@@ -802,8 +1007,8 @@
       }
     },
     {
-      "id": 45,
-      "identity": "artifact/type-aliases::local(45)",
+      "id": 55,
+      "identity": "artifact/type-aliases::local(55)",
       "name": "B",
       "module": "artifact/type-aliases",
       "namespace": "type",
@@ -814,8 +1019,8 @@
       }
     },
     {
-      "id": 46,
-      "identity": "artifact/type-aliases::local(46)",
+      "id": 56,
+      "identity": "artifact/type-aliases::local(56)",
       "name": "A",
       "module": "artifact/type-aliases",
       "namespace": "type",
@@ -826,7 +1031,7 @@
       }
     },
     {
-      "id": 47,
+      "id": 57,
       "identity": "std/prelude::Effect",
       "name": "Effect",
       "module": "std/prelude",
@@ -838,7 +1043,7 @@
       }
     },
     {
-      "id": 48,
+      "id": 58,
       "identity": "std/prelude::Either",
       "name": "Either",
       "module": "std/prelude",
@@ -851,7 +1056,7 @@
       "description": "Represents either a typed failure or a success value."
     },
     {
-      "id": 49,
+      "id": 59,
       "identity": "std/prelude::Either::E",
       "name": "E",
       "module": "std/prelude",
@@ -863,7 +1068,7 @@
       }
     },
     {
-      "id": 50,
+      "id": 60,
       "identity": "std/prelude::Either::A",
       "name": "A",
       "module": "std/prelude",
@@ -875,7 +1080,7 @@
       }
     },
     {
-      "id": 51,
+      "id": 61,
       "identity": "std/prelude::Left",
       "name": "Left",
       "module": "std/prelude",
@@ -888,7 +1093,7 @@
       "description": "Constructs the failure side of Either."
     },
     {
-      "id": 52,
+      "id": 62,
       "identity": "std/prelude::Right",
       "name": "Right",
       "module": "std/prelude",
@@ -901,8 +1106,8 @@
       "description": "Constructs the success side of Either."
     },
     {
-      "id": 53,
-      "identity": "artifact/type-aliases::local(53)",
+      "id": 63,
+      "identity": "artifact/type-aliases::local(63)",
       "name": "A",
       "module": "artifact/type-aliases",
       "namespace": "type",
@@ -913,8 +1118,8 @@
       }
     },
     {
-      "id": 54,
-      "identity": "artifact/type-aliases::local(54)",
+      "id": 64,
+      "identity": "artifact/type-aliases::local(64)",
       "name": "A",
       "module": "artifact/type-aliases",
       "namespace": "type",
@@ -925,8 +1130,8 @@
       }
     },
     {
-      "id": 55,
-      "identity": "artifact/type-aliases::local(55)",
+      "id": 65,
+      "identity": "artifact/type-aliases::local(65)",
       "name": "value",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -938,8 +1143,8 @@
       "typeName": "Int"
     },
     {
-      "id": 56,
-      "identity": "artifact/type-aliases::local(56)",
+      "id": 66,
+      "identity": "artifact/type-aliases::local(66)",
       "name": "A",
       "module": "artifact/type-aliases",
       "namespace": "type",
@@ -950,8 +1155,8 @@
       }
     },
     {
-      "id": 57,
-      "identity": "artifact/type-aliases::local(57)",
+      "id": 67,
+      "identity": "artifact/type-aliases::local(67)",
       "name": "value",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -963,8 +1168,8 @@
       "typeName": "A"
     },
     {
-      "id": 58,
-      "identity": "artifact/type-aliases::local(58)",
+      "id": 68,
+      "identity": "artifact/type-aliases::local(68)",
       "name": "A",
       "module": "artifact/type-aliases",
       "namespace": "type",
@@ -975,8 +1180,8 @@
       }
     },
     {
-      "id": 59,
-      "identity": "artifact/type-aliases::local(59)",
+      "id": 69,
+      "identity": "artifact/type-aliases::local(69)",
       "name": "B",
       "module": "artifact/type-aliases",
       "namespace": "type",
@@ -987,8 +1192,8 @@
       }
     },
     {
-      "id": 60,
-      "identity": "artifact/type-aliases::local(60)",
+      "id": 70,
+      "identity": "artifact/type-aliases::local(70)",
       "name": "transform",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1000,8 +1205,8 @@
       "typeName": "A -> B"
     },
     {
-      "id": 61,
-      "identity": "artifact/type-aliases::local(61)",
+      "id": 71,
+      "identity": "artifact/type-aliases::local(71)",
       "name": "value",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1013,8 +1218,8 @@
       "typeName": "A"
     },
     {
-      "id": 62,
-      "identity": "artifact/type-aliases::local(62)",
+      "id": 72,
+      "identity": "artifact/type-aliases::local(72)",
       "name": "value",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1026,8 +1231,8 @@
       "typeName": "AppError"
     },
     {
-      "id": 63,
-      "identity": "artifact/type-aliases::local(63)",
+      "id": 73,
+      "identity": "artifact/type-aliases::local(73)",
       "name": "value",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1039,8 +1244,8 @@
       "typeName": "Either<AppError, Int>"
     },
     {
-      "id": 64,
-      "identity": "artifact/type-aliases::local(64)",
+      "id": 74,
+      "identity": "artifact/type-aliases::local(74)",
       "name": "state",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1052,7 +1257,7 @@
       "typeName": "MutableSignal<Int>"
     },
     {
-      "id": 65,
+      "id": 75,
       "identity": "std/prelude::Task",
       "name": "Task",
       "module": "std/prelude",
@@ -1065,7 +1270,7 @@
       "description": "Transparent alias for an Effect with no environment and no recoverable failure."
     },
     {
-      "id": 66,
+      "id": 76,
       "identity": "std/prelude::Unit",
       "name": "Unit",
       "module": "std/prelude",
@@ -1077,7 +1282,7 @@
       }
     },
     {
-      "id": 67,
+      "id": 77,
       "identity": "std/signal::update",
       "name": "update",
       "module": "std/signal",
@@ -1112,8 +1317,8 @@
       }
     },
     {
-      "id": 68,
-      "identity": "artifact/type-aliases::local(68)",
+      "id": 78,
+      "identity": "artifact/type-aliases::local(78)",
       "name": "value",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1125,7 +1330,7 @@
       "typeName": "Int"
     },
     {
-      "id": 69,
+      "id": 79,
       "identity": "std/prelude::+",
       "name": "+",
       "module": "std/prelude",
@@ -1137,8 +1342,8 @@
       }
     },
     {
-      "id": 70,
-      "identity": "artifact/type-aliases::local(70)",
+      "id": 80,
+      "identity": "artifact/type-aliases::local(80)",
       "name": "state",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1150,8 +1355,8 @@
       "typeName": "MutableSignal<Int>"
     },
     {
-      "id": 71,
-      "identity": "artifact/type-aliases::local(71)",
+      "id": 81,
+      "identity": "artifact/type-aliases::local(81)",
       "name": "current",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1163,7 +1368,7 @@
       "typeName": "Int"
     },
     {
-      "id": 72,
+      "id": 82,
       "identity": "std/web/html::button",
       "name": "button",
       "module": "std/web/html",
@@ -1173,7 +1378,7 @@
         "start": 12,
         "end": 16
       },
-      "typeName": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action>",
+      "typeName": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action>",
       "callable": {
         "identity": "std/web/html::button",
         "name": "button",
@@ -1185,20 +1390,20 @@
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}"
           }
         ],
         "result": "Html<Action>",
         "constraints": [
           "IntoChildren<C, Action>"
         ],
-        "signature": "button<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+        "signature": "button<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
       }
     },
     {
-      "id": 73,
-      "identity": "artifact/type-aliases::local(73)",
+      "id": 83,
+      "identity": "artifact/type-aliases::local(83)",
       "name": "state",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1210,7 +1415,7 @@
       "typeName": "MutableSignal<Int>"
     },
     {
-      "id": 74,
+      "id": 84,
       "identity": "std/signal::map",
       "name": "map",
       "module": "std/signal",
@@ -1247,7 +1452,7 @@
       "description": "Derives a Signal by transforming each current value."
     },
     {
-      "id": 75,
+      "id": 85,
       "identity": "std/prelude::succeed",
       "name": "succeed",
       "module": "std/prelude",
@@ -1259,7 +1464,7 @@
       }
     },
     {
-      "id": 76,
+      "id": 86,
       "identity": "std/prelude::ConsoleError",
       "name": "ConsoleError",
       "module": "std/prelude",
@@ -1271,7 +1476,7 @@
       }
     },
     {
-      "id": 77,
+      "id": 87,
       "identity": "std/signal::make",
       "name": "make",
       "module": "std/signal",
@@ -1303,8 +1508,8 @@
       "description": "Creates a mutable Signal inside Effect."
     },
     {
-      "id": 78,
-      "identity": "artifact/type-aliases::local(78)",
+      "id": 88,
+      "identity": "artifact/type-aliases::local(88)",
       "name": "state",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1316,8 +1521,8 @@
       "typeName": "MutableSignal<Int>"
     },
     {
-      "id": 79,
-      "identity": "artifact/type-aliases::local(79)",
+      "id": 89,
+      "identity": "artifact/type-aliases::local(89)",
       "name": "rendered",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1329,8 +1534,8 @@
       "typeName": "Signal<html.Html<Effect<{}, Never, Unit>>>"
     },
     {
-      "id": 80,
-      "identity": "artifact/type-aliases::local(80)",
+      "id": 90,
+      "identity": "artifact/type-aliases::local(90)",
       "name": "current",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1342,8 +1547,8 @@
       "typeName": "Int"
     },
     {
-      "id": 81,
-      "identity": "artifact/type-aliases::local(81)",
+      "id": 91,
+      "identity": "artifact/type-aliases::local(91)",
       "name": "values",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1355,7 +1560,7 @@
       "typeName": "{left: Int, right: Int}"
     },
     {
-      "id": 82,
+      "id": 92,
       "identity": "std/prelude::println",
       "name": "println",
       "module": "std/prelude",
@@ -1545,224 +1750,224 @@
         "start": 49,
         "end": 56
       },
-      "symbol": 34
+      "symbol": 44
     },
     {
       "range": {
         "start": 146,
         "end": 183
       },
-      "symbol": 42
+      "symbol": 52
     },
     {
       "range": {
         "start": 220,
         "end": 247
       },
-      "symbol": 44
+      "symbol": 54
     },
     {
       "range": {
         "start": 220,
         "end": 247
       },
-      "symbol": 45
+      "symbol": 55
     },
     {
       "range": {
         "start": 280,
         "end": 322
       },
-      "symbol": 46
+      "symbol": 56
     },
     {
       "range": {
         "start": 388,
         "end": 420
       },
-      "symbol": 53
+      "symbol": 63
     },
     {
       "range": {
         "start": 421,
         "end": 446
       },
-      "symbol": 54
+      "symbol": 64
     },
     {
       "range": {
         "start": 458,
         "end": 463
       },
-      "symbol": 55
+      "symbol": 65
     },
     {
       "range": {
         "start": 488,
         "end": 552
       },
-      "symbol": 56
+      "symbol": 66
     },
     {
       "range": {
         "start": 499,
         "end": 504
       },
-      "symbol": 57
+      "symbol": 67
     },
     {
       "range": {
         "start": 554,
         "end": 629
       },
-      "symbol": 58
+      "symbol": 68
     },
     {
       "range": {
         "start": 554,
         "end": 629
       },
-      "symbol": 59
+      "symbol": 69
     },
     {
       "range": {
         "start": 569,
         "end": 578
       },
-      "symbol": 60
+      "symbol": 70
     },
     {
       "range": {
         "start": 596,
         "end": 601
       },
-      "symbol": 61
+      "symbol": 71
     },
     {
       "range": {
         "start": 722,
         "end": 727
       },
-      "symbol": 62
+      "symbol": 72
     },
     {
       "range": {
         "start": 768,
         "end": 773
       },
-      "symbol": 63
+      "symbol": 73
     },
     {
       "range": {
         "start": 832,
         "end": 837
       },
-      "symbol": 64
+      "symbol": 74
     },
     {
       "range": {
         "start": 884,
         "end": 889
       },
-      "symbol": 68
+      "symbol": 78
     },
     {
       "range": {
         "start": 924,
         "end": 929
       },
-      "symbol": 70
+      "symbol": 80
     },
     {
       "range": {
         "start": 946,
         "end": 953
       },
-      "symbol": 71
+      "symbol": 81
     },
     {
       "range": {
         "start": 1077,
         "end": 1082
       },
-      "symbol": 73
+      "symbol": 83
     },
     {
       "range": {
         "start": 1265,
         "end": 1270
       },
-      "symbol": 78
+      "symbol": 88
     },
     {
       "range": {
         "start": 1318,
         "end": 1326
       },
-      "symbol": 79
+      "symbol": 89
     },
     {
       "range": {
         "start": 1347,
         "end": 1354
       },
-      "symbol": 80
+      "symbol": 90
     },
     {
       "range": {
         "start": 1373,
         "end": 1379
       },
-      "symbol": 81
+      "symbol": 91
     },
     {
       "range": {
         "start": 142,
         "end": 145
       },
-      "symbol": 41
+      "symbol": 51
     },
     {
       "range": {
         "start": 170,
         "end": 171
       },
-      "symbol": 42
+      "symbol": 52
     },
     {
       "range": {
         "start": 180,
         "end": 181
       },
-      "symbol": 42
+      "symbol": 52
     },
     {
       "range": {
         "start": 210,
         "end": 217
       },
-      "symbol": 43
+      "symbol": 53
     },
     {
       "range": {
         "start": 241,
         "end": 242
       },
-      "symbol": 44
+      "symbol": 54
     },
     {
       "range": {
         "start": 246,
         "end": 247
       },
-      "symbol": 45
+      "symbol": 55
     },
     {
       "range": {
         "start": 295,
         "end": 322
       },
-      "symbol": 47
+      "symbol": 57
     },
     {
       "range": {
@@ -1783,7 +1988,7 @@
         "start": 320,
         "end": 321
       },
-      "symbol": 46
+      "symbol": 56
     },
     {
       "range": {
@@ -1797,7 +2002,7 @@
         "start": 366,
         "end": 387
       },
-      "symbol": 48
+      "symbol": 58
     },
     {
       "range": {
@@ -1811,35 +2016,35 @@
         "start": 383,
         "end": 386
       },
-      "symbol": 41
+      "symbol": 51
     },
     {
       "range": {
         "start": 404,
         "end": 420
       },
-      "symbol": 38
+      "symbol": 48
     },
     {
       "range": {
         "start": 418,
         "end": 419
       },
-      "symbol": 53
+      "symbol": 63
     },
     {
       "range": {
         "start": 437,
         "end": 446
       },
-      "symbol": 36
+      "symbol": 46
     },
     {
       "range": {
         "start": 444,
         "end": 445
       },
-      "symbol": 54
+      "symbol": 64
     },
     {
       "range": {
@@ -1853,21 +2058,21 @@
         "start": 475,
         "end": 478
       },
-      "symbol": 41
+      "symbol": 51
     },
     {
       "range": {
         "start": 481,
         "end": 486
       },
-      "symbol": 55
+      "symbol": 65
     },
     {
       "range": {
         "start": 506,
         "end": 507
       },
-      "symbol": 56
+      "symbol": 66
     },
     {
       "range": {
@@ -1881,21 +2086,21 @@
         "start": 516,
         "end": 517
       },
-      "symbol": 56
+      "symbol": 66
     },
     {
       "range": {
         "start": 531,
         "end": 536
       },
-      "symbol": 57
+      "symbol": 67
     },
     {
       "range": {
         "start": 545,
         "end": 550
       },
-      "symbol": 57
+      "symbol": 67
     },
     {
       "range": {
@@ -1909,42 +2114,42 @@
         "start": 587,
         "end": 588
       },
-      "symbol": 58
+      "symbol": 68
     },
     {
       "range": {
         "start": 590,
         "end": 591
       },
-      "symbol": 59
+      "symbol": 69
     },
     {
       "range": {
         "start": 603,
         "end": 604
       },
-      "symbol": 58
+      "symbol": 68
     },
     {
       "range": {
         "start": 608,
         "end": 609
       },
-      "symbol": 59
+      "symbol": 69
     },
     {
       "range": {
         "start": 614,
         "end": 623
       },
-      "symbol": 60
+      "symbol": 70
     },
     {
       "range": {
         "start": 624,
         "end": 629
       },
-      "symbol": 61
+      "symbol": 71
     },
     {
       "range": {
@@ -1965,7 +2170,7 @@
         "start": 751,
         "end": 756
       },
-      "symbol": 62
+      "symbol": 72
     },
     {
       "range": {
@@ -1979,7 +2184,7 @@
         "start": 788,
         "end": 809
       },
-      "symbol": 48
+      "symbol": 58
     },
     {
       "range": {
@@ -1993,14 +2198,14 @@
         "start": 805,
         "end": 808
       },
-      "symbol": 41
+      "symbol": 51
     },
     {
       "range": {
         "start": 812,
         "end": 817
       },
-      "symbol": 63
+      "symbol": 73
     },
     {
       "range": {
@@ -2014,56 +2219,56 @@
         "start": 844,
         "end": 847
       },
-      "symbol": 41
+      "symbol": 51
     },
     {
       "range": {
         "start": 852,
         "end": 862
       },
-      "symbol": 65
+      "symbol": 75
     },
     {
       "range": {
         "start": 857,
         "end": 861
       },
-      "symbol": 66
+      "symbol": 76
     },
     {
       "range": {
         "start": 867,
         "end": 881
       },
-      "symbol": 67
+      "symbol": 77
     },
     {
       "range": {
         "start": 891,
         "end": 894
       },
-      "symbol": 41
+      "symbol": 51
     },
     {
       "range": {
         "start": 898,
         "end": 903
       },
-      "symbol": 68
+      "symbol": 78
     },
     {
       "range": {
         "start": 904,
         "end": 905
       },
-      "symbol": 69
+      "symbol": 79
     },
     {
       "range": {
         "start": 909,
         "end": 914
       },
-      "symbol": 64
+      "symbol": 74
     },
     {
       "range": {
@@ -2077,14 +2282,14 @@
         "start": 936,
         "end": 939
       },
-      "symbol": 41
+      "symbol": 51
     },
     {
       "range": {
         "start": 955,
         "end": 958
       },
-      "symbol": 41
+      "symbol": 51
     },
     {
       "range": {
@@ -2098,21 +2303,21 @@
         "start": 974,
         "end": 984
       },
-      "symbol": 65
+      "symbol": 75
     },
     {
       "range": {
         "start": 979,
         "end": 983
       },
-      "symbol": 66
+      "symbol": 76
     },
     {
       "range": {
         "start": 990,
         "end": 1001
       },
-      "symbol": 72
+      "symbol": 82
     },
     {
       "range": {
@@ -2126,14 +2331,14 @@
         "start": 1027,
         "end": 1032
       },
-      "symbol": 70
+      "symbol": 80
     },
     {
       "range": {
         "start": 1051,
         "end": 1058
       },
-      "symbol": 71
+      "symbol": 81
     },
     {
       "range": {
@@ -2147,7 +2352,7 @@
         "start": 1089,
         "end": 1092
       },
-      "symbol": 41
+      "symbol": 51
     },
     {
       "range": {
@@ -2168,21 +2373,21 @@
         "start": 1112,
         "end": 1122
       },
-      "symbol": 65
+      "symbol": 75
     },
     {
       "range": {
         "start": 1117,
         "end": 1121
       },
-      "symbol": 66
+      "symbol": 76
     },
     {
       "range": {
         "start": 1129,
         "end": 1140
       },
-      "symbol": 74
+      "symbol": 84
     },
     {
       "range": {
@@ -2196,42 +2401,42 @@
         "start": 1147,
         "end": 1152
       },
-      "symbol": 73
+      "symbol": 83
     },
     {
       "range": {
         "start": 1154,
         "end": 1159
       },
-      "symbol": 73
+      "symbol": 83
     },
     {
       "range": {
         "start": 1181,
         "end": 1188
       },
-      "symbol": 75
+      "symbol": 85
     },
     {
       "range": {
         "start": 1215,
         "end": 1219
       },
-      "symbol": 66
+      "symbol": 76
     },
     {
       "range": {
         "start": 1239,
         "end": 1251
       },
-      "symbol": 76
+      "symbol": 86
     },
     {
       "range": {
         "start": 1274,
         "end": 1286
       },
-      "symbol": 77
+      "symbol": 87
     },
     {
       "range": {
@@ -2245,7 +2450,7 @@
         "start": 1304,
         "end": 1309
       },
-      "symbol": 78
+      "symbol": 88
     },
     {
       "range": {
@@ -2259,14 +2464,14 @@
         "start": 1337,
         "end": 1342
       },
-      "symbol": 78
+      "symbol": 88
     },
     {
       "range": {
         "start": 1359,
         "end": 1364
       },
-      "symbol": 78
+      "symbol": 88
     },
     {
       "range": {
@@ -2294,28 +2499,28 @@
         "start": 1402,
         "end": 1409
       },
-      "symbol": 80
+      "symbol": 90
     },
     {
       "range": {
         "start": 1414,
         "end": 1421
       },
-      "symbol": 82
+      "symbol": 92
     },
     {
       "range": {
         "start": 1436,
         "end": 1442
       },
-      "symbol": 81
+      "symbol": 91
     },
     {
       "range": {
         "start": 1460,
         "end": 1467
       },
-      "symbol": 80
+      "symbol": 90
     }
   ],
   "typeOccurrences": [
@@ -2723,7 +2928,7 @@
         "start": 990,
         "end": 1001
       },
-      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action>"
+      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action>"
     },
     {
       "range": {
@@ -3338,14 +3543,14 @@
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}"
           }
         ],
         "result": "Html<Action>",
         "constraints": [
           "IntoChildren<C, Action>"
         ],
-        "signature": "button<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+        "signature": "button<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
       }
     },
@@ -3635,14 +3840,14 @@
         "parameters": [
           {
             "name": "arg1",
-            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}"
           }
         ],
         "result": "Html<Action>",
         "constraints": [
           "IntoChildren<C, Action>"
         ],
-        "signature": "button<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+        "signature": "button<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
       }
     },
@@ -4713,6 +4918,71 @@
       "constraints": []
     },
     {
+      "identity": "std/web/html::Dispatch",
+      "name": "Dispatch",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "constructor",
+      "signature": "Dispatch<Action> arg1: Action -> EventAction<Action>",
+      "description": "Dispatches an Action without controlling the browser event.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::DispatchPreventDefault",
+      "name": "DispatchPreventDefault",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "constructor",
+      "signature": "DispatchPreventDefault<Action> arg1: Action -> EventAction<Action>",
+      "description": "Prevents the browser default before dispatching an Action.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::DispatchPreventDefaultAndStop",
+      "name": "DispatchPreventDefaultAndStop",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "constructor",
+      "signature": "DispatchPreventDefaultAndStop<Action> arg1: Action -> EventAction<Action>",
+      "description": "Prevents the browser default and stops propagation before dispatching an Action.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::DispatchStopPropagation",
+      "name": "DispatchStopPropagation",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "constructor",
+      "signature": "DispatchStopPropagation<Action> arg1: Action -> EventAction<Action>",
+      "description": "Stops event propagation before dispatching an Action.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::EventAction",
+      "name": "EventAction",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-type",
+      "signature": "EventAction<_>",
+      "description": "Explicit event outcome describing dispatch, default prevention, and propagation control.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/html::Html",
       "name": "Html",
       "module": "std/web/html",
@@ -4734,6 +5004,19 @@
       "signature": "HtmlBuildError",
       "description": "Describes a rejected custom HTML tag or attribute name.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::IgnoreEvent",
+      "name": "IgnoreEvent",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "constructor",
+      "signature": "EventAction<Action>",
+      "description": "Ignores an event without dispatch or browser control.",
+      "typeParameters": [
+        "Action"
+      ],
       "constraints": []
     },
     {
@@ -4795,6 +5078,28 @@
       "constraints": []
     },
     {
+      "identity": "std/web/html::MouseEvent",
+      "name": "MouseEvent",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-struct",
+      "signature": "MouseEvent",
+      "description": "Immutable mouse snapshot containing button, coordinates, and modifier keys.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::PointerEvent",
+      "name": "PointerEvent",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-struct",
+      "signature": "PointerEvent",
+      "description": "Immutable pointer snapshot distinguishing mouse, touch, and pen input.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/html::ReservedAttributeName",
       "name": "ReservedAttributeName",
       "module": "std/web/html",
@@ -4802,6 +5107,17 @@
       "kind": "constructor",
       "signature": "ReservedAttributeName arg1: String -> HtmlBuildError",
       "description": "Reports a custom attribute that collides with typed or runtime-owned props.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::ScrollEvent",
+      "name": "ScrollEvent",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-struct",
+      "signature": "ScrollEvent",
+      "description": "Immutable scroll snapshot containing the current element offsets.",
       "typeParameters": [],
       "constraints": []
     },
@@ -4846,7 +5162,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "a<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, href: String, target?: String, rel?: String, download?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "a<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, href: String, target?: String, rel?: String, download?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a hyperlink with typed navigation props.",
       "typeParameters": [
         "Action",
@@ -4862,7 +5178,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "article<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "article<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a self-contained article section.",
       "typeParameters": [
         "Action",
@@ -4878,7 +5194,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "aside<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "aside<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates content related to the surrounding section.",
       "typeParameters": [
         "Action",
@@ -4905,7 +5221,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "audio<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, src?: String, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "audio<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, src?: String, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates an audio media element.",
       "typeParameters": [
         "Action",
@@ -4921,7 +5237,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "blockquote<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "blockquote<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a block quotation.",
       "typeParameters": [
         "Action",
@@ -4937,7 +5253,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "body<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "body<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates the document body container.",
       "typeParameters": [
         "Action",
@@ -4953,7 +5269,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "br<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action}) -> Html<Action>",
+      "signature": "br<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>}) -> Html<Action>",
       "description": "Creates a void line-break element without children.",
       "typeParameters": [
         "Action"
@@ -4966,7 +5282,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "button<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "button<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
         "Action",
@@ -4982,7 +5298,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "caption<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "caption<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a caption for a typed data table.",
       "typeParameters": [
         "Action",
@@ -4998,7 +5314,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "code<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "code<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates an inline code fragment.",
       "typeParameters": [
         "Action",
@@ -5014,7 +5330,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "custom<Action, C> arg1: Tag -> arg2: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "custom<Action, C> arg1: Tag -> arg2: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a custom element from a validated Tag.",
       "typeParameters": [
         "Action",
@@ -5041,7 +5357,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "details<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, open?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "details<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, open?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a disclosure element with typed open state.",
       "typeParameters": [
         "Action",
@@ -5057,7 +5373,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "dialog<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, open?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "dialog<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, open?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a dialog element with typed open state.",
       "typeParameters": [
         "Action",
@@ -5073,7 +5389,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "div<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "div<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
         "Action",
@@ -5089,7 +5405,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "em<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "em<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates emphasized text.",
       "typeParameters": [
         "Action",
@@ -5105,7 +5421,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "fieldset<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "fieldset<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Groups related controls in a typed form.",
       "typeParameters": [
         "Action",
@@ -5121,7 +5437,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "footer<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "footer<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates footer content for a page or section.",
       "typeParameters": [
         "Action",
@@ -5137,7 +5453,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "form<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, onSubmit?: Action, name?: String, autoComplete?: String, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "form<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, onSubmit?: Action, name?: String, autoComplete?: String, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a typed form whose onSubmit message prevents native page reload.",
       "typeParameters": [
         "Action",
@@ -5169,7 +5485,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "h1<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "h1<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
         "Action",
@@ -5185,7 +5501,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "h2<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "h2<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
         "Action",
@@ -5201,7 +5517,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "h3<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "h3<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a typed document heading.",
       "typeParameters": [
         "Action",
@@ -5217,7 +5533,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "h4<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "h4<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a typed document heading.",
       "typeParameters": [
         "Action",
@@ -5233,7 +5549,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "h5<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "h5<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a typed document heading.",
       "typeParameters": [
         "Action",
@@ -5249,7 +5565,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "h6<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "h6<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a typed document heading.",
       "typeParameters": [
         "Action",
@@ -5265,7 +5581,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "head<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "head<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates the metadata container for a typed document.",
       "typeParameters": [
         "Action",
@@ -5281,7 +5597,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "header<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "header<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates introductory content for a page or section.",
       "typeParameters": [
         "Action",
@@ -5297,7 +5613,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "hr<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action}) -> Html<Action>",
+      "signature": "hr<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>}) -> Html<Action>",
       "description": "Creates a void thematic-break element without children.",
       "typeParameters": [
         "Action"
@@ -5310,7 +5626,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "html<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "html<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates the root html element for a typed document.",
       "typeParameters": [
         "Action",
@@ -5326,7 +5642,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "img<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, src: String, alt: String, width?: Int, height?: Int, loading?: String}) -> Html<Action>",
+      "signature": "img<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, src: String, alt: String, width?: Int, height?: Int, loading?: String}) -> Html<Action>",
       "description": "Creates a void image element with required source and alt text.",
       "typeParameters": [
         "Action"
@@ -5339,7 +5655,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "input<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
+      "signature": "input<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
       "description": "Creates a controlled input with typed input and change event snapshots.",
       "typeParameters": [
         "Action"
@@ -5352,7 +5668,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "label<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, htmlFor?: String, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "label<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, htmlFor?: String, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a label connected through the htmlFor prop.",
       "typeParameters": [
         "Action",
@@ -5368,7 +5684,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "legend<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "legend<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a caption for a fieldset.",
       "typeParameters": [
         "Action",
@@ -5384,7 +5700,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "li<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "li<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a list item.",
       "typeParameters": [
         "Action",
@@ -5400,7 +5716,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "link<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, rel: String, href: String}) -> Html<Action>",
+      "signature": "link<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, rel: String, href: String}) -> Html<Action>",
       "description": "Creates a void external-resource link element without children.",
       "typeParameters": [
         "Action"
@@ -5413,7 +5729,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "main<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "main<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
         "Action",
@@ -5429,7 +5745,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "meta<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action}) -> Html<Action>",
+      "signature": "meta<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>}) -> Html<Action>",
       "description": "Creates a void metadata element without children.",
       "typeParameters": [
         "Action"
@@ -5442,7 +5758,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "nav<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "nav<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a navigation section.",
       "typeParameters": [
         "Action",
@@ -5458,7 +5774,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "ol<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "ol<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates an ordered list.",
       "typeParameters": [
         "Action",
@@ -5474,7 +5790,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "option<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, value?: String, selected?: Bool, disabled?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "option<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, value?: String, selected?: Bool, disabled?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates an option for a typed selection control.",
       "typeParameters": [
         "Action",
@@ -5490,7 +5806,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "p<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "p<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
         "Action",
@@ -5506,7 +5822,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "picture<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "picture<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a responsive image container.",
       "typeParameters": [
         "Action",
@@ -5522,7 +5838,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "pre<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "pre<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates preformatted text.",
       "typeParameters": [
         "Action",
@@ -5564,7 +5880,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "section<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "section<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
         "Action",
@@ -5580,7 +5896,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "select<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, name?: String, value?: String, disabled?: Bool, required?: Bool, multiple?: Bool, autoFocus?: Bool, onChange?: ChangeEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "select<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, name?: String, value?: String, disabled?: Bool, required?: Bool, multiple?: Bool, autoFocus?: Bool, onChange?: ChangeEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a typed selection control using the shared change snapshot.",
       "typeParameters": [
         "Action",
@@ -5596,7 +5912,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "small<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "small<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates secondary or fine-print text.",
       "typeParameters": [
         "Action",
@@ -5612,7 +5928,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "source<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, src: String, media?: String, mimeType?: String}) -> Html<Action>",
+      "signature": "source<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, src: String, media?: String, mimeType?: String}) -> Html<Action>",
       "description": "Creates a void media source element without children.",
       "typeParameters": [
         "Action"
@@ -5625,7 +5941,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "span<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "span<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
       "typeParameters": [
         "Action",
@@ -5641,7 +5957,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "strong<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "strong<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates strongly emphasized text.",
       "typeParameters": [
         "Action",
@@ -5672,7 +5988,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "summary<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "summary<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates the visible summary for a disclosure element.",
       "typeParameters": [
         "Action",
@@ -5688,7 +6004,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "table<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "table<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a typed data table.",
       "typeParameters": [
         "Action",
@@ -5704,7 +6020,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "tbody<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "tbody<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Groups body rows in a typed data table.",
       "typeParameters": [
         "Action",
@@ -5720,7 +6036,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "td<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, colSpan?: Int, rowSpan?: Int, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "td<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, colSpan?: Int, rowSpan?: Int, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a data cell with typed span props.",
       "typeParameters": [
         "Action",
@@ -5749,7 +6065,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "textarea<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
+      "signature": "textarea<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
       "description": "Creates a controlled textarea with typed input and change snapshots.",
       "typeParameters": [
         "Action"
@@ -5762,7 +6078,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "tfoot<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "tfoot<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Groups footer rows in a typed data table.",
       "typeParameters": [
         "Action",
@@ -5778,7 +6094,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "th<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, colSpan?: Int, rowSpan?: Int, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "th<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, colSpan?: Int, rowSpan?: Int, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a header cell with typed span props.",
       "typeParameters": [
         "Action",
@@ -5794,7 +6110,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "thead<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "thead<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Groups header rows in a typed data table.",
       "typeParameters": [
         "Action",
@@ -5810,7 +6126,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "title<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "title<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates the document title element.",
       "typeParameters": [
         "Action",
@@ -5826,7 +6142,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "tr<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "tr<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a row in a typed data table.",
       "typeParameters": [
         "Action",
@@ -5842,7 +6158,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "ul<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "ul<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates an unordered list.",
       "typeParameters": [
         "Action",
@@ -5858,7 +6174,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "video<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, src?: String, width?: Int, height?: Int, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "video<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> EventAction<Action>, onKeyUp?: KeyboardEvent -> EventAction<Action>, onMouseDown?: MouseEvent -> EventAction<Action>, onMouseUp?: MouseEvent -> EventAction<Action>, onPointerDown?: PointerEvent -> EventAction<Action>, onPointerUp?: PointerEvent -> EventAction<Action>, onDoubleClick?: MouseEvent -> EventAction<Action>, onContextMenu?: MouseEvent -> EventAction<Action>, onScroll?: ScrollEvent -> EventAction<Action>, src?: String, width?: Int, height?: Int, children: C}) -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a video media element.",
       "typeParameters": [
         "Action",

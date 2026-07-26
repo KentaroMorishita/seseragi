@@ -4,15 +4,26 @@
   "module": "artifact/web-keyboard-events",
   "runtimeRequirements": [
     "web.html.keyboard-event-type",
+    "web.html.event-action-type",
     "effect.core.type",
     "web.html.type",
     "core.adt",
     "core.string",
+    "web.html.event.dispatch",
     "core.bool",
     "core.unit",
+    "web.html.event.ignore",
     "web.html.button"
   ],
   "imports": [
+    {
+      "feature": "web.html.event.dispatch",
+      "local": "_ssrg_html_Dispatch"
+    },
+    {
+      "feature": "web.html.event.ignore",
+      "local": "_ssrg_html_IgnoreEvent"
+    },
     {
       "feature": "web.html.button",
       "local": "_ssrg_html_button"
@@ -22,6 +33,10 @@
     {
       "feature": "web.html.keyboard-event-type",
       "local": "KeyboardEvent"
+    },
+    {
+      "feature": "web.html.event-action-type",
+      "local": "EventAction"
     },
     {
       "feature": "effect.core.type",
@@ -102,38 +117,44 @@
         }
       ],
       "body": {
-        "kind": "conditional",
-        "condition": {
-          "kind": "field-access",
-          "receiver": {
-            "kind": "identifier",
-            "name": "event"
-          },
-          "field": "controlKey"
-        },
-        "thenBranch": {
-          "kind": "identifier",
-          "name": "ControlKey"
-        },
-        "elseBranch": {
-          "kind": "call",
-          "callee": "KeyPressed",
-          "arguments": [
-            {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_Dispatch",
+        "arguments": [
+          {
+            "kind": "conditional",
+            "condition": {
               "kind": "field-access",
               "receiver": {
                 "kind": "identifier",
                 "name": "event"
               },
-              "field": "key"
+              "field": "controlKey"
+            },
+            "thenBranch": {
+              "kind": "identifier",
+              "name": "ControlKey"
+            },
+            "elseBranch": {
+              "kind": "call",
+              "callee": "KeyPressed",
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "event"
+                  },
+                  "field": "key"
+                }
+              ]
             }
-          ]
-        }
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",
         "start": 114,
-        "end": 228
+        "end": 262
       }
     },
     {
@@ -153,13 +174,40 @@
         }
       ],
       "body": {
-        "kind": "identifier",
-        "name": "action"
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_Dispatch",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "action"
+          }
+        ]
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 230,
-        "end": 313
+        "start": 264,
+        "end": 379
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "ignoreKey",
+      "parameters": [
+        {
+          "name": "event",
+          "type": "KeyboardEvent",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-reference",
+        "name": "_ssrg_html_IgnoreEvent"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 381,
+        "end": 468
       }
     },
     {
@@ -217,7 +265,7 @@
                 "name": "onKeyUp",
                 "value": {
                   "kind": "identifier",
-                  "name": "keyAction"
+                  "name": "ignoreKey"
                 }
               },
               {
@@ -234,8 +282,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 315,
-        "end": 521
+        "start": 470,
+        "end": 676
       }
     },
     {
@@ -292,8 +340,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 523,
-        "end": 686
+        "start": 678,
+        "end": 841
       }
     }
   ]

@@ -1,0 +1,1291 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/web-pointer-events",
+  "dependencies": [
+    {
+      "specifier": "std/web/html",
+      "module": "artifact/web-pointer-events/std/web/html",
+      "origin": {
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/web-pointer-events/std/web/html::*",
+          "localName": "html"
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "private",
+      "name": "Action",
+      "nameSpan": {
+        "start": 43,
+        "end": 49
+      },
+      "variants": [
+        {
+          "name": "Clicked",
+          "nameSpan": {
+            "start": 56,
+            "end": 63
+          },
+          "span": {
+            "start": 54,
+            "end": 63
+          }
+        },
+        {
+          "name": "MouseButton",
+          "nameSpan": {
+            "start": 68,
+            "end": 79
+          },
+          "payload": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 80,
+              "end": 83
+            }
+          },
+          "span": {
+            "start": 66,
+            "end": 83
+          }
+        },
+        {
+          "name": "PointerKind",
+          "nameSpan": {
+            "start": 88,
+            "end": 99
+          },
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 100,
+              "end": 106
+            }
+          },
+          "span": {
+            "start": 86,
+            "end": 106
+          }
+        },
+        {
+          "name": "Scrolled",
+          "nameSpan": {
+            "start": 111,
+            "end": 119
+          },
+          "span": {
+            "start": 109,
+            "end": 119
+          }
+        }
+      ],
+      "span": {
+        "start": 38,
+        "end": 119
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "mouseAction",
+      "nameSpan": {
+        "start": 124,
+        "end": 135
+      },
+      "parameters": [
+        {
+          "name": "event",
+          "nameSpan": {
+            "start": 136,
+            "end": 141
+          },
+          "type": {
+            "kind": "named",
+            "name": "html.MouseEvent",
+            "span": {
+              "start": 143,
+              "end": 158
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "html.EventAction",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Action",
+            "span": {
+              "start": 179,
+              "end": 185
+            }
+          }
+        ],
+        "span": {
+          "start": 162,
+          "end": 186
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "html",
+            "span": {
+              "start": 191,
+              "end": 195
+            }
+          },
+          "field": "DispatchPreventDefault",
+          "fieldSpan": {
+            "start": 196,
+            "end": 218
+          },
+          "span": {
+            "start": 191,
+            "end": 218
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "MouseButton",
+              "span": {
+                "start": 220,
+                "end": 231
+              }
+            },
+            "argument": {
+              "kind": "member",
+              "receiver": {
+                "kind": "name",
+                "name": "event",
+                "span": {
+                  "start": 232,
+                  "end": 237
+                }
+              },
+              "field": "button",
+              "fieldSpan": {
+                "start": 238,
+                "end": 244
+              },
+              "span": {
+                "start": 232,
+                "end": 244
+              }
+            },
+            "span": {
+              "start": 220,
+              "end": 244
+            }
+          },
+          "span": {
+            "start": 219,
+            "end": 245
+          }
+        },
+        "span": {
+          "start": 191,
+          "end": 245
+        }
+      },
+      "span": {
+        "start": 121,
+        "end": 245
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "pointerAction",
+      "nameSpan": {
+        "start": 250,
+        "end": 263
+      },
+      "parameters": [
+        {
+          "name": "event",
+          "nameSpan": {
+            "start": 264,
+            "end": 269
+          },
+          "type": {
+            "kind": "named",
+            "name": "html.PointerEvent",
+            "span": {
+              "start": 271,
+              "end": 288
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "html.EventAction",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Action",
+            "span": {
+              "start": 309,
+              "end": 315
+            }
+          }
+        ],
+        "span": {
+          "start": 292,
+          "end": 316
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "html",
+            "span": {
+              "start": 321,
+              "end": 325
+            }
+          },
+          "field": "DispatchStopPropagation",
+          "fieldSpan": {
+            "start": 326,
+            "end": 349
+          },
+          "span": {
+            "start": 321,
+            "end": 349
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "PointerKind",
+              "span": {
+                "start": 351,
+                "end": 362
+              }
+            },
+            "argument": {
+              "kind": "member",
+              "receiver": {
+                "kind": "name",
+                "name": "event",
+                "span": {
+                  "start": 363,
+                  "end": 368
+                }
+              },
+              "field": "pointerType",
+              "fieldSpan": {
+                "start": 369,
+                "end": 380
+              },
+              "span": {
+                "start": 363,
+                "end": 380
+              }
+            },
+            "span": {
+              "start": 351,
+              "end": 380
+            }
+          },
+          "span": {
+            "start": 350,
+            "end": 381
+          }
+        },
+        "span": {
+          "start": 321,
+          "end": 381
+        }
+      },
+      "span": {
+        "start": 247,
+        "end": 381
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "scrollAction",
+      "nameSpan": {
+        "start": 386,
+        "end": 398
+      },
+      "parameters": [
+        {
+          "name": "event",
+          "nameSpan": {
+            "start": 399,
+            "end": 404
+          },
+          "type": {
+            "kind": "named",
+            "name": "html.ScrollEvent",
+            "span": {
+              "start": 406,
+              "end": 422
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "html.EventAction",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Action",
+            "span": {
+              "start": 443,
+              "end": 449
+            }
+          }
+        ],
+        "span": {
+          "start": 426,
+          "end": 450
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "html",
+            "span": {
+              "start": 455,
+              "end": 459
+            }
+          },
+          "field": "DispatchPreventDefaultAndStop",
+          "fieldSpan": {
+            "start": 460,
+            "end": 489
+          },
+          "span": {
+            "start": 455,
+            "end": 489
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "Scrolled",
+          "span": {
+            "start": 490,
+            "end": 498
+          }
+        },
+        "span": {
+          "start": 455,
+          "end": 498
+        }
+      },
+      "span": {
+        "start": 383,
+        "end": 498
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "view",
+      "nameSpan": {
+        "start": 507,
+        "end": 511
+      },
+      "parameters": [],
+      "returnType": {
+        "kind": "named",
+        "name": "html.Html",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Action",
+            "span": {
+              "start": 525,
+              "end": 531
+            }
+          }
+        ],
+        "span": {
+          "start": 515,
+          "end": 532
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "html",
+            "span": {
+              "start": 537,
+              "end": 541
+            }
+          },
+          "field": "div",
+          "fieldSpan": {
+            "start": 542,
+            "end": 545
+          },
+          "span": {
+            "start": 537,
+            "end": 545
+          }
+        },
+        "argument": {
+          "kind": "record",
+          "items": [
+            {
+              "kind": "field",
+              "name": "onClick",
+              "nameSpan": {
+                "start": 552,
+                "end": 559
+              },
+              "value": {
+                "kind": "name",
+                "name": "Clicked",
+                "span": {
+                  "start": 561,
+                  "end": 568
+                }
+              },
+              "span": {
+                "start": 552,
+                "end": 568
+              }
+            },
+            {
+              "kind": "field",
+              "name": "preventClickDefault",
+              "nameSpan": {
+                "start": 574,
+                "end": 593
+              },
+              "value": {
+                "kind": "boolean",
+                "value": true,
+                "span": {
+                  "start": 595,
+                  "end": 599
+                }
+              },
+              "span": {
+                "start": 574,
+                "end": 599
+              }
+            },
+            {
+              "kind": "field",
+              "name": "stopClickPropagation",
+              "nameSpan": {
+                "start": 605,
+                "end": 625
+              },
+              "value": {
+                "kind": "boolean",
+                "value": true,
+                "span": {
+                  "start": 627,
+                  "end": 631
+                }
+              },
+              "span": {
+                "start": 605,
+                "end": 631
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onMouseDown",
+              "nameSpan": {
+                "start": 637,
+                "end": 648
+              },
+              "value": {
+                "kind": "name",
+                "name": "mouseAction",
+                "span": {
+                  "start": 650,
+                  "end": 661
+                }
+              },
+              "span": {
+                "start": 637,
+                "end": 661
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onMouseUp",
+              "nameSpan": {
+                "start": 667,
+                "end": 676
+              },
+              "value": {
+                "kind": "name",
+                "name": "mouseAction",
+                "span": {
+                  "start": 678,
+                  "end": 689
+                }
+              },
+              "span": {
+                "start": 667,
+                "end": 689
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onPointerDown",
+              "nameSpan": {
+                "start": 695,
+                "end": 708
+              },
+              "value": {
+                "kind": "name",
+                "name": "pointerAction",
+                "span": {
+                  "start": 710,
+                  "end": 723
+                }
+              },
+              "span": {
+                "start": 695,
+                "end": 723
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onPointerUp",
+              "nameSpan": {
+                "start": 729,
+                "end": 740
+              },
+              "value": {
+                "kind": "name",
+                "name": "pointerAction",
+                "span": {
+                  "start": 742,
+                  "end": 755
+                }
+              },
+              "span": {
+                "start": 729,
+                "end": 755
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onDoubleClick",
+              "nameSpan": {
+                "start": 761,
+                "end": 774
+              },
+              "value": {
+                "kind": "name",
+                "name": "mouseAction",
+                "span": {
+                  "start": 776,
+                  "end": 787
+                }
+              },
+              "span": {
+                "start": 761,
+                "end": 787
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onContextMenu",
+              "nameSpan": {
+                "start": 793,
+                "end": 806
+              },
+              "value": {
+                "kind": "name",
+                "name": "mouseAction",
+                "span": {
+                  "start": 808,
+                  "end": 819
+                }
+              },
+              "span": {
+                "start": 793,
+                "end": 819
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onScroll",
+              "nameSpan": {
+                "start": 825,
+                "end": 833
+              },
+              "value": {
+                "kind": "name",
+                "name": "scrollAction",
+                "span": {
+                  "start": 835,
+                  "end": 847
+                }
+              },
+              "span": {
+                "start": 825,
+                "end": 847
+              }
+            },
+            {
+              "kind": "field",
+              "name": "children",
+              "nameSpan": {
+                "start": 853,
+                "end": 861
+              },
+              "value": {
+                "kind": "string",
+                "raw": "\"Pointer target\"",
+                "span": {
+                  "start": 863,
+                  "end": 879
+                }
+              },
+              "span": {
+                "start": 853,
+                "end": 879
+              }
+            }
+          ],
+          "span": {
+            "start": 546,
+            "end": 883
+          }
+        },
+        "span": {
+          "start": 537,
+          "end": 883
+        }
+      },
+      "span": {
+        "start": 500,
+        "end": 883
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 38,
+        "end": 883
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 38,
+        "end": 119
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 121,
+        "end": 245
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 247,
+        "end": 381
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 383,
+        "end": 498
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 500,
+        "end": 883
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Action",
+      "canonical": "artifact/web-pointer-events::Action",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 43,
+        "end": 49
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Clicked",
+      "canonical": "artifact/web-pointer-events::Clicked",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 56,
+        "end": 63
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "MouseButton",
+      "canonical": "artifact/web-pointer-events::MouseButton",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 68,
+        "end": 79
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "PointerKind",
+      "canonical": "artifact/web-pointer-events::PointerKind",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 88,
+        "end": 99
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Scrolled",
+      "canonical": "artifact/web-pointer-events::Scrolled",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 111,
+        "end": 119
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "mouseAction",
+      "canonical": "artifact/web-pointer-events::mouseAction",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 124,
+        "end": 135
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "pointerAction",
+      "canonical": "artifact/web-pointer-events::pointerAction",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 250,
+        "end": 263
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "scrollAction",
+      "canonical": "artifact/web-pointer-events::scrollAction",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 386,
+        "end": 398
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "view",
+      "canonical": "artifact/web-pointer-events::view",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 507,
+        "end": 511
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "html",
+      "canonical": "artifact/web-pointer-events/std/web/html::*",
+      "namespace": "module",
+      "kind": "module-import",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 36
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "event",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 136,
+        "end": 141
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "event",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 264,
+        "end": 269
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "event",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 399,
+        "end": 404
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 80,
+        "end": 83
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 11,
+      "origin": {
+        "start": 100,
+        "end": 106
+      }
+    },
+    {
+      "spelling": "html.MouseEvent",
+      "namespace": "type",
+      "origin": {
+        "start": 143,
+        "end": 158
+      }
+    },
+    {
+      "spelling": "html.EventAction",
+      "namespace": "type",
+      "origin": {
+        "start": 162,
+        "end": 186
+      }
+    },
+    {
+      "spelling": "Action",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 179,
+        "end": 185
+      }
+    },
+    {
+      "spelling": "html.DispatchPreventDefault",
+      "namespace": "value",
+      "origin": {
+        "start": 191,
+        "end": 218
+      }
+    },
+    {
+      "spelling": "MouseButton",
+      "namespace": "value",
+      "target": 2,
+      "origin": {
+        "start": 220,
+        "end": 231
+      }
+    },
+    {
+      "spelling": "event",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 232,
+        "end": 237
+      }
+    },
+    {
+      "spelling": "html.PointerEvent",
+      "namespace": "type",
+      "origin": {
+        "start": 271,
+        "end": 288
+      }
+    },
+    {
+      "spelling": "html.EventAction",
+      "namespace": "type",
+      "origin": {
+        "start": 292,
+        "end": 316
+      }
+    },
+    {
+      "spelling": "Action",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 309,
+        "end": 315
+      }
+    },
+    {
+      "spelling": "html.DispatchStopPropagation",
+      "namespace": "value",
+      "origin": {
+        "start": 321,
+        "end": 349
+      }
+    },
+    {
+      "spelling": "PointerKind",
+      "namespace": "value",
+      "target": 3,
+      "origin": {
+        "start": 351,
+        "end": 362
+      }
+    },
+    {
+      "spelling": "event",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 363,
+        "end": 368
+      }
+    },
+    {
+      "spelling": "html.ScrollEvent",
+      "namespace": "type",
+      "origin": {
+        "start": 406,
+        "end": 422
+      }
+    },
+    {
+      "spelling": "html.EventAction",
+      "namespace": "type",
+      "origin": {
+        "start": 426,
+        "end": 450
+      }
+    },
+    {
+      "spelling": "Action",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 443,
+        "end": 449
+      }
+    },
+    {
+      "spelling": "html.DispatchPreventDefaultAndStop",
+      "namespace": "value",
+      "origin": {
+        "start": 455,
+        "end": 489
+      }
+    },
+    {
+      "spelling": "Scrolled",
+      "namespace": "value",
+      "target": 4,
+      "origin": {
+        "start": 490,
+        "end": 498
+      }
+    },
+    {
+      "spelling": "html.Html",
+      "namespace": "type",
+      "origin": {
+        "start": 515,
+        "end": 532
+      }
+    },
+    {
+      "spelling": "Action",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 525,
+        "end": 531
+      }
+    },
+    {
+      "spelling": "html.div",
+      "namespace": "value",
+      "origin": {
+        "start": 537,
+        "end": 545
+      }
+    },
+    {
+      "spelling": "Clicked",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 561,
+        "end": 568
+      }
+    },
+    {
+      "spelling": "mouseAction",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 650,
+        "end": 661
+      }
+    },
+    {
+      "spelling": "mouseAction",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 678,
+        "end": 689
+      }
+    },
+    {
+      "spelling": "pointerAction",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 710,
+        "end": 723
+      }
+    },
+    {
+      "spelling": "pointerAction",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 742,
+        "end": 755
+      }
+    },
+    {
+      "spelling": "mouseAction",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 776,
+        "end": 787
+      }
+    },
+    {
+      "spelling": "mouseAction",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 808,
+        "end": 819
+      }
+    },
+    {
+      "spelling": "scrollAction",
+      "namespace": "value",
+      "target": 7,
+      "origin": {
+        "start": 835,
+        "end": 847
+      }
+    }
+  ],
+  "issues": [
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 143,
+        "end": 158
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 162,
+        "end": 186
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 191,
+        "end": 218
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 271,
+        "end": 288
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 292,
+        "end": 316
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 321,
+        "end": 349
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 406,
+        "end": 422
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 426,
+        "end": 450
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 455,
+        "end": 489
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 515,
+        "end": 532
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 537,
+        "end": 545
+      }
+    }
+  ]
+}

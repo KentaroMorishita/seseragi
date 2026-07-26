@@ -394,6 +394,80 @@ fn web_html_interface() -> ModuleInterface {
                 required("shiftKey", named("Bool")),
             ],
         ),
+        record_type_export(
+            "std/web/html",
+            "MouseEvent",
+            [
+                required("button", named("Int")),
+                required("clientX", named("Float")),
+                required("clientY", named("Float")),
+                required("altKey", named("Bool")),
+                required("controlKey", named("Bool")),
+                required("metaKey", named("Bool")),
+                required("shiftKey", named("Bool")),
+            ],
+        ),
+        record_type_export(
+            "std/web/html",
+            "PointerEvent",
+            [
+                required("pointerId", named("Int")),
+                required("pointerType", named("String")),
+                required("isPrimary", named("Bool")),
+                required("button", named("Int")),
+                required("clientX", named("Float")),
+                required("clientY", named("Float")),
+                required("pressure", named("Float")),
+                required("altKey", named("Bool")),
+                required("controlKey", named("Bool")),
+                required("metaKey", named("Bool")),
+                required("shiftKey", named("Bool")),
+            ],
+        ),
+        record_type_export(
+            "std/web/html",
+            "ScrollEvent",
+            [
+                required("scrollLeft", named("Float")),
+                required("scrollTop", named("Float")),
+            ],
+        ),
+        opaque_adt_type_export("std/web/html", "EventAction", ["Action"]),
+        constructor_export(
+            "std/web/html",
+            "EventAction",
+            "IgnoreEvent",
+            ["Action"],
+            None,
+        ),
+        constructor_export(
+            "std/web/html",
+            "EventAction",
+            "Dispatch",
+            ["Action"],
+            Some(named("Action")),
+        ),
+        constructor_export(
+            "std/web/html",
+            "EventAction",
+            "DispatchPreventDefault",
+            ["Action"],
+            Some(named("Action")),
+        ),
+        constructor_export(
+            "std/web/html",
+            "EventAction",
+            "DispatchStopPropagation",
+            ["Action"],
+            Some(named("Action")),
+        ),
+        constructor_export(
+            "std/web/html",
+            "EventAction",
+            "DispatchPreventDefaultAndStop",
+            ["Action"],
+            Some(named("Action")),
+        ),
         adt_type_export("std/web/html", "HtmlBuildError", []),
         constructor_export(
             "std/web/html",
@@ -943,17 +1017,57 @@ fn common_html_props() -> Vec<InterfaceRecordField> {
         optional("draggable", named("Bool")),
         optional("contentEditable", named("Bool")),
         optional("onClick", named("Action")),
+        optional("preventClickDefault", named("Bool")),
+        optional("stopClickPropagation", named("Bool")),
         optional("onFocus", named("Action")),
         optional("onBlur", named("Action")),
         optional(
             "onKeyDown",
-            function_type(vec![html_event_type("KeyboardEvent")], named("Action")),
+            function_type(vec![html_event_type("KeyboardEvent")], event_action_type()),
         ),
         optional(
             "onKeyUp",
-            function_type(vec![html_event_type("KeyboardEvent")], named("Action")),
+            function_type(vec![html_event_type("KeyboardEvent")], event_action_type()),
+        ),
+        optional(
+            "onMouseDown",
+            function_type(vec![html_event_type("MouseEvent")], event_action_type()),
+        ),
+        optional(
+            "onMouseUp",
+            function_type(vec![html_event_type("MouseEvent")], event_action_type()),
+        ),
+        optional(
+            "onPointerDown",
+            function_type(vec![html_event_type("PointerEvent")], event_action_type()),
+        ),
+        optional(
+            "onPointerUp",
+            function_type(vec![html_event_type("PointerEvent")], event_action_type()),
+        ),
+        optional(
+            "onDoubleClick",
+            function_type(vec![html_event_type("MouseEvent")], event_action_type()),
+        ),
+        optional(
+            "onContextMenu",
+            function_type(vec![html_event_type("MouseEvent")], event_action_type()),
+        ),
+        optional(
+            "onScroll",
+            function_type(vec![html_event_type("ScrollEvent")], event_action_type()),
         ),
     ]
+}
+
+fn event_action_type() -> InterfaceType {
+    external_type(
+        "EventAction",
+        "std/web/html::EventAction",
+        "std/web/html",
+        "EventAction",
+        vec![named("Action")],
+    )
 }
 
 fn with_fields<const N: usize>(
@@ -1006,6 +1120,16 @@ fn adt_type_export<const N: usize>(
     parameters: [&str; N],
 ) -> InterfaceExport {
     let mut export = type_export(module, name, N as u32, "type");
+    export.scheme.type_parameters = parameters.into_iter().map(TypeParameter::value).collect();
+    export
+}
+
+fn opaque_adt_type_export<const N: usize>(
+    module: &str,
+    name: &str,
+    parameters: [&str; N],
+) -> InterfaceExport {
+    let mut export = type_export(module, name, N as u32, "opaque-type");
     export.scheme.type_parameters = parameters.into_iter().map(TypeParameter::value).collect();
     export
 }
@@ -1352,6 +1476,58 @@ mod tests {
             panic!("button must accept a props record");
         };
         for name in ["onFocus", "onBlur", "onKeyDown", "onKeyUp"] {
+            assert!(fields.iter().any(|field| field.name == name));
+        }
+    }
+
+    #[test]
+    fn exposes_pointer_scroll_and_event_control_surface() {
+        let target = standard_module_target("std/web/html").unwrap();
+        let interface = target.interface();
+
+        for name in ["EventAction", "MouseEvent", "PointerEvent", "ScrollEvent"] {
+            assert!(interface
+                .exports
+                .iter()
+                .any(|export| export.namespace == "type" && export.name == name));
+        }
+        for name in [
+            "IgnoreEvent",
+            "Dispatch",
+            "DispatchPreventDefault",
+            "DispatchStopPropagation",
+            "DispatchPreventDefaultAndStop",
+        ] {
+            assert!(interface
+                .exports
+                .iter()
+                .any(|export| export.namespace == "value"
+                    && export.declaration_kind.as_deref() == Some("constructor")
+                    && export.name == name));
+        }
+
+        let div = interface
+            .exports
+            .iter()
+            .find(|export| export.namespace == "value" && export.name == "div")
+            .unwrap();
+        let InterfaceType::Function { parameter, .. } = &div.scheme.type_ref else {
+            panic!("div must be callable");
+        };
+        let InterfaceType::Record { fields, .. } = parameter.as_ref() else {
+            panic!("div must accept a props record");
+        };
+        for name in [
+            "preventClickDefault",
+            "stopClickPropagation",
+            "onMouseDown",
+            "onMouseUp",
+            "onPointerDown",
+            "onPointerUp",
+            "onDoubleClick",
+            "onContextMenu",
+            "onScroll",
+        ] {
             assert!(fields.iter().any(|field| field.name == name));
         }
     }

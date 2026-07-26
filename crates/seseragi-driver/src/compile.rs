@@ -519,18 +519,21 @@ type Action =
   | KeyPressed String
   | ControlKey
 
-fn keyAction event: html.KeyboardEvent -> Action =
-  if event.controlKey then ControlKey else KeyPressed event.key
+fn keyAction event: html.KeyboardEvent -> html.EventAction<Action> =
+  html.Dispatch (if event.controlKey then ControlKey else KeyPressed event.key)
 
-fn taskKey action: Task<Unit> -> event: html.KeyboardEvent -> Task<Unit> =
-  action
+fn taskKey action: Task<Unit> -> event: html.KeyboardEvent -> html.EventAction<Task<Unit>> =
+  html.Dispatch action
+
+fn ignoreKey event: html.KeyboardEvent -> html.EventAction<Action> =
+  html.IgnoreEvent
 
 pub fn view -> html.Html<Action> =
   html.button {
     onFocus: Focused,
     onBlur: Blurred,
     onKeyDown: keyAction,
-    onKeyUp: keyAction,
+    onKeyUp: ignoreKey,
     children: "Keyboard target"
   }
 
@@ -549,6 +552,7 @@ pub fn taskView action: Task<Unit> -> html.Html<Task<Unit>> =
         .expect("focus and keyboard actions should compile");
 
         assert!(compiled.generated.typescript.contains("type KeyboardEvent"));
+        assert!(compiled.generated.typescript.contains("type EventAction"));
         assert!(compiled.generated.typescript.contains("_ssrg_html_button"));
         assert!(compiled
             .generated
@@ -562,6 +566,77 @@ pub fn taskView action: Task<Unit> -> html.Html<Task<Unit>> =
             .generated
             .typescript
             .contains("(event: KeyboardEvent)"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("_ssrg_html_Dispatch"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("_ssrg_html_IgnoreEvent"));
+        assert!(!compiled.generated.typescript.contains("std/web/html"));
+    }
+
+    #[test]
+    fn compiles_pointer_scroll_and_event_controls_through_the_runtime_abi() {
+        let source = r#"import * as html from "std/web/html"
+
+type Action =
+  | MouseButton Int
+  | PointerKind String
+  | Scrolled
+
+fn mouseAction event: html.MouseEvent -> html.EventAction<Action> =
+  html.DispatchPreventDefault (MouseButton event.button)
+
+fn pointerAction event: html.PointerEvent -> html.EventAction<Action> =
+  html.DispatchStopPropagation (PointerKind event.pointerType)
+
+fn scrollAction event: html.ScrollEvent -> html.EventAction<Action> =
+  html.DispatchPreventDefaultAndStop Scrolled
+
+pub fn view -> html.Html<Action> =
+  html.div {
+    onMouseDown: mouseAction,
+    onMouseUp: mouseAction,
+    onPointerDown: pointerAction,
+    onPointerUp: pointerAction,
+    onDoubleClick: mouseAction,
+    onContextMenu: mouseAction,
+    onScroll: scrollAction,
+    children: "Pointer target"
+  }
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-pointer-events",
+            source,
+        ))
+        .expect("pointer, scroll, and event controls should compile");
+
+        for type_name in [
+            "type EventAction",
+            "type MouseEvent",
+            "type PointerEvent",
+            "type ScrollEvent",
+        ] {
+            assert!(compiled.generated.typescript.contains(type_name));
+        }
+        for helper in [
+            "_ssrg_html_DispatchPreventDefault",
+            "_ssrg_html_DispatchStopPropagation",
+            "_ssrg_html_DispatchPreventDefaultAndStop",
+        ] {
+            assert!(compiled.generated.typescript.contains(helper));
+        }
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("\"onPointerDown\": pointerAction"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("\"onScroll\": scrollAction"));
         assert!(!compiled.generated.typescript.contains("std/web/html"));
     }
 

@@ -58,6 +58,69 @@ export type KeyboardEvent = Readonly<{
   readonly shiftKey: boolean
 }>
 
+export type MouseEvent = Readonly<{
+  readonly button: bigint
+  readonly clientX: number
+  readonly clientY: number
+  readonly altKey: boolean
+  readonly controlKey: boolean
+  readonly metaKey: boolean
+  readonly shiftKey: boolean
+}>
+
+export type PointerEvent = Readonly<{
+  readonly pointerId: bigint
+  readonly pointerType: string
+  readonly isPrimary: boolean
+  readonly button: bigint
+  readonly clientX: number
+  readonly clientY: number
+  readonly pressure: number
+  readonly altKey: boolean
+  readonly controlKey: boolean
+  readonly metaKey: boolean
+  readonly shiftKey: boolean
+}>
+
+export type ScrollEvent = Readonly<{
+  readonly scrollLeft: number
+  readonly scrollTop: number
+}>
+
+export type EventAction<Action> =
+  | Readonly<{ readonly tag: "IgnoreEvent" }>
+  | Readonly<{ readonly tag: "Dispatch"; readonly value: Action }>
+  | Readonly<{
+      readonly tag: "DispatchPreventDefault"
+      readonly value: Action
+    }>
+  | Readonly<{
+      readonly tag: "DispatchStopPropagation"
+      readonly value: Action
+    }>
+  | Readonly<{
+      readonly tag: "DispatchPreventDefaultAndStop"
+      readonly value: Action
+    }>
+
+export const IgnoreEvent: EventAction<never> = Object.freeze({
+  tag: "IgnoreEvent",
+})
+export const Dispatch = <Action>(value: Action): EventAction<Action> =>
+  Object.freeze({ tag: "Dispatch", value })
+export const DispatchPreventDefault = <Action>(
+  value: Action
+): EventAction<Action> =>
+  Object.freeze({ tag: "DispatchPreventDefault", value })
+export const DispatchStopPropagation = <Action>(
+  value: Action
+): EventAction<Action> =>
+  Object.freeze({ tag: "DispatchStopPropagation", value })
+export const DispatchPreventDefaultAndStop = <Action>(
+  value: Action
+): EventAction<Action> =>
+  Object.freeze({ tag: "DispatchPreventDefaultAndStop", value })
+
 export type HtmlBuildError =
   | Readonly<{ readonly tag: "InvalidTagName"; readonly value: string }>
   | Readonly<{ readonly tag: "InvalidAttributeName"; readonly value: string }>
@@ -82,16 +145,33 @@ export type Attribute = Readonly<{
 }>
 
 export type DomEventHandler<Action> =
-  | Readonly<{ readonly kind: "click"; readonly message: Action }>
+  | Readonly<{
+      readonly kind: "click"
+      readonly message: Action
+      readonly preventDefault: boolean
+      readonly stopPropagation: boolean
+    }>
   | Readonly<{ readonly kind: "focus"; readonly message: Action }>
   | Readonly<{ readonly kind: "blur"; readonly message: Action }>
   | Readonly<{
       readonly kind: "keydown"
-      readonly map: (event: KeyboardEvent) => Action
+      readonly map: (event: KeyboardEvent) => EventAction<Action>
     }>
   | Readonly<{
       readonly kind: "keyup"
-      readonly map: (event: KeyboardEvent) => Action
+      readonly map: (event: KeyboardEvent) => EventAction<Action>
+    }>
+  | Readonly<{
+      readonly kind: "mousedown" | "mouseup" | "dblclick" | "contextmenu"
+      readonly map: (event: MouseEvent) => EventAction<Action>
+    }>
+  | Readonly<{
+      readonly kind: "pointerdown" | "pointerup"
+      readonly map: (event: PointerEvent) => EventAction<Action>
+    }>
+  | Readonly<{
+      readonly kind: "scroll"
+      readonly map: (event: ScrollEvent) => EventAction<Action>
     }>
   | Readonly<{
       readonly kind: "input"
@@ -102,6 +182,19 @@ export type DomEventHandler<Action> =
       readonly map: (event: ChangeEvent) => Action
     }>
   | Readonly<{ readonly kind: "submit"; readonly message: Action }>
+
+export type DomEventResolution<Action> =
+  | Readonly<{
+      readonly kind: "ignore"
+      readonly preventDefault: false
+      readonly stopPropagation: false
+    }>
+  | Readonly<{
+      readonly kind: "dispatch"
+      readonly action: Action
+      readonly preventDefault: boolean
+      readonly stopPropagation: boolean
+    }>
 
 export type DomRender<Action> = Readonly<{
   readonly html: string
@@ -257,11 +350,53 @@ type TagFunction = {
     props: Readonly<{ onBlur: Action }> & Readonly<Record<string, unknown>>
   ): Html<Action>
   <Action>(
-    props: Readonly<{ onKeyDown: (event: KeyboardEvent) => Action }> &
+    props: Readonly<{
+      onKeyDown: (event: KeyboardEvent) => EventAction<Action>
+    }> &
       Readonly<Record<string, unknown>>
   ): Html<Action>
   <Action>(
-    props: Readonly<{ onKeyUp: (event: KeyboardEvent) => Action }> &
+    props: Readonly<{
+      onKeyUp: (event: KeyboardEvent) => EventAction<Action>
+    }> &
+      Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{
+      onMouseDown: (event: MouseEvent) => EventAction<Action>
+    }> &
+      Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{ onMouseUp: (event: MouseEvent) => EventAction<Action> }> &
+      Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{
+      onPointerDown: (event: PointerEvent) => EventAction<Action>
+    }> &
+      Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{
+      onPointerUp: (event: PointerEvent) => EventAction<Action>
+    }> &
+      Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{
+      onDoubleClick: (event: MouseEvent) => EventAction<Action>
+    }> &
+      Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{
+      onContextMenu: (event: MouseEvent) => EventAction<Action>
+    }> &
+      Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{ onScroll: (event: ScrollEvent) => EventAction<Action> }> &
       Readonly<Record<string, unknown>>
   ): Html<Action>
   <Action = never>(props: unknown): Html<Action>
@@ -414,7 +549,18 @@ function registerDomEvents<Action>(
     markers[kind] = id
   }
   if (Object.hasOwn(props, "onClick")) {
-    register("click", { kind: "click", message: props.onClick as Action })
+    register("click", {
+      kind: "click",
+      message: props.onClick as Action,
+      preventDefault: optionalEventControl(
+        "preventClickDefault",
+        props.preventClickDefault
+      ),
+      stopPropagation: optionalEventControl(
+        "stopClickPropagation",
+        props.stopClickPropagation
+      ),
+    })
   }
   if (Object.hasOwn(props, "onFocus")) {
     register("focus", { kind: "focus", message: props.onFocus as Action })
@@ -425,7 +571,7 @@ function registerDomEvents<Action>(
   if (Object.hasOwn(props, "onKeyDown")) {
     register("keydown", {
       kind: "keydown",
-      map: expectEventMapper<KeyboardEvent, Action>(
+      map: expectEventMapper<KeyboardEvent, EventAction<Action>>(
         "onKeyDown",
         props.onKeyDown
       ),
@@ -434,7 +580,49 @@ function registerDomEvents<Action>(
   if (Object.hasOwn(props, "onKeyUp")) {
     register("keyup", {
       kind: "keyup",
-      map: expectEventMapper<KeyboardEvent, Action>("onKeyUp", props.onKeyUp),
+      map: expectEventMapper<KeyboardEvent, EventAction<Action>>(
+        "onKeyUp",
+        props.onKeyUp
+      ),
+    })
+  }
+  for (const [prop, kind] of [
+    ["onMouseDown", "mousedown"],
+    ["onMouseUp", "mouseup"],
+    ["onDoubleClick", "dblclick"],
+    ["onContextMenu", "contextmenu"],
+  ] as const) {
+    if (Object.hasOwn(props, prop)) {
+      register(kind, {
+        kind,
+        map: expectEventMapper<MouseEvent, EventAction<Action>>(
+          prop,
+          props[prop]
+        ),
+      })
+    }
+  }
+  for (const [prop, kind] of [
+    ["onPointerDown", "pointerdown"],
+    ["onPointerUp", "pointerup"],
+  ] as const) {
+    if (Object.hasOwn(props, prop)) {
+      register(kind, {
+        kind,
+        map: expectEventMapper<PointerEvent, EventAction<Action>>(
+          prop,
+          props[prop]
+        ),
+      })
+    }
+  }
+  if (Object.hasOwn(props, "onScroll")) {
+    register("scroll", {
+      kind: "scroll",
+      map: expectEventMapper<ScrollEvent, EventAction<Action>>(
+        "onScroll",
+        props.onScroll
+      ),
     })
   }
   if (Object.hasOwn(props, "onInput")) {
@@ -533,6 +721,13 @@ function renderAttributes(
     "blur",
     "keydown",
     "keyup",
+    "mousedown",
+    "mouseup",
+    "pointerdown",
+    "pointerup",
+    "dblclick",
+    "contextmenu",
+    "scroll",
     "input",
     "change",
     "submit",
@@ -643,27 +838,136 @@ export function messageFromDomEvent<Action>(
   target: unknown,
   event: unknown = target
 ): Action {
+  const resolution = resolveDomEvent(handler, target, event)
+  if (resolution.kind === "ignore") {
+    throw new TypeError("ignored DOM events do not contain an Action")
+  }
+  return resolution.action
+}
+
+export function resolveDomEvent<Action>(
+  handler: DomEventHandler<Action>,
+  target: unknown,
+  event: unknown = target
+): DomEventResolution<Action> {
   switch (handler.kind) {
     case "click":
+      return dispatchResolution(
+        handler.message,
+        handler.preventDefault,
+        handler.stopPropagation
+      )
     case "focus":
     case "blur":
+      return dispatchResolution(handler.message)
     case "submit":
-      return handler.message
+      return dispatchResolution(handler.message, true)
     case "keydown":
     case "keyup":
-      return handler.map(keyboardEventSnapshot(event))
+      return resolveEventAction(handler.map(keyboardEventSnapshot(event)))
+    case "mousedown":
+    case "mouseup":
+    case "dblclick":
+    case "contextmenu":
+      return resolveEventAction(handler.map(mouseEventSnapshot(event)))
+    case "pointerdown":
+    case "pointerup":
+      return resolveEventAction(handler.map(pointerEventSnapshot(event)))
+    case "scroll":
+      return resolveEventAction(handler.map(scrollEventSnapshot(target)))
     case "input":
-      return handler.map(
-        Object.freeze({ value: eventTargetString("value", target) })
+      return dispatchResolution(
+        handler.map(
+          Object.freeze({ value: eventTargetString("value", target) })
+        )
       )
     case "change":
-      return handler.map(
-        Object.freeze({
-          value: eventTargetString("value", target),
-          checked: eventTargetBoolean("checked", target),
-        })
+      return dispatchResolution(
+        handler.map(
+          Object.freeze({
+            value: eventTargetString("value", target),
+            checked: eventTargetBoolean("checked", target),
+          })
+        )
       )
   }
+}
+
+function dispatchResolution<Action>(
+  action: Action,
+  preventDefault = false,
+  stopPropagation = false
+): DomEventResolution<Action> {
+  return Object.freeze({
+    kind: "dispatch",
+    action,
+    preventDefault,
+    stopPropagation,
+  })
+}
+
+function resolveEventAction<Action>(
+  value: EventAction<Action>
+): DomEventResolution<Action> {
+  if (typeof value !== "object" || value === null) {
+    throw new TypeError("DOM event mappers must return html.EventAction")
+  }
+  switch (value.tag) {
+    case "IgnoreEvent":
+      return Object.freeze({
+        kind: "ignore",
+        preventDefault: false,
+        stopPropagation: false,
+      })
+    case "Dispatch":
+      return dispatchResolution(value.value)
+    case "DispatchPreventDefault":
+      return dispatchResolution(value.value, true)
+    case "DispatchStopPropagation":
+      return dispatchResolution(value.value, false, true)
+    case "DispatchPreventDefaultAndStop":
+      return dispatchResolution(value.value, true, true)
+    default:
+      throw new TypeError("DOM event mapper returned an unknown EventAction")
+  }
+}
+
+function mouseEventSnapshot(event: unknown): MouseEvent {
+  return Object.freeze({
+    button: eventTargetInt("button", event),
+    clientX: eventTargetNumber("clientX", event),
+    clientY: eventTargetNumber("clientY", event),
+    ...modifierSnapshot(event),
+  })
+}
+
+function pointerEventSnapshot(event: unknown): PointerEvent {
+  return Object.freeze({
+    pointerId: eventTargetInt("pointerId", event),
+    pointerType: eventTargetString("pointerType", event),
+    isPrimary: eventTargetBoolean("isPrimary", event),
+    button: eventTargetInt("button", event),
+    clientX: eventTargetNumber("clientX", event),
+    clientY: eventTargetNumber("clientY", event),
+    pressure: eventTargetNumber("pressure", event),
+    ...modifierSnapshot(event),
+  })
+}
+
+function scrollEventSnapshot(target: unknown): ScrollEvent {
+  return Object.freeze({
+    scrollLeft: eventTargetNumber("scrollLeft", target),
+    scrollTop: eventTargetNumber("scrollTop", target),
+  })
+}
+
+function modifierSnapshot(event: unknown) {
+  return {
+    altKey: eventTargetBoolean("altKey", event),
+    controlKey: eventTargetBoolean("ctrlKey", event),
+    metaKey: eventTargetBoolean("metaKey", event),
+    shiftKey: eventTargetBoolean("shiftKey", event),
+  } as const
 }
 
 function keyboardEventSnapshot(event: unknown): KeyboardEvent {
@@ -681,7 +985,16 @@ function keyboardEventSnapshot(event: unknown): KeyboardEvent {
 export function domEventPreventsDefault(
   handler: DomEventHandler<unknown>
 ): boolean {
-  return handler.kind === "submit"
+  return (
+    handler.kind === "submit" ||
+    (handler.kind === "click" && handler.preventDefault)
+  )
+}
+
+export function domEventStopsPropagation(
+  handler: DomEventHandler<unknown>
+): boolean {
+  return handler.kind === "click" && handler.stopPropagation
 }
 
 function styleAttribute(output: string[], value: unknown): void {
@@ -774,6 +1087,30 @@ function expectEventMapper<Event, Action>(
   return value as (event: Event) => Action
 }
 
+function optionalEventControl(name: string, value: unknown): boolean {
+  if (value === undefined) return false
+  if (typeof value !== "boolean") {
+    throw new TypeError(`HTML event control ${name} must be a boolean`)
+  }
+  return value
+}
+
+function eventTargetNumber(name: string, target: unknown): number {
+  const value = eventTargetProperty(name, target)
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new TypeError(`DOM event source ${name} must be a finite number`)
+  }
+  return value
+}
+
+function eventTargetInt(name: string, target: unknown): bigint {
+  const value = eventTargetNumber(name, target)
+  if (!Number.isSafeInteger(value)) {
+    throw new TypeError(`DOM event source ${name} must be a safe integer`)
+  }
+  return BigInt(value)
+}
+
 function eventTargetString(name: string, target: unknown): string {
   const value = eventTargetProperty(name, target)
   if (typeof value !== "string") {
@@ -792,7 +1129,7 @@ function eventTargetBoolean(name: string, target: unknown): boolean {
 
 function eventTargetProperty(name: string, target: unknown): unknown {
   if ((typeof target !== "object" && typeof target !== "function") || !target) {
-    throw new TypeError("DOM event target must expose form control state")
+    throw new TypeError("DOM event source must expose snapshot state")
   }
   return Reflect.get(target, name)
 }

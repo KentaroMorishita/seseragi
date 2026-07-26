@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "module": "artifact/web-pointer-events",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "web.html.mouse-event-type",
+      "web.html.event-action-type",
+      "web.html.pointer-event-type",
+      "web.html.scroll-event-type",
+      "web.html.type",
+      "core.adt",
+      "core.int64",
+      "core.string",
+      "web.html.event.dispatch-prevent-default",
+      "web.html.event.dispatch-stop-propagation",
+      "web.html.event.dispatch-prevent-default-and-stop",
+      "core.unit",
+      "web.html.div",
+      "core.bool"
+    ]
+  },
+  "exports": [
+    "view"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

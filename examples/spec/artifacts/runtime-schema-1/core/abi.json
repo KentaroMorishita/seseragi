@@ -1355,6 +1355,54 @@
       "import": null
     },
     {
+      "id": "web.html.mouse-event-type",
+      "kind": "value-representation",
+      "typescript": "type MouseEvent",
+      "boundary": "immutable { button: Int, clientX: Float, clientY: Float, altKey: Bool, controlKey: Bool, metaKey: Bool, shiftKey: Bool } snapshot without a host DOM Event",
+      "typeIdentity": "std/web/html::MouseEvent",
+      "typeImport": {
+        "module": "@seseragi/runtime/html",
+        "export": "MouseEvent"
+      },
+      "import": null
+    },
+    {
+      "id": "web.html.pointer-event-type",
+      "kind": "value-representation",
+      "typescript": "type PointerEvent",
+      "boundary": "immutable pointerId, pointerType, isPrimary, button, coordinates, pressure, and modifier snapshot without a host DOM Event",
+      "typeIdentity": "std/web/html::PointerEvent",
+      "typeImport": {
+        "module": "@seseragi/runtime/html",
+        "export": "PointerEvent"
+      },
+      "import": null
+    },
+    {
+      "id": "web.html.scroll-event-type",
+      "kind": "value-representation",
+      "typescript": "type ScrollEvent",
+      "boundary": "immutable { scrollLeft: Float, scrollTop: Float } current-target snapshot without a host DOM Event",
+      "typeIdentity": "std/web/html::ScrollEvent",
+      "typeImport": {
+        "module": "@seseragi/runtime/html",
+        "export": "ScrollEvent"
+      },
+      "import": null
+    },
+    {
+      "id": "web.html.event-action-type",
+      "kind": "value-representation",
+      "typescript": "type EventAction<Action>",
+      "boundary": "IgnoreEvent | Dispatch Action | DispatchPreventDefault Action | DispatchStopPropagation Action | DispatchPreventDefaultAndStop Action",
+      "typeIdentity": "std/web/html::EventAction",
+      "typeImport": {
+        "module": "@seseragi/runtime/html",
+        "export": "EventAction"
+      },
+      "import": null
+    },
+    {
       "id": "web.html.style",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -1381,6 +1429,50 @@
       "typescript": "function",
       "boundary": "Tag -> ElementProps<Msg, C> -> Html<Msg>",
       "import": { "module": "@seseragi/runtime/html", "export": "custom" }
+    },
+    {
+      "id": "web.html.event.ignore",
+      "kind": "runtime-helper",
+      "typescript": "value",
+      "boundary": "EventAction<Action>",
+      "import": { "module": "@seseragi/runtime/html", "export": "IgnoreEvent" }
+    },
+    {
+      "id": "web.html.event.dispatch",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Action -> EventAction<Action>",
+      "import": { "module": "@seseragi/runtime/html", "export": "Dispatch" }
+    },
+    {
+      "id": "web.html.event.dispatch-prevent-default",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Action -> EventAction<Action>",
+      "import": {
+        "module": "@seseragi/runtime/html",
+        "export": "DispatchPreventDefault"
+      }
+    },
+    {
+      "id": "web.html.event.dispatch-stop-propagation",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Action -> EventAction<Action>",
+      "import": {
+        "module": "@seseragi/runtime/html",
+        "export": "DispatchStopPropagation"
+      }
+    },
+    {
+      "id": "web.html.event.dispatch-prevent-default-and-stop",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Action -> EventAction<Action>",
+      "import": {
+        "module": "@seseragi/runtime/html",
+        "export": "DispatchPreventDefaultAndStop"
+      }
     },
     {
       "id": "web.html.error.invalid-tag-name",

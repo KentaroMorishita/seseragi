@@ -1,0 +1,710 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "imports": [
+    {
+      "specifier": "std/web/html",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 7,
+            "end": 8
+          },
+          "alias": "html",
+          "aliasSpan": {
+            "start": 12,
+            "end": 16
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 36
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "private",
+      "name": "Action",
+      "nameSpan": {
+        "start": 43,
+        "end": 49
+      },
+      "variants": [
+        {
+          "name": "Clicked",
+          "nameSpan": {
+            "start": 56,
+            "end": 63
+          },
+          "span": {
+            "start": 54,
+            "end": 63
+          }
+        },
+        {
+          "name": "MouseButton",
+          "nameSpan": {
+            "start": 68,
+            "end": 79
+          },
+          "payload": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 80,
+              "end": 83
+            }
+          },
+          "span": {
+            "start": 66,
+            "end": 83
+          }
+        },
+        {
+          "name": "PointerKind",
+          "nameSpan": {
+            "start": 88,
+            "end": 99
+          },
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 100,
+              "end": 106
+            }
+          },
+          "span": {
+            "start": 86,
+            "end": 106
+          }
+        },
+        {
+          "name": "Scrolled",
+          "nameSpan": {
+            "start": 111,
+            "end": 119
+          },
+          "span": {
+            "start": 109,
+            "end": 119
+          }
+        }
+      ],
+      "span": {
+        "start": 38,
+        "end": 119
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "mouseAction",
+      "nameSpan": {
+        "start": 124,
+        "end": 135
+      },
+      "parameters": [
+        {
+          "name": "event",
+          "nameSpan": {
+            "start": 136,
+            "end": 141
+          },
+          "type": {
+            "kind": "named",
+            "name": "html.MouseEvent",
+            "span": {
+              "start": 143,
+              "end": 158
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "html.EventAction",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Action",
+            "span": {
+              "start": 179,
+              "end": 185
+            }
+          }
+        ],
+        "span": {
+          "start": 162,
+          "end": 186
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "html",
+            "span": {
+              "start": 191,
+              "end": 195
+            }
+          },
+          "field": "DispatchPreventDefault",
+          "fieldSpan": {
+            "start": 196,
+            "end": 218
+          },
+          "span": {
+            "start": 191,
+            "end": 218
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "MouseButton",
+              "span": {
+                "start": 220,
+                "end": 231
+              }
+            },
+            "argument": {
+              "kind": "member",
+              "receiver": {
+                "kind": "name",
+                "name": "event",
+                "span": {
+                  "start": 232,
+                  "end": 237
+                }
+              },
+              "field": "button",
+              "fieldSpan": {
+                "start": 238,
+                "end": 244
+              },
+              "span": {
+                "start": 232,
+                "end": 244
+              }
+            },
+            "span": {
+              "start": 220,
+              "end": 244
+            }
+          },
+          "span": {
+            "start": 219,
+            "end": 245
+          }
+        },
+        "span": {
+          "start": 191,
+          "end": 245
+        }
+      },
+      "span": {
+        "start": 121,
+        "end": 245
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "pointerAction",
+      "nameSpan": {
+        "start": 250,
+        "end": 263
+      },
+      "parameters": [
+        {
+          "name": "event",
+          "nameSpan": {
+            "start": 264,
+            "end": 269
+          },
+          "type": {
+            "kind": "named",
+            "name": "html.PointerEvent",
+            "span": {
+              "start": 271,
+              "end": 288
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "html.EventAction",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Action",
+            "span": {
+              "start": 309,
+              "end": 315
+            }
+          }
+        ],
+        "span": {
+          "start": 292,
+          "end": 316
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "html",
+            "span": {
+              "start": 321,
+              "end": 325
+            }
+          },
+          "field": "DispatchStopPropagation",
+          "fieldSpan": {
+            "start": 326,
+            "end": 349
+          },
+          "span": {
+            "start": 321,
+            "end": 349
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "PointerKind",
+              "span": {
+                "start": 351,
+                "end": 362
+              }
+            },
+            "argument": {
+              "kind": "member",
+              "receiver": {
+                "kind": "name",
+                "name": "event",
+                "span": {
+                  "start": 363,
+                  "end": 368
+                }
+              },
+              "field": "pointerType",
+              "fieldSpan": {
+                "start": 369,
+                "end": 380
+              },
+              "span": {
+                "start": 363,
+                "end": 380
+              }
+            },
+            "span": {
+              "start": 351,
+              "end": 380
+            }
+          },
+          "span": {
+            "start": 350,
+            "end": 381
+          }
+        },
+        "span": {
+          "start": 321,
+          "end": 381
+        }
+      },
+      "span": {
+        "start": 247,
+        "end": 381
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "scrollAction",
+      "nameSpan": {
+        "start": 386,
+        "end": 398
+      },
+      "parameters": [
+        {
+          "name": "event",
+          "nameSpan": {
+            "start": 399,
+            "end": 404
+          },
+          "type": {
+            "kind": "named",
+            "name": "html.ScrollEvent",
+            "span": {
+              "start": 406,
+              "end": 422
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "html.EventAction",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Action",
+            "span": {
+              "start": 443,
+              "end": 449
+            }
+          }
+        ],
+        "span": {
+          "start": 426,
+          "end": 450
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "html",
+            "span": {
+              "start": 455,
+              "end": 459
+            }
+          },
+          "field": "DispatchPreventDefaultAndStop",
+          "fieldSpan": {
+            "start": 460,
+            "end": 489
+          },
+          "span": {
+            "start": 455,
+            "end": 489
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "Scrolled",
+          "span": {
+            "start": 490,
+            "end": 498
+          }
+        },
+        "span": {
+          "start": 455,
+          "end": 498
+        }
+      },
+      "span": {
+        "start": 383,
+        "end": 498
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "view",
+      "nameSpan": {
+        "start": 507,
+        "end": 511
+      },
+      "parameters": [],
+      "returnType": {
+        "kind": "named",
+        "name": "html.Html",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Action",
+            "span": {
+              "start": 525,
+              "end": 531
+            }
+          }
+        ],
+        "span": {
+          "start": 515,
+          "end": 532
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "html",
+            "span": {
+              "start": 537,
+              "end": 541
+            }
+          },
+          "field": "div",
+          "fieldSpan": {
+            "start": 542,
+            "end": 545
+          },
+          "span": {
+            "start": 537,
+            "end": 545
+          }
+        },
+        "argument": {
+          "kind": "record",
+          "items": [
+            {
+              "kind": "field",
+              "name": "onClick",
+              "nameSpan": {
+                "start": 552,
+                "end": 559
+              },
+              "value": {
+                "kind": "name",
+                "name": "Clicked",
+                "span": {
+                  "start": 561,
+                  "end": 568
+                }
+              },
+              "span": {
+                "start": 552,
+                "end": 568
+              }
+            },
+            {
+              "kind": "field",
+              "name": "preventClickDefault",
+              "nameSpan": {
+                "start": 574,
+                "end": 593
+              },
+              "value": {
+                "kind": "boolean",
+                "value": true,
+                "span": {
+                  "start": 595,
+                  "end": 599
+                }
+              },
+              "span": {
+                "start": 574,
+                "end": 599
+              }
+            },
+            {
+              "kind": "field",
+              "name": "stopClickPropagation",
+              "nameSpan": {
+                "start": 605,
+                "end": 625
+              },
+              "value": {
+                "kind": "boolean",
+                "value": true,
+                "span": {
+                  "start": 627,
+                  "end": 631
+                }
+              },
+              "span": {
+                "start": 605,
+                "end": 631
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onMouseDown",
+              "nameSpan": {
+                "start": 637,
+                "end": 648
+              },
+              "value": {
+                "kind": "name",
+                "name": "mouseAction",
+                "span": {
+                  "start": 650,
+                  "end": 661
+                }
+              },
+              "span": {
+                "start": 637,
+                "end": 661
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onMouseUp",
+              "nameSpan": {
+                "start": 667,
+                "end": 676
+              },
+              "value": {
+                "kind": "name",
+                "name": "mouseAction",
+                "span": {
+                  "start": 678,
+                  "end": 689
+                }
+              },
+              "span": {
+                "start": 667,
+                "end": 689
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onPointerDown",
+              "nameSpan": {
+                "start": 695,
+                "end": 708
+              },
+              "value": {
+                "kind": "name",
+                "name": "pointerAction",
+                "span": {
+                  "start": 710,
+                  "end": 723
+                }
+              },
+              "span": {
+                "start": 695,
+                "end": 723
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onPointerUp",
+              "nameSpan": {
+                "start": 729,
+                "end": 740
+              },
+              "value": {
+                "kind": "name",
+                "name": "pointerAction",
+                "span": {
+                  "start": 742,
+                  "end": 755
+                }
+              },
+              "span": {
+                "start": 729,
+                "end": 755
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onDoubleClick",
+              "nameSpan": {
+                "start": 761,
+                "end": 774
+              },
+              "value": {
+                "kind": "name",
+                "name": "mouseAction",
+                "span": {
+                  "start": 776,
+                  "end": 787
+                }
+              },
+              "span": {
+                "start": 761,
+                "end": 787
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onContextMenu",
+              "nameSpan": {
+                "start": 793,
+                "end": 806
+              },
+              "value": {
+                "kind": "name",
+                "name": "mouseAction",
+                "span": {
+                  "start": 808,
+                  "end": 819
+                }
+              },
+              "span": {
+                "start": 793,
+                "end": 819
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onScroll",
+              "nameSpan": {
+                "start": 825,
+                "end": 833
+              },
+              "value": {
+                "kind": "name",
+                "name": "scrollAction",
+                "span": {
+                  "start": 835,
+                  "end": 847
+                }
+              },
+              "span": {
+                "start": 825,
+                "end": 847
+              }
+            },
+            {
+              "kind": "field",
+              "name": "children",
+              "nameSpan": {
+                "start": 853,
+                "end": 861
+              },
+              "value": {
+                "kind": "string",
+                "raw": "\"Pointer target\"",
+                "span": {
+                  "start": 863,
+                  "end": 879
+                }
+              },
+              "span": {
+                "start": 853,
+                "end": 879
+              }
+            }
+          ],
+          "span": {
+            "start": 546,
+            "end": 883
+          }
+        },
+        "span": {
+          "start": 537,
+          "end": 883
+        }
+      },
+      "span": {
+        "start": 500,
+        "end": 883
+      }
+    }
+  ]
+}

@@ -7,12 +7,15 @@
     "abiMajor": 1,
     "requirements": [
       "web.html.keyboard-event-type",
+      "web.html.event-action-type",
       "effect.core.type",
       "web.html.type",
       "core.adt",
       "core.string",
+      "web.html.event.dispatch",
       "core.bool",
       "core.unit",
+      "web.html.event.ignore",
       "web.html.button"
     ]
   },

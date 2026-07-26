@@ -1,0 +1,340 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/web-pointer-events",
+  "runtimeRequirements": [
+    "web.html.mouse-event-type",
+    "web.html.event-action-type",
+    "web.html.pointer-event-type",
+    "web.html.scroll-event-type",
+    "web.html.type",
+    "core.adt",
+    "core.int64",
+    "core.string",
+    "web.html.event.dispatch-prevent-default",
+    "web.html.event.dispatch-stop-propagation",
+    "web.html.event.dispatch-prevent-default-and-stop",
+    "core.unit",
+    "web.html.div",
+    "core.bool"
+  ],
+  "imports": [
+    {
+      "feature": "web.html.event.dispatch-prevent-default",
+      "local": "_ssrg_html_DispatchPreventDefault"
+    },
+    {
+      "feature": "web.html.event.dispatch-stop-propagation",
+      "local": "_ssrg_html_DispatchStopPropagation"
+    },
+    {
+      "feature": "web.html.event.dispatch-prevent-default-and-stop",
+      "local": "_ssrg_html_DispatchPreventDefaultAndStop"
+    },
+    {
+      "feature": "web.html.div",
+      "local": "_ssrg_html_div"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "web.html.mouse-event-type",
+      "local": "MouseEvent"
+    },
+    {
+      "feature": "web.html.event-action-type",
+      "local": "EventAction"
+    },
+    {
+      "feature": "web.html.pointer-event-type",
+      "local": "PointerEvent"
+    },
+    {
+      "feature": "web.html.scroll-event-type",
+      "local": "ScrollEvent"
+    },
+    {
+      "feature": "web.html.type",
+      "local": "Html"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "Action",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Clicked",
+          "tag": "Clicked",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 56,
+            "end": 63
+          }
+        },
+        {
+          "exported": false,
+          "name": "MouseButton",
+          "tag": "MouseButton",
+          "payload": {
+            "kind": "bigint"
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 68,
+            "end": 79
+          }
+        },
+        {
+          "exported": false,
+          "name": "PointerKind",
+          "tag": "PointerKind",
+          "payload": {
+            "kind": "string"
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 88,
+            "end": 99
+          }
+        },
+        {
+          "exported": false,
+          "name": "Scrolled",
+          "tag": "Scrolled",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 111,
+            "end": 119
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 38,
+        "end": 119
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "mouseAction",
+      "parameters": [
+        {
+          "name": "event",
+          "type": "MouseEvent",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_DispatchPreventDefault",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "MouseButton",
+            "arguments": [
+              {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "identifier",
+                  "name": "event"
+                },
+                "field": "button"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 121,
+        "end": 245
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "pointerAction",
+      "parameters": [
+        {
+          "name": "event",
+          "type": "PointerEvent",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_DispatchStopPropagation",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "PointerKind",
+            "arguments": [
+              {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "identifier",
+                  "name": "event"
+                },
+                "field": "pointerType"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 247,
+        "end": 381
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "scrollAction",
+      "parameters": [
+        {
+          "name": "event",
+          "type": "ScrollEvent",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_DispatchPreventDefaultAndStop",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "Scrolled"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 383,
+        "end": 498
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "view",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_div",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "onClick",
+                "value": {
+                  "kind": "identifier",
+                  "name": "Clicked"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "preventClickDefault",
+                "value": {
+                  "kind": "boolean",
+                  "value": true
+                }
+              },
+              {
+                "kind": "field",
+                "name": "stopClickPropagation",
+                "value": {
+                  "kind": "boolean",
+                  "value": true
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onMouseDown",
+                "value": {
+                  "kind": "identifier",
+                  "name": "mouseAction"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onMouseUp",
+                "value": {
+                  "kind": "identifier",
+                  "name": "mouseAction"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onPointerDown",
+                "value": {
+                  "kind": "identifier",
+                  "name": "pointerAction"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onPointerUp",
+                "value": {
+                  "kind": "identifier",
+                  "name": "pointerAction"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onDoubleClick",
+                "value": {
+                  "kind": "identifier",
+                  "name": "mouseAction"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onContextMenu",
+                "value": {
+                  "kind": "identifier",
+                  "name": "mouseAction"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onScroll",
+                "value": {
+                  "kind": "identifier",
+                  "name": "scrollAction"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "string",
+                  "value": "Pointer target"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 500,
+        "end": 883
+      }
+    }
+  ]
+}
