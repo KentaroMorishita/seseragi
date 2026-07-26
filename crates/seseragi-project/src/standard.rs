@@ -6,6 +6,33 @@ use seseragi_syntax::{
 
 const ORIGIN: ByteSpan = ByteSpan { start: 0, end: 0 };
 
+const DOCUMENT_HTML_TAGS: &[&str] = &[
+    "html",
+    "head",
+    "body",
+    "title",
+    "header",
+    "footer",
+    "nav",
+    "article",
+    "aside",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "strong",
+    "em",
+    "small",
+    "code",
+    "pre",
+    "blockquote",
+    "ul",
+    "ol",
+    "li",
+];
+
+const VOID_DOCUMENT_HTML_TAGS: &[&str] = &["meta", "link", "br", "hr"];
+
 struct StandardModuleDefinition {
     specifier: &'static str,
     interface: fn() -> ModuleInterface,
@@ -372,6 +399,12 @@ fn web_html_interface() -> ModuleInterface {
     for tag in ["div", "span", "p", "main", "section", "h1", "h2"] {
         exports.push(constrained_html_function(tag, element_props()));
     }
+    for tag in DOCUMENT_HTML_TAGS {
+        exports.push(constrained_html_function(tag, element_props()));
+    }
+    for tag in VOID_DOCUMENT_HTML_TAGS {
+        exports.push(void_html_function(tag));
+    }
     exports.push(constrained_html_function("button", button_props()));
     exports.push(constrained_html_function("form", form_props()));
     exports.push(constrained_html_function("label", label_props()));
@@ -562,6 +595,17 @@ fn constrained_html_function(name: &str, parameter: InterfaceType) -> InterfaceE
     )
 }
 
+fn void_html_function(name: &str) -> InterfaceExport {
+    function_export(
+        "std/web/html",
+        name,
+        ["Action"],
+        Vec::new(),
+        vec![void_element_props()],
+        html(named("Action")),
+    )
+}
+
 fn fragment_parameter() -> InterfaceType {
     named("C")
 }
@@ -576,6 +620,18 @@ fn element_props() -> InterfaceType {
         optional("style", named("Style")),
         optional("onClick", named("Action")),
         required("children", named("C")),
+    ])
+}
+
+fn void_element_props() -> InterfaceType {
+    record([
+        optional("id", named("String")),
+        optional("className", named("String")),
+        optional("title", named("String")),
+        optional("hidden", named("Bool")),
+        optional("key", named("String")),
+        optional("style", named("Style")),
+        optional("onClick", named("Action")),
     ])
 }
 
@@ -952,5 +1008,33 @@ mod tests {
         assert!(fields.iter().any(|field| field.name == "onChange"));
         assert!(fields.iter().any(|field| field.name == "required"));
         assert!(fields.iter().any(|field| field.name == "inputType"));
+    }
+
+    #[test]
+    fn exposes_document_text_list_and_void_html_tags() {
+        let target = standard_module_target("std/web/html").unwrap();
+        let interface = target.interface();
+
+        for name in DOCUMENT_HTML_TAGS
+            .iter()
+            .chain(VOID_DOCUMENT_HTML_TAGS.iter())
+        {
+            let export = interface
+                .exports
+                .iter()
+                .find(|export| export.namespace == "value" && export.name == *name)
+                .unwrap_or_else(|| panic!("missing std/web/html::{name}"));
+            let InterfaceType::Function { parameter, .. } = &export.scheme.type_ref else {
+                panic!("std/web/html::{name} must be callable");
+            };
+            let InterfaceType::Record { fields, .. } = parameter.as_ref() else {
+                panic!("std/web/html::{name} must accept a props record");
+            };
+            assert_eq!(
+                fields.iter().any(|field| field.name == "children"),
+                !VOID_DOCUMENT_HTML_TAGS.contains(name),
+                "std/web/html::{name} has the wrong children contract"
+            );
+        }
     }
 }

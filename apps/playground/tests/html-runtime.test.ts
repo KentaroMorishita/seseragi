@@ -1,18 +1,47 @@
 import { describe, expect, test } from "bun:test"
 import {
+  article,
+  aside,
+  blockquote,
+  body,
+  br,
   button,
   type ChangeEvent,
+  code,
   div,
   domEventPreventsDefault,
+  em,
+  footer,
   form,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  head,
+  header,
+  hr,
+  html as htmlTag,
   type InputEvent,
   input,
   label,
+  li,
+  link,
+  meta,
   messageFromDomEvent,
+  nav,
+  ol,
+  pre,
   renderForDom,
+  renderDocument,
   renderToString,
+  small,
+  strong,
   style,
   textarea,
+  title,
+  ul,
 } from "../../../runtime/ts/src/html"
 import { createDomEventBindings } from "../src/runtime/browser-dom"
 import { createImeInputCoordinator } from "../src/runtime/ime-input"
@@ -30,6 +59,57 @@ describe("HTML browser runtime", () => {
 
     expect(renderToString(node)).toBe(
       '<div style="--card-shadow: 0 4px 16px &quot;#0002&quot;; background-color: #fff; box-shadow: var(--card-shadow)">Styled</div>'
+    )
+  })
+
+  test("renders document, sectioning, text, list, and void tags", () => {
+    const document = htmlTag({
+      children: [
+        head({
+          children: [title({ children: "Seseragi" }), meta({}), link({})],
+        }),
+        body({
+          children: [
+            header({ children: h1({ children: "Reference" }) }),
+            nav({ children: small({ children: "Contents" }) }),
+            article({
+              children: [
+                h2({ children: "Document" }),
+                h3({ children: "Section" }),
+                h4({ children: "Topic" }),
+                h5({ children: "Detail" }),
+                h6({ children: "Note" }),
+                strong({ children: "Strong" }),
+                em({ children: "Emphasis" }),
+                code({ children: "let value = 1" }),
+                pre({ children: "line 1\nline 2" }),
+                blockquote({ children: "Typed HTML" }),
+                ul({ children: [li({ children: "One" })] }),
+                ol({ children: [li({ children: "First" })] }),
+                br({}),
+                hr({}),
+              ],
+            }),
+            aside({ children: "Related" }),
+            footer({ children: "End" }),
+          ],
+        }),
+      ],
+    })
+
+    expect(renderDocument(document)).toBe(
+      [
+        "<!doctype html><html><head><title>Seseragi</title><meta><link>",
+        "</head><body><header><h1>Reference</h1></header>",
+        "<nav><small>Contents</small></nav><article>",
+        "<h2>Document</h2><h3>Section</h3><h4>Topic</h4>",
+        "<h5>Detail</h5><h6>Note</h6><strong>Strong</strong>",
+        "<em>Emphasis</em><code>let value = 1</code>",
+        "<pre>line 1\nline 2</pre><blockquote>Typed HTML</blockquote>",
+        "<ul><li>One</li></ul><ol><li>First</li></ol><br><hr>",
+        "</article><aside>Related</aside><footer>End</footer>",
+        "</body></html>",
+      ].join("")
     )
   })
 

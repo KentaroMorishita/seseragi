@@ -259,6 +259,102 @@ fails ConsoleError =
     }
 
     #[test]
+    fn compiles_document_text_list_and_void_html_tags() {
+        let source = r#"import * as html from "std/web/html"
+
+type Action = | Navigate
+
+fn page -> html.Html<Action> =
+  html.html {
+    children: [
+      html.head {
+        children: [
+          html.title { children: "Seseragi" },
+          html.meta { id: "metadata" },
+          html.link { id: "styles" }
+        ]
+      },
+      html.body {
+        children: [
+          html.header { children: html.h1 { children: "Reference" } },
+          html.nav { children: html.small { children: "Contents" } },
+          html.article {
+            children: [
+              html.h2 { children: "Document" },
+              html.h3 { children: "Section" },
+              html.h4 { children: "Topic" },
+              html.h5 { children: "Detail" },
+              html.h6 { children: "Note" },
+              html.strong { children: "Strong" },
+              html.em { children: "Emphasis" },
+              html.code { children: "let value = 1" },
+              html.pre { children: "line 1\nline 2" },
+              html.blockquote { children: "Typed HTML" },
+              html.ul { children: [html.li { children: "One" }] },
+              html.ol { children: [html.li { children: "First" }] },
+              html.br { id: "break" },
+              html.hr { id: "rule" }
+            ]
+          },
+          html.aside { children: "Related" },
+          html.footer { children: "End" }
+        ]
+      }
+    ]
+  }
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ html.renderDocument (page ())
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-html-document-tags",
+            source,
+        ))
+        .expect("document HTML tags should compile through the runtime ABI");
+
+        for runtime_name in [
+            "html",
+            "head",
+            "body",
+            "title",
+            "meta",
+            "link",
+            "header",
+            "footer",
+            "nav",
+            "article",
+            "aside",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+            "strong",
+            "em",
+            "small",
+            "code",
+            "pre",
+            "blockquote",
+            "ul",
+            "ol",
+            "li",
+            "br",
+            "hr",
+        ] {
+            assert!(
+                compiled
+                    .generated
+                    .typescript
+                    .contains(&format!("_ssrg_html_{runtime_name}")),
+                "missing runtime import for {runtime_name}"
+            );
+        }
+        assert!(!compiled.generated.typescript.contains("std/web/html"));
+    }
+
+    #[test]
     fn compiles_typed_form_event_snapshots_through_the_runtime_abi() {
         let source = r#"import * as html from "std/web/html"
 

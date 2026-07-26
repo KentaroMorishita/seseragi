@@ -1177,6 +1177,7 @@ fn standard_category(name: &str, module: &str) -> &'static str {
 
 fn standard_description(identity: &str) -> Option<&'static str> {
     Some(match identity {
+        "std/web/html::head" => "Creates the metadata container for a typed document.",
         identity if identity.ends_with("::toArray") => {
             "Copies the List elements into an Array in source order."
         }
@@ -1271,6 +1272,30 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/web/html::renderToString" => "Renders typed HTML to an escaped fragment string.",
         "std/web/html::renderDocument" => "Renders typed HTML as a complete document string.",
         "std/web/html::style" => "Validates and converts a style record into inline Style.",
+        "std/web/html::html" => "Creates the root html element for a typed document.",
+        "std/web/html::body" => "Creates the document body container.",
+        "std/web/html::title" => "Creates the document title element.",
+        "std/web/html::meta" => "Creates a void metadata element without children.",
+        "std/web/html::link" => "Creates a void external-resource link element without children.",
+        "std/web/html::header" => "Creates introductory content for a page or section.",
+        "std/web/html::footer" => "Creates footer content for a page or section.",
+        "std/web/html::nav" => "Creates a navigation section.",
+        "std/web/html::article" => "Creates a self-contained article section.",
+        "std/web/html::aside" => "Creates content related to the surrounding section.",
+        "std/web/html::h3" | "std/web/html::h4" | "std/web/html::h5" | "std/web/html::h6" => {
+            "Creates a typed document heading."
+        }
+        "std/web/html::strong" => "Creates strongly emphasized text.",
+        "std/web/html::em" => "Creates emphasized text.",
+        "std/web/html::small" => "Creates secondary or fine-print text.",
+        "std/web/html::code" => "Creates an inline code fragment.",
+        "std/web/html::pre" => "Creates preformatted text.",
+        "std/web/html::blockquote" => "Creates a block quotation.",
+        "std/web/html::ul" => "Creates an unordered list.",
+        "std/web/html::ol" => "Creates an ordered list.",
+        "std/web/html::li" => "Creates a list item.",
+        "std/web/html::br" => "Creates a void line-break element without children.",
+        "std/web/html::hr" => "Creates a void thematic-break element without children.",
         "std/web/html::InputEvent" => {
             "Immutable text-input snapshot containing only the current String value."
         }

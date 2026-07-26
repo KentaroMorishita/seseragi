@@ -4022,6 +4022,83 @@
       "constraints": []
     },
     {
+      "identity": "std/web/html::article",
+      "name": "article",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "article<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a self-contained article section.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::aside",
+      "name": "aside",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "aside<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates content related to the surrounding section.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::blockquote",
+      "name": "blockquote",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "blockquote<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a block quotation.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::body",
+      "name": "body",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "body<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates the document body container.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::br",
+      "name": "br",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "br<Action> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action} -> Html<Action>",
+      "description": "Creates a void line-break element without children.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/html::button",
       "name": "button",
       "module": "std/web/html",
@@ -4038,6 +4115,22 @@
       ]
     },
     {
+      "identity": "std/web/html::code",
+      "name": "code",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "code<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates an inline code fragment.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
       "identity": "std/web/html::div",
       "name": "div",
       "module": "std/web/html",
@@ -4045,6 +4138,38 @@
       "kind": "function",
       "signature": "div<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::em",
+      "name": "em",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "em<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates emphasized text.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::footer",
+      "name": "footer",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "footer<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates footer content for a page or section.",
       "typeParameters": [
         "Action",
         "C"
@@ -4118,6 +4243,131 @@
       ]
     },
     {
+      "identity": "std/web/html::h3",
+      "name": "h3",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "h3<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a typed document heading.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::h4",
+      "name": "h4",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "h4<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a typed document heading.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::h5",
+      "name": "h5",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "h5<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a typed document heading.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::h6",
+      "name": "h6",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "h6<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a typed document heading.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::head",
+      "name": "head",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "head<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates the metadata container for a typed document.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::header",
+      "name": "header",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "header<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates introductory content for a page or section.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::hr",
+      "name": "hr",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "hr<Action> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action} -> Html<Action>",
+      "description": "Creates a void thematic-break element without children.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::html",
+      "name": "html",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "html<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates the root html element for a typed document.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
       "identity": "std/web/html::input",
       "name": "input",
       "module": "std/web/html",
@@ -4147,6 +4397,35 @@
       ]
     },
     {
+      "identity": "std/web/html::li",
+      "name": "li",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "li<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a list item.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::link",
+      "name": "link",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "link<Action> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action} -> Html<Action>",
+      "description": "Creates a void external-resource link element without children.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/html::main",
       "name": "main",
       "module": "std/web/html",
@@ -4163,6 +4442,51 @@
       ]
     },
     {
+      "identity": "std/web/html::meta",
+      "name": "meta",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "meta<Action> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action} -> Html<Action>",
+      "description": "Creates a void metadata element without children.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::nav",
+      "name": "nav",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "nav<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a navigation section.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::ol",
+      "name": "ol",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "ol<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates an ordered list.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
       "identity": "std/web/html::p",
       "name": "p",
       "module": "std/web/html",
@@ -4170,6 +4494,22 @@
       "kind": "function",
       "signature": "p<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::pre",
+      "name": "pre",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "pre<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates preformatted text.",
       "typeParameters": [
         "Action",
         "C"
@@ -4221,6 +4561,22 @@
       ]
     },
     {
+      "identity": "std/web/html::small",
+      "name": "small",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "small<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates secondary or fine-print text.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
       "identity": "std/web/html::span",
       "name": "span",
       "module": "std/web/html",
@@ -4228,6 +4584,22 @@
       "kind": "function",
       "signature": "span<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::strong",
+      "name": "strong",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "strong<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates strongly emphasized text.",
       "typeParameters": [
         "Action",
         "C"
@@ -4276,6 +4648,38 @@
         "Action"
       ],
       "constraints": []
+    },
+    {
+      "identity": "std/web/html::title",
+      "name": "title",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "title<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates the document title element.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::ul",
+      "name": "ul",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "ul<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates an unordered list.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
     },
     {
       "identity": "std/prelude::Either",

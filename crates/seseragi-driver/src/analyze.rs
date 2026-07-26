@@ -119,6 +119,62 @@ mod tests {
     }
 
     #[test]
+    fn exposes_document_html_tags_in_the_reference_catalog() {
+        let analysis = analyze_module(CompileInput::new(
+            "main.ssrg",
+            "analysis/html-reference",
+            "pub let value = 1\n",
+        ));
+
+        for name in [
+            "html",
+            "head",
+            "body",
+            "title",
+            "meta",
+            "link",
+            "header",
+            "footer",
+            "nav",
+            "article",
+            "aside",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+            "strong",
+            "em",
+            "small",
+            "code",
+            "pre",
+            "blockquote",
+            "ul",
+            "ol",
+            "li",
+            "br",
+            "hr",
+        ] {
+            let item = analysis
+                .standard_library_catalog()
+                .iter()
+                .find(|item| item.identity == format!("std/web/html::{name}"))
+                .unwrap_or_else(|| panic!("missing Reference entry for std/web/html::{name}"));
+            assert_eq!(item.module, "std/web/html");
+            assert!(item.signature.is_some());
+            assert!(!item.description.is_empty());
+        }
+        let head = analysis
+            .standard_library_catalog()
+            .iter()
+            .find(|item| item.identity == "std/web/html::head")
+            .expect("std/web/html::head is available in Reference");
+        assert_eq!(
+            head.description,
+            "Creates the metadata container for a typed document."
+        );
+    }
+
+    #[test]
     fn invalid_source_still_returns_shared_diagnostics_and_catalog() {
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",

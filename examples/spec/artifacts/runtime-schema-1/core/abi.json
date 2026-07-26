@@ -1331,6 +1331,191 @@
       "import": { "module": "@seseragi/runtime/html", "export": "fragment" }
     },
     {
+      "id": "web.html.html",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "html" }
+    },
+    {
+      "id": "web.html.head",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "head" }
+    },
+    {
+      "id": "web.html.body",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "body" }
+    },
+    {
+      "id": "web.html.title",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "title" }
+    },
+    {
+      "id": "web.html.meta",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "VoidElementProps<Msg> -> Html<Msg> without children",
+      "import": { "module": "@seseragi/runtime/html", "export": "meta" }
+    },
+    {
+      "id": "web.html.link",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "VoidElementProps<Msg> -> Html<Msg> without children",
+      "import": { "module": "@seseragi/runtime/html", "export": "link" }
+    },
+    {
+      "id": "web.html.header",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "header" }
+    },
+    {
+      "id": "web.html.footer",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "footer" }
+    },
+    {
+      "id": "web.html.nav",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "nav" }
+    },
+    {
+      "id": "web.html.article",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "article" }
+    },
+    {
+      "id": "web.html.aside",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "aside" }
+    },
+    {
+      "id": "web.html.h3",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "h3" }
+    },
+    {
+      "id": "web.html.h4",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "h4" }
+    },
+    {
+      "id": "web.html.h5",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "h5" }
+    },
+    {
+      "id": "web.html.h6",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "h6" }
+    },
+    {
+      "id": "web.html.strong",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "strong" }
+    },
+    {
+      "id": "web.html.em",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "em" }
+    },
+    {
+      "id": "web.html.small",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "small" }
+    },
+    {
+      "id": "web.html.code",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "code" }
+    },
+    {
+      "id": "web.html.pre",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "pre" }
+    },
+    {
+      "id": "web.html.blockquote",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": {
+        "module": "@seseragi/runtime/html",
+        "export": "blockquote"
+      }
+    },
+    {
+      "id": "web.html.ul",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "ul" }
+    },
+    {
+      "id": "web.html.ol",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "ol" }
+    },
+    {
+      "id": "web.html.li",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "li" }
+    },
+    {
+      "id": "web.html.br",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "VoidElementProps<Msg> -> Html<Msg> without children",
+      "import": { "module": "@seseragi/runtime/html", "export": "br" }
+    },
+    {
+      "id": "web.html.hr",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "VoidElementProps<Msg> -> Html<Msg> without children",
+      "import": { "module": "@seseragi/runtime/html", "export": "hr" }
+    },
+    {
       "id": "web.html.div",
       "kind": "runtime-helper",
       "typescript": "function",
