@@ -3911,8 +3911,24 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "button<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "button<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates or renders typed HTML through the standard HTML surface.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::caption",
+      "name": "caption",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "caption<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a caption for a typed data table.",
       "typeParameters": [
         "Action",
         "C"
@@ -3929,6 +3945,38 @@
       "kind": "function",
       "signature": "code<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates an inline code fragment.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::details",
+      "name": "details",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "details<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, open?: Bool, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a disclosure element with typed open state.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::dialog",
+      "name": "dialog",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "dialog<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, open?: Bool, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a dialog element with typed open state.",
       "typeParameters": [
         "Action",
         "C"
@@ -3970,6 +4018,22 @@
       ]
     },
     {
+      "identity": "std/web/html::fieldset",
+      "name": "fieldset",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "fieldset<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Groups related controls in a typed form.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
       "identity": "std/web/html::footer",
       "name": "footer",
       "module": "std/web/html",
@@ -3991,7 +4055,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "form<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, onSubmit?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "form<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, onSubmit?: Action, name?: String, autoComplete?: String, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a typed form whose onSubmit message prevents native page reload.",
       "typeParameters": [
         "Action",
@@ -4193,7 +4257,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "input<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
+      "signature": "input<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
       "description": "Creates a controlled input with typed input and change event snapshots.",
       "typeParameters": [
         "Action"
@@ -4208,6 +4272,22 @@
       "kind": "function",
       "signature": "label<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, htmlFor?: String, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a label connected through the htmlFor prop.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::legend",
+      "name": "legend",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "legend<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a caption for a fieldset.",
       "typeParameters": [
         "Action",
         "C"
@@ -4307,6 +4387,22 @@
       ]
     },
     {
+      "identity": "std/web/html::option",
+      "name": "option",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "option<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, selected?: Bool, disabled?: Bool, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates an option for a typed selection control.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
       "identity": "std/web/html::p",
       "name": "p",
       "module": "std/web/html",
@@ -4397,6 +4493,22 @@
       ]
     },
     {
+      "identity": "std/web/html::select",
+      "name": "select",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "select<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, name?: String, value?: String, disabled?: Bool, required?: Bool, multiple?: Bool, autoFocus?: Bool, onChange?: ChangeEvent -> Action, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a typed selection control using the shared change snapshot.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
       "identity": "std/web/html::small",
       "name": "small",
       "module": "std/web/html",
@@ -4473,6 +4585,70 @@
       ]
     },
     {
+      "identity": "std/web/html::summary",
+      "name": "summary",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "summary<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates the visible summary for a disclosure element.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::table",
+      "name": "table",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "table<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a typed data table.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::tbody",
+      "name": "tbody",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "tbody<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Groups body rows in a typed data table.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::td",
+      "name": "td",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "td<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, colSpan?: Int, rowSpan?: Int, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a data cell with typed span props.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
       "identity": "std/web/html::text",
       "name": "text",
       "module": "std/web/html",
@@ -4491,12 +4667,60 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "textarea<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, placeholder?: String, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
+      "signature": "textarea<Action> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: InputEvent -> Action, onChange?: ChangeEvent -> Action}) -> Html<Action>",
       "description": "Creates a controlled textarea with typed input and change snapshots.",
       "typeParameters": [
         "Action"
       ],
       "constraints": []
+    },
+    {
+      "identity": "std/web/html::tfoot",
+      "name": "tfoot",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "tfoot<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Groups footer rows in a typed data table.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::th",
+      "name": "th",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "th<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, colSpan?: Int, rowSpan?: Int, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a header cell with typed span props.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::thead",
+      "name": "thead",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "thead<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Groups header rows in a typed data table.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
     },
     {
       "identity": "std/web/html::title",
@@ -4506,6 +4730,22 @@
       "kind": "function",
       "signature": "title<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates the document title element.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::tr",
+      "name": "tr",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "tr<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a row in a typed data table.",
       "typeParameters": [
         "Action",
         "C"

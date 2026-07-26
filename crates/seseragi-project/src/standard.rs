@@ -459,6 +459,17 @@ fn web_html_interface() -> ModuleInterface {
         vec![textarea_props()],
         html(named("Action")),
     ));
+    exports.push(constrained_html_function("select", select_props()));
+    exports.push(constrained_html_function("option", option_props()));
+    for tag in [
+        "fieldset", "legend", "table", "thead", "tbody", "tfoot", "tr", "caption", "summary",
+    ] {
+        exports.push(constrained_html_function(tag, element_props()));
+    }
+    exports.push(constrained_html_function("th", table_cell_props()));
+    exports.push(constrained_html_function("td", table_cell_props()));
+    exports.push(constrained_html_function("details", open_element_props()));
+    exports.push(constrained_html_function("dialog", open_element_props()));
     for renderer in ["renderToString", "renderDocument"] {
         exports.push(function_export(
             "std/web/html",
@@ -773,6 +784,9 @@ fn button_props() -> InterfaceType {
         optional("style", named("Style")),
         optional("disabled", named("Bool")),
         optional("buttonType", named("String")),
+        optional("name", named("String")),
+        optional("value", named("String")),
+        optional("autoFocus", named("Bool")),
         optional("onClick", named("Action")),
         required("children", named("C")),
     ])
@@ -788,6 +802,8 @@ fn form_props() -> InterfaceType {
         optional("style", named("Style")),
         optional("onClick", named("Action")),
         optional("onSubmit", named("Action")),
+        optional("name", named("String")),
+        optional("autoComplete", named("String")),
         required("children", named("C")),
     ])
 }
@@ -819,7 +835,15 @@ fn input_props() -> InterfaceType {
         optional("name", named("String")),
         optional("disabled", named("Bool")),
         optional("required", named("Bool")),
+        optional("readOnly", named("Bool")),
+        optional("multiple", named("Bool")),
         optional("placeholder", named("String")),
+        optional("autoComplete", named("String")),
+        optional("autoFocus", named("Bool")),
+        optional("min", named("String")),
+        optional("max", named("String")),
+        optional("step", named("String")),
+        optional("pattern", named("String")),
         optional("inputType", named("String")),
         optional(
             "onInput",
@@ -844,7 +868,12 @@ fn textarea_props() -> InterfaceType {
         optional("name", named("String")),
         optional("disabled", named("Bool")),
         optional("required", named("Bool")),
+        optional("readOnly", named("Bool")),
         optional("placeholder", named("String")),
+        optional("autoComplete", named("String")),
+        optional("autoFocus", named("Bool")),
+        optional("rows", named("Int")),
+        optional("cols", named("Int")),
         optional(
             "onInput",
             function_type(vec![html_event_type("InputEvent")], named("Action")),
@@ -853,6 +882,72 @@ fn textarea_props() -> InterfaceType {
             "onChange",
             function_type(vec![html_event_type("ChangeEvent")], named("Action")),
         ),
+    ])
+}
+
+fn select_props() -> InterfaceType {
+    record([
+        optional("id", named("String")),
+        optional("className", named("String")),
+        optional("title", named("String")),
+        optional("hidden", named("Bool")),
+        optional("key", named("String")),
+        optional("style", named("Style")),
+        optional("name", named("String")),
+        optional("value", named("String")),
+        optional("disabled", named("Bool")),
+        optional("required", named("Bool")),
+        optional("multiple", named("Bool")),
+        optional("autoFocus", named("Bool")),
+        optional(
+            "onChange",
+            function_type(vec![html_event_type("ChangeEvent")], named("Action")),
+        ),
+        required("children", named("C")),
+    ])
+}
+
+fn option_props() -> InterfaceType {
+    record([
+        optional("id", named("String")),
+        optional("className", named("String")),
+        optional("title", named("String")),
+        optional("hidden", named("Bool")),
+        optional("key", named("String")),
+        optional("style", named("Style")),
+        optional("value", named("String")),
+        optional("selected", named("Bool")),
+        optional("disabled", named("Bool")),
+        required("children", named("C")),
+    ])
+}
+
+fn table_cell_props() -> InterfaceType {
+    record([
+        optional("id", named("String")),
+        optional("className", named("String")),
+        optional("title", named("String")),
+        optional("hidden", named("Bool")),
+        optional("key", named("String")),
+        optional("style", named("Style")),
+        optional("onClick", named("Action")),
+        optional("colSpan", named("Int")),
+        optional("rowSpan", named("Int")),
+        required("children", named("C")),
+    ])
+}
+
+fn open_element_props() -> InterfaceType {
+    record([
+        optional("id", named("String")),
+        optional("className", named("String")),
+        optional("title", named("String")),
+        optional("hidden", named("Bool")),
+        optional("key", named("String")),
+        optional("style", named("Style")),
+        optional("onClick", named("Action")),
+        optional("open", named("Bool")),
+        required("children", named("C")),
     ])
 }
 
@@ -1205,5 +1300,51 @@ mod tests {
         assert!(is_standard_void_html_tag("img"));
         assert!(is_standard_void_html_tag("source"));
         assert!(!is_standard_void_html_tag("picture"));
+    }
+
+    #[test]
+    fn exposes_form_table_and_interactive_tag_props() {
+        let target = standard_module_target("std/web/html").unwrap();
+        let interface = target.interface();
+
+        let props = |name: &str| {
+            let export = interface
+                .exports
+                .iter()
+                .find(|export| export.namespace == "value" && export.name == name)
+                .unwrap_or_else(|| panic!("missing std/web/html::{name}"));
+            let InterfaceType::Function { parameter, .. } = &export.scheme.type_ref else {
+                panic!("std/web/html::{name} must be callable");
+            };
+            let InterfaceType::Record { fields, .. } = parameter.as_ref() else {
+                panic!("std/web/html::{name} must accept a props record");
+            };
+            fields
+                .iter()
+                .map(|field| field.name.as_str())
+                .collect::<Vec<_>>()
+        };
+
+        for name in [
+            "select", "option", "fieldset", "legend", "table", "thead", "tbody", "tfoot", "tr",
+            "th", "td", "caption", "details", "summary", "dialog",
+        ] {
+            assert!(props(name).contains(&"children"));
+        }
+        for name in ["input", "textarea"] {
+            assert!(props(name).contains(&"readOnly"));
+            assert!(props(name).contains(&"autoFocus"));
+        }
+        assert!(props("input").contains(&"multiple"));
+        assert!(props("input").contains(&"pattern"));
+        assert!(props("textarea").contains(&"rows"));
+        assert!(props("textarea").contains(&"cols"));
+        assert!(props("select").contains(&"onChange"));
+        assert!(props("option").contains(&"selected"));
+        assert!(props("th").contains(&"colSpan"));
+        assert!(props("td").contains(&"rowSpan"));
+        assert!(props("details").contains(&"open"));
+        assert!(props("dialog").contains(&"open"));
+        assert!(!props("table").contains(&"colSpan"));
     }
 }

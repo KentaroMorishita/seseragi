@@ -510,6 +510,118 @@ pub fn view draft: String -> checked: Bool -> html.Html<Action> =
     }
 
     #[test]
+    fn compiles_form_table_and_interactive_tags_with_tag_specific_props() {
+        let source = r#"import * as html from "std/web/html"
+
+type Action = | Changed String
+
+fn changed event: html.ChangeEvent -> Action =
+  Changed event.value
+
+pub fn view -> html.Html<Action> =
+  html.div {
+    children: [
+      html.form {
+        name: "profile",
+        autoComplete: "on",
+        children: html.fieldset {
+          children: [
+            html.legend { children: "Profile" },
+            html.label { htmlFor: "age", children: "Age" },
+            html.input {
+              id: "age",
+              name: "age",
+              value: "18",
+              readOnly: True,
+              multiple: True,
+              autoComplete: "off",
+              autoFocus: True,
+              min: "0",
+              max: "120",
+              step: "1",
+              pattern: "[0-9]+"
+            },
+            html.textarea {
+              name: "bio",
+              value: "Typed UI",
+              readOnly: True,
+              autoComplete: "off",
+              autoFocus: True,
+              rows: 4,
+              cols: 40
+            },
+            html.select {
+              name: "theme",
+              value: "dark",
+              required: True,
+              multiple: True,
+              autoFocus: True,
+              onChange: changed,
+              children: [
+                html.option { value: "light", disabled: True, children: "Light" },
+                html.option { value: "dark", selected: True, children: "Dark" }
+              ]
+            },
+            html.button {
+              name: "save",
+              value: "yes",
+              autoFocus: True,
+              children: "Save"
+            }
+          ]
+        }
+      },
+      html.table {
+        children: [
+          html.caption { children: "Scores" },
+          html.thead {
+            children: html.tr {
+              children: html.th { colSpan: 2, children: "Result" }
+            }
+          },
+          html.tbody {
+            children: html.tr {
+              children: html.td { rowSpan: 2, children: "42" }
+            }
+          },
+          html.tfoot {
+            children: html.tr { children: html.td { children: "End" } }
+          }
+        ]
+      },
+      html.details {
+        open: True,
+        children: html.summary { children: "More details" }
+      },
+      html.dialog { open: True, children: "Ready" }
+    ]
+  }
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-form-table-interactive",
+            source,
+        ))
+        .expect("form, table, and interactive tags should compile");
+
+        for runtime_name in [
+            "form", "fieldset", "legend", "label", "input", "textarea", "select", "option",
+            "button", "table", "caption", "thead", "tbody", "tfoot", "tr", "th", "td", "details",
+            "summary", "dialog",
+        ] {
+            assert!(
+                compiled
+                    .generated
+                    .typescript
+                    .contains(&format!("_ssrg_html_{runtime_name}")),
+                "missing runtime import for {runtime_name}: {}",
+                compiled.generated.typescript
+            );
+        }
+        assert!(compiled.generated.typescript.contains("type ChangeEvent"));
+    }
+
+    #[test]
     fn rejects_a_form_event_handler_with_the_wrong_shape_before_lowering() {
         let source = r#"import * as html from "std/web/html"
 

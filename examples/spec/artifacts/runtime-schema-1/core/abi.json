@@ -1645,6 +1645,111 @@
       }
     },
     {
+      "id": "web.html.select",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "SelectProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "select" }
+    },
+    {
+      "id": "web.html.option",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "OptionProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "option" }
+    },
+    {
+      "id": "web.html.fieldset",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "fieldset" }
+    },
+    {
+      "id": "web.html.legend",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "legend" }
+    },
+    {
+      "id": "web.html.table",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "table" }
+    },
+    {
+      "id": "web.html.thead",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "thead" }
+    },
+    {
+      "id": "web.html.tbody",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "tbody" }
+    },
+    {
+      "id": "web.html.tfoot",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "tfoot" }
+    },
+    {
+      "id": "web.html.tr",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "tr" }
+    },
+    {
+      "id": "web.html.th",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "TableCellProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "th" }
+    },
+    {
+      "id": "web.html.td",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "TableCellProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "td" }
+    },
+    {
+      "id": "web.html.caption",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "caption" }
+    },
+    {
+      "id": "web.html.details",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "OpenElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "details" }
+    },
+    {
+      "id": "web.html.summary",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "summary" }
+    },
+    {
+      "id": "web.html.dialog",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "OpenElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "dialog" }
+    },
+    {
       "id": "web.html.render-to-string",
       "kind": "runtime-helper",
       "typescript": "function",

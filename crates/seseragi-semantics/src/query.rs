@@ -1318,6 +1318,23 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/web/html::textarea" => {
             "Creates a controlled textarea with typed input and change snapshots."
         }
+        "std/web/html::select" => {
+            "Creates a typed selection control using the shared change snapshot."
+        }
+        "std/web/html::option" => "Creates an option for a typed selection control.",
+        "std/web/html::fieldset" => "Groups related controls in a typed form.",
+        "std/web/html::legend" => "Creates a caption for a fieldset.",
+        "std/web/html::table" => "Creates a typed data table.",
+        "std/web/html::thead" => "Groups header rows in a typed data table.",
+        "std/web/html::tbody" => "Groups body rows in a typed data table.",
+        "std/web/html::tfoot" => "Groups footer rows in a typed data table.",
+        "std/web/html::tr" => "Creates a row in a typed data table.",
+        "std/web/html::th" => "Creates a header cell with typed span props.",
+        "std/web/html::td" => "Creates a data cell with typed span props.",
+        "std/web/html::caption" => "Creates a caption for a typed data table.",
+        "std/web/html::details" => "Creates a disclosure element with typed open state.",
+        "std/web/html::summary" => "Creates the visible summary for a disclosure element.",
+        "std/web/html::dialog" => "Creates a dialog element with typed open state.",
         "std/signal::map" => "Derives a Signal by transforming each current value.",
         "std/signal::make" => "Creates a mutable Signal inside Effect.",
         _ => return None,

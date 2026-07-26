@@ -159,6 +159,21 @@ mod tests {
             "source",
             "video",
             "audio",
+            "select",
+            "option",
+            "fieldset",
+            "legend",
+            "table",
+            "thead",
+            "tbody",
+            "tfoot",
+            "tr",
+            "th",
+            "td",
+            "caption",
+            "details",
+            "summary",
+            "dialog",
         ] {
             let item = analysis
                 .standard_library_catalog()

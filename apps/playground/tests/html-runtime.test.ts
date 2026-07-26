@@ -8,12 +8,16 @@ import {
   body,
   br,
   button,
+  caption,
   type ChangeEvent,
   code,
+  details,
+  dialog,
   div,
   domEventPreventsDefault,
   em,
   footer,
+  fieldset,
   form,
   h1,
   h2,
@@ -29,23 +33,34 @@ import {
   type InputEvent,
   input,
   label,
+  legend,
   li,
   link,
   meta,
   messageFromDomEvent,
   nav,
   ol,
+  option,
   picture,
   pre,
   renderForDom,
   renderDocument,
   renderToString,
+  select,
   small,
   source,
   strong,
   style,
+  summary,
+  table,
+  tbody,
+  td,
   textarea,
+  tfoot,
+  th,
+  thead,
   title,
+  tr,
   ul,
   video,
 } from "../../../runtime/ts/src/html"
@@ -238,6 +253,91 @@ describe("HTML browser runtime", () => {
     expect(rendered.html).toContain('data-ssrg-event-input="1"')
     expect(rendered.html).toContain('data-ssrg-event-change="2"')
     expect(renderToString(node)).not.toContain("data-ssrg-event")
+  })
+
+  test("renders form, table, and interactive tag-specific props", () => {
+    const node = div({
+      children: [
+        form({
+          name: "profile",
+          autoComplete: "on",
+          children: fieldset({
+            children: [
+              legend({ children: "Profile" }),
+              label({ htmlFor: "age", children: "Age" }),
+              input({
+                id: "age",
+                name: "age",
+                value: "18",
+                readOnly: true,
+                multiple: true,
+                autoComplete: "off",
+                autoFocus: true,
+                min: "0",
+                max: "120",
+                step: "1",
+                pattern: "[0-9]+",
+              }),
+              textarea({
+                name: "bio",
+                value: "Typed UI",
+                readOnly: true,
+                autoComplete: "off",
+                autoFocus: true,
+                rows: 4n,
+                cols: 40n,
+              }),
+              select({
+                name: "theme",
+                value: "dark",
+                required: true,
+                multiple: true,
+                autoFocus: true,
+                onChange: (event: ChangeEvent) => event.value,
+                children: [
+                  option({ value: "light", disabled: true, children: "Light" }),
+                  option({ value: "dark", selected: true, children: "Dark" }),
+                ],
+              }),
+            ],
+          }),
+        }),
+        table({
+          children: [
+            caption({ children: "Scores" }),
+            thead({
+              children: tr({
+                children: th({ colSpan: 2n, children: "Result" }),
+              }),
+            }),
+            tbody({
+              children: tr({
+                children: td({ rowSpan: 2n, children: "42" }),
+              }),
+            }),
+            tfoot({ children: tr({ children: td({ children: "End" }) }) }),
+          ],
+        }),
+        details({
+          open: true,
+          children: summary({ children: "More details" }),
+        }),
+        dialog({ open: true, children: "Ready" }),
+      ],
+    })
+
+    expect(renderToString(node)).toBe(
+      [
+        '<div><form name="profile" autocomplete="on"><fieldset><legend>Profile</legend><label for="age">Age</label>',
+        '<input id="age" value="18" name="age" readonly multiple autocomplete="off" autofocus min="0" max="120" step="1" pattern="[0-9]+" type="text">',
+        '<textarea name="bio" readonly autocomplete="off" autofocus rows="4" cols="40">Typed UI</textarea>',
+        '<select name="theme" value="dark" required multiple autofocus><option value="light" disabled>Light</option>',
+        '<option value="dark" selected>Dark</option></select></fieldset></form>',
+        '<table><caption>Scores</caption><thead><tr><th colspan="2">Result</th></tr></thead>',
+        '<tbody><tr><td rowspan="2">42</td></tr></tbody><tfoot><tr><td>End</td></tr></tfoot></table>',
+        "<details open><summary>More details</summary></details><dialog open>Ready</dialog></div>",
+      ].join("")
+    )
   })
 
   test("snapshots input and change state exactly once", () => {

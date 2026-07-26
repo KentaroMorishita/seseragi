@@ -169,6 +169,21 @@ export const audio = tag("audio")
 export const button = tag("button")
 export const form = tag("form")
 export const label = tag("label")
+export const select = tag("select")
+export const option = tag("option")
+export const fieldset = tag("fieldset")
+export const legend = tag("legend")
+export const table = tag("table")
+export const thead = tag("thead")
+export const tbody = tag("tbody")
+export const tfoot = tag("tfoot")
+export const tr = tag("tr")
+export const th = tag("th")
+export const td = tag("td")
+export const caption = tag("caption")
+export const details = tag("details")
+export const summary = tag("summary")
+export const dialog = tag("dialog")
 
 export function input<Action = never>(props: unknown): Html<Action> {
   return element("input", props, true)
@@ -336,6 +351,13 @@ function renderAttributes(
   if (tagName === "button") {
     booleanAttribute(attributes, "disabled", props.disabled)
     stringAttribute(attributes, "type", props.buttonType ?? "button")
+    stringAttribute(attributes, "name", props.name)
+    stringAttribute(attributes, "value", props.value)
+    booleanAttribute(attributes, "autofocus", props.autoFocus)
+  }
+  if (tagName === "form") {
+    stringAttribute(attributes, "name", props.name)
+    stringAttribute(attributes, "autocomplete", props.autoComplete)
   }
   if (tagName === "input") {
     stringAttribute(attributes, "value", props.value)
@@ -343,14 +365,27 @@ function renderAttributes(
     stringAttribute(attributes, "name", props.name)
     booleanAttribute(attributes, "disabled", props.disabled)
     booleanAttribute(attributes, "required", props.required)
+    booleanAttribute(attributes, "readonly", props.readOnly)
+    booleanAttribute(attributes, "multiple", props.multiple)
     stringAttribute(attributes, "placeholder", props.placeholder)
+    stringAttribute(attributes, "autocomplete", props.autoComplete)
+    booleanAttribute(attributes, "autofocus", props.autoFocus)
+    stringAttribute(attributes, "min", props.min)
+    stringAttribute(attributes, "max", props.max)
+    stringAttribute(attributes, "step", props.step)
+    stringAttribute(attributes, "pattern", props.pattern)
     stringAttribute(attributes, "type", props.inputType ?? "text")
   }
   if (tagName === "textarea") {
     stringAttribute(attributes, "name", props.name)
     booleanAttribute(attributes, "disabled", props.disabled)
     booleanAttribute(attributes, "required", props.required)
+    booleanAttribute(attributes, "readonly", props.readOnly)
     stringAttribute(attributes, "placeholder", props.placeholder)
+    stringAttribute(attributes, "autocomplete", props.autoComplete)
+    booleanAttribute(attributes, "autofocus", props.autoFocus)
+    integerAttribute(attributes, "rows", props.rows)
+    integerAttribute(attributes, "cols", props.cols)
   }
   if (tagName === "label") {
     stringAttribute(attributes, "for", props.htmlFor)
@@ -383,6 +418,26 @@ function renderAttributes(
   if (tagName === "link") {
     stringAttribute(attributes, "rel", props.rel)
     stringAttribute(attributes, "href", props.href)
+  }
+  if (tagName === "select") {
+    stringAttribute(attributes, "name", props.name)
+    stringAttribute(attributes, "value", props.value)
+    booleanAttribute(attributes, "disabled", props.disabled)
+    booleanAttribute(attributes, "required", props.required)
+    booleanAttribute(attributes, "multiple", props.multiple)
+    booleanAttribute(attributes, "autofocus", props.autoFocus)
+  }
+  if (tagName === "option") {
+    stringAttribute(attributes, "value", props.value)
+    booleanAttribute(attributes, "selected", props.selected)
+    booleanAttribute(attributes, "disabled", props.disabled)
+  }
+  if (tagName === "th" || tagName === "td") {
+    integerAttribute(attributes, "colspan", props.colSpan)
+    integerAttribute(attributes, "rowspan", props.rowSpan)
+  }
+  if (tagName === "details" || tagName === "dialog") {
+    booleanAttribute(attributes, "open", props.open)
   }
   return attributes.length === 0 ? "" : ` ${attributes.join(" ")}`
 }
