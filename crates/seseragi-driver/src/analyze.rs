@@ -153,6 +153,12 @@ mod tests {
             "li",
             "br",
             "hr",
+            "a",
+            "img",
+            "picture",
+            "source",
+            "video",
+            "audio",
         ] {
             let item = analysis
                 .standard_library_catalog()

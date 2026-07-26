@@ -1296,6 +1296,12 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/web/html::li" => "Creates a list item.",
         "std/web/html::br" => "Creates a void line-break element without children.",
         "std/web/html::hr" => "Creates a void thematic-break element without children.",
+        "std/web/html::a" => "Creates a hyperlink with typed navigation props.",
+        "std/web/html::img" => "Creates a void image element with required source and alt text.",
+        "std/web/html::picture" => "Creates a responsive image container.",
+        "std/web/html::source" => "Creates a void media source element without children.",
+        "std/web/html::video" => "Creates a video media element.",
+        "std/web/html::audio" => "Creates an audio media element.",
         "std/web/html::InputEvent" => {
             "Immutable text-input snapshot containing only the current String value."
         }

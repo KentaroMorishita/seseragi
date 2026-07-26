@@ -271,7 +271,7 @@ fn page -> html.Html<Action> =
         children: [
           html.title { children: "Seseragi" },
           html.meta { id: "metadata" },
-          html.link { id: "styles" }
+          html.link { rel: "stylesheet", href: "/styles.css" }
         ]
       },
       html.body {
@@ -352,6 +352,94 @@ fails ConsoleError =
             );
         }
         assert!(!compiled.generated.typescript.contains("std/web/html"));
+    }
+
+    #[test]
+    fn compiles_link_image_and_media_tags_with_tag_specific_props() {
+        let source = r#"import * as html from "std/web/html"
+
+type Action = | Navigate
+
+pub fn page -> html.Html<Action> =
+  html.article {
+    children: [
+      html.a {
+        href: "https://example.com/docs",
+        target: "_blank",
+        rel: "noopener",
+        download: True,
+        children: "Docs"
+      },
+      html.img {
+        src: "/hero.png",
+        alt: "Seseragi",
+        width: 640,
+        height: 360,
+        loading: "lazy"
+      },
+      html.picture {
+        children: html.source {
+          src: "/hero-wide.png",
+          media: "(min-width: 48rem)",
+          mimeType: "image/png"
+        }
+      },
+      html.video {
+        src: "/intro.mp4",
+        width: 640,
+        height: 360,
+        children: html.source { src: "/intro.webm", mimeType: "video/webm" }
+      },
+      html.audio {
+        src: "/theme.mp3",
+        children: html.source { src: "/theme.ogg", mimeType: "audio/ogg" }
+      }
+    ]
+  }
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-html-link-media",
+            source,
+        ))
+        .expect("link, image, picture, source, video, and audio should compile");
+
+        for runtime_name in ["a", "img", "picture", "source", "video", "audio"] {
+            assert!(
+                compiled
+                    .generated
+                    .typescript
+                    .contains(&format!("_ssrg_html_{runtime_name}")),
+                "missing runtime import for {runtime_name}: {}",
+                compiled.generated.typescript
+            );
+        }
+    }
+
+    #[test]
+    fn diagnoses_children_on_standard_void_html_elements() {
+        for tag in ["img", "source"] {
+            let props = if tag == "img" {
+                r#"src: "/hero.png", alt: "Hero", children: "invalid""#
+            } else {
+                r#"src: "/hero.png", children: "invalid""#
+            };
+            let source = format!(
+                "import * as html from \"std/web/html\"\n\
+                 pub fn invalid -> html.Html<Never> = html.{tag} {{ {props} }}\n"
+            );
+            let module_id = format!("artifact/web-html-{tag}-void-children");
+            let diagnostics = compile_module(CompileInput::new("main.ssrg", &module_id, &source))
+                .expect_err("void element children must stop compilation");
+
+            assert!(
+                diagnostics.diagnostics.iter().any(|diagnostic| {
+                    diagnostic.code == "SES-T0701"
+                        && diagnostic.message_key == "web.html.void-children"
+                }),
+                "{tag}: {diagnostics:?}"
+            );
+        }
     }
 
     #[test]

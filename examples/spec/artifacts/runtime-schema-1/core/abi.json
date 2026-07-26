@@ -1516,6 +1516,48 @@
       "import": { "module": "@seseragi/runtime/html", "export": "hr" }
     },
     {
+      "id": "web.html.a",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "AnchorProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "a" }
+    },
+    {
+      "id": "web.html.img",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ImageProps<Msg> -> Html<Msg> without children",
+      "import": { "module": "@seseragi/runtime/html", "export": "img" }
+    },
+    {
+      "id": "web.html.picture",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "picture" }
+    },
+    {
+      "id": "web.html.source",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "SourceProps<Msg> -> Html<Msg> without children",
+      "import": { "module": "@seseragi/runtime/html", "export": "source" }
+    },
+    {
+      "id": "web.html.video",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "VideoProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "video" }
+    },
+    {
+      "id": "web.html.audio",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "AudioProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "audio" }
+    },
+    {
       "id": "web.html.div",
       "kind": "runtime-helper",
       "typescript": "function",

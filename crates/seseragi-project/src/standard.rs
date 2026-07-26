@@ -31,7 +31,14 @@ const DOCUMENT_HTML_TAGS: &[&str] = &[
     "li",
 ];
 
-const VOID_DOCUMENT_HTML_TAGS: &[&str] = &["meta", "link", "br", "hr"];
+const VOID_DOCUMENT_HTML_TAGS: &[&str] = &["meta", "br", "hr"];
+
+pub fn is_standard_void_html_tag(name: &str) -> bool {
+    matches!(
+        name,
+        "meta" | "link" | "br" | "hr" | "img" | "source" | "input"
+    )
+}
 
 struct StandardModuleDefinition {
     specifier: &'static str,
@@ -405,6 +412,34 @@ fn web_html_interface() -> ModuleInterface {
     for tag in VOID_DOCUMENT_HTML_TAGS {
         exports.push(void_html_function(tag));
     }
+    exports.push(function_export(
+        "std/web/html",
+        "link",
+        ["Action"],
+        Vec::new(),
+        vec![link_props()],
+        html(named("Action")),
+    ));
+    exports.push(constrained_html_function("a", anchor_props()));
+    exports.push(function_export(
+        "std/web/html",
+        "img",
+        ["Action"],
+        Vec::new(),
+        vec![image_props()],
+        html(named("Action")),
+    ));
+    exports.push(constrained_html_function("picture", element_props()));
+    exports.push(function_export(
+        "std/web/html",
+        "source",
+        ["Action"],
+        Vec::new(),
+        vec![source_props()],
+        html(named("Action")),
+    ));
+    exports.push(constrained_html_function("video", video_props()));
+    exports.push(constrained_html_function("audio", audio_props()));
     exports.push(constrained_html_function("button", button_props()));
     exports.push(constrained_html_function("form", form_props()));
     exports.push(constrained_html_function("label", label_props()));
@@ -632,6 +667,99 @@ fn void_element_props() -> InterfaceType {
         optional("key", named("String")),
         optional("style", named("Style")),
         optional("onClick", named("Action")),
+    ])
+}
+
+fn link_props() -> InterfaceType {
+    record([
+        optional("id", named("String")),
+        optional("className", named("String")),
+        optional("title", named("String")),
+        optional("hidden", named("Bool")),
+        optional("key", named("String")),
+        optional("style", named("Style")),
+        optional("onClick", named("Action")),
+        required("rel", named("String")),
+        required("href", named("String")),
+    ])
+}
+
+fn anchor_props() -> InterfaceType {
+    record([
+        optional("id", named("String")),
+        optional("className", named("String")),
+        optional("title", named("String")),
+        optional("hidden", named("Bool")),
+        optional("key", named("String")),
+        optional("style", named("Style")),
+        optional("onClick", named("Action")),
+        required("href", named("String")),
+        optional("target", named("String")),
+        optional("rel", named("String")),
+        optional("download", named("Bool")),
+        required("children", named("C")),
+    ])
+}
+
+fn image_props() -> InterfaceType {
+    record([
+        optional("id", named("String")),
+        optional("className", named("String")),
+        optional("title", named("String")),
+        optional("hidden", named("Bool")),
+        optional("key", named("String")),
+        optional("style", named("Style")),
+        optional("onClick", named("Action")),
+        required("src", named("String")),
+        required("alt", named("String")),
+        optional("width", named("Int")),
+        optional("height", named("Int")),
+        optional("loading", named("String")),
+    ])
+}
+
+fn source_props() -> InterfaceType {
+    record([
+        optional("id", named("String")),
+        optional("className", named("String")),
+        optional("title", named("String")),
+        optional("hidden", named("Bool")),
+        optional("key", named("String")),
+        optional("style", named("Style")),
+        optional("onClick", named("Action")),
+        required("src", named("String")),
+        optional("media", named("String")),
+        optional("mimeType", named("String")),
+    ])
+}
+
+fn video_props() -> InterfaceType {
+    record([
+        optional("id", named("String")),
+        optional("className", named("String")),
+        optional("title", named("String")),
+        optional("hidden", named("Bool")),
+        optional("key", named("String")),
+        optional("style", named("Style")),
+        optional("onClick", named("Action")),
+        optional("src", named("String")),
+        optional("width", named("Int")),
+        optional("height", named("Int")),
+        required("children", named("C")),
+    ])
+}
+
+fn audio_props() -> InterfaceType {
+    record([
+        optional("id", named("String")),
+        optional("className", named("String")),
+        optional("title", named("String")),
+        optional("hidden", named("Bool")),
+        optional("key", named("String")),
+        optional("style", named("Style")),
+        optional("onClick", named("Action")),
+        optional("src", named("String")),
+        required("children", named("C")),
     ])
 }
 
@@ -1036,5 +1164,46 @@ mod tests {
                 "std/web/html::{name} has the wrong children contract"
             );
         }
+    }
+
+    #[test]
+    fn exposes_tag_specific_link_and_media_props() {
+        let target = standard_module_target("std/web/html").unwrap();
+        let interface = target.interface();
+
+        for name in ["a", "img", "picture", "source", "video", "audio", "link"] {
+            assert!(interface
+                .exports
+                .iter()
+                .any(|export| export.namespace == "value" && export.name == name));
+        }
+
+        let props = |name: &str| {
+            let export = interface
+                .exports
+                .iter()
+                .find(|export| export.namespace == "value" && export.name == name)
+                .unwrap();
+            let InterfaceType::Function { parameter, .. } = &export.scheme.type_ref else {
+                panic!("std/web/html::{name} must be callable");
+            };
+            let InterfaceType::Record { fields, .. } = parameter.as_ref() else {
+                panic!("std/web/html::{name} must accept a props record");
+            };
+            fields
+                .iter()
+                .map(|field| field.name.as_str())
+                .collect::<Vec<_>>()
+        };
+
+        assert!(props("a").contains(&"href"));
+        assert!(!props("article").contains(&"href"));
+        assert!(props("img").contains(&"alt"));
+        assert!(!props("img").contains(&"children"));
+        assert!(!props("a").contains(&"alt"));
+        assert!(!props("source").contains(&"children"));
+        assert!(is_standard_void_html_tag("img"));
+        assert!(is_standard_void_html_tag("source"));
+        assert!(!is_standard_void_html_tag("picture"));
     }
 }

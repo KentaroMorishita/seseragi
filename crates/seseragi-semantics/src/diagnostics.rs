@@ -20,6 +20,7 @@ mod record;
 mod resolution;
 mod traits;
 mod type_labels;
+mod web_html;
 
 pub fn semantic_diagnostics(source_name: impl Into<String>, source: &str) -> DiagnosticArtifact {
     let source_name = source_name.into();
@@ -51,6 +52,7 @@ pub(crate) fn semantic_diagnostics_from_resolved(
 
     for declaration in &resolved.declarations {
         collect_decl_diagnostics(declaration, &tokens, &resolution, &mut diagnostics);
+        web_html::collect_html_diagnostics(declaration, &resolution, &mut diagnostics);
     }
     traits::collect_trait_diagnostics(resolved, &resolution, &mut diagnostics);
     impl_blocks::collect_impl_diagnostics(resolved, &resolution, &mut diagnostics);

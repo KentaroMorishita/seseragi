@@ -144,6 +144,8 @@ export {
 } from "./sum"
 export type { ChangeEvent, Html, InputEvent, Style } from "./html"
 export {
+  a,
+  audio,
   article,
   aside,
   blockquote,
@@ -166,6 +168,7 @@ export {
   header,
   hr,
   html,
+  img,
   input,
   label,
   li,
@@ -175,11 +178,13 @@ export {
   nav,
   ol,
   p,
+  picture,
   pre,
   renderDocument,
   renderToString,
   section,
   small,
+  source,
   span,
   style,
   strong,
@@ -187,6 +192,7 @@ export {
   textarea,
   title,
   ul,
+  video,
 } from "./html"
 export type {
   Dom,

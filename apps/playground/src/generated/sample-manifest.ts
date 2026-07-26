@@ -495,12 +495,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
     definition: {
       "id": "html-components",
       "title": "ComponentとStyleでSSR",
-      "summary": "文書構造tag、関数component、再利用可能なStyleからHTMLを組み立ててSSRします。",
+      "summary": "文書構造tag、link、image、関数component、再利用可能なStyleからHTMLを組み立ててSSRします。",
       "kind": "showcase",
       "difficulty": "advanced",
       "topics": [
         "Html",
         "document tags",
+        "link",
+        "image",
         "function component",
         "Style",
         "SSR"
@@ -519,7 +521,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/html-components/main.ssrg",
       "guidePath": "examples/samples/html-components/guide.md",
       "expectedOutputPath": "examples/samples/html-components/stdout.html",
-      "sourceHash": "sha256:054ae642cd61fca7e5ab9189eee2192cf04b6750ee13c13a73d8124d82cf0adb"
+      "sourceHash": "sha256:3d3fa3a443beb2871ae9999c5285a3186e59c90bf79cbe587c11f667d5da6bae"
     },
     source: sample12Source,
     guide: sample12Guide,

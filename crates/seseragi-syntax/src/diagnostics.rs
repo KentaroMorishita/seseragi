@@ -109,6 +109,7 @@ impl Diagnostic {
             }
             "alias.cycle" => "Type alias expands recursively into itself".to_owned(),
             "alias.private-type-exposure" => "Public type alias exposes a private type".to_owned(),
+            "web.html.void-children" => "Void HTML elements cannot receive children".to_owned(),
             _ => humanize_message_key(&self.message_key),
         }
     }

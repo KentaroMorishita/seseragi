@@ -25,6 +25,13 @@ fn card title: String -> detail: String -> html.Html<Action> =
           children: title
         }
       },
+      html.img {
+        src: "/seseragi-mark.png",
+        alt: "Seseragi",
+        width: 96,
+        height: 96,
+        loading: "lazy"
+      },
       html.p {
         style: html.style { color: "#315c53", marginBottom: "0" },
         children: [
@@ -57,8 +64,11 @@ fn page -> html.Html<Action> =
             children: "Seseragi components"
           },
           html.nav {
-            children: html.ol {
-              children: [html.li { children: "Document components" }]
+            children: html.a {
+              href: "https://github.com/KentaroMorishita/seseragi",
+              target: "_blank",
+              rel: "noopener",
+              children: "Seseragi repository"
             }
           }
         ]

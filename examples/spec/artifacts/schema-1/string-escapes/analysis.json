@@ -1287,6 +1287,22 @@
       "constraints": []
     },
     {
+      "identity": "std/web/html::a",
+      "name": "a",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "a<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, href: String, target?: String, rel?: String, download?: Bool, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a hyperlink with typed navigation props.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
       "identity": "std/web/html::article",
       "name": "article",
       "module": "std/web/html",
@@ -1310,6 +1326,22 @@
       "kind": "function",
       "signature": "aside<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates content related to the surrounding section.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::audio",
+      "name": "audio",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "audio<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, src?: String, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates an audio media element.",
       "typeParameters": [
         "Action",
         "C"
@@ -1633,6 +1665,19 @@
       ]
     },
     {
+      "identity": "std/web/html::img",
+      "name": "img",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "img<Action> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, src: String, alt: String, width?: Int, height?: Int, loading?: String} -> Html<Action>",
+      "description": "Creates a void image element with required source and alt text.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/html::input",
       "name": "input",
       "module": "std/web/html",
@@ -1683,7 +1728,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "link<Action> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action} -> Html<Action>",
+      "signature": "link<Action> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, rel: String, href: String} -> Html<Action>",
       "description": "Creates a void external-resource link element without children.",
       "typeParameters": [
         "Action"
@@ -1768,6 +1813,22 @@
       ]
     },
     {
+      "identity": "std/web/html::picture",
+      "name": "picture",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "picture<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a responsive image container.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
       "identity": "std/web/html::pre",
       "name": "pre",
       "module": "std/web/html",
@@ -1840,6 +1901,19 @@
       "constraints": [
         "IntoChildren<C, Action>"
       ]
+    },
+    {
+      "identity": "std/web/html::source",
+      "name": "source",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "source<Action> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, src: String, media?: String, mimeType?: String} -> Html<Action>",
+      "description": "Creates a void media source element without children.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
     },
     {
       "identity": "std/web/html::span",
@@ -1938,6 +2012,22 @@
       "kind": "function",
       "signature": "ul<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, children: C} -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates an unordered list.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": [
+        "IntoChildren<C, Action>"
+      ]
+    },
+    {
+      "identity": "std/web/html::video",
+      "name": "video",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "video<Action, C> arg1: {id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, onClick?: Action, src?: String, width?: Int, height?: Int, children: C} -> Html<Action> where IntoChildren<C, Action>",
+      "description": "Creates a video media element.",
       "typeParameters": [
         "Action",
         "C"

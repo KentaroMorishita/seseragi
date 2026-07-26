@@ -1,5 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import {
+  a,
+  audio,
   article,
   aside,
   blockquote,
@@ -23,6 +25,7 @@ import {
   header,
   hr,
   html as htmlTag,
+  img,
   type InputEvent,
   input,
   label,
@@ -32,16 +35,19 @@ import {
   messageFromDomEvent,
   nav,
   ol,
+  picture,
   pre,
   renderForDom,
   renderDocument,
   renderToString,
   small,
+  source,
   strong,
   style,
   textarea,
   title,
   ul,
+  video,
 } from "../../../runtime/ts/src/html"
 import { createDomEventBindings } from "../src/runtime/browser-dom"
 import { createImeInputCoordinator } from "../src/runtime/ime-input"
@@ -66,7 +72,11 @@ describe("HTML browser runtime", () => {
     const document = htmlTag({
       children: [
         head({
-          children: [title({ children: "Seseragi" }), meta({}), link({})],
+          children: [
+            title({ children: "Seseragi" }),
+            meta({}),
+            link({ rel: "stylesheet", href: "/styles.css" }),
+          ],
         }),
         body({
           children: [
@@ -99,7 +109,7 @@ describe("HTML browser runtime", () => {
 
     expect(renderDocument(document)).toBe(
       [
-        "<!doctype html><html><head><title>Seseragi</title><meta><link>",
+        '<!doctype html><html><head><title>Seseragi</title><meta><link rel="stylesheet" href="/styles.css">',
         "</head><body><header><h1>Reference</h1></header>",
         "<nav><small>Contents</small></nav><article>",
         "<h2>Document</h2><h3>Section</h3><h4>Topic</h4>",
@@ -110,6 +120,69 @@ describe("HTML browser runtime", () => {
         "</article><aside>Related</aside><footer>End</footer>",
         "</body></html>",
       ].join("")
+    )
+  })
+
+  test("renders link, image, picture, source, video, and audio props", () => {
+    const node = article({
+      children: [
+        a({
+          href: "https://example.com/docs?q=seseragi",
+          target: "_blank",
+          rel: "noopener",
+          download: true,
+          children: "Docs",
+        }),
+        img({
+          src: "/assets/hero.png",
+          alt: 'Seseragi "hero"',
+          width: 640n,
+          height: 360n,
+          loading: "lazy",
+        }),
+        picture({
+          children: source({
+            src: "/assets/hero-wide.png",
+            media: "(min-width: 48rem)",
+            mimeType: "image/png",
+          }),
+        }),
+        video({
+          src: "/assets/intro.mp4",
+          width: 640n,
+          height: 360n,
+          children: source({
+            src: "/assets/intro.webm",
+            mimeType: "video/webm",
+          }),
+        }),
+        audio({
+          src: "/assets/theme.mp3",
+          children: source({
+            src: "/assets/theme.ogg",
+            mimeType: "audio/ogg",
+          }),
+        }),
+      ],
+    })
+
+    expect(renderToString(node)).toBe(
+      [
+        '<article><a href="https://example.com/docs?q=seseragi" target="_blank" rel="noopener" download>Docs</a>',
+        '<img src="/assets/hero.png" alt="Seseragi &quot;hero&quot;" width="640" height="360" loading="lazy">',
+        '<picture><source src="/assets/hero-wide.png" media="(min-width: 48rem)" type="image/png"></picture>',
+        '<video src="/assets/intro.mp4" width="640" height="360"><source src="/assets/intro.webm" type="video/webm"></video>',
+        '<audio src="/assets/theme.mp3"><source src="/assets/theme.ogg" type="audio/ogg"></audio></article>',
+      ].join("")
+    )
+  })
+
+  test("rejects children passed to void elements at the runtime boundary", () => {
+    expect(() =>
+      img({ src: "/hero.png", alt: "Hero", children: "invalid" })
+    ).toThrow("void HTML element img cannot have children")
+    expect(() => source({ src: "/hero.png", children: "invalid" })).toThrow(
+      "void HTML element source cannot have children"
     )
   })
 

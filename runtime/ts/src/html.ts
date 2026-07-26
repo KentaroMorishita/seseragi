@@ -160,6 +160,12 @@ export const ol = tag("ol")
 export const li = tag("li")
 export const br = voidTag("br")
 export const hr = voidTag("hr")
+export const a = tag("a")
+export const img = voidTag("img")
+export const picture = tag("picture")
+export const source = voidTag("source")
+export const video = tag("video")
+export const audio = tag("audio")
 export const button = tag("button")
 export const form = tag("form")
 export const label = tag("label")
@@ -267,6 +273,9 @@ function element<Action>(
   voidElement: boolean
 ): Html<Action> {
   const props = expectProps(value)
+  if (voidElement && Object.hasOwn(props, "children")) {
+    throw new TypeError(`void HTML element ${name} cannot have children`)
+  }
   const children = voidElement
     ? (Object.freeze([]) as ReadonlyArray<Html<Action>>)
     : normalizeChildren<Action>(props.children)
@@ -346,6 +355,35 @@ function renderAttributes(
   if (tagName === "label") {
     stringAttribute(attributes, "for", props.htmlFor)
   }
+  if (tagName === "a") {
+    stringAttribute(attributes, "href", props.href)
+    stringAttribute(attributes, "target", props.target)
+    stringAttribute(attributes, "rel", props.rel)
+    booleanAttribute(attributes, "download", props.download)
+  }
+  if (tagName === "img") {
+    stringAttribute(attributes, "src", props.src)
+    stringAttribute(attributes, "alt", props.alt)
+    integerAttribute(attributes, "width", props.width)
+    integerAttribute(attributes, "height", props.height)
+    stringAttribute(attributes, "loading", props.loading)
+  }
+  if (tagName === "source") {
+    stringAttribute(attributes, "src", props.src)
+    stringAttribute(attributes, "media", props.media)
+    stringAttribute(attributes, "type", props.mimeType)
+  }
+  if (tagName === "video" || tagName === "audio") {
+    stringAttribute(attributes, "src", props.src)
+  }
+  if (tagName === "video") {
+    integerAttribute(attributes, "width", props.width)
+    integerAttribute(attributes, "height", props.height)
+  }
+  if (tagName === "link") {
+    stringAttribute(attributes, "rel", props.rel)
+    stringAttribute(attributes, "href", props.href)
+  }
   return attributes.length === 0 ? "" : ` ${attributes.join(" ")}`
 }
 
@@ -399,6 +437,18 @@ function booleanAttribute(
   value: unknown
 ): void {
   if (value === true) output.push(name)
+}
+
+function integerAttribute(
+  output: string[],
+  name: string,
+  value: unknown
+): void {
+  if (value === undefined) return
+  if (typeof value !== "bigint") {
+    throw new TypeError(`HTML attribute ${name} must be an Int`)
+  }
+  output.push(`${name}="${value}"`)
 }
 
 function escapeText(value: string): string {
