@@ -365,6 +365,23 @@ describe("Playground sample catalog", () => {
     expect(sample?.source).not.toContain("type RootAction")
   })
 
+  test("integrates the Web UI surface in one feature-owned Todo sample", () => {
+    const sample = samples.find((candidate) => candidate.id === "form-todo")
+
+    expect(sample?.interactive).toBe(true)
+    expect(sample?.source).toContain("MutableSignal<Model>")
+    expect(sample?.source).toContain("Signal<html.Html<Task<Unit>>>")
+    expect(sample?.source).toContain("onSubmit: dispatch state Submitted")
+    expect(sample?.source).toContain("html.img {")
+    expect(sample?.source).toContain("html.a {")
+    expect(sample?.source).toContain("html.table {")
+    expect(sample?.source).toContain("onKeyDown: filterKeyTask state")
+    expect(sample?.source).toContain("onPointerDown: pointerTask state")
+    expect(sample?.source).toContain("stopClickPropagation: True")
+    expect(sample?.source).toContain('role: "status"')
+    expect(sample?.source).not.toContain("dom.app {")
+  })
+
   test("shows transparent user aliases and Task in the learning catalog", () => {
     const sample = samples.find((candidate) => candidate.id === "type-aliases")
 

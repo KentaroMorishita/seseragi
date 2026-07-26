@@ -424,6 +424,183 @@ describe("HTML browser runtime", () => {
     )
   })
 
+  test("integrates accessible document, form, table, and controlled events", () => {
+    type IntegratedAction =
+      | Readonly<{ tag: "Submitted" }>
+      | Readonly<{ tag: "Changed"; value: string }>
+      | Readonly<{ tag: "Pointer"; pointerType: string }>
+      | Readonly<{ tag: "Filtered" }>
+      | Readonly<{ tag: "Deleted" }>
+    const ariaLive = attribute("aria-live", "polite")
+    expect(ariaLive.tag).toBe("Right")
+    if (ariaLive.tag !== "Right") {
+      throw new Error("expected a validated ARIA attribute")
+    }
+
+    const node = article<IntegratedAction>({
+      role: "region",
+      attributes: [ariaLive.value],
+      children: [
+        a({
+          href: "https://example.com/docs",
+          children: img({
+            src: "/seseragi-mark.png",
+            alt: "Seseragi documentation",
+            width: 72n,
+            height: 72n,
+          }),
+        }),
+        form({
+          onSubmit: { tag: "Submitted" },
+          children: [
+            label({ htmlFor: "task-title", children: "Task" }),
+            input({
+              id: "task-title",
+              name: "title",
+              required: true,
+              onInput: (event: InputEvent) => ({
+                tag: "Changed",
+                value: event.value,
+              }),
+            }),
+            button({ buttonType: "submit", children: "Add task" }),
+          ],
+        }),
+        table({
+          children: [
+            caption({ children: "Todo status" }),
+            thead({
+              children: tr({
+                children: [
+                  th({ children: "Task" }),
+                  th({ children: "Action" }),
+                ],
+              }),
+            }),
+            tbody({
+              children: tr({
+                onPointerDown: (event: PointerEvent) =>
+                  Dispatch({
+                    tag: "Pointer",
+                    pointerType: event.pointerType,
+                  }),
+                children: [
+                  td({ children: "Ship integration" }),
+                  td({
+                    children: button({
+                      onClick: { tag: "Deleted" },
+                      preventClickDefault: true,
+                      stopClickPropagation: true,
+                      children: "Delete",
+                    }),
+                  }),
+                ],
+              }),
+            }),
+          ],
+        }),
+        button({
+          onKeyDown: (event: KeyboardEvent) =>
+            event.key === "ArrowRight"
+              ? DispatchPreventDefault({ tag: "Filtered" })
+              : IgnoreEvent,
+          children: "Urgent filter",
+        }),
+      ],
+    })
+
+    expect(renderToString(node)).toBe(
+      [
+        '<article role="region" aria-live="polite">',
+        '<a href="https://example.com/docs"><img src="/seseragi-mark.png" alt="Seseragi documentation" width="72" height="72"></a>',
+        '<form><label for="task-title">Task</label><input id="task-title" name="title" required type="text">',
+        '<button type="submit">Add task</button></form>',
+        "<table><caption>Todo status</caption><thead><tr><th>Task</th><th>Action</th></tr></thead>",
+        '<tbody><tr><td>Ship integration</td><td><button type="button">Delete</button></td></tr></tbody></table>',
+        '<button type="button">Urgent filter</button></article>',
+      ].join("")
+    )
+
+    const rendered = renderForDom(node)
+    const handlers = [...rendered.eventHandlers.values()]
+    const inputHandler = handlers.find((handler) => handler.kind === "input")
+    const submitHandler = handlers.find((handler) => handler.kind === "submit")
+    const pointerHandler = handlers.find(
+      (handler) => handler.kind === "pointerdown"
+    )
+    const clickHandler = handlers.find((handler) => handler.kind === "click")
+    const keyHandler = handlers.find((handler) => handler.kind === "keydown")
+    expect(
+      messageFromDomEvent<IntegratedAction>(inputHandler!, {
+        value: "Edited on iOS",
+      })
+    ).toEqual({
+      tag: "Changed",
+      value: "Edited on iOS",
+    })
+    expect(domEventPreventsDefault(submitHandler!)).toBe(true)
+    expect(messageFromDomEvent<IntegratedAction>(submitHandler!, {})).toEqual({
+      tag: "Submitted",
+    })
+    expect(
+      resolveDomEvent<IntegratedAction>(
+        pointerHandler!,
+        {},
+        {
+          pointerId: 9,
+          pointerType: "touch",
+          isPrimary: true,
+          button: 0,
+          clientX: 12,
+          clientY: 24,
+          pressure: 0.5,
+          altKey: false,
+          ctrlKey: false,
+          metaKey: false,
+          shiftKey: false,
+        }
+      )
+    ).toMatchObject({
+      kind: "dispatch",
+      action: { tag: "Pointer", pointerType: "touch" },
+    })
+    expect(
+      resolveDomEvent<IntegratedAction>(
+        keyHandler!,
+        {},
+        {
+          key: "ArrowRight",
+          code: "ArrowRight",
+          repeat: false,
+          altKey: false,
+          ctrlKey: false,
+          metaKey: false,
+          shiftKey: false,
+        }
+      )
+    ).toEqual({
+      kind: "dispatch",
+      action: { tag: "Filtered" },
+      preventDefault: true,
+      stopPropagation: false,
+    })
+
+    const order: string[] = []
+    applyDomEventResolution(
+      {
+        preventDefault: () => order.push("preventDefault"),
+        stopPropagation: () => order.push("stopPropagation"),
+      },
+      resolveDomEvent<IntegratedAction>(clickHandler!, {}),
+      (action) => order.push(`dispatch:${action.tag}`)
+    )
+    expect(order).toEqual([
+      "preventDefault",
+      "stopPropagation",
+      "dispatch:Deleted",
+    ])
+  })
+
   test("snapshots input and change state exactly once", () => {
     type SnapshotAction =
       | Readonly<{ tag: "Input"; snapshot: InputEvent }>

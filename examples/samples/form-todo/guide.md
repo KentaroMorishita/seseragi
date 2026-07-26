@@ -1,11 +1,15 @@
-`onInput`と`onChange`はbrowserのEvent objectではなく、immutableな`InputEvent` / `ChangeEvent`を渡します。追加・削除・絞り込みはすべてpureな`update`で新しい`Model`を返します。
+一つのfeature-owned `MutableSignal<Model>`から`Signal<Html<Task<Unit>>>`を作り、form、editable table、
+文書link / image、keyboard / pointer操作を同じWeb UIへ統合します。親へ巨大なAction unionを公開せず、
+各eventはfeature内の`dispatch`で`Task<Unit>`へ変換されます。
 
-- text inputとtextareaは`event.value`をActionへ変換します。
-- checkboxは`event.checked`を読み取ります。
-- `onSubmit`を持つformはpage reloadを防いでからActionをdispatchします。
-- 空のdraftはbuttonの`disabled`と`update`の両方で無視します。
-- `Removed id`は`filter`で対象だけを除き、`FilterChanged`は元のitemsを失わず表示対象だけを切り替えます。
+- `label.htmlFor`とcontrolの`id`、native button、`role: "status"`で基本的なaccessibilityを保ちます。
+- `onInput` / `onChange`はhost Eventを保持せず、immutable snapshotからTaskを作ります。
+- form submitは同期的にdefaultを防いでからTodoを追加します。
+- table内のtitle inputでTodoを編集し、Delete、All / Urgentで削除・絞り込みできます。
+- filter buttonへfocusしたあと、左右矢印でもAll / Urgentを切り替えられます。
+- rowの`onPointerDown`はmouse / touch / penを同じ`PointerEvent`として扱うため、iOSのtouch操作も
+  browser objectをstateへ持ち込みません。
+- Deleteは`stopClickPropagation`を指定し、nested controlのclickをrow側へ漏らしません。
 
-入力中も同じcontrolへfocusを戻すため、controlled inputとして続けて編集できます。日本語IMEの変換途中はrerenderを
-保留し、確定した文字列だけを一度Actionへ変換します。Playgroundではtitleへ「日本語」、detailへ「カタカナ」を
-変換入力し、候補選択・Backspace・caret移動のあとも文字列と選択位置が壊れないことを確認できます。
+日本語IMEの変換中はrerenderを保留し、確定した文字列だけを一度Taskへ変換します。Playgroundでは
+title / noteの変換入力、inline edit、keyboard filter、touch操作を続けて試せます。

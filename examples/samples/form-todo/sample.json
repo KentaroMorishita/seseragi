@@ -1,8 +1,8 @@
 {
   "$schema": "../sample.schema.json",
   "id": "form-todo",
-  "title": "Todoを追加・削除・絞り込み",
-  "summary": "IME対応のtyped formとpure updateでTodoの追加、削除、urgent filterをつなぎます。",
+  "title": "Todoを追加・編集・削除・絞り込み",
+  "summary": "feature-owned Taskでform、編集可能なTodo table、文書、keyboard・pointer操作を統合します。",
   "kind": "showcase",
   "difficulty": "intermediate",
   "topics": [
@@ -10,8 +10,11 @@
     "IME",
     "InputEvent",
     "ChangeEvent",
-    "typed Action",
-    "filter"
+    "Task",
+    "editable table",
+    "accessibility",
+    "keyboard",
+    "pointer"
   ],
   "capabilities": ["dom"],
   "outputMode": "html",

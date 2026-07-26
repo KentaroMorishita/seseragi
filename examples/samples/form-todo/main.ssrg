@@ -1,6 +1,8 @@
 import * as arrays from "std/array"
 import * as dom from "std/web/dom"
 import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
 
 struct Todo {
   id: Int,
@@ -19,35 +21,44 @@ struct Model {
   urgent: Bool,
   nextId: Int,
   filter: Filter,
+  lastInteraction: String,
   items: Array<Todo>,
 }
 
-type Action =
+type TodoAction =
   | DraftChanged String
   | NoteChanged String
   | UrgentChanged Bool
   | Submitted
+  | TitleChanged (Int, String)
   | Removed Int
   | FilterChanged Filter
+  | InteractionChanged String
+  | NoOp
 
 let initialModel: Model =
   Model {
     draft: "",
     note: "",
     urgent: False,
-    nextId: 1,
+    nextId: 3,
     filter: All,
-    items: []
+    lastInteraction: "Ready for keyboard, touch, pen, or mouse.",
+    items: [
+      Todo {
+        id: 1,
+        title: "Review the typed form",
+        note: "Edit this title directly in the table.",
+        urgent: True
+      },
+      Todo {
+        id: 2,
+        title: "Try the filters",
+        note: "Arrow keys move between All and Urgent.",
+        urgent: False
+      }
+    ]
   }
-
-fn draftAction event: html.InputEvent -> Action =
-  DraftChanged event.value
-
-fn noteAction event: html.InputEvent -> Action =
-  NoteChanged event.value
-
-fn urgentAction event: html.ChangeEvent -> Action =
-  UrgentChanged event.checked
 
 fn newTodo model: Model -> Todo =
   Todo {
@@ -60,6 +71,9 @@ fn newTodo model: Model -> Todo =
 fn keepTodo removedId: Int -> todo: Todo -> Bool =
   todo.id != removedId
 
+fn renameTodo id: Int -> title: String -> todo: Todo -> Todo =
+  if todo.id == id then Todo { ...todo, title } else todo
+
 fn isUrgent todo: Todo -> Bool =
   todo.urgent
 
@@ -69,7 +83,7 @@ fn visibleItems filter: Filter -> items: Array<Todo> -> Array<Todo> =
     UrgentOnly -> arrays.filter isUrgent items
   }
 
-fn update action: Action -> model: Model -> Model =
+fn update action: TodoAction -> model: Model -> Model =
   match action {
     DraftChanged value -> Model { ...model, draft: value }
     NoteChanged value -> Model { ...model, note: value }
@@ -84,144 +98,315 @@ fn update action: Action -> model: Model -> Model =
           note: "",
           urgent: False,
           nextId: model.nextId + 1,
+          lastInteraction: "Task added from the form.",
           items: arrays.append [newTodo model] model.items
         }
+    TitleChanged (id, title) ->
+      Model {
+        ...model,
+        lastInteraction: "Task title edited.",
+        items: map (renameTodo id title) model.items
+      }
     Removed id ->
-      Model { ...model, items: arrays.filter (keepTodo id) model.items }
+      Model {
+        ...model,
+        lastInteraction: "Task deleted.",
+        items: arrays.filter (keepTodo id) model.items
+      }
     FilterChanged filter ->
-      Model { ...model, filter }
+      Model {
+        ...model,
+        filter,
+        lastInteraction: "Visible tasks filtered."
+      }
+    InteractionChanged detail ->
+      Model { ...model, lastInteraction: detail }
+    NoOp -> model
   }
 
-fn itemTitle todo: Todo -> String =
-  if todo.urgent then `Urgent: ${todo.title}` else todo.title
+fn dispatch state: MutableSignal<Model>
+  -> action: TodoAction
+  -> Task<Unit> =
+  signals.update (update action) state
 
-fn itemRow todo: Todo -> html.Html<Action> =
-  html.div {
-    className: "flex items-start justify-between gap-2 rounded-xl bg-slate-50 px-4 py-3",
+fn draftTask state: MutableSignal<Model>
+  -> event: html.InputEvent
+  -> Task<Unit> =
+  dispatch state (DraftChanged event.value)
+
+fn noteTask state: MutableSignal<Model>
+  -> event: html.InputEvent
+  -> Task<Unit> =
+  dispatch state (NoteChanged event.value)
+
+fn urgentTask state: MutableSignal<Model>
+  -> event: html.ChangeEvent
+  -> Task<Unit> =
+  dispatch state (UrgentChanged event.checked)
+
+fn renameTask state: MutableSignal<Model>
+  -> id: Int
+  -> event: html.InputEvent
+  -> Task<Unit> =
+  dispatch state (TitleChanged (id, event.value))
+
+fn pointerTask state: MutableSignal<Model>
+  -> event: html.PointerEvent
+  -> html.EventAction<Task<Unit>> =
+  html.Dispatch $
+    dispatch state
+      (InteractionChanged `Row reached with ${event.pointerType} pointer.`)
+
+fn filterKeyTask state: MutableSignal<Model>
+  -> event: html.KeyboardEvent
+  -> html.EventAction<Task<Unit>> =
+  match event.key {
+    "ArrowLeft" ->
+      html.DispatchPreventDefault (dispatch state (FilterChanged All))
+    "ArrowRight" ->
+      html.DispatchPreventDefault (dispatch state (FilterChanged UrgentOnly))
+    _ -> html.Dispatch (dispatch state NoOp)
+  }
+
+fn filterButton state: MutableSignal<Model>
+  -> label: String
+  -> filter: Filter
+  -> html.Html<Task<Unit>> =
+  html.button {
+    buttonType: "button",
+    onClick: dispatch state (FilterChanged filter),
+    onFocus: dispatch state (InteractionChanged `${label} filter focused.`),
+    onKeyDown: filterKeyTask state,
+    className: "rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800",
+    children: label
+  }
+
+fn titleCell state: MutableSignal<Model>
+  -> todo: Todo
+  -> html.Html<Task<Unit>> =
+  html.td {
+    className: "border-b border-slate-200 px-3 py-3",
+    children: html.input {
+      id: `todo-${todo.id}`,
+      value: todo.title,
+      onInput: renameTask state todo.id,
+      className: "w-full rounded-lg border border-slate-200 px-3 py-2 text-base"
+    }
+  }
+
+fn textCell value: String -> className: String -> html.Html<Task<Unit>> =
+  html.td { className, children: value }
+
+fn deleteCell state: MutableSignal<Model>
+  -> todo: Todo
+  -> html.Html<Task<Unit>> =
+  html.td {
+    className: "border-b border-slate-200 px-3 py-3 text-right",
+    children: html.button {
+      buttonType: "button",
+      onClick: dispatch state (Removed todo.id),
+      stopClickPropagation: True,
+      className: "rounded-lg border-0 bg-slate-900 px-3 py-2 text-sm font-semibold text-white",
+      children: "Delete"
+    }
+  }
+
+fn itemRow state: MutableSignal<Model>
+  -> todo: Todo
+  -> html.Html<Task<Unit>> =
+  html.tr {
+    key: `${todo.id}`,
+    onPointerDown: pointerTask state,
     children: [
-      html.div {
+      titleCell state todo,
+      textCell
+        todo.note
+        "border-b border-slate-200 px-3 py-3 text-sm text-slate-600",
+      textCell
+        (if todo.urgent then "Urgent" else "Normal")
+        "border-b border-slate-200 px-3 py-3 text-sm",
+      deleteCell state todo
+    ]
+  }
+
+fn tableCaption model: Model -> html.Html<Task<Unit>> =
+  html.caption {
+    className: "pb-2 text-left text-sm text-slate-500",
+    children:
+      `${arrays.length (visibleItems model.filter model.items)} visible tasks`
+  }
+
+fn tableHeading label: String -> html.Html<Task<Unit>> =
+  html.th { className: "px-3 py-2", children: label }
+
+fn tableHeaderRow -> html.Html<Task<Unit>> =
+  html.tr {
+    children: [
+      tableHeading "Editable task",
+      tableHeading "Note",
+      tableHeading "Priority",
+      tableHeading "Action"
+    ]
+  }
+
+fn tableHeader -> html.Html<Task<Unit>> =
+  html.thead { children: tableHeaderRow () }
+
+fn taskTable state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.table {
+    className: "mt-4 w-full border-collapse text-left",
+    children: [
+      tableCaption model,
+      tableHeader (),
+      html.tbody {
         children: [
-          html.p {
-            className: "m-0 font-semibold text-slate-900",
-            children: itemTitle todo
-          },
-          html.p {
-            className: "mb-0 mt-2 text-sm text-slate-500",
-            children: todo.note
-          }
+          itemRow state item
+          | item <- visibleItems model.filter model.items
         ]
-      },
-      html.button {
-        buttonType: "button",
-        onClick: Removed todo.id,
-        className: "rounded-lg border-0 bg-slate-900 px-3 py-2 text-sm font-semibold text-white",
-        children: "Delete"
       }
     ]
   }
 
-fn view model: Model -> html.Html<Action> =
+fn brandImage -> html.Html<Task<Unit>> =
+  html.img {
+    src: "/seseragi-mark.png",
+    alt: "Seseragi",
+    width: 72,
+    height: 72,
+    loading: "lazy"
+  }
+
+fn introHeading -> html.Html<Task<Unit>> =
+  html.h1 {
+    className: "mb-2 mt-4 text-3xl font-bold",
+    children: "Typed Web UI workshop"
+  }
+
+fn introCopy -> html.Html<Task<Unit>> =
+  html.p {
+    className: "mb-3 text-emerald-50",
+    children: "One feature-owned Signal connects forms, tables, keyboard, and pointer input."
+  }
+
+fn sourceLink -> html.Html<Task<Unit>> =
+  html.a {
+    href: "https://github.com/KentaroMorishita/seseragi",
+    target: "_blank",
+    rel: "noopener",
+    className: "font-semibold text-emerald-200",
+    children: "Read the Seseragi source"
+  }
+
+fn documentIntro -> html.Html<Task<Unit>> =
+  html.article {
+    className: "mx-auto mb-6 max-w-4xl rounded-2xl bg-emerald-950 p-6 text-white shadow-lg",
+    children: [brandImage (), introHeading (), introCopy (), sourceLink ()]
+  }
+
+fn fieldLabel target: String -> label: String -> html.Html<Task<Unit>> =
+  html.label {
+    htmlFor: target,
+    className: "mb-2 block font-semibold text-slate-700",
+    children: label
+  }
+
+fn urgentControl state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.label {
+    className: "mb-4 flex items-center gap-2 text-slate-700",
+    children: [
+      html.input {
+        name: "urgent",
+        inputType: "checkbox",
+        checked: model.urgent,
+        onChange: urgentTask state
+      },
+      html.text "Mark as urgent"
+    ]
+  }
+
+fn status model: Model -> html.Html<Task<Unit>> =
+  html.p {
+    role: "status",
+    className: "mb-0 mt-4 text-sm text-emerald-800",
+    children: model.lastInteraction
+  }
+
+fn view state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
   html.main {
     className: "min-h-screen bg-emerald-50 p-6 sm:p-12",
-    children: html.section {
-      className: "mx-auto max-w-lg rounded-2xl bg-white p-6 shadow-lg",
-      children: [
-        html.h1 {
-          className: "m-0 mb-2 text-3xl font-bold text-slate-900",
-          children: "Typed form todo"
-        },
-        html.p {
-          className: "m-0 mb-6 text-slate-500",
-          children: "Input events become immutable Seseragi actions."
-        },
-        html.form {
-          onSubmit: Submitted,
-          children: [
-            html.label {
-              htmlFor: "todo-title",
-              className: "mb-2 block font-semibold text-slate-700",
-              children: "Task"
-            },
-            html.input {
-              id: "todo-title",
-              name: "title",
-              value: model.draft,
-              placeholder: "Ship the next slice",
-              inputType: "text",
-              required: True,
-              onInput: draftAction,
-              className: "mb-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-base"
-            },
-            html.label {
-              htmlFor: "todo-note",
-              className: "mb-2 block font-semibold text-slate-700",
-              children: "Note"
-            },
-            html.textarea {
-              id: "todo-note",
-              name: "note",
-              value: model.note,
-              placeholder: "Optional detail",
-              onInput: noteAction,
-              className: "mb-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-base"
-            },
-            html.label {
-              className: "mb-4 flex items-center gap-2 text-slate-700",
-              children: [
-                html.input {
-                  name: "urgent",
-                  inputType: "checkbox",
-                  checked: model.urgent,
-                  onChange: urgentAction
-                },
-                html.text "Mark as urgent"
-              ]
-            },
-            html.p {
-              className: "mb-4 text-sm text-emerald-800",
-              children: `Live preview: ${model.draft}`
-            },
-            html.button {
-              buttonType: "submit",
-              disabled: model.draft == "",
-              className: "w-full rounded-xl border-0 bg-emerald-600 px-4 py-3 font-semibold text-white",
-              children: "Add task"
-            }
-          ]
-        },
-        html.div {
-          className: "mt-6 flex gap-2",
-          children: [
-            html.button {
-              buttonType: "button",
-              onClick: FilterChanged All,
-              className: "rounded-lg border-0 bg-slate-900 px-3 py-2 text-sm font-semibold text-white",
-              children: "All"
-            },
-            html.button {
-              buttonType: "button",
-              onClick: FilterChanged UrgentOnly,
-              className: "rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800",
-              children: "Urgent"
-            }
-          ]
-        },
-        html.p {
-          className: "mb-2 mt-4 text-sm text-slate-500",
-          children: `${arrays.length (visibleItems model.filter model.items)} visible tasks`
-        },
-        html.div {
-          className: "grid gap-2",
-          children: [itemRow item | item <- visibleItems model.filter model.items]
-        }
-      ]
-    }
+    children: [
+      documentIntro (),
+      html.section {
+        className: "mx-auto max-w-4xl rounded-2xl bg-white p-6 shadow-lg",
+        children: [
+          html.form {
+            onSubmit: dispatch state Submitted,
+            children: [
+              fieldLabel "todo-title" "Task",
+              html.input {
+                id: "todo-title",
+                name: "title",
+                value: model.draft,
+                placeholder: "Ship the next slice",
+                inputType: "text",
+                required: True,
+                onInput: draftTask state,
+                className: "mb-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-base"
+              },
+              fieldLabel "todo-note" "Note",
+              html.textarea {
+                id: "todo-note",
+                name: "note",
+                value: model.note,
+                placeholder: "Optional detail",
+                onInput: noteTask state,
+                className: "mb-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-base"
+              },
+              urgentControl state model,
+              html.button {
+                buttonType: "submit",
+                disabled: model.draft == "",
+                className: "w-full rounded-xl border-0 bg-emerald-600 px-4 py-3 font-semibold text-white",
+                children: "Add task"
+              }
+            ]
+          },
+          html.nav {
+            role: "group",
+            className: "mt-6 flex gap-2",
+            children: [
+              filterButton state "All" All,
+              filterButton state "Urgent" UrgentOnly
+            ]
+          },
+          status model,
+          taskTable state model
+        ]
+      }
+    ]
+  }
+
+fn perform action: Task<Unit> -> Task<Unit> = action
+
+effect fn mount content: Signal<html.Html<Task<Unit>>> -> Unit
+with dom: dom.Dom
+fails String =
+  do {
+    target <-
+      dom.query "#app"
+        |> mapError (\error: dom.DomError -> "DOM target unavailable")
+    dom.run (dom.defaultOptions ()) target perform content
+      |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
   }
 
 pub effect fn main =
-  dom.app {
-    target: "#app",
-    initial: initialModel,
-    update,
-    view
+  do {
+    state <- signals.make initialModel
+    mount $ signals.map (view state) state
   }

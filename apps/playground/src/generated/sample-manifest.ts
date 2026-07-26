@@ -366,8 +366,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "form-todo",
-      "title": "Todoを追加・削除・絞り込み",
-      "summary": "IME対応のtyped formとpure updateでTodoの追加、削除、urgent filterをつなぎます。",
+      "title": "Todoを追加・編集・削除・絞り込み",
+      "summary": "feature-owned Taskでform、編集可能なTodo table、文書、keyboard・pointer操作を統合します。",
       "kind": "showcase",
       "difficulty": "intermediate",
       "topics": [
@@ -375,8 +375,11 @@ export const generatedSamples: readonly GeneratedSample[] = [
         "IME",
         "InputEvent",
         "ChangeEvent",
-        "typed Action",
-        "filter"
+        "Task",
+        "editable table",
+        "accessibility",
+        "keyboard",
+        "pointer"
       ],
       "capabilities": [
         "dom"
@@ -390,7 +393,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/form-todo/main.ssrg",
       "guidePath": "examples/samples/form-todo/guide.md",
-      "sourceHash": "sha256:11f7ffb079b41a2a7954dd5c245a5003e2c770eff6195f4aabbae298ba147c37"
+      "sourceHash": "sha256:70c473fa0c0c4f1c87c08a4ec927e47bddb7d7b86f8471909ca610a0178275a4"
     },
     source: sample8Source,
     guide: sample8Guide,
