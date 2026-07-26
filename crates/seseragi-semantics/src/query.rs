@@ -1321,6 +1321,9 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/web/html::ChangeEvent" => {
             "Immutable form-control snapshot containing value and checked state."
         }
+        "std/web/html::KeyboardEvent" => {
+            "Immutable keyboard snapshot containing key identity, repeat state, and modifier keys."
+        }
         "std/web/html::form" => {
             "Creates a typed form whose onSubmit message prevents native page reload."
         }

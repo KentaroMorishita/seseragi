@@ -1,0 +1,30 @@
+import * as html from "std/web/html"
+
+type Action =
+  | Focused
+  | Blurred
+  | KeyPressed String
+  | ControlKey
+
+fn keyAction event: html.KeyboardEvent -> Action =
+  if event.controlKey then ControlKey else KeyPressed event.key
+
+fn taskKey action: Task<Unit> -> event: html.KeyboardEvent -> Task<Unit> =
+  action
+
+pub fn view -> html.Html<Action> =
+  html.button {
+    id: "keyboard-target",
+    onFocus: Focused,
+    onBlur: Blurred,
+    onKeyDown: keyAction,
+    onKeyUp: keyAction,
+    children: "Keyboard target"
+  }
+
+pub fn taskView action: Task<Unit> -> html.Html<Task<Unit>> =
+  html.button {
+    onFocus: action,
+    onKeyDown: taskKey action,
+    children: "Effect target"
+  }

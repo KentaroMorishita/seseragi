@@ -21,6 +21,14 @@
       }
     },
     {
+      "spelling": "KeyboardEvent",
+      "canonical": "std/web/html::KeyboardEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "KeyboardEvent"
+      }
+    },
+    {
       "spelling": "html.Html",
       "canonical": "std/web/html::Html",
       "provider": {

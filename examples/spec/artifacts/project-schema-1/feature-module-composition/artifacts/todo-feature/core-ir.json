@@ -48,6 +48,14 @@
       }
     },
     {
+      "spelling": "KeyboardEvent",
+      "canonical": "std/web/html::KeyboardEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "KeyboardEvent"
+      }
+    },
+    {
       "spelling": "Signal",
       "canonical": "std/signal::Signal",
       "provider": {

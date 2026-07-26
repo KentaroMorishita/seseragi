@@ -225,6 +225,23 @@ mod tests {
     }
 
     #[test]
+    fn exposes_keyboard_snapshot_in_the_reference_catalog() {
+        let analysis = analyze_module(CompileInput::new(
+            "main.ssrg",
+            "analysis/html-keyboard-reference",
+            "pub let value = 1\n",
+        ));
+
+        let keyboard = analysis
+            .standard_library_catalog()
+            .iter()
+            .find(|item| item.identity == "std/web/html::KeyboardEvent")
+            .expect("KeyboardEvent is available in Reference");
+        assert_eq!(keyboard.signature.as_deref(), Some("KeyboardEvent"));
+        assert!(keyboard.description.contains("modifier keys"));
+    }
+
+    #[test]
     fn invalid_source_still_returns_shared_diagnostics_and_catalog() {
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",

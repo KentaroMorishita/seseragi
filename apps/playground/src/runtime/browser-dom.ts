@@ -41,6 +41,17 @@ export type DomEventBindings<Action> = Readonly<{
   readonly handler: (id: string) => DomEventHandler<Action> | undefined
 }>
 
+export const BROWSER_DOM_EVENT_BINDINGS = Object.freeze([
+  Object.freeze({ nativeKind: "click", handlerKind: "click" }),
+  Object.freeze({ nativeKind: "focusin", handlerKind: "focus" }),
+  Object.freeze({ nativeKind: "focusout", handlerKind: "blur" }),
+  Object.freeze({ nativeKind: "keydown", handlerKind: "keydown" }),
+  Object.freeze({ nativeKind: "keyup", handlerKind: "keyup" }),
+  Object.freeze({ nativeKind: "input", handlerKind: "input" }),
+  Object.freeze({ nativeKind: "change", handlerKind: "change" }),
+  Object.freeze({ nativeKind: "submit", handlerKind: "submit" }),
+] as const)
+
 export function createDomEventBindings<Action>(): DomEventBindings<Action> {
   let handlers: ReadonlyMap<string, DomEventHandler<Action>> = new Map()
   return Object.freeze({
@@ -238,38 +249,41 @@ export function createBrowserDom(
             }
           }
 
-          for (const kind of ["click", "input", "change", "submit"] as const) {
+          for (const {
+            nativeKind,
+            handlerKind,
+          } of BROWSER_DOM_EVENT_BINDINGS) {
             const listener: EventListener = (event: Event): void => {
               if (settled) return
               const eventTarget = event.target
               if (!(eventTarget instanceof document.defaultView!.Element))
                 return
               const matched = eventTarget.closest<HTMLElement>(
-                `[data-ssrg-event-${kind}]`
+                `[data-ssrg-event-${handlerKind}]`
               )
               if (matched === null || !element.contains(matched)) return
-              const id = matched.getAttribute(`data-ssrg-event-${kind}`)
+              const id = matched.getAttribute(`data-ssrg-event-${handlerKind}`)
               if (id === null) return
               const handler = bindings.handler(id)
-              if (handler === undefined || handler.kind !== kind) return
+              if (handler === undefined || handler.kind !== handlerKind) return
               if (
-                kind === "input" &&
+                handlerKind === "input" &&
                 !ime.input(matched, nativeInputIsComposing(event))
               ) {
                 return
               }
-              if (kind === "submit" && ime.busy()) commitCompositions()
+              if (handlerKind === "submit" && ime.busy()) commitCompositions()
               if (domEventPreventsDefault(handler)) event.preventDefault()
               try {
                 enqueue(
-                  messageFromDomEvent(handler, matched),
-                  kind === "submit" ? flushDeferredRender : undefined
+                  messageFromDomEvent(handler, matched, event),
+                  handlerKind === "submit" ? flushDeferredRender : undefined
                 )
               } catch (error) {
                 reject(error)
               }
             }
-            listen(kind, listener)
+            listen(nativeKind, listener)
           }
 
           for (const kind of [

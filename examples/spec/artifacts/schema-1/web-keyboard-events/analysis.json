@@ -1,193 +1,432 @@
 {
   "schema": 1,
   "source": "main.ssrg",
-  "module": "artifact/collection-compose",
+  "module": "artifact/web-keyboard-events",
   "diagnostics": {
     "schema": 1,
-    "source": "artifact/collection-compose/main.ssrg",
+    "source": "artifact/web-keyboard-events/main.ssrg",
     "positionEncoding": "utf-8",
     "diagnostics": []
   },
   "symbols": [
     {
       "id": 0,
-      "identity": "artifact/collection-compose::showArray",
-      "name": "showArray",
-      "module": "artifact/collection-compose",
-      "namespace": "value",
-      "kind": "function",
+      "identity": "artifact/web-keyboard-events::Action",
+      "name": "Action",
+      "module": "artifact/web-keyboard-events",
+      "namespace": "type",
+      "kind": "type",
       "definition": {
-        "start": 74,
-        "end": 83
+        "start": 43,
+        "end": 49
       },
-      "typeName": "Array<Int> -> String",
-      "callable": {
-        "identity": "artifact/collection-compose::showArray",
-        "name": "showArray",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "Array<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showArray values: Array<Int> -> String",
-        "remainingParameters": []
-      }
+      "typeName": "Action"
     },
     {
       "id": 1,
-      "identity": "artifact/collection-compose::showList",
-      "name": "showList",
-      "module": "artifact/collection-compose",
+      "identity": "artifact/web-keyboard-events::Focused",
+      "name": "Focused",
+      "module": "artifact/web-keyboard-events",
       "namespace": "value",
-      "kind": "function",
+      "kind": "constructor",
       "definition": {
-        "start": 161,
-        "end": 169
+        "start": 56,
+        "end": 63
       },
-      "typeName": "List<Int> -> String",
-      "callable": {
-        "identity": "artifact/collection-compose::showList",
-        "name": "showList",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "List<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showList values: List<Int> -> String",
-        "remainingParameters": []
-      }
+      "typeName": "Action"
     },
     {
       "id": 2,
-      "identity": "artifact/collection-compose::nestedLists",
-      "name": "nestedLists",
-      "module": "artifact/collection-compose",
+      "identity": "artifact/web-keyboard-events::Blurred",
+      "name": "Blurred",
+      "module": "artifact/web-keyboard-events",
       "namespace": "value",
-      "kind": "function",
+      "kind": "constructor",
       "definition": {
-        "start": 246,
-        "end": 257
+        "start": 68,
+        "end": 75
       },
-      "typeName": "Unit -> List<List<Int>>",
-      "callable": {
-        "identity": "artifact/collection-compose::nestedLists",
-        "name": "nestedLists",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "unit",
-            "type": "Unit"
-          }
-        ],
-        "result": "List<List<Int>>",
-        "constraints": [],
-        "signature": "nestedLists unit: Unit -> List<List<Int>>",
-        "remainingParameters": []
-      }
+      "typeName": "Action"
     },
     {
       "id": 3,
-      "identity": "artifact/collection-compose::collectionComposeResults",
-      "name": "collectionComposeResults",
-      "module": "artifact/collection-compose",
+      "identity": "artifact/web-keyboard-events::KeyPressed",
+      "name": "KeyPressed",
+      "module": "artifact/web-keyboard-events",
       "namespace": "value",
-      "kind": "function",
+      "kind": "constructor",
       "definition": {
-        "start": 327,
-        "end": 351
+        "start": 80,
+        "end": 90
       },
-      "typeName": "Unit -> Array<String>",
+      "typeName": "String -> Action",
       "callable": {
-        "identity": "artifact/collection-compose::collectionComposeResults",
-        "name": "collectionComposeResults",
-        "module": "artifact/collection-compose",
+        "identity": "artifact/web-keyboard-events::KeyPressed",
+        "name": "KeyPressed",
+        "module": "artifact/web-keyboard-events",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "unit",
-            "type": "Unit"
+            "name": "arg1",
+            "type": "String"
           }
         ],
-        "result": "Array<String>",
+        "result": "Action",
         "constraints": [],
-        "signature": "collectionComposeResults unit: Unit -> Array<String>",
+        "signature": "KeyPressed arg1: String -> Action",
         "remainingParameters": []
       }
     },
     {
       "id": 4,
-      "identity": "std/array::*",
-      "name": "arrays",
-      "module": "std/array",
-      "namespace": "module",
-      "kind": "module-import",
+      "identity": "artifact/web-keyboard-events::ControlKey",
+      "name": "ControlKey",
+      "module": "artifact/web-keyboard-events",
+      "namespace": "value",
+      "kind": "constructor",
       "definition": {
-        "start": 12,
-        "end": 18
-      }
+        "start": 102,
+        "end": 112
+      },
+      "typeName": "Action"
     },
     {
       "id": 5,
-      "identity": "std/list::*",
-      "name": "lists",
-      "module": "std/list",
-      "namespace": "module",
-      "kind": "module-import",
+      "identity": "artifact/web-keyboard-events::keyAction",
+      "name": "keyAction",
+      "module": "artifact/web-keyboard-events",
+      "namespace": "value",
+      "kind": "function",
       "definition": {
-        "start": 48,
-        "end": 53
+        "start": 117,
+        "end": 126
+      },
+      "typeName": "html.KeyboardEvent -> Action",
+      "callable": {
+        "identity": "artifact/web-keyboard-events::keyAction",
+        "name": "keyAction",
+        "module": "artifact/web-keyboard-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "event",
+            "type": "html.KeyboardEvent"
+          }
+        ],
+        "result": "Action",
+        "constraints": [],
+        "signature": "keyAction event: html.KeyboardEvent -> Action",
+        "remainingParameters": []
       }
     },
     {
       "id": 6,
-      "identity": "std/prelude::Array",
-      "name": "Array",
-      "module": "std/prelude",
-      "namespace": "type",
-      "kind": "prelude",
+      "identity": "artifact/web-keyboard-events::taskKey",
+      "name": "taskKey",
+      "module": "artifact/web-keyboard-events",
+      "namespace": "value",
+      "kind": "function",
       "definition": {
-        "start": 0,
-        "end": 0
+        "start": 233,
+        "end": 240
+      },
+      "typeName": "Effect<{}, Never, Unit> -> html.KeyboardEvent -> Effect<{}, Never, Unit>",
+      "callable": {
+        "identity": "artifact/web-keyboard-events::taskKey",
+        "name": "taskKey",
+        "module": "artifact/web-keyboard-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "action",
+            "type": "Effect<{}, Never, Unit>"
+          },
+          {
+            "name": "event",
+            "type": "html.KeyboardEvent"
+          }
+        ],
+        "result": "Effect<{}, Never, Unit>",
+        "constraints": [],
+        "signature": "taskKey action: Effect<{}, Never, Unit> -> event: html.KeyboardEvent -> Effect<{}, Never, Unit>",
+        "remainingParameters": []
       }
     },
     {
       "id": 7,
-      "identity": "std/prelude::Int",
-      "name": "Int",
-      "module": "std/prelude",
+      "identity": "artifact/web-keyboard-events::view",
+      "name": "view",
+      "module": "artifact/web-keyboard-events",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 322,
+        "end": 326
+      },
+      "typeName": "Unit -> html.Html<Action>",
+      "callable": {
+        "identity": "artifact/web-keyboard-events::view",
+        "name": "view",
+        "module": "artifact/web-keyboard-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "type": "Unit"
+          }
+        ],
+        "result": "html.Html<Action>",
+        "constraints": [],
+        "signature": "view Unit -> html.Html<Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 8,
+      "identity": "artifact/web-keyboard-events::taskView",
+      "name": "taskView",
+      "module": "artifact/web-keyboard-events",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 530,
+        "end": 538
+      },
+      "typeName": "Effect<{}, Never, Unit> -> html.Html<Effect<{}, Never, Unit>>",
+      "callable": {
+        "identity": "artifact/web-keyboard-events::taskView",
+        "name": "taskView",
+        "module": "artifact/web-keyboard-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "action",
+            "type": "Effect<{}, Never, Unit>"
+          }
+        ],
+        "result": "html.Html<Effect<{}, Never, Unit>>",
+        "constraints": [],
+        "signature": "taskView action: Effect<{}, Never, Unit> -> html.Html<Effect<{}, Never, Unit>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 9,
+      "identity": "std/web/html::*",
+      "name": "html",
+      "module": "std/web/html",
+      "namespace": "module",
+      "kind": "module-import",
+      "definition": {
+        "start": 12,
+        "end": 16
+      }
+    },
+    {
+      "id": 10,
+      "identity": "std/web/html::Html::T0",
+      "name": "T0",
+      "module": "std/web/html",
       "namespace": "type",
-      "kind": "prelude",
+      "kind": "type-parameter",
       "definition": {
         "start": 0,
         "end": 0
       }
     },
     {
-      "id": 8,
-      "identity": "artifact/collection-compose::local(8)",
-      "name": "values",
-      "module": "artifact/collection-compose",
-      "namespace": "value",
-      "kind": "parameter",
+      "id": 11,
+      "identity": "std/web/html::Html",
+      "name": "Html",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
       "definition": {
-        "start": 84,
-        "end": 90
-      },
-      "typeName": "Array<Int>"
+        "start": 12,
+        "end": 16
+      }
     },
     {
-      "id": 9,
+      "id": 12,
+      "identity": "std/web/html::Style",
+      "name": "Style",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "identity": "std/web/html::Tag",
+      "name": "Tag",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Validated opaque name for a custom HTML element."
+    },
+    {
+      "id": 14,
+      "identity": "std/web/html::Attribute",
+      "name": "Attribute",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Validated opaque custom HTML attribute name and value."
+    },
+    {
+      "id": 15,
+      "identity": "std/web/html::InputEvent",
+      "name": "InputEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Immutable text-input snapshot containing only the current String value."
+    },
+    {
+      "id": 16,
+      "identity": "std/web/html::ChangeEvent",
+      "name": "ChangeEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Immutable form-control snapshot containing value and checked state."
+    },
+    {
+      "id": 17,
+      "identity": "std/web/html::KeyboardEvent",
+      "name": "KeyboardEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "description": "Immutable keyboard snapshot containing key identity, repeat state, and modifier keys."
+    },
+    {
+      "id": 18,
+      "identity": "std/web/html::HtmlBuildError",
+      "name": "HtmlBuildError",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Describes a rejected custom HTML tag or attribute name."
+    },
+    {
+      "id": 19,
+      "identity": "std/web/html::InvalidTagName",
+      "name": "InvalidTagName",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "String -> HtmlBuildError",
+      "callable": {
+        "identity": "std/web/html::InvalidTagName",
+        "name": "InvalidTagName",
+        "module": "std/web/html",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "HtmlBuildError",
+        "constraints": [],
+        "signature": "InvalidTagName arg1: String -> HtmlBuildError",
+        "remainingParameters": []
+      },
+      "description": "Reports a rejected custom-element name."
+    },
+    {
+      "id": 20,
+      "identity": "std/web/html::InvalidAttributeName",
+      "name": "InvalidAttributeName",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "String -> HtmlBuildError",
+      "callable": {
+        "identity": "std/web/html::InvalidAttributeName",
+        "name": "InvalidAttributeName",
+        "module": "std/web/html",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "HtmlBuildError",
+        "constraints": [],
+        "signature": "InvalidAttributeName arg1: String -> HtmlBuildError",
+        "remainingParameters": []
+      },
+      "description": "Reports an invalid custom attribute spelling."
+    },
+    {
+      "id": 21,
+      "identity": "std/web/html::ReservedAttributeName",
+      "name": "ReservedAttributeName",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "String -> HtmlBuildError",
+      "callable": {
+        "identity": "std/web/html::ReservedAttributeName",
+        "name": "ReservedAttributeName",
+        "module": "std/web/html",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "HtmlBuildError",
+        "constraints": [],
+        "signature": "ReservedAttributeName arg1: String -> HtmlBuildError",
+        "remainingParameters": []
+      },
+      "description": "Reports a custom attribute that collides with typed or runtime-owned props."
+    },
+    {
+      "id": 22,
       "identity": "std/prelude::String",
       "name": "String",
       "module": "std/prelude",
@@ -199,96 +438,33 @@
       }
     },
     {
-      "id": 10,
-      "identity": "std/prelude::join",
-      "name": "join",
-      "module": "std/prelude",
+      "id": 23,
+      "identity": "artifact/web-keyboard-events::local(23)",
+      "name": "event",
+      "module": "artifact/web-keyboard-events",
       "namespace": "value",
-      "kind": "prelude",
+      "kind": "parameter",
       "definition": {
-        "start": 0,
-        "end": 0
+        "start": 127,
+        "end": 132
       },
-      "typeName": "String -> C -> String",
-      "callable": {
-        "identity": "std/prelude::join",
-        "name": "join",
-        "module": "std/prelude",
-        "typeParameters": [
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "String"
-          },
-          {
-            "name": "arg2",
-            "type": "C"
-          }
-        ],
-        "result": "String",
-        "constraints": [
-          "Reducible<C, String>"
-        ],
-        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
-        "remainingParameters": []
-      },
-      "description": "Joins a reducible collection of strings with a separator."
+      "typeName": "html.KeyboardEvent"
     },
     {
-      "id": 11,
-      "identity": "artifact/collection-compose::local(11)",
-      "name": "value",
-      "module": "artifact/collection-compose",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "definition": {
-        "start": 140,
-        "end": 145
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 12,
-      "identity": "std/prelude::List",
-      "name": "List",
+      "id": 24,
+      "identity": "std/prelude::Task",
+      "name": "Task",
       "module": "std/prelude",
       "namespace": "type",
       "kind": "prelude",
       "definition": {
         "start": 0,
         "end": 0
-      }
-    },
-    {
-      "id": 13,
-      "identity": "artifact/collection-compose::local(13)",
-      "name": "values",
-      "module": "artifact/collection-compose",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 170,
-        "end": 176
       },
-      "typeName": "List<Int>"
+      "description": "Transparent alias for an Effect with no environment and no recoverable failure."
     },
     {
-      "id": 14,
-      "identity": "artifact/collection-compose::local(14)",
-      "name": "value",
-      "module": "artifact/collection-compose",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "definition": {
-        "start": 225,
-        "end": 230
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 15,
+      "id": 25,
       "identity": "std/prelude::Unit",
       "name": "Unit",
       "module": "std/prelude",
@@ -300,2261 +476,1036 @@
       }
     },
     {
-      "id": 16,
-      "identity": "artifact/collection-compose::local(16)",
-      "name": "unit",
-      "module": "artifact/collection-compose",
+      "id": 26,
+      "identity": "artifact/web-keyboard-events::local(26)",
+      "name": "action",
+      "module": "artifact/web-keyboard-events",
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 258,
-        "end": 262
+        "start": 241,
+        "end": 247
       },
-      "typeName": "Unit"
+      "typeName": "Effect<{}, Never, Unit>"
     },
     {
-      "id": 17,
-      "identity": "artifact/collection-compose::local(17)",
-      "name": "unit",
-      "module": "artifact/collection-compose",
+      "id": 27,
+      "identity": "artifact/web-keyboard-events::local(27)",
+      "name": "event",
+      "module": "artifact/web-keyboard-events",
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 352,
-        "end": 356
+        "start": 263,
+        "end": 268
       },
-      "typeName": "Unit"
+      "typeName": "html.KeyboardEvent"
     },
     {
-      "id": 18,
-      "identity": "std/array::append",
-      "name": "append",
-      "module": "std/array",
+      "id": 28,
+      "identity": "std/web/html::button",
+      "name": "button",
+      "module": "std/web/html",
       "namespace": "value",
       "kind": "imported",
       "definition": {
         "start": 12,
-        "end": 18
+        "end": 16
       },
-      "typeName": "Array<A> -> Array<A> -> Array<A>",
+      "typeName": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action>",
       "callable": {
-        "identity": "std/array::append",
-        "name": "append",
-        "module": "std/array",
+        "identity": "std/web/html::button",
+        "name": "button",
+        "module": "std/web/html",
         "typeParameters": [
-          "A"
+          "Action",
+          "C"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "Array<A>"
-          },
-          {
-            "name": "arg2",
-            "type": "Array<A>"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}"
           }
         ],
-        "result": "Array<A>",
-        "constraints": [],
-        "signature": "append<A> arg1: Array<A> -> arg2: Array<A> -> Array<A>",
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "button<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
-      },
-      "description": "Appends the suffix after the collection values."
+      }
     },
     {
-      "id": 19,
-      "identity": "std/list::append",
-      "name": "append",
-      "module": "std/list",
+      "id": 29,
+      "identity": "artifact/web-keyboard-events::local(29)",
+      "name": "action",
+      "module": "artifact/web-keyboard-events",
       "namespace": "value",
-      "kind": "imported",
+      "kind": "parameter",
       "definition": {
-        "start": 48,
-        "end": 53
+        "start": 539,
+        "end": 545
       },
-      "typeName": "List<A> -> List<A> -> List<A>",
-      "callable": {
-        "identity": "std/list::append",
-        "name": "append",
-        "module": "std/list",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "List<A>"
-          },
-          {
-            "name": "arg2",
-            "type": "List<A>"
-          }
-        ],
-        "result": "List<A>",
-        "constraints": [],
-        "signature": "append<A> arg1: List<A> -> arg2: List<A> -> List<A>",
-        "remainingParameters": []
-      },
-      "description": "Appends the suffix after the collection values."
-    },
-    {
-      "id": 20,
-      "identity": "std/array::concat",
-      "name": "concat",
-      "module": "std/array",
-      "namespace": "value",
-      "kind": "imported",
-      "definition": {
-        "start": 12,
-        "end": 18
-      },
-      "typeName": "Array<Array<A>> -> Array<A>",
-      "callable": {
-        "identity": "std/array::concat",
-        "name": "concat",
-        "module": "std/array",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Array<Array<A>>"
-          }
-        ],
-        "result": "Array<A>",
-        "constraints": [],
-        "signature": "concat<A> arg1: Array<Array<A>> -> Array<A>",
-        "remainingParameters": []
-      },
-      "description": "Flattens one level of nested collections in source order."
-    },
-    {
-      "id": 21,
-      "identity": "std/list::concat",
-      "name": "concat",
-      "module": "std/list",
-      "namespace": "value",
-      "kind": "imported",
-      "definition": {
-        "start": 48,
-        "end": 53
-      },
-      "typeName": "List<List<A>> -> List<A>",
-      "callable": {
-        "identity": "std/list::concat",
-        "name": "concat",
-        "module": "std/list",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "List<List<A>>"
-          }
-        ],
-        "result": "List<A>",
-        "constraints": [],
-        "signature": "concat<A> arg1: List<List<A>> -> List<A>",
-        "remainingParameters": []
-      },
-      "description": "Flattens one level of nested collections in source order."
-    },
-    {
-      "id": 22,
-      "identity": "std/array::reverse",
-      "name": "reverse",
-      "module": "std/array",
-      "namespace": "value",
-      "kind": "imported",
-      "definition": {
-        "start": 12,
-        "end": 18
-      },
-      "typeName": "Array<A> -> Array<A>",
-      "callable": {
-        "identity": "std/array::reverse",
-        "name": "reverse",
-        "module": "std/array",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Array<A>"
-          }
-        ],
-        "result": "Array<A>",
-        "constraints": [],
-        "signature": "reverse<A> arg1: Array<A> -> Array<A>",
-        "remainingParameters": []
-      },
-      "description": "Returns the collection elements in reverse order."
-    },
-    {
-      "id": 23,
-      "identity": "std/list::reverse",
-      "name": "reverse",
-      "module": "std/list",
-      "namespace": "value",
-      "kind": "imported",
-      "definition": {
-        "start": 48,
-        "end": 53
-      },
-      "typeName": "List<A> -> List<A>",
-      "callable": {
-        "identity": "std/list::reverse",
-        "name": "reverse",
-        "module": "std/list",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "List<A>"
-          }
-        ],
-        "result": "List<A>",
-        "constraints": [],
-        "signature": "reverse<A> arg1: List<A> -> List<A>",
-        "remainingParameters": []
-      },
-      "description": "Returns the collection elements in reverse order."
+      "typeName": "Effect<{}, Never, Unit>"
     }
   ],
   "symbolOccurrences": [
     {
       "range": {
-        "start": 74,
-        "end": 83
+        "start": 43,
+        "end": 49
       },
       "symbol": 0
     },
     {
       "range": {
-        "start": 161,
-        "end": 169
+        "start": 56,
+        "end": 63
       },
       "symbol": 1
     },
     {
       "range": {
-        "start": 246,
-        "end": 257
+        "start": 68,
+        "end": 75
       },
       "symbol": 2
     },
     {
       "range": {
-        "start": 327,
-        "end": 351
+        "start": 80,
+        "end": 90
       },
       "symbol": 3
     },
     {
       "range": {
-        "start": 12,
-        "end": 18
+        "start": 102,
+        "end": 112
       },
       "symbol": 4
     },
     {
       "range": {
-        "start": 48,
-        "end": 53
+        "start": 117,
+        "end": 126
       },
       "symbol": 5
     },
     {
       "range": {
-        "start": 84,
-        "end": 90
-      },
-      "symbol": 8
-    },
-    {
-      "range": {
-        "start": 140,
-        "end": 145
-      },
-      "symbol": 11
-    },
-    {
-      "range": {
-        "start": 170,
-        "end": 176
-      },
-      "symbol": 13
-    },
-    {
-      "range": {
-        "start": 225,
-        "end": 230
-      },
-      "symbol": 14
-    },
-    {
-      "range": {
-        "start": 258,
-        "end": 262
-      },
-      "symbol": 16
-    },
-    {
-      "range": {
-        "start": 352,
-        "end": 356
-      },
-      "symbol": 17
-    },
-    {
-      "range": {
-        "start": 92,
-        "end": 102
-      },
-      "symbol": 6
-    },
-    {
-      "range": {
-        "start": 98,
-        "end": 101
-      },
-      "symbol": 7
-    },
-    {
-      "range": {
-        "start": 106,
-        "end": 112
-      },
-      "symbol": 9
-    },
-    {
-      "range": {
-        "start": 117,
-        "end": 121
-      },
-      "symbol": 10
-    },
-    {
-      "range": {
-        "start": 149,
-        "end": 155
-      },
-      "symbol": 8
-    },
-    {
-      "range": {
-        "start": 130,
-        "end": 135
-      },
-      "symbol": 11
-    },
-    {
-      "range": {
-        "start": 178,
-        "end": 187
-      },
-      "symbol": 12
-    },
-    {
-      "range": {
-        "start": 183,
-        "end": 186
-      },
-      "symbol": 7
-    },
-    {
-      "range": {
-        "start": 191,
-        "end": 197
-      },
-      "symbol": 9
-    },
-    {
-      "range": {
-        "start": 202,
-        "end": 206
-      },
-      "symbol": 10
-    },
-    {
-      "range": {
-        "start": 234,
+        "start": 233,
         "end": 240
       },
-      "symbol": 13
+      "symbol": 6
     },
     {
       "range": {
-        "start": 215,
-        "end": 220
-      },
-      "symbol": 14
-    },
-    {
-      "range": {
-        "start": 264,
-        "end": 268
-      },
-      "symbol": 15
-    },
-    {
-      "range": {
-        "start": 272,
-        "end": 287
-      },
-      "symbol": 12
-    },
-    {
-      "range": {
-        "start": 277,
-        "end": 286
-      },
-      "symbol": 12
-    },
-    {
-      "range": {
-        "start": 282,
-        "end": 285
+        "start": 322,
+        "end": 326
       },
       "symbol": 7
     },
     {
       "range": {
-        "start": 358,
-        "end": 362
+        "start": 530,
+        "end": 538
       },
-      "symbol": 15
+      "symbol": 8
     },
     {
       "range": {
-        "start": 366,
-        "end": 379
-      },
-      "symbol": 6
-    },
-    {
-      "range": {
-        "start": 372,
-        "end": 378
+        "start": 12,
+        "end": 16
       },
       "symbol": 9
     },
     {
       "range": {
-        "start": 390,
-        "end": 399
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 411,
-        "end": 424
-      },
-      "symbol": 18
-    },
-    {
-      "range": {
-        "start": 438,
-        "end": 446
-      },
-      "symbol": 1
-    },
-    {
-      "range": {
-        "start": 459,
-        "end": 471
-      },
-      "symbol": 19
-    },
-    {
-      "range": {
-        "start": 486,
-        "end": 495
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 497,
-        "end": 510
-      },
-      "symbol": 20
-    },
-    {
-      "range": {
-        "start": 538,
-        "end": 546
-      },
-      "symbol": 1
-    },
-    {
-      "range": {
-        "start": 548,
-        "end": 560
-      },
-      "symbol": 21
-    },
-    {
-      "range": {
-        "start": 562,
-        "end": 573
-      },
-      "symbol": 2
-    },
-    {
-      "range": {
-        "start": 584,
-        "end": 593
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 595,
-        "end": 609
-      },
-      "symbol": 22
-    },
-    {
-      "range": {
-        "start": 626,
-        "end": 634
-      },
-      "symbol": 1
-    },
-    {
-      "range": {
-        "start": 636,
-        "end": 649
+        "start": 127,
+        "end": 132
       },
       "symbol": 23
     },
     {
       "range": {
-        "start": 667,
-        "end": 676
+        "start": 241,
+        "end": 247
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 263,
+        "end": 268
+      },
+      "symbol": 27
+    },
+    {
+      "range": {
+        "start": 539,
+        "end": 545
+      },
+      "symbol": 29
+    },
+    {
+      "range": {
+        "start": 91,
+        "end": 97
+      },
+      "symbol": 22
+    },
+    {
+      "range": {
+        "start": 134,
+        "end": 152
+      },
+      "symbol": 17
+    },
+    {
+      "range": {
+        "start": 156,
+        "end": 162
       },
       "symbol": 0
     },
     {
       "range": {
-        "start": 678,
-        "end": 691
+        "start": 170,
+        "end": 175
       },
-      "symbol": 20
+      "symbol": 23
     },
     {
       "range": {
-        "start": 701,
-        "end": 709
+        "start": 192,
+        "end": 202
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 208,
+        "end": 218
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 219,
+        "end": 224
+      },
+      "symbol": 23
+    },
+    {
+      "range": {
+        "start": 249,
+        "end": 259
+      },
+      "symbol": 24
+    },
+    {
+      "range": {
+        "start": 254,
+        "end": 258
+      },
+      "symbol": 25
+    },
+    {
+      "range": {
+        "start": 270,
+        "end": 288
+      },
+      "symbol": 17
+    },
+    {
+      "range": {
+        "start": 292,
+        "end": 302
+      },
+      "symbol": 24
+    },
+    {
+      "range": {
+        "start": 297,
+        "end": 301
+      },
+      "symbol": 25
+    },
+    {
+      "range": {
+        "start": 307,
+        "end": 313
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 330,
+        "end": 347
+      },
+      "symbol": 11
+    },
+    {
+      "range": {
+        "start": 340,
+        "end": 346
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 352,
+        "end": 363
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 406,
+        "end": 413
       },
       "symbol": 1
     },
     {
       "range": {
-        "start": 711,
-        "end": 723
+        "start": 427,
+        "end": 434
       },
-      "symbol": 21
+      "symbol": 2
+    },
+    {
+      "range": {
+        "start": 451,
+        "end": 460
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 475,
+        "end": 484
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 547,
+        "end": 557
+      },
+      "symbol": 24
+    },
+    {
+      "range": {
+        "start": 552,
+        "end": 556
+      },
+      "symbol": 25
+    },
+    {
+      "range": {
+        "start": 561,
+        "end": 582
+      },
+      "symbol": 11
+    },
+    {
+      "range": {
+        "start": 571,
+        "end": 581
+      },
+      "symbol": 24
+    },
+    {
+      "range": {
+        "start": 576,
+        "end": 580
+      },
+      "symbol": 25
+    },
+    {
+      "range": {
+        "start": 587,
+        "end": 598
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 614,
+        "end": 620
+      },
+      "symbol": 29
+    },
+    {
+      "range": {
+        "start": 637,
+        "end": 644
+      },
+      "symbol": 6
+    },
+    {
+      "range": {
+        "start": 645,
+        "end": 651
+      },
+      "symbol": 29
     }
   ],
   "typeOccurrences": [
     {
       "range": {
-        "start": 74,
-        "end": 83
+        "start": 43,
+        "end": 49
       },
-      "type": "Array<Int> -> String"
+      "type": "Action"
     },
     {
       "range": {
-        "start": 84,
+        "start": 56,
+        "end": 63
+      },
+      "type": "Action"
+    },
+    {
+      "range": {
+        "start": 68,
+        "end": 75
+      },
+      "type": "Action"
+    },
+    {
+      "range": {
+        "start": 80,
         "end": 90
       },
-      "type": "Array<Int>"
+      "type": "String -> Action"
+    },
+    {
+      "range": {
+        "start": 102,
+        "end": 112
+      },
+      "type": "Action"
     },
     {
       "range": {
         "start": 117,
-        "end": 121
+        "end": 126
       },
-      "type": "String -> C -> String"
-    },
-    {
-      "range": {
-        "start": 117,
-        "end": 156
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 122,
-        "end": 125
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 126,
-        "end": 156
-      },
-      "type": "Array<String>"
+      "type": "html.KeyboardEvent -> Action"
     },
     {
       "range": {
         "start": 127,
-        "end": 137
+        "end": 132
       },
-      "type": "String"
+      "type": "html.KeyboardEvent"
     },
     {
       "range": {
-        "start": 130,
-        "end": 135
+        "start": 156,
+        "end": 162
       },
-      "type": "Int"
+      "type": "Action"
     },
     {
       "range": {
-        "start": 140,
-        "end": 145
+        "start": 167,
+        "end": 228
       },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 149,
-        "end": 155
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 161,
-        "end": 169
-      },
-      "type": "List<Int> -> String"
+      "type": "Action"
     },
     {
       "range": {
         "start": 170,
-        "end": 176
+        "end": 175
       },
-      "type": "List<Int>"
+      "type": "html.KeyboardEvent"
     },
     {
       "range": {
-        "start": 202,
-        "end": 206
+        "start": 170,
+        "end": 186
       },
-      "type": "String -> C -> String"
+      "type": "Bool"
     },
     {
       "range": {
-        "start": 202,
-        "end": 241
+        "start": 192,
+        "end": 202
+      },
+      "type": "Action"
+    },
+    {
+      "range": {
+        "start": 208,
+        "end": 218
+      },
+      "type": "String -> Action"
+    },
+    {
+      "range": {
+        "start": 208,
+        "end": 228
+      },
+      "type": "Action"
+    },
+    {
+      "range": {
+        "start": 219,
+        "end": 224
+      },
+      "type": "html.KeyboardEvent"
+    },
+    {
+      "range": {
+        "start": 219,
+        "end": 228
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 207,
-        "end": 210
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 211,
-        "end": 241
-      },
-      "type": "Array<String>"
-    },
-    {
-      "range": {
-        "start": 212,
-        "end": 222
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 215,
-        "end": 220
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 225,
-        "end": 230
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 234,
+        "start": 233,
         "end": 240
       },
-      "type": "List<Int>"
+      "type": "Effect<{}, Never, Unit> -> html.KeyboardEvent -> Effect<{}, Never, Unit>"
     },
     {
       "range": {
-        "start": 246,
-        "end": 257
+        "start": 241,
+        "end": 247
       },
-      "type": "Unit -> List<List<Int>>"
+      "type": "Effect<{}, Never, Unit>"
     },
     {
       "range": {
-        "start": 258,
-        "end": 262
+        "start": 263,
+        "end": 268
       },
-      "type": "Unit"
+      "type": "html.KeyboardEvent"
     },
     {
       "range": {
-        "start": 292,
-        "end": 318
+        "start": 307,
+        "end": 313
       },
-      "type": "List<List<Int>>"
+      "type": "Effect<{}, Never, Unit>"
     },
     {
       "range": {
-        "start": 295,
-        "end": 302
+        "start": 322,
+        "end": 326
       },
-      "type": "List<Int>"
+      "type": "Unit -> html.Html<Action>"
     },
     {
       "range": {
-        "start": 297,
-        "end": 298
+        "start": 340,
+        "end": 346
       },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 300,
-        "end": 301
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 304,
-        "end": 307
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 309,
-        "end": 316
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 311,
-        "end": 312
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 314,
-        "end": 315
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 327,
-        "end": 351
-      },
-      "type": "Unit -> Array<String>"
+      "type": "Action"
     },
     {
       "range": {
         "start": 352,
-        "end": 356
+        "end": 363
       },
-      "type": "Unit"
+      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action>"
     },
     {
       "range": {
-        "start": 384,
-        "end": 732
+        "start": 352,
+        "end": 521
       },
-      "type": "Array<String>"
+      "type": "html.Html<Action>"
     },
     {
       "range": {
-        "start": 390,
-        "end": 399
+        "start": 364,
+        "end": 521
       },
-      "type": "Array<Int> -> String"
+      "type": "{children: String, id: String, onBlur: Action, onFocus: Action, onKeyDown: html.KeyboardEvent -> Action, onKeyUp: html.KeyboardEvent -> Action}"
     },
     {
       "range": {
-        "start": 390,
-        "end": 432
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 401,
-        "end": 407
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 401,
-        "end": 431
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 402,
-        "end": 403
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 405,
-        "end": 406
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 411,
-        "end": 424
-      },
-      "type": "Array<A> -> Array<A> -> Array<A>"
-    },
-    {
-      "range": {
-        "start": 425,
-        "end": 431
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 426,
-        "end": 427
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 429,
-        "end": 430
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 438,
-        "end": 446
-      },
-      "type": "List<Int> -> String"
-    },
-    {
-      "range": {
-        "start": 438,
-        "end": 480
+        "start": 374,
+        "end": 391
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 448,
-        "end": 455
+        "start": 406,
+        "end": 413
       },
-      "type": "List<Int>"
+      "type": "Action"
     },
     {
       "range": {
-        "start": 448,
-        "end": 479
+        "start": 427,
+        "end": 434
       },
-      "type": "List<Int>"
+      "type": "Action"
     },
     {
       "range": {
-        "start": 450,
-        "end": 451
+        "start": 451,
+        "end": 460
       },
-      "type": "Int"
+      "type": "html.KeyboardEvent -> Action"
     },
     {
       "range": {
-        "start": 453,
-        "end": 454
+        "start": 475,
+        "end": 484
       },
-      "type": "Int"
+      "type": "html.KeyboardEvent -> Action"
     },
     {
       "range": {
-        "start": 459,
-        "end": 471
-      },
-      "type": "List<A> -> List<A> -> List<A>"
-    },
-    {
-      "range": {
-        "start": 472,
-        "end": 479
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 474,
-        "end": 475
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 477,
-        "end": 478
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 486,
-        "end": 495
-      },
-      "type": "Array<Int> -> String"
-    },
-    {
-      "range": {
-        "start": 486,
-        "end": 532
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 497,
-        "end": 510
-      },
-      "type": "Array<Array<A>> -> Array<A>"
-    },
-    {
-      "range": {
-        "start": 497,
-        "end": 531
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 511,
-        "end": 531
-      },
-      "type": "Array<Array<Int>>"
-    },
-    {
-      "range": {
-        "start": 512,
-        "end": 518
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 513,
-        "end": 514
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 516,
+        "start": 500,
         "end": 517
       },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 520,
-        "end": 522
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 524,
-        "end": 530
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 525,
-        "end": 526
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 528,
-        "end": 529
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 538,
-        "end": 546
-      },
-      "type": "List<Int> -> String"
-    },
-    {
-      "range": {
-        "start": 538,
-        "end": 578
-      },
       "type": "String"
     },
     {
       "range": {
-        "start": 548,
-        "end": 560
+        "start": 530,
+        "end": 538
       },
-      "type": "List<List<A>> -> List<A>"
+      "type": "Effect<{}, Never, Unit> -> html.Html<Effect<{}, Never, Unit>>"
     },
     {
       "range": {
-        "start": 548,
-        "end": 577
+        "start": 539,
+        "end": 545
       },
-      "type": "List<Int>"
+      "type": "Effect<{}, Never, Unit>"
     },
     {
       "range": {
-        "start": 562,
-        "end": 573
+        "start": 587,
+        "end": 598
       },
-      "type": "Unit -> List<List<Int>>"
+      "type": "({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action>"
     },
     {
       "range": {
-        "start": 562,
-        "end": 576
+        "start": 587,
+        "end": 686
       },
-      "type": "List<List<Int>>"
+      "type": "html.Html<Effect<{}, Never, Unit>>"
     },
     {
       "range": {
-        "start": 574,
-        "end": 576
+        "start": 599,
+        "end": 686
       },
-      "type": "Unit"
-    },
-    {
-      "range": {
-        "start": 584,
-        "end": 593
-      },
-      "type": "Array<Int> -> String"
-    },
-    {
-      "range": {
-        "start": 584,
-        "end": 620
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 595,
-        "end": 609
-      },
-      "type": "Array<A> -> Array<A>"
-    },
-    {
-      "range": {
-        "start": 595,
-        "end": 619
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 610,
-        "end": 619
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 611,
-        "end": 612
-      },
-      "type": "Int"
+      "type": "{children: String, onFocus: Effect<{}, Never, Unit>, onKeyDown: html.KeyboardEvent -> Effect<{}, Never, Unit>}"
     },
     {
       "range": {
         "start": 614,
-        "end": 615
+        "end": 620
       },
-      "type": "Int"
+      "type": "Effect<{}, Never, Unit>"
     },
     {
       "range": {
-        "start": 617,
-        "end": 618
+        "start": 637,
+        "end": 644
       },
-      "type": "Int"
+      "type": "Effect<{}, Never, Unit> -> html.KeyboardEvent -> Effect<{}, Never, Unit>"
     },
     {
       "range": {
-        "start": 626,
-        "end": 634
+        "start": 637,
+        "end": 651
       },
-      "type": "List<Int> -> String"
+      "type": "html.KeyboardEvent -> Effect<{}, Never, Unit>"
     },
     {
       "range": {
-        "start": 626,
-        "end": 661
+        "start": 645,
+        "end": 651
       },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 636,
-        "end": 649
-      },
-      "type": "List<A> -> List<A>"
-    },
-    {
-      "range": {
-        "start": 636,
-        "end": 660
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 650,
-        "end": 660
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 652,
-        "end": 653
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 655,
-        "end": 656
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 658,
-        "end": 659
-      },
-      "type": "Int"
+      "type": "Effect<{}, Never, Unit>"
     },
     {
       "range": {
         "start": 667,
-        "end": 676
-      },
-      "type": "Array<Int> -> String"
-    },
-    {
-      "range": {
-        "start": 667,
-        "end": 695
+        "end": 682
       },
       "type": "String"
-    },
-    {
-      "range": {
-        "start": 678,
-        "end": 691
-      },
-      "type": "Array<Array<A>> -> Array<A>"
-    },
-    {
-      "range": {
-        "start": 678,
-        "end": 694
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 692,
-        "end": 694
-      },
-      "type": "Array<Array<Int>>"
-    },
-    {
-      "range": {
-        "start": 701,
-        "end": 709
-      },
-      "type": "List<Int> -> String"
-    },
-    {
-      "range": {
-        "start": 701,
-        "end": 728
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 711,
-        "end": 723
-      },
-      "type": "List<List<A>> -> List<A>"
-    },
-    {
-      "range": {
-        "start": 711,
-        "end": 727
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 724,
-        "end": 727
-      },
-      "type": "List<List<Int>>"
     }
   ],
   "callableOccurrences": [
     {
       "range": {
-        "start": 74,
-        "end": 83
+        "start": 80,
+        "end": 90
       },
       "callable": {
-        "identity": "artifact/collection-compose::showArray",
-        "name": "showArray",
-        "module": "artifact/collection-compose",
+        "identity": "artifact/web-keyboard-events::KeyPressed",
+        "name": "KeyPressed",
+        "module": "artifact/web-keyboard-events",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "values",
-            "type": "Array<Int>"
+            "name": "arg1",
+            "type": "String"
           }
         ],
-        "result": "String",
+        "result": "Action",
         "constraints": [],
-        "signature": "showArray values: Array<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 161,
-        "end": 169
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::showList",
-        "name": "showList",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "List<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showList values: List<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 246,
-        "end": 257
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::nestedLists",
-        "name": "nestedLists",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "unit",
-            "type": "Unit"
-          }
-        ],
-        "result": "List<List<Int>>",
-        "constraints": [],
-        "signature": "nestedLists unit: Unit -> List<List<Int>>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 327,
-        "end": 351
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::collectionComposeResults",
-        "name": "collectionComposeResults",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "unit",
-            "type": "Unit"
-          }
-        ],
-        "result": "Array<String>",
-        "constraints": [],
-        "signature": "collectionComposeResults unit: Unit -> Array<String>",
+        "signature": "KeyPressed arg1: String -> Action",
         "remainingParameters": []
       }
     },
     {
       "range": {
         "start": 117,
-        "end": 121
+        "end": 126
       },
       "callable": {
-        "identity": "std/prelude::join",
-        "name": "join",
-        "module": "std/prelude",
-        "typeParameters": [
-          "C"
-        ],
+        "identity": "artifact/web-keyboard-events::keyAction",
+        "name": "keyAction",
+        "module": "artifact/web-keyboard-events",
+        "typeParameters": [],
         "parameters": [
           {
-            "name": "arg1",
-            "type": "String"
+            "name": "event",
+            "type": "html.KeyboardEvent"
+          }
+        ],
+        "result": "Action",
+        "constraints": [],
+        "signature": "keyAction event: html.KeyboardEvent -> Action",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 233,
+        "end": 240
+      },
+      "callable": {
+        "identity": "artifact/web-keyboard-events::taskKey",
+        "name": "taskKey",
+        "module": "artifact/web-keyboard-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "action",
+            "type": "Effect<{}, Never, Unit>"
           },
           {
-            "name": "arg2",
-            "type": "C"
+            "name": "event",
+            "type": "html.KeyboardEvent"
           }
         ],
-        "result": "String",
-        "constraints": [
-          "Reducible<C, String>"
-        ],
-        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+        "result": "Effect<{}, Never, Unit>",
+        "constraints": [],
+        "signature": "taskKey action: Effect<{}, Never, Unit> -> event: html.KeyboardEvent -> Effect<{}, Never, Unit>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 202,
-        "end": 206
+        "start": 322,
+        "end": 326
       },
       "callable": {
-        "identity": "std/prelude::join",
-        "name": "join",
-        "module": "std/prelude",
-        "typeParameters": [
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "String"
-          },
-          {
-            "name": "arg2",
-            "type": "C"
-          }
-        ],
-        "result": "String",
-        "constraints": [
-          "Reducible<C, String>"
-        ],
-        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 390,
-        "end": 399
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::showArray",
-        "name": "showArray",
-        "module": "artifact/collection-compose",
+        "identity": "artifact/web-keyboard-events::view",
+        "name": "view",
+        "module": "artifact/web-keyboard-events",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "values",
-            "type": "Array<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showArray values: Array<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 411,
-        "end": 424
-      },
-      "callable": {
-        "identity": "std/array::append",
-        "name": "append",
-        "module": "std/array",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Array<A>"
-          },
-          {
-            "name": "arg2",
-            "type": "Array<A>"
-          }
-        ],
-        "result": "Array<A>",
-        "constraints": [],
-        "signature": "append<A> arg1: Array<A> -> arg2: Array<A> -> Array<A>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 438,
-        "end": 446
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::showList",
-        "name": "showList",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "List<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showList values: List<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 459,
-        "end": 471
-      },
-      "callable": {
-        "identity": "std/list::append",
-        "name": "append",
-        "module": "std/list",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "List<A>"
-          },
-          {
-            "name": "arg2",
-            "type": "List<A>"
-          }
-        ],
-        "result": "List<A>",
-        "constraints": [],
-        "signature": "append<A> arg1: List<A> -> arg2: List<A> -> List<A>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 486,
-        "end": 495
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::showArray",
-        "name": "showArray",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "Array<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showArray values: Array<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 497,
-        "end": 510
-      },
-      "callable": {
-        "identity": "std/array::concat",
-        "name": "concat",
-        "module": "std/array",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Array<Array<A>>"
-          }
-        ],
-        "result": "Array<A>",
-        "constraints": [],
-        "signature": "concat<A> arg1: Array<Array<A>> -> Array<A>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 538,
-        "end": 546
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::showList",
-        "name": "showList",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "List<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showList values: List<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 548,
-        "end": 560
-      },
-      "callable": {
-        "identity": "std/list::concat",
-        "name": "concat",
-        "module": "std/list",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "List<List<A>>"
-          }
-        ],
-        "result": "List<A>",
-        "constraints": [],
-        "signature": "concat<A> arg1: List<List<A>> -> List<A>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 562,
-        "end": 573
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::nestedLists",
-        "name": "nestedLists",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "unit",
             "type": "Unit"
           }
         ],
-        "result": "List<List<Int>>",
+        "result": "html.Html<Action>",
         "constraints": [],
-        "signature": "nestedLists unit: Unit -> List<List<Int>>",
+        "signature": "view Unit -> html.Html<Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 584,
-        "end": 593
+        "start": 530,
+        "end": 538
       },
       "callable": {
-        "identity": "artifact/collection-compose::showArray",
-        "name": "showArray",
-        "module": "artifact/collection-compose",
+        "identity": "artifact/web-keyboard-events::taskView",
+        "name": "taskView",
+        "module": "artifact/web-keyboard-events",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "values",
-            "type": "Array<Int>"
+            "name": "action",
+            "type": "Effect<{}, Never, Unit>"
           }
         ],
-        "result": "String",
+        "result": "html.Html<Effect<{}, Never, Unit>>",
         "constraints": [],
-        "signature": "showArray values: Array<Int> -> String",
+        "signature": "taskView action: Effect<{}, Never, Unit> -> html.Html<Effect<{}, Never, Unit>>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 595,
-        "end": 609
+        "start": 208,
+        "end": 218
       },
       "callable": {
-        "identity": "std/array::reverse",
-        "name": "reverse",
-        "module": "std/array",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Array<A>"
-          }
-        ],
-        "result": "Array<A>",
-        "constraints": [],
-        "signature": "reverse<A> arg1: Array<A> -> Array<A>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 626,
-        "end": 634
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::showList",
-        "name": "showList",
-        "module": "artifact/collection-compose",
+        "identity": "artifact/web-keyboard-events::KeyPressed",
+        "name": "KeyPressed",
+        "module": "artifact/web-keyboard-events",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "values",
-            "type": "List<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showList values: List<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 636,
-        "end": 649
-      },
-      "callable": {
-        "identity": "std/list::reverse",
-        "name": "reverse",
-        "module": "std/list",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
             "name": "arg1",
-            "type": "List<A>"
+            "type": "String"
           }
         ],
-        "result": "List<A>",
+        "result": "Action",
         "constraints": [],
-        "signature": "reverse<A> arg1: List<A> -> List<A>",
+        "signature": "KeyPressed arg1: String -> Action",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 667,
-        "end": 676
+        "start": 352,
+        "end": 363
       },
       "callable": {
-        "identity": "artifact/collection-compose::showArray",
-        "name": "showArray",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "Array<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showArray values: Array<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 678,
-        "end": 691
-      },
-      "callable": {
-        "identity": "std/array::concat",
-        "name": "concat",
-        "module": "std/array",
+        "identity": "std/web/html::button",
+        "name": "button",
+        "module": "std/web/html",
         "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Array<Array<A>>"
-          }
-        ],
-        "result": "Array<A>",
-        "constraints": [],
-        "signature": "concat<A> arg1: Array<Array<A>> -> Array<A>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 701,
-        "end": 709
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::showList",
-        "name": "showList",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "List<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showList values: List<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 711,
-        "end": 723
-      },
-      "callable": {
-        "identity": "std/list::concat",
-        "name": "concat",
-        "module": "std/list",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "List<List<A>>"
-          }
-        ],
-        "result": "List<A>",
-        "constraints": [],
-        "signature": "concat<A> arg1: List<List<A>> -> List<A>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 117,
-        "end": 156
-      },
-      "callable": {
-        "identity": "std/prelude::join",
-        "name": "join",
-        "module": "std/prelude",
-        "typeParameters": [
+          "Action",
           "C"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "String"
-          },
-          {
-            "name": "arg2",
-            "type": "C"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}"
           }
         ],
-        "result": "String",
+        "result": "Html<Action>",
         "constraints": [
-          "Reducible<C, String>"
+          "IntoChildren<C, Action>"
         ],
-        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+        "signature": "button<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 202,
-        "end": 241
+        "start": 451,
+        "end": 460
       },
       "callable": {
-        "identity": "std/prelude::join",
-        "name": "join",
-        "module": "std/prelude",
+        "identity": "artifact/web-keyboard-events::keyAction",
+        "name": "keyAction",
+        "module": "artifact/web-keyboard-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "event",
+            "type": "html.KeyboardEvent"
+          }
+        ],
+        "result": "Action",
+        "constraints": [],
+        "signature": "keyAction event: html.KeyboardEvent -> Action",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 475,
+        "end": 484
+      },
+      "callable": {
+        "identity": "artifact/web-keyboard-events::keyAction",
+        "name": "keyAction",
+        "module": "artifact/web-keyboard-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "event",
+            "type": "html.KeyboardEvent"
+          }
+        ],
+        "result": "Action",
+        "constraints": [],
+        "signature": "keyAction event: html.KeyboardEvent -> Action",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 587,
+        "end": 598
+      },
+      "callable": {
+        "identity": "std/web/html::button",
+        "name": "button",
+        "module": "std/web/html",
         "typeParameters": [
+          "Action",
           "C"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "String"
-          },
-          {
-            "name": "arg2",
-            "type": "C"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}"
           }
         ],
-        "result": "String",
+        "result": "Html<Action>",
         "constraints": [
-          "Reducible<C, String>"
+          "IntoChildren<C, Action>"
         ],
-        "signature": "join<C> arg1: String -> arg2: C -> String where Reducible<C, String>",
+        "signature": "button<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 390,
-        "end": 432
+        "start": 637,
+        "end": 644
       },
       "callable": {
-        "identity": "artifact/collection-compose::showArray",
-        "name": "showArray",
-        "module": "artifact/collection-compose",
+        "identity": "artifact/web-keyboard-events::taskKey",
+        "name": "taskKey",
+        "module": "artifact/web-keyboard-events",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "values",
-            "type": "Array<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showArray values: Array<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 401,
-        "end": 431
-      },
-      "callable": {
-        "identity": "std/array::append",
-        "name": "append",
-        "module": "std/array",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Array<A>"
+            "name": "action",
+            "type": "Effect<{}, Never, Unit>"
           },
           {
-            "name": "arg2",
-            "type": "Array<A>"
+            "name": "event",
+            "type": "html.KeyboardEvent"
           }
         ],
-        "result": "Array<A>",
+        "result": "Effect<{}, Never, Unit>",
         "constraints": [],
-        "signature": "append<A> arg1: Array<A> -> arg2: Array<A> -> Array<A>",
+        "signature": "taskKey action: Effect<{}, Never, Unit> -> event: html.KeyboardEvent -> Effect<{}, Never, Unit>",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 438,
-        "end": 480
+        "start": 208,
+        "end": 228
       },
       "callable": {
-        "identity": "artifact/collection-compose::showList",
-        "name": "showList",
-        "module": "artifact/collection-compose",
+        "identity": "artifact/web-keyboard-events::KeyPressed",
+        "name": "KeyPressed",
+        "module": "artifact/web-keyboard-events",
         "typeParameters": [],
         "parameters": [
           {
-            "name": "values",
-            "type": "List<Int>"
+            "name": "arg1",
+            "type": "String"
           }
         ],
-        "result": "String",
+        "result": "Action",
         "constraints": [],
-        "signature": "showList values: List<Int> -> String",
+        "signature": "KeyPressed arg1: String -> Action",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 448,
-        "end": 479
+        "start": 352,
+        "end": 521
       },
       "callable": {
-        "identity": "std/list::append",
-        "name": "append",
-        "module": "std/list",
+        "identity": "std/web/html::button",
+        "name": "button",
+        "module": "std/web/html",
         "typeParameters": [
-          "A"
+          "Action",
+          "C"
         ],
         "parameters": [
           {
             "name": "arg1",
-            "type": "List<A>"
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "button<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 587,
+        "end": 686
+      },
+      "callable": {
+        "identity": "std/web/html::button",
+        "name": "button",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "button<Action, C> arg1: ({id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, onFocus?: Action, onBlur?: Action, onKeyDown?: KeyboardEvent -> Action, onKeyUp?: KeyboardEvent -> Action, disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C}) -> Html<Action> where IntoChildren<C, Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 637,
+        "end": 651
+      },
+      "callable": {
+        "identity": "artifact/web-keyboard-events::taskKey",
+        "name": "taskKey",
+        "module": "artifact/web-keyboard-events",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "action",
+            "type": "Effect<{}, Never, Unit>"
           },
           {
-            "name": "arg2",
-            "type": "List<A>"
+            "name": "event",
+            "type": "html.KeyboardEvent"
           }
         ],
-        "result": "List<A>",
+        "result": "Effect<{}, Never, Unit>",
         "constraints": [],
-        "signature": "append<A> arg1: List<A> -> arg2: List<A> -> List<A>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 486,
-        "end": 532
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::showArray",
-        "name": "showArray",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
+        "signature": "taskKey action: Effect<{}, Never, Unit> -> event: html.KeyboardEvent -> Effect<{}, Never, Unit>",
+        "remainingParameters": [
           {
-            "name": "values",
-            "type": "Array<Int>"
+            "name": "event",
+            "type": "html.KeyboardEvent"
           }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showArray values: Array<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 497,
-        "end": 531
-      },
-      "callable": {
-        "identity": "std/array::concat",
-        "name": "concat",
-        "module": "std/array",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Array<Array<A>>"
-          }
-        ],
-        "result": "Array<A>",
-        "constraints": [],
-        "signature": "concat<A> arg1: Array<Array<A>> -> Array<A>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 538,
-        "end": 578
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::showList",
-        "name": "showList",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "List<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showList values: List<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 548,
-        "end": 577
-      },
-      "callable": {
-        "identity": "std/list::concat",
-        "name": "concat",
-        "module": "std/list",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "List<List<A>>"
-          }
-        ],
-        "result": "List<A>",
-        "constraints": [],
-        "signature": "concat<A> arg1: List<List<A>> -> List<A>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 562,
-        "end": 576
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::nestedLists",
-        "name": "nestedLists",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "unit",
-            "type": "Unit"
-          }
-        ],
-        "result": "List<List<Int>>",
-        "constraints": [],
-        "signature": "nestedLists unit: Unit -> List<List<Int>>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 584,
-        "end": 620
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::showArray",
-        "name": "showArray",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "Array<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showArray values: Array<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 595,
-        "end": 619
-      },
-      "callable": {
-        "identity": "std/array::reverse",
-        "name": "reverse",
-        "module": "std/array",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Array<A>"
-          }
-        ],
-        "result": "Array<A>",
-        "constraints": [],
-        "signature": "reverse<A> arg1: Array<A> -> Array<A>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 626,
-        "end": 661
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::showList",
-        "name": "showList",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "List<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showList values: List<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 636,
-        "end": 660
-      },
-      "callable": {
-        "identity": "std/list::reverse",
-        "name": "reverse",
-        "module": "std/list",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "List<A>"
-          }
-        ],
-        "result": "List<A>",
-        "constraints": [],
-        "signature": "reverse<A> arg1: List<A> -> List<A>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 667,
-        "end": 695
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::showArray",
-        "name": "showArray",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "Array<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showArray values: Array<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 678,
-        "end": 694
-      },
-      "callable": {
-        "identity": "std/array::concat",
-        "name": "concat",
-        "module": "std/array",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Array<Array<A>>"
-          }
-        ],
-        "result": "Array<A>",
-        "constraints": [],
-        "signature": "concat<A> arg1: Array<Array<A>> -> Array<A>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 701,
-        "end": 728
-      },
-      "callable": {
-        "identity": "artifact/collection-compose::showList",
-        "name": "showList",
-        "module": "artifact/collection-compose",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "values",
-            "type": "List<Int>"
-          }
-        ],
-        "result": "String",
-        "constraints": [],
-        "signature": "showList values: List<Int> -> String",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 711,
-        "end": 727
-      },
-      "callable": {
-        "identity": "std/list::concat",
-        "name": "concat",
-        "module": "std/list",
-        "typeParameters": [
-          "A"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "List<List<A>>"
-          }
-        ],
-        "result": "List<A>",
-        "constraints": [],
-        "signature": "concat<A> arg1: List<List<A>> -> List<A>",
-        "remainingParameters": []
+        ]
       }
     }
   ],

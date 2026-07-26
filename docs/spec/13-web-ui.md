@@ -80,11 +80,10 @@ alias ElementProps<Action, C> = {
   draggable?: Bool,
   contentEditable?: Bool,
   onClick?: Action,
-  preventClickDefault?: Bool,
-  stopClickPropagation?: Bool,
-  onMouseDown?: MouseEvent -> EventAction<Action>,
-  onMouseUp?: MouseEvent -> EventAction<Action>,
-  onKeyDown?: KeyboardEvent -> EventAction<Action>,
+  onFocus?: Action,
+  onBlur?: Action,
+  onKeyDown?: KeyboardEvent -> Action,
+  onKeyUp?: KeyboardEvent -> Action,
   children: C
 }
 
@@ -105,11 +104,10 @@ alias ButtonProps<Action, C> = {
   disabled?: Bool,
   buttonType?: String,
   onClick?: Action,
-  preventClickDefault?: Bool,
-  stopClickPropagation?: Bool,
-  onMouseDown?: MouseEvent -> EventAction<Action>,
-  onMouseUp?: MouseEvent -> EventAction<Action>,
-  onKeyDown?: KeyboardEvent -> EventAction<Action>,
+  onFocus?: Action,
+  onBlur?: Action,
+  onKeyDown?: KeyboardEvent -> Action,
+  onKeyUp?: KeyboardEvent -> Action,
   children: C
 }
 
@@ -136,8 +134,10 @@ alias InputProps<Action> = {
   inputType?: String,
   onInput?: InputEvent -> Action,
   onChange?: ChangeEvent -> Action,
-  onMouseDown?: MouseEvent -> EventAction<Action>,
-  onKeyDown?: KeyboardEvent -> EventAction<Action>
+  onFocus?: Action,
+  onBlur?: Action,
+  onKeyDown?: KeyboardEvent -> Action,
+  onKeyUp?: KeyboardEvent -> Action
 }
 
 alias TextareaProps<Action> = {
@@ -160,7 +160,11 @@ alias TextareaProps<Action> = {
   required?: Bool,
   placeholder?: String,
   onInput?: InputEvent -> Action,
-  onChange?: ChangeEvent -> Action
+  onChange?: ChangeEvent -> Action,
+  onFocus?: Action,
+  onBlur?: Action,
+  onKeyDown?: KeyboardEvent -> Action,
+  onKeyUp?: KeyboardEvent -> Action
 }
 
 alias FormProps<Action, C> = {
@@ -178,6 +182,10 @@ alias FormProps<Action, C> = {
   draggable?: Bool,
   contentEditable?: Bool,
   onClick?: Action,
+  onFocus?: Action,
+  onBlur?: Action,
+  onKeyDown?: KeyboardEvent -> Action,
+  onKeyUp?: KeyboardEvent -> Action,
   onSubmit?: Action,
   children: C
 }
@@ -198,6 +206,10 @@ alias LabelProps<Action, C> = {
   contentEditable?: Bool,
   htmlFor?: String,
   onClick?: Action,
+  onFocus?: Action,
+  onBlur?: Action,
+  onKeyDown?: KeyboardEvent -> Action,
+  onKeyUp?: KeyboardEvent -> Action,
   children: C
 }
 
@@ -219,10 +231,10 @@ alias AnchorProps<Action, C> = {
   target?: LinkTarget,
   rel?: String,
   onClick?: Action,
-  preventClickDefault?: Bool,
-  stopClickPropagation?: Bool,
-  onMouseDown?: MouseEvent -> EventAction<Action>,
-  onMouseUp?: MouseEvent -> EventAction<Action>,
+  onFocus?: Action,
+  onBlur?: Action,
+  onKeyDown?: KeyboardEvent -> Action,
+  onKeyUp?: KeyboardEvent -> Action,
   children: C
 }
 
@@ -312,24 +324,7 @@ composition eventを個別に配線する必要はありません。
 native submitは変更しません。SSRは`onInput`、`onChange`、`onSubmit`をattributeへ出力しません。
 
 ```seseragi
-type EventAction<Action> =
-  | IgnoreEvent
-  | Dispatch Action
-  | DispatchPreventDefault Action
-  | DispatchStopPropagation Action
-  | DispatchPreventDefaultAndStop Action
-
-struct MouseEvent deriving Eq, Show {
-  button: Int,
-  clientX: Float,
-  clientY: Float,
-  altKey: Bool,
-  controlKey: Bool,
-  metaKey: Bool,
-  shiftKey: Bool
-}
-
-struct KeyboardEvent deriving Eq, Show {
+opaque struct KeyboardEvent {
   key: String,
   code: String,
   repeat: Bool,
@@ -340,13 +335,10 @@ struct KeyboardEvent deriving Eq, Show {
 }
 ```
 
-`onClick: action` はclick時にDispatch Actionを作ります。preventClickDefault / stopClickPropagationはclickの
-default actionとbubbleをAction enqueue前に制御します。onKeyDownのmapperはEventActionを直接返します。event
-snapshotはhost DOM Eventを保持せず、currentTarget、prototype、mutable fieldを公開しません。
-
-rendererはEventActionを同期的に決定してpreventDefault / stopPropagationを適用し、その後DispatchされたActionを13.9の
-queueへ渡します。mapperがthrowする概念はなく、pure function defectは通常runtime defectです。
-preventClickDefault / stopClickPropagationだけを指定してonClickがabsentなら動作せず、SES-L0101 Warningを出します。
+`onFocus: action`と`onBlur: action`は、bubbleする`focusin` / `focusout`をruntime内で正規化してActionをqueueへ
+渡します。`onKeyDown`と`onKeyUp`のmapperは、native keyboard eventから一度だけ読み取った`KeyboardEvent`を受け取り
+Actionを返します。snapshotはhost DOM Eventを保持せず、currentTarget、prototype、mutable fieldを公開しません。
+Actionとして`Task<Unit>`を使う場合も同じ契約です。SSRはこれらのhandlerをattributeへ出力しません。
 
 ## 13.5 safe tag、attribute、style、URL
 

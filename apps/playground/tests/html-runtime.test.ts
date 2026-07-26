@@ -35,6 +35,7 @@ import {
   img,
   type InputEvent,
   input,
+  type KeyboardEvent,
   label,
   legend,
   li,
@@ -67,7 +68,10 @@ import {
   ul,
   video,
 } from "../../../runtime/ts/src/html"
-import { createDomEventBindings } from "../src/runtime/browser-dom"
+import {
+  BROWSER_DOM_EVENT_BINDINGS,
+  createDomEventBindings,
+} from "../src/runtime/browser-dom"
 import { createImeInputCoordinator } from "../src/runtime/ime-input"
 
 describe("HTML browser runtime", () => {
@@ -452,6 +456,109 @@ describe("HTML browser runtime", () => {
     expect(Object.isFrozen(changeAction.snapshot)).toBe(true)
     expect(valueReads).toBe(2)
     expect(checkedReads).toBe(1)
+  })
+
+  test("dispatches focus and immutable keyboard snapshots", () => {
+    type Action = Readonly<{
+      readonly tag: string
+      readonly keyboard?: KeyboardEvent
+    }>
+    const rendered = renderForDom(
+      button<Action>({
+        onFocus: { tag: "Focused" },
+        onBlur: { tag: "Blurred" },
+        onKeyDown: (keyboard: KeyboardEvent) => ({
+          tag: "KeyDown",
+          keyboard,
+        }),
+        onKeyUp: (keyboard: KeyboardEvent) => ({ tag: "KeyUp", keyboard }),
+        children: "Keyboard target",
+      })
+    )
+
+    expect(rendered.html).toContain('data-ssrg-event-focus="0"')
+    expect(rendered.html).toContain('data-ssrg-event-blur="1"')
+    expect(rendered.html).toContain('data-ssrg-event-keydown="2"')
+    expect(rendered.html).toContain('data-ssrg-event-keyup="3"')
+    expect(messageFromDomEvent(rendered.eventHandlers.get("0")!, {})).toEqual({
+      tag: "Focused",
+    })
+    expect(messageFromDomEvent(rendered.eventHandlers.get("1")!, {})).toEqual({
+      tag: "Blurred",
+    })
+
+    let reads = 0
+    const nativeEvent = {
+      get key() {
+        reads += 1
+        return "Enter"
+      },
+      get code() {
+        reads += 1
+        return "Enter"
+      },
+      get repeat() {
+        reads += 1
+        return false
+      },
+      get altKey() {
+        reads += 1
+        return false
+      },
+      get ctrlKey() {
+        reads += 1
+        return true
+      },
+      get metaKey() {
+        reads += 1
+        return false
+      },
+      get shiftKey() {
+        reads += 1
+        return true
+      },
+    }
+    const action = messageFromDomEvent(
+      rendered.eventHandlers.get("2")!,
+      {},
+      nativeEvent
+    )
+    expect(action).toEqual({
+      tag: "KeyDown",
+      keyboard: {
+        key: "Enter",
+        code: "Enter",
+        repeat: false,
+        altKey: false,
+        controlKey: true,
+        metaKey: false,
+        shiftKey: true,
+      },
+    })
+    expect(Object.isFrozen(action.keyboard)).toBe(true)
+    expect(reads).toBe(7)
+    expect(renderToString(button({ onFocus: "Focus", children: "SSR" }))).toBe(
+      '<button type="button">SSR</button>'
+    )
+  })
+
+  test("normalizes bubbling focus and keyboard browser events", () => {
+    expect(BROWSER_DOM_EVENT_BINDINGS).toContainEqual({
+      nativeKind: "focusin",
+      handlerKind: "focus",
+    })
+    expect(BROWSER_DOM_EVENT_BINDINGS).toContainEqual({
+      nativeKind: "focusout",
+      handlerKind: "blur",
+    })
+    expect(BROWSER_DOM_EVENT_BINDINGS).toContainEqual({
+      nativeKind: "keydown",
+      handlerKind: "keydown",
+    })
+    expect(BROWSER_DOM_EVENT_BINDINGS).toContainEqual({
+      nativeKind: "keyup",
+      handlerKind: "keyup",
+    })
   })
 
   test("marks submit handlers for synchronous default prevention", () => {

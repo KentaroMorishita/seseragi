@@ -1,0 +1,27 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/web-keyboard-events"
+  ],
+  "sourcesContent": [
+    "import * as html from \"std/web/html\"\n\ntype Action =\n  | Focused\n  | Blurred\n  | KeyPressed String\n  | ControlKey\n\nfn keyAction event: html.KeyboardEvent -> Action =\n  if event.controlKey then ControlKey else KeyPressed event.key\n\nfn taskKey action: Task<Unit> -> event: html.KeyboardEvent -> Task<Unit> =\n  action\n\npub fn view -> html.Html<Action> =\n  html.button {\n    id: \"keyboard-target\",\n    onFocus: Focused,\n    onBlur: Blurred,\n    onKeyDown: keyAction,\n    onKeyUp: keyAction,\n    children: \"Keyboard target\"\n  }\n\npub fn taskView action: Task<Unit> -> html.Html<Task<Unit>> =\n  html.button {\n    onFocus: action,\n    onKeyDown: taskKey action,\n    children: \"Effect target\"\n  }\n"
+  ],
+  "names": [
+    "Action",
+    "Focused",
+    "Blurred",
+    "KeyPressed",
+    "ControlKey",
+    "keyAction",
+    "KeyPressed",
+    "taskKey",
+    "view",
+    "button",
+    "taskView",
+    "button",
+    "taskKey"
+  ],
+  "mappings": ";;;AAEAA;;;;;AACIC;AACAC;AACAC;AACAC;AAEJC;AAGAE;AAGAC;AAUAE"
+}

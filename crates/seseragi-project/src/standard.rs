@@ -381,6 +381,19 @@ fn web_html_interface() -> ModuleInterface {
                 required("checked", named("Bool")),
             ],
         ),
+        record_type_export(
+            "std/web/html",
+            "KeyboardEvent",
+            [
+                required("key", named("String")),
+                required("code", named("String")),
+                required("repeat", named("Bool")),
+                required("altKey", named("Bool")),
+                required("controlKey", named("Bool")),
+                required("metaKey", named("Bool")),
+                required("shiftKey", named("Bool")),
+            ],
+        ),
         adt_type_export("std/web/html", "HtmlBuildError", []),
         constructor_export(
             "std/web/html",
@@ -930,6 +943,16 @@ fn common_html_props() -> Vec<InterfaceRecordField> {
         optional("draggable", named("Bool")),
         optional("contentEditable", named("Bool")),
         optional("onClick", named("Action")),
+        optional("onFocus", named("Action")),
+        optional("onBlur", named("Action")),
+        optional(
+            "onKeyDown",
+            function_type(vec![html_event_type("KeyboardEvent")], named("Action")),
+        ),
+        optional(
+            "onKeyUp",
+            function_type(vec![html_event_type("KeyboardEvent")], named("Action")),
+        ),
     ]
 }
 
@@ -1282,6 +1305,55 @@ mod tests {
         assert!(fields.iter().any(|field| field.name == "onChange"));
         assert!(fields.iter().any(|field| field.name == "required"));
         assert!(fields.iter().any(|field| field.name == "inputType"));
+    }
+
+    #[test]
+    fn exposes_focus_and_keyboard_events_from_the_shared_html_interface() {
+        let target = standard_module_target("std/web/html").unwrap();
+        let interface = target.interface();
+
+        let keyboard_event = interface
+            .exports
+            .iter()
+            .find(|export| export.namespace == "type" && export.name == "KeyboardEvent")
+            .unwrap();
+        assert_eq!(
+            keyboard_event.declaration_kind.as_deref(),
+            Some("opaque-struct")
+        );
+        let Some(InterfaceType::Record { fields, .. }) = &keyboard_event.representation else {
+            panic!("KeyboardEvent must expose only immutable snapshot fields");
+        };
+        assert_eq!(
+            fields
+                .iter()
+                .map(|field| field.name.as_str())
+                .collect::<Vec<_>>(),
+            [
+                "key",
+                "code",
+                "repeat",
+                "altKey",
+                "controlKey",
+                "metaKey",
+                "shiftKey",
+            ]
+        );
+
+        let button = interface
+            .exports
+            .iter()
+            .find(|export| export.namespace == "value" && export.name == "button")
+            .unwrap();
+        let InterfaceType::Function { parameter, .. } = &button.scheme.type_ref else {
+            panic!("button must be callable");
+        };
+        let InterfaceType::Record { fields, .. } = parameter.as_ref() else {
+            panic!("button must accept a props record");
+        };
+        for name in ["onFocus", "onBlur", "onKeyDown", "onKeyUp"] {
+            assert!(fields.iter().any(|field| field.name == name));
+        }
     }
 
     #[test]

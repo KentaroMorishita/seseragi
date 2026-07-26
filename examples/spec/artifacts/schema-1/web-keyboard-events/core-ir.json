@@ -1,0 +1,968 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/web-keyboard-events",
+  "externalTypeBindings": [
+    {
+      "spelling": "Style",
+      "canonical": "std/web/html::Style",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Style"
+      }
+    },
+    {
+      "spelling": "Attribute",
+      "canonical": "std/web/html::Attribute",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Attribute"
+      }
+    },
+    {
+      "spelling": "html.KeyboardEvent",
+      "canonical": "std/web/html::KeyboardEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "KeyboardEvent"
+      }
+    },
+    {
+      "spelling": "html.Html",
+      "canonical": "std/web/html::Html",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Html"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 36
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Html",
+          "local": "html.Html",
+          "canonical": "std/web/html::Html",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "KeyboardEvent",
+          "local": "html.KeyboardEvent",
+          "canonical": "std/web/html::KeyboardEvent",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "button",
+          "local": "html.button",
+          "canonical": "std/web/html::button",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        }
+      ]
+    }
+  ],
+  "adts": [
+    {
+      "symbol": "artifact/web-keyboard-events::Action",
+      "name": "Action",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/web-keyboard-events::Focused",
+          "name": "Focused",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 56,
+            "end": 63
+          }
+        },
+        {
+          "symbol": "artifact/web-keyboard-events::Blurred",
+          "name": "Blurred",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 68,
+            "end": 75
+          }
+        },
+        {
+          "symbol": "artifact/web-keyboard-events::KeyPressed",
+          "name": "KeyPressed",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 80,
+            "end": 90
+          }
+        },
+        {
+          "symbol": "artifact/web-keyboard-events::ControlKey",
+          "name": "ControlKey",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 102,
+            "end": 112
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 38,
+        "end": 112
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/web-keyboard-events::keyAction",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 114,
+        "end": 228
+      },
+      "parameters": [
+        {
+          "id": "event",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "html.KeyboardEvent",
+            "canonical": "std/web/html::KeyboardEvent",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "variable",
+            "name": "event",
+            "type": {
+              "kind": "external-named",
+              "name": "html.KeyboardEvent",
+              "canonical": "std/web/html::KeyboardEvent",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 170,
+              "end": 175
+            }
+          },
+          "field": "controlKey",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 170,
+            "end": 186
+          }
+        },
+        "thenBranch": {
+          "kind": "variable",
+          "name": "artifact/web-keyboard-events::ControlKey",
+          "type": {
+            "kind": "named",
+            "name": "Action",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 192,
+            "end": 202
+          }
+        },
+        "elseBranch": {
+          "kind": "call",
+          "callee": "artifact/web-keyboard-events::KeyPressed",
+          "arguments": [
+            {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "variable",
+                "name": "event",
+                "type": {
+                  "kind": "external-named",
+                  "name": "html.KeyboardEvent",
+                  "canonical": "std/web/html::KeyboardEvent",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 219,
+                  "end": 224
+                }
+              },
+              "field": "key",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 219,
+                "end": 228
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Action",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 208,
+            "end": 228
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Action",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 167,
+          "end": 228
+        }
+      }
+    },
+    {
+      "symbol": "artifact/web-keyboard-events::taskKey",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 230,
+        "end": 313
+      },
+      "parameters": [
+        {
+          "id": "action",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "event",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "html.KeyboardEvent",
+            "canonical": "std/web/html::KeyboardEvent",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "action",
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 307,
+          "end": 313
+        }
+      }
+    },
+    {
+      "symbol": "artifact/web-keyboard-events::view",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 315,
+        "end": 521
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::button",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "id",
+                "value": {
+                  "kind": "string",
+                  "value": "keyboard-target",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 374,
+                    "end": 391
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 370,
+                  "end": 391
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onFocus",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-keyboard-events::Focused",
+                  "type": {
+                    "kind": "named",
+                    "name": "Action",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 406,
+                    "end": 413
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 397,
+                  "end": 413
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onBlur",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-keyboard-events::Blurred",
+                  "type": {
+                    "kind": "named",
+                    "name": "Action",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 427,
+                    "end": 434
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 419,
+                  "end": 434
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onKeyDown",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-keyboard-events::keyAction",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.KeyboardEvent",
+                      "canonical": "std/web/html::KeyboardEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 451,
+                    "end": 460
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 440,
+                  "end": 460
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onKeyUp",
+                "value": {
+                  "kind": "variable",
+                  "name": "artifact/web-keyboard-events::keyAction",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.KeyboardEvent",
+                      "canonical": "std/web/html::KeyboardEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 475,
+                    "end": 484
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 466,
+                  "end": 484
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "string",
+                  "value": "Keyboard target",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 500,
+                    "end": 517
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 490,
+                  "end": 517
+                }
+              }
+            ],
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "id",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onBlur",
+                  "type": {
+                    "kind": "named",
+                    "name": "Action",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onFocus",
+                  "type": {
+                    "kind": "named",
+                    "name": "Action",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onKeyDown",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.KeyboardEvent",
+                      "canonical": "std/web/html::KeyboardEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    }
+                  }
+                },
+                {
+                  "name": "onKeyUp",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.KeyboardEvent",
+                      "canonical": "std/web/html::KeyboardEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    }
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 364,
+              "end": 521
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "IntoChildren",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Action",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/web/html::IntoChildren<String>"
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 352,
+          "end": 521
+        }
+      }
+    },
+    {
+      "symbol": "artifact/web-keyboard-events::taskView",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 523,
+        "end": 686
+      },
+      "parameters": [
+        {
+          "id": "action",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::button",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "onFocus",
+                "value": {
+                  "kind": "variable",
+                  "name": "action",
+                  "type": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 614,
+                    "end": 620
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 605,
+                  "end": 620
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onKeyDown",
+                "value": {
+                  "kind": "call",
+                  "callee": "artifact/web-keyboard-events::taskKey",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "action",
+                      "type": {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 645,
+                        "end": 651
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.KeyboardEvent",
+                      "canonical": "std/web/html::KeyboardEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 637,
+                    "end": 651
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 626,
+                  "end": 651
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "string",
+                  "value": "Effect target",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 667,
+                    "end": 682
+                  }
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 657,
+                  "end": 682
+                }
+              }
+            ],
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "onFocus",
+                  "type": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "onKeyDown",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "html.KeyboardEvent",
+                      "canonical": "std/web/html::KeyboardEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 599,
+              "end": 686
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "IntoChildren",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/web/html::IntoChildren<String>"
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 587,
+          "end": 686
+        }
+      }
+    }
+  ]
+}

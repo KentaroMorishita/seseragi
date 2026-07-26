@@ -1,0 +1,653 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "imports": [
+    {
+      "specifier": "std/web/html",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 7,
+            "end": 8
+          },
+          "alias": "html",
+          "aliasSpan": {
+            "start": 12,
+            "end": 16
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 36
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "private",
+      "name": "Action",
+      "nameSpan": {
+        "start": 43,
+        "end": 49
+      },
+      "variants": [
+        {
+          "name": "Focused",
+          "nameSpan": {
+            "start": 56,
+            "end": 63
+          },
+          "span": {
+            "start": 54,
+            "end": 63
+          }
+        },
+        {
+          "name": "Blurred",
+          "nameSpan": {
+            "start": 68,
+            "end": 75
+          },
+          "span": {
+            "start": 66,
+            "end": 75
+          }
+        },
+        {
+          "name": "KeyPressed",
+          "nameSpan": {
+            "start": 80,
+            "end": 90
+          },
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 91,
+              "end": 97
+            }
+          },
+          "span": {
+            "start": 78,
+            "end": 97
+          }
+        },
+        {
+          "name": "ControlKey",
+          "nameSpan": {
+            "start": 102,
+            "end": 112
+          },
+          "span": {
+            "start": 100,
+            "end": 112
+          }
+        }
+      ],
+      "span": {
+        "start": 38,
+        "end": 112
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "keyAction",
+      "nameSpan": {
+        "start": 117,
+        "end": 126
+      },
+      "parameters": [
+        {
+          "name": "event",
+          "nameSpan": {
+            "start": 127,
+            "end": 132
+          },
+          "type": {
+            "kind": "named",
+            "name": "html.KeyboardEvent",
+            "span": {
+              "start": 134,
+              "end": 152
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Action",
+        "span": {
+          "start": 156,
+          "end": 162
+        }
+      },
+      "body": {
+        "kind": "if",
+        "condition": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "event",
+            "span": {
+              "start": 170,
+              "end": 175
+            }
+          },
+          "field": "controlKey",
+          "fieldSpan": {
+            "start": 176,
+            "end": 186
+          },
+          "span": {
+            "start": 170,
+            "end": 186
+          }
+        },
+        "thenBranch": {
+          "kind": "name",
+          "name": "ControlKey",
+          "span": {
+            "start": 192,
+            "end": 202
+          }
+        },
+        "elseBranch": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "KeyPressed",
+            "span": {
+              "start": 208,
+              "end": 218
+            }
+          },
+          "argument": {
+            "kind": "member",
+            "receiver": {
+              "kind": "name",
+              "name": "event",
+              "span": {
+                "start": 219,
+                "end": 224
+              }
+            },
+            "field": "key",
+            "fieldSpan": {
+              "start": 225,
+              "end": 228
+            },
+            "span": {
+              "start": 219,
+              "end": 228
+            }
+          },
+          "span": {
+            "start": 208,
+            "end": 228
+          }
+        },
+        "span": {
+          "start": 167,
+          "end": 228
+        }
+      },
+      "span": {
+        "start": 114,
+        "end": 228
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "taskKey",
+      "nameSpan": {
+        "start": 233,
+        "end": 240
+      },
+      "parameters": [
+        {
+          "name": "action",
+          "nameSpan": {
+            "start": 241,
+            "end": 247
+          },
+          "type": {
+            "kind": "named",
+            "name": "Task",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Unit",
+                "span": {
+                  "start": 254,
+                  "end": 258
+                }
+              }
+            ],
+            "span": {
+              "start": 249,
+              "end": 259
+            }
+          }
+        },
+        {
+          "name": "event",
+          "nameSpan": {
+            "start": 263,
+            "end": 268
+          },
+          "type": {
+            "kind": "named",
+            "name": "html.KeyboardEvent",
+            "span": {
+              "start": 270,
+              "end": 288
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Task",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 297,
+              "end": 301
+            }
+          }
+        ],
+        "span": {
+          "start": 292,
+          "end": 302
+        }
+      },
+      "body": {
+        "kind": "name",
+        "name": "action",
+        "span": {
+          "start": 307,
+          "end": 313
+        }
+      },
+      "span": {
+        "start": 230,
+        "end": 313
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "view",
+      "nameSpan": {
+        "start": 322,
+        "end": 326
+      },
+      "parameters": [],
+      "returnType": {
+        "kind": "named",
+        "name": "html.Html",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Action",
+            "span": {
+              "start": 340,
+              "end": 346
+            }
+          }
+        ],
+        "span": {
+          "start": 330,
+          "end": 347
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "html",
+            "span": {
+              "start": 352,
+              "end": 356
+            }
+          },
+          "field": "button",
+          "fieldSpan": {
+            "start": 357,
+            "end": 363
+          },
+          "span": {
+            "start": 352,
+            "end": 363
+          }
+        },
+        "argument": {
+          "kind": "record",
+          "items": [
+            {
+              "kind": "field",
+              "name": "id",
+              "nameSpan": {
+                "start": 370,
+                "end": 372
+              },
+              "value": {
+                "kind": "string",
+                "raw": "\"keyboard-target\"",
+                "span": {
+                  "start": 374,
+                  "end": 391
+                }
+              },
+              "span": {
+                "start": 370,
+                "end": 391
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onFocus",
+              "nameSpan": {
+                "start": 397,
+                "end": 404
+              },
+              "value": {
+                "kind": "name",
+                "name": "Focused",
+                "span": {
+                  "start": 406,
+                  "end": 413
+                }
+              },
+              "span": {
+                "start": 397,
+                "end": 413
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onBlur",
+              "nameSpan": {
+                "start": 419,
+                "end": 425
+              },
+              "value": {
+                "kind": "name",
+                "name": "Blurred",
+                "span": {
+                  "start": 427,
+                  "end": 434
+                }
+              },
+              "span": {
+                "start": 419,
+                "end": 434
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onKeyDown",
+              "nameSpan": {
+                "start": 440,
+                "end": 449
+              },
+              "value": {
+                "kind": "name",
+                "name": "keyAction",
+                "span": {
+                  "start": 451,
+                  "end": 460
+                }
+              },
+              "span": {
+                "start": 440,
+                "end": 460
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onKeyUp",
+              "nameSpan": {
+                "start": 466,
+                "end": 473
+              },
+              "value": {
+                "kind": "name",
+                "name": "keyAction",
+                "span": {
+                  "start": 475,
+                  "end": 484
+                }
+              },
+              "span": {
+                "start": 466,
+                "end": 484
+              }
+            },
+            {
+              "kind": "field",
+              "name": "children",
+              "nameSpan": {
+                "start": 490,
+                "end": 498
+              },
+              "value": {
+                "kind": "string",
+                "raw": "\"Keyboard target\"",
+                "span": {
+                  "start": 500,
+                  "end": 517
+                }
+              },
+              "span": {
+                "start": 490,
+                "end": 517
+              }
+            }
+          ],
+          "span": {
+            "start": 364,
+            "end": 521
+          }
+        },
+        "span": {
+          "start": 352,
+          "end": 521
+        }
+      },
+      "span": {
+        "start": 315,
+        "end": 521
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "taskView",
+      "nameSpan": {
+        "start": 530,
+        "end": 538
+      },
+      "parameters": [
+        {
+          "name": "action",
+          "nameSpan": {
+            "start": 539,
+            "end": 545
+          },
+          "type": {
+            "kind": "named",
+            "name": "Task",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Unit",
+                "span": {
+                  "start": 552,
+                  "end": 556
+                }
+              }
+            ],
+            "span": {
+              "start": 547,
+              "end": 557
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "html.Html",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Task",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Unit",
+                "span": {
+                  "start": 576,
+                  "end": 580
+                }
+              }
+            ],
+            "span": {
+              "start": 571,
+              "end": 581
+            }
+          }
+        ],
+        "span": {
+          "start": 561,
+          "end": 582
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "html",
+            "span": {
+              "start": 587,
+              "end": 591
+            }
+          },
+          "field": "button",
+          "fieldSpan": {
+            "start": 592,
+            "end": 598
+          },
+          "span": {
+            "start": 587,
+            "end": 598
+          }
+        },
+        "argument": {
+          "kind": "record",
+          "items": [
+            {
+              "kind": "field",
+              "name": "onFocus",
+              "nameSpan": {
+                "start": 605,
+                "end": 612
+              },
+              "value": {
+                "kind": "name",
+                "name": "action",
+                "span": {
+                  "start": 614,
+                  "end": 620
+                }
+              },
+              "span": {
+                "start": 605,
+                "end": 620
+              }
+            },
+            {
+              "kind": "field",
+              "name": "onKeyDown",
+              "nameSpan": {
+                "start": 626,
+                "end": 635
+              },
+              "value": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "taskKey",
+                  "span": {
+                    "start": 637,
+                    "end": 644
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "action",
+                  "span": {
+                    "start": 645,
+                    "end": 651
+                  }
+                },
+                "span": {
+                  "start": 637,
+                  "end": 651
+                }
+              },
+              "span": {
+                "start": 626,
+                "end": 651
+              }
+            },
+            {
+              "kind": "field",
+              "name": "children",
+              "nameSpan": {
+                "start": 657,
+                "end": 665
+              },
+              "value": {
+                "kind": "string",
+                "raw": "\"Effect target\"",
+                "span": {
+                  "start": 667,
+                  "end": 682
+                }
+              },
+              "span": {
+                "start": 657,
+                "end": 682
+              }
+            }
+          ],
+          "span": {
+            "start": 599,
+            "end": 686
+          }
+        },
+        "span": {
+          "start": 587,
+          "end": 686
+        }
+      },
+      "span": {
+        "start": 523,
+        "end": 686
+      }
+    }
+  ]
+}

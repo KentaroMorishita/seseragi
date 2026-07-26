@@ -1,0 +1,300 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/web-keyboard-events",
+  "runtimeRequirements": [
+    "web.html.keyboard-event-type",
+    "effect.core.type",
+    "web.html.type",
+    "core.adt",
+    "core.string",
+    "core.bool",
+    "core.unit",
+    "web.html.button"
+  ],
+  "imports": [
+    {
+      "feature": "web.html.button",
+      "local": "_ssrg_html_button"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "web.html.keyboard-event-type",
+      "local": "KeyboardEvent"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "web.html.type",
+      "local": "Html"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "Action",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Focused",
+          "tag": "Focused",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 56,
+            "end": 63
+          }
+        },
+        {
+          "exported": false,
+          "name": "Blurred",
+          "tag": "Blurred",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 68,
+            "end": 75
+          }
+        },
+        {
+          "exported": false,
+          "name": "KeyPressed",
+          "tag": "KeyPressed",
+          "payload": {
+            "kind": "string"
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 80,
+            "end": 90
+          }
+        },
+        {
+          "exported": false,
+          "name": "ControlKey",
+          "tag": "ControlKey",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 102,
+            "end": 112
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 38,
+        "end": 112
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "keyAction",
+      "parameters": [
+        {
+          "name": "event",
+          "type": "KeyboardEvent",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "conditional",
+        "condition": {
+          "kind": "field-access",
+          "receiver": {
+            "kind": "identifier",
+            "name": "event"
+          },
+          "field": "controlKey"
+        },
+        "thenBranch": {
+          "kind": "identifier",
+          "name": "ControlKey"
+        },
+        "elseBranch": {
+          "kind": "call",
+          "callee": "KeyPressed",
+          "arguments": [
+            {
+              "kind": "field-access",
+              "receiver": {
+                "kind": "identifier",
+                "name": "event"
+              },
+              "field": "key"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 114,
+        "end": 228
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "taskKey",
+      "parameters": [
+        {
+          "name": "action",
+          "type": "Effect<{  }, never, undefined>",
+          "implicit": false
+        },
+        {
+          "name": "event",
+          "type": "KeyboardEvent",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "action"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 230,
+        "end": 313
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "view",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_button",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "id",
+                "value": {
+                  "kind": "string",
+                  "value": "keyboard-target"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onFocus",
+                "value": {
+                  "kind": "identifier",
+                  "name": "Focused"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onBlur",
+                "value": {
+                  "kind": "identifier",
+                  "name": "Blurred"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onKeyDown",
+                "value": {
+                  "kind": "identifier",
+                  "name": "keyAction"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onKeyUp",
+                "value": {
+                  "kind": "identifier",
+                  "name": "keyAction"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "string",
+                  "value": "Keyboard target"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 315,
+        "end": 521
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "taskView",
+      "parameters": [
+        {
+          "name": "action",
+          "type": "Effect<{  }, never, undefined>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_html_button",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "onFocus",
+                "value": {
+                  "kind": "identifier",
+                  "name": "action"
+                }
+              },
+              {
+                "kind": "field",
+                "name": "onKeyDown",
+                "value": {
+                  "kind": "call",
+                  "callee": "taskKey",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "action"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "string",
+                  "value": "Effect target"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 523,
+        "end": 686
+      }
+    }
+  ]
+}

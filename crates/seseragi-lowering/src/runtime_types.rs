@@ -98,6 +98,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "ChangeEvent",
     },
     RuntimeTypeImport {
+        canonical: "std/web/html::KeyboardEvent",
+        runtime_feature: "web.html.keyboard-event-type",
+        module: "@seseragi/runtime/html",
+        export_name: "KeyboardEvent",
+    },
+    RuntimeTypeImport {
         canonical: "std/web/dom::Dom",
         runtime_feature: "web.dom.service",
         module: "@seseragi/runtime/dom",

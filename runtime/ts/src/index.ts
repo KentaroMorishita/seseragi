@@ -148,6 +148,7 @@ export type {
   Html,
   HtmlBuildError,
   InputEvent,
+  KeyboardEvent,
   Style,
   Tag,
 } from "./html"

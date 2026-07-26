@@ -47,6 +47,17 @@ export type ChangeEvent = Readonly<{
   readonly checked: boolean
 }>
 
+/** Immutable keyboard snapshot. It never retains the host DOM event. */
+export type KeyboardEvent = Readonly<{
+  readonly key: string
+  readonly code: string
+  readonly repeat: boolean
+  readonly altKey: boolean
+  readonly controlKey: boolean
+  readonly metaKey: boolean
+  readonly shiftKey: boolean
+}>
+
 export type HtmlBuildError =
   | Readonly<{ readonly tag: "InvalidTagName"; readonly value: string }>
   | Readonly<{ readonly tag: "InvalidAttributeName"; readonly value: string }>
@@ -72,6 +83,16 @@ export type Attribute = Readonly<{
 
 export type DomEventHandler<Action> =
   | Readonly<{ readonly kind: "click"; readonly message: Action }>
+  | Readonly<{ readonly kind: "focus"; readonly message: Action }>
+  | Readonly<{ readonly kind: "blur"; readonly message: Action }>
+  | Readonly<{
+      readonly kind: "keydown"
+      readonly map: (event: KeyboardEvent) => Action
+    }>
+  | Readonly<{
+      readonly kind: "keyup"
+      readonly map: (event: KeyboardEvent) => Action
+    }>
   | Readonly<{
       readonly kind: "input"
       readonly map: (event: InputEvent) => Action
@@ -229,6 +250,20 @@ type TagFunction = {
     props: Readonly<{ onChange: (event: ChangeEvent) => Action }> &
       Readonly<Record<string, unknown>>
   ): Html<Action>
+  <Action>(
+    props: Readonly<{ onFocus: Action }> & Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{ onBlur: Action }> & Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{ onKeyDown: (event: KeyboardEvent) => Action }> &
+      Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{ onKeyUp: (event: KeyboardEvent) => Action }> &
+      Readonly<Record<string, unknown>>
+  ): Html<Action>
   <Action = never>(props: unknown): Html<Action>
 }
 
@@ -381,6 +416,27 @@ function registerDomEvents<Action>(
   if (Object.hasOwn(props, "onClick")) {
     register("click", { kind: "click", message: props.onClick as Action })
   }
+  if (Object.hasOwn(props, "onFocus")) {
+    register("focus", { kind: "focus", message: props.onFocus as Action })
+  }
+  if (Object.hasOwn(props, "onBlur")) {
+    register("blur", { kind: "blur", message: props.onBlur as Action })
+  }
+  if (Object.hasOwn(props, "onKeyDown")) {
+    register("keydown", {
+      kind: "keydown",
+      map: expectEventMapper<KeyboardEvent, Action>(
+        "onKeyDown",
+        props.onKeyDown
+      ),
+    })
+  }
+  if (Object.hasOwn(props, "onKeyUp")) {
+    register("keyup", {
+      kind: "keyup",
+      map: expectEventMapper<KeyboardEvent, Action>("onKeyUp", props.onKeyUp),
+    })
+  }
   if (Object.hasOwn(props, "onInput")) {
     register("input", {
       kind: "input",
@@ -471,7 +527,16 @@ function renderAttributes(
     "contenteditable",
     props.contentEditable
   )
-  for (const kind of ["click", "input", "change", "submit"] as const) {
+  for (const kind of [
+    "click",
+    "focus",
+    "blur",
+    "keydown",
+    "keyup",
+    "input",
+    "change",
+    "submit",
+  ] as const) {
     const id = eventMarkers[kind]
     if (id !== undefined) {
       attributes.push(`data-ssrg-event-${kind}="${id}"`)
@@ -575,12 +640,18 @@ function renderAttributes(
 
 export function messageFromDomEvent<Action>(
   handler: DomEventHandler<Action>,
-  target: unknown
+  target: unknown,
+  event: unknown = target
 ): Action {
   switch (handler.kind) {
     case "click":
+    case "focus":
+    case "blur":
     case "submit":
       return handler.message
+    case "keydown":
+    case "keyup":
+      return handler.map(keyboardEventSnapshot(event))
     case "input":
       return handler.map(
         Object.freeze({ value: eventTargetString("value", target) })
@@ -593,6 +664,18 @@ export function messageFromDomEvent<Action>(
         })
       )
   }
+}
+
+function keyboardEventSnapshot(event: unknown): KeyboardEvent {
+  return Object.freeze({
+    key: eventTargetString("key", event),
+    code: eventTargetString("code", event),
+    repeat: eventTargetBoolean("repeat", event),
+    altKey: eventTargetBoolean("altKey", event),
+    controlKey: eventTargetBoolean("ctrlKey", event),
+    metaKey: eventTargetBoolean("metaKey", event),
+    shiftKey: eventTargetBoolean("shiftKey", event),
+  })
 }
 
 export function domEventPreventsDefault(

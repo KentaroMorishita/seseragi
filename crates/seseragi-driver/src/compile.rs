@@ -510,6 +510,62 @@ pub fn view draft: String -> checked: Bool -> html.Html<Action> =
     }
 
     #[test]
+    fn compiles_focus_and_keyboard_actions_through_the_runtime_abi() {
+        let source = r#"import * as html from "std/web/html"
+
+type Action =
+  | Focused
+  | Blurred
+  | KeyPressed String
+  | ControlKey
+
+fn keyAction event: html.KeyboardEvent -> Action =
+  if event.controlKey then ControlKey else KeyPressed event.key
+
+fn taskKey action: Task<Unit> -> event: html.KeyboardEvent -> Task<Unit> =
+  action
+
+pub fn view -> html.Html<Action> =
+  html.button {
+    onFocus: Focused,
+    onBlur: Blurred,
+    onKeyDown: keyAction,
+    onKeyUp: keyAction,
+    children: "Keyboard target"
+  }
+
+pub fn taskView action: Task<Unit> -> html.Html<Task<Unit>> =
+  html.button {
+    onFocus: action,
+    onKeyDown: taskKey action,
+    children: "Effect target"
+  }
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-keyboard-events",
+            source,
+        ))
+        .expect("focus and keyboard actions should compile");
+
+        assert!(compiled.generated.typescript.contains("type KeyboardEvent"));
+        assert!(compiled.generated.typescript.contains("_ssrg_html_button"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("\"onFocus\": Focused"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("\"onKeyDown\": keyAction"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("(event: KeyboardEvent)"));
+        assert!(!compiled.generated.typescript.contains("std/web/html"));
+    }
+
+    #[test]
     fn compiles_form_table_and_interactive_tags_with_tag_specific_props() {
         let source = r#"import * as html from "std/web/html"
 

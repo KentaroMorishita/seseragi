@@ -49,6 +49,14 @@
       }
     },
     {
+      "spelling": "KeyboardEvent",
+      "canonical": "std/web/html::KeyboardEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "KeyboardEvent"
+      }
+    },
+    {
       "spelling": "dom.Dom",
       "canonical": "std/web/dom::Dom",
       "provider": {

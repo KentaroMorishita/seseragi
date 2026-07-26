@@ -49,6 +49,14 @@
       }
     },
     {
+      "spelling": "KeyboardEvent",
+      "canonical": "std/web/html::KeyboardEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "KeyboardEvent"
+      }
+    },
+    {
       "spelling": "Signal",
       "canonical": "std/signal::Signal",
       "provider": {
@@ -479,7 +487,7 @@
               "symbol": "fixture/feature-module-composition::todo/feature::DraftChanged",
               "argument": {
                 "kind": "binding",
-                "symbol": 38,
+                "symbol": 39,
                 "name": "value",
                 "type": {
                   "kind": "named",

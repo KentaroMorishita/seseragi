@@ -1343,6 +1343,18 @@
       "import": null
     },
     {
+      "id": "web.html.keyboard-event-type",
+      "kind": "value-representation",
+      "typescript": "type KeyboardEvent",
+      "boundary": "immutable { key: String, code: String, repeat: Bool, altKey: Bool, controlKey: Bool, metaKey: Bool, shiftKey: Bool } snapshot without a host DOM Event",
+      "typeIdentity": "std/web/html::KeyboardEvent",
+      "typeImport": {
+        "module": "@seseragi/runtime/html",
+        "export": "KeyboardEvent"
+      },
+      "import": null
+    },
+    {
       "id": "web.html.style",
       "kind": "runtime-helper",
       "typescript": "function",
