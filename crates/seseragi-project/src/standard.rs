@@ -366,6 +366,8 @@ fn web_html_interface() -> ModuleInterface {
     let mut exports = vec![
         type_export("std/web/html", "Html", 1, "opaque-type"),
         type_export("std/web/html", "Style", 0, "opaque-type"),
+        type_export("std/web/html", "Tag", 0, "opaque-type"),
+        type_export("std/web/html", "Attribute", 0, "opaque-type"),
         record_type_export(
             "std/web/html",
             "InputEvent",
@@ -378,6 +380,28 @@ fn web_html_interface() -> ModuleInterface {
                 required("value", named("String")),
                 required("checked", named("Bool")),
             ],
+        ),
+        adt_type_export("std/web/html", "HtmlBuildError", []),
+        constructor_export(
+            "std/web/html",
+            "HtmlBuildError",
+            "InvalidTagName",
+            [],
+            Some(named("String")),
+        ),
+        constructor_export(
+            "std/web/html",
+            "HtmlBuildError",
+            "InvalidAttributeName",
+            [],
+            Some(named("String")),
+        ),
+        constructor_export(
+            "std/web/html",
+            "HtmlBuildError",
+            "ReservedAttributeName",
+            [],
+            Some(named("String")),
         ),
         trait_export("std/web/html", "IntoChildren", ["C", "Action"]),
         trait_export("std/web/html", "StyleRecord", ["R"]),
@@ -392,6 +416,22 @@ fn web_html_interface() -> ModuleInterface {
             }],
             vec![named("R")],
             named("Style"),
+        ),
+        function_export(
+            "std/web/html",
+            "customTag",
+            [],
+            Vec::new(),
+            vec![named("String")],
+            named_with("Either", vec![named("HtmlBuildError"), named("Tag")]),
+        ),
+        function_export(
+            "std/web/html",
+            "attribute",
+            [],
+            Vec::new(),
+            vec![named("String"), named("String")],
+            named_with("Either", vec![named("HtmlBuildError"), named("Attribute")]),
         ),
         function_export(
             "std/web/html",
@@ -470,6 +510,18 @@ fn web_html_interface() -> ModuleInterface {
     exports.push(constrained_html_function("td", table_cell_props()));
     exports.push(constrained_html_function("details", open_element_props()));
     exports.push(constrained_html_function("dialog", open_element_props()));
+    exports.push(function_export(
+        "std/web/html",
+        "custom",
+        ["Action", "C"],
+        vec![InterfaceConstraint {
+            name: "IntoChildren".to_owned(),
+            trait_identity: Some("std/web/html::trait(IntoChildren)".to_owned()),
+            arguments: vec![named("C"), named("Action")],
+        }],
+        vec![named("Tag"), element_props()],
+        html(named("Action")),
+    ));
     for renderer in ["renderToString", "renderDocument"] {
         exports.push(function_export(
             "std/web/html",
@@ -657,298 +709,248 @@ fn fragment_parameter() -> InterfaceType {
 }
 
 fn element_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("onClick", named("Action")),
-        required("children", named("C")),
-    ])
+    with_children(common_html_props())
 }
 
 fn void_element_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("onClick", named("Action")),
-    ])
+    record_vec(common_html_props())
 }
 
 fn link_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("onClick", named("Action")),
-        required("rel", named("String")),
-        required("href", named("String")),
-    ])
+    record_vec(with_fields(
+        common_html_props(),
+        [
+            required("rel", named("String")),
+            required("href", named("String")),
+        ],
+    ))
 }
 
 fn anchor_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("onClick", named("Action")),
-        required("href", named("String")),
-        optional("target", named("String")),
-        optional("rel", named("String")),
-        optional("download", named("Bool")),
-        required("children", named("C")),
-    ])
+    with_children(with_fields(
+        common_html_props(),
+        [
+            required("href", named("String")),
+            optional("target", named("String")),
+            optional("rel", named("String")),
+            optional("download", named("Bool")),
+        ],
+    ))
 }
 
 fn image_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("onClick", named("Action")),
-        required("src", named("String")),
-        required("alt", named("String")),
-        optional("width", named("Int")),
-        optional("height", named("Int")),
-        optional("loading", named("String")),
-    ])
+    record_vec(with_fields(
+        common_html_props(),
+        [
+            required("src", named("String")),
+            required("alt", named("String")),
+            optional("width", named("Int")),
+            optional("height", named("Int")),
+            optional("loading", named("String")),
+        ],
+    ))
 }
 
 fn source_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("onClick", named("Action")),
-        required("src", named("String")),
-        optional("media", named("String")),
-        optional("mimeType", named("String")),
-    ])
+    record_vec(with_fields(
+        common_html_props(),
+        [
+            required("src", named("String")),
+            optional("media", named("String")),
+            optional("mimeType", named("String")),
+        ],
+    ))
 }
 
 fn video_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("onClick", named("Action")),
-        optional("src", named("String")),
-        optional("width", named("Int")),
-        optional("height", named("Int")),
-        required("children", named("C")),
-    ])
+    with_children(with_fields(
+        common_html_props(),
+        [
+            optional("src", named("String")),
+            optional("width", named("Int")),
+            optional("height", named("Int")),
+        ],
+    ))
 }
 
 fn audio_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("onClick", named("Action")),
-        optional("src", named("String")),
-        required("children", named("C")),
-    ])
+    with_children(with_fields(
+        common_html_props(),
+        [optional("src", named("String"))],
+    ))
 }
 
 fn button_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("disabled", named("Bool")),
-        optional("buttonType", named("String")),
-        optional("name", named("String")),
-        optional("value", named("String")),
-        optional("autoFocus", named("Bool")),
-        optional("onClick", named("Action")),
-        required("children", named("C")),
-    ])
+    with_children(with_fields(
+        common_html_props(),
+        [
+            optional("disabled", named("Bool")),
+            optional("buttonType", named("String")),
+            optional("name", named("String")),
+            optional("value", named("String")),
+            optional("autoFocus", named("Bool")),
+        ],
+    ))
 }
 
 fn form_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("onClick", named("Action")),
-        optional("onSubmit", named("Action")),
-        optional("name", named("String")),
-        optional("autoComplete", named("String")),
-        required("children", named("C")),
-    ])
+    with_children(with_fields(
+        common_html_props(),
+        [
+            optional("onSubmit", named("Action")),
+            optional("name", named("String")),
+            optional("autoComplete", named("String")),
+        ],
+    ))
 }
 
 fn label_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("htmlFor", named("String")),
-        optional("onClick", named("Action")),
-        required("children", named("C")),
-    ])
+    with_children(with_fields(
+        common_html_props(),
+        [optional("htmlFor", named("String"))],
+    ))
 }
 
 fn input_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("value", named("String")),
-        optional("checked", named("Bool")),
-        optional("name", named("String")),
-        optional("disabled", named("Bool")),
-        optional("required", named("Bool")),
-        optional("readOnly", named("Bool")),
-        optional("multiple", named("Bool")),
-        optional("placeholder", named("String")),
-        optional("autoComplete", named("String")),
-        optional("autoFocus", named("Bool")),
-        optional("min", named("String")),
-        optional("max", named("String")),
-        optional("step", named("String")),
-        optional("pattern", named("String")),
-        optional("inputType", named("String")),
-        optional(
-            "onInput",
-            function_type(vec![html_event_type("InputEvent")], named("Action")),
-        ),
-        optional(
-            "onChange",
-            function_type(vec![html_event_type("ChangeEvent")], named("Action")),
-        ),
-    ])
+    record_vec(with_fields(
+        common_html_props(),
+        [
+            optional("value", named("String")),
+            optional("checked", named("Bool")),
+            optional("name", named("String")),
+            optional("disabled", named("Bool")),
+            optional("required", named("Bool")),
+            optional("readOnly", named("Bool")),
+            optional("multiple", named("Bool")),
+            optional("placeholder", named("String")),
+            optional("autoComplete", named("String")),
+            optional("autoFocus", named("Bool")),
+            optional("min", named("String")),
+            optional("max", named("String")),
+            optional("step", named("String")),
+            optional("pattern", named("String")),
+            optional("inputType", named("String")),
+            optional(
+                "onInput",
+                function_type(vec![html_event_type("InputEvent")], named("Action")),
+            ),
+            optional(
+                "onChange",
+                function_type(vec![html_event_type("ChangeEvent")], named("Action")),
+            ),
+        ],
+    ))
 }
 
 fn textarea_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("value", named("String")),
-        optional("name", named("String")),
-        optional("disabled", named("Bool")),
-        optional("required", named("Bool")),
-        optional("readOnly", named("Bool")),
-        optional("placeholder", named("String")),
-        optional("autoComplete", named("String")),
-        optional("autoFocus", named("Bool")),
-        optional("rows", named("Int")),
-        optional("cols", named("Int")),
-        optional(
-            "onInput",
-            function_type(vec![html_event_type("InputEvent")], named("Action")),
-        ),
-        optional(
-            "onChange",
-            function_type(vec![html_event_type("ChangeEvent")], named("Action")),
-        ),
-    ])
+    record_vec(with_fields(
+        common_html_props(),
+        [
+            optional("value", named("String")),
+            optional("name", named("String")),
+            optional("disabled", named("Bool")),
+            optional("required", named("Bool")),
+            optional("readOnly", named("Bool")),
+            optional("placeholder", named("String")),
+            optional("autoComplete", named("String")),
+            optional("autoFocus", named("Bool")),
+            optional("rows", named("Int")),
+            optional("cols", named("Int")),
+            optional(
+                "onInput",
+                function_type(vec![html_event_type("InputEvent")], named("Action")),
+            ),
+            optional(
+                "onChange",
+                function_type(vec![html_event_type("ChangeEvent")], named("Action")),
+            ),
+        ],
+    ))
 }
 
 fn select_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("name", named("String")),
-        optional("value", named("String")),
-        optional("disabled", named("Bool")),
-        optional("required", named("Bool")),
-        optional("multiple", named("Bool")),
-        optional("autoFocus", named("Bool")),
-        optional(
-            "onChange",
-            function_type(vec![html_event_type("ChangeEvent")], named("Action")),
-        ),
-        required("children", named("C")),
-    ])
+    with_children(with_fields(
+        common_html_props(),
+        [
+            optional("name", named("String")),
+            optional("value", named("String")),
+            optional("disabled", named("Bool")),
+            optional("required", named("Bool")),
+            optional("multiple", named("Bool")),
+            optional("autoFocus", named("Bool")),
+            optional(
+                "onChange",
+                function_type(vec![html_event_type("ChangeEvent")], named("Action")),
+            ),
+        ],
+    ))
 }
 
 fn option_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("value", named("String")),
-        optional("selected", named("Bool")),
-        optional("disabled", named("Bool")),
-        required("children", named("C")),
-    ])
+    with_children(with_fields(
+        common_html_props(),
+        [
+            optional("value", named("String")),
+            optional("selected", named("Bool")),
+            optional("disabled", named("Bool")),
+        ],
+    ))
 }
 
 fn table_cell_props() -> InterfaceType {
-    record([
-        optional("id", named("String")),
-        optional("className", named("String")),
-        optional("title", named("String")),
-        optional("hidden", named("Bool")),
-        optional("key", named("String")),
-        optional("style", named("Style")),
-        optional("onClick", named("Action")),
-        optional("colSpan", named("Int")),
-        optional("rowSpan", named("Int")),
-        required("children", named("C")),
-    ])
+    with_children(with_fields(
+        common_html_props(),
+        [
+            optional("colSpan", named("Int")),
+            optional("rowSpan", named("Int")),
+        ],
+    ))
 }
 
 fn open_element_props() -> InterfaceType {
-    record([
+    with_children(with_fields(
+        common_html_props(),
+        [optional("open", named("Bool"))],
+    ))
+}
+
+fn common_html_props() -> Vec<InterfaceRecordField> {
+    vec![
         optional("id", named("String")),
         optional("className", named("String")),
         optional("title", named("String")),
         optional("hidden", named("Bool")),
         optional("key", named("String")),
         optional("style", named("Style")),
+        optional("attributes", named_with("Array", vec![named("Attribute")])),
+        optional("role", named("String")),
+        optional("tabIndex", named("Int")),
+        optional("lang", named("String")),
+        optional("dir", named("String")),
+        optional("draggable", named("Bool")),
+        optional("contentEditable", named("Bool")),
         optional("onClick", named("Action")),
-        optional("open", named("Bool")),
-        required("children", named("C")),
-    ])
+    ]
+}
+
+fn with_fields<const N: usize>(
+    mut fields: Vec<InterfaceRecordField>,
+    additions: [InterfaceRecordField; N],
+) -> Vec<InterfaceRecordField> {
+    fields.extend(additions);
+    fields
+}
+
+fn with_children(mut fields: Vec<InterfaceRecordField>) -> InterfaceType {
+    fields.push(required("children", named("C")));
+    record_vec(fields)
+}
+
+fn record_vec(fields: Vec<InterfaceRecordField>) -> InterfaceType {
+    InterfaceType::Record {
+        closed: true,
+        fields,
+    }
 }
 
 fn type_export(module: &str, name: &str, arity: u32, declaration_kind: &str) -> InterfaceExport {
@@ -969,6 +971,55 @@ fn type_export(module: &str, name: &str, arity: u32, declaration_kind: &str) -> 
                 name: name.to_owned(),
                 arity,
             },
+        },
+        methods: Vec::new(),
+        representation: None,
+    }
+}
+
+fn adt_type_export<const N: usize>(
+    module: &str,
+    name: &str,
+    parameters: [&str; N],
+) -> InterfaceExport {
+    let mut export = type_export(module, name, N as u32, "type");
+    export.scheme.type_parameters = parameters.into_iter().map(TypeParameter::value).collect();
+    export
+}
+
+fn constructor_export<const N: usize>(
+    module: &str,
+    owner: &str,
+    name: &str,
+    parameters: [&str; N],
+    payload: Option<InterfaceType>,
+) -> InterfaceExport {
+    let arguments = parameters
+        .iter()
+        .map(|parameter| named(parameter))
+        .collect::<Vec<_>>();
+    let result = external_type(
+        owner,
+        &format!("{module}::{owner}"),
+        module,
+        owner,
+        arguments,
+    );
+    InterfaceExport {
+        symbol: format!("{module}::{name}"),
+        namespace: "value".to_owned(),
+        name: name.to_owned(),
+        constructor_of: Some(format!("{module}::{owner}")),
+        visibility: Visibility::Public,
+        declaration_kind: Some("constructor".to_owned()),
+        declaration: ORIGIN,
+        scheme: InterfaceScheme {
+            type_parameters: parameters.into_iter().map(TypeParameter::value).collect(),
+            constraints: Vec::new(),
+            type_ref: payload.map_or(result.clone(), |payload| InterfaceType::Function {
+                parameter: Box::new(payload),
+                result: Box::new(result),
+            }),
         },
         methods: Vec::new(),
         representation: None,
@@ -1346,5 +1397,63 @@ mod tests {
         assert!(props("details").contains(&"open"));
         assert!(props("dialog").contains(&"open"));
         assert!(!props("table").contains(&"colSpan"));
+    }
+
+    #[test]
+    fn exposes_global_and_validated_custom_html_surface() {
+        let target = standard_module_target("std/web/html").unwrap();
+        let interface = target.interface();
+
+        let props = |name: &str| {
+            let export = interface
+                .exports
+                .iter()
+                .find(|export| export.namespace == "value" && export.name == name)
+                .unwrap_or_else(|| panic!("missing std/web/html::{name}"));
+            let InterfaceType::Function { parameter, .. } = &export.scheme.type_ref else {
+                panic!("std/web/html::{name} must be callable");
+            };
+            let InterfaceType::Record { fields, .. } = parameter.as_ref() else {
+                panic!("std/web/html::{name} must accept a props record");
+            };
+            fields
+                .iter()
+                .map(|field| field.name.as_str())
+                .collect::<Vec<_>>()
+        };
+
+        for tag in ["div", "img", "input", "table", "dialog"] {
+            let fields = props(tag);
+            for field in [
+                "attributes",
+                "role",
+                "tabIndex",
+                "lang",
+                "dir",
+                "draggable",
+                "contentEditable",
+            ] {
+                assert!(fields.contains(&field), "std/web/html::{tag} lacks {field}");
+            }
+        }
+        for name in ["Tag", "Attribute", "HtmlBuildError"] {
+            assert!(interface
+                .exports
+                .iter()
+                .any(|export| export.namespace == "type" && export.name == name));
+        }
+        for name in [
+            "customTag",
+            "attribute",
+            "custom",
+            "InvalidTagName",
+            "InvalidAttributeName",
+            "ReservedAttributeName",
+        ] {
+            assert!(interface
+                .exports
+                .iter()
+                .any(|export| export.namespace == "value" && export.name == name));
+        }
     }
 }

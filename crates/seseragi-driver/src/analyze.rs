@@ -196,6 +196,35 @@ mod tests {
     }
 
     #[test]
+    fn exposes_validated_custom_html_values_in_the_reference_catalog() {
+        let analysis = analyze_module(CompileInput::new(
+            "main.ssrg",
+            "analysis/html-custom-reference",
+            "pub let value = 1\n",
+        ));
+
+        for name in [
+            "Tag",
+            "Attribute",
+            "HtmlBuildError",
+            "customTag",
+            "attribute",
+            "custom",
+            "InvalidTagName",
+            "InvalidAttributeName",
+            "ReservedAttributeName",
+        ] {
+            let item = analysis
+                .standard_library_catalog()
+                .iter()
+                .find(|item| item.identity == format!("std/web/html::{name}"))
+                .unwrap_or_else(|| panic!("missing Reference entry for std/web/html::{name}"));
+            assert!(item.signature.is_some());
+            assert!(!item.description.is_empty());
+        }
+    }
+
+    #[test]
     fn invalid_source_still_returns_shared_diagnostics_and_catalog() {
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",

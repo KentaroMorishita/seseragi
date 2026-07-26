@@ -1286,6 +1286,39 @@
       "import": null
     },
     {
+      "id": "web.html.tag-type",
+      "kind": "value-representation",
+      "typescript": "type Tag",
+      "boundary": "opaque validated custom-element name",
+      "typeIdentity": "std/web/html::Tag",
+      "typeImport": { "module": "@seseragi/runtime/html", "export": "Tag" },
+      "import": null
+    },
+    {
+      "id": "web.html.attribute-type",
+      "kind": "value-representation",
+      "typescript": "type Attribute",
+      "boundary": "opaque validated custom HTML attribute",
+      "typeIdentity": "std/web/html::Attribute",
+      "typeImport": {
+        "module": "@seseragi/runtime/html",
+        "export": "Attribute"
+      },
+      "import": null
+    },
+    {
+      "id": "web.html.build-error-type",
+      "kind": "value-representation",
+      "typescript": "type HtmlBuildError",
+      "boundary": "InvalidTagName | InvalidAttributeName | ReservedAttributeName",
+      "typeIdentity": "std/web/html::HtmlBuildError",
+      "typeImport": {
+        "module": "@seseragi/runtime/html",
+        "export": "HtmlBuildError"
+      },
+      "import": null
+    },
+    {
       "id": "web.html.input-event-type",
       "kind": "value-representation",
       "typescript": "type InputEvent",
@@ -1315,6 +1348,57 @@
       "typescript": "function",
       "boundary": "StyleRecord<R> => R -> Style",
       "import": { "module": "@seseragi/runtime/html", "export": "style" }
+    },
+    {
+      "id": "web.html.custom-tag",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> Either<HtmlBuildError, Tag>",
+      "import": { "module": "@seseragi/runtime/html", "export": "customTag" }
+    },
+    {
+      "id": "web.html.attribute",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> String -> Either<HtmlBuildError, Attribute>",
+      "import": { "module": "@seseragi/runtime/html", "export": "attribute" }
+    },
+    {
+      "id": "web.html.custom",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Tag -> ElementProps<Msg, C> -> Html<Msg>",
+      "import": { "module": "@seseragi/runtime/html", "export": "custom" }
+    },
+    {
+      "id": "web.html.error.invalid-tag-name",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> HtmlBuildError",
+      "import": {
+        "module": "@seseragi/runtime/html",
+        "export": "InvalidTagName"
+      }
+    },
+    {
+      "id": "web.html.error.invalid-attribute-name",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> HtmlBuildError",
+      "import": {
+        "module": "@seseragi/runtime/html",
+        "export": "InvalidAttributeName"
+      }
+    },
+    {
+      "id": "web.html.error.reserved-attribute-name",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> HtmlBuildError",
+      "import": {
+        "module": "@seseragi/runtime/html",
+        "export": "ReservedAttributeName"
+      }
     },
     {
       "id": "web.html.text",

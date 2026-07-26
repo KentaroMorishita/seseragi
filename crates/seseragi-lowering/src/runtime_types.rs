@@ -68,6 +68,24 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "Style",
     },
     RuntimeTypeImport {
+        canonical: "std/web/html::Tag",
+        runtime_feature: "web.html.tag-type",
+        module: "@seseragi/runtime/html",
+        export_name: "Tag",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/html::Attribute",
+        runtime_feature: "web.html.attribute-type",
+        module: "@seseragi/runtime/html",
+        export_name: "Attribute",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/html::HtmlBuildError",
+        runtime_feature: "web.html.build-error-type",
+        module: "@seseragi/runtime/html",
+        export_name: "HtmlBuildError",
+    },
+    RuntimeTypeImport {
         canonical: "std/web/html::InputEvent",
         runtime_feature: "web.html.input-event-type",
         module: "@seseragi/runtime/html",

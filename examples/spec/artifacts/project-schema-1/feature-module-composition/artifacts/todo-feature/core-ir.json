@@ -40,6 +40,14 @@
       }
     },
     {
+      "spelling": "Attribute",
+      "canonical": "std/web/html::Attribute",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Attribute"
+      }
+    },
+    {
       "spelling": "Signal",
       "canonical": "std/signal::Signal",
       "provider": {

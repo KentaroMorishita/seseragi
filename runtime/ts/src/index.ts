@@ -142,9 +142,18 @@ export {
   Nothing,
   Right,
 } from "./sum"
-export type { ChangeEvent, Html, InputEvent, Style } from "./html"
+export type {
+  Attribute,
+  ChangeEvent,
+  Html,
+  HtmlBuildError,
+  InputEvent,
+  Style,
+  Tag,
+} from "./html"
 export {
   a,
+  attribute,
   audio,
   article,
   aside,
@@ -152,8 +161,10 @@ export {
   body,
   br,
   button,
-  code,
   caption,
+  code,
+  custom,
+  customTag,
   details,
   dialog,
   div,
@@ -174,6 +185,8 @@ export {
   html,
   img,
   input,
+  InvalidAttributeName,
+  InvalidTagName,
   label,
   legend,
   li,
@@ -188,6 +201,7 @@ export {
   pre,
   renderDocument,
   renderToString,
+  ReservedAttributeName,
   section,
   select,
   small,

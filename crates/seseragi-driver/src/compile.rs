@@ -622,6 +622,65 @@ pub fn view -> html.Html<Action> =
     }
 
     #[test]
+    fn compiles_global_attributes_and_validated_custom_html_values() {
+        let source = r#"import * as html from "std/web/html"
+
+type Action = | Selected
+
+pub fn safeTag name: String -> Either<html.HtmlBuildError, html.Tag> =
+  html.customTag name
+
+pub fn safeAttribute name: String -> value: String
+  -> Either<html.HtmlBuildError, html.Attribute> =
+  html.attribute name value
+
+pub fn invalidTag name: String -> html.HtmlBuildError =
+  html.InvalidTagName name
+
+pub fn card tag: html.Tag -> label: html.Attribute -> html.Html<Action> =
+  html.custom tag {
+    id: "profile",
+    role: "article",
+    tabIndex: 0,
+    lang: "en",
+    dir: "ltr",
+    draggable: False,
+    contentEditable: True,
+    attributes: [label],
+    onClick: Selected,
+    children: "Mio"
+  }
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-global-custom-attributes",
+            source,
+        ))
+        .expect("global and validated custom HTML values should compile");
+
+        for runtime_name in ["customTag", "attribute", "custom", "InvalidTagName"] {
+            assert!(
+                compiled
+                    .generated
+                    .typescript
+                    .contains(&format!("_ssrg_html_{runtime_name}")),
+                "missing runtime import for {runtime_name}: {}",
+                compiled.generated.typescript
+            );
+        }
+        for type_name in ["Tag", "Attribute", "HtmlBuildError"] {
+            assert!(
+                compiled
+                    .generated
+                    .typescript
+                    .contains(&format!("type {type_name}")),
+                "missing runtime type import for {type_name}: {}",
+                compiled.generated.typescript
+            );
+        }
+    }
+
+    #[test]
     fn rejects_a_form_event_handler_with_the_wrong_shape_before_lowering() {
         let source = r#"import * as html from "std/web/html"
 

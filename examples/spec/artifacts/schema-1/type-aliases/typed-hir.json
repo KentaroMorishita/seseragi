@@ -33,6 +33,14 @@
       }
     },
     {
+      "spelling": "Attribute",
+      "canonical": "std/web/html::Attribute",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Attribute"
+      }
+    },
+    {
       "spelling": "html.Html",
       "canonical": "std/web/html::Html",
       "provider": {

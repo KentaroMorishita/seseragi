@@ -41,6 +41,14 @@
       }
     },
     {
+      "spelling": "Attribute",
+      "canonical": "std/web/html::Attribute",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Attribute"
+      }
+    },
+    {
       "spelling": "dom.Dom",
       "canonical": "std/web/dom::Dom",
       "provider": {

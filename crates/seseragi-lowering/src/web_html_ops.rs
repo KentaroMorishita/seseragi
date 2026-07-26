@@ -39,6 +39,9 @@ macro_rules! dom_operation {
 
 const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
     operation!("style", "web.html.style", "_ssrg_html_style"),
+    operation!("customTag", "web.html.custom-tag", "_ssrg_html_customTag"),
+    operation!("attribute", "web.html.attribute", "_ssrg_html_attribute"),
+    operation!("custom", "web.html.custom", "_ssrg_html_custom"),
     operation!("text", "web.html.text", "_ssrg_html_text"),
     operation!("fragment", "web.html.fragment", "_ssrg_html_fragment"),
     operation!("html", "web.html.html", "_ssrg_html_html"),
@@ -100,6 +103,21 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
     operation!("details", "web.html.details", "_ssrg_html_details"),
     operation!("summary", "web.html.summary", "_ssrg_html_summary"),
     operation!("dialog", "web.html.dialog", "_ssrg_html_dialog"),
+    operation!(
+        "InvalidTagName",
+        "web.html.error.invalid-tag-name",
+        "_ssrg_html_InvalidTagName"
+    ),
+    operation!(
+        "InvalidAttributeName",
+        "web.html.error.invalid-attribute-name",
+        "_ssrg_html_InvalidAttributeName"
+    ),
+    operation!(
+        "ReservedAttributeName",
+        "web.html.error.reserved-attribute-name",
+        "_ssrg_html_ReservedAttributeName"
+    ),
     operation!(
         "renderToString",
         "web.html.render-to-string",

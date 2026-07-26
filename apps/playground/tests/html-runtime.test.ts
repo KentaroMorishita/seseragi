@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import {
   a,
+  attribute,
   audio,
   article,
   aside,
@@ -11,6 +12,8 @@ import {
   caption,
   type ChangeEvent,
   code,
+  custom,
+  customTag,
   details,
   dialog,
   div,
@@ -81,6 +84,71 @@ describe("HTML browser runtime", () => {
     expect(renderToString(node)).toBe(
       '<div style="--card-shadow: 0 4px 16px &quot;#0002&quot;; background-color: #fff; box-shadow: var(--card-shadow)">Styled</div>'
     )
+  })
+
+  test("renders global, ARIA, data, and validated custom attributes", () => {
+    const tag = customTag("user-card")
+    const ariaLabel = attribute("aria-label", 'Read "the docs"')
+    const userId = attribute("data-user-id", "42")
+    expect(tag.tag).toBe("Right")
+    expect(ariaLabel.tag).toBe("Right")
+    expect(userId.tag).toBe("Right")
+    if (
+      tag.tag !== "Right" ||
+      ariaLabel.tag !== "Right" ||
+      userId.tag !== "Right"
+    ) {
+      throw new Error("expected validated custom HTML values")
+    }
+
+    const node = article({
+      role: "article",
+      tabIndex: 0n,
+      lang: "en",
+      dir: "ltr",
+      draggable: false,
+      contentEditable: true,
+      attributes: [ariaLabel.value],
+      children: custom(tag.value, {
+        id: "mio",
+        attributes: [userId.value],
+        children: "Mio",
+      }),
+    })
+
+    expect(renderToString(node)).toBe(
+      '<article role="article" tabindex="0" lang="en" dir="ltr" draggable="false" contenteditable="true" aria-label="Read &quot;the docs&quot;"><user-card id="mio" data-user-id="42">Mio</user-card></article>'
+    )
+  })
+
+  test("rejects invalid, reserved, or colliding custom names", () => {
+    expect(customTag("UserCard")).toEqual({
+      tag: "Left",
+      value: { tag: "InvalidTagName", value: "UserCard" },
+    })
+    expect(attribute("bad name", "value")).toEqual({
+      tag: "Left",
+      value: { tag: "InvalidAttributeName", value: "bad name" },
+    })
+    expect(attribute("aria-Label", "value")).toEqual({
+      tag: "Left",
+      value: { tag: "InvalidAttributeName", value: "aria-Label" },
+    })
+    expect(attribute("onclick", "alert(1)")).toEqual({
+      tag: "Left",
+      value: { tag: "ReservedAttributeName", value: "onclick" },
+    })
+    expect(attribute("CLASS", "wide")).toEqual({
+      tag: "Left",
+      value: { tag: "ReservedAttributeName", value: "CLASS" },
+    })
+    expect(attribute("data-ssrg-event-click", "0")).toEqual({
+      tag: "Left",
+      value: {
+        tag: "ReservedAttributeName",
+        value: "data-ssrg-event-click",
+      },
+    })
   })
 
   test("renders document, sectioning, text, list, and void tags", () => {

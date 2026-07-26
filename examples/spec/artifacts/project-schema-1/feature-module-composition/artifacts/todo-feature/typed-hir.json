@@ -41,6 +41,14 @@
       }
     },
     {
+      "spelling": "Attribute",
+      "canonical": "std/web/html::Attribute",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Attribute"
+      }
+    },
+    {
       "spelling": "Signal",
       "canonical": "std/signal::Signal",
       "provider": {
@@ -471,7 +479,7 @@
               "symbol": "fixture/feature-module-composition::todo/feature::DraftChanged",
               "argument": {
                 "kind": "binding",
-                "symbol": 32,
+                "symbol": 38,
                 "name": "value",
                 "type": {
                   "kind": "named",

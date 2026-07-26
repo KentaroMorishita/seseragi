@@ -1,5 +1,9 @@
+import { type Either, Left, Right } from "./sum"
+
 const HTML_NODE = Symbol("seseragi.html")
 const STYLE = Symbol("seseragi.style")
+const TAG = Symbol("seseragi.html.tag")
+const ATTRIBUTE = Symbol("seseragi.html.attribute")
 
 type PhantomAction<Action> = {
   readonly __action?: Action
@@ -41,6 +45,29 @@ export type InputEvent = Readonly<{
 export type ChangeEvent = Readonly<{
   readonly value: string
   readonly checked: boolean
+}>
+
+export type HtmlBuildError =
+  | Readonly<{ readonly tag: "InvalidTagName"; readonly value: string }>
+  | Readonly<{ readonly tag: "InvalidAttributeName"; readonly value: string }>
+  | Readonly<{ readonly tag: "ReservedAttributeName"; readonly value: string }>
+
+export const InvalidTagName = (value: string): HtmlBuildError =>
+  Object.freeze({ tag: "InvalidTagName", value })
+export const InvalidAttributeName = (value: string): HtmlBuildError =>
+  Object.freeze({ tag: "InvalidAttributeName", value })
+export const ReservedAttributeName = (value: string): HtmlBuildError =>
+  Object.freeze({ tag: "ReservedAttributeName", value })
+
+export type Tag = Readonly<{
+  readonly [TAG]: true
+  readonly name: string
+}>
+
+export type Attribute = Readonly<{
+  readonly [ATTRIBUTE]: true
+  readonly name: string
+  readonly value: string
 }>
 
 export type DomEventHandler<Action> =
@@ -85,6 +112,92 @@ export function style(declarations: unknown): Style {
     [STYLE]: true as const,
     cssText: properties.join("; "),
   })
+}
+
+export function customTag(name: string): Either<HtmlBuildError, Tag> {
+  if (!/^[a-z][a-z0-9-]*$/.test(name) || !name.includes("-")) {
+    return Left(InvalidTagName(name))
+  }
+  return Right(Object.freeze({ [TAG]: true as const, name }))
+}
+
+const RESERVED_CUSTOM_ATTRIBUTE_NAMES = new Set([
+  "alt",
+  "attributes",
+  "autocomplete",
+  "autofocus",
+  "buttontype",
+  "checked",
+  "children",
+  "class",
+  "classname",
+  "cols",
+  "colspan",
+  "contenteditable",
+  "dir",
+  "disabled",
+  "download",
+  "draggable",
+  "for",
+  "height",
+  "hidden",
+  "htmlfor",
+  "href",
+  "id",
+  "inputtype",
+  "key",
+  "lang",
+  "loading",
+  "max",
+  "media",
+  "min",
+  "mimetype",
+  "multiple",
+  "name",
+  "open",
+  "pattern",
+  "placeholder",
+  "readonly",
+  "rel",
+  "required",
+  "role",
+  "rows",
+  "rowspan",
+  "selected",
+  "src",
+  "step",
+  "style",
+  "tabindex",
+  "target",
+  "title",
+  "type",
+  "value",
+  "width",
+])
+
+export function attribute(
+  name: string,
+  value: string
+): Either<HtmlBuildError, Attribute> {
+  if (!/^[A-Za-z_:][A-Za-z0-9_.:-]*$/.test(name)) {
+    return Left(InvalidAttributeName(name))
+  }
+  const normalized = name.toLowerCase()
+  if (
+    (normalized.startsWith("data-") || normalized.startsWith("aria-")) &&
+    (name !== normalized || normalized.length <= 5)
+  ) {
+    return Left(InvalidAttributeName(name))
+  }
+  if (
+    normalized.startsWith("on") ||
+    normalized === "data-ssrg" ||
+    normalized.startsWith("data-ssrg-") ||
+    RESERVED_CUSTOM_ATTRIBUTE_NAMES.has(normalized)
+  ) {
+    return Left(ReservedAttributeName(name))
+  }
+  return Right(Object.freeze({ [ATTRIBUTE]: true as const, name, value }))
 }
 
 export function text<Action = never>(value: string): Html<Action> {
@@ -192,6 +305,13 @@ export function input<Action = never>(props: unknown): Html<Action> {
 export function textarea<Action = never>(props: unknown): Html<Action> {
   const record = expectProps(props)
   return element("textarea", { ...record, children: record.value ?? "" }, false)
+}
+
+export function custom<Action = never>(
+  value: Tag,
+  props: unknown
+): Html<Action> {
+  return element(expectTag(value).name, props, false)
 }
 
 export function renderToString<Action>(value: Html<Action>): string {
@@ -341,6 +461,16 @@ function renderAttributes(
   stringAttribute(attributes, "title", props.title)
   booleanAttribute(attributes, "hidden", props.hidden)
   styleAttribute(attributes, props.style)
+  stringAttribute(attributes, "role", props.role)
+  integerAttribute(attributes, "tabindex", props.tabIndex)
+  stringAttribute(attributes, "lang", props.lang)
+  stringAttribute(attributes, "dir", props.dir)
+  enumeratedBooleanAttribute(attributes, "draggable", props.draggable)
+  enumeratedBooleanAttribute(
+    attributes,
+    "contenteditable",
+    props.contentEditable
+  )
   for (const kind of ["click", "input", "change", "submit"] as const) {
     const id = eventMarkers[kind]
     if (id !== undefined) {
@@ -439,6 +569,7 @@ function renderAttributes(
   if (tagName === "details" || tagName === "dialog") {
     booleanAttribute(attributes, "open", props.open)
   }
+  customAttributes(attributes, props.attributes)
   return attributes.length === 0 ? "" : ` ${attributes.join(" ")}`
 }
 
@@ -494,6 +625,18 @@ function booleanAttribute(
   if (value === true) output.push(name)
 }
 
+function enumeratedBooleanAttribute(
+  output: string[],
+  name: string,
+  value: unknown
+): void {
+  if (value === undefined) return
+  if (typeof value !== "boolean") {
+    throw new TypeError(`HTML attribute ${name} must be a boolean`)
+  }
+  output.push(`${name}="${String(value)}"`)
+}
+
 function integerAttribute(
   output: string[],
   name: string,
@@ -504,6 +647,27 @@ function integerAttribute(
     throw new TypeError(`HTML attribute ${name} must be an Int`)
   }
   output.push(`${name}="${value}"`)
+}
+
+function customAttributes(output: string[], value: unknown): void {
+  if (value === undefined) return
+  if (!Array.isArray(value)) {
+    throw new TypeError("HTML custom attributes must be an Array")
+  }
+  const names = new Set<string>()
+  for (const item of value) {
+    if (!isAttribute(item)) {
+      throw new TypeError(
+        "HTML custom attributes must be created with html.attribute"
+      )
+    }
+    const normalized = item.name.toLowerCase()
+    if (names.has(normalized)) {
+      throw new TypeError(`duplicate HTML custom attribute ${item.name}`)
+    }
+    names.add(normalized)
+    output.push(`${item.name}="${escapeAttribute(item.value)}"`)
+  }
 }
 
 function escapeText(value: string): string {
@@ -580,6 +744,17 @@ function camelToKebab(value: string): string {
 
 function isStyle(value: unknown): value is Style {
   return typeof value === "object" && value !== null && STYLE in value
+}
+
+function expectTag(value: unknown): Tag {
+  if (typeof value !== "object" || value === null || !(TAG in value)) {
+    throw new TypeError("custom HTML tags must be created with html.customTag")
+  }
+  return value as Tag
+}
+
+function isAttribute(value: unknown): value is Attribute {
+  return typeof value === "object" && value !== null && ATTRIBUTE in value
 }
 
 function isHtml<Action>(value: unknown): value is Html<Action> {

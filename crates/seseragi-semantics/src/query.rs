@@ -1272,6 +1272,19 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/web/html::renderToString" => "Renders typed HTML to an escaped fragment string.",
         "std/web/html::renderDocument" => "Renders typed HTML as a complete document string.",
         "std/web/html::style" => "Validates and converts a style record into inline Style.",
+        "std/web/html::Tag" => "Validated opaque name for a custom HTML element.",
+        "std/web/html::Attribute" => "Validated opaque custom HTML attribute name and value.",
+        "std/web/html::HtmlBuildError" => "Describes a rejected custom HTML tag or attribute name.",
+        "std/web/html::customTag" => "Validates a custom-element name into an opaque Tag.",
+        "std/web/html::attribute" => {
+            "Validates a custom, data, or ARIA attribute without bypassing escaping."
+        }
+        "std/web/html::custom" => "Creates a custom element from a validated Tag.",
+        "std/web/html::InvalidTagName" => "Reports a rejected custom-element name.",
+        "std/web/html::InvalidAttributeName" => "Reports an invalid custom attribute spelling.",
+        "std/web/html::ReservedAttributeName" => {
+            "Reports a custom attribute that collides with typed or runtime-owned props."
+        }
         "std/web/html::html" => "Creates the root html element for a typed document.",
         "std/web/html::body" => "Creates the document body container.",
         "std/web/html::title" => "Creates the document title element.",
