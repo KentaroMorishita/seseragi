@@ -443,6 +443,117 @@ pub fn page -> html.Html<Action> =
     }
 
     #[test]
+    fn diagnoses_standard_html_prop_contracts_and_spelling() {
+        let warnings = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-html-prop-warnings",
+            r#"import * as html from "std/web/html"
+
+pub fn typo -> html.Html<Never> =
+  html.div { clasName: "hero", children: "Typo" }
+
+pub fn wrongTag -> html.Html<Never> =
+  html.textarea { href: "/wrong" }
+
+pub fn unusedControl -> html.Html<Never> =
+  html.button { preventClickDefault: True, children: "Save" }
+"#,
+        ))
+        .expect("unknown standard props and unused controls are lint warnings");
+
+        let warning_keys = warnings
+            .diagnostics
+            .diagnostics
+            .iter()
+            .map(|diagnostic| diagnostic.message_key.as_str())
+            .collect::<Vec<_>>();
+        assert_eq!(
+            warning_keys,
+            [
+                "web.html.unknown-prop",
+                "web.html.unknown-prop",
+                "web.html.event-control-without-handler",
+            ]
+        );
+        let typo = &warnings.diagnostics.diagnostics[0];
+        assert_eq!(typo.code, "SES-L0101");
+        assert_eq!(typo.fixes[0].edits[0].replacement, "className");
+
+        let missing = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-html-required-prop",
+            r#"import * as html from "std/web/html"
+
+pub fn missing -> html.Html<Never> =
+  html.img { alt: "missing source" }
+"#,
+        ))
+        .expect_err("missing required standard props must stop compilation");
+        assert!(missing.diagnostics.iter().any(|diagnostic| {
+            diagnostic.code == "SES-T0702"
+                && diagnostic.message_key == "web.html.missing-required-prop"
+                && diagnostic.related[0].message.contains("`src`")
+        }));
+        assert!(!missing
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.message_key == "call.argument-type-mismatch"));
+
+        let recovery = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-html-prop-recovery",
+            concat!(
+                "import * as html from \"std/web/html\"\n",
+                "fn typo -> html.Html<Never> =\n",
+                "  html.div { clasName: \"hero\", children: \"Typo\" }\n",
+                "pub let broken: Int =\n",
+            ),
+        ))
+        .expect_err("parser recovery nodes must stop compilation");
+        assert!(!recovery
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.message_key.starts_with("web.html.")));
+    }
+
+    #[test]
+    fn compiles_public_html_props_aliases_and_validated_custom_attributes() {
+        let source = r#"import * as html from "std/web/html"
+
+fn renderAnchor props: html.AnchorProps<Never, String> -> html.Html<Never> =
+  html.a props
+
+fn renderImage props: html.ImageProps<Never> -> html.Html<Never> =
+  html.img props
+
+fn renderForm props: html.FormProps<Never, String> -> html.Html<Never> =
+  html.form props
+
+fn renderTextarea props: html.TextareaProps<Never> -> html.Html<Never> =
+  html.textarea props
+
+fn renderCustom ariaLabel: html.Attribute -> dataState: html.Attribute -> html.Html<Never> =
+  html.div {
+    attributes: [ariaLabel, dataState],
+    children: "custom attributes"
+  }
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-html-props-aliases",
+            source,
+        ))
+        .expect("public props aliases and validated custom attributes should compile");
+
+        assert!(!compiled.diagnostics.diagnostics.iter().any(|diagnostic| {
+            matches!(
+                diagnostic.message_key.as_str(),
+                "web.html.unknown-prop" | "web.html.missing-required-prop"
+            )
+        }));
+    }
+
+    #[test]
     fn compiles_typed_form_event_snapshots_through_the_runtime_abi() {
         let source = r#"import * as html from "std/web/html"
 

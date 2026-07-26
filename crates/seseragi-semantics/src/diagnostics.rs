@@ -58,6 +58,17 @@ pub(crate) fn semantic_diagnostics_from_resolved(
     impl_blocks::collect_impl_diagnostics(resolved, &resolution, &mut diagnostics);
     aliases::collect_alias_diagnostics(resolved, &mut diagnostics);
     resolution::collect_resolution_diagnostics(resolved, &mut diagnostics);
+    let html_missing_prop_ranges = diagnostics
+        .iter()
+        .filter(|diagnostic| diagnostic.message_key == "web.html.missing-required-prop")
+        .map(|diagnostic| diagnostic.primary)
+        .collect::<Vec<_>>();
+    diagnostics.retain(|diagnostic| {
+        diagnostic.message_key != "call.argument-type-mismatch"
+            || !html_missing_prop_ranges
+                .iter()
+                .any(|primary| *primary == diagnostic.primary)
+    });
     let primary_diagnostics = diagnostics
         .iter()
         .filter(|diagnostic| diagnostic.message_key != "expression.invalid")

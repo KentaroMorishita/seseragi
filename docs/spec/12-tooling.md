@@ -306,6 +306,7 @@ release noteへ記録し、同じlanguage major内では旧codeから新codeへ�
 | SES-T0602 | Error    | type aliasが直接または間接に循環            |
 | SES-T0603 | Error    | public aliasがprivate型を公開interfaceへ露出 |
 | SES-T0701 | Error    | void HTML elementへchildrenを指定            |
+| SES-T0702 | Error    | standard HTML tagのrequired propが欠落       |
 | SES-E0001 | Error    | Effect requirementまたはfailure型が不一致   |
 | SES-K0001 | Error    | manifest / lockfileが不正または不一致       |
 | SES-K0101 | Error    | manifest schemaまたは値が不正               |

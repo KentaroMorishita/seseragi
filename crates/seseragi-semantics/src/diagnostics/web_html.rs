@@ -1,9 +1,9 @@
 use crate::{typed::TypedResolution, SymbolNamespace};
-use seseragi_project::is_standard_void_html_tag;
+use seseragi_project::standard_html_tag_props;
 use seseragi_syntax::{
-    ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, RelatedDiagnostic, SurfaceBlockItem,
-    SurfaceComprehensionClause, SurfaceDecl, SurfaceDoItem, SurfaceExpr, SurfaceImplMember,
-    SurfaceRecordItem,
+    ByteRange, ByteSpan, Diagnostic, DiagnosticEdit, DiagnosticFix, DiagnosticSeverity,
+    RelatedDiagnostic, SurfaceBlockItem, SurfaceComprehensionClause, SurfaceDecl, SurfaceDoItem,
+    SurfaceExpr, SurfaceImplMember, SurfaceRecordItem,
 };
 
 pub(super) fn collect_html_diagnostics(
@@ -54,7 +54,7 @@ fn visit_expression(
         function, argument, ..
     } = expression
     {
-        collect_void_tag_call(function, argument, resolution, diagnostics);
+        collect_tag_call(function, argument, resolution, diagnostics);
     }
 
     match expression {
@@ -184,7 +184,7 @@ fn visit_expression(
     }
 }
 
-fn collect_void_tag_call(
+fn collect_tag_call(
     function: &SurfaceExpr,
     argument: &SurfaceExpr,
     resolution: &TypedResolution<'_>,
@@ -193,12 +193,18 @@ fn collect_void_tag_call(
     let Some(tag_name) = html_tag_name(function, resolution) else {
         return;
     };
-    if !is_standard_void_html_tag(&tag_name) {
-        return;
-    }
-    let SurfaceExpr::Record { items, .. } = argument else {
+    let Some((tag, fields)) = standard_html_tag_props(&tag_name) else {
         return;
     };
+    let SurfaceExpr::Record { items, span } = argument else {
+        return;
+    };
+    let allowed = fields
+        .iter()
+        .map(|field| field.name.clone())
+        .collect::<Vec<_>>();
+    let has_click = items.iter().any(|item| field_name(item) == Some("onClick"));
+
     for item in items {
         let SurfaceRecordItem::Field {
             name, name_span, ..
@@ -206,8 +212,43 @@ fn collect_void_tag_call(
         else {
             continue;
         };
-        if name == "children" {
+
+        if tag.void_element && name == "children" {
             diagnostics.push(void_children_diagnostic(&tag_name, *name_span));
+            continue;
+        }
+        if !allowed.iter().any(|allowed| allowed == name) {
+            diagnostics.push(unknown_prop_diagnostic(
+                &tag_name, name, *name_span, &allowed,
+            ));
+        }
+        if matches!(
+            name.as_str(),
+            "preventClickDefault" | "stopClickPropagation"
+        ) && !has_click
+        {
+            diagnostics.push(event_control_without_handler_diagnostic(
+                &tag_name, name, *name_span,
+            ));
+        }
+    }
+
+    if items
+        .iter()
+        .any(|item| matches!(item, SurfaceRecordItem::Spread { .. }))
+    {
+        return;
+    }
+    for field in fields.iter().filter(|field| !field.optional) {
+        if !items
+            .iter()
+            .any(|item| field_name(item) == Some(field.name.as_str()))
+        {
+            diagnostics.push(missing_required_prop_diagnostic(
+                &tag_name,
+                &field.name,
+                *span,
+            ));
         }
     }
 }
@@ -270,6 +311,108 @@ fn void_children_diagnostic(tag: &str, primary: ByteSpan) -> Diagnostic {
         }],
         fixes: Vec::new(),
     }
+}
+
+fn missing_required_prop_diagnostic(tag: &str, name: &str, primary: ByteSpan) -> Diagnostic {
+    Diagnostic {
+        id: String::new(),
+        code: "SES-T0702".to_owned(),
+        severity: DiagnosticSeverity::Error,
+        message_key: "web.html.missing-required-prop".to_owned(),
+        primary: byte_range(primary),
+        related: vec![RelatedDiagnostic {
+            message: format!("`html.{tag}` requires the `{name}` prop"),
+            primary: byte_range(primary),
+        }],
+        fixes: Vec::new(),
+    }
+}
+
+fn unknown_prop_diagnostic(
+    tag: &str,
+    name: &str,
+    primary: ByteSpan,
+    allowed: &[String],
+) -> Diagnostic {
+    let suggestion = closest(name, allowed);
+    let message = suggestion.as_deref().map_or_else(
+        || format!("`html.{tag}` has no standard prop `{name}`"),
+        |suggestion| {
+            format!("`html.{tag}` has no standard prop `{name}`; did you mean `{suggestion}`?")
+        },
+    );
+    Diagnostic {
+        id: String::new(),
+        code: "SES-L0101".to_owned(),
+        severity: DiagnosticSeverity::Warning,
+        message_key: "web.html.unknown-prop".to_owned(),
+        primary: byte_range(primary),
+        related: vec![RelatedDiagnostic {
+            message,
+            primary: byte_range(primary),
+        }],
+        fixes: suggestion
+            .map(|suggestion| DiagnosticFix {
+                title: format!("Replace with `{suggestion}`"),
+                edits: vec![DiagnosticEdit {
+                    range: byte_range(primary),
+                    replacement: suggestion,
+                }],
+            })
+            .into_iter()
+            .collect(),
+    }
+}
+
+fn event_control_without_handler_diagnostic(
+    tag: &str,
+    name: &str,
+    primary: ByteSpan,
+) -> Diagnostic {
+    Diagnostic {
+        id: String::new(),
+        code: "SES-L0101".to_owned(),
+        severity: DiagnosticSeverity::Warning,
+        message_key: "web.html.event-control-without-handler".to_owned(),
+        primary: byte_range(primary),
+        related: vec![RelatedDiagnostic {
+            message: format!("`html.{tag}` prop `{name}` has no effect without `onClick`"),
+            primary: byte_range(primary),
+        }],
+        fixes: Vec::new(),
+    }
+}
+
+fn field_name(item: &SurfaceRecordItem) -> Option<&str> {
+    match item {
+        SurfaceRecordItem::Field { name, .. } => Some(name),
+        SurfaceRecordItem::Spread { .. } => None,
+    }
+}
+
+fn closest(requested: &str, candidates: &[String]) -> Option<String> {
+    let max_distance = if requested.chars().count() >= 6 { 3 } else { 2 };
+    candidates
+        .iter()
+        .map(|candidate| (edit_distance(requested, candidate), candidate))
+        .filter(|(distance, _)| *distance <= max_distance)
+        .min_by_key(|(distance, candidate)| (*distance, candidate.as_str()))
+        .map(|(_, candidate)| candidate.clone())
+}
+
+fn edit_distance(left: &str, right: &str) -> usize {
+    let mut previous = (0..=right.chars().count()).collect::<Vec<_>>();
+    for (left_index, left_char) in left.chars().enumerate() {
+        let mut current = vec![left_index + 1];
+        for (right_index, right_char) in right.chars().enumerate() {
+            current.push(std::cmp::min(
+                std::cmp::min(current[right_index] + 1, previous[right_index + 1] + 1),
+                previous[right_index] + usize::from(left_char != right_char),
+            ));
+        }
+        previous = current;
+    }
+    previous.last().copied().unwrap_or(left.chars().count())
 }
 
 fn byte_range(span: ByteSpan) -> ByteRange {

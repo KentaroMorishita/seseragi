@@ -162,10 +162,87 @@ fn record_is_compatible(
     expected.iter().all(|required| {
         let found = actual.iter().find(|field| field.name == required.name);
         if required.optional {
-            return found.is_none_or(|field| field.type_ref == required.type_ref);
+            return found.is_none_or(|field| {
+                structural_types_are_compatible(&required.type_ref, &field.type_ref)
+            });
         }
-        found.is_some_and(|field| !field.optional && field.type_ref == required.type_ref)
+        found.is_some_and(|field| {
+            !field.optional && structural_types_are_compatible(&required.type_ref, &field.type_ref)
+        })
     })
+}
+
+fn structural_types_are_compatible(expected: &TypedType, actual: &TypedType) -> bool {
+    match (expected, actual) {
+        (
+            TypedType::ExternalNamed {
+                canonical: expected_canonical,
+                arguments: expected_arguments,
+                ..
+            },
+            TypedType::ExternalNamed {
+                canonical: actual_canonical,
+                arguments: actual_arguments,
+                ..
+            },
+        ) => {
+            expected_canonical == actual_canonical
+                && type_arguments_are_compatible(expected_arguments, actual_arguments)
+        }
+        (
+            TypedType::Named {
+                name: expected_name,
+                arguments: expected_arguments,
+            },
+            TypedType::Named {
+                name: actual_name,
+                arguments: actual_arguments,
+            },
+        ) => {
+            expected_name == actual_name
+                && type_arguments_are_compatible(expected_arguments, actual_arguments)
+        }
+        (
+            TypedType::Function {
+                parameter: expected_parameter,
+                result: expected_result,
+            },
+            TypedType::Function {
+                parameter: actual_parameter,
+                result: actual_result,
+            },
+        ) => {
+            structural_types_are_compatible(expected_parameter, actual_parameter)
+                && structural_types_are_compatible(expected_result, actual_result)
+        }
+        (
+            TypedType::Record {
+                fields: expected_fields,
+                ..
+            },
+            TypedType::Record {
+                fields: actual_fields,
+                ..
+            },
+        ) => record_is_compatible(expected_fields, actual_fields),
+        (
+            TypedType::Tuple {
+                elements: expected_elements,
+            },
+            TypedType::Tuple {
+                elements: actual_elements,
+            },
+        ) => type_arguments_are_compatible(expected_elements, actual_elements),
+        _ => expected == actual,
+    }
+}
+
+fn type_arguments_are_compatible(expected: &[TypedType], actual: &[TypedType]) -> bool {
+    expected.len() == actual.len()
+        && expected
+            .iter()
+            .zip(actual)
+            .all(|(expected, actual)| structural_types_are_compatible(expected, actual))
 }
 
 #[derive(Clone, Debug)]

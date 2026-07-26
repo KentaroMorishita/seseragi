@@ -345,7 +345,10 @@ where IntoChildren<C, Action>
 width subtypingは維持するため、既存recordが追加fieldを持っていてもtag functionへ渡せますが、rendererが読むのは
 parameter型に宣言されたfieldだけです。fresh record literalにtag固有props外のfieldがあればSES-L0101 Warningを出し、
 `clasName`のようなtypoを黙認しません。custom attributeはattributes field、custom elementは13.5のvalidated Tagを
-使います。
+使います。fresh record literalでrequired propが欠けていればSES-T0702 Errorを出します。spreadを含むliteralは
+spread元がrequired propを供給できるため、通常のrecord型検査で判定します。`preventClickDefault`または
+`stopClickPropagation`だけを指定して`onClick`がなければSES-L0101 Warningを出します。parser recovery中は
+これらのsemantic diagnosticを追加しません。
 
 ## 13.4 event Action
 

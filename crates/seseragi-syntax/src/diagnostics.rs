@@ -110,6 +110,13 @@ impl Diagnostic {
             "alias.cycle" => "Type alias expands recursively into itself".to_owned(),
             "alias.private-type-exposure" => "Public type alias exposes a private type".to_owned(),
             "web.html.void-children" => "Void HTML elements cannot receive children".to_owned(),
+            "web.html.missing-required-prop" => {
+                "This HTML tag is missing a required prop".to_owned()
+            }
+            "web.html.unknown-prop" => "This HTML tag has no such standard prop".to_owned(),
+            "web.html.event-control-without-handler" => {
+                "This event control has no matching handler".to_owned()
+            }
             _ => humanize_message_key(&self.message_key),
         }
     }
@@ -167,6 +174,18 @@ impl Diagnostic {
             }
             "alias.private-type-exposure" => {
                 "Make the exposed type public, or keep the alias private."
+            }
+            "web.html.void-children" => {
+                "Remove `children`, or use a non-void element that can contain content."
+            }
+            "web.html.missing-required-prop" => {
+                "Add the required prop to this record literal."
+            }
+            "web.html.unknown-prop" => {
+                "Use the suggested standard prop, or put a validated custom Attribute in `attributes`."
+            }
+            "web.html.event-control-without-handler" => {
+                "Add `onClick`, or remove the unused event control prop."
             }
             "record.field-unresolved" | "struct.field-unresolved" => {
                 "Check the field spelling and the type of the value being accessed."

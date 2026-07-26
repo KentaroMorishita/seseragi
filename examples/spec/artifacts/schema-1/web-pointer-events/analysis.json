@@ -2699,6 +2699,20 @@
       "constraints": []
     },
     {
+      "identity": "std/web/html::AnchorProps",
+      "name": "AnchorProps",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "alias",
+      "signature": "AnchorProps<_, _>",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/html::Attribute",
       "name": "Attribute",
       "module": "std/web/html",
@@ -2707,6 +2721,20 @@
       "signature": "Attribute",
       "description": "Validated opaque custom HTML attribute name and value.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::ButtonProps",
+      "name": "ButtonProps",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "alias",
+      "signature": "ButtonProps<_, _>",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
       "constraints": []
     },
     {
@@ -2773,6 +2801,20 @@
       "constraints": []
     },
     {
+      "identity": "std/web/html::ElementProps",
+      "name": "ElementProps",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "alias",
+      "signature": "ElementProps<_, _>",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/html::EventAction",
       "name": "EventAction",
       "module": "std/web/html",
@@ -2782,6 +2824,20 @@
       "description": "Explicit event outcome describing dispatch, default prevention, and propagation control.",
       "typeParameters": [
         "Action"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::FormProps",
+      "name": "FormProps",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "alias",
+      "signature": "FormProps<_, _>",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [
+        "Action",
+        "C"
       ],
       "constraints": []
     },
@@ -2823,6 +2879,19 @@
       "constraints": []
     },
     {
+      "identity": "std/web/html::ImageProps",
+      "name": "ImageProps",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "alias",
+      "signature": "ImageProps<_>",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/html::InputEvent",
       "name": "InputEvent",
       "module": "std/web/html",
@@ -2831,6 +2900,19 @@
       "signature": "InputEvent",
       "description": "Immutable text-input snapshot containing only the current String value.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::InputProps",
+      "name": "InputProps",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "alias",
+      "signature": "InputProps<_>",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [
+        "Action"
+      ],
       "constraints": []
     },
     {
@@ -2878,6 +2960,20 @@
       "signature": "KeyboardEvent",
       "description": "Immutable keyboard snapshot containing key identity, repeat state, and modifier keys.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::LabelProps",
+      "name": "LabelProps",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "alias",
+      "signature": "LabelProps<_, _>",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [
+        "Action",
+        "C"
+      ],
       "constraints": []
     },
     {
@@ -2957,6 +3053,19 @@
       "signature": "Tag",
       "description": "Validated opaque name for a custom HTML element.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::TextareaProps",
+      "name": "TextareaProps",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "alias",
+      "signature": "TextareaProps<_>",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [
+        "Action"
+      ],
       "constraints": []
     },
     {

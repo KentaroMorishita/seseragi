@@ -6,38 +6,130 @@ use seseragi_syntax::{
 
 const ORIGIN: ByteSpan = ByteSpan { start: 0, end: 0 };
 
-const DOCUMENT_HTML_TAGS: &[&str] = &[
-    "html",
-    "head",
-    "body",
-    "title",
-    "header",
-    "footer",
-    "nav",
-    "article",
-    "aside",
-    "h3",
-    "h4",
-    "h5",
-    "h6",
-    "strong",
-    "em",
-    "small",
-    "code",
-    "pre",
-    "blockquote",
-    "ul",
-    "ol",
-    "li",
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum StandardHtmlTagKind {
+    Element,
+    VoidElement,
+    Link,
+    Anchor,
+    Image,
+    Source,
+    Video,
+    Audio,
+    Button,
+    Form,
+    Label,
+    Input,
+    Textarea,
+    Select,
+    Option,
+    TableCell,
+    OpenElement,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct StandardHtmlTag {
+    pub name: &'static str,
+    pub kind: StandardHtmlTagKind,
+    pub void_element: bool,
+}
+
+macro_rules! html_tag {
+    ($name:literal, $kind:ident) => {
+        StandardHtmlTag {
+            name: $name,
+            kind: StandardHtmlTagKind::$kind,
+            void_element: false,
+        }
+    };
+    ($name:literal, $kind:ident, void) => {
+        StandardHtmlTag {
+            name: $name,
+            kind: StandardHtmlTagKind::$kind,
+            void_element: true,
+        }
+    };
+}
+
+pub const STANDARD_HTML_TAGS: &[StandardHtmlTag] = &[
+    html_tag!("html", Element),
+    html_tag!("head", Element),
+    html_tag!("body", Element),
+    html_tag!("title", Element),
+    html_tag!("meta", VoidElement, void),
+    html_tag!("link", Link, void),
+    html_tag!("header", Element),
+    html_tag!("footer", Element),
+    html_tag!("nav", Element),
+    html_tag!("article", Element),
+    html_tag!("aside", Element),
+    html_tag!("div", Element),
+    html_tag!("span", Element),
+    html_tag!("p", Element),
+    html_tag!("main", Element),
+    html_tag!("section", Element),
+    html_tag!("h1", Element),
+    html_tag!("h2", Element),
+    html_tag!("h3", Element),
+    html_tag!("h4", Element),
+    html_tag!("h5", Element),
+    html_tag!("h6", Element),
+    html_tag!("strong", Element),
+    html_tag!("em", Element),
+    html_tag!("small", Element),
+    html_tag!("code", Element),
+    html_tag!("pre", Element),
+    html_tag!("blockquote", Element),
+    html_tag!("ul", Element),
+    html_tag!("ol", Element),
+    html_tag!("li", Element),
+    html_tag!("br", VoidElement, void),
+    html_tag!("hr", VoidElement, void),
+    html_tag!("a", Anchor),
+    html_tag!("img", Image, void),
+    html_tag!("picture", Element),
+    html_tag!("source", Source, void),
+    html_tag!("video", Video),
+    html_tag!("audio", Audio),
+    html_tag!("button", Button),
+    html_tag!("form", Form),
+    html_tag!("label", Label),
+    html_tag!("input", Input, void),
+    html_tag!("textarea", Textarea),
+    html_tag!("select", Select),
+    html_tag!("option", Option),
+    html_tag!("fieldset", Element),
+    html_tag!("legend", Element),
+    html_tag!("table", Element),
+    html_tag!("thead", Element),
+    html_tag!("tbody", Element),
+    html_tag!("tfoot", Element),
+    html_tag!("tr", Element),
+    html_tag!("th", TableCell),
+    html_tag!("td", TableCell),
+    html_tag!("caption", Element),
+    html_tag!("details", OpenElement),
+    html_tag!("summary", Element),
+    html_tag!("dialog", OpenElement),
 ];
 
-const VOID_DOCUMENT_HTML_TAGS: &[&str] = &["meta", "br", "hr"];
+pub fn standard_html_tag(name: &str) -> Option<StandardHtmlTag> {
+    STANDARD_HTML_TAGS
+        .iter()
+        .copied()
+        .find(|tag| tag.name == name)
+}
+
+pub fn standard_html_tag_props(name: &str) -> Option<(StandardHtmlTag, Vec<InterfaceRecordField>)> {
+    let tag = standard_html_tag(name)?;
+    let InterfaceType::Record { fields, .. } = props_for_html_tag(tag) else {
+        unreachable!("standard HTML tag props must be a record")
+    };
+    Some((tag, fields))
+}
 
 pub fn is_standard_void_html_tag(name: &str) -> bool {
-    matches!(
-        name,
-        "meta" | "link" | "br" | "hr" | "img" | "source" | "input"
-    )
+    standard_html_tag(name).is_some_and(|tag| tag.void_element)
 }
 
 struct StandardModuleDefinition {
@@ -530,73 +622,8 @@ fn web_html_interface() -> ModuleInterface {
         ),
         constrained_html_function("fragment", fragment_parameter()),
     ];
-    for tag in ["div", "span", "p", "main", "section", "h1", "h2"] {
-        exports.push(constrained_html_function(tag, element_props()));
-    }
-    for tag in DOCUMENT_HTML_TAGS {
-        exports.push(constrained_html_function(tag, element_props()));
-    }
-    for tag in VOID_DOCUMENT_HTML_TAGS {
-        exports.push(void_html_function(tag));
-    }
-    exports.push(function_export(
-        "std/web/html",
-        "link",
-        ["Action"],
-        Vec::new(),
-        vec![link_props()],
-        html(named("Action")),
-    ));
-    exports.push(constrained_html_function("a", anchor_props()));
-    exports.push(function_export(
-        "std/web/html",
-        "img",
-        ["Action"],
-        Vec::new(),
-        vec![image_props()],
-        html(named("Action")),
-    ));
-    exports.push(constrained_html_function("picture", element_props()));
-    exports.push(function_export(
-        "std/web/html",
-        "source",
-        ["Action"],
-        Vec::new(),
-        vec![source_props()],
-        html(named("Action")),
-    ));
-    exports.push(constrained_html_function("video", video_props()));
-    exports.push(constrained_html_function("audio", audio_props()));
-    exports.push(constrained_html_function("button", button_props()));
-    exports.push(constrained_html_function("form", form_props()));
-    exports.push(constrained_html_function("label", label_props()));
-    exports.push(function_export(
-        "std/web/html",
-        "input",
-        ["Action"],
-        Vec::new(),
-        vec![input_props()],
-        html(named("Action")),
-    ));
-    exports.push(function_export(
-        "std/web/html",
-        "textarea",
-        ["Action"],
-        Vec::new(),
-        vec![textarea_props()],
-        html(named("Action")),
-    ));
-    exports.push(constrained_html_function("select", select_props()));
-    exports.push(constrained_html_function("option", option_props()));
-    for tag in [
-        "fieldset", "legend", "table", "thead", "tbody", "tfoot", "tr", "caption", "summary",
-    ] {
-        exports.push(constrained_html_function(tag, element_props()));
-    }
-    exports.push(constrained_html_function("th", table_cell_props()));
-    exports.push(constrained_html_function("td", table_cell_props()));
-    exports.push(constrained_html_function("details", open_element_props()));
-    exports.push(constrained_html_function("dialog", open_element_props()));
+    exports.extend(html_props_aliases());
+    exports.extend(STANDARD_HTML_TAGS.iter().copied().map(html_tag_export));
     exports.push(function_export(
         "std/web/html",
         "custom",
@@ -628,6 +655,55 @@ fn web_html_interface() -> ModuleInterface {
         exports,
         operators: Vec::new(),
         instances: Vec::new(),
+    }
+}
+
+fn html_props_aliases() -> Vec<InterfaceExport> {
+    vec![
+        alias_type_export(
+            "std/web/html",
+            "ElementProps",
+            ["Action", "C"],
+            element_props(),
+        ),
+        alias_type_export(
+            "std/web/html",
+            "ButtonProps",
+            ["Action", "C"],
+            button_props(),
+        ),
+        alias_type_export("std/web/html", "FormProps", ["Action", "C"], form_props()),
+        alias_type_export("std/web/html", "LabelProps", ["Action", "C"], label_props()),
+        alias_type_export("std/web/html", "InputProps", ["Action"], input_props()),
+        alias_type_export(
+            "std/web/html",
+            "TextareaProps",
+            ["Action"],
+            textarea_props(),
+        ),
+        alias_type_export(
+            "std/web/html",
+            "AnchorProps",
+            ["Action", "C"],
+            anchor_props(),
+        ),
+        alias_type_export("std/web/html", "ImageProps", ["Action"], image_props()),
+    ]
+}
+
+fn html_tag_export(tag: StandardHtmlTag) -> InterfaceExport {
+    let props = props_for_html_tag(tag);
+    if tag.void_element || tag.kind == StandardHtmlTagKind::Textarea {
+        function_export(
+            "std/web/html",
+            tag.name,
+            ["Action"],
+            Vec::new(),
+            vec![props],
+            html(named("Action")),
+        )
+    } else {
+        constrained_html_function(tag.name, props)
     }
 }
 
@@ -780,19 +856,31 @@ fn constrained_html_function(name: &str, parameter: InterfaceType) -> InterfaceE
     )
 }
 
-fn void_html_function(name: &str) -> InterfaceExport {
-    function_export(
-        "std/web/html",
-        name,
-        ["Action"],
-        Vec::new(),
-        vec![void_element_props()],
-        html(named("Action")),
-    )
-}
-
 fn fragment_parameter() -> InterfaceType {
     named("C")
+}
+
+fn props_for_html_tag(tag: StandardHtmlTag) -> InterfaceType {
+    use StandardHtmlTagKind as Kind;
+    match tag.kind {
+        Kind::Element => element_props(),
+        Kind::VoidElement => void_element_props(),
+        Kind::Link => link_props(),
+        Kind::Anchor => anchor_props(),
+        Kind::Image => image_props(),
+        Kind::Source => source_props(),
+        Kind::Video => video_props(),
+        Kind::Audio => audio_props(),
+        Kind::Button => button_props(),
+        Kind::Form => form_props(),
+        Kind::Label => label_props(),
+        Kind::Input => input_props(),
+        Kind::Textarea => textarea_props(),
+        Kind::Select => select_props(),
+        Kind::Option => option_props(),
+        Kind::TableCell => table_cell_props(),
+        Kind::OpenElement => open_element_props(),
+    }
 }
 
 fn element_props() -> InterfaceType {
@@ -1111,6 +1199,33 @@ fn type_export(module: &str, name: &str, arity: u32, declaration_kind: &str) -> 
         },
         methods: Vec::new(),
         representation: None,
+    }
+}
+
+fn alias_type_export<const N: usize>(
+    module: &str,
+    name: &str,
+    parameters: [&str; N],
+    representation: InterfaceType,
+) -> InterfaceExport {
+    InterfaceExport {
+        symbol: format!("{module}::{name}"),
+        namespace: "type".to_owned(),
+        name: name.to_owned(),
+        constructor_of: None,
+        visibility: Visibility::Public,
+        declaration_kind: Some("alias".to_owned()),
+        declaration: ORIGIN,
+        scheme: InterfaceScheme {
+            type_parameters: parameters.into_iter().map(TypeParameter::value).collect(),
+            constraints: Vec::new(),
+            type_ref: InterfaceType::TypeConstructor {
+                name: name.to_owned(),
+                arity: N as u32,
+            },
+        },
+        methods: Vec::new(),
+        representation: Some(representation),
     }
 }
 
@@ -1533,18 +1648,16 @@ mod tests {
     }
 
     #[test]
-    fn exposes_document_text_list_and_void_html_tags() {
+    fn exposes_standard_html_tags_with_their_children_contract() {
         let target = standard_module_target("std/web/html").unwrap();
         let interface = target.interface();
 
-        for name in DOCUMENT_HTML_TAGS
-            .iter()
-            .chain(VOID_DOCUMENT_HTML_TAGS.iter())
-        {
+        for tag in STANDARD_HTML_TAGS {
+            let name = tag.name;
             let export = interface
                 .exports
                 .iter()
-                .find(|export| export.namespace == "value" && export.name == *name)
+                .find(|export| export.namespace == "value" && export.name == name)
                 .unwrap_or_else(|| panic!("missing std/web/html::{name}"));
             let InterfaceType::Function { parameter, .. } = &export.scheme.type_ref else {
                 panic!("std/web/html::{name} must be callable");
@@ -1554,10 +1667,49 @@ mod tests {
             };
             assert_eq!(
                 fields.iter().any(|field| field.name == "children"),
-                !VOID_DOCUMENT_HTML_TAGS.contains(name),
+                !tag.void_element && tag.kind != StandardHtmlTagKind::Textarea,
                 "std/web/html::{name} has the wrong children contract"
             );
         }
+    }
+
+    #[test]
+    fn exposes_props_aliases_and_derives_diagnostic_metadata_from_the_same_records() {
+        let target = standard_module_target("std/web/html").unwrap();
+        let interface = target.interface();
+
+        for name in [
+            "ElementProps",
+            "ButtonProps",
+            "FormProps",
+            "LabelProps",
+            "InputProps",
+            "TextareaProps",
+            "AnchorProps",
+            "ImageProps",
+        ] {
+            let alias = interface
+                .exports
+                .iter()
+                .find(|export| export.namespace == "type" && export.name == name)
+                .unwrap_or_else(|| panic!("missing std/web/html::{name}"));
+            assert_eq!(alias.declaration_kind.as_deref(), Some("alias"));
+            assert!(matches!(
+                alias.representation,
+                Some(InterfaceType::Record { .. })
+            ));
+        }
+
+        let (image, fields) = standard_html_tag_props("img").unwrap();
+        assert!(image.void_element);
+        assert!(fields
+            .iter()
+            .any(|field| field.name == "src" && !field.optional));
+        assert!(fields
+            .iter()
+            .any(|field| field.name == "alt" && !field.optional));
+        assert!(!fields.iter().any(|field| field.name == "children"));
+        assert!(standard_html_tag_props("custom").is_none());
     }
 
     #[test]

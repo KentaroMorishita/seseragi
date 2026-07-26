@@ -85,7 +85,7 @@
 | document comments / doctest                   | none              | `projects/doc-tests`                           | partial |
 | closed deprecation metadata / tooling         | none              | `compile/deprecation-metadata.ssrg`            | covered |
 | JsonEncode / JsonDecode deriving              | Lesson 26         | codec wire / strict field fixtures             | partial |
-| pure Html props / children / SSR              | Lesson 27         | HTML escaping / props fixtures                 | partial |
+| pure Html props / children / SSR              | Lesson 27         | `analysis-schema-1/web-html-props` + HTML escaping / props fixtures; tag固有Props alias、invalid prop / typo fix、required prop、void children、event control diagnosticを共有driver経路で固定 | partial |
 | typed form input / change / submit snapshots  | `form-todo` sample | `schema-1/web-form-events` + `form-todo` sample + browser runtime event-order tests; input / textareaのIME compositionを確定Action一回へまとめ、checkbox / submitを含むtyped Actionとpure updateへ接続 | covered |
 | Signal-driven DOM / event resource lifetime   | Lesson 30         | `projects/dom-*`                               | covered |
 | private feature State / Action composition    | `feature-composition` sample | `project-schema-1/{feature-module-composition,feature-module-lifetime}` + compiler interface regression + Signal / DOM runtime tests; local / nearest-parent shared / root-owned app-wide state、opaque Effect event、hide / re-show、order swap、child replacementを既存Signal / Effect / module privacyで接続 | covered |

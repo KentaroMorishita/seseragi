@@ -371,4 +371,31 @@ mod tests {
             "Int"
         );
     }
+
+    #[test]
+    fn publishes_shared_standard_html_prop_diagnostics() {
+        let source = r#"import * as html from "std/web/html"
+
+fn view -> html.Html<Never> =
+  html.div { clasName: "hero", children: "Typo" }
+"#;
+        let published = publish(
+            "file:///html-props.ssrg",
+            &DocumentState::analyze("file:///html-props.ssrg", 1, source.to_owned()),
+            PositionEncoding::Utf16,
+        )
+        .unwrap();
+        let diagnostics = published["params"]["diagnostics"].as_array().unwrap();
+
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0]["code"], "SES-L0101");
+        assert_eq!(
+            diagnostics[0]["data"]["messageKey"],
+            "web.html.unknown-prop"
+        );
+        assert_eq!(
+            diagnostics[0]["data"]["fixes"][0]["edits"][0]["replacement"],
+            "className"
+        );
+    }
 }

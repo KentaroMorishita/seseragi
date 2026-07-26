@@ -1,673 +1,211 @@
 {
   "schema": 1,
-  "source": "main.ssrg",
-  "module": "artifact/self-tail-loop",
+  "source": "artifact/web-html-props/main.ssrg",
+  "module": "artifact/web-html-props",
   "diagnostics": {
     "schema": 1,
-    "source": "artifact/self-tail-loop/main.ssrg",
+    "source": "artifact/web-html-props/main.ssrg",
     "positionEncoding": "utf-8",
-    "diagnostics": []
+    "diagnostics": [
+      {
+        "id": "d1",
+        "code": "SES-L0101",
+        "severity": "Warning",
+        "messageKey": "web.html.unknown-prop",
+        "message": "This HTML tag has no such standard prop",
+        "primary": {
+          "start": 81,
+          "end": 89
+        },
+        "related": [
+          {
+            "message": "`html.div` has no standard prop `clasName`; did you mean `className`?",
+            "primary": {
+              "start": 81,
+              "end": 89
+            }
+          }
+        ],
+        "labels": [
+          {
+            "message": "`html.div` has no standard prop `clasName`; did you mean `className`?",
+            "primary": {
+              "start": 81,
+              "end": 89
+            }
+          }
+        ],
+        "notes": [],
+        "helps": [
+          "Use the suggested standard prop, or put a validated custom Attribute in `attributes`."
+        ],
+        "fixes": [
+          {
+            "title": "Replace with `className`",
+            "edits": [
+              {
+                "range": {
+                  "start": 81,
+                  "end": 89
+                },
+                "replacement": "className"
+              }
+            ]
+          }
+        ],
+        "expectedType": null,
+        "actualType": null
+      },
+      {
+        "id": "d2",
+        "code": "SES-L0101",
+        "severity": "Warning",
+        "messageKey": "web.html.unknown-prop",
+        "message": "This HTML tag has no such standard prop",
+        "primary": {
+          "start": 174,
+          "end": 178
+        },
+        "related": [
+          {
+            "message": "`html.textarea` has no standard prop `href`",
+            "primary": {
+              "start": 174,
+              "end": 178
+            }
+          }
+        ],
+        "labels": [
+          {
+            "message": "`html.textarea` has no standard prop `href`",
+            "primary": {
+              "start": 174,
+              "end": 178
+            }
+          }
+        ],
+        "notes": [],
+        "helps": [
+          "Use the suggested standard prop, or put a validated custom Attribute in `attributes`."
+        ],
+        "fixes": [],
+        "expectedType": null,
+        "actualType": null
+      },
+      {
+        "id": "d3",
+        "code": "SES-T0702",
+        "severity": "Error",
+        "messageKey": "web.html.missing-required-prop",
+        "message": "This HTML tag is missing a required prop",
+        "primary": {
+          "start": 244,
+          "end": 269
+        },
+        "related": [
+          {
+            "message": "`html.img` requires the `src` prop",
+            "primary": {
+              "start": 244,
+              "end": 269
+            }
+          }
+        ],
+        "labels": [
+          {
+            "message": "`html.img` requires the `src` prop",
+            "primary": {
+              "start": 244,
+              "end": 269
+            }
+          }
+        ],
+        "notes": [],
+        "helps": [
+          "Add the required prop to this record literal."
+        ],
+        "fixes": [],
+        "expectedType": null,
+        "actualType": null
+      },
+      {
+        "id": "d4",
+        "code": "SES-T0701",
+        "severity": "Error",
+        "messageKey": "web.html.void-children",
+        "message": "Void HTML elements cannot receive children",
+        "primary": {
+          "start": 321,
+          "end": 329
+        },
+        "related": [
+          {
+            "message": "`html.br` is a void element and cannot receive `children`",
+            "primary": {
+              "start": 321,
+              "end": 329
+            }
+          }
+        ],
+        "labels": [
+          {
+            "message": "`html.br` is a void element and cannot receive `children`",
+            "primary": {
+              "start": 321,
+              "end": 329
+            }
+          }
+        ],
+        "notes": [],
+        "helps": [
+          "Remove `children`, or use a non-void element that can contain content."
+        ],
+        "fixes": [],
+        "expectedType": null,
+        "actualType": null
+      },
+      {
+        "id": "d5",
+        "code": "SES-L0101",
+        "severity": "Warning",
+        "messageKey": "web.html.event-control-without-handler",
+        "message": "This event control has no matching handler",
+        "primary": {
+          "start": 399,
+          "end": 419
+        },
+        "related": [
+          {
+            "message": "`html.button` prop `stopClickPropagation` has no effect without `onClick`",
+            "primary": {
+              "start": 399,
+              "end": 419
+            }
+          }
+        ],
+        "labels": [
+          {
+            "message": "`html.button` prop `stopClickPropagation` has no effect without `onClick`",
+            "primary": {
+              "start": 399,
+              "end": 419
+            }
+          }
+        ],
+        "notes": [],
+        "helps": [
+          "Add `onClick`, or remove the unused event control prop."
+        ],
+        "fixes": [],
+        "expectedType": null,
+        "actualType": null
+      }
+    ]
   },
-  "symbols": [
-    {
-      "id": 0,
-      "identity": "artifact/self-tail-loop::sumTo",
-      "name": "sumTo",
-      "module": "artifact/self-tail-loop",
-      "namespace": "value",
-      "kind": "function",
-      "definition": {
-        "start": 3,
-        "end": 8
-      },
-      "typeName": "Int -> Int -> Int",
-      "callable": {
-        "identity": "artifact/self-tail-loop::sumTo",
-        "name": "sumTo",
-        "module": "artifact/self-tail-loop",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "current",
-            "type": "Int"
-          },
-          {
-            "name": "total",
-            "type": "Int"
-          }
-        ],
-        "result": "Int",
-        "constraints": [],
-        "signature": "sumTo current: Int -> total: Int -> Int",
-        "remainingParameters": []
-      }
-    },
-    {
-      "id": 1,
-      "identity": "artifact/self-tail-loop::selfTailLoopWorks",
-      "name": "selfTailLoopWorks",
-      "module": "artifact/self-tail-loop",
-      "namespace": "value",
-      "kind": "function",
-      "definition": {
-        "start": 135,
-        "end": 152
-      },
-      "typeName": "Unit -> Bool",
-      "callable": {
-        "identity": "artifact/self-tail-loop::selfTailLoopWorks",
-        "name": "selfTailLoopWorks",
-        "module": "artifact/self-tail-loop",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "unit",
-            "type": "Unit"
-          }
-        ],
-        "result": "Bool",
-        "constraints": [],
-        "signature": "selfTailLoopWorks unit: Unit -> Bool",
-        "remainingParameters": []
-      }
-    },
-    {
-      "id": 2,
-      "identity": "std/prelude::Int",
-      "name": "Int",
-      "module": "std/prelude",
-      "namespace": "type",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 3,
-      "identity": "artifact/self-tail-loop::local(3)",
-      "name": "current",
-      "module": "artifact/self-tail-loop",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 9,
-        "end": 16
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 4,
-      "identity": "artifact/self-tail-loop::local(4)",
-      "name": "total",
-      "module": "artifact/self-tail-loop",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 25,
-        "end": 30
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 5,
-      "identity": "std/prelude::<=",
-      "name": "<=",
-      "module": "std/prelude",
-      "namespace": "operator",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 6,
-      "identity": "std/prelude::-",
-      "name": "-",
-      "module": "std/prelude",
-      "namespace": "operator",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 7,
-      "identity": "std/prelude::+",
-      "name": "+",
-      "module": "std/prelude",
-      "namespace": "operator",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 8,
-      "identity": "std/prelude::Unit",
-      "name": "Unit",
-      "module": "std/prelude",
-      "namespace": "type",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 9,
-      "identity": "artifact/self-tail-loop::local(9)",
-      "name": "unit",
-      "module": "artifact/self-tail-loop",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 153,
-        "end": 157
-      },
-      "typeName": "Unit"
-    },
-    {
-      "id": 10,
-      "identity": "std/prelude::Bool",
-      "name": "Bool",
-      "module": "std/prelude",
-      "namespace": "type",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 11,
-      "identity": "std/prelude::==",
-      "name": "==",
-      "module": "std/prelude",
-      "namespace": "operator",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    }
-  ],
-  "symbolOccurrences": [
-    {
-      "range": {
-        "start": 3,
-        "end": 8
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 135,
-        "end": 152
-      },
-      "symbol": 1
-    },
-    {
-      "range": {
-        "start": 9,
-        "end": 16
-      },
-      "symbol": 3
-    },
-    {
-      "range": {
-        "start": 25,
-        "end": 30
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 153,
-        "end": 157
-      },
-      "symbol": 9
-    },
-    {
-      "range": {
-        "start": 18,
-        "end": 21
-      },
-      "symbol": 2
-    },
-    {
-      "range": {
-        "start": 32,
-        "end": 35
-      },
-      "symbol": 2
-    },
-    {
-      "range": {
-        "start": 39,
-        "end": 42
-      },
-      "symbol": 2
-    },
-    {
-      "range": {
-        "start": 50,
-        "end": 57
-      },
-      "symbol": 3
-    },
-    {
-      "range": {
-        "start": 58,
-        "end": 60
-      },
-      "symbol": 5
-    },
-    {
-      "range": {
-        "start": 72,
-        "end": 77
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 89,
-        "end": 94
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 96,
-        "end": 103
-      },
-      "symbol": 3
-    },
-    {
-      "range": {
-        "start": 104,
-        "end": 105
-      },
-      "symbol": 6
-    },
-    {
-      "range": {
-        "start": 110,
-        "end": 115
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 116,
-        "end": 117
-      },
-      "symbol": 7
-    },
-    {
-      "range": {
-        "start": 118,
-        "end": 125
-      },
-      "symbol": 3
-    },
-    {
-      "range": {
-        "start": 159,
-        "end": 163
-      },
-      "symbol": 8
-    },
-    {
-      "range": {
-        "start": 167,
-        "end": 171
-      },
-      "symbol": 10
-    },
-    {
-      "range": {
-        "start": 176,
-        "end": 181
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 191,
-        "end": 193
-      },
-      "symbol": 11
-    }
-  ],
-  "typeOccurrences": [
-    {
-      "range": {
-        "start": 3,
-        "end": 8
-      },
-      "type": "Int -> Int -> Int"
-    },
-    {
-      "range": {
-        "start": 9,
-        "end": 16
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 25,
-        "end": 30
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 47,
-        "end": 126
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 50,
-        "end": 57
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 50,
-        "end": 62
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 61,
-        "end": 62
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 72,
-        "end": 77
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 89,
-        "end": 94
-      },
-      "type": "Int -> Int -> Int"
-    },
-    {
-      "range": {
-        "start": 89,
-        "end": 126
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 96,
-        "end": 103
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 96,
-        "end": 107
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 106,
-        "end": 107
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 110,
-        "end": 115
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 110,
-        "end": 125
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 118,
-        "end": 125
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 135,
-        "end": 152
-      },
-      "type": "Unit -> Bool"
-    },
-    {
-      "range": {
-        "start": 153,
-        "end": 157
-      },
-      "type": "Unit"
-    },
-    {
-      "range": {
-        "start": 176,
-        "end": 181
-      },
-      "type": "Int -> Int -> Int"
-    },
-    {
-      "range": {
-        "start": 176,
-        "end": 190
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 176,
-        "end": 204
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 182,
-        "end": 188
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 189,
-        "end": 190
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 194,
-        "end": 204
-      },
-      "type": "Int"
-    }
-  ],
-  "callableOccurrences": [
-    {
-      "range": {
-        "start": 3,
-        "end": 8
-      },
-      "callable": {
-        "identity": "artifact/self-tail-loop::sumTo",
-        "name": "sumTo",
-        "module": "artifact/self-tail-loop",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "current",
-            "type": "Int"
-          },
-          {
-            "name": "total",
-            "type": "Int"
-          }
-        ],
-        "result": "Int",
-        "constraints": [],
-        "signature": "sumTo current: Int -> total: Int -> Int",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 135,
-        "end": 152
-      },
-      "callable": {
-        "identity": "artifact/self-tail-loop::selfTailLoopWorks",
-        "name": "selfTailLoopWorks",
-        "module": "artifact/self-tail-loop",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "unit",
-            "type": "Unit"
-          }
-        ],
-        "result": "Bool",
-        "constraints": [],
-        "signature": "selfTailLoopWorks unit: Unit -> Bool",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 89,
-        "end": 94
-      },
-      "callable": {
-        "identity": "artifact/self-tail-loop::sumTo",
-        "name": "sumTo",
-        "module": "artifact/self-tail-loop",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "current",
-            "type": "Int"
-          },
-          {
-            "name": "total",
-            "type": "Int"
-          }
-        ],
-        "result": "Int",
-        "constraints": [],
-        "signature": "sumTo current: Int -> total: Int -> Int",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 176,
-        "end": 181
-      },
-      "callable": {
-        "identity": "artifact/self-tail-loop::sumTo",
-        "name": "sumTo",
-        "module": "artifact/self-tail-loop",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "current",
-            "type": "Int"
-          },
-          {
-            "name": "total",
-            "type": "Int"
-          }
-        ],
-        "result": "Int",
-        "constraints": [],
-        "signature": "sumTo current: Int -> total: Int -> Int",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 89,
-        "end": 126
-      },
-      "callable": {
-        "identity": "artifact/self-tail-loop::sumTo",
-        "name": "sumTo",
-        "module": "artifact/self-tail-loop",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "current",
-            "type": "Int"
-          },
-          {
-            "name": "total",
-            "type": "Int"
-          }
-        ],
-        "result": "Int",
-        "constraints": [],
-        "signature": "sumTo current: Int -> total: Int -> Int",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 176,
-        "end": 190
-      },
-      "callable": {
-        "identity": "artifact/self-tail-loop::sumTo",
-        "name": "sumTo",
-        "module": "artifact/self-tail-loop",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "current",
-            "type": "Int"
-          },
-          {
-            "name": "total",
-            "type": "Int"
-          }
-        ],
-        "result": "Int",
-        "constraints": [],
-        "signature": "sumTo current: Int -> total: Int -> Int",
-        "remainingParameters": []
-      }
-    }
-  ],
+  "symbols": [],
+  "symbolOccurrences": [],
+  "typeOccurrences": [],
+  "callableOccurrences": [],
   "standardLibrary": [
     {
       "identity": "std/prelude::all",

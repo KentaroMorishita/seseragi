@@ -1,0 +1,16 @@
+import * as html from "std/web/html"
+
+fn typo -> html.Html<Never> =
+  html.div { clasName: "hero", children: "Typo" }
+
+fn invalidProp -> html.Html<Never> =
+  html.textarea { href: "/wrong" }
+
+fn missingRequired -> html.Html<Never> =
+  html.img { alt: "missing source" }
+
+fn voidChildren -> html.Html<Never> =
+  html.br { children: "invalid" }
+
+fn unusedControl -> html.Html<Never> =
+  html.button { stopClickPropagation: True, children: "Save" }

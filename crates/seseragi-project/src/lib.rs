@@ -43,6 +43,7 @@ pub use specifier::{
     SpecifierError,
 };
 pub use standard::{
-    is_standard_module, is_standard_void_html_tag, standard_module_interfaces,
-    standard_module_target,
+    is_standard_module, is_standard_void_html_tag, standard_html_tag, standard_html_tag_props,
+    standard_module_interfaces, standard_module_target, StandardHtmlTag, StandardHtmlTagKind,
+    STANDARD_HTML_TAGS,
 };

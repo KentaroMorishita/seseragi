@@ -126,4 +126,25 @@ mod tests {
             .any(|item| item["name"] == "join"));
         assert!(response.get("generated").is_none());
     }
+
+    #[test]
+    fn returns_shared_standard_html_prop_diagnostics_for_the_playground() {
+        let source = r#"import * as html from "std/web/html"
+
+fn view -> html.Html<Never> =
+  html.div { clasName: "hero", children: "Typo" }
+"#;
+        let response: Value =
+            serde_json::from_str(&analyze_single_file("main.ssrg", "playground/main", source))
+                .unwrap();
+        let diagnostics = response["diagnostics"]["diagnostics"].as_array().unwrap();
+
+        assert_eq!(diagnostics.len(), 1);
+        assert_eq!(diagnostics[0]["code"], "SES-L0101");
+        assert_eq!(diagnostics[0]["messageKey"], "web.html.unknown-prop");
+        assert_eq!(
+            diagnostics[0]["fixes"][0]["edits"][0]["replacement"],
+            "className"
+        );
+    }
 }
