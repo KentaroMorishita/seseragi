@@ -236,8 +236,7 @@ impl<'a> PureExpressionContext<'a> {
             &[Some(trait_identity.clone())],
             self.resolution,
             &self.evidence_parameters,
-        )
-        .map_err(|_| constraint.clone())?
+        )?
         .into_iter()
         .next()
         .ok_or(constraint)?;

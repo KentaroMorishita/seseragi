@@ -17,7 +17,7 @@ pub(crate) fn strict_equality_operator_with_evidence<'operator>(
     let [selected] = evidence else {
         return None;
     };
-    let CoreInstanceEvidence::Standard { identity } = &selected.evidence else {
+    let CoreInstanceEvidence::Standard { identity, .. } = &selected.evidence else {
         return None;
     };
     let [value] = selected.constraint.arguments.as_slice() else {
@@ -74,6 +74,8 @@ mod tests {
             },
             evidence: CoreInstanceEvidence::Standard {
                 identity: identity.to_owned(),
+                type_arguments: Vec::new(),
+                evidence_arguments: Vec::new(),
             },
         }]
     }

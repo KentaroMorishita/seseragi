@@ -1,0 +1,326 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/show-debug-collections",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/show-debug-collections::showNested",
+      "namespace": "value",
+      "name": "showNested",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 320,
+        "end": 413
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-collections::debugNested",
+      "namespace": "value",
+      "name": "debugNested",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 415,
+        "end": 511
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-collections::showMany",
+      "namespace": "value",
+      "name": "showMany",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 513,
+        "end": 588
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [
+          {
+            "name": "Show",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-collections::debugOptional",
+      "namespace": "value",
+      "name": "debugOptional",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 590,
+        "end": 670
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [
+          {
+            "name": "Debug",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-collections::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 672,
+        "end": 935
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Show<artifact/show-debug-collections::Badge>",
+      "providerModule": "artifact/show-debug-collections",
+      "traitIdentity": "std/prelude::Show",
+      "argumentIdentities": [
+        "artifact/show-debug-collections::Badge"
+      ],
+      "typeIdentity": "artifact/show-debug-collections::Badge",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 36,
+        "end": 169
+      }
+    },
+    {
+      "identity": "std/prelude::Debug<artifact/show-debug-collections::Badge>",
+      "providerModule": "artifact/show-debug-collections",
+      "traitIdentity": "std/prelude::Debug",
+      "argumentIdentities": [
+        "artifact/show-debug-collections::Badge"
+      ],
+      "trait": "Debug",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Debug",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 171,
+        "end": 318
+      }
+    }
+  ]
+}

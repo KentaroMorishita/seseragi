@@ -18,9 +18,11 @@ Current scope:
   owns one lazy root-run-local cursor, rejects concurrent reads through the
   typed channel, and returns singleton `Nothing` at sticky EOF.
 - `./show`: pure `Show<A>` / `Debug<A>` dictionary shapes, immutable render
-  documents, and canonical primitive dictionaries. Compact, multiline, and
-  width-based auto layout share one document; String / Char Debug escaping is
-  implemented directly without host JSON or stringification semantics.
+  documents, canonical primitive dictionaries, and conditional Array / List /
+  Maybe / Either dictionary factories. Compact, multiline, and width-based
+  auto layout share one recursively composed document; String / Char Debug
+  escaping is implemented directly without host JSON or stringification
+  semantics.
 
 Typed failureはruntime内部のprivate carrierでdefectと区別します。`fail`だけがcarrierを発生させ、`run`は
 carrierだけを`EffectResult.failure`へ変換します。任意のJavaScript throw / rejected Promiseはdefectとして

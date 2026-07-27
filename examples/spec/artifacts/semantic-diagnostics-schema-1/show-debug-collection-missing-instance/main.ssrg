@@ -1,0 +1,5 @@
+type Token =
+  | Token
+
+pub fn render values: Array<Maybe<Token>> -> String =
+  show values

@@ -60,7 +60,7 @@ pub(super) fn call_diagnostic(
             callee,
             format!(
                 "no {} instance matches the inferred call arguments",
-                constraint.name
+                constraint_label(&constraint)
             ),
         ),
         PureCallIssue::TraitMethodAmbiguous { callee } => (
@@ -181,6 +181,22 @@ pub(super) fn call_diagnostic(
         }],
         fixes: Vec::new(),
     }
+}
+
+fn constraint_label(constraint: &crate::TypedConstraint) -> String {
+    if constraint.arguments.is_empty() || !matches!(constraint.name.as_str(), "Show" | "Debug") {
+        return constraint.name.clone();
+    }
+    format!(
+        "{}<{}>",
+        constraint.name,
+        constraint
+            .arguments
+            .iter()
+            .map(type_label)
+            .collect::<Vec<_>>()
+            .join(", ")
+    )
 }
 
 fn argument_word(count: usize) -> &'static str {
@@ -324,7 +340,24 @@ mod tests {
         assert_eq!(artifact.diagnostics[0].message_key, "instance.missing");
         assert_eq!(
             artifact.diagnostics[0].related[0].message,
-            "no Show instance matches the inferred call arguments"
+            "no Show<Badge> instance matches the inferred call arguments"
+        );
+    }
+
+    #[test]
+    fn reports_the_missing_leaf_of_a_conditional_collection_instance() {
+        let artifact = semantic_diagnostics(
+            "missing-collection-show.ssrg",
+            "type Token = | Token\n\
+             fn render values: Array<Maybe<Token>> -> String = show values\n",
+        );
+
+        assert_eq!(artifact.diagnostics.len(), 1);
+        assert_eq!(artifact.diagnostics[0].code, "SES-T0201");
+        assert_eq!(artifact.diagnostics[0].message_key, "instance.missing");
+        assert_eq!(
+            artifact.diagnostics[0].related[0].message,
+            "no Show<Token> instance matches the inferred call arguments"
         );
     }
 

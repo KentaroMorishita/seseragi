@@ -1,0 +1,22 @@
+{
+  "version": 3,
+  "file": "dist/imported-show-debug-collection-evidence/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-show-debug-collection-evidence::domain"
+  ],
+  "sourcesContent": [
+    "pub type Badge =\n  | Active\n  | Paused\n\ninstance Show<Badge> {\n  fn show value: Badge -> String =\n    match value {\n      Active -> \"active\"\n      Paused -> \"paused\"\n    }\n}\n\ninstance Debug<Badge> {\n  fn debug value: Badge -> String =\n    match value {\n      Active -> \"Badge.Active\"\n      Paused -> \"Badge.Paused\"\n  }\n}\n\npub trait Render<A> {\n  fn render value: A -> String\n}\n\ninstance<T> Render<Maybe<T>>\nwhere Show<Array<T>> {\n  fn render value: Maybe<T> -> String =\n    \"imported collection requirement\"\n}\n\npub fn renderImported<T> value: T -> String\nwhere Render<T> =\n  render value\n"
+  ],
+  "names": [
+    "Badge",
+    "Active",
+    "Paused",
+    "__ssrg$instance$Show$0",
+    "__ssrg$instance$Debug$1",
+    "__ssrg$instance$Render$2",
+    "renderImported",
+    "__ssrg$evidence$0"
+  ],
+  "mappings": "AAAAA;;;AACIC;AACAC;AAEJC;AAQAC;AAYAC;AAMAC"
+}

@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "case": "show-debug-collections",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/show-debug-collections",
+    "export": "main",
+    "compiledModule": "../../schema-1/show-debug-collections/generated-module.json",
+    "typedInterface": "../../schema-1/show-debug-collections/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.list",
+      "core.adt",
+      "core.string",
+      "core.maybe",
+      "core.either",
+      "core.int64",
+      "core.string.show",
+      "core.int64.show",
+      "core.list.show",
+      "core.either.show",
+      "core.maybe.show",
+      "core.array.show",
+      "core.bool",
+      "core.string.debug",
+      "core.bool.debug",
+      "core.list.debug",
+      "core.either.debug",
+      "core.maybe.debug",
+      "core.array.debug",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.maybe.just",
+      "core.either.right",
+      "core.list.from-array",
+      "core.maybe.nothing",
+      "core.either.left"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "[Just Right `[1, 2], Nothing, Just Left oops]"
+        ],
+        "stdout": "[Just Right `[1, 2], Nothing, Just Left oops]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "[Just Right `[True, False], Nothing, Just Left \"oops\"]"
+        ],
+        "stdout": "[Just Right `[True, False], Nothing, Just Left \"oops\"]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "[active, paused]"
+        ],
+        "stdout": "[active, paused]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Just Badge.Active"
+        ],
+        "stdout": "Just Badge.Active\n"
+      }
+    ]
+  }
+}

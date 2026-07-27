@@ -1,0 +1,4 @@
+[Just Right `[1, 2], Nothing, Just Left oops]
+[Just Right `[True, False], Nothing, Just Left "oops"]
+[active, paused]
+Just Badge.Active

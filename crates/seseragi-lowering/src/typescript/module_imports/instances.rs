@@ -254,6 +254,9 @@ fn collect_evidence(evidence: &CoreInstanceEvidence, imported: &mut BTreeSet<(St
         CoreInstanceEvidence::Local {
             evidence_arguments, ..
         } => collect_call_evidence(evidence_arguments, imported),
-        CoreInstanceEvidence::Standard { .. } | CoreInstanceEvidence::Parameter { .. } => {}
+        CoreInstanceEvidence::Standard {
+            evidence_arguments, ..
+        } => collect_call_evidence(evidence_arguments, imported),
+        CoreInstanceEvidence::Parameter { .. } => {}
     }
 }

@@ -36,7 +36,7 @@ pub(super) fn resolve_show_dictionary(
                 local: local.clone(),
             }
         }
-        CoreInstanceEvidence::Standard { identity } => {
+        CoreInstanceEvidence::Standard { identity, .. } => {
             let dictionary = runtime_display_dictionary_for_identity(identity)
                 .expect("selected standard Show identity must be registered");
             push_unique(runtime_requirements, dictionary.runtime_feature);

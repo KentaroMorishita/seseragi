@@ -488,6 +488,22 @@ composite instanceが共有する内部契約です。同じinstanceから次の
 - nested delimiterは現在のindent depthを引き継ぐ。collection itemとfieldはinstanceが渡した
   source順を保ち、rendererがsortし直さない。
 
+Array、List、Maybe、Eitherは次のconditional standard instanceを持ちます。
+
+- `Show<Array<A>> where Show<A>` / `Debug<Array<A>> where Debug<A>`
+- `Show<List<A>> where Show<A>` / `Debug<List<A>> where Debug<A>`
+- `Show<Maybe<A>> where Show<A>` / `Debug<Maybe<A>> where Debug<A>`
+- `Show<Either<E, A>> where Show<E>, Show<A>` /
+  `Debug<Either<E, A>> where Debug<E>, Debug<A>`
+
+Arrayは`[a, b]`、Listは`` `[a, b] ``としてsource順に描画します。Maybeは
+`Nothing`または`Just value`、Eitherは`Left error`または`Right value`です。
+Debugも同じ外形を使いますが、各payloadをDebug dictionaryで描画するため、Stringなどの
+引用符とescapeはShowと異なります。multilineではcollection itemを一段ずつindentし、
+constructor payloadはconstructor名の次行へ一段indentします。composite instanceは
+子dictionaryのrender documentをそのまま合成し、hostの配列文字列化やobject inspectionへ
+委譲しません。
+
 Show/Debugと出力先は別概念です。型classを実装しただけで値がconsoleへ書かれることは
 ありません。
 

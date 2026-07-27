@@ -103,7 +103,15 @@ fn standard_instance_conflicts(local_instances: &[TypedInstance]) -> Vec<Derived
             let [argument] = local.arguments.as_slice() else {
                 return None;
             };
-            crate::prelude::overlapping_standard_instance(&local.trait_identity, argument).map(
+            let [canonical_argument] = local.argument_identities.as_slice() else {
+                return None;
+            };
+            crate::prelude::overlapping_standard_instance(
+                &local.trait_identity,
+                argument,
+                canonical_argument,
+            )
+            .map(
                 |standard| DerivedInstanceIssue::OverlappingStandardInstance {
                     trait_name: local.trait_name.clone(),
                     standard_identity: standard.identity.to_owned(),

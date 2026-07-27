@@ -409,7 +409,7 @@ pub(crate) fn runtime_collection_operation(
     let [selected] = evidence else {
         return None;
     };
-    let CoreInstanceEvidence::Standard { identity } = &selected.evidence else {
+    let CoreInstanceEvidence::Standard { identity, .. } = &selected.evidence else {
         return None;
     };
     if callee != "std/prelude::reduce" || selected.constraint.name != "Reducible" {
@@ -549,7 +549,7 @@ pub(crate) fn runtime_iterable_operation(
     if evidence.constraint.name != "Iterable" {
         return None;
     }
-    let CoreInstanceEvidence::Standard { identity } = &evidence.evidence else {
+    let CoreInstanceEvidence::Standard { identity, .. } = &evidence.evidence else {
         return None;
     };
     match (identity.as_str(), flatten) {
@@ -593,6 +593,8 @@ mod tests {
             },
             evidence: CoreInstanceEvidence::Standard {
                 identity: "std/array::Reducible".to_owned(),
+                type_arguments: Vec::new(),
+                evidence_arguments: Vec::new(),
             },
         }];
 
@@ -619,6 +621,8 @@ mod tests {
             },
             evidence: CoreInstanceEvidence::Standard {
                 identity: "std/range::Reducible".to_owned(),
+                type_arguments: Vec::new(),
+                evidence_arguments: Vec::new(),
             },
         }];
 
@@ -754,6 +758,8 @@ mod tests {
                 },
                 evidence: CoreInstanceEvidence::Standard {
                     identity: "std/string::Monoid".to_owned(),
+                    type_arguments: Vec::new(),
+                    evidence_arguments: Vec::new(),
                 },
             },
         ];
@@ -813,6 +819,8 @@ mod tests {
             },
             evidence: CoreInstanceEvidence::Standard {
                 identity: "std/list::Reducible".to_owned(),
+                type_arguments: Vec::new(),
+                evidence_arguments: Vec::new(),
             },
         }];
 
@@ -844,6 +852,8 @@ mod tests {
             },
             evidence: CoreInstanceEvidence::Standard {
                 identity: "std/range::Iterable".to_owned(),
+                type_arguments: Vec::new(),
+                evidence_arguments: Vec::new(),
             },
         };
 

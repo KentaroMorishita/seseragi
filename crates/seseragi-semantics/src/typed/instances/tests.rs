@@ -183,6 +183,21 @@ instance Identity<Badge> { fn identity value: Badge -> Badge = value }
 }
 
 #[test]
+fn retains_the_primary_type_identity_for_a_user_defined_show_instance() {
+    let source = "\
+type Badge = | Active
+instance Show<Badge> { fn show value: Badge -> String = \"active\" }
+";
+    let typed = type_module("artifact/user-show-instance/main.ssrg", source);
+
+    assert_eq!(typed.instances.len(), 1);
+    assert_eq!(
+        typed.instances[0].type_identity.as_deref(),
+        Some("artifact/user-show-instance::Badge")
+    );
+}
+
+#[test]
 fn alpha_normalizes_generic_instance_binders_in_canonical_identity() {
     let source_for = |binder: &str| {
         format!(

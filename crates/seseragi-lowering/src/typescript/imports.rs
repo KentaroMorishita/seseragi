@@ -124,8 +124,17 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
                 rewrite_expr(argument, renames);
             }
         }
-        TypeScriptExpr::Call { arguments, .. }
-        | TypeScriptExpr::TypeApplicationCall { arguments, .. } => {
+        TypeScriptExpr::TypeApplicationCall {
+            callee, arguments, ..
+        } => {
+            if let Some(fresh) = renames.get(callee) {
+                *callee = fresh.clone();
+            }
+            for argument in arguments {
+                rewrite_expr(argument, renames);
+            }
+        }
+        TypeScriptExpr::Call { arguments, .. } => {
             for argument in arguments {
                 rewrite_expr(argument, renames);
             }

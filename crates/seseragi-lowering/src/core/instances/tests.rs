@@ -42,6 +42,8 @@ pub type AppError deriving Show =
                 type_identity: "std/prelude::String".to_owned(),
                 evidence: CoreInstanceEvidence::Standard {
                     identity: "Show<std/prelude::String>".to_owned(),
+                    type_arguments: Vec::new(),
+                    evidence_arguments: Vec::new(),
                 },
             }],
         }

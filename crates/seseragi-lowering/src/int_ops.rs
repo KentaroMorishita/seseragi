@@ -90,7 +90,7 @@ pub(crate) fn runtime_int_operation_with_evidence(
     let [selected] = evidence else {
         return None;
     };
-    let CoreInstanceEvidence::Standard { identity } = &selected.evidence else {
+    let CoreInstanceEvidence::Standard { identity, .. } = &selected.evidence else {
         return None;
     };
     let arguments_are_int = matches!(selected.constraint.arguments.as_slice(), [left, right, output]
@@ -142,6 +142,8 @@ mod tests {
             },
             evidence: CoreInstanceEvidence::Standard {
                 identity: "std/int::Add".to_owned(),
+                type_arguments: Vec::new(),
+                evidence_arguments: Vec::new(),
             },
         }];
         assert!(runtime_int_operation_with_evidence("+", &evidence).is_some());

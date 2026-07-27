@@ -205,7 +205,7 @@ fn selects_array_reducible_evidence_for_standard_reduce() {
         } if callee == "std/prelude::reduce"
             && type_ref == &named("Int")
             && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
-                evidence: TypedInstanceEvidence::Standard { identity },
+                evidence: TypedInstanceEvidence::Standard { identity, .. },
                 ..
             }] if identity == "std/array::Reducible")
     ));
@@ -218,8 +218,226 @@ fn selects_array_reducible_evidence_for_standard_reduce() {
             if name == "+"
                 && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
                     constraint: crate::TypedConstraint { name, .. },
-                    evidence: TypedInstanceEvidence::Standard { identity },
+                    evidence: TypedInstanceEvidence::Standard { identity, .. },
                 }] if name == "Add" && identity == "std/int::Add")
+    ));
+}
+
+#[test]
+fn composes_array_show_from_a_scoped_element_dictionary() {
+    let typed = type_module(
+        "artifact/scoped-array-show/main.ssrg",
+        "pub fn renderMany<A> values: Array<A> -> String\n\
+         where Show<A> =\n\
+           show values\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[0] else {
+        panic!("expected renderMany function");
+    };
+    assert!(matches!(
+        body,
+        TypedExpr::Call {
+            callee,
+            evidence,
+            ..
+        } if callee == "std/prelude::Show::show"
+            && matches!(
+                evidence.as_slice(),
+                [crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard {
+                        identity,
+                        evidence_arguments,
+                        ..
+                    },
+                    ..
+                }] if identity == "std/array::Show"
+                    && matches!(
+                        evidence_arguments.as_slice(),
+                        [crate::TypedCallEvidence {
+                            evidence: TypedInstanceEvidence::Parameter { index: 0 },
+                            ..
+                        }]
+                    )
+            )
+    ));
+}
+
+#[test]
+fn composes_maybe_show_from_a_local_element_dictionary() {
+    let typed = type_module(
+        "artifact/local-maybe-show/main.ssrg",
+        "type Badge = | Active | Paused\n\
+         instance Show<Badge> {\n\
+           fn show value: Badge -> String =\n\
+             match value { Active -> \"active\"; Paused -> \"paused\" }\n\
+         }\n\
+         pub fn renderBadge value: Maybe<Badge> -> String =\n\
+           show value\n",
+    );
+
+    let body = typed
+        .declarations
+        .iter()
+        .find_map(|declaration| match declaration {
+            TypedDecl::Fn { symbol, body, .. } if symbol.ends_with("::renderBadge") => Some(body),
+            _ => None,
+        })
+        .expect("expected renderBadge function");
+    assert!(matches!(
+        body,
+        TypedExpr::Call {
+            evidence,
+            ..
+        } if matches!(
+            evidence.as_slice(),
+            [crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Standard {
+                    identity,
+                    evidence_arguments,
+                    ..
+                },
+                ..
+            }] if identity == "std/maybe::Show"
+                && matches!(
+                    evidence_arguments.as_slice(),
+                    [crate::TypedCallEvidence {
+                        evidence: TypedInstanceEvidence::Local { identity, .. },
+                        ..
+                    }] if identity == "std/prelude::Show<artifact/local-maybe-show::Badge>"
+                )
+        )
+    ));
+}
+
+#[test]
+fn composes_a_local_instance_requirement_through_standard_collection_evidence() {
+    let typed = type_module(
+        "artifact/local-instance-collection-requirement/main.ssrg",
+        "type Badge = | Active\n\
+         instance Show<Badge> {\n\
+           fn show value: Badge -> String = \"active\"\n\
+         }\n\
+         trait Render<A> {\n\
+           fn render value: A -> String\n\
+         }\n\
+         instance<T> Render<Maybe<T>>\n\
+         where Show<Array<T>> {\n\
+           fn render value: Maybe<T> -> String = \"rendered\"\n\
+         }\n\
+         pub fn label value: Maybe<Badge> -> String =\n\
+           render value\n",
+    );
+
+    let body = typed
+        .declarations
+        .iter()
+        .find_map(|declaration| match declaration {
+            TypedDecl::Fn { symbol, body, .. } if symbol.ends_with("::label") => Some(body),
+            _ => None,
+        })
+        .expect("expected label function");
+    assert!(matches!(
+        body,
+        TypedExpr::Call {
+            evidence,
+            ..
+        } if matches!(
+            evidence.as_slice(),
+            [crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Local {
+                    evidence_arguments,
+                    ..
+                },
+                ..
+            }] if matches!(
+                evidence_arguments.as_slice(),
+                [crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard {
+                        identity,
+                        evidence_arguments,
+                        ..
+                    },
+                    ..
+                }] if identity == "std/array::Show"
+                    && matches!(
+                        evidence_arguments.as_slice(),
+                        [crate::TypedCallEvidence {
+                            evidence: TypedInstanceEvidence::Local { identity, .. },
+                            ..
+                        }] if identity
+                            == "std/prelude::Show<artifact/local-instance-collection-requirement::Badge>"
+                    )
+            )
+        )
+    ));
+}
+
+#[test]
+fn does_not_apply_the_standard_maybe_dictionary_to_a_shadowing_local_adt() {
+    let typed = type_module(
+        "artifact/shadowed-maybe-show/main.ssrg",
+        "type Maybe<A> = | Local A\n\
+         pub fn render value: Maybe<String> -> String =\n\
+           show value\n",
+    );
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[1] else {
+        panic!("expected render function");
+    };
+    assert!(matches!(
+        body,
+        TypedExpr::Call {
+            evidence,
+            type_ref: TypedType::Hole,
+            ..
+        } if evidence.is_empty()
+    ));
+}
+
+#[test]
+fn allows_a_local_show_instance_for_a_shadowing_maybe_adt() {
+    let source = "type Maybe<A> = | Local A\n\
+                  instance<A> Show<Maybe<A>> {\n\
+                    fn show value: Maybe<A> -> String = \"local\"\n\
+                  }\n\
+                  pub fn render value: Maybe<String> -> String =\n\
+                    show value\n";
+    let diagnostics =
+        crate::semantic_diagnostics("artifact/shadowed-maybe-instance/main.ssrg", source);
+    assert!(
+        diagnostics.diagnostics.is_empty(),
+        "unexpected diagnostics: {:?}",
+        diagnostics.diagnostics
+    );
+
+    let typed = type_module("artifact/shadowed-maybe-instance/main.ssrg", source);
+    let body = typed
+        .declarations
+        .iter()
+        .find_map(|declaration| match declaration {
+            TypedDecl::Fn { symbol, body, .. } if symbol.ends_with("::render") => Some(body),
+            _ => None,
+        })
+        .expect("expected render function");
+    assert!(matches!(
+        body,
+        TypedExpr::Call {
+            evidence,
+            ..
+        } if matches!(
+            evidence.as_slice(),
+            [crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Local {
+                    identity,
+                    type_arguments,
+                    ..
+                },
+                ..
+            }] if identity
+                == "std/prelude::Show<artifact/shadowed-maybe-instance::Maybe<$0>>"
+                && type_arguments == &vec![named("String")]
+        )
     ));
 }
 
@@ -243,7 +461,7 @@ fn selects_array_reducible_evidence_for_standard_join() {
         } if callee == "std/prelude::join"
             && type_ref == &named("String")
             && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
-                evidence: TypedInstanceEvidence::Standard { identity },
+                evidence: TypedInstanceEvidence::Standard { identity, .. },
                 ..
             }] if identity == "std/array::Reducible")
     ));
@@ -270,15 +488,15 @@ fn selects_reducible_zero_and_add_evidence_for_standard_sum() {
             && type_ref == &named("Int")
             && matches!(evidence.as_slice(), [
                 crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity: reducible },
+                    evidence: TypedInstanceEvidence::Standard { identity: reducible, .. },
                     ..
                 },
                 crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity: zero },
+                    evidence: TypedInstanceEvidence::Standard { identity: zero, .. },
                     ..
                 },
                 crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity: add },
+                    evidence: TypedInstanceEvidence::Standard { identity: add, .. },
                     ..
                 },
             ] if reducible == "std/array::Reducible"
@@ -308,15 +526,15 @@ fn selects_reducible_one_and_mul_evidence_for_standard_product() {
             && type_ref == &named("Int")
             && matches!(evidence.as_slice(), [
                 crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity: reducible },
+                    evidence: TypedInstanceEvidence::Standard { identity: reducible, .. },
                     ..
                 },
                 crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity: one },
+                    evidence: TypedInstanceEvidence::Standard { identity: one, .. },
                     ..
                 },
                 crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity: mul },
+                    evidence: TypedInstanceEvidence::Standard { identity: mul, .. },
                     ..
                 },
             ] if reducible == "std/list::Reducible"
@@ -354,7 +572,7 @@ fn selects_iterable_evidence_for_short_circuit_aggregates() {
                 if callee == expected_callee
                     && type_ref == &named("Bool")
                     && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
-                        evidence: TypedInstanceEvidence::Standard { identity },
+                        evidence: TypedInstanceEvidence::Standard { identity, .. },
                         ..
                     }] if identity == expected_identity)
         ));
@@ -382,11 +600,11 @@ fn selects_reducible_and_monoid_evidence_for_standard_combine() {
             && type_ref == &named("String")
             && matches!(evidence.as_slice(), [
                 crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity: reducible },
+                    evidence: TypedInstanceEvidence::Standard { identity: reducible, .. },
                     ..
                 },
                 crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity: monoid },
+                    evidence: TypedInstanceEvidence::Standard { identity: monoid, .. },
                     ..
                 },
             ] if reducible == "std/array::Reducible"
@@ -414,7 +632,7 @@ fn selects_standard_power_evidence_for_an_operator_function_value() {
             if name == "**"
                 && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
                     constraint: crate::TypedConstraint { name, .. },
-                    evidence: TypedInstanceEvidence::Standard { identity },
+                    evidence: TypedInstanceEvidence::Standard { identity, .. },
                 }] if name == "Pow" && identity == "std/int::Pow")
     ));
 }
@@ -449,7 +667,7 @@ fn selects_prelude_either_dictionaries_for_explicit_monad_calls() {
     assert!(matches!(
         evidence.as_slice(),
         [crate::TypedCallEvidence {
-            evidence: TypedInstanceEvidence::Standard { identity },
+            evidence: TypedInstanceEvidence::Standard { identity, .. },
             ..
         }] if identity == "std/either::Monad"
     ));
@@ -461,7 +679,7 @@ fn selects_prelude_either_dictionaries_for_explicit_monad_calls() {
         TypedExpr::Call { callee, evidence, .. }
             if callee == "std/prelude::Applicative::pure"
                 && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity },
+                    evidence: TypedInstanceEvidence::Standard { identity, .. },
                     ..
                 }] if identity == "std/either::Applicative")
     ));
@@ -484,7 +702,7 @@ fn selects_the_prelude_maybe_functor_without_source_declarations() {
             if callee == "std/prelude::Functor::map"
                 && type_ref == &applied("Maybe", vec![named("Int")])
                 && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity },
+                    evidence: TypedInstanceEvidence::Standard { identity, .. },
                     ..
                 }] if identity == "std/maybe::Functor")
     ));
@@ -507,7 +725,7 @@ fn selects_the_prelude_array_monad_without_source_declarations() {
             if callee == "std/prelude::Monad::flatMap"
                 && type_ref == &applied("Array", vec![named("Int")])
                 && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity },
+                    evidence: TypedInstanceEvidence::Standard { identity, .. },
                     ..
                 }] if identity == "std/array::Monad")
     ));
@@ -530,7 +748,7 @@ fn selects_the_prelude_list_monad_without_source_declarations() {
             if callee == "std/prelude::Monad::flatMap"
                 && type_ref == &applied("List", vec![named("Int")])
                 && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity },
+                    evidence: TypedInstanceEvidence::Standard { identity, .. },
                     ..
                 }] if identity == "std/list::Monad")
     ));
@@ -564,7 +782,7 @@ fn selects_the_prelude_effect_functor_without_source_declarations() {
                         ],
                     )
                     && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
-                        evidence: TypedInstanceEvidence::Standard { identity },
+                        evidence: TypedInstanceEvidence::Standard { identity, .. },
                         ..
                     }] if identity == "std/effect::Functor")
         ),

@@ -1,5 +1,7 @@
 import type { ConsoleError } from "./console-service"
+import type { List } from "./list"
 import type { StdinError } from "./stdin-service"
+import type { Either, Maybe } from "./sum"
 
 export type RenderLayout = "compact" | "multiline" | "auto"
 
@@ -52,6 +54,10 @@ export type Show<Value> = DocumentBacked<Value> & {
 export type Debug<Value> = DocumentBacked<Value> & {
   readonly debug: (value: Value) => string
 }
+
+type ErasedEvidence = Readonly<Record<string, (...arguments_: any[]) => any>>
+type ShowEvidence<Value> = Show<Value> | ErasedEvidence
+type DebugEvidence<Value> = Debug<Value> | ErasedEvidence
 
 export function text(value: string): RenderDocument {
   return Object.freeze({ kind: "text", value })
@@ -181,6 +187,89 @@ export const stringDebug = defineDebug((value: string) =>
   text(`"${escapeText(value, '"')}"`)
 )
 
+/** Ordered, recursively composed display dictionaries for standard containers. */
+export function arrayShow<Value>(
+  element: ShowEvidence<Value>
+): Show<ReadonlyArray<Value>> {
+  return defineShow((values) =>
+    delimited(
+      "[",
+      values.map((value) => showDocument(element, value)),
+      "]"
+    )
+  )
+}
+
+export function arrayDebug<Value>(
+  element: DebugEvidence<Value>
+): Debug<ReadonlyArray<Value>> {
+  return defineDebug((values) =>
+    delimited(
+      "[",
+      values.map((value) => debugDocument(element, value)),
+      "]"
+    )
+  )
+}
+
+export function listShow<Value>(
+  element: ShowEvidence<Value>
+): Show<List<Value>> {
+  return defineShow((values) =>
+    delimited("`[", listDocuments(values, element, showDocument), "]")
+  )
+}
+
+export function listDebug<Value>(
+  element: DebugEvidence<Value>
+): Debug<List<Value>> {
+  return defineDebug((values) =>
+    delimited("`[", listDocuments(values, element, debugDocument), "]")
+  )
+}
+
+export function maybeShow<Value>(
+  element: ShowEvidence<Value>
+): Show<Maybe<Value>> {
+  return defineShow((value) =>
+    value.tag === "Nothing"
+      ? text("Nothing")
+      : constructorDocument("Just", showDocument(element, value.value))
+  )
+}
+
+export function maybeDebug<Value>(
+  element: DebugEvidence<Value>
+): Debug<Maybe<Value>> {
+  return defineDebug((value) =>
+    value.tag === "Nothing"
+      ? text("Nothing")
+      : constructorDocument("Just", debugDocument(element, value.value))
+  )
+}
+
+export function eitherShow<Error, Value>(
+  error: ShowEvidence<Error>,
+  value: ShowEvidence<Value>
+): Show<Either<Error, Value>> {
+  return defineShow((either) =>
+    either.tag === "Left"
+      ? constructorDocument("Left", showDocument(error, either.value))
+      : constructorDocument("Right", showDocument(value, either.value))
+  )
+}
+
+export function eitherDebug<Error, Value>(
+  error: DebugEvidence<Error>,
+  value: DebugEvidence<Value>
+): Debug<Either<Error, Value>> {
+  return defineDebug((either) =>
+    either.tag === "Left"
+      ? constructorDocument("Left", debugDocument(error, either.value))
+      : constructorDocument("Right", debugDocument(value, either.value))
+  )
+}
+
 /** Stable, user-facing rendering for the opaque Console failure boundary. */
 export const consoleErrorShow = defineShow((error: ConsoleError) =>
   text(`ConsoleError: ${error.message}`)
@@ -212,6 +301,46 @@ export const stdinErrorShow = defineShow((error: StdinError) => {
       )
   }
 })
+
+function showDocument<Value>(
+  evidence: ShowEvidence<Value>,
+  value: Value
+): RenderDocument {
+  const instance = evidence as Show<Value>
+  return instance.document?.(value) ?? text(instance.show(value))
+}
+
+function debugDocument<Value>(
+  evidence: DebugEvidence<Value>,
+  value: Value
+): RenderDocument {
+  const instance = evidence as Debug<Value>
+  return instance.document?.(value) ?? text(instance.debug(value))
+}
+
+function listDocuments<
+  Value,
+  Dictionary extends ShowEvidence<Value> | DebugEvidence<Value>,
+>(
+  values: List<Value>,
+  element: Dictionary,
+  document: (instance: Dictionary, value: Value) => RenderDocument
+): RenderDocument[] {
+  const documents: RenderDocument[] = []
+  let cursor = values
+  while (cursor.tag === "Cons") {
+    documents.push(document(element, cursor.head))
+    cursor = cursor.tail
+  }
+  return documents
+}
+
+function constructorDocument(
+  name: string,
+  payload: RenderDocument
+): RenderDocument {
+  return concat([text(name), indent(concat([line, payload]))])
+}
 
 function renderWithLayout(
   document: RenderDocument,

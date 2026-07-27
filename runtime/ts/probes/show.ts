@@ -1,5 +1,8 @@
 import type { ConsoleError } from "../src/console"
+import { fromArray } from "../src/list"
 import {
+  arrayDebug,
+  arrayShow,
   boolDebug,
   boolShow,
   charDebug,
@@ -8,9 +11,15 @@ import {
   consoleErrorShow,
   type Debug,
   delimited,
+  eitherDebug,
+  eitherShow,
   indent,
   intShow,
   line,
+  listDebug,
+  listShow,
+  maybeDebug,
+  maybeShow,
   renderDebug,
   renderDocument,
   renderShow,
@@ -23,6 +32,7 @@ import {
   unitShow,
 } from "../src/show"
 import type { StdinError } from "../src/stdin"
+import { Just, Left, Nothing, Right } from "../src/sum"
 
 function assertEqual(actual: string, expected: string): void {
   if (actual !== expected) {
@@ -107,6 +117,68 @@ assertEqual(renderDocument(structured), "let = 42")
 assertEqual(renderDocument(structured, { layout: "multiline" }), "let\n=\n  42")
 assertEqual(renderShow(charShow, "瀬", { layout: "multiline" }), "瀬")
 assertEqual(renderDebug(charDebug, "瀬", { layout: "multiline" }), "'瀬'")
+
+const stringsShow = arrayShow(stringShow)
+const stringsDebug = arrayDebug(stringDebug)
+assertEqual(stringsShow.show([]), "[]")
+assertEqual(stringsShow.show(["alpha"]), "[alpha]")
+assertEqual(stringsShow.show(["alpha", "beta"]), "[alpha, beta]")
+assertEqual(stringsDebug.debug(["alpha", "line\nbreak"]), '["alpha", "line\\nbreak"]')
+assertEqual(
+  renderShow(stringsShow, ["alpha", "beta"], { layout: "multiline" }),
+  "[\n  alpha,\n  beta\n]"
+)
+assertEqual(
+  renderDebug(stringsDebug, ["alpha", "beta"], { layout: "auto", maxWidth: 10 }),
+  '[\n  "alpha",\n  "beta"\n]'
+)
+
+const boolsShow = listShow(boolShow)
+const stringsListDebug = listDebug(stringDebug)
+assertEqual(boolsShow.show(fromArray([])), "`[]")
+assertEqual(boolsShow.show(fromArray([true])), "`[True]")
+assertEqual(boolsShow.show(fromArray([true, false])), "`[True, False]")
+assertEqual(
+  stringsListDebug.debug(fromArray(["first", "second"])),
+  '`["first", "second"]'
+)
+assertEqual(
+  renderShow(boolsShow, fromArray([true, false]), { layout: "multiline" }),
+  "`[\n  True,\n  False\n]"
+)
+
+const optionalShow = maybeShow(stringShow)
+const optionalDebug = maybeDebug(stringDebug)
+assertEqual(optionalShow.show(Nothing), "Nothing")
+assertEqual(optionalShow.show(Just("value")), "Just value")
+assertEqual(optionalDebug.debug(Just("value")), 'Just "value"')
+assertEqual(
+  renderDebug(optionalDebug, Just("value"), { layout: "multiline" }),
+  'Just\n  "value"'
+)
+
+const resultShow = eitherShow(stringShow, boolShow)
+const resultDebug = eitherDebug(stringDebug, boolDebug)
+assertEqual(resultShow.show(Left("failure")), "Left failure")
+assertEqual(resultShow.show(Right(true)), "Right True")
+assertEqual(resultDebug.debug(Left("failure")), 'Left "failure"')
+assertEqual(resultDebug.debug(Right(false)), "Right False")
+
+const nestedDebug = arrayDebug(maybeDebug(stringDebug))
+const nestedValue = [Just("alpha"), Nothing, Just("line\nbreak")]
+assertEqual(
+  nestedDebug.debug(nestedValue),
+  '[Just "alpha", Nothing, Just "line\\nbreak"]'
+)
+assertEqual(
+  renderDebug(nestedDebug, nestedValue, { layout: "multiline" }),
+  '[\n  Just\n    "alpha",\n  Nothing,\n  Just\n    "line\\nbreak"\n]'
+)
+
+const fallbackShow: Show<string> = {
+  show: (value) => `<${value}>`,
+}
+assertEqual(arrayShow(fallbackShow).show(["local"]), "[<local>]")
 
 for (const invalid of ["", "ab", "\uD800"]) {
   let rejected = false

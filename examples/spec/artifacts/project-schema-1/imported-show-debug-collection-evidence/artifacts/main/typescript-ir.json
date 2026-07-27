@@ -1,0 +1,241 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-show-debug-collection-evidence::main",
+  "runtimeRequirements": [
+    "core.array.show",
+    "core.string",
+    "core.maybe",
+    "core.maybe.debug"
+  ],
+  "imports": [
+    {
+      "feature": "core.array.show",
+      "local": "_ssrg_show_arrayShow"
+    },
+    {
+      "feature": "core.maybe.debug",
+      "local": "_ssrg_debug_maybeDebug"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-show-debug-collection-evidence::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "Badge",
+          "local": "Badge",
+          "sourceLocal": "Badge",
+          "canonical": "fixture/imported-show-debug-collection-evidence::domain::Badge",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 14
+          }
+        },
+        {
+          "imported": "renderImported",
+          "local": "renderImported",
+          "sourceLocal": "renderImported",
+          "canonical": "fixture/imported-show-debug-collection-evidence::domain::renderImported",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 16,
+            "end": 30
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Render$2",
+          "local": "__ssrg$instance$Render$2",
+          "sourceLocal": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)<std/prelude::Maybe<$0>>",
+          "canonical": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)<std/prelude::Maybe<$0>>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 48
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Debug$1",
+          "local": "__ssrg$instance$Debug$1",
+          "sourceLocal": "std/prelude::Debug<fixture/imported-show-debug-collection-evidence::domain::Badge>",
+          "canonical": "std/prelude::Debug<fixture/imported-show-debug-collection-evidence::domain::Badge>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 48
+          }
+        },
+        {
+          "imported": "__ssrg$instance$Show$0",
+          "local": "__ssrg$instance$Show$0",
+          "sourceLocal": "std/prelude::Show<fixture/imported-show-debug-collection-evidence::domain::Badge>",
+          "canonical": "std/prelude::Show<fixture/imported-show-debug-collection-evidence::domain::Badge>",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 0,
+            "end": 48
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 48
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "render",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<Badge>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_show_arrayShow",
+          "typeArguments": [
+            {
+              "kind": "reference",
+              "name": "Badge",
+              "arguments": []
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "__ssrg$instance$Show$0"
+            }
+          ]
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 50,
+        "end": 110
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "inspect",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: Badge }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_debug_maybeDebug",
+          "typeArguments": [
+            {
+              "kind": "reference",
+              "name": "Badge",
+              "arguments": []
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "__ssrg$instance$Debug$1"
+            }
+          ]
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 112,
+        "end": 172
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "renderThroughImported",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: Badge }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "renderImported",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "type-application-call",
+            "callee": "__ssrg$instance$Render$2",
+            "typeArguments": [
+              {
+                "kind": "reference",
+                "name": "Badge",
+                "arguments": []
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "type-application-call",
+                "callee": "_ssrg_show_arrayShow",
+                "typeArguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Badge",
+                    "arguments": []
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Show$0"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 174,
+        "end": 257
+      }
+    }
+  ]
+}

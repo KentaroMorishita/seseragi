@@ -1,4 +1,4 @@
-use crate::{SymbolNamespace, TypedType};
+use crate::{SymbolNamespace, TypedConstraint, TypedType};
 use serde::Serialize;
 use seseragi_syntax::TypeParameter;
 
@@ -50,6 +50,12 @@ pub(crate) struct PreludeStandardInstance {
     pub(crate) type_canonical: Option<&'static str>,
     pub(crate) type_arity: u32,
     pub(crate) identity: &'static str,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) struct PreludeStandardInstanceConstraint {
+    pub(crate) trait_name: &'static str,
+    pub(crate) type_argument_index: usize,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -253,6 +259,62 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         type_canonical: None,
         type_arity: 0,
         identity: "Debug<std/prelude::Char>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Array",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/array::Show",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Array",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/array::Debug",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "List",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/list::Show",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "List",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/list::Debug",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Maybe",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/maybe::Show",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Maybe",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/maybe::Debug",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Either",
+        type_canonical: None,
+        type_arity: 2,
+        identity: "std/either::Show",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Either",
+        type_canonical: None,
+        type_arity: 2,
+        identity: "std/either::Debug",
     },
     PreludeStandardInstance {
         trait_name: "Semigroup",
@@ -699,6 +761,77 @@ pub(crate) fn standard_instance_by_identity(
         .find(|instance| instance.identity == identity)
 }
 
+pub(crate) fn standard_instance_constraints(
+    instance: &PreludeStandardInstance,
+    type_ref: &TypedType,
+) -> Option<Vec<TypedConstraint>> {
+    let arguments = match type_ref {
+        TypedType::Named { name, arguments }
+            if instance.type_canonical.is_none() && name == instance.type_name =>
+        {
+            arguments
+        }
+        TypedType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if instance.type_canonical == Some(canonical.as_str()) => arguments,
+        _ => return None,
+    };
+    let constraints = standard_instance_constraint_specs(instance.identity)
+        .iter()
+        .map(|constraint| {
+            Some(TypedConstraint {
+                name: constraint.trait_name.to_owned(),
+                arguments: vec![arguments.get(constraint.type_argument_index)?.clone()],
+            })
+        })
+        .collect::<Option<Vec<_>>>()?;
+    Some(constraints)
+}
+
+pub(crate) fn standard_instance_constraint_specs(
+    identity: &str,
+) -> &'static [PreludeStandardInstanceConstraint] {
+    const SHOW_ELEMENT: &[PreludeStandardInstanceConstraint] =
+        &[PreludeStandardInstanceConstraint {
+            trait_name: "Show",
+            type_argument_index: 0,
+        }];
+    const DEBUG_ELEMENT: &[PreludeStandardInstanceConstraint] =
+        &[PreludeStandardInstanceConstraint {
+            trait_name: "Debug",
+            type_argument_index: 0,
+        }];
+    const SHOW_EITHER: &[PreludeStandardInstanceConstraint] = &[
+        PreludeStandardInstanceConstraint {
+            trait_name: "Show",
+            type_argument_index: 0,
+        },
+        PreludeStandardInstanceConstraint {
+            trait_name: "Show",
+            type_argument_index: 1,
+        },
+    ];
+    const DEBUG_EITHER: &[PreludeStandardInstanceConstraint] = &[
+        PreludeStandardInstanceConstraint {
+            trait_name: "Debug",
+            type_argument_index: 0,
+        },
+        PreludeStandardInstanceConstraint {
+            trait_name: "Debug",
+            type_argument_index: 1,
+        },
+    ];
+    match identity {
+        "std/array::Show" | "std/list::Show" | "std/maybe::Show" => SHOW_ELEMENT,
+        "std/array::Debug" | "std/list::Debug" | "std/maybe::Debug" => DEBUG_ELEMENT,
+        "std/either::Show" => SHOW_EITHER,
+        "std/either::Debug" => DEBUG_EITHER,
+        _ => &[],
+    }
+}
+
 pub(crate) fn standard_equality_instance(
     type_ref: &TypedType,
 ) -> Option<&'static StandardEqualityInstance> {
@@ -722,6 +855,7 @@ pub fn standard_equality_instance_by_identity(
 pub(crate) fn overlapping_standard_instance(
     trait_identity: &str,
     type_ref: &TypedType,
+    canonical_type_ref: &str,
 ) -> Option<&'static PreludeStandardInstance> {
     STANDARD_INSTANCES.iter().find(|instance| {
         standard_instance_head(instance, type_ref).is_some_and(|arguments| {
@@ -731,7 +865,22 @@ pub(crate) fn overlapping_standard_instance(
                 && matches!(last_type_argument(type_ref), Some(TypedType::Hole)))
         }) && trait_by_name(instance.trait_name)
             .is_some_and(|trait_spec| trait_spec.canonical == trait_identity)
+            && standard_instance_canonical_head(instance, canonical_type_ref)
     })
+}
+
+fn standard_instance_canonical_head(
+    instance: &PreludeStandardInstance,
+    canonical_type_ref: &str,
+) -> bool {
+    let expected = instance
+        .type_canonical
+        .map(str::to_owned)
+        .unwrap_or_else(|| format!("std/prelude::{}", instance.type_name));
+    canonical_type_ref == expected
+        || canonical_type_ref
+            .strip_prefix(&expected)
+            .is_some_and(|arguments| arguments.starts_with('<'))
 }
 
 fn standard_instance_head(instance: &PreludeStandardInstance, type_ref: &TypedType) -> Option<u32> {
@@ -938,22 +1087,34 @@ mod tests {
         };
 
         assert_eq!(
-            overlapping_standard_instance("std/prelude::Functor", &maybe)
+            overlapping_standard_instance("std/prelude::Functor", &maybe, "std/prelude::Maybe")
                 .map(|instance| instance.identity),
             Some("std/maybe::Functor")
         );
         assert_eq!(
-            overlapping_standard_instance("std/prelude::Monad", &either_string)
-                .map(|instance| instance.identity),
+            overlapping_standard_instance(
+                "std/prelude::Monad",
+                &either_string,
+                "std/prelude::Either<std/prelude::String,_>"
+            )
+            .map(|instance| instance.identity),
             Some("std/either::Monad")
         );
-        assert!(overlapping_standard_instance("fixture::Functor", &maybe).is_none());
+        assert!(
+            overlapping_standard_instance("fixture::Functor", &maybe, "std/prelude::Maybe")
+                .is_none()
+        );
+        assert!(
+            overlapping_standard_instance("std/prelude::Functor", &maybe, "fixture::Maybe")
+                .is_none()
+        );
         assert!(overlapping_standard_instance(
             "std/prelude::Functor",
             &TypedType::Named {
                 name: "Either".to_owned(),
                 arguments: vec![named("String"), named("Int")],
-            }
+            },
+            "std/prelude::Either<std/prelude::String,std/prelude::Int>"
         )
         .is_none());
     }

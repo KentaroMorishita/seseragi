@@ -1,0 +1,45 @@
+type Badge =
+  | Active
+  | Paused
+
+instance Show<Badge> {
+  fn show value: Badge -> String =
+    match value {
+      Active -> "active"
+      Paused -> "paused"
+    }
+}
+
+instance Debug<Badge> {
+  fn debug value: Badge -> String =
+    match value {
+      Active -> "Badge.Active"
+      Paused -> "Badge.Paused"
+    }
+}
+
+pub fn showNested
+  value: Array<Maybe<Either<String, List<Int>>>>
+  -> String =
+  show value
+
+pub fn debugNested
+  value: Array<Maybe<Either<String, List<Bool>>>>
+  -> String =
+  debug value
+
+pub fn showMany<A> values: Array<A> -> String
+where Show<A> =
+  show values
+
+pub fn debugOptional<A> value: Maybe<A> -> String
+where Debug<A> =
+  debug value
+
+pub effect fn main =
+  do {
+    println (showNested [Just (Right `[1, 2]), Nothing, Just (Left "oops")])
+    println (debugNested [Just (Right `[True, False]), Nothing, Just (Left "oops")])
+    println (show [Active, Paused])
+    println (debug (Just Active))
+  }

@@ -85,6 +85,14 @@ where Eq<A> =
 複数 constraint は `,` で区切ります。constraint を満たす instance が call site で
 一意に存在しなければコンパイルエラーです。
 
+standard instanceもconditionalなconstraintを持てます。たとえば
+`Show<Array<A>> where Show<A>`を選ぶときは、`Show<A>`のevidenceを同じscopeから
+再帰的に選び、Arrayのstandard dictionaryへ渡します。子evidenceはstandard、
+local、imported、またはgeneric functionのconstraint parameterのいずれでも構いません。
+選択は型だけで完了し、空collection、`Nothing`、`Left`など実際のconstructorや値を
+見てconstraintを省略してはなりません。再帰のleafに必要なinstanceがなければ
+`SES-T0201`はその具体的なconstraintを報告します。
+
 ## 4.5 trait methodの呼び出し
 
 scope内のtrait methodは、通常のcurried functionとして非修飾名で呼び出せます。

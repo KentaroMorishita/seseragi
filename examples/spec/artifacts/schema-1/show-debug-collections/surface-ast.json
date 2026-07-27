@@ -1,0 +1,1209 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "private",
+      "name": "Badge",
+      "nameSpan": {
+        "start": 5,
+        "end": 10
+      },
+      "variants": [
+        {
+          "name": "Active",
+          "nameSpan": {
+            "start": 17,
+            "end": 23
+          },
+          "span": {
+            "start": 15,
+            "end": 23
+          }
+        },
+        {
+          "name": "Paused",
+          "nameSpan": {
+            "start": 28,
+            "end": 34
+          },
+          "span": {
+            "start": 26,
+            "end": 34
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 34
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Show",
+      "traitNameSpan": {
+        "start": 45,
+        "end": 49
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "span": {
+            "start": 50,
+            "end": 55
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "show",
+          "nameSpan": {
+            "start": 64,
+            "end": 68
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 69,
+                "end": 74
+              },
+              "type": {
+                "kind": "named",
+                "name": "Badge",
+                "span": {
+                  "start": 76,
+                  "end": 81
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 85,
+              "end": 91
+            }
+          },
+          "body": {
+            "kind": "match",
+            "scrutinee": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 104,
+                "end": 109
+              }
+            },
+            "arms": [
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Active",
+                  "nameSpan": {
+                    "start": 118,
+                    "end": 124
+                  },
+                  "span": {
+                    "start": 118,
+                    "end": 124
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"active\"",
+                  "span": {
+                    "start": 128,
+                    "end": 136
+                  }
+                },
+                "span": {
+                  "start": 118,
+                  "end": 136
+                }
+              },
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Paused",
+                  "nameSpan": {
+                    "start": 143,
+                    "end": 149
+                  },
+                  "span": {
+                    "start": 143,
+                    "end": 149
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"paused\"",
+                  "span": {
+                    "start": 153,
+                    "end": 161
+                  }
+                },
+                "span": {
+                  "start": 143,
+                  "end": 161
+                }
+              }
+            ],
+            "span": {
+              "start": 98,
+              "end": 167
+            }
+          },
+          "span": {
+            "start": 61,
+            "end": 167
+          }
+        }
+      ],
+      "span": {
+        "start": 36,
+        "end": 169
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Debug",
+      "traitNameSpan": {
+        "start": 180,
+        "end": 185
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "span": {
+            "start": 186,
+            "end": 191
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "debug",
+          "nameSpan": {
+            "start": 200,
+            "end": 205
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 206,
+                "end": 211
+              },
+              "type": {
+                "kind": "named",
+                "name": "Badge",
+                "span": {
+                  "start": 213,
+                  "end": 218
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 222,
+              "end": 228
+            }
+          },
+          "body": {
+            "kind": "match",
+            "scrutinee": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 241,
+                "end": 246
+              }
+            },
+            "arms": [
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Active",
+                  "nameSpan": {
+                    "start": 255,
+                    "end": 261
+                  },
+                  "span": {
+                    "start": 255,
+                    "end": 261
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"Badge.Active\"",
+                  "span": {
+                    "start": 265,
+                    "end": 279
+                  }
+                },
+                "span": {
+                  "start": 255,
+                  "end": 279
+                }
+              },
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Paused",
+                  "nameSpan": {
+                    "start": 286,
+                    "end": 292
+                  },
+                  "span": {
+                    "start": 286,
+                    "end": 292
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"Badge.Paused\"",
+                  "span": {
+                    "start": 296,
+                    "end": 310
+                  }
+                },
+                "span": {
+                  "start": 286,
+                  "end": 310
+                }
+              }
+            ],
+            "span": {
+              "start": 235,
+              "end": 316
+            }
+          },
+          "span": {
+            "start": 197,
+            "end": 316
+          }
+        }
+      ],
+      "span": {
+        "start": 171,
+        "end": 318
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showNested",
+      "nameSpan": {
+        "start": 327,
+        "end": 337
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 340,
+            "end": 345
+          },
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "span": {
+                          "start": 366,
+                          "end": 372
+                        }
+                      },
+                      {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "span": {
+                              "start": 379,
+                              "end": 382
+                            }
+                          }
+                        ],
+                        "span": {
+                          "start": 374,
+                          "end": 383
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 359,
+                      "end": 384
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 353,
+                  "end": 385
+                }
+              }
+            ],
+            "span": {
+              "start": 347,
+              "end": 386
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 392,
+          "end": 398
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 403,
+            "end": 407
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 408,
+            "end": 413
+          }
+        },
+        "span": {
+          "start": 403,
+          "end": 413
+        }
+      },
+      "span": {
+        "start": 320,
+        "end": 413
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugNested",
+      "nameSpan": {
+        "start": 422,
+        "end": 433
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 436,
+            "end": 441
+          },
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "span": {
+                          "start": 462,
+                          "end": 468
+                        }
+                      },
+                      {
+                        "kind": "named",
+                        "name": "List",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Bool",
+                            "span": {
+                              "start": 475,
+                              "end": 479
+                            }
+                          }
+                        ],
+                        "span": {
+                          "start": 470,
+                          "end": 480
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 455,
+                      "end": 481
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 449,
+                  "end": 482
+                }
+              }
+            ],
+            "span": {
+              "start": 443,
+              "end": 483
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 489,
+          "end": 495
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 500,
+            "end": 505
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 506,
+            "end": 511
+          }
+        },
+        "span": {
+          "start": 500,
+          "end": 511
+        }
+      },
+      "span": {
+        "start": 415,
+        "end": 511
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showMany",
+      "nameSpan": {
+        "start": 520,
+        "end": 528
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "values",
+          "nameSpan": {
+            "start": 532,
+            "end": 538
+          },
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 546,
+                  "end": 547
+                }
+              }
+            ],
+            "span": {
+              "start": 540,
+              "end": 548
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 552,
+          "end": 558
+        }
+      },
+      "constraints": [
+        {
+          "name": "Show",
+          "nameSpan": {
+            "start": 565,
+            "end": 569
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 570,
+                "end": 571
+              }
+            }
+          ],
+          "span": {
+            "start": 565,
+            "end": 572
+          }
+        }
+      ],
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 577,
+            "end": 581
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "values",
+          "span": {
+            "start": 582,
+            "end": 588
+          }
+        },
+        "span": {
+          "start": 577,
+          "end": 588
+        }
+      },
+      "span": {
+        "start": 513,
+        "end": 588
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugOptional",
+      "nameSpan": {
+        "start": 597,
+        "end": 610
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 614,
+            "end": 619
+          },
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 627,
+                  "end": 628
+                }
+              }
+            ],
+            "span": {
+              "start": 621,
+              "end": 629
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 633,
+          "end": 639
+        }
+      },
+      "constraints": [
+        {
+          "name": "Debug",
+          "nameSpan": {
+            "start": 646,
+            "end": 651
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 652,
+                "end": 653
+              }
+            }
+          ],
+          "span": {
+            "start": 646,
+            "end": 654
+          }
+        }
+      ],
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 659,
+            "end": 664
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 665,
+            "end": 670
+          }
+        },
+        "span": {
+          "start": 659,
+          "end": 670
+        }
+      },
+      "span": {
+        "start": 590,
+        "end": 670
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 686,
+        "end": 690
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 704,
+                  "end": 711
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "showNested",
+                    "span": {
+                      "start": 713,
+                      "end": 723
+                    }
+                  },
+                  "argument": {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "application",
+                        "function": {
+                          "kind": "name",
+                          "name": "Just",
+                          "span": {
+                            "start": 725,
+                            "end": 729
+                          }
+                        },
+                        "argument": {
+                          "kind": "grouped",
+                          "value": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "name",
+                              "name": "Right",
+                              "span": {
+                                "start": 731,
+                                "end": 736
+                              }
+                            },
+                            "argument": {
+                              "kind": "list",
+                              "elements": [
+                                {
+                                  "kind": "integer",
+                                  "raw": "1",
+                                  "span": {
+                                    "start": 739,
+                                    "end": 740
+                                  }
+                                },
+                                {
+                                  "kind": "integer",
+                                  "raw": "2",
+                                  "span": {
+                                    "start": 742,
+                                    "end": 743
+                                  }
+                                }
+                              ],
+                              "span": {
+                                "start": 737,
+                                "end": 744
+                              }
+                            },
+                            "span": {
+                              "start": 731,
+                              "end": 744
+                            }
+                          },
+                          "span": {
+                            "start": 730,
+                            "end": 745
+                          }
+                        },
+                        "span": {
+                          "start": 725,
+                          "end": 745
+                        }
+                      },
+                      {
+                        "kind": "name",
+                        "name": "Nothing",
+                        "span": {
+                          "start": 747,
+                          "end": 754
+                        }
+                      },
+                      {
+                        "kind": "application",
+                        "function": {
+                          "kind": "name",
+                          "name": "Just",
+                          "span": {
+                            "start": 756,
+                            "end": 760
+                          }
+                        },
+                        "argument": {
+                          "kind": "grouped",
+                          "value": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "name",
+                              "name": "Left",
+                              "span": {
+                                "start": 762,
+                                "end": 766
+                              }
+                            },
+                            "argument": {
+                              "kind": "string",
+                              "raw": "\"oops\"",
+                              "span": {
+                                "start": 767,
+                                "end": 773
+                              }
+                            },
+                            "span": {
+                              "start": 762,
+                              "end": 773
+                            }
+                          },
+                          "span": {
+                            "start": 761,
+                            "end": 774
+                          }
+                        },
+                        "span": {
+                          "start": 756,
+                          "end": 774
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 724,
+                      "end": 775
+                    }
+                  },
+                  "span": {
+                    "start": 713,
+                    "end": 775
+                  }
+                },
+                "span": {
+                  "start": 712,
+                  "end": 776
+                }
+              },
+              "span": {
+                "start": 704,
+                "end": 776
+              }
+            },
+            "span": {
+              "start": 704,
+              "end": 776
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 781,
+                  "end": 788
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debugNested",
+                    "span": {
+                      "start": 790,
+                      "end": 801
+                    }
+                  },
+                  "argument": {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "application",
+                        "function": {
+                          "kind": "name",
+                          "name": "Just",
+                          "span": {
+                            "start": 803,
+                            "end": 807
+                          }
+                        },
+                        "argument": {
+                          "kind": "grouped",
+                          "value": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "name",
+                              "name": "Right",
+                              "span": {
+                                "start": 809,
+                                "end": 814
+                              }
+                            },
+                            "argument": {
+                              "kind": "list",
+                              "elements": [
+                                {
+                                  "kind": "boolean",
+                                  "value": true,
+                                  "span": {
+                                    "start": 817,
+                                    "end": 821
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false,
+                                  "span": {
+                                    "start": 823,
+                                    "end": 828
+                                  }
+                                }
+                              ],
+                              "span": {
+                                "start": 815,
+                                "end": 829
+                              }
+                            },
+                            "span": {
+                              "start": 809,
+                              "end": 829
+                            }
+                          },
+                          "span": {
+                            "start": 808,
+                            "end": 830
+                          }
+                        },
+                        "span": {
+                          "start": 803,
+                          "end": 830
+                        }
+                      },
+                      {
+                        "kind": "name",
+                        "name": "Nothing",
+                        "span": {
+                          "start": 832,
+                          "end": 839
+                        }
+                      },
+                      {
+                        "kind": "application",
+                        "function": {
+                          "kind": "name",
+                          "name": "Just",
+                          "span": {
+                            "start": 841,
+                            "end": 845
+                          }
+                        },
+                        "argument": {
+                          "kind": "grouped",
+                          "value": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "name",
+                              "name": "Left",
+                              "span": {
+                                "start": 847,
+                                "end": 851
+                              }
+                            },
+                            "argument": {
+                              "kind": "string",
+                              "raw": "\"oops\"",
+                              "span": {
+                                "start": 852,
+                                "end": 858
+                              }
+                            },
+                            "span": {
+                              "start": 847,
+                              "end": 858
+                            }
+                          },
+                          "span": {
+                            "start": 846,
+                            "end": 859
+                          }
+                        },
+                        "span": {
+                          "start": 841,
+                          "end": 859
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 802,
+                      "end": 860
+                    }
+                  },
+                  "span": {
+                    "start": 790,
+                    "end": 860
+                  }
+                },
+                "span": {
+                  "start": 789,
+                  "end": 861
+                }
+              },
+              "span": {
+                "start": 781,
+                "end": 861
+              }
+            },
+            "span": {
+              "start": 781,
+              "end": 861
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 866,
+                  "end": 873
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "show",
+                    "span": {
+                      "start": 875,
+                      "end": 879
+                    }
+                  },
+                  "argument": {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "name",
+                        "name": "Active",
+                        "span": {
+                          "start": 881,
+                          "end": 887
+                        }
+                      },
+                      {
+                        "kind": "name",
+                        "name": "Paused",
+                        "span": {
+                          "start": 889,
+                          "end": 895
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 880,
+                      "end": 896
+                    }
+                  },
+                  "span": {
+                    "start": 875,
+                    "end": 896
+                  }
+                },
+                "span": {
+                  "start": 874,
+                  "end": 897
+                }
+              },
+              "span": {
+                "start": 866,
+                "end": 897
+              }
+            },
+            "span": {
+              "start": 866,
+              "end": 897
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 902,
+              "end": 909
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "debug",
+                "span": {
+                  "start": 911,
+                  "end": 916
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "Just",
+                    "span": {
+                      "start": 918,
+                      "end": 922
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "Active",
+                    "span": {
+                      "start": 923,
+                      "end": 929
+                    }
+                  },
+                  "span": {
+                    "start": 918,
+                    "end": 929
+                  }
+                },
+                "span": {
+                  "start": 917,
+                  "end": 930
+                }
+              },
+              "span": {
+                "start": 911,
+                "end": 930
+              }
+            },
+            "span": {
+              "start": 910,
+              "end": 931
+            }
+          },
+          "span": {
+            "start": 902,
+            "end": 931
+          }
+        },
+        "span": {
+          "start": 695,
+          "end": 935
+        }
+      },
+      "span": {
+        "start": 672,
+        "end": 935
+      }
+    }
+  ]
+}

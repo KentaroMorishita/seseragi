@@ -1,0 +1,10 @@
+import { Badge, renderImported } from "./domain"
+
+pub fn render values: Array<Badge> -> String =
+  show values
+
+pub fn inspect value: Maybe<Badge> -> String =
+  debug value
+
+pub fn renderThroughImported value: Maybe<Badge> -> String =
+  renderImported value

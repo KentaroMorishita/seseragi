@@ -317,7 +317,7 @@ mod tests {
             &parts[1],
             crate::TypedTemplatePart::Interpolation {
                 evidence: Some(crate::TypedCallEvidence {
-                    evidence: crate::TypedInstanceEvidence::Standard { identity },
+                    evidence: crate::TypedInstanceEvidence::Standard { identity, .. },
                     ..
                 }),
                 ..
@@ -464,7 +464,7 @@ mod tests {
             crate::TypedComprehensionClause::Generator {
                 pattern: crate::TypedPattern::Binding { name, .. },
                 evidence: crate::TypedCallEvidence {
-                    evidence: crate::TypedInstanceEvidence::Standard { identity },
+                    evidence: crate::TypedInstanceEvidence::Standard { identity, .. },
                     ..
                 },
                 ..
@@ -509,7 +509,7 @@ mod tests {
             &clauses[0],
             crate::TypedComprehensionClause::Generator {
                 evidence: crate::TypedCallEvidence {
-                    evidence: crate::TypedInstanceEvidence::Standard { identity },
+                    evidence: crate::TypedInstanceEvidence::Standard { identity, .. },
                     ..
                 },
                 ..
@@ -1348,7 +1348,7 @@ mod tests {
                 if operator == "+"
                     && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
                         constraint: TypedConstraint { name, arguments },
-                        evidence: crate::TypedInstanceEvidence::Standard { identity },
+                        evidence: crate::TypedInstanceEvidence::Standard { identity, .. },
                     }] if name == "Add"
                         && arguments == &vec![int_type(), int_type(), int_type()]
                         && identity == "std/int::Add")
@@ -1373,7 +1373,7 @@ mod tests {
                     && type_ref == &string
                     && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
                         constraint: TypedConstraint { name, arguments },
-                        evidence: crate::TypedInstanceEvidence::Standard { identity },
+                        evidence: crate::TypedInstanceEvidence::Standard { identity, .. },
                     }] if name == "Add"
                         && arguments == &vec![string.clone(), string.clone(), string.clone()]
                         && identity == "std/string::Add")
@@ -1425,7 +1425,7 @@ mod tests {
                     && matches!(type_ref, TypedType::Named { name, arguments } if name == "Bool" && arguments.is_empty())
                     && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
                         constraint: TypedConstraint { name, arguments },
-                        evidence: crate::TypedInstanceEvidence::Standard { identity },
+                        evidence: crate::TypedInstanceEvidence::Standard { identity, .. },
                     }] if name == "Eq"
                         && arguments == &vec![string_type()]
                         && identity == "std/string::Eq")

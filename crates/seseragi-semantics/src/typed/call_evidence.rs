@@ -270,11 +270,12 @@ pub(crate) fn select_call_evidence(
         .iter()
         .cloned()
         .map(|constraint| {
-            let identity =
-                standard_instance_identity(&constraint).ok_or_else(|| constraint.clone())?;
+            let evidence = select_standard_instance(None, &constraint)
+                .or_else(|| abi_only_standard_instance_identity(&constraint).map(standard_evidence))
+                .ok_or_else(|| constraint.clone())?;
             Ok(TypedCallEvidence {
                 constraint,
-                evidence: TypedInstanceEvidence::Standard { identity },
+                evidence,
             })
         })
         .collect()
@@ -304,13 +305,24 @@ pub(crate) fn select_function_call_evidence(
                 None => {
                     let trait_identity = format!("std/prelude::{}", constraint.name);
                     select_resolved_evidence(&constraint, &trait_identity, resolution, scoped)
+                        .or_else(|| select_standard_instance(None, &constraint))
                         .or_else(|| {
-                            standard_instance_identity(&constraint)
-                                .map(|identity| TypedInstanceEvidence::Standard { identity })
+                            abi_only_standard_instance_identity(&constraint).map(standard_evidence)
                         })
                 }
             }
-            .ok_or_else(|| constraint.clone())?;
+            .ok_or_else(|| {
+                let resolved_trait_identity = trait_identity
+                    .map(str::to_owned)
+                    .unwrap_or_else(|| format!("std/prelude::{}", constraint.name));
+                missing_standard_requirement(
+                    &constraint,
+                    &resolved_trait_identity,
+                    resolution,
+                    scoped,
+                )
+                .unwrap_or_else(|| constraint.clone())
+            })?;
             Ok(TypedCallEvidence {
                 constraint,
                 evidence,
@@ -319,11 +331,78 @@ pub(crate) fn select_function_call_evidence(
         .collect()
 }
 
+fn missing_standard_requirement(
+    constraint: &TypedConstraint,
+    trait_identity: &str,
+    resolution: &TypedResolution<'_>,
+    scoped: &[ScopedCallEvidence],
+) -> Option<TypedConstraint> {
+    if trait_identity != format!("std/prelude::{}", constraint.name) {
+        return None;
+    }
+    let [type_ref] = constraint.arguments.as_slice() else {
+        return None;
+    };
+    let instance = crate::prelude::standard_instance(&constraint.name, type_ref)?;
+    if standard_type_is_shadowed(instance, type_ref, resolution) {
+        return None;
+    }
+    let requirements = crate::prelude::standard_instance_constraints(instance, type_ref)?;
+    requirements.into_iter().find_map(|required| {
+        let required_trait_identity = format!("std/prelude::{}", required.name);
+        select_resolved_evidence(&required, &required_trait_identity, resolution, scoped)
+            .is_none()
+            .then(|| {
+                missing_standard_requirement(
+                    &required,
+                    &required_trait_identity,
+                    resolution,
+                    scoped,
+                )
+                .unwrap_or(required)
+            })
+    })
+}
+
 fn select_resolved_evidence(
     constraint: &TypedConstraint,
     trait_identity: &str,
     resolution: &TypedResolution<'_>,
     scoped: &[ScopedCallEvidence],
+) -> Option<TypedInstanceEvidence> {
+    select_resolved_evidence_with_stack(
+        constraint,
+        trait_identity,
+        resolution,
+        scoped,
+        &mut Vec::new(),
+    )
+}
+
+pub(super) fn select_resolved_evidence_with_stack(
+    constraint: &TypedConstraint,
+    trait_identity: &str,
+    resolution: &TypedResolution<'_>,
+    scoped: &[ScopedCallEvidence],
+    stack: &mut Vec<(String, Vec<TypedType>)>,
+) -> Option<TypedInstanceEvidence> {
+    let key = (trait_identity.to_owned(), constraint.arguments.clone());
+    if stack.contains(&key) {
+        return None;
+    }
+    stack.push(key);
+    let selected =
+        select_resolved_evidence_inner(constraint, trait_identity, resolution, scoped, stack);
+    stack.pop();
+    selected
+}
+
+fn select_resolved_evidence_inner(
+    constraint: &TypedConstraint,
+    trait_identity: &str,
+    resolution: &TypedResolution<'_>,
+    scoped: &[ScopedCallEvidence],
+    stack: &mut Vec<(String, Vec<TypedType>)>,
 ) -> Option<TypedInstanceEvidence> {
     if let Some(parameter) = scoped.iter().find(|available| {
         available.trait_identity == trait_identity
@@ -344,11 +423,72 @@ fn select_resolved_evidence(
             index: parameter.index,
         });
     }
-    local::select_local_instance(trait_identity, constraint, resolution, scoped)
+    local::select_local_instance_in_context(trait_identity, constraint, resolution, scoped, stack)
         .or_else(|| {
-            imported::select_imported_instance(trait_identity, constraint, resolution, scoped)
+            imported::select_imported_instance_in_context(
+                trait_identity,
+                constraint,
+                resolution,
+                scoped,
+                stack,
+            )
         })
-        .or_else(|| select_standard_instance(Some(trait_identity), constraint))
+        .or_else(|| {
+            select_contextual_standard_instance(
+                trait_identity,
+                constraint,
+                resolution,
+                scoped,
+                stack,
+            )
+        })
+}
+
+fn select_contextual_standard_instance(
+    trait_identity: &str,
+    constraint: &TypedConstraint,
+    resolution: &TypedResolution<'_>,
+    scoped: &[ScopedCallEvidence],
+    stack: &mut Vec<(String, Vec<TypedType>)>,
+) -> Option<TypedInstanceEvidence> {
+    if trait_identity != format!("std/prelude::{}", constraint.name) {
+        return select_standard_instance(Some(trait_identity), constraint);
+    }
+    let [type_ref] = constraint.arguments.as_slice() else {
+        return select_standard_instance(Some(trait_identity), constraint);
+    };
+    let Some(instance) = crate::prelude::standard_instance(&constraint.name, type_ref) else {
+        return select_standard_instance(Some(trait_identity), constraint);
+    };
+    if standard_type_is_shadowed(instance, type_ref, resolution) {
+        return None;
+    }
+    let requirements = crate::prelude::standard_instance_constraints(instance, type_ref)?;
+    if requirements.is_empty() {
+        return select_standard_instance(Some(trait_identity), constraint);
+    }
+    let evidence_arguments = requirements
+        .into_iter()
+        .map(|required| {
+            let required_trait_identity = format!("std/prelude::{}", required.name);
+            let evidence = select_resolved_evidence_with_stack(
+                &required,
+                &required_trait_identity,
+                resolution,
+                scoped,
+                stack,
+            )?;
+            Some(TypedCallEvidence {
+                constraint: required,
+                evidence,
+            })
+        })
+        .collect::<Option<Vec<_>>>()?;
+    Some(TypedInstanceEvidence::Standard {
+        identity: instance.identity.to_owned(),
+        type_arguments: standard_instance_type_arguments(instance, type_ref)?,
+        evidence_arguments,
+    })
 }
 
 pub(super) fn select_standard_instance(
@@ -356,9 +496,7 @@ pub(super) fn select_standard_instance(
     constraint: &TypedConstraint,
 ) -> Option<TypedInstanceEvidence> {
     if let Some(identity) = crate::standard::standard_module_instance(trait_identity, constraint) {
-        return Some(TypedInstanceEvidence::Standard {
-            identity: identity.to_owned(),
-        });
+        return Some(standard_evidence(identity.to_owned()));
     }
     if trait_identity
         .is_some_and(|identity| identity != format!("std/prelude::{}", constraint.name))
@@ -366,13 +504,85 @@ pub(super) fn select_standard_instance(
         return None;
     }
     let identity = standard_instance_identity(constraint)?;
-    // Arithmetic and equality instances lower through dedicated operation
-    // ABIs. Collection traits have first-class standard dictionaries so they
-    // can also cross generic constrained function boundaries.
-    (identity.starts_with("Show<")
-        || matches!(constraint.name.as_str(), "Iterable" | "Reducible")
+    if let Some(instance) = crate::prelude::standard_instance_by_identity(&identity) {
+        let [type_ref] = constraint.arguments.as_slice() else {
+            return None;
+        };
+        let requirements = crate::prelude::standard_instance_constraints(instance, type_ref)?;
+        if !requirements.is_empty() {
+            let evidence_arguments = requirements
+                .into_iter()
+                .map(|required| {
+                    let required_trait_identity = format!("std/prelude::{}", required.name);
+                    let evidence =
+                        select_standard_instance(Some(&required_trait_identity), &required)?;
+                    Some(TypedCallEvidence {
+                        constraint: required,
+                        evidence,
+                    })
+                })
+                .collect::<Option<Vec<_>>>()?;
+            return Some(TypedInstanceEvidence::Standard {
+                identity,
+                type_arguments: standard_instance_type_arguments(instance, type_ref)?,
+                evidence_arguments,
+            });
+        }
+    }
+    // Arithmetic and equality identities lower through dedicated operator
+    // ABIs and cannot cross a generic function boundary as dictionaries.
+    // Only registries with a first-class dictionary representation may be
+    // selected here.
+    (matches!(constraint.name.as_str(), "Iterable" | "Reducible")
         || crate::prelude::standard_instance_by_identity(&identity).is_some())
-    .then_some(TypedInstanceEvidence::Standard { identity })
+    .then(|| standard_evidence(identity))
+}
+
+fn standard_evidence(identity: String) -> TypedInstanceEvidence {
+    TypedInstanceEvidence::Standard {
+        identity,
+        type_arguments: Vec::new(),
+        evidence_arguments: Vec::new(),
+    }
+}
+
+fn standard_instance_type_arguments(
+    instance: &crate::prelude::PreludeStandardInstance,
+    type_ref: &TypedType,
+) -> Option<Vec<TypedType>> {
+    match type_ref {
+        TypedType::Named { name, arguments }
+            if instance.type_canonical.is_none() && name == instance.type_name =>
+        {
+            Some(arguments.clone())
+        }
+        TypedType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if instance.type_canonical == Some(canonical.as_str()) => Some(arguments.clone()),
+        _ => None,
+    }
+}
+
+fn standard_type_is_shadowed(
+    instance: &crate::prelude::PreludeStandardInstance,
+    type_ref: &TypedType,
+    resolution: &TypedResolution<'_>,
+) -> bool {
+    let owner = match resolution.semantic_value_from_typed_type(type_ref).key {
+        super::semantic_types::SemanticTypeKey::Adt { owner, .. }
+        | super::semantic_types::SemanticTypeKey::Struct { owner, .. } => owner,
+        _ => return false,
+    };
+    let expected = instance
+        .type_canonical
+        .map(str::to_owned)
+        .unwrap_or_else(|| format!("std/prelude::{}", instance.type_name));
+    resolution
+        .symbol(owner)
+        .and_then(|symbol| symbol.canonical.as_deref())
+        != Some(expected.as_str())
 }
 
 fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
@@ -423,6 +633,23 @@ fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
         }
         _ => None,
     }
+}
+
+fn abi_only_standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
+    if let [value] = constraint.arguments.as_slice() {
+        if let Some((_, _, identity)) =
+            STANDARD_VALUE_INSTANCES
+                .iter()
+                .find(|(trait_name, type_name, _)| {
+                    constraint.name == *trait_name && named_type_is(value, type_name)
+                })
+        {
+            return Some((*identity).to_owned());
+        }
+    }
+    arithmetic_instance_identity(constraint)
+        .or_else(|| equality_instance_identity(constraint))
+        .map(str::to_owned)
 }
 
 const STANDARD_VALUE_INSTANCES: &[(&str, &str, &str)] = &[
@@ -872,10 +1099,7 @@ pub(crate) fn select_binary_equality_evidence(
         .and_then(|trait_identity| {
             select_resolved_evidence(&constraint, trait_identity, resolution, scoped)
         })
-        .or_else(|| {
-            standard_instance_identity(&constraint)
-                .map(|identity| TypedInstanceEvidence::Standard { identity })
-        })
+        .or_else(|| standard_instance_identity(&constraint).map(standard_evidence))
         .ok_or_else(|| constraint.clone())?;
     Ok(TypedCallEvidence {
         constraint,
@@ -970,6 +1194,13 @@ mod tests {
         }
     }
 
+    fn applied(name: &str, arguments: Vec<TypedType>) -> TypedType {
+        TypedType::Named {
+            name: name.to_owned(),
+            arguments,
+        }
+    }
+
     #[test]
     fn selects_the_standard_array_reducible_instance() {
         let int = named("Int");
@@ -988,7 +1219,7 @@ mod tests {
         assert!(matches!(
             evidence.as_slice(),
             [TypedCallEvidence {
-                evidence: TypedInstanceEvidence::Standard { identity },
+                evidence: TypedInstanceEvidence::Standard { identity, .. },
                 ..
             }] if identity == "std/array::Reducible"
         ));
@@ -1012,7 +1243,7 @@ mod tests {
         assert!(matches!(
             evidence.as_slice(),
             [TypedCallEvidence {
-                evidence: TypedInstanceEvidence::Standard { identity },
+                evidence: TypedInstanceEvidence::Standard { identity, .. },
                 ..
             }] if identity == "std/range::Reducible"
         ));
@@ -1052,7 +1283,7 @@ mod tests {
             .remove(0);
             assert!(matches!(
                 evidence.evidence,
-                TypedInstanceEvidence::Standard { identity } if identity == expected
+                TypedInstanceEvidence::Standard { identity, .. } if identity == expected
             ));
         }
     }
@@ -1078,7 +1309,7 @@ mod tests {
             evidence.as_slice(),
             [TypedCallEvidence {
                 constraint: TypedConstraint { name, arguments },
-                evidence: TypedInstanceEvidence::Standard { identity },
+                evidence: TypedInstanceEvidence::Standard { identity, .. },
             }] if name == "Add" && arguments.len() == 3 && identity == "std/int::Add"
         ));
     }
@@ -1094,7 +1325,7 @@ mod tests {
             evidence.as_slice(),
             [TypedCallEvidence {
                 constraint: TypedConstraint { name, arguments },
-                evidence: TypedInstanceEvidence::Standard { identity },
+                evidence: TypedInstanceEvidence::Standard { identity, .. },
             }] if name == "Add" && arguments.len() == 3 && identity == "std/string::Add"
         ));
     }
@@ -1116,7 +1347,7 @@ mod tests {
             assert!(matches!(
                 evidence.as_slice(),
                 [TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity: selected },
+                    evidence: TypedInstanceEvidence::Standard { identity: selected, .. },
                     ..
                 }] if selected == identity
             ));
@@ -1139,11 +1370,105 @@ mod tests {
             assert!(matches!(
                 evidence.as_slice(),
                 [TypedCallEvidence {
-                    evidence: TypedInstanceEvidence::Standard { identity: selected },
+                    evidence: TypedInstanceEvidence::Standard { identity: selected, .. },
                     ..
                 }] if selected == identity
             ));
         }
+    }
+
+    #[test]
+    fn recursively_composes_standard_collection_show_evidence() {
+        let value = applied("Array", vec![applied("Maybe", vec![named("String")])]);
+        let evidence = select_call_evidence(&[TypedConstraint {
+            name: "Show".to_owned(),
+            arguments: vec![value],
+        }])
+        .expect("nested standard Show evidence")
+        .remove(0);
+
+        let TypedInstanceEvidence::Standard {
+            identity,
+            type_arguments,
+            evidence_arguments,
+        } = evidence.evidence
+        else {
+            panic!("expected a standard Array Show factory");
+        };
+        assert_eq!(identity, "std/array::Show");
+        assert_eq!(
+            type_arguments,
+            vec![applied("Maybe", vec![named("String")])]
+        );
+        let [maybe] = evidence_arguments.as_slice() else {
+            panic!("Array Show must receive one element dictionary");
+        };
+        assert!(matches!(
+            &maybe.evidence,
+            TypedInstanceEvidence::Standard {
+                identity,
+                evidence_arguments,
+                ..
+            } if identity == "std/maybe::Show"
+                && matches!(
+                    evidence_arguments.as_slice(),
+                    [TypedCallEvidence {
+                        evidence: TypedInstanceEvidence::Standard { identity, .. },
+                        ..
+                    }] if identity == "Show<std/prelude::String>"
+                )
+        ));
+    }
+
+    #[test]
+    fn preserves_either_debug_evidence_in_error_then_value_order() {
+        let evidence = select_call_evidence(&[TypedConstraint {
+            name: "Debug".to_owned(),
+            arguments: vec![applied("Either", vec![named("String"), named("Bool")])],
+        }])
+        .expect("Either Debug evidence")
+        .remove(0);
+
+        let TypedInstanceEvidence::Standard {
+            identity,
+            evidence_arguments,
+            ..
+        } = evidence.evidence
+        else {
+            panic!("expected a standard Either Debug factory");
+        };
+        assert_eq!(identity, "std/either::Debug");
+        assert!(matches!(
+            evidence_arguments.as_slice(),
+            [
+                TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard {
+                        identity: error,
+                        ..
+                    },
+                    ..
+                },
+                TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard {
+                        identity: value,
+                        ..
+                    },
+                    ..
+                }
+            ] if error == "Debug<std/prelude::String>"
+                && value == "Debug<std/prelude::Bool>"
+        ));
+    }
+
+    #[test]
+    fn rejects_a_collection_when_the_leaf_debug_instance_is_missing() {
+        let missing = select_call_evidence(&[TypedConstraint {
+            name: "Debug".to_owned(),
+            arguments: vec![applied("Array", vec![applied("Maybe", vec![named("Int")])])],
+        }])
+        .expect_err("Debug<Int> is intentionally not a standard instance");
+
+        assert_eq!(missing.name, "Debug");
     }
 
     #[test]
@@ -1158,7 +1483,7 @@ mod tests {
                 evidence.as_slice(),
                 [TypedCallEvidence {
                     constraint: TypedConstraint { name, arguments },
-                    evidence: TypedInstanceEvidence::Standard { identity: selected },
+                    evidence: TypedInstanceEvidence::Standard { identity: selected, .. },
                 }] if name == "Eq" && arguments.len() == 1 && selected == identity
             ));
         }

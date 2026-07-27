@@ -1,0 +1,268 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-show-debug-collection-evidence::domain",
+  "source": "domain.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "fixture/imported-show-debug-collection-evidence::domain::Badge",
+      "namespace": "type",
+      "name": "Badge",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 38
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Badge",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-show-debug-collection-evidence::domain::Active",
+      "namespace": "value",
+      "name": "Active",
+      "constructorOf": "fixture/imported-show-debug-collection-evidence::domain::Badge",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 21,
+        "end": 27
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-show-debug-collection-evidence::domain::Paused",
+      "namespace": "value",
+      "name": "Paused",
+      "constructorOf": "fixture/imported-show-debug-collection-evidence::domain::Badge",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 32,
+        "end": 38
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)",
+      "namespace": "trait",
+      "name": "Render",
+      "visibility": "public",
+      "declarationKind": "trait",
+      "declaration": {
+        "start": 322,
+        "end": 376
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Render",
+          "arity": 1
+        }
+      },
+      "methods": [
+        {
+          "name": "render",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 346,
+            "end": 374
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "fixture/imported-show-debug-collection-evidence::domain::renderImported",
+      "namespace": "value",
+      "name": "renderImported",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 511,
+        "end": 587
+      },
+      "scheme": {
+        "typeParameters": [
+          "T"
+        ],
+        "constraints": [
+          {
+            "name": "Render",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Show<fixture/imported-show-debug-collection-evidence::domain::Badge>",
+      "providerModule": "fixture/imported-show-debug-collection-evidence::domain",
+      "traitIdentity": "std/prelude::Show",
+      "argumentIdentities": [
+        "fixture/imported-show-debug-collection-evidence::domain::Badge"
+      ],
+      "typeIdentity": "fixture/imported-show-debug-collection-evidence::domain::Badge",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 40,
+        "end": 173
+      }
+    },
+    {
+      "identity": "std/prelude::Debug<fixture/imported-show-debug-collection-evidence::domain::Badge>",
+      "providerModule": "fixture/imported-show-debug-collection-evidence::domain",
+      "traitIdentity": "std/prelude::Debug",
+      "argumentIdentities": [
+        "fixture/imported-show-debug-collection-evidence::domain::Badge"
+      ],
+      "trait": "Debug",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Debug",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 175,
+        "end": 320
+      }
+    },
+    {
+      "identity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)<std/prelude::Maybe<$0>>",
+      "providerModule": "fixture/imported-show-debug-collection-evidence::domain",
+      "traitIdentity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)",
+      "argumentIdentities": [
+        "std/prelude::Maybe<$0>"
+      ],
+      "trait": "Render",
+      "typeParameters": [
+        "T"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Render",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 378,
+        "end": 509
+      }
+    }
+  ]
+}

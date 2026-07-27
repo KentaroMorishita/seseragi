@@ -1,0 +1,22 @@
+{
+  "version": 3,
+  "file": "dist/imported-show-debug-collection-evidence/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-show-debug-collection-evidence::main"
+  ],
+  "sourcesContent": [
+    "import { Badge, renderImported } from \"./domain\"\n\npub fn render values: Array<Badge> -> String =\n  show values\n\npub fn inspect value: Maybe<Badge> -> String =\n  debug value\n\npub fn renderThroughImported value: Maybe<Badge> -> String =\n  renderImported value\n"
+  ],
+  "names": [
+    "render",
+    "arrayShow",
+    "inspect",
+    "maybeDebug",
+    "renderThroughImported",
+    "renderImported",
+    "fixture/imported-show-debug-collection-evidence::domain::trait(Render)<std/prelude::Maybe<$0>>",
+    "arrayShow"
+  ],
+  "mappings": ";;;AAEAA;AAGAE;AAGAE"
+}

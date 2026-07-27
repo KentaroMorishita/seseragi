@@ -1,0 +1,453 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-show-debug-collection-evidence::domain",
+  "adts": [
+    {
+      "symbol": "fixture/imported-show-debug-collection-evidence::domain::Badge",
+      "name": "Badge",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-show-debug-collection-evidence::domain::Active",
+          "name": "Active",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 21,
+            "end": 27
+          }
+        },
+        {
+          "symbol": "fixture/imported-show-debug-collection-evidence::domain::Paused",
+          "name": "Paused",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 32,
+            "end": 38
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 38
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Show<fixture/imported-show-debug-collection-evidence::domain::Badge>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-show-debug-collection-evidence::domain::Badge",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 40,
+        "end": 173
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "show",
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "domain.ssrg",
+                  "start": 108,
+                  "end": 113
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Badge",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "fixture/imported-show-debug-collection-evidence::domain::Active",
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 122,
+                        "end": 128
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "string",
+                    "value": "active",
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 132,
+                      "end": 140
+                    }
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 122,
+                    "end": 140
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "string",
+                    "value": "paused",
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 157,
+                      "end": 165
+                    }
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 147,
+                    "end": 165
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 102,
+                "end": 171
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 65,
+              "end": 171
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Debug<fixture/imported-show-debug-collection-evidence::domain::Badge>",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 175,
+        "end": 320
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "debug",
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "domain.ssrg",
+                  "start": 245,
+                  "end": 250
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Badge",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "fixture/imported-show-debug-collection-evidence::domain::Active",
+                      "origin": {
+                        "source": "domain.ssrg",
+                        "start": 259,
+                        "end": 265
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "string",
+                    "value": "Badge.Active",
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 269,
+                      "end": 283
+                    }
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 259,
+                    "end": 283
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "string",
+                    "value": "Badge.Paused",
+                    "origin": {
+                      "source": "domain.ssrg",
+                      "start": 300,
+                      "end": 314
+                    }
+                  },
+                  "origin": {
+                    "source": "domain.ssrg",
+                    "start": 290,
+                    "end": 314
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 239,
+                "end": 318
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 201,
+              "end": 318
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)<std/prelude::Maybe<$0>>",
+      "trait": "Render",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 378,
+        "end": 509
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "parameters": [
+              {
+                "id": "value",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "T",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "imported collection requirement",
+              "origin": {
+                "source": "domain.ssrg",
+                "start": 474,
+                "end": 507
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 432,
+              "end": 507
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-show-debug-collection-evidence::domain::renderImported",
+      "visibility": "public",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 511,
+        "end": 587
+      },
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Render",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)::render",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 582,
+              "end": 587
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Render",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)",
+          "method": "render"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "domain.ssrg",
+          "start": 575,
+          "end": 587
+        }
+      }
+    }
+  ]
+}

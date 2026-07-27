@@ -300,6 +300,50 @@ mod tests {
     }
 
     #[test]
+    fn lowers_conditional_collection_display_factories_with_nested_evidence() {
+        let source = "pub fn render values: Array<Maybe<String>> -> String = show values\n\
+                      pub fn inspect value: Either<String, List<Bool>> -> String = debug value\n";
+        let typed = type_module("artifact/collection-display/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+
+        for requirement in [
+            "core.array.show",
+            "core.maybe.show",
+            "core.string.show",
+            "core.either.debug",
+            "core.list.debug",
+            "core.string.debug",
+            "core.bool.debug",
+        ] {
+            assert!(
+                typescript
+                    .runtime_requirements
+                    .iter()
+                    .any(|actual| actual == requirement),
+                "missing runtime requirement {requirement}"
+            );
+        }
+
+        let bundle = emit_typescript_module(typescript, source);
+        for factory in [
+            "_ssrg_show_arrayShow",
+            "_ssrg_show_maybeShow",
+            "_ssrg_debug_eitherDebug",
+            "_ssrg_debug_listDebug",
+        ] {
+            assert!(
+                bundle.typescript.contains(factory),
+                "missing {factory} in {}",
+                bundle.typescript
+            );
+        }
+        assert!(bundle.typescript.contains("_ssrg_show_stringShow"));
+        assert!(bundle.typescript.contains("_ssrg_debug_stringDebug"));
+        assert!(bundle.typescript.contains("_ssrg_debug_boolDebug"));
+    }
+
+    #[test]
     fn lowers_adt_constructors_to_tagged_typescript_values() {
         let source = "\
 pub type Hand =
@@ -589,6 +633,27 @@ pub fn listLength values: List<Int> -> Int = {
         assert!(bundle
             .typescript
             .contains("export const add = (x: bigint) => (y: bigint) => _ssrg_int64_add_1(x, y)"));
+    }
+
+    #[test]
+    fn freshens_a_conditional_dictionary_factory_call() {
+        let source = "pub fn _ssrg_show_arrayShow value: String -> String = value\n\
+             pub fn render values: Array<String> -> String = show values\n";
+        let typed = type_module("artifact/display-factory-name-collision/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert!(
+            bundle
+                .typescript
+                .contains("arrayShow as _ssrg_show_arrayShow_1"),
+            "{}",
+            bundle.typescript
+        );
+        assert!(bundle
+            .typescript
+            .contains("_ssrg_show_arrayShow_1<string>(_ssrg_show_stringShow)[\"show\"](values)"));
     }
 
     #[test]

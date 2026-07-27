@@ -126,6 +126,28 @@
       }
     },
     {
+      "id": "core.array.show",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Show<A> -> Show<Array<A>> preserving element order",
+      "instanceIdentity": "std/array::Show",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "arrayShow"
+      }
+    },
+    {
+      "id": "core.array.debug",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Debug<A> -> Debug<Array<A>> preserving element order",
+      "instanceIdentity": "std/array::Debug",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "arrayDebug"
+      }
+    },
+    {
       "id": "core.array.reduce",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -545,6 +567,28 @@
         "export": "List"
       },
       "import": null
+    },
+    {
+      "id": "core.list.show",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Show<A> -> Show<List<A>> preserving element order",
+      "instanceIdentity": "std/list::Show",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "listShow"
+      }
+    },
+    {
+      "id": "core.list.debug",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Debug<A> -> Debug<List<A>> preserving element order",
+      "instanceIdentity": "std/list::Debug",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "listDebug"
+      }
     },
     {
       "id": "core.list.from-array",
@@ -1010,6 +1054,50 @@
       "typescript": "readonly tagged union",
       "boundary": "Left { readonly tag: Left, readonly value: E } | Right { readonly tag: Right, readonly value: A }",
       "import": null
+    },
+    {
+      "id": "core.maybe.show",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Show<A> -> Show<Maybe<A>>",
+      "instanceIdentity": "std/maybe::Show",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "maybeShow"
+      }
+    },
+    {
+      "id": "core.maybe.debug",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Debug<A> -> Debug<Maybe<A>>",
+      "instanceIdentity": "std/maybe::Debug",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "maybeDebug"
+      }
+    },
+    {
+      "id": "core.either.show",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Show<E> -> Show<A> -> Show<Either<E, A>>",
+      "instanceIdentity": "std/either::Show",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "eitherShow"
+      }
+    },
+    {
+      "id": "core.either.debug",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Debug<E> -> Debug<A> -> Debug<Either<E, A>>",
+      "instanceIdentity": "std/either::Debug",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "eitherDebug"
+      }
     },
     {
       "id": "core.maybe.nothing",

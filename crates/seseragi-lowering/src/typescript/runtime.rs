@@ -764,7 +764,12 @@ fn collect_evidence_runtime_requirements(
             | CoreInstanceEvidence::Imported {
                 evidence_arguments, ..
             } => collect_evidence_runtime_requirements(evidence_arguments, requirements),
-            CoreInstanceEvidence::Standard { identity } => {
+            CoreInstanceEvidence::Standard {
+                identity,
+                evidence_arguments,
+                ..
+            } => {
+                collect_evidence_runtime_requirements(evidence_arguments, requirements);
                 if let Some(dictionary) = runtime_display_dictionary_for_identity(identity) {
                     push_unique(requirements, dictionary.runtime_feature);
                 } else if let Some(dictionary) = runtime_prelude_dictionary_for_identity(identity) {
@@ -788,7 +793,12 @@ fn collect_evidence_runtime_imports(
             | CoreInstanceEvidence::Imported {
                 evidence_arguments, ..
             } => collect_evidence_runtime_imports(evidence_arguments, imports),
-            CoreInstanceEvidence::Standard { identity } => {
+            CoreInstanceEvidence::Standard {
+                identity,
+                evidence_arguments,
+                ..
+            } => {
+                collect_evidence_runtime_imports(evidence_arguments, imports);
                 if let Some(dictionary) = runtime_display_dictionary_for_identity(identity) {
                     push_import_unique(
                         imports,

@@ -9,21 +9,6 @@ use super::super::{
     type_ref::typed_type_from_interface_type,
 };
 
-pub(super) fn select_imported_instance(
-    trait_identity: &str,
-    constraint: &TypedConstraint,
-    resolution: &TypedResolution<'_>,
-    scoped: &[super::ScopedCallEvidence],
-) -> Option<TypedInstanceEvidence> {
-    select_imported_instance_with_stack(
-        trait_identity,
-        constraint,
-        resolution,
-        scoped,
-        &mut Vec::new(),
-    )
-}
-
 pub(super) fn infer_imported_functional_instance(
     trait_identity: &str,
     trait_name: &str,
@@ -319,18 +304,13 @@ fn infer_functional_instance_candidate(
     .map(|evidence| (element, evidence))
 }
 
-fn select_imported_instance_with_stack(
+pub(super) fn select_imported_instance_in_context(
     trait_identity: &str,
     constraint: &TypedConstraint,
     resolution: &TypedResolution<'_>,
     scoped: &[super::ScopedCallEvidence],
     stack: &mut Vec<(String, Vec<TypedType>)>,
 ) -> Option<TypedInstanceEvidence> {
-    let key = (trait_identity.to_owned(), constraint.arguments.clone());
-    if stack.contains(&key) {
-        return None;
-    }
-    stack.push(key);
     let mut matches = Vec::new();
     for instance in &resolution.resolved().dependency_instances {
         if let Some(evidence) = match_imported_instance(
@@ -347,7 +327,6 @@ fn select_imported_instance_with_stack(
             }
         }
     }
-    stack.pop();
     let [selected] = matches.as_slice() else {
         return None;
     };
@@ -470,39 +449,13 @@ fn select_required_evidence(
     stack: &mut Vec<(String, Vec<TypedType>)>,
 ) -> Option<TypedInstanceEvidence> {
     if let Some(trait_identity) = trait_identity {
-        if let Some(parameter) = scoped.iter().find(|available| {
-            available.trait_identity == trait_identity
-                && available.constraint.arguments.len() == constraint.arguments.len()
-                && available
-                    .constraint
-                    .arguments
-                    .iter()
-                    .zip(&constraint.arguments)
-                    .all(|(available, required)| {
-                        semantic_values_are_compatible(
-                            &resolution.semantic_value_from_typed_type(available),
-                            &resolution.semantic_value_from_typed_type(required),
-                        )
-                    })
-        }) {
-            return Some(TypedInstanceEvidence::Parameter {
-                index: parameter.index,
-            });
-        }
-        if let Some(local) =
-            super::local::select_local_instance(trait_identity, constraint, resolution, scoped)
-        {
-            return Some(local);
-        }
-        if let Some(imported) = select_imported_instance_with_stack(
-            trait_identity,
+        return super::select_resolved_evidence_with_stack(
             constraint,
+            trait_identity,
             resolution,
             scoped,
             stack,
-        ) {
-            return Some(imported);
-        }
+        );
     }
     super::select_standard_instance(trait_identity, constraint)
 }

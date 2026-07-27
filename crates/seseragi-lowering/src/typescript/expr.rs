@@ -72,7 +72,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     if name == "+"
                         && matches!(
                             evidence.first().map(|selected| &selected.evidence),
-                            Some(crate::CoreInstanceEvidence::Standard { identity })
+                            Some(crate::CoreInstanceEvidence::Standard { identity, .. })
                                 if identity == "std/string::Add"
                         )
                     {

@@ -1,0 +1,305 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-show-debug-collection-evidence::domain",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string",
+    "core.maybe"
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Badge",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Active",
+          "tag": "Active",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 21,
+            "end": 27
+          }
+        },
+        {
+          "exported": true,
+          "name": "Paused",
+          "tag": "Paused",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 32,
+            "end": 38
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 38
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Show<fixture/imported-show-debug-collection-evidence::domain::Badge>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-show-debug-collection-evidence::domain::Badge",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 40,
+        "end": 173
+      },
+      "dictionaryExport": "__ssrg$instance$Show$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "show",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "Badge",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Badge",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Active"
+                    }
+                  ],
+                  "value": {
+                    "kind": "string",
+                    "value": "active"
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "string",
+                    "value": "paused"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 65,
+              "end": 171
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Debug<fixture/imported-show-debug-collection-evidence::domain::Badge>",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 175,
+        "end": 320
+      },
+      "dictionaryExport": "__ssrg$instance$Debug$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "debug",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "Badge",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Badge",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Active"
+                    }
+                  ],
+                  "value": {
+                    "kind": "string",
+                    "value": "Badge.Active"
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "string",
+                    "value": "Badge.Paused"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 201,
+              "end": 318
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)<std/prelude::Maybe<$0>>",
+      "trait": "Render",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "maybe",
+          "element": {
+            "kind": "reference",
+            "name": "T",
+            "arguments": []
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "array",
+              "element": {
+                "kind": "reference",
+                "name": "T",
+                "arguments": []
+              }
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 378,
+        "end": 509
+      },
+      "dictionaryExport": "__ssrg$instance$Render$2",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: T }",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "imported collection requirement"
+            },
+            "origin": {
+              "source": "domain.ssrg",
+              "start": 432,
+              "end": 507
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "renderImported",
+      "typeParameters": [
+        "T"
+      ],
+      "constraints": [
+        {
+          "name": "Render",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "T",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "identifier",
+          "name": "__ssrg$evidence$0"
+        },
+        "method": "render",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 511,
+        "end": 587
+      }
+    }
+  ]
+}

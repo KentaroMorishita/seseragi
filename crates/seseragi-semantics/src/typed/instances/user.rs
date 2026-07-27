@@ -47,6 +47,14 @@ fn typed_instance(
         .iter()
         .map(|argument| canonical_type_ref(argument, resolution, &binders))
         .collect::<Option<Vec<_>>>()?;
+    let type_identity = (trait_identity == "std/prelude::Show")
+        .then(|| canonical_arguments.as_slice())
+        .and_then(|arguments| {
+            let [argument] = arguments else {
+                return None;
+            };
+            Some(argument.clone())
+        });
     let typed_arguments = arguments
         .iter()
         .map(typed_type_from_type_ref)
@@ -81,7 +89,7 @@ fn typed_instance(
             .map(|parameter| parameter.name.clone())
             .collect(),
         arguments: typed_arguments,
-        type_identity: None,
+        type_identity,
         argument_identities: canonical_arguments,
         constraints: supertraits
             .iter()

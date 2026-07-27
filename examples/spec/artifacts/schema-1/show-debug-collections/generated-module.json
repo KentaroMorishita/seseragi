@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "module": "artifact/show-debug-collections",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.list",
+      "core.adt",
+      "core.string",
+      "core.maybe",
+      "core.either",
+      "core.int64",
+      "core.string.show",
+      "core.int64.show",
+      "core.list.show",
+      "core.either.show",
+      "core.maybe.show",
+      "core.array.show",
+      "core.bool",
+      "core.string.debug",
+      "core.bool.debug",
+      "core.list.debug",
+      "core.either.debug",
+      "core.maybe.debug",
+      "core.array.debug",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.maybe.just",
+      "core.either.right",
+      "core.list.from-array",
+      "core.maybe.nothing",
+      "core.either.left"
+    ]
+  },
+  "exports": [
+    "showNested",
+    "debugNested",
+    "showMany",
+    "debugOptional",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Show<artifact/show-debug-collections::Badge>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/show-debug-collections::Badge",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    },
+    {
+      "identity": "std/prelude::Debug<artifact/show-debug-collections::Badge>",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Debug$1"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

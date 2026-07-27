@@ -19,15 +19,35 @@ pub(super) fn local_dictionary_expression(
             name: super::evidence_parameter_name(*index),
         });
     }
-    if let CoreInstanceEvidence::Standard { identity } = evidence {
+    if let CoreInstanceEvidence::Standard {
+        identity,
+        type_arguments,
+        evidence_arguments,
+    } = evidence
+    {
         let local_name = runtime_display_dictionary_for_identity(identity)
             .map(|dictionary| dictionary.local_name)
             .or_else(|| {
                 runtime_prelude_dictionary_for_identity(identity)
                     .map(|dictionary| dictionary.local_name)
             })?;
-        return Some(TypeScriptExpr::RuntimeReference {
-            name: local_name.to_owned(),
+        if type_arguments.is_empty() && evidence_arguments.is_empty() {
+            return Some(TypeScriptExpr::RuntimeReference {
+                name: local_name.to_owned(),
+            });
+        }
+        return Some(TypeScriptExpr::TypeApplicationCall {
+            callee: local_name.to_owned(),
+            type_arguments: type_arguments
+                .iter()
+                .map(|type_ref| type_ref_from_core_type(type_ref, imported_types))
+                .collect(),
+            arguments: evidence_arguments
+                .iter()
+                .map(|evidence| {
+                    local_dictionary_expression(&evidence.evidence, imported_values, imported_types)
+                })
+                .collect::<Option<Vec<_>>>()?,
         });
     }
     let (identity, type_arguments, evidence_arguments) = match evidence {
@@ -77,6 +97,8 @@ mod tests {
         let expression = local_dictionary_expression(
             &CoreInstanceEvidence::Standard {
                 identity: "Show<std/prelude::String>".to_owned(),
+                type_arguments: Vec::new(),
+                evidence_arguments: Vec::new(),
             },
             &BTreeMap::new(),
             &BTreeMap::new(),
@@ -95,6 +117,8 @@ mod tests {
         let expression = local_dictionary_expression(
             &CoreInstanceEvidence::Standard {
                 identity: "Debug<std/prelude::String>".to_owned(),
+                type_arguments: Vec::new(),
+                evidence_arguments: Vec::new(),
             },
             &BTreeMap::new(),
             &BTreeMap::new(),
@@ -109,10 +133,91 @@ mod tests {
     }
 
     #[test]
+    fn materializes_a_standard_collection_factory_with_nested_evidence() {
+        let expression = local_dictionary_expression(
+            &CoreInstanceEvidence::Standard {
+                identity: "std/array::Show".to_owned(),
+                type_arguments: vec![crate::CoreType::Named {
+                    name: "String".to_owned(),
+                    arguments: Vec::new(),
+                }],
+                evidence_arguments: vec![crate::CoreCallEvidence {
+                    constraint: crate::CoreInstanceConstraint {
+                        name: "Show".to_owned(),
+                        arguments: vec![crate::CoreType::Named {
+                            name: "String".to_owned(),
+                            arguments: Vec::new(),
+                        }],
+                    },
+                    evidence: CoreInstanceEvidence::Standard {
+                        identity: "Show<std/prelude::String>".to_owned(),
+                        type_arguments: Vec::new(),
+                        evidence_arguments: Vec::new(),
+                    },
+                }],
+            },
+            &BTreeMap::new(),
+            &BTreeMap::new(),
+        );
+
+        assert_eq!(
+            expression,
+            Some(TypeScriptExpr::TypeApplicationCall {
+                callee: "_ssrg_show_arrayShow".to_owned(),
+                type_arguments: vec![crate::TypeScriptType::String],
+                arguments: vec![TypeScriptExpr::RuntimeReference {
+                    name: "_ssrg_show_stringShow".to_owned(),
+                }],
+            })
+        );
+    }
+
+    #[test]
+    fn materializes_a_standard_collection_factory_from_scoped_evidence() {
+        let expression = local_dictionary_expression(
+            &CoreInstanceEvidence::Standard {
+                identity: "std/maybe::Debug".to_owned(),
+                type_arguments: vec![crate::CoreType::Named {
+                    name: "A".to_owned(),
+                    arguments: Vec::new(),
+                }],
+                evidence_arguments: vec![crate::CoreCallEvidence {
+                    constraint: crate::CoreInstanceConstraint {
+                        name: "Debug".to_owned(),
+                        arguments: vec![crate::CoreType::Named {
+                            name: "A".to_owned(),
+                            arguments: Vec::new(),
+                        }],
+                    },
+                    evidence: CoreInstanceEvidence::Parameter { index: 0 },
+                }],
+            },
+            &BTreeMap::new(),
+            &BTreeMap::new(),
+        );
+
+        assert!(matches!(
+            expression,
+            Some(TypeScriptExpr::TypeApplicationCall {
+                callee,
+                arguments,
+                ..
+            }) if callee == "_ssrg_debug_maybeDebug"
+                && matches!(
+                    arguments.as_slice(),
+                    [TypeScriptExpr::Identifier { name }]
+                        if name == "__ssrg$evidence$0"
+                )
+        ));
+    }
+
+    #[test]
     fn materializes_a_registered_standard_arithmetic_dictionary() {
         let expression = local_dictionary_expression(
             &CoreInstanceEvidence::Standard {
                 identity: "std/int::Add".to_owned(),
+                type_arguments: Vec::new(),
+                evidence_arguments: Vec::new(),
             },
             &BTreeMap::new(),
             &BTreeMap::new(),
@@ -131,6 +236,8 @@ mod tests {
         let expression = local_dictionary_expression(
             &CoreInstanceEvidence::Standard {
                 identity: "std/either::Monad".to_owned(),
+                type_arguments: Vec::new(),
+                evidence_arguments: Vec::new(),
             },
             &BTreeMap::new(),
             &BTreeMap::new(),

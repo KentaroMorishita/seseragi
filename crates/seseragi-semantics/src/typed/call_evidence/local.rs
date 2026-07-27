@@ -10,21 +10,6 @@ use super::super::semantic_types::semantic_values_are_compatible;
 use super::super::type_ref::typed_type_from_type_ref;
 use super::super::TypedResolution;
 
-pub(super) fn select_local_instance(
-    trait_identity: &str,
-    constraint: &TypedConstraint,
-    resolution: &TypedResolution<'_>,
-    scoped: &[super::ScopedCallEvidence],
-) -> Option<TypedInstanceEvidence> {
-    select_local_instance_with_stack(
-        trait_identity,
-        constraint,
-        resolution,
-        scoped,
-        &mut Vec::new(),
-    )
-}
-
 pub(super) fn infer_local_functional_instance(
     trait_identity: &str,
     trait_name: &str,
@@ -294,18 +279,13 @@ fn infer_functional_instance_candidate(
     .map(|evidence| (element, evidence))
 }
 
-fn select_local_instance_with_stack(
+pub(super) fn select_local_instance_in_context(
     trait_identity: &str,
     constraint: &TypedConstraint,
     resolution: &TypedResolution<'_>,
     scoped: &[super::ScopedCallEvidence],
     stack: &mut Vec<(String, Vec<TypedType>)>,
 ) -> Option<TypedInstanceEvidence> {
-    let key = (trait_identity.to_owned(), constraint.arguments.clone());
-    if stack.contains(&key) {
-        return None;
-    }
-    stack.push(key);
     let matches = resolution
         .resolved()
         .declarations
@@ -323,7 +303,6 @@ fn select_local_instance_with_stack(
         })
         .take(2)
         .collect::<Vec<_>>();
-    stack.pop();
     match matches.as_slice() {
         [selected] => Some(selected.clone()),
         _ => None,
@@ -444,24 +423,13 @@ fn match_instance(
         super::direct_supertrait_constraints(*trait_name_span, &constraint.arguments, resolution);
     let mut evidence_arguments = Vec::new();
     for required in supertraits {
-        let evidence = select_scoped_instance(
-            &required.trait_identity,
+        let evidence = super::select_resolved_evidence_with_stack(
             &required.constraint,
+            &required.trait_identity,
             resolution,
             scoped,
-        )
-        .or_else(|| {
-            select_local_instance_with_stack(
-                &required.trait_identity,
-                &required.constraint,
-                resolution,
-                scoped,
-                stack,
-            )
-        })
-        .or_else(|| {
-            super::select_standard_instance(Some(&required.trait_identity), &required.constraint)
-        })?;
+            stack,
+        )?;
         evidence_arguments.push(TypedCallEvidence {
             constraint: required.constraint,
             evidence,
@@ -479,17 +447,13 @@ fn match_instance(
                 .map(|argument| substitute_type_parameters(&argument, &substitutions))
                 .collect(),
         };
-        let evidence = select_scoped_instance(&required_trait, &constraint, resolution, scoped)
-            .or_else(|| {
-                select_local_instance_with_stack(
-                    &required_trait,
-                    &constraint,
-                    resolution,
-                    scoped,
-                    stack,
-                )
-            })
-            .or_else(|| super::select_standard_instance(Some(&required_trait), &constraint))?;
+        let evidence = super::select_resolved_evidence_with_stack(
+            &constraint,
+            &required_trait,
+            resolution,
+            scoped,
+            stack,
+        )?;
         evidence_arguments.push(TypedCallEvidence {
             constraint,
             evidence,
@@ -500,34 +464,6 @@ fn match_instance(
         type_arguments,
         evidence_arguments,
     })
-}
-
-fn select_scoped_instance(
-    trait_identity: &str,
-    constraint: &TypedConstraint,
-    resolution: &TypedResolution<'_>,
-    scoped: &[super::ScopedCallEvidence],
-) -> Option<TypedInstanceEvidence> {
-    scoped
-        .iter()
-        .find(|available| {
-            available.trait_identity == trait_identity
-                && available.constraint.arguments.len() == constraint.arguments.len()
-                && available
-                    .constraint
-                    .arguments
-                    .iter()
-                    .zip(&constraint.arguments)
-                    .all(|(available, required)| {
-                        semantic_values_are_compatible(
-                            &resolution.semantic_value_from_typed_type(available),
-                            &resolution.semantic_value_from_typed_type(required),
-                        )
-                    })
-        })
-        .map(|available| TypedInstanceEvidence::Parameter {
-            index: available.index,
-        })
 }
 
 pub(super) fn normalize_partial_constructor_template(

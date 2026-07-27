@@ -1,0 +1,33 @@
+pub type Badge =
+  | Active
+  | Paused
+
+instance Show<Badge> {
+  fn show value: Badge -> String =
+    match value {
+      Active -> "active"
+      Paused -> "paused"
+    }
+}
+
+instance Debug<Badge> {
+  fn debug value: Badge -> String =
+    match value {
+      Active -> "Badge.Active"
+      Paused -> "Badge.Paused"
+  }
+}
+
+pub trait Render<A> {
+  fn render value: A -> String
+}
+
+instance<T> Render<Maybe<T>>
+where Show<Array<T>> {
+  fn render value: Maybe<T> -> String =
+    "imported collection requirement"
+}
+
+pub fn renderImported<T> value: T -> String
+where Render<T> =
+  render value

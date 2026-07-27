@@ -471,6 +471,136 @@
       "identity": "Debug<std/prelude::Char>"
     },
     {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Array",
+      "typeConstructorCanonical": "std/prelude::Array",
+      "typeConstructorArity": 1,
+      "identity": "std/array::Show",
+      "constraints": [
+        {
+          "trait": "Show",
+          "traitCanonical": "std/prelude::Show",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Array",
+      "typeConstructorCanonical": "std/prelude::Array",
+      "typeConstructorArity": 1,
+      "identity": "std/array::Debug",
+      "constraints": [
+        {
+          "trait": "Debug",
+          "traitCanonical": "std/prelude::Debug",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "List",
+      "typeConstructorCanonical": "std/prelude::List",
+      "typeConstructorArity": 1,
+      "identity": "std/list::Show",
+      "constraints": [
+        {
+          "trait": "Show",
+          "traitCanonical": "std/prelude::Show",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "List",
+      "typeConstructorCanonical": "std/prelude::List",
+      "typeConstructorArity": 1,
+      "identity": "std/list::Debug",
+      "constraints": [
+        {
+          "trait": "Debug",
+          "traitCanonical": "std/prelude::Debug",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Maybe",
+      "typeConstructorCanonical": "std/prelude::Maybe",
+      "typeConstructorArity": 1,
+      "identity": "std/maybe::Show",
+      "constraints": [
+        {
+          "trait": "Show",
+          "traitCanonical": "std/prelude::Show",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Maybe",
+      "typeConstructorCanonical": "std/prelude::Maybe",
+      "typeConstructorArity": 1,
+      "identity": "std/maybe::Debug",
+      "constraints": [
+        {
+          "trait": "Debug",
+          "traitCanonical": "std/prelude::Debug",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Either",
+      "typeConstructorCanonical": "std/prelude::Either",
+      "typeConstructorArity": 2,
+      "identity": "std/either::Show",
+      "constraints": [
+        {
+          "trait": "Show",
+          "traitCanonical": "std/prelude::Show",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Show",
+          "traitCanonical": "std/prelude::Show",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Either",
+      "typeConstructorCanonical": "std/prelude::Either",
+      "typeConstructorArity": 2,
+      "identity": "std/either::Debug",
+      "constraints": [
+        {
+          "trait": "Debug",
+          "traitCanonical": "std/prelude::Debug",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "Debug",
+          "traitCanonical": "std/prelude::Debug",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
       "trait": "Semigroup",
       "traitCanonical": "std/prelude::Semigroup",
       "typeConstructor": "Array",

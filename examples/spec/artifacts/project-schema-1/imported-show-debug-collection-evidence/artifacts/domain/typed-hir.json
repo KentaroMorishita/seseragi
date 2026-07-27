@@ -1,0 +1,555 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/imported-show-debug-collection-evidence::domain",
+  "instances": [
+    {
+      "identity": "std/prelude::Show<fixture/imported-show-debug-collection-evidence::domain::Badge>",
+      "traitIdentity": "std/prelude::Show",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-show-debug-collection-evidence::domain::Badge"
+      ],
+      "typeIdentity": "fixture/imported-show-debug-collection-evidence::domain::Badge",
+      "constraints": [],
+      "origin": {
+        "start": 40,
+        "end": 173
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "show",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 73,
+                  "end": 78
+                }
+              }
+            ],
+            "body": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 108,
+                  "end": 113
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "fixture/imported-show-debug-collection-evidence::domain::Active",
+                    "type": {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 122,
+                      "end": 128
+                    }
+                  },
+                  "body": {
+                    "kind": "string",
+                    "value": "active",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 132,
+                      "end": 140
+                    }
+                  },
+                  "origin": {
+                    "start": 122,
+                    "end": 140
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "fixture/imported-show-debug-collection-evidence::domain::Paused",
+                    "type": {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 147,
+                      "end": 153
+                    }
+                  },
+                  "body": {
+                    "kind": "string",
+                    "value": "paused",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 157,
+                      "end": 165
+                    }
+                  },
+                  "origin": {
+                    "start": 147,
+                    "end": 165
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 102,
+                "end": 171
+              }
+            },
+            "origin": {
+              "start": 65,
+              "end": 171
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Debug<fixture/imported-show-debug-collection-evidence::domain::Badge>",
+      "traitIdentity": "std/prelude::Debug",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-show-debug-collection-evidence::domain::Badge"
+      ],
+      "constraints": [],
+      "origin": {
+        "start": 175,
+        "end": 320
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "debug",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 210,
+                  "end": 215
+                }
+              }
+            ],
+            "body": {
+              "kind": "match",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 245,
+                  "end": 250
+                }
+              },
+              "arms": [
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "fixture/imported-show-debug-collection-evidence::domain::Active",
+                    "type": {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 259,
+                      "end": 265
+                    }
+                  },
+                  "body": {
+                    "kind": "string",
+                    "value": "Badge.Active",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 269,
+                      "end": 283
+                    }
+                  },
+                  "origin": {
+                    "start": 259,
+                    "end": 283
+                  }
+                },
+                {
+                  "pattern": {
+                    "kind": "constructor",
+                    "symbol": "fixture/imported-show-debug-collection-evidence::domain::Paused",
+                    "type": {
+                      "kind": "named",
+                      "name": "Badge",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 290,
+                      "end": 296
+                    }
+                  },
+                  "body": {
+                    "kind": "string",
+                    "value": "Badge.Paused",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 300,
+                      "end": 314
+                    }
+                  },
+                  "origin": {
+                    "start": 290,
+                    "end": 314
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 239,
+                "end": 318
+              }
+            },
+            "origin": {
+              "start": 201,
+              "end": 318
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)<std/prelude::Maybe<$0>>",
+      "traitIdentity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)",
+      "trait": "Render",
+      "typeParameters": [
+        "T"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "argumentIdentities": [
+        "std/prelude::Maybe<$0>"
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "constraintIdentities": [
+        "std/prelude::Show"
+      ],
+      "origin": {
+        "start": 378,
+        "end": 509
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            },
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "T",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 442,
+                  "end": 447
+                }
+              }
+            ],
+            "body": {
+              "kind": "string",
+              "value": "imported collection requirement",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 474,
+                "end": 507
+              }
+            },
+            "origin": {
+              "start": 432,
+              "end": 507
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/imported-show-debug-collection-evidence::domain::Badge",
+      "name": "Badge",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-show-debug-collection-evidence::domain::Active",
+          "name": "Active",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Badge",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 21,
+            "end": 27
+          }
+        },
+        {
+          "symbol": "fixture/imported-show-debug-collection-evidence::domain::Paused",
+          "name": "Paused",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Badge",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 32,
+            "end": 38
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 38
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-show-debug-collection-evidence::domain::renderImported",
+      "visibility": "public",
+      "origin": {
+        "start": 511,
+        "end": 587
+      },
+      "scheme": {
+        "typeParameters": [
+          "T"
+        ],
+        "constraints": [
+          {
+            "name": "Render",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "T",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "T",
+            "arguments": []
+          },
+          "origin": {
+            "start": 536,
+            "end": 541
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)::render",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "T",
+              "arguments": []
+            },
+            "origin": {
+              "start": 582,
+              "end": 587
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Render",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "T",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)",
+          "method": "render"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 575,
+          "end": 587
+        }
+      }
+    }
+  ]
+}

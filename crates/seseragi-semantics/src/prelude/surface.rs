@@ -5,8 +5,8 @@ use seseragi_syntax::TypeParameter;
 use crate::TypedType;
 
 use super::{
-    trait_by_name, trait_method_signature, PreludeTraitMethodSignature, STANDARD_INSTANCES, TRAITS,
-    TRAIT_METHODS,
+    standard_instance_constraint_specs, trait_by_name, trait_method_signature,
+    PreludeTraitMethodSignature, STANDARD_INSTANCES, TRAITS, TRAIT_METHODS,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -50,6 +50,17 @@ struct StandardInstanceSurface {
     type_constructor_canonical: String,
     type_constructor_arity: u32,
     identity: &'static str,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    constraints: Vec<StandardInstanceConstraintSurface>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct StandardInstanceConstraintSurface {
+    #[serde(rename = "trait")]
+    trait_name: &'static str,
+    trait_canonical: &'static str,
+    type_argument_index: usize,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -106,6 +117,18 @@ pub fn standard_prelude_surface() -> StandardModuleSurface {
                         .unwrap_or_else(|| format!("std/prelude::{}", instance.type_name)),
                     type_constructor_arity: instance.type_arity,
                     identity: instance.identity,
+                    constraints: standard_instance_constraint_specs(instance.identity)
+                        .iter()
+                        .map(|constraint| {
+                            let required = trait_by_name(constraint.trait_name)
+                                .expect("standard instance constraint trait must exist");
+                            StandardInstanceConstraintSurface {
+                                trait_name: constraint.trait_name,
+                                trait_canonical: required.canonical,
+                                type_argument_index: constraint.type_argument_index,
+                            }
+                        })
+                        .collect(),
                 }
             })
             .collect(),
@@ -135,7 +158,7 @@ mod tests {
                 .count(),
             8
         );
-        assert_eq!(surface.instances.len(), 34);
+        assert_eq!(surface.instances.len(), 42);
         assert_eq!(surface.coherence.standard_heads, "sealed");
 
         let monoid = surface
@@ -160,5 +183,14 @@ mod tests {
                 arguments: Vec::new(),
             }
         );
+
+        let array_show = surface
+            .instances
+            .iter()
+            .find(|instance| instance.identity == "std/array::Show")
+            .expect("Array Show must be part of the standard Prelude surface");
+        assert_eq!(array_show.constraints.len(), 1);
+        assert_eq!(array_show.constraints[0].trait_name, "Show");
+        assert_eq!(array_show.constraints[0].type_argument_index, 0);
     }
 }
