@@ -2,7 +2,11 @@ import { describe, expect, test } from "bun:test"
 import { createHash } from "node:crypto"
 import { readdir } from "node:fs/promises"
 import { queryAnalysisAt } from "../src/analysis/document"
-import type { AnalysisDocument, CompileResponse } from "../src/compiler/types"
+import type {
+  AnalysisDocument,
+  CompileResponse,
+  FormatResponse,
+} from "../src/compiler/types"
 import { executeGeneratedModule } from "../src/runtime/browser-execution"
 import {
   sampleCapabilities,
@@ -26,6 +30,7 @@ type WasmBindings = {
     moduleId: string,
     source: string
   ) => string
+  readonly format_single_file: (sourceName: string, source: string) => string
 }
 
 let bindings: WasmBindings | undefined
@@ -59,6 +64,11 @@ async function analyze(source: string): Promise<AnalysisDocument> {
   return JSON.parse(
     wasm.analyze_single_file("main.ssrg", "playground/main", source)
   ) as AnalysisDocument
+}
+
+async function format(source: string): Promise<FormatResponse> {
+  const wasm = await loadBindings()
+  return JSON.parse(wasm.format_single_file("main.ssrg", source))
 }
 
 describe("Playground sample catalog", () => {
@@ -282,6 +292,31 @@ describe("Playground sample catalog", () => {
       "referenceBrowser.setCatalog(analysis.standardLibrary)"
     )
     expect(reference).not.toContain("const referenceItems")
+  })
+
+  test("formats source through the shared WASM formatter without rewriting errors", async () => {
+    const source = 'pub let greeting: String = "こんにちは🙂"   \r\n' + "\r\n"
+    const expected = 'pub let greeting: String = "こんにちは🙂"\n'
+
+    const formatted = await format(source)
+    expect(formatted).toEqual({
+      status: "success",
+      schema: 1,
+      source: expected,
+      changed: true,
+    })
+    const canonical = await format(expected)
+    expect(canonical).toEqual({
+      status: "success",
+      schema: 1,
+      source: expected,
+      changed: false,
+    })
+    const invalid = await format("pub let broken: Int =\n")
+    expect(invalid.status).toBe("failure")
+    if (invalid.status !== "failure") throw new Error("invalid source changed")
+    expect(invalid.diagnostics.diagnostics.length).toBeGreaterThan(0)
+    expect(invalid).not.toHaveProperty("source")
   })
 
   test("renders HTML output in an isolated preview", async () => {

@@ -5,7 +5,11 @@ import {
   type LiveAnalysisController,
 } from "./analysis/live-analysis"
 import type { AnalysisDocument, Diagnostic } from "./compiler/types"
-import { analyzeSingleFile, compileSingleFile } from "./compiler/wasm-driver"
+import {
+  analyzeSingleFile,
+  compileSingleFile,
+  formatSingleFile,
+} from "./compiler/wasm-driver"
 import { renderDiagnosticCards } from "./diagnostics/diagnostic-cards"
 import { toEditorDiagnostics } from "./diagnostics/editor-diagnostics"
 import { utf8RangeToUtf16 } from "./diagnostics/source-range"
@@ -123,6 +127,14 @@ const resetSampleButton = requiredElement(
 )
 const mobileResetButton = requiredElement(
   "#mobile-reset-button",
+  HTMLButtonElement
+)
+const formatSourceButton = requiredElement(
+  "#format-source-button",
+  HTMLButtonElement
+)
+const mobileFormatButton = requiredElement(
+  "#mobile-format-button",
   HTMLButtonElement
 )
 const whitespaceToggleButton = requiredElement(
@@ -313,6 +325,42 @@ const resetSample = (): void => {
 }
 resetSampleButton.addEventListener("click", resetSample)
 mobileResetButton.addEventListener("click", resetSample)
+const formatSource = async (): Promise<void> => {
+  const requestedSource = source
+  setStatus("running", "Formatting…")
+  try {
+    const formatted = await formatSingleFile(requestedSource)
+    if (source !== requestedSource) return
+    if (formatted.status === "failure") {
+      const diagnostics = formatted.diagnostics.diagnostics
+      editor.dispatch(
+        setDiagnostics(editor.state, [
+          ...toEditorDiagnostics(requestedSource, diagnostics),
+        ])
+      )
+      showDiagnostics(diagnostics, requestedSource)
+      setStatus("error", `Cannot format: ${diagnostics.length} diagnostic(s)`)
+      return
+    }
+    if (!formatted.changed) {
+      setStatus("success", "Already formatted")
+      return
+    }
+    source = formatted.source
+    replaceEditorSource(editor, source)
+    setStatus("success", "Formatted")
+  } catch (error) {
+    if (source !== requestedSource) return
+    setStatus(
+      "error",
+      error instanceof Error ? error.message : "Formatting failed"
+    )
+  } finally {
+    editor.focus()
+  }
+}
+formatSourceButton.addEventListener("click", () => void formatSource())
+mobileFormatButton.addEventListener("click", () => void formatSource())
 const toggleWhitespace = (): void => setWhitespaceVisible(!showWhitespace)
 whitespaceToggleButton.addEventListener("click", toggleWhitespace)
 mobileWhitespaceButton.addEventListener("click", toggleWhitespace)

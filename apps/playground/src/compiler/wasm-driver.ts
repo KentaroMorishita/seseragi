@@ -1,8 +1,9 @@
 import init, {
   analyze_single_file,
   compile_single_file,
+  format_single_file,
 } from "../wasm/pkg/seseragi_wasm"
-import type { AnalysisDocument, CompileResponse } from "./types"
+import type { AnalysisDocument, CompileResponse, FormatResponse } from "./types"
 
 let initialization: Promise<unknown> | undefined
 
@@ -24,4 +25,14 @@ export async function analyzeSingleFile(
   return JSON.parse(
     analyze_single_file("playground.ssrg", "playground/main", source)
   ) as AnalysisDocument
+}
+
+export async function formatSingleFile(
+  source: string
+): Promise<FormatResponse> {
+  initialization ??= init()
+  await initialization
+  return JSON.parse(
+    format_single_file("playground.ssrg", source)
+  ) as FormatResponse
 }

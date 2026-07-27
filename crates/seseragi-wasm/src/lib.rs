@@ -5,7 +5,7 @@
 //! contracts.
 
 use serde::Serialize;
-use seseragi_driver::{analyze_module, compile_module, CompileInput};
+use seseragi_driver::{analyze_module, compile_module, format_module, CompileInput};
 use seseragi_lowering::GeneratedBundle;
 use seseragi_runtime::{main_contract, MainContract};
 use seseragi_syntax::DiagnosticArtifact;
@@ -22,6 +22,20 @@ enum CompileResponse {
         entry: Option<MainContract>,
         #[serde(rename = "entryError", skip_serializing_if = "Option::is_none")]
         entry_error: Option<String>,
+    },
+    Failure {
+        schema: u32,
+        diagnostics: DiagnosticArtifact,
+    },
+}
+
+#[derive(Serialize)]
+#[serde(tag = "status", rename_all = "camelCase")]
+enum FormatResponse {
+    Success {
+        schema: u32,
+        source: String,
+        changed: bool,
     },
     Failure {
         schema: u32,
@@ -67,6 +81,25 @@ pub fn analyze_single_file(source_name: &str, module_id: &str, source: &str) -> 
         source,
     )))
     .expect("playground analysis response must serialize")
+}
+
+/// Formats one source snapshot with the same formatter used by the native CLI
+/// and LSP, returning either the complete canonical source or shared parser
+/// diagnostics. Invalid source is never returned as a rewritten document.
+#[wasm_bindgen]
+pub fn format_single_file(source_name: &str, source: &str) -> String {
+    let response = match format_module(source_name, source) {
+        Ok(formatted) => FormatResponse::Success {
+            schema: 1,
+            source: formatted.text,
+            changed: formatted.changed,
+        },
+        Err(diagnostics) => FormatResponse::Failure {
+            schema: 1,
+            diagnostics,
+        },
+    };
+    serde_json::to_string(&response).expect("playground format response must serialize")
 }
 
 #[cfg(test)]
@@ -146,5 +179,35 @@ fn view -> html.Html<Never> =
             diagnostics[0]["fixes"][0]["edits"][0]["replacement"],
             "className"
         );
+    }
+
+    #[test]
+    fn formats_with_the_shared_driver_and_preserves_invalid_source() {
+        let source = concat!("pub let greeting: String = \"こんにちは🙂\"   \r\n", "\r\n",);
+        let shared = format_module("main.ssrg", source).expect("valid source");
+        let formatted: Value =
+            serde_json::from_str(&format_single_file("main.ssrg", source)).unwrap();
+
+        assert_eq!(formatted["status"], "success");
+        assert_eq!(formatted["source"], shared.text);
+        assert_eq!(formatted["changed"], true);
+
+        let canonical: Value =
+            serde_json::from_str(&format_single_file("main.ssrg", &shared.text)).unwrap();
+        assert_eq!(canonical["status"], "success");
+        assert_eq!(canonical["source"], shared.text);
+        assert_eq!(canonical["changed"], false);
+
+        let invalid: Value = serde_json::from_str(&format_single_file(
+            "broken.ssrg",
+            "pub let broken: Int =\n",
+        ))
+        .unwrap();
+        assert_eq!(invalid["status"], "failure");
+        assert!(invalid.get("source").is_none());
+        assert!(!invalid["diagnostics"]["diagnostics"]
+            .as_array()
+            .unwrap()
+            .is_empty());
     }
 }

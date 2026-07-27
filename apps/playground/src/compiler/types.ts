@@ -138,3 +138,16 @@ export type CompileResponse =
       readonly schema: number
       readonly diagnostics: DiagnosticArtifact
     }
+
+export type FormatResponse =
+  | {
+      readonly status: "success"
+      readonly schema: number
+      readonly source: string
+      readonly changed: boolean
+    }
+  | {
+      readonly status: "failure"
+      readonly schema: number
+      readonly diagnostics: DiagnosticArtifact
+    }

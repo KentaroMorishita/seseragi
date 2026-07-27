@@ -14,12 +14,20 @@ export function analyze_single_file(source_name: string, module_id: string, sour
  */
 export function compile_single_file(source_name: string, module_id: string, source: string): string;
 
+/**
+ * Formats one source snapshot with the same formatter used by the native CLI
+ * and LSP, returning either the complete canonical source or shared parser
+ * diagnostics. Invalid source is never returned as a rewritten document.
+ */
+export function format_single_file(source_name: string, source: string): string;
+
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
     readonly analyze_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
     readonly compile_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
+    readonly format_single_file: (a: number, b: number, c: number, d: number) => [number, number];
     readonly __wbindgen_externrefs: WebAssembly.Table;
     readonly __wbindgen_malloc: (a: number, b: number) => number;
     readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;

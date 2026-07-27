@@ -129,6 +129,20 @@ describe("mobile editing layout contract", () => {
     expect(main).toContain("setEditorWhitespaceVisible(editor, visible)")
   })
 
+  test("exposes shared document formatting in desktop tools and mobile overflow", async () => {
+    const html = await Bun.file(new URL("index.html", root)).text()
+    const main = await Bun.file(new URL("src/main.ts", root)).text()
+
+    expect(html).toContain('id="format-source-button"')
+    expect(html).toContain('id="mobile-format-button"')
+    expect(html).toContain("Format code")
+    expect(main).toContain("formatSingleFile(requestedSource)")
+    expect(main).toContain('setStatus("success", "Formatted")')
+    expect(main).toContain('setStatus("success", "Already formatted")')
+    expect(main).toContain("Cannot format:")
+    expect(main).toContain("editor.focus()")
+  })
+
   test("supports focus, arrow keys, outside taps, and Escape in overflow", async () => {
     const menu = await Bun.file(new URL("src/ui/overflow-menu.ts", root)).text()
 
