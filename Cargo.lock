@@ -218,6 +218,7 @@ name = "seseragi-runtime"
 version = "0.0.0"
 dependencies = [
  "serde",
+ "serde_json",
  "seseragi-driver",
  "seseragi-semantics",
  "seseragi-syntax",

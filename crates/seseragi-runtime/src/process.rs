@@ -10,9 +10,11 @@ use crate::{main_contract, MainContract};
 mod entry;
 mod local_package;
 
+pub use build::{build_main, BuildError};
 use entry::entry_source;
 pub use local_package::{run_local_package, run_local_project};
 
+mod build;
 static NEXT_RUN: AtomicU64 = AtomicU64::new(0);
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -65,17 +67,24 @@ fn run_in_directory(
     contract: &MainContract,
     directory: &Path,
 ) -> Result<RunOutcome, RunError> {
-    fs::write(directory.join("main.ts"), &compiled.generated.typescript).map_err(|error| {
-        RunError::Host(format!("failed to stage generated TypeScript: {error}"))
-    })?;
-    crate::stage_typescript_package(directory).map_err(RunError::Host)?;
+    stage_main_program(compiled, contract, directory).map_err(RunError::Host)?;
+
+    run_target(directory)
+}
+
+fn stage_main_program(
+    compiled: &CompiledModule,
+    contract: &MainContract,
+    directory: &Path,
+) -> Result<(), String> {
+    fs::write(directory.join("main.ts"), &compiled.generated.typescript)
+        .map_err(|error| format!("failed to stage generated TypeScript: {error}"))?;
+    crate::stage_typescript_package(directory)?;
     fs::write(
         directory.join("entry.ts"),
         entry_source(contract, "./main.ts"),
     )
-    .map_err(|error| RunError::Host(format!("failed to stage runtime entry: {error}")))?;
-
-    run_target(directory)
+    .map_err(|error| format!("failed to stage runtime entry: {error}"))
 }
 
 pub(super) fn run_target(directory: &Path) -> Result<RunOutcome, RunError> {

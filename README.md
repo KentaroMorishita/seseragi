@@ -20,6 +20,10 @@ cargo build -p seseragi-cli
 # single-file programをcompileして実行
 cargo run -p seseragi-cli -- run examples/samples/hello-world/main.ssrg
 
+# 実行せず、再現可能なTypeScript成果物をdist/へ出力
+cargo run -p seseragi-cli -- build examples/samples/hello-world/main.ssrg
+bun run dist/entry.ts
+
 # formatter
 cargo run -p seseragi-cli -- format --check \
   examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg
@@ -27,6 +31,13 @@ cargo run -p seseragi-cli -- format --check \
 
 `run`はsingle fileだけでなく、`seseragi.json`を持つlocal packageも受け取れます。
 生成TypeScriptの実行にはBunを使います。
+
+`build`はsingle fileを既定の`dist/`、または`--out-dir`で指定したdirectoryへ
+永続出力します。成果物には`main.ts`、`main.ts.map`、
+`generated-module.json`、Bun用`entry.ts`、versioned TypeScript runtimeが
+含まれます。同じ入力の再buildではdirectory全体を再生成しますが、
+`.seseragi-build.json`を持たない既存の非空directoryは誤削除を避けるため
+上書きしません。
 
 ## Playground
 
