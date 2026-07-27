@@ -1,0 +1,605 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showBool",
+      "nameSpan": {
+        "start": 7,
+        "end": 15
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 16,
+            "end": 21
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 23,
+              "end": 27
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 31,
+          "end": 37
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 42,
+            "end": 46
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 47,
+            "end": 52
+          }
+        },
+        "span": {
+          "start": 42,
+          "end": 52
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 52
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugBool",
+      "nameSpan": {
+        "start": 61,
+        "end": 70
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 71,
+            "end": 76
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 78,
+              "end": 82
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 86,
+          "end": 92
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 97,
+            "end": 102
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 103,
+            "end": 108
+          }
+        },
+        "span": {
+          "start": 97,
+          "end": 108
+        }
+      },
+      "span": {
+        "start": 54,
+        "end": 108
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showUnit",
+      "nameSpan": {
+        "start": 117,
+        "end": 125
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 126,
+            "end": 131
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 133,
+              "end": 137
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 141,
+          "end": 147
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 152,
+            "end": 156
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 157,
+            "end": 162
+          }
+        },
+        "span": {
+          "start": 152,
+          "end": 162
+        }
+      },
+      "span": {
+        "start": 110,
+        "end": 162
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugUnit",
+      "nameSpan": {
+        "start": 171,
+        "end": 180
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 181,
+            "end": 186
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 188,
+              "end": 192
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 196,
+          "end": 202
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 207,
+            "end": 212
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 213,
+            "end": 218
+          }
+        },
+        "span": {
+          "start": 207,
+          "end": 218
+        }
+      },
+      "span": {
+        "start": 164,
+        "end": 218
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showChar",
+      "nameSpan": {
+        "start": 227,
+        "end": 235
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 236,
+            "end": 241
+          },
+          "type": {
+            "kind": "named",
+            "name": "Char",
+            "span": {
+              "start": 243,
+              "end": 247
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 251,
+          "end": 257
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 262,
+            "end": 266
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 267,
+            "end": 272
+          }
+        },
+        "span": {
+          "start": 262,
+          "end": 272
+        }
+      },
+      "span": {
+        "start": 220,
+        "end": 272
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugChar",
+      "nameSpan": {
+        "start": 281,
+        "end": 290
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 291,
+            "end": 296
+          },
+          "type": {
+            "kind": "named",
+            "name": "Char",
+            "span": {
+              "start": 298,
+              "end": 302
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 306,
+          "end": 312
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 317,
+            "end": 322
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 323,
+            "end": 328
+          }
+        },
+        "span": {
+          "start": 317,
+          "end": 328
+        }
+      },
+      "span": {
+        "start": 274,
+        "end": 328
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugString",
+      "nameSpan": {
+        "start": 337,
+        "end": 348
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 349,
+            "end": 354
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 356,
+              "end": 362
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 366,
+          "end": 372
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 377,
+            "end": 382
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 383,
+            "end": 388
+          }
+        },
+        "span": {
+          "start": 377,
+          "end": 388
+        }
+      },
+      "span": {
+        "start": 330,
+        "end": 388
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 404,
+        "end": 408
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 422,
+                  "end": 429
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "show",
+                    "span": {
+                      "start": 431,
+                      "end": 435
+                    }
+                  },
+                  "argument": {
+                    "kind": "boolean",
+                    "value": true,
+                    "span": {
+                      "start": 436,
+                      "end": 440
+                    }
+                  },
+                  "span": {
+                    "start": 431,
+                    "end": 440
+                  }
+                },
+                "span": {
+                  "start": 430,
+                  "end": 441
+                }
+              },
+              "span": {
+                "start": 422,
+                "end": 441
+              }
+            },
+            "span": {
+              "start": 422,
+              "end": 441
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 446,
+                  "end": 453
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "show",
+                    "span": {
+                      "start": 455,
+                      "end": 459
+                    }
+                  },
+                  "argument": {
+                    "kind": "unit",
+                    "span": {
+                      "start": 460,
+                      "end": 462
+                    }
+                  },
+                  "span": {
+                    "start": 455,
+                    "end": 462
+                  }
+                },
+                "span": {
+                  "start": 454,
+                  "end": 463
+                }
+              },
+              "span": {
+                "start": 446,
+                "end": 463
+              }
+            },
+            "span": {
+              "start": 446,
+              "end": 463
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 468,
+              "end": 475
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "debug",
+                "span": {
+                  "start": 477,
+                  "end": 482
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"line\\n\\\"quoted\\\"\"",
+                "span": {
+                  "start": 483,
+                  "end": 501
+                }
+              },
+              "span": {
+                "start": 477,
+                "end": 501
+              }
+            },
+            "span": {
+              "start": 476,
+              "end": 502
+            }
+          },
+          "span": {
+            "start": 468,
+            "end": 502
+          }
+        },
+        "span": {
+          "start": 413,
+          "end": 506
+        }
+      },
+      "span": {
+        "start": 390,
+        "end": 506
+      }
+    }
+  ]
+}

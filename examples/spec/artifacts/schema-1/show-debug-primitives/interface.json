@@ -1,0 +1,206 @@
+{
+  "schema": 1,
+  "module": "artifact/show-debug-primitives",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/show-debug-primitives::showBool",
+      "namespace": "value",
+      "name": "showBool",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 0,
+        "end": 52
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-primitives::debugBool",
+      "namespace": "value",
+      "name": "debugBool",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 54,
+        "end": 108
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-primitives::showUnit",
+      "namespace": "value",
+      "name": "showUnit",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 110,
+        "end": 162
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-primitives::debugUnit",
+      "namespace": "value",
+      "name": "debugUnit",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 164,
+        "end": 218
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-primitives::showChar",
+      "namespace": "value",
+      "name": "showChar",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 220,
+        "end": 272
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Char",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-primitives::debugChar",
+      "namespace": "value",
+      "name": "debugChar",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 274,
+        "end": 328
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Char",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-primitives::debugString",
+      "namespace": "value",
+      "name": "debugString",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 330,
+        "end": 388
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

@@ -120,8 +120,34 @@ export type {
   ServiceSuccess,
 } from "./service"
 export { serviceEffect, serviceFailure, serviceSuccess } from "./service"
-export type { Show } from "./show"
-export { consoleErrorShow, intShow, stdinErrorShow, stringShow } from "./show"
+export type {
+  Debug,
+  RenderDocument,
+  RenderLayout,
+  RenderOptions,
+  Show,
+} from "./show"
+export {
+  boolDebug,
+  boolShow,
+  charDebug,
+  charShow,
+  concat,
+  consoleErrorShow,
+  delimited,
+  indent,
+  intShow,
+  line,
+  renderDebug,
+  renderDocument as renderValueDocument,
+  renderShow,
+  stdinErrorShow,
+  stringDebug,
+  stringShow,
+  text as renderText,
+  unitDebug,
+  unitShow,
+} from "./show"
 export type {
   ProcessStdin,
   Stdin,

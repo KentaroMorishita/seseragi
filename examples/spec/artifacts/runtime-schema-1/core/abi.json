@@ -769,6 +769,26 @@
       "import": null
     },
     {
+      "id": "core.unit.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<undefined>",
+      "boundary": "Show<Unit> canonical () rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "unitShow"
+      }
+    },
+    {
+      "id": "core.unit.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<undefined>",
+      "boundary": "Debug<Unit> canonical () rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "unitDebug"
+      }
+    },
+    {
       "id": "core.string",
       "kind": "value-representation",
       "typescript": "string",
@@ -776,14 +796,40 @@
       "import": null
     },
     {
+      "id": "core.char",
+      "kind": "value-representation",
+      "typescript": "string",
+      "boundary": "exactly one Unicode scalar",
+      "import": null
+    },
+    {
+      "id": "core.render.document",
+      "kind": "value-representation",
+      "typescript": "type RenderDocument",
+      "boundary": "immutable text, line, concat, indent, and delimited render tree",
+      "import": null
+    },
+    {
       "id": "core.show.dictionary",
       "kind": "value-representation",
       "typescript": "type Show<A>",
-      "boundary": "pure dictionary { readonly show: (value: A) => string }",
+      "boundary": "pure dictionary with stable show string and optional internal render document",
       "typeIdentity": "std/prelude::Show",
       "typeImport": {
         "module": "@seseragi/runtime/show",
         "export": "Show"
+      },
+      "import": null
+    },
+    {
+      "id": "core.debug.dictionary",
+      "kind": "value-representation",
+      "typescript": "type Debug<A>",
+      "boundary": "pure developer-facing dictionary with optional internal render document",
+      "typeIdentity": "std/prelude::Debug",
+      "typeImport": {
+        "module": "@seseragi/runtime/show",
+        "export": "Debug"
       },
       "import": null
     },
@@ -795,6 +841,36 @@
       "import": {
         "module": "@seseragi/runtime/show",
         "export": "stringShow"
+      }
+    },
+    {
+      "id": "core.string.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<string>",
+      "boundary": "Debug<String> quoted Seseragi literal with deterministic escapes",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "stringDebug"
+      }
+    },
+    {
+      "id": "core.char.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<string>",
+      "boundary": "Show<Char> unquoted Unicode scalar rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "charShow"
+      }
+    },
+    {
+      "id": "core.char.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<string>",
+      "boundary": "Debug<Char> quoted Seseragi literal with deterministic escapes",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "charDebug"
       }
     },
     {
@@ -825,6 +901,26 @@
       "typescript": "boolean",
       "boundary": "boolean",
       "import": null
+    },
+    {
+      "id": "core.bool.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<boolean>",
+      "boundary": "Show<Bool> canonical True or False rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "boolShow"
+      }
+    },
+    {
+      "id": "core.bool.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<boolean>",
+      "boundary": "Debug<Bool> canonical True or False rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "boolDebug"
+      }
     },
     {
       "id": "effect.console.service",

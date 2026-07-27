@@ -1,0 +1,1321 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/show-debug-primitives",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showBool",
+      "nameSpan": {
+        "start": 7,
+        "end": 15
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 16,
+            "end": 21
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 23,
+              "end": 27
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 31,
+          "end": 37
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 42,
+            "end": 46
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 47,
+            "end": 52
+          }
+        },
+        "span": {
+          "start": 42,
+          "end": 52
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 52
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugBool",
+      "nameSpan": {
+        "start": 61,
+        "end": 70
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 71,
+            "end": 76
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 78,
+              "end": 82
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 86,
+          "end": 92
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 97,
+            "end": 102
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 103,
+            "end": 108
+          }
+        },
+        "span": {
+          "start": 97,
+          "end": 108
+        }
+      },
+      "span": {
+        "start": 54,
+        "end": 108
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showUnit",
+      "nameSpan": {
+        "start": 117,
+        "end": 125
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 126,
+            "end": 131
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 133,
+              "end": 137
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 141,
+          "end": 147
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 152,
+            "end": 156
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 157,
+            "end": 162
+          }
+        },
+        "span": {
+          "start": 152,
+          "end": 162
+        }
+      },
+      "span": {
+        "start": 110,
+        "end": 162
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugUnit",
+      "nameSpan": {
+        "start": 171,
+        "end": 180
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 181,
+            "end": 186
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 188,
+              "end": 192
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 196,
+          "end": 202
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 207,
+            "end": 212
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 213,
+            "end": 218
+          }
+        },
+        "span": {
+          "start": 207,
+          "end": 218
+        }
+      },
+      "span": {
+        "start": 164,
+        "end": 218
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showChar",
+      "nameSpan": {
+        "start": 227,
+        "end": 235
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 236,
+            "end": 241
+          },
+          "type": {
+            "kind": "named",
+            "name": "Char",
+            "span": {
+              "start": 243,
+              "end": 247
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 251,
+          "end": 257
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 262,
+            "end": 266
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 267,
+            "end": 272
+          }
+        },
+        "span": {
+          "start": 262,
+          "end": 272
+        }
+      },
+      "span": {
+        "start": 220,
+        "end": 272
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugChar",
+      "nameSpan": {
+        "start": 281,
+        "end": 290
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 291,
+            "end": 296
+          },
+          "type": {
+            "kind": "named",
+            "name": "Char",
+            "span": {
+              "start": 298,
+              "end": 302
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 306,
+          "end": 312
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 317,
+            "end": 322
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 323,
+            "end": 328
+          }
+        },
+        "span": {
+          "start": 317,
+          "end": 328
+        }
+      },
+      "span": {
+        "start": 274,
+        "end": 328
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugString",
+      "nameSpan": {
+        "start": 337,
+        "end": 348
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 349,
+            "end": 354
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 356,
+              "end": 362
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 366,
+          "end": 372
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 377,
+            "end": 382
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 383,
+            "end": 388
+          }
+        },
+        "span": {
+          "start": 377,
+          "end": 388
+        }
+      },
+      "span": {
+        "start": 330,
+        "end": 388
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 404,
+        "end": 408
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 422,
+                  "end": 429
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "show",
+                    "span": {
+                      "start": 431,
+                      "end": 435
+                    }
+                  },
+                  "argument": {
+                    "kind": "boolean",
+                    "value": true,
+                    "span": {
+                      "start": 436,
+                      "end": 440
+                    }
+                  },
+                  "span": {
+                    "start": 431,
+                    "end": 440
+                  }
+                },
+                "span": {
+                  "start": 430,
+                  "end": 441
+                }
+              },
+              "span": {
+                "start": 422,
+                "end": 441
+              }
+            },
+            "span": {
+              "start": 422,
+              "end": 441
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 446,
+                  "end": 453
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "show",
+                    "span": {
+                      "start": 455,
+                      "end": 459
+                    }
+                  },
+                  "argument": {
+                    "kind": "unit",
+                    "span": {
+                      "start": 460,
+                      "end": 462
+                    }
+                  },
+                  "span": {
+                    "start": 455,
+                    "end": 462
+                  }
+                },
+                "span": {
+                  "start": 454,
+                  "end": 463
+                }
+              },
+              "span": {
+                "start": 446,
+                "end": 463
+              }
+            },
+            "span": {
+              "start": 446,
+              "end": 463
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 468,
+              "end": 475
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "debug",
+                "span": {
+                  "start": 477,
+                  "end": 482
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"line\\n\\\"quoted\\\"\"",
+                "span": {
+                  "start": 483,
+                  "end": 501
+                }
+              },
+              "span": {
+                "start": 477,
+                "end": 501
+              }
+            },
+            "span": {
+              "start": 476,
+              "end": 502
+            }
+          },
+          "span": {
+            "start": 468,
+            "end": 502
+          }
+        },
+        "span": {
+          "start": 413,
+          "end": 506
+        }
+      },
+      "span": {
+        "start": 390,
+        "end": 506
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 506
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 0,
+        "end": 52
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 54,
+        "end": 108
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 110,
+        "end": 162
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 164,
+        "end": 218
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 220,
+        "end": 272
+      }
+    },
+    {
+      "id": 6,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 274,
+        "end": 328
+      }
+    },
+    {
+      "id": 7,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 330,
+        "end": 388
+      }
+    },
+    {
+      "id": 8,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 390,
+        "end": 506
+      }
+    },
+    {
+      "id": 9,
+      "parent": 8,
+      "kind": "do-block",
+      "origin": {
+        "start": 413,
+        "end": 506
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "showBool",
+      "canonical": "artifact/show-debug-primitives::showBool",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 7,
+        "end": 15
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "debugBool",
+      "canonical": "artifact/show-debug-primitives::debugBool",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 61,
+        "end": 70
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "showUnit",
+      "canonical": "artifact/show-debug-primitives::showUnit",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 117,
+        "end": 125
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "debugUnit",
+      "canonical": "artifact/show-debug-primitives::debugUnit",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 171,
+        "end": 180
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "showChar",
+      "canonical": "artifact/show-debug-primitives::showChar",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 227,
+        "end": 235
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "debugChar",
+      "canonical": "artifact/show-debug-primitives::debugChar",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 281,
+        "end": 290
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "debugString",
+      "canonical": "artifact/show-debug-primitives::debugString",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 337,
+        "end": 348
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "main",
+      "canonical": "artifact/show-debug-primitives::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 404,
+        "end": 408
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "Bool",
+      "canonical": "std/prelude::Bool",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 16,
+        "end": 21
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "Show",
+      "canonical": "std/prelude::Show",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "show",
+      "canonical": "std/prelude::Show::show",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 71,
+        "end": 76
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "Debug",
+      "canonical": "std/prelude::Debug",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "debug",
+      "canonical": "std/prelude::Debug::debug",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 126,
+        "end": 131
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 181,
+        "end": 186
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "Char",
+      "canonical": "std/prelude::Char",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 5,
+      "origin": {
+        "start": 236,
+        "end": 241
+      }
+    },
+    {
+      "id": 21,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 6,
+      "origin": {
+        "start": 291,
+        "end": 296
+      }
+    },
+    {
+      "id": 22,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 7,
+      "origin": {
+        "start": 349,
+        "end": 354
+      }
+    },
+    {
+      "id": 23,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 23,
+        "end": 27
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 31,
+        "end": 37
+      }
+    },
+    {
+      "spelling": "show",
+      "namespace": "value",
+      "target": 12,
+      "candidates": [
+        12
+      ],
+      "origin": {
+        "start": 42,
+        "end": 46
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 47,
+        "end": 52
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 8,
+      "origin": {
+        "start": 78,
+        "end": 82
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 86,
+        "end": 92
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 15,
+      "candidates": [
+        15
+      ],
+      "origin": {
+        "start": 97,
+        "end": 102
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 103,
+        "end": 108
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 16,
+      "origin": {
+        "start": 133,
+        "end": 137
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 141,
+        "end": 147
+      }
+    },
+    {
+      "spelling": "show",
+      "namespace": "value",
+      "target": 12,
+      "candidates": [
+        12
+      ],
+      "origin": {
+        "start": 152,
+        "end": 156
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 17,
+      "origin": {
+        "start": 157,
+        "end": 162
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 16,
+      "origin": {
+        "start": 188,
+        "end": 192
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 196,
+        "end": 202
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 15,
+      "candidates": [
+        15
+      ],
+      "origin": {
+        "start": 207,
+        "end": 212
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 18,
+      "origin": {
+        "start": 213,
+        "end": 218
+      }
+    },
+    {
+      "spelling": "Char",
+      "namespace": "type",
+      "target": 19,
+      "origin": {
+        "start": 243,
+        "end": 247
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 251,
+        "end": 257
+      }
+    },
+    {
+      "spelling": "show",
+      "namespace": "value",
+      "target": 12,
+      "candidates": [
+        12
+      ],
+      "origin": {
+        "start": 262,
+        "end": 266
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 20,
+      "origin": {
+        "start": 267,
+        "end": 272
+      }
+    },
+    {
+      "spelling": "Char",
+      "namespace": "type",
+      "target": 19,
+      "origin": {
+        "start": 298,
+        "end": 302
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 306,
+        "end": 312
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 15,
+      "candidates": [
+        15
+      ],
+      "origin": {
+        "start": 317,
+        "end": 322
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 323,
+        "end": 328
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 356,
+        "end": 362
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 366,
+        "end": 372
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 15,
+      "candidates": [
+        15
+      ],
+      "origin": {
+        "start": 377,
+        "end": 382
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 22,
+      "origin": {
+        "start": 383,
+        "end": 388
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 23,
+      "origin": {
+        "start": 422,
+        "end": 429
+      }
+    },
+    {
+      "spelling": "show",
+      "namespace": "value",
+      "target": 12,
+      "candidates": [
+        12
+      ],
+      "origin": {
+        "start": 431,
+        "end": 435
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 23,
+      "origin": {
+        "start": 446,
+        "end": 453
+      }
+    },
+    {
+      "spelling": "show",
+      "namespace": "value",
+      "target": 12,
+      "candidates": [
+        12
+      ],
+      "origin": {
+        "start": 455,
+        "end": 459
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 23,
+      "origin": {
+        "start": 468,
+        "end": 475
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 15,
+      "candidates": [
+        15
+      ],
+      "origin": {
+        "start": 477,
+        "end": 482
+      }
+    }
+  ],
+  "issues": []
+}

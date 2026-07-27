@@ -1,5 +1,6 @@
 mod collection_ops;
 mod core;
+mod display_ops;
 mod effect_ops;
 mod emit;
 mod equality_ops;
@@ -10,7 +11,6 @@ mod prelude_ops;
 mod range_ops;
 mod runtime_modules;
 mod runtime_types;
-mod show_ops;
 mod signal_ops;
 mod span;
 mod sum_ops;

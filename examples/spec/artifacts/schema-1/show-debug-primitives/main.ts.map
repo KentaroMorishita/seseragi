@@ -1,0 +1,35 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/show-debug-primitives"
+  ],
+  "sourcesContent": [
+    "pub fn showBool value: Bool -> String =\n  show value\n\npub fn debugBool value: Bool -> String =\n  debug value\n\npub fn showUnit value: Unit -> String =\n  show value\n\npub fn debugUnit value: Unit -> String =\n  debug value\n\npub fn showChar value: Char -> String =\n  show value\n\npub fn debugChar value: Char -> String =\n  debug value\n\npub fn debugString value: String -> String =\n  debug value\n\npub effect fn main =\n  do {\n    println (show True)\n    println (show ())\n    println (debug \"line\\n\\\"quoted\\\"\")\n  }\n"
+  ],
+  "names": [
+    "showBool",
+    "boolShow",
+    "debugBool",
+    "boolDebug",
+    "showUnit",
+    "unitShow",
+    "debugUnit",
+    "unitDebug",
+    "showChar",
+    "charShow",
+    "debugChar",
+    "charDebug",
+    "debugString",
+    "stringDebug",
+    "main",
+    "println",
+    "boolShow",
+    "println",
+    "unitShow",
+    "println",
+    "stringDebug"
+  ],
+  "mappings": ";;;;AAAAA;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE"
+}

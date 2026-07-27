@@ -226,7 +226,8 @@ newtype UserId deriving Eq, Ord, Hash, Show = Int
 payloadを辞書式順序で比較します。newtypeのEq、Ord、Hashは内部値へ委譲します。
 `Show`はconstructor名と公開されているfield名を含む
 source-likeな表現を返します。`Debug`は同じ構造をdeveloper向けに詳細表示しますが、文字列の
-互換性を保証しません。
+互換性を保証しません。fieldは宣言順、ADT payloadはsource上の順序を保ち、rendererが名前順へ
+並べ替えることはありません。
 
 newtypeのderived ShowとDebugはwrapperを透明化せず、`UserId 42` のようにconstructor名を
 含めます。型の意味を表示から失わないためです。

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "module": "artifact/show-debug-primitives",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.bool",
+      "core.bool.show",
+      "core.string",
+      "core.bool.debug",
+      "core.unit",
+      "core.unit.show",
+      "core.unit.debug",
+      "core.char",
+      "core.char.show",
+      "core.char.debug",
+      "core.string.debug",
+      "effect.core.flatMap",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "showBool",
+    "debugBool",
+    "showUnit",
+    "debugUnit",
+    "showChar",
+    "debugChar",
+    "debugString",
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

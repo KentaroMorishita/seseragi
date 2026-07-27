@@ -83,6 +83,9 @@ pub(super) fn type_ref_from_core_type_with_erasure(
         CoreType::Named { name, arguments } if name == "String" && arguments.is_empty() => {
             TypeScriptType::String
         }
+        CoreType::Named { name, arguments } if name == "Char" && arguments.is_empty() => {
+            TypeScriptType::String
+        }
         CoreType::Named { name, arguments } if name == "Bool" && arguments.is_empty() => {
             TypeScriptType::Boolean
         }

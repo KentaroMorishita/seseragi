@@ -35,6 +35,8 @@ pub(crate) struct PreludeTraitMethodSignature {
 enum PreludeTraitMethodKind {
     Append,
     Empty,
+    Show,
+    Debug,
     Map,
     Pure,
     Apply,
@@ -73,6 +75,20 @@ pub(crate) const TRAITS: &[PreludeTrait] = &[
         supertrait: Some("Semigroup"),
     },
     PreludeTrait {
+        name: "Show",
+        canonical: "std/prelude::Show",
+        type_parameter: "A",
+        type_parameter_arity: 0,
+        supertrait: None,
+    },
+    PreludeTrait {
+        name: "Debug",
+        canonical: "std/prelude::Debug",
+        type_parameter: "A",
+        type_parameter_arity: 0,
+        supertrait: None,
+    },
+    PreludeTrait {
         name: "Functor",
         canonical: "std/prelude::Functor",
         type_parameter: "F",
@@ -107,6 +123,18 @@ pub(crate) const TRAIT_METHODS: &[PreludeTraitMethod] = &[
         name: "empty",
         canonical: "std/prelude::Monoid::empty",
         kind: PreludeTraitMethodKind::Empty,
+    },
+    PreludeTraitMethod {
+        trait_name: "Show",
+        name: "show",
+        canonical: "std/prelude::Show::show",
+        kind: PreludeTraitMethodKind::Show,
+    },
+    PreludeTraitMethod {
+        trait_name: "Debug",
+        name: "debug",
+        canonical: "std/prelude::Debug::debug",
+        kind: PreludeTraitMethodKind::Debug,
     },
     PreludeTraitMethod {
         trait_name: "Functor",
@@ -148,6 +176,83 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         type_canonical: None,
         type_arity: 0,
         identity: "std/string::Monoid",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Int",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Show<std/prelude::Int>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "String",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Show<std/prelude::String>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Bool",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Show<std/prelude::Bool>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Unit",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Show<std/prelude::Unit>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Char",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Show<std/prelude::Char>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "ConsoleError",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Show<std/prelude::ConsoleError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "StdinError",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Show<std/prelude::StdinError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "String",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Debug<std/prelude::String>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Bool",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Debug<std/prelude::Bool>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Unit",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Debug<std/prelude::Unit>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Char",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Debug<std/prelude::Char>",
     },
     PreludeStandardInstance {
         trait_name: "Semigroup",
@@ -399,6 +504,7 @@ pub(crate) fn is_standalone_symbol(namespace: SymbolNamespace, spelling: &str) -
                 | "Bool"
                 | "Int"
                 | "Float"
+                | "Char"
                 | "String"
                 | "Array"
                 | "List"
@@ -525,6 +631,13 @@ pub(crate) fn trait_method_signature(method: &PreludeTraitMethod) -> PreludeTrai
             parameters: vec![named("Unit")],
             result: named(constructor),
         },
+        PreludeTraitMethodKind::Show | PreludeTraitMethodKind::Debug => {
+            PreludeTraitMethodSignature {
+                type_parameters: vec![TypeParameter::value(constructor)],
+                parameters: vec![named(constructor)],
+                result: named("String"),
+            }
+        }
         PreludeTraitMethodKind::Map => {
             type_parameters.extend([TypeParameter::value("A"), TypeParameter::value("B")]);
             PreludeTraitMethodSignature {
@@ -688,6 +801,7 @@ mod tests {
     #[test]
     fn records_prelude_type_constructor_arities() {
         assert_eq!(type_constructor_arity("Int"), Some(0));
+        assert_eq!(type_constructor_arity("Char"), Some(0));
         assert_eq!(type_constructor_arity("Maybe"), Some(1));
         assert_eq!(type_constructor_arity("Either"), Some(2));
         assert_eq!(type_constructor_arity("Effect"), Some(3));
@@ -725,6 +839,18 @@ mod tests {
         );
         assert_eq!(empty_signature.parameters, vec![named("Unit")]);
         assert_eq!(empty_signature.result, named("A"));
+
+        let show = trait_method_by_canonical("std/prelude::Show::show").unwrap();
+        let show_signature = trait_method_signature(show);
+        assert_eq!(
+            show_signature.type_parameters,
+            vec![TypeParameter::value("A")]
+        );
+        assert_eq!(show_signature.parameters, vec![named("A")]);
+        assert_eq!(show_signature.result, named("String"));
+
+        let debug = trait_method_by_canonical("std/prelude::Debug::debug").unwrap();
+        assert_eq!(trait_method_signature(debug), show_signature);
     }
 
     #[test]
@@ -751,6 +877,14 @@ mod tests {
         assert_eq!(
             standard_instance("Monad", &named("List")).map(|instance| instance.identity),
             Some("std/list::Monad")
+        );
+        assert_eq!(
+            standard_instance("Show", &named("Bool")).map(|instance| instance.identity),
+            Some("Show<std/prelude::Bool>")
+        );
+        assert_eq!(
+            standard_instance("Debug", &named("Char")).map(|instance| instance.identity),
+            Some("Debug<std/prelude::Char>")
         );
         assert_eq!(
             standard_instance(

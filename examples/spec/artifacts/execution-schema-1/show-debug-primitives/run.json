@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "case": "show-debug-primitives",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/show-debug-primitives",
+    "export": "main",
+    "compiledModule": "../../schema-1/show-debug-primitives/generated-module.json",
+    "typedInterface": "../../schema-1/show-debug-primitives/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.bool",
+      "core.bool.show",
+      "core.string",
+      "core.bool.debug",
+      "core.unit",
+      "core.unit.show",
+      "core.unit.debug",
+      "core.char",
+      "core.char.show",
+      "core.char.debug",
+      "core.string.debug",
+      "effect.core.flatMap",
+      "effect.console.println"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "True"
+        ],
+        "stdout": "True\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "()"
+        ],
+        "stdout": "()\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "\"line\\n\\\"quoted\\\"\""
+        ],
+        "stdout": "\"line\\n\\\"quoted\\\"\"\n"
+      }
+    ]
+  }
+}

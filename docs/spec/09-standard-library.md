@@ -445,6 +445,7 @@ trait Show<A> {
 Intのstandard Showは`std/int.format`と同じcanonicalな符号付き10進表記を返します。桁区切りや
 先頭の`+`は加えません。Charのstandard Showはそのscalar一個を含むString、Stringのstandard Showは同じStringを返します。
 quoteやescapeを含むsource表現はDebugの責務であり、Showは自動でquoteを加えません。
+Boolのstandard Showは`True`または`False`、Unitのstandard Showは`()`を返します。
 
 Stringは`Add<String, String, String>`のstandard instanceを持ち、`left + right`は二つのStringを
 その順で連結した新しいStringを返します。数値や他の型を暗黙にStringへ変換しません。異なる型を含む
@@ -462,6 +463,30 @@ compilerが構文として検査しますが、`show`自体は通常のtrait met
 `Debug<A>` はdeveloper向け表現です。compiler/runtime version間で文字列互換性を保証せず、
 protocol、永続化、snapshot formatへ使ってはなりません。secretを含む型はDebugを実装しないか、
 明示的にredactします。
+
+```seseragi
+trait Debug<A> {
+  fn debug value: A -> String
+}
+```
+
+BoolとUnitのstandard DebugはそれぞれShowと同じ表記です。Charはsingle quote、Stringは
+double quoteで囲み、quote、backslash、NUL、backspace、tab、line feed、form feed、
+carriage returnをescapeします。その他のC0/C1 controlは大文字hexの`\u{...}`でescapeします。
+このescapeはhostの`JSON.stringify`や`toString`へ意味を委譲しません。
+
+standard Show/Debug instanceは、文字列結果に加えてruntime内部のimmutableなrender documentを
+組み立てます。render documentのnodeはtext、soft line、連結、indent、delimiter付きitem列です。
+これはlanguage上のtrait methodの戻り型を変えるpublic APIではなく、標準instanceと後続の
+composite instanceが共有する内部契約です。同じinstanceから次のlayoutを生成できます。
+
+- compactはsoft lineをspaceにし、一行へ配置する。
+- multilineは空のdelimiterを`[]`のように閉じたまま保ち、singletonを含む非空itemを一行ずつ
+  一段indentして配置する。
+- autoはまずcompactを生成し、改行を含まず既定80 Unicode scalar以内なら採用し、それ以外は
+  multilineを採用する。呼び出し側は上限とindent幅を明示的に変更できる。
+- nested delimiterは現在のindent depthを引き継ぐ。collection itemとfieldはinstanceが渡した
+  source順を保ち、rendererがsortし直さない。
 
 Show/Debugと出力先は別概念です。型classを実装しただけで値がconsoleへ書かれることは
 ありません。

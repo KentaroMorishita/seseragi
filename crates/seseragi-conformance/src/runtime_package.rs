@@ -69,6 +69,9 @@ pub(crate) fn check_typescript_runtime_package(
     if runtime_helper_is_declared(abi, "core.int64.add") {
         check_typescript_runtime_int64(root)?;
     }
+    if runtime_feature_is_declared(abi, "core.show.dictionary") {
+        check_typescript_runtime_show(root)?;
+    }
     if runtime_helper_is_declared(abi, "core.range.reduce") {
         range::check_typescript_runtime_range(root)?;
     }
@@ -90,12 +93,25 @@ pub(crate) fn check_typescript_runtime_package(
 }
 
 fn runtime_helper_is_declared(abi: &serde_json::Value, id: &str) -> bool {
+    runtime_feature_is_declared_with_kind(abi, id, Some("runtime-helper"))
+}
+
+fn runtime_feature_is_declared(abi: &serde_json::Value, id: &str) -> bool {
+    runtime_feature_is_declared_with_kind(abi, id, None)
+}
+
+fn runtime_feature_is_declared_with_kind(
+    abi: &serde_json::Value,
+    id: &str,
+    kind: Option<&str>,
+) -> bool {
     abi.get("features")
         .and_then(|value| value.as_array())
         .is_some_and(|features| {
             features.iter().any(|feature| {
-                feature.get("kind").and_then(|value| value.as_str()) == Some("runtime-helper")
-                    && feature.get("id").and_then(|value| value.as_str()) == Some(id)
+                kind.is_none_or(|kind| {
+                    feature.get("kind").and_then(|value| value.as_str()) == Some(kind)
+                }) && feature.get("id").and_then(|value| value.as_str()) == Some(id)
             })
         })
 }
@@ -145,6 +161,28 @@ fn check_typescript_runtime_int64(root: &Path) -> Result<(), String> {
     {
         return Err(format!(
             "TypeScript Int64 runtime probe returned unexpected values: {}",
+            String::from_utf8_lossy(&output.stdout)
+        ));
+    }
+    Ok(())
+}
+
+fn check_typescript_runtime_show(root: &Path) -> Result<(), String> {
+    let output = Command::new("bun")
+        .arg("probes/show.ts")
+        .current_dir(root.join("runtime/ts"))
+        .output()
+        .map_err(|error| format!("failed to run TypeScript Show runtime probe: {error}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "TypeScript Show runtime probe failed\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        ));
+    }
+    if output.stdout != b"show runtime probe passed\n" {
+        return Err(format!(
+            "TypeScript Show runtime probe returned unexpected output: {}",
             String::from_utf8_lossy(&output.stdout)
         ));
     }

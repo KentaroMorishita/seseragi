@@ -1,0 +1,364 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/show-debug-primitives",
+  "runtimeRequirements": [
+    "core.bool",
+    "core.bool.show",
+    "core.string",
+    "core.bool.debug",
+    "core.unit",
+    "core.unit.show",
+    "core.unit.debug",
+    "core.char",
+    "core.char.show",
+    "core.char.debug",
+    "core.string.debug",
+    "effect.core.flatMap",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "core.bool.show",
+      "local": "_ssrg_show_boolShow"
+    },
+    {
+      "feature": "core.bool.debug",
+      "local": "_ssrg_debug_boolDebug"
+    },
+    {
+      "feature": "core.unit.show",
+      "local": "_ssrg_show_unitShow"
+    },
+    {
+      "feature": "core.unit.debug",
+      "local": "_ssrg_debug_unitDebug"
+    },
+    {
+      "feature": "core.char.show",
+      "local": "_ssrg_show_charShow"
+    },
+    {
+      "feature": "core.char.debug",
+      "local": "_ssrg_debug_charDebug"
+    },
+    {
+      "feature": "core.string.debug",
+      "local": "_ssrg_debug_stringDebug"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "showBool",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_show_boolShow"
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 52
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugBool",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_debug_boolDebug"
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 54,
+        "end": 108
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "showUnit",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_show_unitShow"
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 110,
+        "end": 162
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugUnit",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_debug_unitDebug"
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 164,
+        "end": 218
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "showChar",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_show_charShow"
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 220,
+        "end": 272
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugChar",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_debug_charDebug"
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 274,
+        "end": 328
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugString",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_debug_stringDebug"
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 330,
+        "end": 388
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_boolShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "boolean",
+                      "value": true
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_unitShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_debug_stringDebug"
+              },
+              "method": "debug",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "line\n\"quoted\""
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 390,
+        "end": 506
+      }
+    }
+  ]
+}

@@ -71,6 +71,66 @@
       ]
     },
     {
+      "name": "Show",
+      "canonical": "std/prelude::Show",
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "show",
+          "canonical": "std/prelude::Show::show",
+          "signature": {
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Debug",
+      "canonical": "std/prelude::Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "debug",
+          "canonical": "std/prelude::Debug::debug",
+          "signature": {
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "Functor",
       "canonical": "std/prelude::Functor",
       "typeParameters": [
@@ -321,6 +381,94 @@
       "typeConstructorCanonical": "std/prelude::String",
       "typeConstructorArity": 0,
       "identity": "std/string::Monoid"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Int",
+      "typeConstructorCanonical": "std/prelude::Int",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/prelude::Int>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "String",
+      "typeConstructorCanonical": "std/prelude::String",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/prelude::String>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Bool",
+      "typeConstructorCanonical": "std/prelude::Bool",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/prelude::Bool>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Unit",
+      "typeConstructorCanonical": "std/prelude::Unit",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/prelude::Unit>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Char",
+      "typeConstructorCanonical": "std/prelude::Char",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/prelude::Char>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "ConsoleError",
+      "typeConstructorCanonical": "std/prelude::ConsoleError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/prelude::ConsoleError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "StdinError",
+      "typeConstructorCanonical": "std/prelude::StdinError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/prelude::StdinError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "String",
+      "typeConstructorCanonical": "std/prelude::String",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/prelude::String>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Bool",
+      "typeConstructorCanonical": "std/prelude::Bool",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/prelude::Bool>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Unit",
+      "typeConstructorCanonical": "std/prelude::Unit",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/prelude::Unit>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Char",
+      "typeConstructorCanonical": "std/prelude::Char",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/prelude::Char>"
     },
     {
       "trait": "Semigroup",

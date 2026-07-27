@@ -2836,6 +2836,36 @@
       ]
     },
     {
+      "identity": "std/prelude::Debug::debug",
+      "name": "debug",
+      "module": "std/prelude",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "debug<A> arg1: A -> String where Debug<A>",
+      "description": "Standard function provided by the compiler-owned library surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Debug<A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::Show::show",
+      "name": "show",
+      "module": "std/prelude",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "show<A> arg1: A -> String where Show<A>",
+      "description": "Standard function provided by the compiler-owned library surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Show<A>"
+      ]
+    },
+    {
       "identity": "std/signal::MutableSignal",
       "name": "MutableSignal",
       "module": "std/signal",

@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use crate::{show_ops::runtime_show_dictionary_for_identity, CoreInstanceEvidence};
+use crate::{display_ops::runtime_display_dictionary_for_identity, CoreInstanceEvidence};
 
 use super::super::{push_import_unique, push_unique, TypeScriptImport};
 use super::TypeScriptShowDictionaryReference;
@@ -37,7 +37,7 @@ pub(super) fn resolve_show_dictionary(
             }
         }
         CoreInstanceEvidence::Standard { identity } => {
-            let dictionary = runtime_show_dictionary_for_identity(identity)
+            let dictionary = runtime_display_dictionary_for_identity(identity)
                 .expect("selected standard Show identity must be registered");
             push_unique(runtime_requirements, dictionary.runtime_feature);
             push_import_unique(

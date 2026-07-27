@@ -392,9 +392,6 @@ fn standard_instance_identity(constraint: &TypedConstraint) -> Option<String> {
             return Some(instance.identity.to_owned());
         }
     }
-    if let Some(identity) = show_instance_identity(constraint) {
-        return Some(identity.to_owned());
-    }
     if let Some(identity) = arithmetic_instance_identity(constraint) {
         return Some(identity.to_owned());
     }
@@ -432,28 +429,6 @@ const STANDARD_VALUE_INSTANCES: &[(&str, &str, &str)] = &[
     ("Zero", "Int", "std/int::Zero"),
     ("One", "Int", "std/int::One"),
 ];
-
-fn show_instance_identity(constraint: &TypedConstraint) -> Option<&'static str> {
-    let [value] = constraint.arguments.as_slice() else {
-        return None;
-    };
-    if constraint.name != "Show" {
-        return None;
-    }
-    let TypedType::Named { name, arguments } = value else {
-        return None;
-    };
-    if !arguments.is_empty() {
-        return None;
-    }
-    match name.as_str() {
-        "Int" => Some("Show<std/prelude::Int>"),
-        "String" => Some("Show<std/prelude::String>"),
-        "ConsoleError" => Some("Show<std/prelude::ConsoleError>"),
-        "StdinError" => Some("Show<std/prelude::StdinError>"),
-        _ => None,
-    }
-}
 
 pub(crate) fn select_iterable_evidence(
     collection: TypedType,
@@ -1129,12 +1104,38 @@ mod tests {
         for (name, identity) in [
             ("Int", "Show<std/prelude::Int>"),
             ("String", "Show<std/prelude::String>"),
+            ("Bool", "Show<std/prelude::Bool>"),
+            ("Unit", "Show<std/prelude::Unit>"),
+            ("Char", "Show<std/prelude::Char>"),
         ] {
             let evidence = select_call_evidence(&[TypedConstraint {
                 name: "Show".to_owned(),
                 arguments: vec![named(name)],
             }])
             .expect("standard Show evidence");
+            assert!(matches!(
+                evidence.as_slice(),
+                [TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity: selected },
+                    ..
+                }] if selected == identity
+            ));
+        }
+    }
+
+    #[test]
+    fn selects_materializable_standard_debug_evidence() {
+        for (name, identity) in [
+            ("String", "Debug<std/prelude::String>"),
+            ("Bool", "Debug<std/prelude::Bool>"),
+            ("Unit", "Debug<std/prelude::Unit>"),
+            ("Char", "Debug<std/prelude::Char>"),
+        ] {
+            let evidence = select_call_evidence(&[TypedConstraint {
+                name: "Debug".to_owned(),
+                arguments: vec![named(name)],
+            }])
+            .expect("standard Debug evidence");
             assert!(matches!(
                 evidence.as_slice(),
                 [TypedCallEvidence {

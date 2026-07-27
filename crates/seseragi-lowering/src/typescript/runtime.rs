@@ -13,10 +13,11 @@ use crate::signal_ops::runtime_signal_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::web_html_ops::runtime_web_html_operation;
 use crate::{
-    effect_ops::runtime_effect_operation, int_ops::runtime_int_operation_with_evidence,
-    prelude_ops::runtime_prelude_dictionary_for_identity,
-    show_ops::runtime_show_dictionary_for_identity, CoreCallEvidence, CoreComprehensionClause,
-    CoreExpr, CoreInstanceEvidence, CoreStatement, CoreTemplatePart, CoreType,
+    display_ops::runtime_display_dictionary_for_identity, effect_ops::runtime_effect_operation,
+    int_ops::runtime_int_operation_with_evidence,
+    prelude_ops::runtime_prelude_dictionary_for_identity, CoreCallEvidence,
+    CoreComprehensionClause, CoreExpr, CoreInstanceEvidence, CoreStatement, CoreTemplatePart,
+    CoreType,
 };
 
 use super::{push_import_unique, push_unique, TypeScriptImport};
@@ -764,7 +765,7 @@ fn collect_evidence_runtime_requirements(
                 evidence_arguments, ..
             } => collect_evidence_runtime_requirements(evidence_arguments, requirements),
             CoreInstanceEvidence::Standard { identity } => {
-                if let Some(dictionary) = runtime_show_dictionary_for_identity(identity) {
+                if let Some(dictionary) = runtime_display_dictionary_for_identity(identity) {
                     push_unique(requirements, dictionary.runtime_feature);
                 } else if let Some(dictionary) = runtime_prelude_dictionary_for_identity(identity) {
                     push_unique(requirements, dictionary.runtime_feature);
@@ -788,7 +789,7 @@ fn collect_evidence_runtime_imports(
                 evidence_arguments, ..
             } => collect_evidence_runtime_imports(evidence_arguments, imports),
             CoreInstanceEvidence::Standard { identity } => {
-                if let Some(dictionary) = runtime_show_dictionary_for_identity(identity) {
+                if let Some(dictionary) = runtime_display_dictionary_for_identity(identity) {
                     push_import_unique(
                         imports,
                         TypeScriptImport {
@@ -860,6 +861,7 @@ pub(super) fn collect_type_runtime_requirement(
             match name.as_str() {
                 "Int" => push_unique(requirements, "core.int64"),
                 "String" => push_unique(requirements, "core.string"),
+                "Char" => push_unique(requirements, "core.char"),
                 "Bool" => push_unique(requirements, "core.bool"),
                 "Unit" => push_unique(requirements, "core.unit"),
                 "Effect" => push_unique(requirements, "effect.core.type"),

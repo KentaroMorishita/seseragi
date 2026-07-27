@@ -1,0 +1,27 @@
+pub fn showBool value: Bool -> String =
+  show value
+
+pub fn debugBool value: Bool -> String =
+  debug value
+
+pub fn showUnit value: Unit -> String =
+  show value
+
+pub fn debugUnit value: Unit -> String =
+  debug value
+
+pub fn showChar value: Char -> String =
+  show value
+
+pub fn debugChar value: Char -> String =
+  debug value
+
+pub fn debugString value: String -> String =
+  debug value
+
+pub effect fn main =
+  do {
+    println (show True)
+    println (show ())
+    println (debug "line\n\"quoted\"")
+  }

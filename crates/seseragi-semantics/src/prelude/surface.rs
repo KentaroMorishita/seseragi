@@ -1,6 +1,9 @@
 use serde::Serialize;
 use seseragi_syntax::TypeParameter;
 
+#[cfg(test)]
+use crate::TypedType;
+
 use super::{
     trait_by_name, trait_method_signature, PreludeTraitMethodSignature, STANDARD_INSTANCES, TRAITS,
     TRAIT_METHODS,
@@ -123,16 +126,16 @@ mod tests {
         let surface = standard_prelude_surface();
 
         assert_eq!(surface.language_version, "0.1.0");
-        assert_eq!(surface.traits.len(), 5);
+        assert_eq!(surface.traits.len(), 7);
         assert_eq!(
             surface
                 .traits
                 .iter()
                 .flat_map(|trait_spec| &trait_spec.methods)
                 .count(),
-            6
+            8
         );
-        assert_eq!(surface.instances.len(), 23);
+        assert_eq!(surface.instances.len(), 34);
         assert_eq!(surface.coherence.standard_heads, "sealed");
 
         let monoid = surface
@@ -142,5 +145,20 @@ mod tests {
             .expect("Monoid must be part of the standard Prelude surface");
         assert_eq!(monoid.type_parameters, vec![TypeParameter::value("A")]);
         assert_eq!(monoid.supertrait, Some("Semigroup"));
+
+        let debug = surface
+            .traits
+            .iter()
+            .find(|trait_spec| trait_spec.name == "Debug")
+            .expect("Debug must be part of the standard Prelude surface");
+        assert_eq!(debug.type_parameters, vec![TypeParameter::value("A")]);
+        assert_eq!(debug.methods[0].name, "debug");
+        assert_eq!(
+            debug.methods[0].signature.result,
+            TypedType::Named {
+                name: "String".to_owned(),
+                arguments: Vec::new(),
+            }
+        );
     }
 }

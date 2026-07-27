@@ -14,6 +14,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "Show",
     },
     RuntimeTypeImport {
+        canonical: "std/prelude::Debug",
+        runtime_feature: "core.debug.dictionary",
+        module: "@seseragi/runtime/show",
+        export_name: "Debug",
+    },
+    RuntimeTypeImport {
         canonical: "std/prelude::Console",
         runtime_feature: "effect.console.service",
         module: "@seseragi/runtime/console",
@@ -238,6 +244,18 @@ mod tests {
         assert_eq!(
             runtime_type_import_for_feature("core.show.dictionary"),
             Some(expected)
+        );
+
+        let debug = RuntimeTypeImport {
+            canonical: "std/prelude::Debug",
+            runtime_feature: "core.debug.dictionary",
+            module: "@seseragi/runtime/show",
+            export_name: "Debug",
+        };
+        assert_eq!(runtime_type_import("std/prelude::Debug"), Some(debug));
+        assert_eq!(
+            runtime_type_import_for_feature("core.debug.dictionary"),
+            Some(debug)
         );
     }
 }
