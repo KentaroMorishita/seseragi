@@ -1,0 +1,2 @@
+pub fn userLabel name: String -> String =
+  `User ${name}`

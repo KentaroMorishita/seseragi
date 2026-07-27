@@ -35,33 +35,7 @@ fn run_in_directory(
     contract: &crate::MainContract,
     directory: &Path,
 ) -> Result<RunOutcome, RunError> {
-    for module_id in &compiled.order {
-        let module = compiled
-            .modules
-            .get(module_id)
-            .ok_or_else(|| RunError::Host(format!("compiled package omitted {module_id}")))?;
-        let relative = canonical_output_path(&module.generated.metadata.outputs.typescript)
-            .map_err(RunError::Host)?;
-        let target = directory.join(&relative);
-        let parent = target.parent().ok_or_else(|| {
-            RunError::Host(format!(
-                "generated output has no parent: {}",
-                relative.display()
-            ))
-        })?;
-        fs::create_dir_all(parent).map_err(|error| {
-            RunError::Host(format!(
-                "failed to create generated module directory {}: {error}",
-                parent.display()
-            ))
-        })?;
-        fs::write(&target, &module.generated.typescript).map_err(|error| {
-            RunError::Host(format!(
-                "failed to stage generated module {}: {error}",
-                target.display()
-            ))
-        })?;
-    }
+    stage_project_modules(compiled, directory).map_err(RunError::Host)?;
     crate::stage_typescript_package(directory).map_err(RunError::Host)?;
     let entry = compiled
         .modules
@@ -78,7 +52,37 @@ fn run_in_directory(
     run_target(directory)
 }
 
-fn canonical_output_path(value: &str) -> Result<PathBuf, String> {
+pub(super) fn stage_project_modules(
+    compiled: &CompiledProject,
+    directory: &Path,
+) -> Result<(), String> {
+    for module_id in &compiled.order {
+        let module = compiled
+            .modules
+            .get(module_id)
+            .ok_or_else(|| format!("compiled package omitted {module_id}"))?;
+        let relative = canonical_output_path(&module.generated.metadata.outputs.typescript)?;
+        let target = directory.join(&relative);
+        let parent = target
+            .parent()
+            .ok_or_else(|| format!("generated output has no parent: {}", relative.display()))?;
+        fs::create_dir_all(parent).map_err(|error| {
+            format!(
+                "failed to create generated module directory {}: {error}",
+                parent.display()
+            )
+        })?;
+        fs::write(&target, &module.generated.typescript).map_err(|error| {
+            format!(
+                "failed to stage generated module {}: {error}",
+                target.display()
+            )
+        })?;
+    }
+    Ok(())
+}
+
+pub(super) fn canonical_output_path(value: &str) -> Result<PathBuf, String> {
     let path = Path::new(value);
     if value.is_empty()
         || path.is_absolute()

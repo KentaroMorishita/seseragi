@@ -122,6 +122,69 @@ fn uses_dist_as_the_default_output_directory() {
 }
 
 #[test]
+fn builds_a_nested_multi_import_package_that_matches_run() {
+    let package = repository_root().join("examples/spec/fixtures/projects/cli-build-nested");
+    let directory = test_directory("package");
+    let output_directory = directory.join("artifact");
+
+    let first = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("build")
+        .arg(&package)
+        .arg("--out-dir")
+        .arg(&output_directory)
+        .output()
+        .unwrap();
+    assert_eq!(first.status.code(), Some(0));
+    assert_eq!(String::from_utf8_lossy(&first.stderr), "");
+
+    let files = files_in(&output_directory);
+    let module_root = "dist/packages/fixture/cli-build-nested/0.0.0";
+    for required in [
+        ".seseragi-build.json",
+        "entry.ts",
+        "node_modules/@seseragi/runtime/package.json",
+        &format!("{module_root}/main.ts"),
+        &format!("{module_root}/math/score.ts"),
+        &format!("{module_root}/math/score.ts.map"),
+        &format!("{module_root}/math/score.generated-module.json"),
+        &format!("{module_root}/text/label.ts"),
+        &format!("{module_root}/text/label.ts.map"),
+        &format!("{module_root}/text/label.generated-module.json"),
+    ] {
+        assert!(files.contains_key(required), "{required}");
+    }
+    let manifest = fs::read_to_string(output_directory.join(".seseragi-build.json")).unwrap();
+    assert!(manifest.contains("fixture/cli-build-nested@0.0.0::math/score"));
+    assert!(manifest.contains("fixture/cli-build-nested@0.0.0::text/label"));
+    assert!(manifest.contains("\"entryModule\""));
+
+    let run = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+    let built = Command::new("bun")
+        .args(["run", "entry.ts"])
+        .current_dir(&output_directory)
+        .output()
+        .unwrap();
+    assert_eq!(built.status.code(), run.status.code());
+    assert_eq!(built.stdout, run.stdout);
+    assert_eq!(built.stderr, run.stderr);
+
+    let second = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("build")
+        .arg(&package)
+        .arg("--out-dir")
+        .arg(&output_directory)
+        .output()
+        .unwrap();
+    assert_eq!(second.status.code(), Some(0));
+    assert_eq!(files_in(&output_directory), files);
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn refuses_to_clean_an_unmanaged_output_directory() {
     let source = repository_root().join("examples/samples/hello-world/main.ssrg");
     let directory = test_directory("unmanaged");
@@ -170,6 +233,39 @@ fn reports_compile_diagnostics_without_creating_output() {
 }
 
 #[test]
+fn reports_package_compile_diagnostics_without_creating_output() {
+    let directory = test_directory("package-diagnostics");
+    let package = directory.join("package");
+    let source_directory = package.join("src");
+    let output_directory = directory.join("artifact");
+    fs::create_dir_all(&source_directory).unwrap();
+    fs::write(
+        package.join("seseragi.toml"),
+        "[package]\nname = \"fixture/build-diagnostics\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n\n[run]\nentry = \"main\"\ntarget = \"test-js\"\n",
+    )
+    .unwrap();
+    fs::write(
+        source_directory.join("main.ssrg"),
+        "pub effect fn main = println missing\n",
+    )
+    .unwrap();
+
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("build")
+        .arg(&package)
+        .arg("--out-dir")
+        .arg(&output_directory)
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(2));
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("error[SES-N0001]: Name could not be resolved"));
+    assert!(!output_directory.exists());
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn documents_build_in_cli_help() {
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("--help")
@@ -179,4 +275,6 @@ fn documents_build_in_cli_help() {
     assert_eq!(output.status.code(), Some(0));
     assert!(String::from_utf8_lossy(&output.stdout)
         .contains("seseragi build path/to/app.ssrg [--out-dir path/to/dist]"));
+    assert!(String::from_utf8_lossy(&output.stdout)
+        .contains("seseragi build path/to/package [--out-dir path/to/dist]"));
 }

@@ -1,0 +1,7 @@
+import { doubled } from "./math/score"
+import { userLabel } from "./text/label"
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  println $ `${userLabel "Mio"}: ${doubled 21}`

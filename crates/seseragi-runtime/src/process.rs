@@ -10,7 +10,7 @@ use crate::{main_contract, MainContract};
 mod entry;
 mod local_package;
 
-pub use build::{build_main, BuildError};
+pub use build::{build_local_project, build_main, BuildError};
 use entry::entry_source;
 pub use local_package::{run_local_package, run_local_project};
 

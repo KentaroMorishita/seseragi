@@ -24,6 +24,10 @@ cargo run -p seseragi-cli -- run examples/samples/hello-world/main.ssrg
 cargo run -p seseragi-cli -- build examples/samples/hello-world/main.ssrg
 bun run dist/entry.ts
 
+# local packageのmodule graph全体を同じ成果物へ出力
+cargo run -p seseragi-cli -- build \
+  examples/spec/fixtures/projects/cli-build-nested
+
 # formatter
 cargo run -p seseragi-cli -- format --check \
   examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg
@@ -38,6 +42,11 @@ cargo run -p seseragi-cli -- format --check \
 含まれます。同じ入力の再buildではdirectory全体を再生成しますが、
 `.seseragi-build.json`を持たない既存の非空directoryは誤削除を避けるため
 上書きしません。
+
+local packageを渡した場合は、`run`と同じmanifest・module graph・entry解決を
+使い、compilerが計画した`dist/packages/<name>/<version>/...`構成を保って
+全moduleのTypeScript、source map、metadataを出力します。`entry.ts`から
+実行するため、成果物directory内で`bun run entry.ts`を使えます。
 
 ## Playground
 

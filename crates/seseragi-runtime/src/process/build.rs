@@ -1,7 +1,8 @@
-use super::stage_main_program;
+use super::local_package::{canonical_output_path, stage_project_modules};
+use super::{entry_source, stage_main_program};
 use crate::main_contract;
-use serde::Serialize;
-use seseragi_driver::CompiledModule;
+use serde::{Deserialize, Serialize};
+use seseragi_driver::{CompiledLocalProject, CompiledModule};
 use std::fs;
 use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
@@ -45,8 +46,7 @@ impl std::error::Error for BuildError {}
 /// builds are replaced. Other existing targets are left untouched.
 pub fn build_main(compiled: &CompiledModule, output_directory: &Path) -> Result<(), BuildError> {
     let contract = main_contract(compiled).map_err(BuildError::InvalidEntry)?;
-    let staging = create_staging_directory(output_directory).map_err(BuildError::Host)?;
-    let result = (|| {
+    publish_build(output_directory, |staging| {
         stage_main_program(compiled, &contract, &staging)?;
         write_json(
             &staging.join("generated-module.json"),
@@ -60,8 +60,109 @@ pub fn build_main(compiled: &CompiledModule, output_directory: &Path) -> Result<
         )?;
         fs::write(staging.join(BUILD_MARKER_NAME), BUILD_MARKER)
             .map_err(|error| format!("failed to write build ownership marker: {error}"))?;
-        replace_output_directory(output_directory, &staging)
-    })();
+        Ok(())
+    })
+}
+
+/// Writes every generated module in a compiled local project, preserving the
+/// compiler-planned output graph and process entry contract.
+pub fn build_local_project(
+    project: &CompiledLocalProject,
+    output_directory: &Path,
+) -> Result<(), BuildError> {
+    let entry = project
+        .compiled
+        .modules
+        .get(&project.entry_module)
+        .ok_or_else(|| BuildError::InvalidEntry("compiled package omitted its entry".to_owned()))?;
+    let contract = main_contract(entry).map_err(BuildError::InvalidEntry)?;
+    publish_build(output_directory, |staging| {
+        stage_project_modules(&project.compiled, staging)?;
+        let mut modules = Vec::with_capacity(project.compiled.order.len());
+        for module_id in &project.compiled.order {
+            let module = project
+                .compiled
+                .modules
+                .get(module_id)
+                .ok_or_else(|| format!("compiled package omitted {module_id}"))?;
+            let typescript = canonical_output_path(&module.generated.metadata.outputs.typescript)?;
+            let source_map =
+                canonical_source_map_path(&module.generated.metadata.outputs.source_map)?;
+            let metadata = module_metadata_path(&typescript)?;
+            write_json(
+                &staging.join(&source_map),
+                "project module source map",
+                &module.generated.source_map,
+            )?;
+            write_json(
+                &staging.join(&metadata),
+                "project generated module metadata",
+                &module.generated.metadata,
+            )?;
+            modules.push(ProjectBuildModule {
+                module: module_id.clone(),
+                typescript: path_string(&typescript),
+                source_map: path_string(&source_map),
+                metadata: path_string(&metadata),
+            });
+        }
+        crate::stage_typescript_package(staging)?;
+        let entry_path = canonical_output_path(&entry.generated.metadata.outputs.typescript)?;
+        fs::write(
+            staging.join("entry.ts"),
+            entry_source(&contract, &format!("./{}", path_string(&entry_path))),
+        )
+        .map_err(|error| format!("failed to stage runtime entry: {error}"))?;
+        write_json(
+            &staging.join(BUILD_MARKER_NAME),
+            "build ownership marker",
+            &ProjectBuildMarker {
+                schema: 1,
+                kind: "local-project",
+                entry: "entry.ts",
+                entry_module: &project.entry_module,
+                modules,
+                runtime: "node_modules/@seseragi/runtime",
+            },
+        )
+    })
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ProjectBuildMarker<'entry> {
+    schema: u32,
+    kind: &'static str,
+    entry: &'static str,
+    entry_module: &'entry str,
+    modules: Vec<ProjectBuildModule>,
+    runtime: &'static str,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ProjectBuildModule {
+    module: String,
+    typescript: String,
+    source_map: String,
+    metadata: String,
+}
+
+#[derive(Deserialize)]
+struct BuildOwnership {
+    schema: u32,
+    kind: String,
+    entry: String,
+    runtime: String,
+}
+
+fn publish_build(
+    output_directory: &Path,
+    stage: impl FnOnce(&Path) -> Result<(), String>,
+) -> Result<(), BuildError> {
+    let staging = create_staging_directory(output_directory).map_err(BuildError::Host)?;
+    let result =
+        stage(&staging).and_then(|()| replace_output_directory(output_directory, &staging));
     if result.is_err() {
         let _ = fs::remove_dir_all(&staging);
     }
@@ -73,6 +174,35 @@ fn write_json(path: &Path, description: &str, value: &impl Serialize) -> Result<
         .map_err(|error| format!("failed to encode {description}: {error}"))?;
     fs::write(path, format!("{json}\n"))
         .map_err(|error| format!("failed to write {description}: {error}"))
+}
+
+fn canonical_source_map_path(value: &str) -> Result<PathBuf, String> {
+    let path = Path::new(value);
+    if value.is_empty()
+        || path.is_absolute()
+        || value.contains('\\')
+        || value
+            .split('/')
+            .any(|segment| matches!(segment, "" | "." | ".."))
+        || !value.ends_with(".ts.map")
+    {
+        return Err(format!(
+            "generated package source map must be a canonical relative path: {value}"
+        ));
+    }
+    Ok(path.to_owned())
+}
+
+fn module_metadata_path(typescript: &Path) -> Result<PathBuf, String> {
+    let value = path_string(typescript);
+    let stem = value
+        .strip_suffix(".ts")
+        .ok_or_else(|| format!("generated module is not TypeScript: {value}"))?;
+    Ok(PathBuf::from(format!("{stem}.generated-module.json")))
+}
+
+fn path_string(path: &Path) -> String {
+    path.to_string_lossy().replace('\\', "/")
 }
 
 fn create_staging_directory(output_directory: &Path) -> Result<PathBuf, String> {
@@ -139,9 +269,7 @@ fn replace_output_directory(output_directory: &Path, staging: &Path) -> Result<(
                 })?
                 .next()
                 .is_none();
-            let is_managed = fs::read_to_string(output_directory.join(BUILD_MARKER_NAME))
-                .map(|marker| marker == BUILD_MARKER)
-                .unwrap_or(false);
+            let is_managed = is_managed_build(output_directory);
             if !is_empty && !is_managed {
                 return Err(format!(
                     "refusing to clean unmanaged build output {}; choose an empty directory or a previous Seseragi build",
@@ -171,9 +299,21 @@ fn replace_output_directory(output_directory: &Path, staging: &Path) -> Result<(
     })
 }
 
+fn is_managed_build(output_directory: &Path) -> bool {
+    fs::read_to_string(output_directory.join(BUILD_MARKER_NAME))
+        .ok()
+        .and_then(|marker| serde_json::from_str::<BuildOwnership>(&marker).ok())
+        .is_some_and(|ownership| {
+            ownership.schema == 1
+                && ownership.entry == "entry.ts"
+                && ownership.runtime == "node_modules/@seseragi/runtime"
+                && matches!(ownership.kind.as_str(), "single-file" | "local-project")
+        })
+}
+
 #[cfg(test)]
 mod tests {
-    use super::{replace_output_directory, BUILD_MARKER, BUILD_MARKER_NAME};
+    use super::{is_managed_build, replace_output_directory, BUILD_MARKER, BUILD_MARKER_NAME};
     use std::fs;
     use std::path::Path;
 
@@ -233,5 +373,27 @@ mod tests {
             Path::new(BUILD_MARKER_NAME),
             Path::new(".seseragi-build.json")
         );
+    }
+
+    #[test]
+    fn recognizes_only_supported_build_ownership_markers() {
+        let root = test_directory("ownership");
+        fs::write(root.join(BUILD_MARKER_NAME), BUILD_MARKER).unwrap();
+        assert!(is_managed_build(&root));
+
+        fs::write(
+            root.join(BUILD_MARKER_NAME),
+            "{\"schema\":1,\"kind\":\"local-project\",\"entry\":\"entry.ts\",\"runtime\":\"node_modules/@seseragi/runtime\"}\n",
+        )
+        .unwrap();
+        assert!(is_managed_build(&root));
+
+        fs::write(
+            root.join(BUILD_MARKER_NAME),
+            "{\"schema\":2,\"kind\":\"local-project\"}\n",
+        )
+        .unwrap();
+        assert!(!is_managed_build(&root));
+        fs::remove_dir_all(root).unwrap();
     }
 }
