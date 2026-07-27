@@ -18,6 +18,46 @@ const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
         source_map_name: "intShow",
     },
     RuntimeDisplayDictionary {
+        semantic_identity: "Debug<std/prelude::Int>",
+        runtime_feature: "core.int64.debug",
+        local_name: "_ssrg_debug_intDebug",
+        module: "@seseragi/runtime/show",
+        export_name: "intDebug",
+        source_map_name: "intDebug",
+    },
+    RuntimeDisplayDictionary {
+        semantic_identity: "Show<std/prelude::Float>",
+        runtime_feature: "core.float64.show",
+        local_name: "_ssrg_show_floatShow",
+        module: "@seseragi/runtime/show",
+        export_name: "floatShow",
+        source_map_name: "floatShow",
+    },
+    RuntimeDisplayDictionary {
+        semantic_identity: "Debug<std/prelude::Float>",
+        runtime_feature: "core.float64.debug",
+        local_name: "_ssrg_debug_floatDebug",
+        module: "@seseragi/runtime/show",
+        export_name: "floatDebug",
+        source_map_name: "floatDebug",
+    },
+    RuntimeDisplayDictionary {
+        semantic_identity: "Show<std/prelude::Never>",
+        runtime_feature: "core.never.show",
+        local_name: "_ssrg_show_neverShow",
+        module: "@seseragi/runtime/show",
+        export_name: "neverShow",
+        source_map_name: "neverShow",
+    },
+    RuntimeDisplayDictionary {
+        semantic_identity: "Debug<std/prelude::Never>",
+        runtime_feature: "core.never.debug",
+        local_name: "_ssrg_debug_neverDebug",
+        module: "@seseragi/runtime/show",
+        export_name: "neverDebug",
+        source_map_name: "neverDebug",
+    },
+    RuntimeDisplayDictionary {
         semantic_identity: "Show<std/prelude::String>",
         runtime_feature: "core.string.show",
         local_name: "_ssrg_show_stringShow",
@@ -201,6 +241,36 @@ mod tests {
                 "stringShow",
             ),
             (
+                "Debug<std/prelude::Int>",
+                "core.int64.debug",
+                "_ssrg_debug_intDebug",
+                "intDebug",
+            ),
+            (
+                "Show<std/prelude::Float>",
+                "core.float64.show",
+                "_ssrg_show_floatShow",
+                "floatShow",
+            ),
+            (
+                "Debug<std/prelude::Float>",
+                "core.float64.debug",
+                "_ssrg_debug_floatDebug",
+                "floatDebug",
+            ),
+            (
+                "Show<std/prelude::Never>",
+                "core.never.show",
+                "_ssrg_show_neverShow",
+                "neverShow",
+            ),
+            (
+                "Debug<std/prelude::Never>",
+                "core.never.debug",
+                "_ssrg_debug_neverDebug",
+                "neverDebug",
+            ),
+            (
                 "Show<std/prelude::ConsoleError>",
                 "effect.console.error.show",
                 "_ssrg_show_consoleErrorShow",
@@ -317,7 +387,7 @@ mod tests {
 
     #[test]
     fn rejects_unknown_display_dictionary_features() {
-        assert!(runtime_display_dictionary_for_feature("core.float64.show").is_none());
+        assert!(runtime_display_dictionary_for_feature("core.decimal.show").is_none());
         assert!(runtime_display_dictionary_for_identity("Show<fixture/local::Detail>").is_none());
     }
 }

@@ -41,9 +41,20 @@
       "value": "Unit"
     },
     "runtimeRequirements": [
+      "core.maybe.nothing",
+      "core.maybe",
+      "core.either.right",
+      "core.either",
+      "core.string",
+      "core.int64",
+      "core.int64.show",
+      "core.int64.debug",
+      "core.float64.show",
+      "core.float64.debug",
+      "core.never.show",
+      "core.never.debug",
       "core.bool",
       "core.bool.show",
-      "core.string",
       "core.bool.debug",
       "core.unit",
       "core.unit.show",
@@ -53,7 +64,9 @@
       "core.char.debug",
       "core.string.debug",
       "effect.core.flatMap",
-      "effect.console.println"
+      "effect.console.println",
+      "core.maybe.show",
+      "core.either.debug"
     ],
     "process": {
       "exitCode": 0
@@ -61,6 +74,30 @@
     "stdout": "stdout.txt",
     "stderr": "stderr.txt",
     "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "42"
+        ],
+        "stdout": "42\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Nothing"
+        ],
+        "stdout": "Nothing\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Right \"ready\""
+        ],
+        "stdout": "Right \"ready\"\n"
+      },
       {
         "service": "console",
         "operation": "println",

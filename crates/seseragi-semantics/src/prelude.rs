@@ -191,6 +191,41 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         identity: "Show<std/prelude::Int>",
     },
     PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Int",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Debug<std/prelude::Int>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Float",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Show<std/prelude::Float>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Float",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Debug<std/prelude::Float>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Never",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Show<std/prelude::Never>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Never",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Debug<std/prelude::Never>",
+    },
+    PreludeStandardInstance {
         trait_name: "Show",
         type_name: "String",
         type_canonical: None,
@@ -1076,6 +1111,19 @@ mod tests {
             Some("std/signal::Applicative")
         );
         assert!(standard_instance("Monad", &signal).is_none());
+    }
+
+    #[test]
+    fn exposes_the_complete_primitive_show_and_debug_matrix() {
+        for type_name in ["Int", "Float", "Bool", "Char", "String", "Unit", "Never"] {
+            let type_ref = named(type_name);
+            for trait_name in ["Show", "Debug"] {
+                let instance = standard_instance(trait_name, &type_ref)
+                    .unwrap_or_else(|| panic!("{trait_name}<{type_name}> must be registered"));
+                assert_eq!(instance.type_name, type_name);
+                assert_eq!(instance.type_arity, 0);
+            }
+        }
     }
 
     #[test]

@@ -5,14 +5,182 @@
   "dependencies": [],
   "exports": [
     {
+      "symbol": "artifact/show-debug-primitives::showInt",
+      "namespace": "value",
+      "name": "showInt",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 0,
+        "end": 50
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-primitives::debugInt",
+      "namespace": "value",
+      "name": "debugInt",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 52,
+        "end": 104
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-primitives::showFloat",
+      "namespace": "value",
+      "name": "showFloat",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 106,
+        "end": 160
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-primitives::debugFloat",
+      "namespace": "value",
+      "name": "debugFloat",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 162,
+        "end": 218
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-primitives::showNever",
+      "namespace": "value",
+      "name": "showNever",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 220,
+        "end": 274
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-primitives::debugNever",
+      "namespace": "value",
+      "name": "debugNever",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 276,
+        "end": 332
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
       "symbol": "artifact/show-debug-primitives::showBool",
       "namespace": "value",
       "name": "showBool",
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 0,
-        "end": 52
+        "start": 334,
+        "end": 386
       },
       "scheme": {
         "typeParameters": [],
@@ -39,8 +207,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 54,
-        "end": 108
+        "start": 388,
+        "end": 442
       },
       "scheme": {
         "typeParameters": [],
@@ -67,8 +235,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 110,
-        "end": 162
+        "start": 444,
+        "end": 496
       },
       "scheme": {
         "typeParameters": [],
@@ -95,8 +263,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 164,
-        "end": 218
+        "start": 498,
+        "end": 552
       },
       "scheme": {
         "typeParameters": [],
@@ -123,8 +291,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 220,
-        "end": 272
+        "start": 554,
+        "end": 606
       },
       "scheme": {
         "typeParameters": [],
@@ -151,8 +319,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 274,
-        "end": 328
+        "start": 608,
+        "end": 662
       },
       "scheme": {
         "typeParameters": [],
@@ -179,8 +347,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 330,
-        "end": 388
+        "start": 664,
+        "end": 722
       },
       "scheme": {
         "typeParameters": [],

@@ -284,6 +284,7 @@ impl TypeScriptRecordValueItem {
 )]
 pub enum TypeScriptType {
     Bigint,
+    Number,
     Boolean,
     String,
     Undefined,

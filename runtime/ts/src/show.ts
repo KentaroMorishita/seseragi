@@ -159,6 +159,29 @@ export const stringShow = defineShow((value: string) => text(value))
 /** Int Show uses the canonical signed base-10 spelling without separators. */
 export const intShow = defineShow((value: bigint) => text(value.toString(10)))
 
+/** Int Debug uses the same canonical spelling as Show. */
+export const intDebug = defineDebug((value: bigint) => text(value.toString(10)))
+
+/**
+ * Float display is the shortest decimal spelling that round-trips to the same
+ * binary64 value while retaining an unambiguous Float spelling.
+ */
+export const floatShow = defineShow((value: number) =>
+  text(canonicalFloat(value))
+)
+
+export const floatDebug = defineDebug((value: number) =>
+  text(canonicalFloat(value))
+)
+
+/**
+ * Never has no runtime inhabitants. These dictionaries exist so conditional
+ * evidence such as Show<Maybe<Never>> can still be materialized.
+ */
+export const neverShow = defineShow((value: never) => unreachableNever(value))
+
+export const neverDebug = defineDebug((value: never) => unreachableNever(value))
+
 /** Bool uses Seseragi's canonical constructor spelling. */
 export const boolShow = defineShow((value: boolean) =>
   text(value ? "True" : "False")
@@ -316,6 +339,31 @@ function debugDocument<Value>(
 ): RenderDocument {
   const instance = evidence as Debug<Value>
   return instance.document?.(value) ?? text(instance.debug(value))
+}
+
+function canonicalFloat(value: number): string {
+  if (Number.isNaN(value)) {
+    return "NaN"
+  }
+  if (value === Number.POSITIVE_INFINITY) {
+    return "Infinity"
+  }
+  if (value === Number.NEGATIVE_INFINITY) {
+    return "-Infinity"
+  }
+  if (Object.is(value, -0)) {
+    return "-0.0"
+  }
+
+  const rendered = value.toString()
+  if (rendered.includes("e")) {
+    return rendered.replace("e+", "e").replace(/e(-?)0+(\d+)/, "e$1$2")
+  }
+  return rendered.includes(".") ? rendered : `${rendered}.0`
+}
+
+function unreachableNever(_value: never): never {
+  throw new TypeError("Never display dictionary received a runtime value")
 }
 
 function listDocuments<

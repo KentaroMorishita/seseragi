@@ -344,6 +344,51 @@ mod tests {
     }
 
     #[test]
+    fn lowers_the_complete_primitive_display_matrix() {
+        let source = "pub fn inspectInt value: Int -> String = debug value\n\
+                      pub fn renderFloat value: Float -> String = show value\n\
+                      pub fn inspectFloat value: Float -> String = debug value\n\
+                      pub fn renderNever value: Never -> String = show value\n\
+                      pub fn inspectNever value: Never -> String = debug value\n";
+        let typed = type_module("artifact/primitive-display/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+
+        for requirement in [
+            "core.int64.debug",
+            "core.float64.show",
+            "core.float64.debug",
+            "core.never.show",
+            "core.never.debug",
+        ] {
+            assert!(
+                typescript
+                    .runtime_requirements
+                    .iter()
+                    .any(|actual| actual == requirement),
+                "missing runtime requirement {requirement}"
+            );
+        }
+
+        let bundle = emit_typescript_module(typescript, source);
+        for dictionary in [
+            "_ssrg_debug_intDebug",
+            "_ssrg_show_floatShow",
+            "_ssrg_debug_floatDebug",
+            "_ssrg_show_neverShow",
+            "_ssrg_debug_neverDebug",
+        ] {
+            assert!(
+                bundle.typescript.contains(dictionary),
+                "missing {dictionary} in {}",
+                bundle.typescript
+            );
+        }
+        assert!(bundle.typescript.contains("renderFloat = (value: number)"));
+        assert!(bundle.typescript.contains("renderNever = (value: never)"));
+    }
+
+    #[test]
     fn lowers_adt_constructors_to_tagged_typescript_values() {
         let source = "\
 pub type Hand =

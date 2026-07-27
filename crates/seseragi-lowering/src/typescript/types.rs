@@ -80,6 +80,9 @@ pub(super) fn type_ref_from_core_type_with_erasure(
         CoreType::Named { name, arguments } if name == "Int" && arguments.is_empty() => {
             TypeScriptType::Bigint
         }
+        CoreType::Named { name, arguments } if name == "Float" && arguments.is_empty() => {
+            TypeScriptType::Number
+        }
         CoreType::Named { name, arguments } if name == "String" && arguments.is_empty() => {
             TypeScriptType::String
         }
@@ -227,6 +230,7 @@ pub(super) fn type_ref_from_core_type_with_erasure(
 pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
     match type_ref {
         TypeScriptType::Bigint => "bigint".to_owned(),
+        TypeScriptType::Number => "number".to_owned(),
         TypeScriptType::Boolean => "boolean".to_owned(),
         TypeScriptType::String => "string".to_owned(),
         TypeScriptType::Undefined => "undefined".to_owned(),
@@ -381,6 +385,23 @@ mod tests {
         assert_eq!(
             render_typescript_type(&type_ref_from_core_type(&type_ref, &Default::default())),
             "never"
+        );
+    }
+
+    #[test]
+    fn renders_float_as_the_typescript_number_type() {
+        let type_ref = CoreType::Named {
+            name: "Float".to_owned(),
+            arguments: Vec::new(),
+        };
+
+        assert_eq!(
+            type_ref_from_core_type(&type_ref, &Default::default()),
+            TypeScriptType::Number
+        );
+        assert_eq!(
+            render_typescript_type(&type_ref_from_core_type(&type_ref, &Default::default())),
+            "number"
         );
     }
 

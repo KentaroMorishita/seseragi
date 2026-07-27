@@ -13,13 +13,18 @@ import {
   delimited,
   eitherDebug,
   eitherShow,
+  floatDebug,
+  floatShow,
   indent,
+  intDebug,
   intShow,
   line,
   listDebug,
   listShow,
   maybeDebug,
   maybeShow,
+  neverDebug,
+  neverShow,
   renderDebug,
   renderDocument,
   renderShow,
@@ -45,6 +50,8 @@ function assertEqual(actual: string, expected: string): void {
 const dictionaries: readonly Show<unknown>[] = [
   stringShow as Show<unknown>,
   intShow as Show<unknown>,
+  floatShow as Show<unknown>,
+  neverShow as Show<unknown>,
   boolShow as Show<unknown>,
   unitShow as Show<unknown>,
   charShow as Show<unknown>,
@@ -57,6 +64,9 @@ if (dictionaries.some((dictionary) => typeof dictionary.show !== "function")) {
 
 const debugDictionaries: readonly Debug<unknown>[] = [
   stringDebug as Debug<unknown>,
+  intDebug as Debug<unknown>,
+  floatDebug as Debug<unknown>,
+  neverDebug as Debug<unknown>,
   boolDebug as Debug<unknown>,
   unitDebug as Debug<unknown>,
   charDebug as Debug<unknown>,
@@ -71,6 +81,20 @@ assertEqual(stringShow.show("hello\nworld"), "hello\nworld")
 assertEqual(intShow.show(0n), "0")
 assertEqual(intShow.show(42n), "42")
 assertEqual(intShow.show(-9_223_372_036_854_775_808n), "-9223372036854775808")
+assertEqual(intDebug.debug(42n), "42")
+for (const [value, expected] of [
+  [0, "0.0"],
+  [-0, "-0.0"],
+  [1.5, "1.5"],
+  [1e21, "1e21"],
+  [1e-7, "1e-7"],
+  [Number.NaN, "NaN"],
+  [Number.POSITIVE_INFINITY, "Infinity"],
+  [Number.NEGATIVE_INFINITY, "-Infinity"],
+] as const) {
+  assertEqual(floatShow.show(value), expected)
+  assertEqual(floatDebug.debug(value), expected)
+}
 assertEqual(boolShow.show(true), "True")
 assertEqual(boolShow.show(false), "False")
 assertEqual(boolDebug.debug(true), "True")
@@ -123,13 +147,19 @@ const stringsDebug = arrayDebug(stringDebug)
 assertEqual(stringsShow.show([]), "[]")
 assertEqual(stringsShow.show(["alpha"]), "[alpha]")
 assertEqual(stringsShow.show(["alpha", "beta"]), "[alpha, beta]")
-assertEqual(stringsDebug.debug(["alpha", "line\nbreak"]), '["alpha", "line\\nbreak"]')
+assertEqual(
+  stringsDebug.debug(["alpha", "line\nbreak"]),
+  '["alpha", "line\\nbreak"]'
+)
 assertEqual(
   renderShow(stringsShow, ["alpha", "beta"], { layout: "multiline" }),
   "[\n  alpha,\n  beta\n]"
 )
 assertEqual(
-  renderDebug(stringsDebug, ["alpha", "beta"], { layout: "auto", maxWidth: 10 }),
+  renderDebug(stringsDebug, ["alpha", "beta"], {
+    layout: "auto",
+    maxWidth: 10,
+  }),
   '[\n  "alpha",\n  "beta"\n]'
 )
 
@@ -149,6 +179,8 @@ assertEqual(
 
 const optionalShow = maybeShow(stringShow)
 const optionalDebug = maybeDebug(stringDebug)
+assertEqual(maybeShow(neverShow).show(Nothing), "Nothing")
+assertEqual(maybeDebug(neverDebug).debug(Nothing), "Nothing")
 assertEqual(optionalShow.show(Nothing), "Nothing")
 assertEqual(optionalShow.show(Just("value")), "Just value")
 assertEqual(optionalDebug.debug(Just("value")), 'Just "value"')

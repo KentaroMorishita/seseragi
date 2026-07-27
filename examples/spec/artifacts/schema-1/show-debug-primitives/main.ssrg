@@ -1,3 +1,21 @@
+pub fn showInt value: Int -> String =
+  show value
+
+pub fn debugInt value: Int -> String =
+  debug value
+
+pub fn showFloat value: Float -> String =
+  show value
+
+pub fn debugFloat value: Float -> String =
+  debug value
+
+pub fn showNever value: Never -> String =
+  show value
+
+pub fn debugNever value: Never -> String =
+  debug value
+
 pub fn showBool value: Bool -> String =
   show value
 
@@ -19,8 +37,15 @@ pub fn debugChar value: Char -> String =
 pub fn debugString value: String -> String =
   debug value
 
+let absent: Maybe<Never> = Nothing
+
+let available: Either<Never, String> = Right "ready"
+
 pub effect fn main =
   do {
+    println (debug 42)
+    println (show absent)
+    println (debug available)
     println (show True)
     println (show ())
     println (debug "line\n\"quoted\"")

@@ -6,7 +6,13 @@ use crate::typed::instances::canonical_instance_identity;
 use crate::typed::TypedResolution;
 
 const STANDARD_SHOW_TYPES: &[&str] = &[
+    "std/prelude::Int",
+    "std/prelude::Float",
+    "std/prelude::Bool",
+    "std/prelude::Char",
     "std/prelude::String",
+    "std/prelude::Unit",
+    "std/prelude::Never",
     "std/prelude::ConsoleError",
     "std/prelude::StdinError",
 ];

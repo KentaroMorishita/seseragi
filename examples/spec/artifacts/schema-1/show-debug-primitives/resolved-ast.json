@@ -8,24 +8,24 @@
     {
       "kind": "fn",
       "visibility": "public",
-      "name": "showBool",
+      "name": "showInt",
       "nameSpan": {
         "start": 7,
-        "end": 15
+        "end": 14
       },
       "parameters": [
         {
           "name": "value",
           "nameSpan": {
-            "start": 16,
-            "end": 21
+            "start": 15,
+            "end": 20
           },
           "type": {
             "kind": "named",
-            "name": "Bool",
+            "name": "Int",
             "span": {
-              "start": 23,
-              "end": 27
+              "start": 22,
+              "end": 25
             }
           }
         }
@@ -34,8 +34,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 31,
-          "end": 37
+          "start": 29,
+          "end": 35
         }
       },
       "body": {
@@ -44,49 +44,49 @@
           "kind": "name",
           "name": "show",
           "span": {
-            "start": 42,
-            "end": 46
+            "start": 40,
+            "end": 44
           }
         },
         "argument": {
           "kind": "name",
           "name": "value",
           "span": {
-            "start": 47,
-            "end": 52
+            "start": 45,
+            "end": 50
           }
         },
         "span": {
-          "start": 42,
-          "end": 52
+          "start": 40,
+          "end": 50
         }
       },
       "span": {
         "start": 0,
-        "end": 52
+        "end": 50
       }
     },
     {
       "kind": "fn",
       "visibility": "public",
-      "name": "debugBool",
+      "name": "debugInt",
       "nameSpan": {
-        "start": 61,
-        "end": 70
+        "start": 59,
+        "end": 67
       },
       "parameters": [
         {
           "name": "value",
           "nameSpan": {
-            "start": 71,
-            "end": 76
+            "start": 68,
+            "end": 73
           },
           "type": {
             "kind": "named",
-            "name": "Bool",
+            "name": "Int",
             "span": {
-              "start": 78,
-              "end": 82
+              "start": 75,
+              "end": 78
             }
           }
         }
@@ -95,8 +95,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 86,
-          "end": 92
+          "start": 82,
+          "end": 88
         }
       },
       "body": {
@@ -105,49 +105,49 @@
           "kind": "name",
           "name": "debug",
           "span": {
-            "start": 97,
-            "end": 102
+            "start": 93,
+            "end": 98
           }
         },
         "argument": {
           "kind": "name",
           "name": "value",
           "span": {
-            "start": 103,
-            "end": 108
+            "start": 99,
+            "end": 104
           }
         },
         "span": {
-          "start": 97,
-          "end": 108
+          "start": 93,
+          "end": 104
         }
       },
       "span": {
-        "start": 54,
-        "end": 108
+        "start": 52,
+        "end": 104
       }
     },
     {
       "kind": "fn",
       "visibility": "public",
-      "name": "showUnit",
+      "name": "showFloat",
       "nameSpan": {
-        "start": 117,
-        "end": 125
+        "start": 113,
+        "end": 122
       },
       "parameters": [
         {
           "name": "value",
           "nameSpan": {
-            "start": 126,
-            "end": 131
+            "start": 123,
+            "end": 128
           },
           "type": {
             "kind": "named",
-            "name": "Unit",
+            "name": "Float",
             "span": {
-              "start": 133,
-              "end": 137
+              "start": 130,
+              "end": 135
             }
           }
         }
@@ -156,8 +156,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 141,
-          "end": 147
+          "start": 139,
+          "end": 145
         }
       },
       "body": {
@@ -166,48 +166,48 @@
           "kind": "name",
           "name": "show",
           "span": {
-            "start": 152,
-            "end": 156
+            "start": 150,
+            "end": 154
           }
         },
         "argument": {
           "kind": "name",
           "name": "value",
           "span": {
-            "start": 157,
-            "end": 162
+            "start": 155,
+            "end": 160
           }
         },
         "span": {
-          "start": 152,
-          "end": 162
+          "start": 150,
+          "end": 160
         }
       },
       "span": {
-        "start": 110,
-        "end": 162
+        "start": 106,
+        "end": 160
       }
     },
     {
       "kind": "fn",
       "visibility": "public",
-      "name": "debugUnit",
+      "name": "debugFloat",
       "nameSpan": {
-        "start": 171,
-        "end": 180
+        "start": 169,
+        "end": 179
       },
       "parameters": [
         {
           "name": "value",
           "nameSpan": {
-            "start": 181,
-            "end": 186
+            "start": 180,
+            "end": 185
           },
           "type": {
             "kind": "named",
-            "name": "Unit",
+            "name": "Float",
             "span": {
-              "start": 188,
+              "start": 187,
               "end": 192
             }
           }
@@ -245,31 +245,31 @@
         }
       },
       "span": {
-        "start": 164,
+        "start": 162,
         "end": 218
       }
     },
     {
       "kind": "fn",
       "visibility": "public",
-      "name": "showChar",
+      "name": "showNever",
       "nameSpan": {
         "start": 227,
-        "end": 235
+        "end": 236
       },
       "parameters": [
         {
           "name": "value",
           "nameSpan": {
-            "start": 236,
-            "end": 241
+            "start": 237,
+            "end": 242
           },
           "type": {
             "kind": "named",
-            "name": "Char",
+            "name": "Never",
             "span": {
-              "start": 243,
-              "end": 247
+              "start": 244,
+              "end": 249
             }
           }
         }
@@ -278,8 +278,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 251,
-          "end": 257
+          "start": 253,
+          "end": 259
         }
       },
       "body": {
@@ -288,26 +288,392 @@
           "kind": "name",
           "name": "show",
           "span": {
-            "start": 262,
-            "end": 266
+            "start": 264,
+            "end": 268
           }
         },
         "argument": {
           "kind": "name",
           "name": "value",
           "span": {
-            "start": 267,
-            "end": 272
+            "start": 269,
+            "end": 274
           }
         },
         "span": {
-          "start": 262,
-          "end": 272
+          "start": 264,
+          "end": 274
         }
       },
       "span": {
         "start": 220,
-        "end": 272
+        "end": 274
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugNever",
+      "nameSpan": {
+        "start": 283,
+        "end": 293
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 294,
+            "end": 299
+          },
+          "type": {
+            "kind": "named",
+            "name": "Never",
+            "span": {
+              "start": 301,
+              "end": 306
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 310,
+          "end": 316
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 321,
+            "end": 326
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 327,
+            "end": 332
+          }
+        },
+        "span": {
+          "start": 321,
+          "end": 332
+        }
+      },
+      "span": {
+        "start": 276,
+        "end": 332
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showBool",
+      "nameSpan": {
+        "start": 341,
+        "end": 349
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 350,
+            "end": 355
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 357,
+              "end": 361
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 365,
+          "end": 371
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 376,
+            "end": 380
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 381,
+            "end": 386
+          }
+        },
+        "span": {
+          "start": 376,
+          "end": 386
+        }
+      },
+      "span": {
+        "start": 334,
+        "end": 386
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugBool",
+      "nameSpan": {
+        "start": 395,
+        "end": 404
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 405,
+            "end": 410
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 412,
+              "end": 416
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 420,
+          "end": 426
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 431,
+            "end": 436
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 437,
+            "end": 442
+          }
+        },
+        "span": {
+          "start": 431,
+          "end": 442
+        }
+      },
+      "span": {
+        "start": 388,
+        "end": 442
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showUnit",
+      "nameSpan": {
+        "start": 451,
+        "end": 459
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 460,
+            "end": 465
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 467,
+              "end": 471
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 475,
+          "end": 481
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 486,
+            "end": 490
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 491,
+            "end": 496
+          }
+        },
+        "span": {
+          "start": 486,
+          "end": 496
+        }
+      },
+      "span": {
+        "start": 444,
+        "end": 496
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugUnit",
+      "nameSpan": {
+        "start": 505,
+        "end": 514
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 515,
+            "end": 520
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 522,
+              "end": 526
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 530,
+          "end": 536
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 541,
+            "end": 546
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 547,
+            "end": 552
+          }
+        },
+        "span": {
+          "start": 541,
+          "end": 552
+        }
+      },
+      "span": {
+        "start": 498,
+        "end": 552
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showChar",
+      "nameSpan": {
+        "start": 561,
+        "end": 569
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 570,
+            "end": 575
+          },
+          "type": {
+            "kind": "named",
+            "name": "Char",
+            "span": {
+              "start": 577,
+              "end": 581
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 585,
+          "end": 591
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 596,
+            "end": 600
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 601,
+            "end": 606
+          }
+        },
+        "span": {
+          "start": 596,
+          "end": 606
+        }
+      },
+      "span": {
+        "start": 554,
+        "end": 606
       }
     },
     {
@@ -315,22 +681,22 @@
       "visibility": "public",
       "name": "debugChar",
       "nameSpan": {
-        "start": 281,
-        "end": 290
+        "start": 615,
+        "end": 624
       },
       "parameters": [
         {
           "name": "value",
           "nameSpan": {
-            "start": 291,
-            "end": 296
+            "start": 625,
+            "end": 630
           },
           "type": {
             "kind": "named",
             "name": "Char",
             "span": {
-              "start": 298,
-              "end": 302
+              "start": 632,
+              "end": 636
             }
           }
         }
@@ -339,8 +705,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 306,
-          "end": 312
+          "start": 640,
+          "end": 646
         }
       },
       "body": {
@@ -349,26 +715,26 @@
           "kind": "name",
           "name": "debug",
           "span": {
-            "start": 317,
-            "end": 322
+            "start": 651,
+            "end": 656
           }
         },
         "argument": {
           "kind": "name",
           "name": "value",
           "span": {
-            "start": 323,
-            "end": 328
+            "start": 657,
+            "end": 662
           }
         },
         "span": {
-          "start": 317,
-          "end": 328
+          "start": 651,
+          "end": 662
         }
       },
       "span": {
-        "start": 274,
-        "end": 328
+        "start": 608,
+        "end": 662
       }
     },
     {
@@ -376,22 +742,22 @@
       "visibility": "public",
       "name": "debugString",
       "nameSpan": {
-        "start": 337,
-        "end": 348
+        "start": 671,
+        "end": 682
       },
       "parameters": [
         {
           "name": "value",
           "nameSpan": {
-            "start": 349,
-            "end": 354
+            "start": 683,
+            "end": 688
           },
           "type": {
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 356,
-              "end": 362
+              "start": 690,
+              "end": 696
             }
           }
         }
@@ -400,8 +766,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 366,
-          "end": 372
+          "start": 700,
+          "end": 706
         }
       },
       "body": {
@@ -410,26 +776,127 @@
           "kind": "name",
           "name": "debug",
           "span": {
-            "start": 377,
-            "end": 382
+            "start": 711,
+            "end": 716
           }
         },
         "argument": {
           "kind": "name",
           "name": "value",
           "span": {
-            "start": 383,
-            "end": 388
+            "start": 717,
+            "end": 722
           }
         },
         "span": {
-          "start": 377,
-          "end": 388
+          "start": 711,
+          "end": 722
         }
       },
       "span": {
-        "start": 330,
-        "end": 388
+        "start": 664,
+        "end": 722
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "absent",
+      "nameSpan": {
+        "start": 728,
+        "end": 734
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Maybe",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Never",
+            "span": {
+              "start": 742,
+              "end": 747
+            }
+          }
+        ],
+        "span": {
+          "start": 736,
+          "end": 748
+        }
+      },
+      "body": {
+        "kind": "name",
+        "name": "Nothing",
+        "span": {
+          "start": 751,
+          "end": 758
+        }
+      },
+      "span": {
+        "start": 724,
+        "end": 758
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "available",
+      "nameSpan": {
+        "start": 764,
+        "end": 773
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Never",
+            "span": {
+              "start": 782,
+              "end": 787
+            }
+          },
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 789,
+              "end": 795
+            }
+          }
+        ],
+        "span": {
+          "start": 775,
+          "end": 796
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "Right",
+          "span": {
+            "start": 799,
+            "end": 804
+          }
+        },
+        "argument": {
+          "kind": "string",
+          "raw": "\"ready\"",
+          "span": {
+            "start": 805,
+            "end": 812
+          }
+        },
+        "span": {
+          "start": 799,
+          "end": 812
+        }
+      },
+      "span": {
+        "start": 760,
+        "end": 812
       }
     },
     {
@@ -437,8 +904,8 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 404,
-        "end": 408
+        "start": 828,
+        "end": 832
       },
       "inferredContract": true,
       "returnType": null,
@@ -453,8 +920,8 @@
                 "kind": "name",
                 "name": "println",
                 "span": {
-                  "start": 422,
-                  "end": 429
+                  "start": 846,
+                  "end": 853
                 }
               },
               "argument": {
@@ -463,38 +930,38 @@
                   "kind": "application",
                   "function": {
                     "kind": "name",
-                    "name": "show",
+                    "name": "debug",
                     "span": {
-                      "start": 431,
-                      "end": 435
+                      "start": 855,
+                      "end": 860
                     }
                   },
                   "argument": {
-                    "kind": "boolean",
-                    "value": true,
+                    "kind": "integer",
+                    "raw": "42",
                     "span": {
-                      "start": 436,
-                      "end": 440
+                      "start": 861,
+                      "end": 863
                     }
                   },
                   "span": {
-                    "start": 431,
-                    "end": 440
+                    "start": 855,
+                    "end": 863
                   }
                 },
                 "span": {
-                  "start": 430,
-                  "end": 441
+                  "start": 854,
+                  "end": 864
                 }
               },
               "span": {
-                "start": 422,
-                "end": 441
+                "start": 846,
+                "end": 864
               }
             },
             "span": {
-              "start": 422,
-              "end": 441
+              "start": 846,
+              "end": 864
             }
           },
           {
@@ -505,8 +972,8 @@
                 "kind": "name",
                 "name": "println",
                 "span": {
-                  "start": 446,
-                  "end": 453
+                  "start": 869,
+                  "end": 876
                 }
               },
               "argument": {
@@ -517,35 +984,191 @@
                     "kind": "name",
                     "name": "show",
                     "span": {
-                      "start": 455,
-                      "end": 459
+                      "start": 878,
+                      "end": 882
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "absent",
+                    "span": {
+                      "start": 883,
+                      "end": 889
+                    }
+                  },
+                  "span": {
+                    "start": 878,
+                    "end": 889
+                  }
+                },
+                "span": {
+                  "start": 877,
+                  "end": 890
+                }
+              },
+              "span": {
+                "start": 869,
+                "end": 890
+              }
+            },
+            "span": {
+              "start": 869,
+              "end": 890
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 895,
+                  "end": 902
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debug",
+                    "span": {
+                      "start": 904,
+                      "end": 909
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "available",
+                    "span": {
+                      "start": 910,
+                      "end": 919
+                    }
+                  },
+                  "span": {
+                    "start": 904,
+                    "end": 919
+                  }
+                },
+                "span": {
+                  "start": 903,
+                  "end": 920
+                }
+              },
+              "span": {
+                "start": 895,
+                "end": 920
+              }
+            },
+            "span": {
+              "start": 895,
+              "end": 920
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 925,
+                  "end": 932
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "show",
+                    "span": {
+                      "start": 934,
+                      "end": 938
+                    }
+                  },
+                  "argument": {
+                    "kind": "boolean",
+                    "value": true,
+                    "span": {
+                      "start": 939,
+                      "end": 943
+                    }
+                  },
+                  "span": {
+                    "start": 934,
+                    "end": 943
+                  }
+                },
+                "span": {
+                  "start": 933,
+                  "end": 944
+                }
+              },
+              "span": {
+                "start": 925,
+                "end": 944
+              }
+            },
+            "span": {
+              "start": 925,
+              "end": 944
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 949,
+                  "end": 956
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "show",
+                    "span": {
+                      "start": 958,
+                      "end": 962
                     }
                   },
                   "argument": {
                     "kind": "unit",
                     "span": {
-                      "start": 460,
-                      "end": 462
+                      "start": 963,
+                      "end": 965
                     }
                   },
                   "span": {
-                    "start": 455,
-                    "end": 462
+                    "start": 958,
+                    "end": 965
                   }
                 },
                 "span": {
-                  "start": 454,
-                  "end": 463
+                  "start": 957,
+                  "end": 966
                 }
               },
               "span": {
-                "start": 446,
-                "end": 463
+                "start": 949,
+                "end": 966
               }
             },
             "span": {
-              "start": 446,
-              "end": 463
+              "start": 949,
+              "end": 966
             }
           }
         ],
@@ -555,8 +1178,8 @@
             "kind": "name",
             "name": "println",
             "span": {
-              "start": 468,
-              "end": 475
+              "start": 971,
+              "end": 978
             }
           },
           "argument": {
@@ -567,41 +1190,41 @@
                 "kind": "name",
                 "name": "debug",
                 "span": {
-                  "start": 477,
-                  "end": 482
+                  "start": 980,
+                  "end": 985
                 }
               },
               "argument": {
                 "kind": "string",
                 "raw": "\"line\\n\\\"quoted\\\"\"",
                 "span": {
-                  "start": 483,
-                  "end": 501
+                  "start": 986,
+                  "end": 1004
                 }
               },
               "span": {
-                "start": 477,
-                "end": 501
+                "start": 980,
+                "end": 1004
               }
             },
             "span": {
-              "start": 476,
-              "end": 502
+              "start": 979,
+              "end": 1005
             }
           },
           "span": {
-            "start": 468,
-            "end": 502
+            "start": 971,
+            "end": 1005
           }
         },
         "span": {
-          "start": 413,
-          "end": 506
+          "start": 837,
+          "end": 1009
         }
       },
       "span": {
-        "start": 390,
-        "end": 506
+        "start": 814,
+        "end": 1009
       }
     }
   ],
@@ -611,7 +1234,7 @@
       "kind": "module",
       "origin": {
         "start": 0,
-        "end": 506
+        "end": 1009
       }
     },
     {
@@ -620,7 +1243,7 @@
       "kind": "function",
       "origin": {
         "start": 0,
-        "end": 52
+        "end": 50
       }
     },
     {
@@ -628,8 +1251,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 54,
-        "end": 108
+        "start": 52,
+        "end": 104
       }
     },
     {
@@ -637,8 +1260,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 110,
-        "end": 162
+        "start": 106,
+        "end": 160
       }
     },
     {
@@ -646,7 +1269,7 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 164,
+        "start": 162,
         "end": 218
       }
     },
@@ -656,7 +1279,7 @@
       "kind": "function",
       "origin": {
         "start": 220,
-        "end": 272
+        "end": 274
       }
     },
     {
@@ -664,8 +1287,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 274,
-        "end": 328
+        "start": 276,
+        "end": 332
       }
     },
     {
@@ -673,8 +1296,8 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 330,
-        "end": 388
+        "start": 334,
+        "end": 386
       }
     },
     {
@@ -682,194 +1305,59 @@
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 390,
-        "end": 506
+        "start": 388,
+        "end": 442
       }
     },
     {
       "id": 9,
-      "parent": 8,
-      "kind": "do-block",
-      "origin": {
-        "start": 413,
-        "end": 506
-      }
-    }
-  ],
-  "symbols": [
-    {
-      "id": 0,
-      "spelling": "showBool",
-      "canonical": "artifact/show-debug-primitives::showBool",
-      "namespace": "value",
+      "parent": 0,
       "kind": "function",
-      "scope": 0,
       "origin": {
-        "start": 7,
-        "end": 15
-      }
-    },
-    {
-      "id": 1,
-      "spelling": "debugBool",
-      "canonical": "artifact/show-debug-primitives::debugBool",
-      "namespace": "value",
-      "kind": "function",
-      "scope": 0,
-      "origin": {
-        "start": 61,
-        "end": 70
-      }
-    },
-    {
-      "id": 2,
-      "spelling": "showUnit",
-      "canonical": "artifact/show-debug-primitives::showUnit",
-      "namespace": "value",
-      "kind": "function",
-      "scope": 0,
-      "origin": {
-        "start": 117,
-        "end": 125
-      }
-    },
-    {
-      "id": 3,
-      "spelling": "debugUnit",
-      "canonical": "artifact/show-debug-primitives::debugUnit",
-      "namespace": "value",
-      "kind": "function",
-      "scope": 0,
-      "origin": {
-        "start": 171,
-        "end": 180
-      }
-    },
-    {
-      "id": 4,
-      "spelling": "showChar",
-      "canonical": "artifact/show-debug-primitives::showChar",
-      "namespace": "value",
-      "kind": "function",
-      "scope": 0,
-      "origin": {
-        "start": 227,
-        "end": 235
-      }
-    },
-    {
-      "id": 5,
-      "spelling": "debugChar",
-      "canonical": "artifact/show-debug-primitives::debugChar",
-      "namespace": "value",
-      "kind": "function",
-      "scope": 0,
-      "origin": {
-        "start": 281,
-        "end": 290
-      }
-    },
-    {
-      "id": 6,
-      "spelling": "debugString",
-      "canonical": "artifact/show-debug-primitives::debugString",
-      "namespace": "value",
-      "kind": "function",
-      "scope": 0,
-      "origin": {
-        "start": 337,
-        "end": 348
-      }
-    },
-    {
-      "id": 7,
-      "spelling": "main",
-      "canonical": "artifact/show-debug-primitives::main",
-      "namespace": "value",
-      "kind": "effect-function",
-      "scope": 0,
-      "origin": {
-        "start": 404,
-        "end": 408
-      }
-    },
-    {
-      "id": 8,
-      "spelling": "Bool",
-      "canonical": "std/prelude::Bool",
-      "namespace": "type",
-      "kind": "prelude",
-      "scope": 0,
-      "origin": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 9,
-      "spelling": "value",
-      "namespace": "value",
-      "kind": "parameter",
-      "scope": 1,
-      "origin": {
-        "start": 16,
-        "end": 21
+        "start": 444,
+        "end": 496
       }
     },
     {
       "id": 10,
-      "spelling": "String",
-      "canonical": "std/prelude::String",
-      "namespace": "type",
-      "kind": "prelude",
-      "scope": 0,
+      "parent": 0,
+      "kind": "function",
       "origin": {
-        "start": 0,
-        "end": 0
+        "start": 498,
+        "end": 552
       }
     },
     {
       "id": 11,
-      "spelling": "Show",
-      "canonical": "std/prelude::Show",
-      "namespace": "trait",
-      "kind": "prelude",
-      "scope": 0,
+      "parent": 0,
+      "kind": "function",
       "origin": {
-        "start": 0,
-        "end": 0
+        "start": 554,
+        "end": 606
       }
     },
     {
       "id": 12,
-      "spelling": "show",
-      "canonical": "std/prelude::Show::show",
-      "namespace": "value",
-      "kind": "trait-method",
-      "scope": 0,
+      "parent": 0,
+      "kind": "function",
       "origin": {
-        "start": 0,
-        "end": 0
+        "start": 608,
+        "end": 662
       }
     },
     {
       "id": 13,
-      "spelling": "value",
-      "namespace": "value",
-      "kind": "parameter",
-      "scope": 2,
+      "parent": 0,
+      "kind": "function",
       "origin": {
-        "start": 71,
-        "end": 76
+        "start": 664,
+        "end": 722
       }
     },
     {
       "id": 14,
-      "spelling": "Debug",
-      "canonical": "std/prelude::Debug",
-      "namespace": "trait",
-      "kind": "prelude",
-      "scope": 0,
+      "parent": 0,
+      "kind": "declaration",
       "origin": {
         "start": 0,
         "end": 0
@@ -877,11 +1365,8 @@
     },
     {
       "id": 15,
-      "spelling": "debug",
-      "canonical": "std/prelude::Debug::debug",
-      "namespace": "value",
-      "kind": "trait-method",
-      "scope": 0,
+      "parent": 0,
+      "kind": "declaration",
       "origin": {
         "start": 0,
         "end": 0
@@ -889,8 +1374,220 @@
     },
     {
       "id": 16,
-      "spelling": "Unit",
-      "canonical": "std/prelude::Unit",
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 814,
+        "end": 1009
+      }
+    },
+    {
+      "id": 17,
+      "parent": 16,
+      "kind": "do-block",
+      "origin": {
+        "start": 837,
+        "end": 1009
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "showInt",
+      "canonical": "artifact/show-debug-primitives::showInt",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 7,
+        "end": 14
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "debugInt",
+      "canonical": "artifact/show-debug-primitives::debugInt",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 59,
+        "end": 67
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "showFloat",
+      "canonical": "artifact/show-debug-primitives::showFloat",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 113,
+        "end": 122
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "debugFloat",
+      "canonical": "artifact/show-debug-primitives::debugFloat",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 169,
+        "end": 179
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "showNever",
+      "canonical": "artifact/show-debug-primitives::showNever",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 227,
+        "end": 236
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "debugNever",
+      "canonical": "artifact/show-debug-primitives::debugNever",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 283,
+        "end": 293
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "showBool",
+      "canonical": "artifact/show-debug-primitives::showBool",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 341,
+        "end": 349
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "debugBool",
+      "canonical": "artifact/show-debug-primitives::debugBool",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 395,
+        "end": 404
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "showUnit",
+      "canonical": "artifact/show-debug-primitives::showUnit",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 451,
+        "end": 459
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "debugUnit",
+      "canonical": "artifact/show-debug-primitives::debugUnit",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 505,
+        "end": 514
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "showChar",
+      "canonical": "artifact/show-debug-primitives::showChar",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 561,
+        "end": 569
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "debugChar",
+      "canonical": "artifact/show-debug-primitives::debugChar",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 615,
+        "end": 624
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "debugString",
+      "canonical": "artifact/show-debug-primitives::debugString",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 671,
+        "end": 682
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "absent",
+      "canonical": "artifact/show-debug-primitives::absent",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 728,
+        "end": 734
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "available",
+      "canonical": "artifact/show-debug-primitives::available",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 764,
+        "end": 773
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "main",
+      "canonical": "artifact/show-debug-primitives::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 828,
+        "end": 832
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
       "namespace": "type",
       "kind": "prelude",
       "scope": 0,
@@ -904,25 +1601,221 @@
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
-      "scope": 3,
+      "scope": 1,
       "origin": {
-        "start": 126,
-        "end": 131
+        "start": 15,
+        "end": 20
       }
     },
     {
       "id": 18,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "Show",
+      "canonical": "std/prelude::Show",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "show",
+      "canonical": "std/prelude::Show::show",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 21,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 68,
+        "end": 73
+      }
+    },
+    {
+      "id": 22,
+      "spelling": "Debug",
+      "canonical": "std/prelude::Debug",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 23,
+      "spelling": "debug",
+      "canonical": "std/prelude::Debug::debug",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 24,
+      "spelling": "Float",
+      "canonical": "std/prelude::Float",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 25,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 123,
+        "end": 128
+      }
+    },
+    {
+      "id": 26,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
       "scope": 4,
       "origin": {
-        "start": 181,
-        "end": 186
+        "start": 180,
+        "end": 185
       }
     },
     {
-      "id": 19,
+      "id": 27,
+      "spelling": "Never",
+      "canonical": "std/prelude::Never",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 28,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 5,
+      "origin": {
+        "start": 237,
+        "end": 242
+      }
+    },
+    {
+      "id": 29,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 6,
+      "origin": {
+        "start": 294,
+        "end": 299
+      }
+    },
+    {
+      "id": 30,
+      "spelling": "Bool",
+      "canonical": "std/prelude::Bool",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 31,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 7,
+      "origin": {
+        "start": 350,
+        "end": 355
+      }
+    },
+    {
+      "id": 32,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 8,
+      "origin": {
+        "start": 405,
+        "end": 410
+      }
+    },
+    {
+      "id": 33,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 34,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 9,
+      "origin": {
+        "start": 460,
+        "end": 465
+      }
+    },
+    {
+      "id": 35,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 10,
+      "origin": {
+        "start": 515,
+        "end": 520
+      }
+    },
+    {
+      "id": 36,
       "spelling": "Char",
       "canonical": "std/prelude::Char",
       "namespace": "type",
@@ -934,40 +1827,148 @@
       }
     },
     {
-      "id": 20,
+      "id": 37,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
-      "scope": 5,
+      "scope": 11,
       "origin": {
-        "start": 236,
-        "end": 241
+        "start": 570,
+        "end": 575
       }
     },
     {
-      "id": 21,
+      "id": 38,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
-      "scope": 6,
+      "scope": 12,
       "origin": {
-        "start": 291,
-        "end": 296
+        "start": 625,
+        "end": 630
       }
     },
     {
-      "id": 22,
+      "id": 39,
       "spelling": "value",
       "namespace": "value",
       "kind": "parameter",
-      "scope": 7,
+      "scope": 13,
       "origin": {
-        "start": 349,
-        "end": 354
+        "start": 683,
+        "end": 688
       }
     },
     {
-      "id": 23,
+      "id": 40,
+      "spelling": "Maybe",
+      "canonical": "std/prelude::Maybe",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 41,
+      "spelling": "A",
+      "canonical": "std/prelude::Maybe::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 14,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 42,
+      "spelling": "Nothing",
+      "canonical": "std/prelude::Nothing",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 43,
+      "spelling": "Just",
+      "canonical": "std/prelude::Just",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 44,
+      "spelling": "Either",
+      "canonical": "std/prelude::Either",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 45,
+      "spelling": "E",
+      "canonical": "std/prelude::Either::E",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 15,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 46,
+      "spelling": "A",
+      "canonical": "std/prelude::Either::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 15,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 47,
+      "spelling": "Left",
+      "canonical": "std/prelude::Left",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 48,
+      "spelling": "Right",
+      "canonical": "std/prelude::Right",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 49,
       "spelling": "println",
       "canonical": "std/prelude::println",
       "namespace": "value",
@@ -981,111 +1982,33 @@
   ],
   "references": [
     {
-      "spelling": "Bool",
-      "namespace": "type",
-      "target": 8,
-      "origin": {
-        "start": 23,
-        "end": 27
-      }
-    },
-    {
-      "spelling": "String",
-      "namespace": "type",
-      "target": 10,
-      "origin": {
-        "start": 31,
-        "end": 37
-      }
-    },
-    {
-      "spelling": "show",
-      "namespace": "value",
-      "target": 12,
-      "candidates": [
-        12
-      ],
-      "origin": {
-        "start": 42,
-        "end": 46
-      }
-    },
-    {
-      "spelling": "value",
-      "namespace": "value",
-      "target": 9,
-      "origin": {
-        "start": 47,
-        "end": 52
-      }
-    },
-    {
-      "spelling": "Bool",
-      "namespace": "type",
-      "target": 8,
-      "origin": {
-        "start": 78,
-        "end": 82
-      }
-    },
-    {
-      "spelling": "String",
-      "namespace": "type",
-      "target": 10,
-      "origin": {
-        "start": 86,
-        "end": 92
-      }
-    },
-    {
-      "spelling": "debug",
-      "namespace": "value",
-      "target": 15,
-      "candidates": [
-        15
-      ],
-      "origin": {
-        "start": 97,
-        "end": 102
-      }
-    },
-    {
-      "spelling": "value",
-      "namespace": "value",
-      "target": 13,
-      "origin": {
-        "start": 103,
-        "end": 108
-      }
-    },
-    {
-      "spelling": "Unit",
+      "spelling": "Int",
       "namespace": "type",
       "target": 16,
       "origin": {
-        "start": 133,
-        "end": 137
+        "start": 22,
+        "end": 25
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 10,
+      "target": 18,
       "origin": {
-        "start": 141,
-        "end": 147
+        "start": 29,
+        "end": 35
       }
     },
     {
       "spelling": "show",
       "namespace": "value",
-      "target": 12,
+      "target": 20,
       "candidates": [
-        12
+        20
       ],
       "origin": {
-        "start": 152,
-        "end": 156
+        "start": 40,
+        "end": 44
       }
     },
     {
@@ -1093,23 +2016,101 @@
       "namespace": "value",
       "target": 17,
       "origin": {
-        "start": 157,
-        "end": 162
+        "start": 45,
+        "end": 50
       }
     },
     {
-      "spelling": "Unit",
+      "spelling": "Int",
       "namespace": "type",
       "target": 16,
       "origin": {
-        "start": 188,
+        "start": 75,
+        "end": 78
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 82,
+        "end": 88
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 23,
+      "candidates": [
+        23
+      ],
+      "origin": {
+        "start": 93,
+        "end": 98
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 99,
+        "end": 104
+      }
+    },
+    {
+      "spelling": "Float",
+      "namespace": "type",
+      "target": 24,
+      "origin": {
+        "start": 130,
+        "end": 135
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 139,
+        "end": 145
+      }
+    },
+    {
+      "spelling": "show",
+      "namespace": "value",
+      "target": 20,
+      "candidates": [
+        20
+      ],
+      "origin": {
+        "start": 150,
+        "end": 154
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 25,
+      "origin": {
+        "start": 155,
+        "end": 160
+      }
+    },
+    {
+      "spelling": "Float",
+      "namespace": "type",
+      "target": 24,
+      "origin": {
+        "start": 187,
         "end": 192
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 10,
+      "target": 18,
       "origin": {
         "start": 196,
         "end": 202
@@ -1118,9 +2119,9 @@
     {
       "spelling": "debug",
       "namespace": "value",
-      "target": 15,
+      "target": 23,
       "candidates": [
-        15
+        23
       ],
       "origin": {
         "start": 207,
@@ -1130,190 +2131,568 @@
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 18,
+      "target": 26,
       "origin": {
         "start": 213,
         "end": 218
       }
     },
     {
-      "spelling": "Char",
+      "spelling": "Never",
       "namespace": "type",
-      "target": 19,
+      "target": 27,
       "origin": {
-        "start": 243,
-        "end": 247
+        "start": 244,
+        "end": 249
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 10,
+      "target": 18,
       "origin": {
-        "start": 251,
-        "end": 257
+        "start": 253,
+        "end": 259
       }
     },
     {
       "spelling": "show",
-      "namespace": "value",
-      "target": 12,
-      "candidates": [
-        12
-      ],
-      "origin": {
-        "start": 262,
-        "end": 266
-      }
-    },
-    {
-      "spelling": "value",
       "namespace": "value",
       "target": 20,
-      "origin": {
-        "start": 267,
-        "end": 272
-      }
-    },
-    {
-      "spelling": "Char",
-      "namespace": "type",
-      "target": 19,
-      "origin": {
-        "start": 298,
-        "end": 302
-      }
-    },
-    {
-      "spelling": "String",
-      "namespace": "type",
-      "target": 10,
-      "origin": {
-        "start": 306,
-        "end": 312
-      }
-    },
-    {
-      "spelling": "debug",
-      "namespace": "value",
-      "target": 15,
       "candidates": [
-        15
+        20
       ],
       "origin": {
-        "start": 317,
-        "end": 322
+        "start": 264,
+        "end": 268
       }
     },
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 21,
+      "target": 28,
       "origin": {
-        "start": 323,
-        "end": 328
+        "start": 269,
+        "end": 274
+      }
+    },
+    {
+      "spelling": "Never",
+      "namespace": "type",
+      "target": 27,
+      "origin": {
+        "start": 301,
+        "end": 306
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 10,
+      "target": 18,
       "origin": {
-        "start": 356,
-        "end": 362
-      }
-    },
-    {
-      "spelling": "String",
-      "namespace": "type",
-      "target": 10,
-      "origin": {
-        "start": 366,
-        "end": 372
+        "start": 310,
+        "end": 316
       }
     },
     {
       "spelling": "debug",
-      "namespace": "value",
-      "target": 15,
-      "candidates": [
-        15
-      ],
-      "origin": {
-        "start": 377,
-        "end": 382
-      }
-    },
-    {
-      "spelling": "value",
-      "namespace": "value",
-      "target": 22,
-      "origin": {
-        "start": 383,
-        "end": 388
-      }
-    },
-    {
-      "spelling": "println",
       "namespace": "value",
       "target": 23,
+      "candidates": [
+        23
+      ],
       "origin": {
-        "start": 422,
-        "end": 429
+        "start": 321,
+        "end": 326
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 29,
+      "origin": {
+        "start": 327,
+        "end": 332
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 30,
+      "origin": {
+        "start": 357,
+        "end": 361
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 365,
+        "end": 371
       }
     },
     {
       "spelling": "show",
       "namespace": "value",
-      "target": 12,
+      "target": 20,
       "candidates": [
-        12
+        20
+      ],
+      "origin": {
+        "start": 376,
+        "end": 380
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 31,
+      "origin": {
+        "start": 381,
+        "end": 386
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 30,
+      "origin": {
+        "start": 412,
+        "end": 416
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 420,
+        "end": 426
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 23,
+      "candidates": [
+        23
       ],
       "origin": {
         "start": 431,
-        "end": 435
+        "end": 436
       }
     },
     {
-      "spelling": "println",
+      "spelling": "value",
       "namespace": "value",
-      "target": 23,
+      "target": 32,
       "origin": {
-        "start": 446,
-        "end": 453
+        "start": 437,
+        "end": 442
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 33,
+      "origin": {
+        "start": 467,
+        "end": 471
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 475,
+        "end": 481
       }
     },
     {
       "spelling": "show",
       "namespace": "value",
-      "target": 12,
+      "target": 20,
       "candidates": [
-        12
+        20
       ],
       "origin": {
-        "start": 455,
-        "end": 459
+        "start": 486,
+        "end": 490
       }
     },
     {
-      "spelling": "println",
+      "spelling": "value",
       "namespace": "value",
-      "target": 23,
+      "target": 34,
       "origin": {
-        "start": 468,
-        "end": 475
+        "start": 491,
+        "end": 496
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 33,
+      "origin": {
+        "start": 522,
+        "end": 526
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 530,
+        "end": 536
       }
     },
     {
       "spelling": "debug",
       "namespace": "value",
-      "target": 15,
+      "target": 23,
       "candidates": [
-        15
+        23
       ],
       "origin": {
-        "start": 477,
-        "end": 482
+        "start": 541,
+        "end": 546
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 35,
+      "origin": {
+        "start": 547,
+        "end": 552
+      }
+    },
+    {
+      "spelling": "Char",
+      "namespace": "type",
+      "target": 36,
+      "origin": {
+        "start": 577,
+        "end": 581
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 585,
+        "end": 591
+      }
+    },
+    {
+      "spelling": "show",
+      "namespace": "value",
+      "target": 20,
+      "candidates": [
+        20
+      ],
+      "origin": {
+        "start": 596,
+        "end": 600
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 37,
+      "origin": {
+        "start": 601,
+        "end": 606
+      }
+    },
+    {
+      "spelling": "Char",
+      "namespace": "type",
+      "target": 36,
+      "origin": {
+        "start": 632,
+        "end": 636
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 640,
+        "end": 646
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 23,
+      "candidates": [
+        23
+      ],
+      "origin": {
+        "start": 651,
+        "end": 656
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 38,
+      "origin": {
+        "start": 657,
+        "end": 662
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 690,
+        "end": 696
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 700,
+        "end": 706
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 23,
+      "candidates": [
+        23
+      ],
+      "origin": {
+        "start": 711,
+        "end": 716
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 39,
+      "origin": {
+        "start": 717,
+        "end": 722
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 40,
+      "origin": {
+        "start": 736,
+        "end": 748
+      }
+    },
+    {
+      "spelling": "Never",
+      "namespace": "type",
+      "target": 27,
+      "origin": {
+        "start": 742,
+        "end": 747
+      }
+    },
+    {
+      "spelling": "Nothing",
+      "namespace": "value",
+      "target": 42,
+      "origin": {
+        "start": 751,
+        "end": 758
+      }
+    },
+    {
+      "spelling": "Either",
+      "namespace": "type",
+      "target": 44,
+      "origin": {
+        "start": 775,
+        "end": 796
+      }
+    },
+    {
+      "spelling": "Never",
+      "namespace": "type",
+      "target": 27,
+      "origin": {
+        "start": 782,
+        "end": 787
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 789,
+        "end": 795
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 48,
+      "origin": {
+        "start": 799,
+        "end": 804
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 49,
+      "origin": {
+        "start": 846,
+        "end": 853
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 23,
+      "candidates": [
+        23
+      ],
+      "origin": {
+        "start": 855,
+        "end": 860
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 49,
+      "origin": {
+        "start": 869,
+        "end": 876
+      }
+    },
+    {
+      "spelling": "show",
+      "namespace": "value",
+      "target": 20,
+      "candidates": [
+        20
+      ],
+      "origin": {
+        "start": 878,
+        "end": 882
+      }
+    },
+    {
+      "spelling": "absent",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 883,
+        "end": 889
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 49,
+      "origin": {
+        "start": 895,
+        "end": 902
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 23,
+      "candidates": [
+        23
+      ],
+      "origin": {
+        "start": 904,
+        "end": 909
+      }
+    },
+    {
+      "spelling": "available",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 910,
+        "end": 919
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 49,
+      "origin": {
+        "start": 925,
+        "end": 932
+      }
+    },
+    {
+      "spelling": "show",
+      "namespace": "value",
+      "target": 20,
+      "candidates": [
+        20
+      ],
+      "origin": {
+        "start": 934,
+        "end": 938
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 49,
+      "origin": {
+        "start": 949,
+        "end": 956
+      }
+    },
+    {
+      "spelling": "show",
+      "namespace": "value",
+      "target": 20,
+      "candidates": [
+        20
+      ],
+      "origin": {
+        "start": 958,
+        "end": 962
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 49,
+      "origin": {
+        "start": 971,
+        "end": 978
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 23,
+      "candidates": [
+        23
+      ],
+      "origin": {
+        "start": 980,
+        "end": 985
       }
     }
   ],

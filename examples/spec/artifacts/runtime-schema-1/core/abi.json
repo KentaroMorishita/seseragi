@@ -22,6 +22,70 @@
       }
     },
     {
+      "id": "core.int64.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<bigint>",
+      "boundary": "Debug<Int> canonical signed base-10 rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "intDebug"
+      }
+    },
+    {
+      "id": "core.float64",
+      "kind": "value-representation",
+      "typescript": "number",
+      "boundary": "IEEE 754 binary64 including NaN, infinities, and signed zero",
+      "import": null
+    },
+    {
+      "id": "core.float64.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<number>",
+      "boundary": "Show<Float> canonical shortest round-trip decimal rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "floatShow"
+      }
+    },
+    {
+      "id": "core.float64.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<number>",
+      "boundary": "Debug<Float> canonical shortest round-trip decimal rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "floatDebug"
+      }
+    },
+    {
+      "id": "core.never",
+      "kind": "value-representation",
+      "typescript": "never",
+      "boundary": "uninhabited bottom type",
+      "import": null
+    },
+    {
+      "id": "core.never.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<never>",
+      "boundary": "unreachable Show<Never> evidence for conditional dictionaries",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "neverShow"
+      }
+    },
+    {
+      "id": "core.never.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<never>",
+      "boundary": "unreachable Debug<Never> evidence for conditional dictionaries",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "neverDebug"
+      }
+    },
+    {
       "id": "core.int64.add",
       "kind": "runtime-helper",
       "typescript": "function",

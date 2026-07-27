@@ -1334,10 +1334,12 @@ mod tests {
     fn selects_materializable_standard_show_evidence() {
         for (name, identity) in [
             ("Int", "Show<std/prelude::Int>"),
+            ("Float", "Show<std/prelude::Float>"),
             ("String", "Show<std/prelude::String>"),
             ("Bool", "Show<std/prelude::Bool>"),
             ("Unit", "Show<std/prelude::Unit>"),
             ("Char", "Show<std/prelude::Char>"),
+            ("Never", "Show<std/prelude::Never>"),
         ] {
             let evidence = select_call_evidence(&[TypedConstraint {
                 name: "Show".to_owned(),
@@ -1357,10 +1359,13 @@ mod tests {
     #[test]
     fn selects_materializable_standard_debug_evidence() {
         for (name, identity) in [
+            ("Int", "Debug<std/prelude::Int>"),
+            ("Float", "Debug<std/prelude::Float>"),
             ("String", "Debug<std/prelude::String>"),
             ("Bool", "Debug<std/prelude::Bool>"),
             ("Unit", "Debug<std/prelude::Unit>"),
             ("Char", "Debug<std/prelude::Char>"),
+            ("Never", "Debug<std/prelude::Never>"),
         ] {
             let evidence = select_call_evidence(&[TypedConstraint {
                 name: "Debug".to_owned(),
@@ -1461,14 +1466,32 @@ mod tests {
     }
 
     #[test]
-    fn rejects_a_collection_when_the_leaf_debug_instance_is_missing() {
-        let missing = select_call_evidence(&[TypedConstraint {
+    fn composes_int_and_never_collection_display_evidence() {
+        let debug = select_call_evidence(&[TypedConstraint {
             name: "Debug".to_owned(),
             arguments: vec![applied("Array", vec![applied("Maybe", vec![named("Int")])])],
         }])
-        .expect_err("Debug<Int> is intentionally not a standard instance");
+        .expect("Debug<Int> must close nested collection evidence");
+        assert!(matches!(
+            debug.as_slice(),
+            [TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Standard { identity, .. },
+                ..
+            }] if identity == "std/array::Debug"
+        ));
 
-        assert_eq!(missing.name, "Debug");
+        let show = select_call_evidence(&[TypedConstraint {
+            name: "Show".to_owned(),
+            arguments: vec![applied("Either", vec![named("Never"), named("String")])],
+        }])
+        .expect("Show<Never> must close an unreachable Either branch");
+        assert!(matches!(
+            show.as_slice(),
+            [TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Standard { identity, .. },
+                ..
+            }] if identity == "std/either::Show"
+        ));
     }
 
     #[test]

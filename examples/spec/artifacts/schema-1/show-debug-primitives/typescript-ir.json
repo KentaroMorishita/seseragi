@@ -3,9 +3,20 @@
   "stage": "typescript-ir",
   "module": "artifact/show-debug-primitives",
   "runtimeRequirements": [
+    "core.maybe.nothing",
+    "core.maybe",
+    "core.either.right",
+    "core.either",
+    "core.string",
+    "core.int64",
+    "core.int64.show",
+    "core.int64.debug",
+    "core.float64.show",
+    "core.float64.debug",
+    "core.never.show",
+    "core.never.debug",
     "core.bool",
     "core.bool.show",
-    "core.string",
     "core.bool.debug",
     "core.unit",
     "core.unit.show",
@@ -15,9 +26,43 @@
     "core.char.debug",
     "core.string.debug",
     "effect.core.flatMap",
-    "effect.console.println"
+    "effect.console.println",
+    "core.maybe.show",
+    "core.either.debug"
   ],
   "imports": [
+    {
+      "feature": "core.maybe.nothing",
+      "local": "_ssrg_maybe_Nothing"
+    },
+    {
+      "feature": "core.either.right",
+      "local": "_ssrg_either_Right"
+    },
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.int64.debug",
+      "local": "_ssrg_debug_intDebug"
+    },
+    {
+      "feature": "core.float64.show",
+      "local": "_ssrg_show_floatShow"
+    },
+    {
+      "feature": "core.float64.debug",
+      "local": "_ssrg_debug_floatDebug"
+    },
+    {
+      "feature": "core.never.show",
+      "local": "_ssrg_show_neverShow"
+    },
+    {
+      "feature": "core.never.debug",
+      "local": "_ssrg_debug_neverDebug"
+    },
     {
       "feature": "core.bool.show",
       "local": "_ssrg_show_boolShow"
@@ -53,9 +98,254 @@
     {
       "feature": "effect.console.println",
       "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.maybe.show",
+      "local": "_ssrg_show_maybeShow"
+    },
+    {
+      "feature": "core.either.debug",
+      "local": "_ssrg_debug_eitherDebug"
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "absent",
+      "type": {
+        "kind": "maybe",
+        "element": {
+          "kind": "never"
+        }
+      },
+      "initializer": {
+        "kind": "runtime-reference",
+        "name": "_ssrg_maybe_Nothing"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 724,
+        "end": 758
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "available",
+      "type": {
+        "kind": "either",
+        "error": {
+          "kind": "never"
+        },
+        "value": {
+          "kind": "string"
+        }
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_either_Right",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "ready"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 760,
+        "end": 812
+      }
     }
   ],
   "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "showInt",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_show_intShow"
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 50
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugInt",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_debug_intDebug"
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 52,
+        "end": 104
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "showFloat",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "number",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_show_floatShow"
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 106,
+        "end": 160
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugFloat",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "number",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_debug_floatDebug"
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 162,
+        "end": 218
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "showNever",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "never",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_show_neverShow"
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 220,
+        "end": 274
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugNever",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "never",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_debug_neverDebug"
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 276,
+        "end": 332
+      }
+    },
     {
       "kind": "const-function",
       "exported": true,
@@ -83,8 +373,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 0,
-        "end": 52
+        "start": 334,
+        "end": 386
       }
     },
     {
@@ -114,8 +404,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 54,
-        "end": 108
+        "start": 388,
+        "end": 442
       }
     },
     {
@@ -145,8 +435,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 110,
-        "end": 162
+        "start": 444,
+        "end": 496
       }
     },
     {
@@ -176,8 +466,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 164,
-        "end": 218
+        "start": 498,
+        "end": 552
       }
     },
     {
@@ -207,8 +497,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 220,
-        "end": 272
+        "start": 554,
+        "end": 606
       }
     },
     {
@@ -238,8 +528,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 274,
-        "end": 328
+        "start": 608,
+        "end": 662
       }
     },
     {
@@ -269,8 +559,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 330,
-        "end": 388
+        "start": 664,
+        "end": 722
       }
     },
     {
@@ -287,6 +577,104 @@
       "body": {
         "kind": "sequence",
         "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_debug_intDebug"
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "bigint",
+                      "value": "42"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_show_maybeShow",
+                    "typeArguments": [
+                      {
+                        "kind": "never"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_neverShow"
+                      }
+                    ]
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "absent"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_eitherDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "never"
+                      },
+                      {
+                        "kind": "string"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_neverDebug"
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_stringDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "available"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
           {
             "kind": "effect",
             "value": {
@@ -356,8 +744,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 390,
-        "end": 506
+        "start": 814,
+        "end": 1009
       }
     }
   ]

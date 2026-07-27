@@ -391,6 +391,46 @@
       "identity": "Show<std/prelude::Int>"
     },
     {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Int",
+      "typeConstructorCanonical": "std/prelude::Int",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/prelude::Int>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Float",
+      "typeConstructorCanonical": "std/prelude::Float",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/prelude::Float>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Float",
+      "typeConstructorCanonical": "std/prelude::Float",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/prelude::Float>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Never",
+      "typeConstructorCanonical": "std/prelude::Never",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/prelude::Never>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Never",
+      "typeConstructorCanonical": "std/prelude::Never",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/prelude::Never>"
+    },
+    {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
       "typeConstructor": "String",

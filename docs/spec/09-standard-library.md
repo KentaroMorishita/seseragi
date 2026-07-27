@@ -442,10 +442,27 @@ trait Show<A> {
 `show` は純粋で、I/O、throw、global locale参照を行いません。localeやformat optionが必要な
 表示は引数を取る名前付きformatterとして定義します。
 
-Intのstandard Showは`std/int.format`と同じcanonicalな符号付き10進表記を返します。桁区切りや
-先頭の`+`は加えません。Charのstandard Showはそのscalar一個を含むString、Stringのstandard Showは同じStringを返します。
+Intのstandard ShowとDebugは`std/int.format`と同じcanonicalな符号付き10進表記を返します。桁区切りや
+先頭の`+`は加えません。FloatのShowとDebugは`std/float.format`と同じcanonical表記を使います。
+finite値は同じbinary64へround-tripする最短decimalとし、整数に見える表記には`.0`を付けます。
+negative zeroは`-0.0`、特殊値は`NaN`、`Infinity`、`-Infinity`、指数はlowercase `e`かつ
+plus sign・先頭zeroなしです。Charのstandard Showはそのscalar一個を含むString、Stringのstandard Showは同じStringを返します。
 quoteやescapeを含むsource表現はDebugの責務であり、Showは自動でquoteを加えません。
 Boolのstandard Showは`True`または`False`、Unitのstandard Showは`()`を返します。
+
+primitiveのstandard instance matrixは次のとおりです。`Never`はruntime valueを持たないため、
+直接描画されませんが、`Maybe<Never>`や`Either<Never, A>`の到達不能側を含むconditional
+instanceを合成できるunreachable dictionaryをShow/Debugの両方に持ちます。
+
+| primitive | Show | Debug |
+| --- | --- | --- |
+| `Int` | canonical signed decimal | canonical signed decimal |
+| `Float` | canonical binary64 decimal | canonical binary64 decimal |
+| `Bool` | `True` / `False` | `True` / `False` |
+| `Char` | unquoted scalar | quoted and escaped scalar |
+| `String` | identity | quoted and escaped text |
+| `Unit` | `()` | `()` |
+| `Never` | unreachable evidence | unreachable evidence |
 
 Stringは`Add<String, String, String>`のstandard instanceを持ち、`left + right`は二つのStringを
 その順で連結した新しいStringを返します。数値や他の型を暗黙にStringへ変換しません。異なる型を含む
