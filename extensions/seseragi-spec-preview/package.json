@@ -81,6 +81,9 @@
       }
     },
     "configurationDefaults": {
+      "[seseragi]": {
+        "editor.defaultFormatter": "seseragi-dev.seseragi-spec-preview"
+      },
       "editor.tokenColorCustomizations": {
         "textMateRules": [
           {

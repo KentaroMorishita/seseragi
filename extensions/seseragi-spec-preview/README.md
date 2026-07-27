@@ -6,6 +6,7 @@ untitled documentへ次を提供します。
 - TextMateによる起動直後のsyntax highlighting
 - 現行Rust compilerと同じAnalysis APIを使うnative language server
 - hover、completion、signature help、definition、diagnostic、quick fix
+- CLIと同じformatterを使うFormat Document
 - semantic tokensによる型・symbol情報を使ったhighlightの補完
 
 TextMate grammarはserver起動前も使える字句highlightを担当し、semantic tokensは
@@ -40,6 +41,26 @@ Command Paletteには次があります。
 独自buildを使う場合だけ、`seseragi.languageServer.path`へabsolute pathまたは
 PATH上のcommandを設定してください。起動時にbinary version、protocol version、
 analysis schema versionを検査し、互換性がない場合はコンパイル機能を開始しません。
+
+## Formatting
+
+`.ssrg`では、このextensionがdefault formatterとして選択されます。Command Paletteの
+`Format Document`またはeditorの`Format Document With...`から、未保存のdocumentも
+CLIの`seseragi format`と同じ規則で整形できます。
+
+保存時にも整形する場合は、VS Codeの設定へ次を追加します。
+
+```json
+{
+  "[seseragi]": {
+    "editor.defaultFormatter": "seseragi-dev.seseragi-spec-preview",
+    "editor.formatOnSave": true
+  }
+}
+```
+
+syntax errorがあるdocumentは書き換えず、language serverが通常のdiagnosticを表示します。
+range formattingとon-type formattingは提供しません。
 
 ## Upgrade from 0.1.0
 

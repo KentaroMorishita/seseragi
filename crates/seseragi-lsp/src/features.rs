@@ -1,7 +1,8 @@
 use crate::model::{CodeActionParams, Position, TextDocumentPositionParams};
 use serde_json::{json, Value};
 use seseragi_driver::{
-    analyze_module, AnalysisDocument, AnalysisReferenceItem, AnalysisSymbol, CompileInput,
+    analyze_module, format_module, AnalysisDocument, AnalysisReferenceItem, AnalysisSymbol,
+    CompileInput,
 };
 use seseragi_source::{EncodedPosition, LineIndex, PositionEncoding};
 use seseragi_syntax::{parse_surface_ast, ByteSpan};
@@ -308,6 +309,25 @@ pub(crate) fn code_actions(
         }
     }
     Value::Array(actions)
+}
+
+pub(crate) fn document_formatting(document: &DocumentState, encoding: PositionEncoding) -> Value {
+    let Ok(formatted) = format_module(&document.analysis.source, &document.source) else {
+        // didOpen/didChange already publish the shared parser diagnostics. Returning
+        // no edits keeps an invalid buffer untouched without producing a second,
+        // editor-specific error surface.
+        return json!([]);
+    };
+    if !formatted.changed {
+        return json!([]);
+    }
+    let Some(range) = range_json(&document.source, 0, document.source.len(), encoding) else {
+        return json!([]);
+    };
+    json!([{
+        "range": range,
+        "newText": formatted.text,
+    }])
 }
 
 pub(crate) fn semantic_tokens(document: &DocumentState, encoding: PositionEncoding) -> Value {

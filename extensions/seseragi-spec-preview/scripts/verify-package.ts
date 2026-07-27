@@ -54,6 +54,14 @@ export async function verifyPackage(
   if (!language?.extensions?.includes(".ssrg")) {
     throw new Error("VSIX does not register every .ssrg file as Seseragi")
   }
+  const formatterDefaults =
+    manifest.contributes?.configurationDefaults?.["[seseragi]"]
+  if (
+    formatterDefaults?.["editor.defaultFormatter"] !==
+    "seseragi-dev.seseragi-spec-preview"
+  ) {
+    throw new Error("VSIX does not select the Seseragi default formatter")
+  }
   const commands = new Set(
     (manifest.contributes?.commands || []).map(
       (entry: { command?: string }) => entry.command

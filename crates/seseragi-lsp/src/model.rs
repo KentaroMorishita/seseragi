@@ -92,3 +92,9 @@ pub struct CodeActionParams {
 pub struct SemanticTokensParams {
     pub text_document: TextDocumentIdentifier,
 }
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DocumentFormattingParams {
+    pub text_document: TextDocumentIdentifier,
+}

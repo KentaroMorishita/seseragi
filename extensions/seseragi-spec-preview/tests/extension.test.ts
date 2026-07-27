@@ -174,6 +174,9 @@ describe("official VS Code extension contract", () => {
         "seseragi.languageServer.path"
       ].default
     ).toBe("")
+    expect(manifest.contributes.configurationDefaults["[seseragi]"]).toEqual({
+      "editor.defaultFormatter": "seseragi-dev.seseragi-spec-preview",
+    })
   })
 
   test("maps every release platform to one bundled server", () => {

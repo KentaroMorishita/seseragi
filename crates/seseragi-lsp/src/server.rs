@@ -2,8 +2,8 @@ use crate::capabilities::{negotiate_position_encoding, position_encoding_name};
 use crate::diagnostics;
 use crate::features::{self, DocumentState, SEMANTIC_TOKEN_TYPES};
 use crate::model::{
-    CodeActionParams, DidChangeParams, DidCloseParams, DidOpenParams, InitializeParams,
-    SemanticTokensParams, TextDocumentPositionParams,
+    CodeActionParams, DidChangeParams, DidCloseParams, DidOpenParams, DocumentFormattingParams,
+    InitializeParams, SemanticTokensParams, TextDocumentPositionParams,
 };
 use crate::protocol::{self, ProtocolError};
 use serde::Deserialize;
@@ -93,6 +93,7 @@ impl State {
                             },
                             "definitionProvider": true,
                             "codeActionProvider": true,
+                            "documentFormattingProvider": true,
                             "semanticTokensProvider": {
                                 "legend": {
                                     "tokenTypes": SEMANTIC_TOKEN_TYPES,
@@ -203,6 +204,18 @@ impl State {
                                     self.encoding.unwrap_or(PositionEncoding::Utf16),
                                 )
                             })
+                    })
+                    .unwrap_or_else(|| json!([]));
+                Ok(vec![response(id, result)])
+            }
+            Some("textDocument/formatting") => {
+                let result = parse_params::<DocumentFormattingParams>(&message)
+                    .and_then(|params| self.documents.get(&params.text_document.uri))
+                    .map(|document| {
+                        features::document_formatting(
+                            document,
+                            self.encoding.unwrap_or(PositionEncoding::Utf16),
+                        )
                     })
                     .unwrap_or_else(|| json!([]));
                 Ok(vec![response(id, result)])

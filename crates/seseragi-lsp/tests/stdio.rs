@@ -1,4 +1,6 @@
 use serde_json::{json, Value};
+use seseragi_driver::format_module;
+use seseragi_source::{LineIndex, PositionEncoding};
 use std::io::Write;
 use std::process::{Command, Stdio};
 
@@ -181,6 +183,108 @@ fn binary_serves_open_document_diagnostics_over_stdio() {
         .as_array()
         .unwrap()
         .is_empty());
+}
+
+#[test]
+fn binary_formats_the_latest_document_with_the_shared_cli_formatter() {
+    let uri = "file:///formatting.ssrg";
+    let source = concat!(
+        "// 🙂   \r\n",
+        "pub let greeting: String = \"こんにちは🙂\"   ",
+    );
+    let formatted = format_module(uri, source).expect("valid source");
+    assert!(formatted.changed);
+
+    for (encoding_name, encoding) in [
+        ("utf-8", PositionEncoding::Utf8),
+        ("utf-16", PositionEncoding::Utf16),
+    ] {
+        let input = [
+            json!({
+                "jsonrpc": "2.0", "id": 1, "method": "initialize",
+                "params": {
+                    "capabilities": {
+                        "general": {"positionEncodings": [encoding_name]}
+                    }
+                }
+            }),
+            json!({
+                "jsonrpc": "2.0", "method": "textDocument/didOpen",
+                "params": {"textDocument": {
+                    "uri": uri, "languageId": "seseragi", "version": 1,
+                    "text": source
+                }}
+            }),
+            json!({
+                "jsonrpc": "2.0", "id": 2, "method": "textDocument/formatting",
+                "params": {
+                    "textDocument": {"uri": uri},
+                    "options": {"tabSize": 4, "insertSpaces": false}
+                }
+            }),
+            json!({
+                "jsonrpc": "2.0", "method": "textDocument/didChange",
+                "params": {
+                    "textDocument": {"uri": uri, "version": 2},
+                    "contentChanges": [{"text": formatted.text.clone()}]
+                }
+            }),
+            json!({
+                "jsonrpc": "2.0", "id": 3, "method": "textDocument/formatting",
+                "params": {
+                    "textDocument": {"uri": uri},
+                    "options": {"tabSize": 2, "insertSpaces": true}
+                }
+            }),
+            json!({
+                "jsonrpc": "2.0", "method": "textDocument/didChange",
+                "params": {
+                    "textDocument": {"uri": uri, "version": 3},
+                    "contentChanges": [{"text": "pub let broken: Int =\n"}]
+                }
+            }),
+            json!({
+                "jsonrpc": "2.0", "id": 4, "method": "textDocument/formatting",
+                "params": {
+                    "textDocument": {"uri": uri},
+                    "options": {"tabSize": 2, "insertSpaces": true}
+                }
+            }),
+            json!({"jsonrpc": "2.0", "id": 5, "method": "shutdown"}),
+            json!({"jsonrpc": "2.0", "method": "exit"}),
+        ];
+
+        let messages = run_server(&input);
+        assert_eq!(
+            response(&messages, 1)["result"]["capabilities"]["documentFormattingProvider"],
+            true
+        );
+
+        let edits = response(&messages, 2)["result"].as_array().unwrap();
+        assert_eq!(edits.len(), 1);
+        assert_eq!(edits[0]["newText"], formatted.text);
+        assert_eq!(
+            edits[0]["range"]["start"],
+            json!({"line": 0, "character": 0})
+        );
+        let end = LineIndex::new(source)
+            .try_locate_encoded(source.len(), encoding)
+            .unwrap();
+        assert_eq!(
+            edits[0]["range"]["end"],
+            json!({"line": end.line, "character": end.character})
+        );
+
+        assert_eq!(response(&messages, 3)["result"], json!([]));
+        assert_eq!(response(&messages, 4)["result"], json!([]));
+        assert!(messages.iter().any(|message| {
+            message["method"] == "textDocument/publishDiagnostics"
+                && message["params"]["version"] == 3
+                && message["params"]["diagnostics"]
+                    .as_array()
+                    .is_some_and(|diagnostics| !diagnostics.is_empty())
+        }));
+    }
 }
 
 #[test]
