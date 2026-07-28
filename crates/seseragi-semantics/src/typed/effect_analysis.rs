@@ -270,6 +270,7 @@ pub(super) fn expression_origin(expression: &TypedExpr) -> ByteSpan {
         | TypedExpr::OptionalFieldAccess { origin, .. }
         | TypedExpr::Record { origin, .. }
         | TypedExpr::Binary { origin, .. }
+        | TypedExpr::Unary { origin, .. }
         | TypedExpr::If { origin, .. }
         | TypedExpr::Match { origin, .. }
         | TypedExpr::EffectCall { origin, .. }

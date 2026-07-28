@@ -200,6 +200,7 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
             rewrite_expr(left, renames);
             rewrite_expr(right, renames);
         }
+        TypeScriptExpr::Unary { operand, .. } => rewrite_expr(operand, renames),
         TypeScriptExpr::Conditional {
             condition,
             then_branch,

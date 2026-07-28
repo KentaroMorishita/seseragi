@@ -95,6 +95,10 @@ import sample23Source from "../../../../examples/samples/type-aliases/main.ssrg?
 import sample23Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
 import sample23Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
 
+import sample24Source from "../../../../examples/samples/unary-operators/main.ssrg?raw"
+import sample24Guide from "../../../../examples/samples/unary-operators/guide.md?raw"
+import sample24Output from "../../../../examples/samples/unary-operators/stdout.txt?raw"
+
 export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
@@ -895,6 +899,40 @@ export const generatedSamples: readonly GeneratedSample[] = [
     guide: sample23Guide,
     stdin: "",
     expectedOutput: (sample23Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    definition: {
+      "id": "unary-operators",
+      "title": "単項演算子と値表示",
+      "summary": "unary - / !の型と値をbinding・argument・Debugまで保ちます。",
+      "kind": "recipe",
+      "difficulty": "intermediate",
+      "topics": [
+        "operator",
+        "Int",
+        "Float",
+        "Bool",
+        "Debug"
+      ],
+      "capabilities": [
+        "console"
+      ],
+      "outputMode": "text",
+      "prerequisites": [
+        "strings-and-templates"
+      ],
+      "featured": false,
+      "isNew": false,
+      "interactive": false,
+      "sourcePath": "examples/samples/unary-operators/main.ssrg",
+      "guidePath": "examples/samples/unary-operators/guide.md",
+      "expectedOutputPath": "examples/samples/unary-operators/stdout.txt",
+      "sourceHash": "sha256:841807590b7e3cbab4f8193c28ff051456f798a60cc3d5f9d22004dfb3a0c7a1"
+    },
+    source: sample24Source,
+    guide: sample24Guide,
+    stdin: "",
+    expectedOutput: (sample24Output).replace(/\r?\n$/u, ""),
   }
 ]
 

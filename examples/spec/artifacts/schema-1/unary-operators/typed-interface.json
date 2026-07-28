@@ -1,0 +1,385 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/unary-operators",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/unary-operators::Snapshot",
+      "namespace": "type",
+      "name": "Snapshot",
+      "visibility": "public",
+      "declarationKind": "struct",
+      "declaration": {
+        "start": 94,
+        "end": 175
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Snapshot",
+          "arity": 0
+        }
+      },
+      "representation": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "negative",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          },
+          {
+            "name": "negativeZero",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          },
+          {
+            "name": "inverted",
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::negative",
+      "namespace": "value",
+      "name": "negative",
+      "visibility": "public",
+      "declaration": {
+        "start": 177,
+        "end": 198
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::negativeZero",
+      "namespace": "value",
+      "name": "negativeZero",
+      "visibility": "public",
+      "declaration": {
+        "start": 199,
+        "end": 226
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::inverted",
+      "namespace": "value",
+      "name": "inverted",
+      "visibility": "public",
+      "declaration": {
+        "start": 227,
+        "end": 251
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::minimum",
+      "namespace": "value",
+      "name": "minimum",
+      "visibility": "public",
+      "declaration": {
+        "start": 252,
+        "end": 295
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::values",
+      "namespace": "value",
+      "name": "values",
+      "visibility": "public",
+      "declaration": {
+        "start": 297,
+        "end": 338
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::floats",
+      "namespace": "value",
+      "name": "floats",
+      "visibility": "public",
+      "declaration": {
+        "start": 339,
+        "end": 393
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::flags",
+      "namespace": "value",
+      "name": "flags",
+      "visibility": "public",
+      "declaration": {
+        "start": 394,
+        "end": 438
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::tuple",
+      "namespace": "value",
+      "name": "tuple",
+      "visibility": "public",
+      "declaration": {
+        "start": 439,
+        "end": 493
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::record",
+      "namespace": "value",
+      "name": "record",
+      "visibility": "public",
+      "declaration": {
+        "start": 494,
+        "end": 544
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "inverted",
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            {
+              "name": "negative",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::snapshot",
+      "namespace": "value",
+      "name": "snapshot",
+      "visibility": "public",
+      "declaration": {
+        "start": 545,
+        "end": 654
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Snapshot",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::negateInt",
+      "namespace": "value",
+      "name": "negateInt",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 656,
+        "end": 699
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::negateFloat",
+      "namespace": "value",
+      "name": "negateFloat",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 700,
+        "end": 749
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::invert",
+      "namespace": "value",
+      "name": "invert",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 750,
+        "end": 792
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

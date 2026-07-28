@@ -1245,3 +1245,57 @@ fn parses_float_literals_and_negative_zero() {
                 && matches!(operand.as_ref(), SurfaceExpr::Float { raw, .. } if raw == "0.0")
     ));
 }
+
+#[test]
+fn parses_boolean_inversion_as_a_prefix_expression() {
+    let body = first_body("let flags: Array<Bool> = [!True, !False]\n");
+    let SurfaceExpr::Array { elements, .. } = body else {
+        panic!("expected array literal");
+    };
+
+    assert!(matches!(
+        &elements[0],
+        SurfaceExpr::Prefix { operator, operand, .. }
+            if operator == "!"
+                && matches!(operand.as_ref(), SurfaceExpr::Boolean { value: true, .. })
+    ));
+    assert!(matches!(
+        &elements[1],
+        SurfaceExpr::Prefix { operator, operand, .. }
+            if operator == "!"
+                && matches!(operand.as_ref(), SurfaceExpr::Boolean { value: false, .. })
+    ));
+}
+
+#[test]
+fn parses_grouped_unary_values_without_confusing_operator_sections() {
+    let negative = first_body("let value: Int = (-2)\n");
+    assert!(matches!(
+        negative,
+        SurfaceExpr::Grouped { value, .. }
+            if matches!(
+                value.as_ref(),
+                SurfaceExpr::Prefix { operator, operand, .. }
+                    if operator == "-"
+                        && matches!(
+                            operand.as_ref(),
+                            SurfaceExpr::Integer { raw, .. } if raw == "2"
+                        )
+            )
+    ));
+
+    let inverted = first_body("let value: Bool = (!True)\n");
+    assert!(matches!(
+        inverted,
+        SurfaceExpr::Grouped { value, .. }
+            if matches!(
+                value.as_ref(),
+                SurfaceExpr::Prefix { operator, operand, .. }
+                    if operator == "!"
+                        && matches!(
+                            operand.as_ref(),
+                            SurfaceExpr::Boolean { value: true, .. }
+                        )
+            )
+    ));
+}

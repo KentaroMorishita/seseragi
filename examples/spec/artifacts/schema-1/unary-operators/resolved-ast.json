@@ -1,0 +1,1515 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/unary-operators",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "struct",
+      "visibility": "public",
+      "name": "Snapshot",
+      "nameSpan": {
+        "start": 105,
+        "end": 113
+      },
+      "fields": [
+        {
+          "name": "negative",
+          "nameSpan": {
+            "start": 118,
+            "end": 126
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 128,
+              "end": 131
+            }
+          }
+        },
+        {
+          "name": "negativeZero",
+          "nameSpan": {
+            "start": 135,
+            "end": 147
+          },
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "span": {
+              "start": 149,
+              "end": 154
+            }
+          }
+        },
+        {
+          "name": "inverted",
+          "nameSpan": {
+            "start": 158,
+            "end": 166
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 168,
+              "end": 172
+            }
+          }
+        }
+      ],
+      "span": {
+        "start": 94,
+        "end": 175
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "negative",
+      "nameSpan": {
+        "start": 185,
+        "end": 193
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "prefix",
+        "operator": "-",
+        "operatorSpan": {
+          "start": 196,
+          "end": 197
+        },
+        "operand": {
+          "kind": "integer",
+          "raw": "2",
+          "span": {
+            "start": 197,
+            "end": 198
+          }
+        },
+        "span": {
+          "start": 196,
+          "end": 198
+        }
+      },
+      "span": {
+        "start": 177,
+        "end": 198
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "negativeZero",
+      "nameSpan": {
+        "start": 207,
+        "end": 219
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "prefix",
+        "operator": "-",
+        "operatorSpan": {
+          "start": 222,
+          "end": 223
+        },
+        "operand": {
+          "kind": "float",
+          "raw": "0.0",
+          "span": {
+            "start": 223,
+            "end": 226
+          }
+        },
+        "span": {
+          "start": 222,
+          "end": 226
+        }
+      },
+      "span": {
+        "start": 199,
+        "end": 226
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "inverted",
+      "nameSpan": {
+        "start": 235,
+        "end": 243
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "prefix",
+        "operator": "!",
+        "operatorSpan": {
+          "start": 246,
+          "end": 247
+        },
+        "operand": {
+          "kind": "boolean",
+          "value": true,
+          "span": {
+            "start": 247,
+            "end": 251
+          }
+        },
+        "span": {
+          "start": 246,
+          "end": 251
+        }
+      },
+      "span": {
+        "start": 227,
+        "end": 251
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "minimum",
+      "nameSpan": {
+        "start": 260,
+        "end": 267
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 269,
+          "end": 272
+        }
+      },
+      "body": {
+        "kind": "prefix",
+        "operator": "-",
+        "operatorSpan": {
+          "start": 275,
+          "end": 276
+        },
+        "operand": {
+          "kind": "integer",
+          "raw": "9223372036854775808",
+          "span": {
+            "start": 276,
+            "end": 295
+          }
+        },
+        "span": {
+          "start": 275,
+          "end": 295
+        }
+      },
+      "span": {
+        "start": 252,
+        "end": 295
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "values",
+      "nameSpan": {
+        "start": 305,
+        "end": 311
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 319,
+              "end": 322
+            }
+          }
+        ],
+        "span": {
+          "start": 313,
+          "end": 323
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "prefix",
+            "operator": "-",
+            "operatorSpan": {
+              "start": 327,
+              "end": 328
+            },
+            "operand": {
+              "kind": "integer",
+              "raw": "1",
+              "span": {
+                "start": 328,
+                "end": 329
+              }
+            },
+            "span": {
+              "start": 327,
+              "end": 329
+            }
+          },
+          {
+            "kind": "prefix",
+            "operator": "-",
+            "operatorSpan": {
+              "start": 331,
+              "end": 332
+            },
+            "operand": {
+              "kind": "integer",
+              "raw": "2",
+              "span": {
+                "start": 332,
+                "end": 333
+              }
+            },
+            "span": {
+              "start": 331,
+              "end": 333
+            }
+          },
+          {
+            "kind": "prefix",
+            "operator": "-",
+            "operatorSpan": {
+              "start": 335,
+              "end": 336
+            },
+            "operand": {
+              "kind": "integer",
+              "raw": "3",
+              "span": {
+                "start": 336,
+                "end": 337
+              }
+            },
+            "span": {
+              "start": 335,
+              "end": 337
+            }
+          }
+        ],
+        "span": {
+          "start": 326,
+          "end": 338
+        }
+      },
+      "span": {
+        "start": 297,
+        "end": 338
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "floats",
+      "nameSpan": {
+        "start": 347,
+        "end": 353
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Float",
+            "span": {
+              "start": 361,
+              "end": 366
+            }
+          }
+        ],
+        "span": {
+          "start": 355,
+          "end": 367
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "prefix",
+            "operator": "-",
+            "operatorSpan": {
+              "start": 371,
+              "end": 372
+            },
+            "operand": {
+              "kind": "float",
+              "raw": "1.0",
+              "span": {
+                "start": 372,
+                "end": 375
+              }
+            },
+            "span": {
+              "start": 371,
+              "end": 375
+            }
+          },
+          {
+            "kind": "prefix",
+            "operator": "-",
+            "operatorSpan": {
+              "start": 377,
+              "end": 378
+            },
+            "operand": {
+              "kind": "float",
+              "raw": "0.0",
+              "span": {
+                "start": 378,
+                "end": 381
+              }
+            },
+            "span": {
+              "start": 377,
+              "end": 381
+            }
+          },
+          {
+            "kind": "prefix",
+            "operator": "-",
+            "operatorSpan": {
+              "start": 383,
+              "end": 384
+            },
+            "operand": {
+              "kind": "float",
+              "raw": "6.022e23",
+              "span": {
+                "start": 384,
+                "end": 392
+              }
+            },
+            "span": {
+              "start": 383,
+              "end": 392
+            }
+          }
+        ],
+        "span": {
+          "start": 370,
+          "end": 393
+        }
+      },
+      "span": {
+        "start": 339,
+        "end": 393
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "flags",
+      "nameSpan": {
+        "start": 402,
+        "end": 407
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 415,
+              "end": 419
+            }
+          }
+        ],
+        "span": {
+          "start": 409,
+          "end": 420
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "prefix",
+            "operator": "!",
+            "operatorSpan": {
+              "start": 424,
+              "end": 425
+            },
+            "operand": {
+              "kind": "boolean",
+              "value": true,
+              "span": {
+                "start": 425,
+                "end": 429
+              }
+            },
+            "span": {
+              "start": 424,
+              "end": 429
+            }
+          },
+          {
+            "kind": "prefix",
+            "operator": "!",
+            "operatorSpan": {
+              "start": 431,
+              "end": 432
+            },
+            "operand": {
+              "kind": "boolean",
+              "value": false,
+              "span": {
+                "start": 432,
+                "end": 437
+              }
+            },
+            "span": {
+              "start": 431,
+              "end": 437
+            }
+          }
+        ],
+        "span": {
+          "start": 423,
+          "end": 438
+        }
+      },
+      "span": {
+        "start": 394,
+        "end": 438
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "tuple",
+      "nameSpan": {
+        "start": 447,
+        "end": 452
+      },
+      "typeRef": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 455,
+              "end": 458
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Float",
+            "span": {
+              "start": 460,
+              "end": 465
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 467,
+              "end": 471
+            }
+          }
+        ],
+        "span": {
+          "start": 454,
+          "end": 472
+        }
+      },
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "prefix",
+            "operator": "-",
+            "operatorSpan": {
+              "start": 476,
+              "end": 477
+            },
+            "operand": {
+              "kind": "integer",
+              "raw": "4",
+              "span": {
+                "start": 477,
+                "end": 478
+              }
+            },
+            "span": {
+              "start": 476,
+              "end": 478
+            }
+          },
+          {
+            "kind": "prefix",
+            "operator": "-",
+            "operatorSpan": {
+              "start": 480,
+              "end": 481
+            },
+            "operand": {
+              "kind": "float",
+              "raw": "2.5",
+              "span": {
+                "start": 481,
+                "end": 484
+              }
+            },
+            "span": {
+              "start": 480,
+              "end": 484
+            }
+          },
+          {
+            "kind": "prefix",
+            "operator": "!",
+            "operatorSpan": {
+              "start": 486,
+              "end": 487
+            },
+            "operand": {
+              "kind": "boolean",
+              "value": false,
+              "span": {
+                "start": 487,
+                "end": 492
+              }
+            },
+            "span": {
+              "start": 486,
+              "end": 492
+            }
+          }
+        ],
+        "span": {
+          "start": 475,
+          "end": 493
+        }
+      },
+      "span": {
+        "start": 439,
+        "end": 493
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "record",
+      "nameSpan": {
+        "start": 502,
+        "end": 508
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "negative",
+            "nameSpan": {
+              "start": 513,
+              "end": 521
+            },
+            "value": {
+              "kind": "prefix",
+              "operator": "-",
+              "operatorSpan": {
+                "start": 523,
+                "end": 524
+              },
+              "operand": {
+                "kind": "integer",
+                "raw": "5",
+                "span": {
+                  "start": 524,
+                  "end": 525
+                }
+              },
+              "span": {
+                "start": 523,
+                "end": 525
+              }
+            },
+            "span": {
+              "start": 513,
+              "end": 525
+            }
+          },
+          {
+            "kind": "field",
+            "name": "inverted",
+            "nameSpan": {
+              "start": 527,
+              "end": 535
+            },
+            "value": {
+              "kind": "prefix",
+              "operator": "!",
+              "operatorSpan": {
+                "start": 537,
+                "end": 538
+              },
+              "operand": {
+                "kind": "boolean",
+                "value": true,
+                "span": {
+                  "start": 538,
+                  "end": 542
+                }
+              },
+              "span": {
+                "start": 537,
+                "end": 542
+              }
+            },
+            "span": {
+              "start": 527,
+              "end": 542
+            }
+          }
+        ],
+        "span": {
+          "start": 511,
+          "end": 544
+        }
+      },
+      "span": {
+        "start": 494,
+        "end": 544
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "snapshot",
+      "nameSpan": {
+        "start": 553,
+        "end": 561
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Snapshot",
+        "span": {
+          "start": 563,
+          "end": 571
+        }
+      },
+      "body": {
+        "kind": "struct",
+        "name": "Snapshot",
+        "nameSpan": {
+          "start": 576,
+          "end": 584
+        },
+        "items": [
+          {
+            "kind": "field",
+            "name": "negative",
+            "nameSpan": {
+              "start": 591,
+              "end": 599
+            },
+            "value": {
+              "kind": "prefix",
+              "operator": "-",
+              "operatorSpan": {
+                "start": 601,
+                "end": 602
+              },
+              "operand": {
+                "kind": "integer",
+                "raw": "6",
+                "span": {
+                  "start": 602,
+                  "end": 603
+                }
+              },
+              "span": {
+                "start": 601,
+                "end": 603
+              }
+            },
+            "span": {
+              "start": 591,
+              "end": 603
+            }
+          },
+          {
+            "kind": "field",
+            "name": "negativeZero",
+            "nameSpan": {
+              "start": 609,
+              "end": 621
+            },
+            "value": {
+              "kind": "prefix",
+              "operator": "-",
+              "operatorSpan": {
+                "start": 623,
+                "end": 624
+              },
+              "operand": {
+                "kind": "float",
+                "raw": "0.0",
+                "span": {
+                  "start": 624,
+                  "end": 627
+                }
+              },
+              "span": {
+                "start": 623,
+                "end": 627
+              }
+            },
+            "span": {
+              "start": 609,
+              "end": 627
+            }
+          },
+          {
+            "kind": "field",
+            "name": "inverted",
+            "nameSpan": {
+              "start": 633,
+              "end": 641
+            },
+            "value": {
+              "kind": "prefix",
+              "operator": "!",
+              "operatorSpan": {
+                "start": 643,
+                "end": 644
+              },
+              "operand": {
+                "kind": "boolean",
+                "value": false,
+                "span": {
+                  "start": 644,
+                  "end": 649
+                }
+              },
+              "span": {
+                "start": 643,
+                "end": 649
+              }
+            },
+            "span": {
+              "start": 633,
+              "end": 649
+            }
+          }
+        ],
+        "span": {
+          "start": 576,
+          "end": 654
+        }
+      },
+      "span": {
+        "start": 545,
+        "end": 654
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "negateInt",
+      "nameSpan": {
+        "start": 663,
+        "end": 672
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 673,
+            "end": 678
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 680,
+              "end": 683
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 687,
+          "end": 690
+        }
+      },
+      "body": {
+        "kind": "prefix",
+        "operator": "-",
+        "operatorSpan": {
+          "start": 693,
+          "end": 694
+        },
+        "operand": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 694,
+            "end": 699
+          }
+        },
+        "span": {
+          "start": 693,
+          "end": 699
+        }
+      },
+      "span": {
+        "start": 656,
+        "end": 699
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "negateFloat",
+      "nameSpan": {
+        "start": 707,
+        "end": 718
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 719,
+            "end": 724
+          },
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "span": {
+              "start": 726,
+              "end": 731
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Float",
+        "span": {
+          "start": 735,
+          "end": 740
+        }
+      },
+      "body": {
+        "kind": "prefix",
+        "operator": "-",
+        "operatorSpan": {
+          "start": 743,
+          "end": 744
+        },
+        "operand": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 744,
+            "end": 749
+          }
+        },
+        "span": {
+          "start": 743,
+          "end": 749
+        }
+      },
+      "span": {
+        "start": 700,
+        "end": 749
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "invert",
+      "nameSpan": {
+        "start": 757,
+        "end": 763
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 764,
+            "end": 769
+          },
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 771,
+              "end": 775
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Bool",
+        "span": {
+          "start": 779,
+          "end": 783
+        }
+      },
+      "body": {
+        "kind": "prefix",
+        "operator": "!",
+        "operatorSpan": {
+          "start": 786,
+          "end": 787
+        },
+        "operand": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 787,
+            "end": 792
+          }
+        },
+        "span": {
+          "start": 786,
+          "end": 792
+        }
+      },
+      "span": {
+        "start": 750,
+        "end": 792
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 94,
+        "end": 792
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 94,
+        "end": 175
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 656,
+        "end": 699
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 700,
+        "end": 749
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 750,
+        "end": 792
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Snapshot",
+      "canonical": "artifact/unary-operators::Snapshot",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 105,
+        "end": 113
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "negative",
+      "canonical": "artifact/unary-operators::negative",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 185,
+        "end": 193
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "negativeZero",
+      "canonical": "artifact/unary-operators::negativeZero",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 207,
+        "end": 219
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "inverted",
+      "canonical": "artifact/unary-operators::inverted",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 235,
+        "end": 243
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "minimum",
+      "canonical": "artifact/unary-operators::minimum",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 260,
+        "end": 267
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "values",
+      "canonical": "artifact/unary-operators::values",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 305,
+        "end": 311
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "floats",
+      "canonical": "artifact/unary-operators::floats",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 347,
+        "end": 353
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "flags",
+      "canonical": "artifact/unary-operators::flags",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 402,
+        "end": 407
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "tuple",
+      "canonical": "artifact/unary-operators::tuple",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 447,
+        "end": 452
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "record",
+      "canonical": "artifact/unary-operators::record",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 502,
+        "end": 508
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "snapshot",
+      "canonical": "artifact/unary-operators::snapshot",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 553,
+        "end": 561
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "negateInt",
+      "canonical": "artifact/unary-operators::negateInt",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 663,
+        "end": 672
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "negateFloat",
+      "canonical": "artifact/unary-operators::negateFloat",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 707,
+        "end": 718
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "invert",
+      "canonical": "artifact/unary-operators::invert",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 757,
+        "end": 763
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "Float",
+      "canonical": "std/prelude::Float",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "Bool",
+      "canonical": "std/prelude::Bool",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "Array",
+      "canonical": "std/prelude::Array",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 673,
+        "end": 678
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 719,
+        "end": 724
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 764,
+        "end": 769
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 128,
+        "end": 131
+      }
+    },
+    {
+      "spelling": "Float",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 149,
+        "end": 154
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 16,
+      "origin": {
+        "start": 168,
+        "end": 172
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 269,
+        "end": 272
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 17,
+      "origin": {
+        "start": 313,
+        "end": 323
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 319,
+        "end": 322
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 17,
+      "origin": {
+        "start": 355,
+        "end": 367
+      }
+    },
+    {
+      "spelling": "Float",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 361,
+        "end": 366
+      }
+    },
+    {
+      "spelling": "Array",
+      "namespace": "type",
+      "target": 17,
+      "origin": {
+        "start": 409,
+        "end": 420
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 16,
+      "origin": {
+        "start": 415,
+        "end": 419
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 455,
+        "end": 458
+      }
+    },
+    {
+      "spelling": "Float",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 460,
+        "end": 465
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 16,
+      "origin": {
+        "start": 467,
+        "end": 471
+      }
+    },
+    {
+      "spelling": "Snapshot",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 563,
+        "end": 571
+      }
+    },
+    {
+      "spelling": "Snapshot",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 576,
+        "end": 584
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 680,
+        "end": 683
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 687,
+        "end": 690
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 18,
+      "origin": {
+        "start": 694,
+        "end": 699
+      }
+    },
+    {
+      "spelling": "Float",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 726,
+        "end": 731
+      }
+    },
+    {
+      "spelling": "Float",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 735,
+        "end": 740
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 19,
+      "origin": {
+        "start": 744,
+        "end": 749
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 16,
+      "origin": {
+        "start": 771,
+        "end": 775
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 16,
+      "origin": {
+        "start": 779,
+        "end": 783
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 20,
+      "origin": {
+        "start": 787,
+        "end": 792
+      }
+    }
+  ],
+  "issues": []
+}

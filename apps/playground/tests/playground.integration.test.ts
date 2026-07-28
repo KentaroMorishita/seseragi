@@ -339,7 +339,7 @@ describe("Playground sample catalog", () => {
       throw new Error("missing Float execution entry")
     }
     expect(response.generated.typescript).toContain(
-      "[1.0, 2.3, -0.0, 6.022e23]"
+      "[1.0, 2.3, -(0.0), 6.022e23]"
     )
     expect(response.generated.typescript).not.toContain(" = _")
     expect(

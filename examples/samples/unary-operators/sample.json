@@ -1,0 +1,18 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "unary-operators",
+  "title": "単項演算子と値表示",
+  "summary": "unary - / !の型と値をbinding・argument・Debugまで保ちます。",
+  "kind": "recipe",
+  "difficulty": "intermediate",
+  "topics": ["operator", "Int", "Float", "Bool", "Debug"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["strings-and-templates"],
+  "featured": false,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

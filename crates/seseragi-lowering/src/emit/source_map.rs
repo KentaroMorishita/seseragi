@@ -304,6 +304,9 @@ fn collect_expr_names(
             collect_expr_names(left, helper_names, names);
             collect_expr_names(right, helper_names, names);
         }
+        TypeScriptExpr::Unary { operand, .. } => {
+            collect_expr_names(operand, helper_names, names);
+        }
         TypeScriptExpr::Conditional {
             condition,
             then_branch,

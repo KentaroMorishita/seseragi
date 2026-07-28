@@ -13,11 +13,12 @@ use crate::signal_ops::runtime_signal_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::web_html_ops::runtime_web_html_operation;
 use crate::{
-    display_ops::runtime_display_dictionary_for_identity, effect_ops::runtime_effect_operation,
-    int_ops::runtime_int_operation_with_evidence,
-    prelude_ops::runtime_prelude_dictionary_for_identity, CoreCallEvidence,
-    CoreComprehensionClause, CoreExpr, CoreInstanceEvidence, CoreStatement, CoreTemplatePart,
-    CoreType,
+    display_ops::runtime_display_dictionary_for_identity,
+    effect_ops::runtime_effect_operation,
+    int_ops::{runtime_int_operation, runtime_int_operation_with_evidence},
+    prelude_ops::runtime_prelude_dictionary_for_identity,
+    CoreCallEvidence, CoreComprehensionClause, CoreExpr, CoreInstanceEvidence, CoreStatement,
+    CoreTemplatePart, CoreType,
 };
 
 use super::{push_import_unique, push_unique, TypeScriptImport};
@@ -238,6 +239,20 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             }
             collect_expr_runtime_requirements(left, requirements);
             collect_expr_runtime_requirements(right, requirements);
+        }
+        CoreExpr::Unary {
+            operator,
+            operand,
+            type_ref,
+            ..
+        } => {
+            collect_type_runtime_requirement(type_ref, requirements);
+            if operator == "-" && is_int_type(type_ref) {
+                let operation =
+                    runtime_int_operation("-").expect("Int subtraction runtime is registered");
+                push_unique(requirements, operation.runtime_feature);
+            }
+            collect_expr_runtime_requirements(operand, requirements);
         }
         CoreExpr::If {
             condition,
@@ -691,6 +706,25 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             }
             collect_expr_runtime_imports(left, imports);
             collect_expr_runtime_imports(right, imports);
+        }
+        CoreExpr::Unary {
+            operator,
+            operand,
+            type_ref,
+            ..
+        } => {
+            if operator == "-" && is_int_type(type_ref) {
+                let operation =
+                    runtime_int_operation("-").expect("Int subtraction runtime is registered");
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            }
+            collect_expr_runtime_imports(operand, imports);
         }
         CoreExpr::If {
             condition,

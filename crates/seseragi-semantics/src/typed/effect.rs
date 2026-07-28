@@ -115,7 +115,10 @@ fn collect_effect_contract(
             }
         }
         TypedExpr::FieldAccess { receiver, .. }
-        | TypedExpr::OptionalFieldAccess { receiver, .. } => {
+        | TypedExpr::OptionalFieldAccess { receiver, .. }
+        | TypedExpr::Unary {
+            operand: receiver, ..
+        } => {
             collect_effect_contract(receiver, requirements, failure);
         }
         TypedExpr::Lambda { body, .. } => {

@@ -83,8 +83,21 @@
             }
           },
           {
-            "kind": "float",
-            "value": "-0.0",
+            "kind": "unary",
+            "operator": "-",
+            "operand": {
+              "kind": "float",
+              "value": "0.0",
+              "type": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "origin": {
+                "start": 180,
+                "end": 183
+              }
+            },
             "type": {
               "kind": "named",
               "name": "Float",
@@ -299,8 +312,21 @@
             "kind": "field",
             "name": "reading",
             "value": {
-              "kind": "float",
-              "value": "-0.0",
+              "kind": "unary",
+              "operator": "-",
+              "operand": {
+                "kind": "float",
+                "value": "0.0",
+                "type": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 336,
+                  "end": 339
+                }
+              },
               "type": {
                 "kind": "named",
                 "name": "Float",

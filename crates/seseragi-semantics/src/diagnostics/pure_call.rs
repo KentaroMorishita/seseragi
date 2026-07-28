@@ -54,6 +54,25 @@ pub(super) fn call_diagnostic(
                 type_label(&actual)
             ),
         ),
+        PureCallIssue::UnaryOperandType {
+            operand,
+            operator,
+            expected,
+            actual,
+        } => (
+            "SES-T0101",
+            "unary.operand-type-mismatch",
+            operand,
+            format!(
+                "unary `{operator}` expects {}, received {}",
+                expected
+                    .iter()
+                    .map(type_label)
+                    .collect::<Vec<_>>()
+                    .join(" or "),
+                type_label(&actual)
+            ),
+        ),
         PureCallIssue::MissingInstance { callee, constraint } => (
             "SES-T0201",
             "instance.missing",
@@ -236,6 +255,33 @@ mod tests {
         assert_eq!(artifact.diagnostics.len(), 1);
         assert_eq!(artifact.diagnostics[0].code, "SES-T0101");
         assert_eq!(artifact.diagnostics[0].message_key, "expression.invalid");
+    }
+
+    #[test]
+    fn reports_concrete_unary_operand_type_mismatches() {
+        let negative_bool = semantic_diagnostics("negative-bool.ssrg", "pub let broken = -True\n");
+        assert_eq!(negative_bool.diagnostics.len(), 1);
+        assert_eq!(negative_bool.diagnostics[0].code, "SES-T0101");
+        assert_eq!(
+            negative_bool.diagnostics[0].message_key,
+            "unary.operand-type-mismatch"
+        );
+        assert_eq!(
+            negative_bool.diagnostics[0].related[0].message,
+            "unary `-` expects Int or Float, received Bool"
+        );
+
+        let not_int = semantic_diagnostics("not-int.ssrg", "pub let broken = !1\n");
+        assert_eq!(not_int.diagnostics.len(), 1);
+        assert_eq!(not_int.diagnostics[0].code, "SES-T0101");
+        assert_eq!(
+            not_int.diagnostics[0].message_key,
+            "unary.operand-type-mismatch"
+        );
+        assert_eq!(
+            not_int.diagnostics[0].related[0].message,
+            "unary `!` expects Bool, received Int"
+        );
     }
 
     #[test]

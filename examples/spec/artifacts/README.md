@@ -106,6 +106,12 @@ SurfaceAstからTypedHir、CoreIr、TypeScriptIrへ値を失わず運びます�
 nominal fieldへnestedに置いたFloatをTypeScript `number`として生成し、同名execution fixtureで
 `Show<Float>`、`Debug<Float>`、composite Debugのactual outputと`-0.0`の符号保持を固定します。
 
+`schema-1/unary-operators/`はunary `-` / `!`を専用のTypedHir・CoreIr・TypeScriptIr nodeとして
+literal、注釈なしbinding、関数argument、Array、tuple、record、nominal fieldへ運びます。Int negationは
+checked subtract runtime、Float / BoolはTypeScript unary expressionへlowerし、`-0.0`の符号を保持します。
+`semantic-diagnostics-schema-1/unary-operand-mismatch/`は`-True`と`!1`を具体的なoperand type diagnosticで
+backend前に停止し、`unary-operators` sampleはCLIとPlaygroundの同じWASM driverからlet経由・直接argumentを実行します。
+
 `schema-1/derived-show-debug-nominal/`はADT、Struct、Newtypeの`deriving Show, Debug`を
 通常のinstanceとしてTypedHir、CoreIr、TypeScriptIr、生成dictionary factoryへ運びます。field / payloadの
 Array、Range、tuple、closed record、注釈なし算術結果、Float literalから必要なgeneric constraintを生成し、

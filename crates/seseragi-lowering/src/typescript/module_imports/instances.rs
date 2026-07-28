@@ -165,6 +165,7 @@ fn collect_expr(expr: &CoreExpr, imported: &mut BTreeSet<(String, String)>) {
             collect_expr(left, imported);
             collect_expr(right, imported);
         }
+        CoreExpr::Unary { operand, .. } => collect_expr(operand, imported),
         CoreExpr::If {
             condition,
             then_branch,

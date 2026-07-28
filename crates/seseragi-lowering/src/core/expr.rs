@@ -304,6 +304,17 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             type_ref: lower_typed_type(type_ref),
             origin: source_span(source, origin),
         },
+        TypedExpr::Unary {
+            operator,
+            operand,
+            type_ref,
+            origin,
+        } => CoreExpr::Unary {
+            operator,
+            operand: Box::new(lower_expr(source, *operand)),
+            type_ref: lower_typed_type(type_ref),
+            origin: source_span(source, origin),
+        },
         TypedExpr::If {
             condition,
             then_branch,

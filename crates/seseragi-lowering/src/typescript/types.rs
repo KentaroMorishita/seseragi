@@ -27,6 +27,7 @@ pub(super) fn type_ref_from_core_expr(
         | CoreExpr::ArrayComprehension { type_ref, .. }
         | CoreExpr::ListComprehension { type_ref, .. }
         | CoreExpr::Binary { type_ref, .. }
+        | CoreExpr::Unary { type_ref, .. }
         | CoreExpr::If { type_ref, .. }
         | CoreExpr::Decision { type_ref, .. }
         | CoreExpr::MonadDo { type_ref, .. } => type_ref_from_core_type(type_ref, imported_types),

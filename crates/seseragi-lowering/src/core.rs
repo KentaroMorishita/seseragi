@@ -404,6 +404,13 @@ pub enum CoreExpr {
         type_ref: CoreType,
         origin: SourceSpan,
     },
+    Unary {
+        operator: String,
+        operand: Box<CoreExpr>,
+        #[serde(rename = "type")]
+        type_ref: CoreType,
+        origin: SourceSpan,
+    },
     If {
         condition: Box<CoreExpr>,
         then_branch: Box<CoreExpr>,

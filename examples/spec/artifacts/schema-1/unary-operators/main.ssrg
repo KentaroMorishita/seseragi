@@ -1,0 +1,27 @@
+// unary - / !の型と値をliteral・binding・argument・nested valueで固定します。
+pub struct Snapshot {
+  negative: Int,
+  negativeZero: Float,
+  inverted: Bool,
+}
+
+pub let negative = -2
+pub let negativeZero = -0.0
+pub let inverted = !True
+pub let minimum: Int = -9223372036854775808
+
+pub let values: Array<Int> = [-1, -2, -3]
+pub let floats: Array<Float> = [-1.0, -0.0, -6.022e23]
+pub let flags: Array<Bool> = [!True, !False]
+pub let tuple: (Int, Float, Bool) = (-4, -2.5, !False)
+pub let record = { negative: -5, inverted: !True }
+pub let snapshot: Snapshot =
+  Snapshot {
+    negative: -6,
+    negativeZero: -0.0,
+    inverted: !False,
+  }
+
+pub fn negateInt value: Int -> Int = -value
+pub fn negateFloat value: Float -> Float = -value
+pub fn invert value: Bool -> Bool = !value

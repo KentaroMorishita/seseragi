@@ -7,7 +7,7 @@ use crate::collection_ops::{
 };
 use crate::effect_ops::runtime_effect_operation;
 use crate::equality_ops::strict_equality_operator_with_evidence;
-use crate::int_ops::runtime_int_operation_with_evidence;
+use crate::int_ops::{runtime_int_operation, runtime_int_operation_with_evidence};
 use crate::iterator_ops::runtime_iterator_operation;
 use crate::list_ops::runtime_list_literal_operation;
 use crate::range_ops::runtime_range_operation;
@@ -496,6 +496,32 @@ pub(super) fn lower_core_expr_to_typescript(
             imported_values,
             imported_types,
         ),
+        CoreExpr::Unary {
+            operator,
+            operand,
+            type_ref,
+            ..
+        } => {
+            let operand = lower_core_expr_to_typescript(*operand, imported_values, imported_types);
+            if operator == "-" && is_int_type(&type_ref) {
+                let operation =
+                    runtime_int_operation("-").expect("Int subtraction runtime is registered");
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments: vec![
+                        TypeScriptExpr::Bigint {
+                            value: "0".to_owned(),
+                        },
+                        operand,
+                    ],
+                }
+            } else {
+                TypeScriptExpr::Unary {
+                    operator,
+                    operand: Box::new(operand),
+                }
+            }
+        }
         CoreExpr::If {
             condition,
             then_branch,
@@ -683,6 +709,7 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
         TypeScriptExpr::Binary { left, right, .. } => {
             typescript_expr_contains_await(left) || typescript_expr_contains_await(right)
         }
+        TypeScriptExpr::Unary { operand, .. } => typescript_expr_contains_await(operand),
         TypeScriptExpr::Conditional {
             condition,
             then_branch,

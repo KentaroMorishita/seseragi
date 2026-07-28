@@ -381,6 +381,10 @@ pub enum TypeScriptExpr {
         left: Box<TypeScriptExpr>,
         right: Box<TypeScriptExpr>,
     },
+    Unary {
+        operator: String,
+        operand: Box<TypeScriptExpr>,
+    },
     Conditional {
         condition: Box<TypeScriptExpr>,
         then_branch: Box<TypeScriptExpr>,

@@ -1565,8 +1565,94 @@ mod tests {
             [
                 TypedExpr::Float { value: first, .. },
                 TypedExpr::Float { value: exponent, .. },
-                TypedExpr::Float { value: negative_zero, .. }
-            ] if first == "1.0" && exponent == "6.022e23" && negative_zero == "-0.0"
+                TypedExpr::Unary {
+                    operator,
+                    operand,
+                    type_ref: TypedType::Named { name, arguments },
+                    ..
+                }
+            ] if first == "1.0"
+                && exponent == "6.022e23"
+                && operator == "-"
+                && matches!(operand.as_ref(), TypedExpr::Float { value, .. } if value == "0.0")
+                && name == "Float"
+                && arguments.is_empty()
+        ));
+    }
+
+    #[test]
+    fn types_unannotated_and_direct_unary_expressions_without_recovery_holes() {
+        let typed = type_module(
+            "artifact/unary-expressions/main.ssrg",
+            "pub let negative = -2\npub let negativeZero = -0.0\npub let inverted = !True\n",
+        );
+
+        let [TypedDecl::Let {
+            scheme: negative_scheme,
+            value: negative,
+            ..
+        }, TypedDecl::Let {
+            scheme: negative_zero_scheme,
+            value: negative_zero,
+            ..
+        }, TypedDecl::Let {
+            scheme: inverted_scheme,
+            value: inverted,
+            ..
+        }] = typed.declarations.as_slice()
+        else {
+            panic!("expected three typed unary bindings");
+        };
+
+        assert_eq!(negative_scheme.type_ref, int_type());
+        assert!(matches!(
+            negative,
+            TypedExpr::Unary {
+                operator,
+                operand,
+                type_ref,
+                ..
+            } if operator == "-"
+                && type_ref == &int_type()
+                && matches!(operand.as_ref(), TypedExpr::Integer { value, .. } if value == "2")
+        ));
+        assert_eq!(
+            negative_zero_scheme.type_ref,
+            TypedType::Named {
+                name: "Float".to_owned(),
+                arguments: Vec::new(),
+            }
+        );
+        assert!(matches!(
+            negative_zero,
+            TypedExpr::Unary {
+                operator,
+                operand,
+                type_ref: TypedType::Named { name, arguments },
+                ..
+            } if operator == "-"
+                && name == "Float"
+                && arguments.is_empty()
+                && matches!(operand.as_ref(), TypedExpr::Float { value, .. } if value == "0.0")
+        ));
+        assert_eq!(
+            inverted_scheme.type_ref,
+            TypedType::Named {
+                name: "Bool".to_owned(),
+                arguments: Vec::new(),
+            }
+        );
+        assert!(matches!(
+            inverted,
+            TypedExpr::Unary {
+                operator,
+                operand,
+                type_ref: TypedType::Named { name, arguments },
+                ..
+            } if operator == "!"
+                && name == "Bool"
+                && arguments.is_empty()
+                && matches!(operand.as_ref(), TypedExpr::Boolean { value: true, .. })
         ));
     }
 

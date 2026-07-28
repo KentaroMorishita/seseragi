@@ -15,6 +15,7 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open_token: &Token) -> Op
         });
     }
 
+    let section_start = parser.cursor;
     if let Some(operator) = parser.infix_operator_occurrence() {
         parser.cursor = operator.next;
         parser.skip_trivia();
@@ -45,7 +46,7 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open_token: &Token) -> Op
                 },
             });
         }
-        return None;
+        parser.cursor = section_start;
     }
 
     let first = parser.parse_expr_bp(

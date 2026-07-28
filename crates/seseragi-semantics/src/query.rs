@@ -1534,6 +1534,7 @@ fn walk_expression(expression: &TypedExpr, visit: &mut impl FnMut(&TypedExpr)) {
             walk_expression(left, visit);
             walk_expression(right, visit);
         }
+        TypedExpr::Unary { operand, .. } => walk_expression(operand, visit),
         TypedExpr::If {
             condition,
             then_branch,
@@ -1676,6 +1677,7 @@ fn expression_origin(expression: &TypedExpr) -> ByteSpan {
         | TypedExpr::ArrayComprehension { origin, .. }
         | TypedExpr::ListComprehension { origin, .. }
         | TypedExpr::Binary { origin, .. }
+        | TypedExpr::Unary { origin, .. }
         | TypedExpr::If { origin, .. }
         | TypedExpr::Match { origin, .. }
         | TypedExpr::EffectCall { origin, .. }
@@ -1706,6 +1708,7 @@ fn expression_type(expression: &TypedExpr) -> Option<TypedType> {
         | TypedExpr::ArrayComprehension { type_ref, .. }
         | TypedExpr::ListComprehension { type_ref, .. }
         | TypedExpr::Binary { type_ref, .. }
+        | TypedExpr::Unary { type_ref, .. }
         | TypedExpr::If { type_ref, .. }
         | TypedExpr::Match { type_ref, .. }
         | TypedExpr::Block { type_ref, .. }

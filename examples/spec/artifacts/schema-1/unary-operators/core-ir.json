@@ -1,0 +1,943 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/unary-operators",
+  "structs": [
+    {
+      "symbol": "artifact/unary-operators::Snapshot",
+      "name": "Snapshot",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "negative",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 118,
+            "end": 126
+          }
+        },
+        {
+          "name": "negativeZero",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 135,
+            "end": 147
+          }
+        },
+        {
+          "name": "inverted",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 158,
+            "end": 166
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 94,
+        "end": 175
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "symbol": "artifact/unary-operators::negative",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 177,
+        "end": 198
+      },
+      "value": {
+        "kind": "unary",
+        "operator": "-",
+        "operand": {
+          "kind": "int64",
+          "value": "2",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 197,
+            "end": 198
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 196,
+          "end": 198
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::negativeZero",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 199,
+        "end": 226
+      },
+      "value": {
+        "kind": "unary",
+        "operator": "-",
+        "operand": {
+          "kind": "float64",
+          "value": "0.0",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 223,
+            "end": 226
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 222,
+          "end": 226
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::inverted",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 227,
+        "end": 251
+      },
+      "value": {
+        "kind": "unary",
+        "operator": "!",
+        "operand": {
+          "kind": "boolean",
+          "value": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 247,
+            "end": 251
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 246,
+          "end": 251
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::minimum",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 252,
+        "end": 295
+      },
+      "value": {
+        "kind": "unary",
+        "operator": "-",
+        "operand": {
+          "kind": "int64",
+          "value": "9223372036854775808",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 276,
+            "end": 295
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 275,
+          "end": 295
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::values",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 297,
+        "end": 338
+      },
+      "value": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "unary",
+            "operator": "-",
+            "operand": {
+              "kind": "int64",
+              "value": "1",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 328,
+                "end": 329
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 327,
+              "end": 329
+            }
+          },
+          {
+            "kind": "unary",
+            "operator": "-",
+            "operand": {
+              "kind": "int64",
+              "value": "2",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 332,
+                "end": 333
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 331,
+              "end": 333
+            }
+          },
+          {
+            "kind": "unary",
+            "operator": "-",
+            "operand": {
+              "kind": "int64",
+              "value": "3",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 336,
+                "end": 337
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 335,
+              "end": 337
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 326,
+          "end": 338
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::floats",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 339,
+        "end": 393
+      },
+      "value": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "unary",
+            "operator": "-",
+            "operand": {
+              "kind": "float64",
+              "value": "1.0",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 372,
+                "end": 375
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 371,
+              "end": 375
+            }
+          },
+          {
+            "kind": "unary",
+            "operator": "-",
+            "operand": {
+              "kind": "float64",
+              "value": "0.0",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 378,
+                "end": 381
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 377,
+              "end": 381
+            }
+          },
+          {
+            "kind": "unary",
+            "operator": "-",
+            "operand": {
+              "kind": "float64",
+              "value": "6.022e23",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 384,
+                "end": 392
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 383,
+              "end": 392
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 370,
+          "end": 393
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::flags",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 394,
+        "end": 438
+      },
+      "value": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "unary",
+            "operator": "!",
+            "operand": {
+              "kind": "boolean",
+              "value": true,
+              "origin": {
+                "source": "main.ssrg",
+                "start": 425,
+                "end": 429
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 424,
+              "end": 429
+            }
+          },
+          {
+            "kind": "unary",
+            "operator": "!",
+            "operand": {
+              "kind": "boolean",
+              "value": false,
+              "origin": {
+                "source": "main.ssrg",
+                "start": 432,
+                "end": 437
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 431,
+              "end": 437
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 423,
+          "end": 438
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::tuple",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 439,
+        "end": 493
+      },
+      "value": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "unary",
+            "operator": "-",
+            "operand": {
+              "kind": "int64",
+              "value": "4",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 477,
+                "end": 478
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 476,
+              "end": 478
+            }
+          },
+          {
+            "kind": "unary",
+            "operator": "-",
+            "operand": {
+              "kind": "float64",
+              "value": "2.5",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 481,
+                "end": 484
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 480,
+              "end": 484
+            }
+          },
+          {
+            "kind": "unary",
+            "operator": "!",
+            "operand": {
+              "kind": "boolean",
+              "value": false,
+              "origin": {
+                "source": "main.ssrg",
+                "start": 487,
+                "end": 492
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 486,
+              "end": 492
+            }
+          }
+        ],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 475,
+          "end": 493
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::record",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 494,
+        "end": 544
+      },
+      "value": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "negative",
+            "value": {
+              "kind": "unary",
+              "operator": "-",
+              "operand": {
+                "kind": "int64",
+                "value": "5",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 524,
+                  "end": 525
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 523,
+                "end": 525
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 513,
+              "end": 525
+            }
+          },
+          {
+            "kind": "field",
+            "name": "inverted",
+            "value": {
+              "kind": "unary",
+              "operator": "!",
+              "operand": {
+                "kind": "boolean",
+                "value": true,
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 538,
+                  "end": 542
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 537,
+                "end": 542
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 527,
+              "end": 542
+            }
+          }
+        ],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "inverted",
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            {
+              "name": "negative",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 511,
+          "end": 544
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::snapshot",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 545,
+        "end": 654
+      },
+      "value": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "negative",
+            "value": {
+              "kind": "unary",
+              "operator": "-",
+              "operand": {
+                "kind": "int64",
+                "value": "6",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 602,
+                  "end": 603
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 601,
+                "end": 603
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 591,
+              "end": 603
+            }
+          },
+          {
+            "kind": "field",
+            "name": "negativeZero",
+            "value": {
+              "kind": "unary",
+              "operator": "-",
+              "operand": {
+                "kind": "float64",
+                "value": "0.0",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 624,
+                  "end": 627
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 623,
+                "end": 627
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 609,
+              "end": 627
+            }
+          },
+          {
+            "kind": "field",
+            "name": "inverted",
+            "value": {
+              "kind": "unary",
+              "operator": "!",
+              "operand": {
+                "kind": "boolean",
+                "value": false,
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 644,
+                  "end": 649
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 643,
+                "end": 649
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 633,
+              "end": 649
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Snapshot",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 576,
+          "end": 654
+        }
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/unary-operators::negateInt",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 656,
+        "end": 699
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "unary",
+        "operator": "-",
+        "operand": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 694,
+            "end": 699
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 693,
+          "end": 699
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::negateFloat",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 700,
+        "end": 749
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "unary",
+        "operator": "-",
+        "operand": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 744,
+            "end": 749
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 743,
+          "end": 749
+        }
+      }
+    },
+    {
+      "symbol": "artifact/unary-operators::invert",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 750,
+        "end": 792
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "unary",
+        "operator": "!",
+        "operand": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 787,
+            "end": 792
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 786,
+          "end": 792
+        }
+      }
+    }
+  ]
+}

@@ -527,6 +527,13 @@ pub enum TypedExpr {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    Unary {
+        operator: String,
+        operand: Box<TypedExpr>,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     If {
         condition: Box<TypedExpr>,
         then_branch: Box<TypedExpr>,

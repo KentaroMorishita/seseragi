@@ -518,7 +518,19 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
         }),
         SurfaceExpr::EffectfulFor { .. } => None,
         SurfaceExpr::Grouped { value, .. } => surface_expression_type_hint(value),
-        SurfaceExpr::Prefix { .. } | SurfaceExpr::Assignment { .. } => None,
+        SurfaceExpr::Prefix {
+            operator, operand, ..
+        } => {
+            let operand = surface_expression_type_hint(operand)?;
+            match operator.as_str() {
+                "-" if named_type_is(&operand, "Int") || named_type_is(&operand, "Float") => {
+                    Some(operand)
+                }
+                "!" if named_type_is(&operand, "Bool") => Some(named_type("Bool")),
+                _ => None,
+            }
+        }
+        SurfaceExpr::Assignment { .. } => None,
         SurfaceExpr::Lambda {
             parameter, body, ..
         } => Some(TypedType::Function {
@@ -627,7 +639,9 @@ pub(super) fn type_surface_expression(
             operand,
             span,
             ..
-        } if operator == "-" => type_numeric_negation(operand, *span),
+        } if matches!(operator.as_str(), "-" | "!") => {
+            type_unary(operator, operand, *span, context)
+        }
         SurfaceExpr::Prefix { span, .. } => SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
                 name: String::new(),
@@ -782,6 +796,7 @@ fn recovery_hole_origin(expression: &TypedExpr) -> Option<ByteSpan> {
         TypedExpr::Binary { left, right, .. } => {
             recovery_hole_origin(left).or_else(|| recovery_hole_origin(right))
         }
+        TypedExpr::Unary { operand, .. } => recovery_hole_origin(operand),
         TypedExpr::If {
             condition,
             then_branch,
@@ -829,28 +844,56 @@ fn recovery_hole_origin(expression: &TypedExpr) -> Option<ByteSpan> {
     }
 }
 
-fn type_numeric_negation(operand: &SurfaceExpr, span: ByteSpan) -> SurfaceExpressionAnalysis {
-    match operand {
-        SurfaceExpr::Integer { raw, .. } => SurfaceExpressionAnalysis::valid(TypedExpr::Integer {
-            value: format!("-{}", raw.replace('_', "")),
-            type_ref: named_type("Int"),
-            origin: span,
-        }),
-        SurfaceExpr::Float { raw, .. } => SurfaceExpressionAnalysis::valid(TypedExpr::Float {
-            value: format!("-{}", raw.replace('_', "")),
-            type_ref: named_type("Float"),
-            origin: span,
-        }),
-        _ => SurfaceExpressionAnalysis::valid_with_semantic_type(
-            TypedExpr::Variable {
-                name: String::new(),
-                evidence: Vec::new(),
-                type_ref: TypedType::Hole,
-                origin: span,
-            },
-            SemanticTypeKey::Invalid,
-        ),
+fn type_unary(
+    operator: &str,
+    operand: &SurfaceExpr,
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    let allowed = match operator {
+        "-" => vec![named_type("Int"), named_type("Float")],
+        "!" => vec![named_type("Bool")],
+        _ => unreachable!("unsupported unary operator reached typed unary analysis"),
+    };
+    let expected_operand = match operator {
+        "-" => context
+            .expected()
+            .filter(|expected| {
+                named_type_is(&expected.type_ref, "Int")
+                    || named_type_is(&expected.type_ref, "Float")
+            })
+            .cloned(),
+        "!" => Some(context.semantic_value_from_typed_type(&named_type("Bool"))),
+        _ => None,
+    };
+    let operand_analysis =
+        type_surface_expression(operand, &context.with_expected(expected_operand));
+    let operand_type = super::type_ref::inferred_type_from_expr(&operand_analysis.value);
+    let result_type = allowed
+        .iter()
+        .find(|candidate| **candidate == operand_type)
+        .cloned()
+        .unwrap_or(TypedType::Hole);
+    let issue = (result_type == TypedType::Hole && operand_type != TypedType::Hole).then(|| {
+        PureCallIssue::UnaryOperandType {
+            operand: operand.span(),
+            operator: operator.to_owned(),
+            expected: allowed,
+            actual: operand_type,
+        }
+    });
+    let mut result = SurfaceExpressionAnalysis::valid(TypedExpr::Unary {
+        operator: operator.to_owned(),
+        operand: Box::new(operand_analysis.value.clone()),
+        type_ref: result_type,
+        origin: span,
+    });
+    result.merge_issues_from(operand_analysis);
+    result.pure_call_issue = result.pure_call_issue.or(issue);
+    if result.pure_call_issue.is_some() {
+        result.semantic_type = SemanticTypeKey::Invalid;
     }
+    result
 }
 
 fn type_template(

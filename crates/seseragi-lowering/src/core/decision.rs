@@ -303,6 +303,7 @@ fn typed_expr_type(expression: &TypedExpr) -> TypedType {
         | TypedExpr::ArrayComprehension { type_ref, .. }
         | TypedExpr::ListComprehension { type_ref, .. }
         | TypedExpr::Binary { type_ref, .. }
+        | TypedExpr::Unary { type_ref, .. }
         | TypedExpr::If { type_ref, .. }
         | TypedExpr::Match { type_ref, .. }
         | TypedExpr::Block { type_ref, .. }

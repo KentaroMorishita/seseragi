@@ -1,0 +1,13 @@
+let negative = -2
+let negativeZero = -0.0
+let inverted = !True
+
+pub effect fn main =
+  do {
+    println (debug negative)
+    println (debug negativeZero)
+    println (debug inverted)
+    println (debug (-2))
+    println (debug (-0.0))
+    println (debug (!True))
+  }

@@ -78,6 +78,7 @@ fn collect_expr_value_symbols(expr: &CoreExpr, values: &mut BTreeSet<String>) {
             collect_expr_value_symbols(left, values);
             collect_expr_value_symbols(right, values);
         }
+        CoreExpr::Unary { operand, .. } => collect_expr_value_symbols(operand, values),
         CoreExpr::If {
             condition,
             then_branch,
@@ -304,6 +305,12 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
             collect_type_names(type_ref, references);
             collect_expr_type_names(left, references);
             collect_expr_type_names(right, references);
+        }
+        CoreExpr::Unary {
+            operand, type_ref, ..
+        } => {
+            collect_type_names(type_ref, references);
+            collect_expr_type_names(operand, references);
         }
         CoreExpr::If {
             condition,

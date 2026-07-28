@@ -132,6 +132,7 @@ fn collect_local_expr_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
             collect_local_expr_names(left, names);
             collect_local_expr_names(right, names);
         }
+        CoreExpr::Unary { operand, .. } => collect_local_expr_names(operand, names),
         CoreExpr::If {
             condition,
             then_branch,

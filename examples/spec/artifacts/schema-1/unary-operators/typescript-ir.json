@@ -1,0 +1,579 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/unary-operators",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.subtract",
+    "core.float64",
+    "core.bool"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.subtract",
+      "local": "_ssrg_int64_subtract"
+    }
+  ],
+  "structs": [
+    {
+      "exported": true,
+      "name": "Snapshot",
+      "brand": "__ssrg$brand$Snapshot",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "negative",
+          "optional": false,
+          "type": {
+            "kind": "bigint"
+          }
+        },
+        {
+          "name": "negativeZero",
+          "optional": false,
+          "type": {
+            "kind": "number"
+          }
+        },
+        {
+          "name": "inverted",
+          "optional": false,
+          "type": {
+            "kind": "boolean"
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 94,
+        "end": 175
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "negative",
+      "type": {
+        "kind": "bigint"
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_subtract",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "0"
+          },
+          {
+            "kind": "bigint",
+            "value": "2"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 177,
+        "end": 198
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "negativeZero",
+      "type": {
+        "kind": "number"
+      },
+      "initializer": {
+        "kind": "unary",
+        "operator": "-",
+        "operand": {
+          "kind": "number",
+          "value": "0.0"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 199,
+        "end": 226
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "inverted",
+      "type": {
+        "kind": "boolean"
+      },
+      "initializer": {
+        "kind": "unary",
+        "operator": "!",
+        "operand": {
+          "kind": "boolean",
+          "value": true
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 227,
+        "end": 251
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "minimum",
+      "type": {
+        "kind": "bigint"
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_subtract",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "0"
+          },
+          {
+            "kind": "bigint",
+            "value": "9223372036854775808"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 252,
+        "end": 295
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "values",
+      "type": {
+        "kind": "array",
+        "element": {
+          "kind": "bigint"
+        }
+      },
+      "initializer": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int64_subtract",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "0"
+              },
+              {
+                "kind": "bigint",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int64_subtract",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "0"
+              },
+              {
+                "kind": "bigint",
+                "value": "2"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int64_subtract",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "0"
+              },
+              {
+                "kind": "bigint",
+                "value": "3"
+              }
+            ]
+          }
+        ],
+        "elementType": {
+          "kind": "bigint"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 297,
+        "end": 338
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "floats",
+      "type": {
+        "kind": "array",
+        "element": {
+          "kind": "number"
+        }
+      },
+      "initializer": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "unary",
+            "operator": "-",
+            "operand": {
+              "kind": "number",
+              "value": "1.0"
+            }
+          },
+          {
+            "kind": "unary",
+            "operator": "-",
+            "operand": {
+              "kind": "number",
+              "value": "0.0"
+            }
+          },
+          {
+            "kind": "unary",
+            "operator": "-",
+            "operand": {
+              "kind": "number",
+              "value": "6.022e23"
+            }
+          }
+        ],
+        "elementType": {
+          "kind": "number"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 339,
+        "end": 393
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "flags",
+      "type": {
+        "kind": "array",
+        "element": {
+          "kind": "boolean"
+        }
+      },
+      "initializer": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "unary",
+            "operator": "!",
+            "operand": {
+              "kind": "boolean",
+              "value": true
+            }
+          },
+          {
+            "kind": "unary",
+            "operator": "!",
+            "operand": {
+              "kind": "boolean",
+              "value": false
+            }
+          }
+        ],
+        "elementType": {
+          "kind": "boolean"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 394,
+        "end": 438
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "tuple",
+      "type": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "bigint"
+          },
+          {
+            "kind": "number"
+          },
+          {
+            "kind": "boolean"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int64_subtract",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "0"
+              },
+              {
+                "kind": "bigint",
+                "value": "4"
+              }
+            ]
+          },
+          {
+            "kind": "unary",
+            "operator": "-",
+            "operand": {
+              "kind": "number",
+              "value": "2.5"
+            }
+          },
+          {
+            "kind": "unary",
+            "operator": "!",
+            "operand": {
+              "kind": "boolean",
+              "value": false
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 439,
+        "end": 493
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "record",
+      "type": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "inverted",
+            "optional": false,
+            "type": {
+              "kind": "boolean"
+            }
+          },
+          {
+            "name": "negative",
+            "optional": false,
+            "type": {
+              "kind": "bigint"
+            }
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "negative",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_subtract",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "0"
+                },
+                {
+                  "kind": "bigint",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "field",
+            "name": "inverted",
+            "value": {
+              "kind": "unary",
+              "operator": "!",
+              "operand": {
+                "kind": "boolean",
+                "value": true
+              }
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 494,
+        "end": 544
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "snapshot",
+      "type": {
+        "kind": "reference",
+        "name": "Snapshot",
+        "arguments": []
+      },
+      "initializer": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "negative",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_subtract",
+              "arguments": [
+                {
+                  "kind": "bigint",
+                  "value": "0"
+                },
+                {
+                  "kind": "bigint",
+                  "value": "6"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "field",
+            "name": "negativeZero",
+            "value": {
+              "kind": "unary",
+              "operator": "-",
+              "operand": {
+                "kind": "number",
+                "value": "0.0"
+              }
+            }
+          },
+          {
+            "kind": "field",
+            "name": "inverted",
+            "value": {
+              "kind": "unary",
+              "operator": "!",
+              "operand": {
+                "kind": "boolean",
+                "value": false
+              }
+            }
+          }
+        ],
+        "assertedType": {
+          "kind": "reference",
+          "name": "Snapshot",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 545,
+        "end": 654
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "negateInt",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_subtract",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "0"
+          },
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 656,
+        "end": 699
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "negateFloat",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "number",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "unary",
+        "operator": "-",
+        "operand": {
+          "kind": "identifier",
+          "name": "value"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 700,
+        "end": 749
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "invert",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "boolean",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "unary",
+        "operator": "!",
+        "operand": {
+          "kind": "identifier",
+          "name": "value"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 750,
+        "end": 792
+      }
+    }
+  ]
+}

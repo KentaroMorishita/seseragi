@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "unary.operand-type-mismatch",
+      "message": "Unary operand type mismatch",
+      "primary": {
+        "start": 24,
+        "end": 28
+      },
+      "related": [
+        {
+          "message": "unary `-` expects Int or Float, received Bool",
+          "primary": {
+            "start": 0,
+            "end": 28
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "unary `-` expects Int or Float, received Bool",
+          "primary": {
+            "start": 0,
+            "end": 28
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "unary.operand-type-mismatch",
+      "message": "Unary operand type mismatch",
+      "primary": {
+        "start": 52,
+        "end": 53
+      },
+      "related": [
+        {
+          "message": "unary `!` expects Bool, received Int",
+          "primary": {
+            "start": 29,
+            "end": 53
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "unary `!` expects Bool, received Int",
+          "primary": {
+            "start": 29,
+            "end": 53
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/unary-operators"
+  ],
+  "sourcesContent": [
+    "// unary - / !の型と値をliteral・binding・argument・nested valueで固定します。\npub struct Snapshot {\n  negative: Int,\n  negativeZero: Float,\n  inverted: Bool,\n}\n\npub let negative = -2\npub let negativeZero = -0.0\npub let inverted = !True\npub let minimum: Int = -9223372036854775808\n\npub let values: Array<Int> = [-1, -2, -3]\npub let floats: Array<Float> = [-1.0, -0.0, -6.022e23]\npub let flags: Array<Bool> = [!True, !False]\npub let tuple: (Int, Float, Bool) = (-4, -2.5, !False)\npub let record = { negative: -5, inverted: !True }\npub let snapshot: Snapshot =\n  Snapshot {\n    negative: -6,\n    negativeZero: -0.0,\n    inverted: !False,\n  }\n\npub fn negateInt value: Int -> Int = -value\npub fn negateFloat value: Float -> Float = -value\npub fn invert value: Bool -> Bool = !value\n"
+  ],
+  "names": [
+    "Snapshot",
+    "negative",
+    "subtract",
+    "negativeZero",
+    "inverted",
+    "minimum",
+    "subtract",
+    "values",
+    "subtract",
+    "subtract",
+    "subtract",
+    "floats",
+    "flags",
+    "tuple",
+    "subtract",
+    "record",
+    "subtract",
+    "snapshot",
+    "subtract",
+    "negateInt",
+    "subtract",
+    "negateFloat",
+    "invert"
+  ],
+  "mappings": ";;;AACAA;;;;;;AAMAC;AACAE;AACAC;AACAC;AAEAE;AACAI;AACAC;AACAC;AACAE;AACAE;AAOAE;AACAE;AACAC"
+}

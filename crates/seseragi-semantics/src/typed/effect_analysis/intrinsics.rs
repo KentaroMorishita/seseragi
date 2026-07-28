@@ -91,6 +91,9 @@ fn collect_intrinsic_issues(
             collect_intrinsic_issues(left, resolution, issues);
             collect_intrinsic_issues(right, resolution, issues);
         }
+        TypedExpr::Unary { operand, .. } => {
+            collect_intrinsic_issues(operand, resolution, issues);
+        }
         TypedExpr::If {
             condition,
             then_branch,

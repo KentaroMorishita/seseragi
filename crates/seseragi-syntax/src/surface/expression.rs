@@ -287,6 +287,18 @@ impl ExpressionParser<'_> {
                     operand: Box::new(operand),
                 })
             }
+            TokenKind::OperatorCustom if token.raw == "!" => {
+                let operand = self.parse_expr_bp(70, stops)?;
+                Some(SurfaceExpr::Prefix {
+                    operator: token.raw.clone(),
+                    operator_span: token_span(token),
+                    span: ByteSpan {
+                        start: token.start,
+                        end: operand.span().end,
+                    },
+                    operand: Box::new(operand),
+                })
+            }
             TokenKind::LiteralInteger => Some(SurfaceExpr::Integer {
                 raw: token.raw.clone(),
                 span: token_span(token),

@@ -500,6 +500,9 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
             render_typescript_expr(left),
             render_typescript_expr(right)
         ),
+        TypeScriptExpr::Unary { operator, operand } => {
+            format!("{operator}({})", render_typescript_expr(operand))
+        }
         TypeScriptExpr::Conditional {
             condition,
             then_branch,

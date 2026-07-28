@@ -90,8 +90,12 @@
             "value": "2.3"
           },
           {
-            "kind": "number",
-            "value": "-0.0"
+            "kind": "unary",
+            "operator": "-",
+            "operand": {
+              "kind": "number",
+              "value": "0.0"
+            }
           },
           {
             "kind": "number",
@@ -193,8 +197,12 @@
             "kind": "field",
             "name": "reading",
             "value": {
-              "kind": "number",
-              "value": "-0.0"
+              "kind": "unary",
+              "operator": "-",
+              "operand": {
+                "kind": "number",
+                "value": "0.0"
+              }
             }
           }
         ],

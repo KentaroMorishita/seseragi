@@ -1334,16 +1334,145 @@ fails ConsoleError =
         let CoreExpr::Array { elements, .. } = &core.bindings[0].value else {
             panic!("expected Core Float array");
         };
-        assert!(elements
-            .iter()
-            .all(|value| matches!(value, CoreExpr::Float64 { .. })));
+        assert!(matches!(
+            elements.as_slice(),
+            [
+                CoreExpr::Float64 { value: first, .. },
+                CoreExpr::Float64 { value: second, .. },
+                CoreExpr::Unary {
+                    operator,
+                    operand,
+                    type_ref: CoreType::Named {
+                        name,
+                        arguments,
+                    },
+                    ..
+                },
+                CoreExpr::Float64 { value: exponent, .. }
+            ] if first == "1.0"
+                && second == "2.3"
+                && operator == "-"
+                && matches!(operand.as_ref(), CoreExpr::Float64 { value, .. } if value == "0.0")
+                && name == "Float"
+                && arguments.is_empty()
+                && exponent == "6.022e23"
+        ));
 
         let typescript = lower_core_module_to_typescript_ir(core);
         let bundle = emit_typescript_module(typescript, source);
 
         assert_eq!(bundle.metadata.runtime.requirements, vec!["core.float64"]);
-        assert!(bundle.typescript.contains("[1.0, 2.3, -0.0, 6.022e23]"));
+        assert!(bundle.typescript.contains("[1.0, 2.3, -(0.0), 6.022e23]"));
         assert!(!bundle.typescript.contains(" = _"));
+    }
+
+    #[test]
+    fn lowers_unary_values_through_formal_ir_and_checked_int_negation() {
+        let source = "pub struct Snapshot {\n  number: Int,\n  ratio: Float,\n  flag: Bool,\n}\n\npub let negative = -2\npub let negativeZero = -0.0\npub let inverted = !True\npub let values: Array<Int> = [-1, -2, -3]\npub let floats: Array<Float> = [-1.0, -0.0, -6.022e23]\npub let flags: Array<Bool> = [!True, !False]\npub let snapshot: Snapshot = Snapshot { number: -2, ratio: -0.0, flag: !True }\n";
+        let typed = type_module("artifact/unary-values/main.ssrg", source);
+        let core = lower_typed_module(typed);
+
+        assert!(matches!(
+            &core.bindings[0].value,
+            CoreExpr::Unary {
+                operator,
+                operand,
+                type_ref: CoreType::Named {
+                    name,
+                    arguments,
+                },
+                ..
+            } if operator == "-"
+                && matches!(operand.as_ref(), CoreExpr::Int64 { value, .. } if value == "2")
+                && name == "Int"
+                && arguments.is_empty()
+        ));
+        assert!(matches!(
+            &core.bindings[1].value,
+            CoreExpr::Unary {
+                operator,
+                operand,
+                type_ref: CoreType::Named {
+                    name,
+                    arguments,
+                },
+                ..
+            } if operator == "-"
+                && matches!(operand.as_ref(), CoreExpr::Float64 { value, .. } if value == "0.0")
+                && name == "Float"
+                && arguments.is_empty()
+        ));
+        assert!(matches!(
+            &core.bindings[2].value,
+            CoreExpr::Unary {
+                operator,
+                operand,
+                type_ref: CoreType::Named {
+                    name,
+                    arguments,
+                },
+                ..
+            } if operator == "!"
+                && matches!(operand.as_ref(), CoreExpr::Boolean { value: true, .. })
+                && name == "Bool"
+                && arguments.is_empty()
+        ));
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        assert!(matches!(
+            &typescript.bindings[0],
+            TypeScriptBinding::Const {
+                initializer: TypeScriptExpr::RuntimeCall { callee, arguments },
+                ..
+            }
+                if callee == "_ssrg_int64_subtract"
+                    && matches!(
+                        arguments.as_slice(),
+                        [
+                            TypeScriptExpr::Bigint { value: zero },
+                            TypeScriptExpr::Bigint { value: two }
+                        ] if zero == "0" && two == "2"
+                    )
+        ));
+        assert!(matches!(
+            &typescript.bindings[1],
+            TypeScriptBinding::Const {
+                initializer: TypeScriptExpr::Unary {
+                    operator,
+                    operand
+                },
+                ..
+            } if operator == "-"
+                && matches!(operand.as_ref(), TypeScriptExpr::Number { value } if value == "0.0")
+        ));
+        assert!(matches!(
+            &typescript.bindings[2],
+            TypeScriptBinding::Const {
+                initializer: TypeScriptExpr::Unary {
+                    operator,
+                    operand
+                },
+                ..
+            } if operator == "!"
+                && matches!(operand.as_ref(), TypeScriptExpr::Boolean { value: true })
+        ));
+
+        let bundle = emit_typescript_module(typescript, source);
+        assert!(bundle
+            .metadata
+            .runtime
+            .requirements
+            .contains(&"core.int64.subtract".to_owned()));
+        assert!(bundle
+            .typescript
+            .contains("export const negative: bigint = _ssrg_int64_subtract(0n, 2n);"));
+        assert!(bundle
+            .typescript
+            .contains("export const negativeZero: number = -(0.0);"));
+        assert!(bundle
+            .typescript
+            .contains("export const inverted: boolean = !(true);"));
+        assert!(!bundle.typescript.contains(" = _;"));
     }
 
     #[test]
