@@ -1,4 +1,6 @@
 import type { ConsoleError } from "./console-service"
+import type { DomError, DomRuntimeError } from "./dom"
+import type { HtmlBuildError } from "./html"
 import type { List } from "./list"
 import type { StdinError } from "./stdin-service"
 import type { Either, Maybe } from "./sum"
@@ -64,6 +66,10 @@ type DisplayRange<Value> = Readonly<{
   end: Value
   inclusive: boolean
 }>
+
+export const displayDepthLimit = 128
+const depthLimitDocument = text("…")
+let displayDepth = 0
 
 export function text(value: string): RenderDocument {
   return Object.freeze({ kind: "text", value })
@@ -140,10 +146,12 @@ export function renderDebug<Value>(
 function defineShow<Value>(
   document: (value: Value) => RenderDocument
 ): Show<Value> {
+  const boundedDocument = (value: Value): RenderDocument =>
+    withDisplayDepth(() => document(value), depthLimitDocument)
   return Object.freeze({
-    document,
+    document: boundedDocument,
     show(value: Value): string {
-      return renderDocument(document(value))
+      return renderDocument(boundedDocument(value))
     },
   })
 }
@@ -151,10 +159,37 @@ function defineShow<Value>(
 function defineDebug<Value>(
   document: (value: Value) => RenderDocument
 ): Debug<Value> {
+  const boundedDocument = (value: Value): RenderDocument =>
+    withDisplayDepth(() => document(value), depthLimitDocument)
   return Object.freeze({
-    document,
+    document: boundedDocument,
     debug(value: Value): string {
-      return renderDocument(document(value))
+      return renderDocument(boundedDocument(value))
+    },
+  })
+}
+
+/**
+ * Wraps compiler-derived Show implementations with the shared recursion bound.
+ * User-defined instances remain responsible for their own recursion policy.
+ */
+export function boundedShow<Value>(
+  show: (value: Value) => string
+): Show<Value> {
+  return Object.freeze({
+    show(value: Value): string {
+      return withDisplayDepth(() => show(value), "…")
+    },
+  })
+}
+
+/** Wraps compiler-derived Debug implementations with the shared depth bound. */
+export function boundedDebug<Value>(
+  debug: (value: Value) => string
+): Debug<Value> {
+  return Object.freeze({
+    debug(value: Value): string {
+      return withDisplayDepth(() => debug(value), "…")
     },
   })
 }
@@ -428,8 +463,25 @@ export const consoleErrorShow = defineShow((error: ConsoleError) =>
   text(`ConsoleError: ${error.message}`)
 )
 
+/**
+ * Console failures cross a host boundary. Debug preserves the failure kind but
+ * redacts the host-provided message so it cannot become an accidental secret
+ * or stack-trace channel.
+ */
+export const consoleErrorDebug = defineDebug((_error: ConsoleError) =>
+  text('ConsoleError { message: "<redacted>" }')
+)
+
 /** Source-like rendering for the standard Stdin failure ADT. */
-export const stdinErrorShow = defineShow((error: StdinError) => {
+export const stdinErrorShow = defineShow((error: StdinError) =>
+  stdinErrorDocument(error)
+)
+
+export const stdinErrorDebug = defineDebug((error: StdinError) =>
+  stdinErrorDocument(error)
+)
+
+function stdinErrorDocument(error: StdinError): RenderDocument {
   switch (error.tag) {
     case "StdinUnavailable":
     case "StdinReadFailure":
@@ -453,7 +505,72 @@ export const stdinErrorShow = defineShow((error: StdinError) => {
         true
       )
   }
-})
+}
+
+export const domErrorShow = defineShow((error: DomError) =>
+  domErrorDocument(error, (value) => showDocument(stringShow, value))
+)
+
+export const domErrorDebug = defineDebug((error: DomError) =>
+  domErrorDocument(error, (value) => debugDocument(stringDebug, value))
+)
+
+export function domRuntimeErrorShow<Failure>(
+  failure: ShowEvidence<Failure>
+): Show<DomRuntimeError<Failure>> {
+  return defineShow((error) =>
+    error.tag === "DomFailure"
+      ? constructorDocument(
+          "DomFailure",
+          showDocument(domErrorShow, error.value)
+        )
+      : constructorDocument(
+          "DispatchFailure",
+          showDocument(failure, error.value)
+        )
+  )
+}
+
+export function domRuntimeErrorDebug<Failure>(
+  failure: DebugEvidence<Failure>
+): Debug<DomRuntimeError<Failure>> {
+  return defineDebug((error) =>
+    error.tag === "DomFailure"
+      ? constructorDocument(
+          "DomFailure",
+          debugDocument(domErrorDebug, error.value)
+        )
+      : constructorDocument(
+          "DispatchFailure",
+          debugDocument(failure, error.value)
+        )
+  )
+}
+
+export const htmlBuildErrorShow = defineShow((error: HtmlBuildError) =>
+  constructorDocument(error.tag, showDocument(stringShow, error.value))
+)
+
+export const htmlBuildErrorDebug = defineDebug((error: HtmlBuildError) =>
+  constructorDocument(error.tag, debugDocument(stringDebug, error.value))
+)
+
+function domErrorDocument(
+  error: DomError,
+  renderString: (value: string) => RenderDocument
+): RenderDocument {
+  switch (error.tag) {
+    case "DomTargetAlreadyMounted":
+    case "DomTargetRemoved":
+      return text(error.tag)
+    case "InvalidSelector":
+    case "DomTargetNotFound":
+    case "DomOperationFailed":
+      return constructorDocument(error.tag, renderString(error.value))
+    case "DomEventQueueOverflow":
+      return constructorDocument(error.tag, showDocument(intShow, error.value))
+  }
+}
 
 function showDocument<Value>(
   evidence: ShowEvidence<Value>,
@@ -461,6 +578,18 @@ function showDocument<Value>(
 ): RenderDocument {
   const instance = evidence as Show<Value>
   return instance.document?.(value) ?? text(instance.show(value))
+}
+
+function withDisplayDepth<Value>(render: () => Value, fallback: Value): Value {
+  if (displayDepth >= displayDepthLimit) {
+    return fallback
+  }
+  displayDepth += 1
+  try {
+    return render()
+  } finally {
+    displayDepth -= 1
+  }
 }
 
 function debugDocument<Value>(

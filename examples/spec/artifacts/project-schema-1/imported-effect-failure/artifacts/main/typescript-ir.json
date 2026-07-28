@@ -5,6 +5,7 @@
   "runtimeRequirements": [
     "core.adt",
     "core.show.dictionary",
+    "core.show.bounded",
     "core.unit",
     "effect.core.flatMap",
     "effect.core.mapError",
@@ -12,6 +13,10 @@
     "effect.core.succeed"
   ],
   "imports": [
+    {
+      "feature": "core.show.bounded",
+      "local": "_ssrg_show_boundedShow"
+    },
     {
       "feature": "effect.core.flatMap",
       "local": "_ssrg_effect_flatMap"

@@ -269,6 +269,62 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     },
     PreludeStandardInstance {
         trait_name: "Debug",
+        type_name: "ConsoleError",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Debug<std/prelude::ConsoleError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "StdinError",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "Debug<std/prelude::StdinError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "DomError",
+        type_canonical: Some("std/web/dom::DomError"),
+        type_arity: 0,
+        identity: "Show<std/web/dom::DomError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "DomError",
+        type_canonical: Some("std/web/dom::DomError"),
+        type_arity: 0,
+        identity: "Debug<std/web/dom::DomError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "DomRuntimeError",
+        type_canonical: Some("std/web/dom::DomRuntimeError"),
+        type_arity: 1,
+        identity: "std/web/dom::DomRuntimeError::Show",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "DomRuntimeError",
+        type_canonical: Some("std/web/dom::DomRuntimeError"),
+        type_arity: 1,
+        identity: "std/web/dom::DomRuntimeError::Debug",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "HtmlBuildError",
+        type_canonical: Some("std/web/html::HtmlBuildError"),
+        type_arity: 0,
+        identity: "Show<std/web/html::HtmlBuildError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "HtmlBuildError",
+        type_canonical: Some("std/web/html::HtmlBuildError"),
+        type_arity: 0,
+        identity: "Debug<std/web/html::HtmlBuildError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
         type_name: "String",
         type_canonical: None,
         type_arity: 0,
@@ -881,6 +937,8 @@ pub(crate) fn standard_instance_constraint_specs(
         }
         "std/either::Show" => SHOW_EITHER,
         "std/either::Debug" => DEBUG_EITHER,
+        "std/web/dom::DomRuntimeError::Show" => SHOW_ELEMENT,
+        "std/web/dom::DomRuntimeError::Debug" => DEBUG_ELEMENT,
         _ => &[],
     }
 }
@@ -1154,6 +1212,64 @@ mod tests {
                 assert_eq!(instance.type_name, type_name);
                 assert_eq!(instance.type_arity, 0);
             }
+        }
+    }
+
+    #[test]
+    fn exposes_standard_error_show_and_debug_with_payload_evidence() {
+        for (name, canonical) in [
+            ("DomError", "std/web/dom::DomError"),
+            ("HtmlBuildError", "std/web/html::HtmlBuildError"),
+        ] {
+            let type_ref = TypedType::ExternalNamed {
+                name: name.to_owned(),
+                canonical: canonical.to_owned(),
+                arguments: Vec::new(),
+            };
+            for trait_name in ["Show", "Debug"] {
+                assert!(
+                    standard_instance(trait_name, &type_ref).is_some(),
+                    "{trait_name}<{canonical}> must be registered"
+                );
+            }
+        }
+
+        let runtime_error = TypedType::ExternalNamed {
+            name: "DomRuntimeError".to_owned(),
+            canonical: "std/web/dom::DomRuntimeError".to_owned(),
+            arguments: vec![named("String")],
+        };
+        for trait_name in ["Show", "Debug"] {
+            let instance = standard_instance(trait_name, &runtime_error)
+                .unwrap_or_else(|| panic!("{trait_name}<DomRuntimeError<String>> is missing"));
+            let constraints = standard_instance_constraints(instance, &runtime_error)
+                .expect("generic standard error must expose its payload constraint");
+            assert_eq!(
+                constraints,
+                vec![TypedConstraint {
+                    name: trait_name.to_owned(),
+                    arguments: vec![named("String")],
+                }]
+            );
+        }
+
+        for unsupported in [
+            TypedType::Named {
+                name: "Effect".to_owned(),
+                arguments: vec![named("Unit"), named("Never"), named("Unit")],
+            },
+            TypedType::Function {
+                parameter: Box::new(named("Int")),
+                result: Box::new(named("Int")),
+            },
+            TypedType::ExternalNamed {
+                name: "Signal".to_owned(),
+                canonical: "std/signal::Signal".to_owned(),
+                arguments: vec![named("Int")],
+            },
+        ] {
+            assert!(standard_instance("Show", &unsupported).is_none());
+            assert!(standard_instance("Debug", &unsupported).is_none());
         }
     }
 

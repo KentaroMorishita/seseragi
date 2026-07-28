@@ -1112,6 +1112,96 @@ pub fn invalid -> html.Html<Action> =
     }
 
     #[test]
+    fn reports_missing_display_instances_for_effects_functions_and_opaque_handles() {
+        let source = r#"import * as signals from "std/signal"
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+
+pub fn showEffect value: Effect<{}, Never, Unit> -> String = show value
+pub fn debugTask value: Task<Unit> -> String = debug value
+pub fn showSignal value: signals.Signal<Int> -> String = show value
+pub fn debugMutableSignal value: signals.MutableSignal<Int> -> String = debug value
+pub fn showFunction value: (Int -> Int) -> String = show value
+pub fn debugDomTarget value: dom.DomTarget -> String = debug value
+pub fn showHtml value: html.Html<Unit> -> String = show value
+pub fn debugAttribute value: html.Attribute -> String = debug value
+"#;
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/display-instance-unavailable",
+            source,
+        ))
+        .expect_err("non-display runtime values must stop before lowering");
+
+        assert_eq!(diagnostics.diagnostics.len(), 8);
+        assert!(diagnostics.diagnostics.iter().all(|diagnostic| {
+            diagnostic.code == "SES-T0201" && diagnostic.message_key == "instance.missing"
+        }));
+        for expected in [
+            "Show<Effect<record, Never, Unit>>",
+            "Debug<Effect<record, Never, Unit>>",
+            "Show<signals.Signal<Int>>",
+            "Debug<signals.MutableSignal<Int>>",
+            "Show<function>",
+            "Debug<dom.DomTarget>",
+            "Show<html.Html<Unit>>",
+            "Debug<html.Attribute>",
+        ] {
+            assert!(
+                diagnostics.diagnostics.iter().any(|diagnostic| diagnostic
+                    .related
+                    .iter()
+                    .any(|related| related.message.contains(expected))),
+                "missing diagnostic for {expected}: {diagnostics:#?}"
+            );
+        }
+    }
+
+    #[test]
+    fn compiles_standard_error_display_with_canonical_provider_types() {
+        let source = include_str!(
+            "../../../examples/spec/artifacts/schema-1/standard-error-display/main.ssrg"
+        );
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/standard-error-display",
+            source,
+        ))
+        .expect("standard errors must select Show and Debug before lowering");
+
+        for requirement in [
+            "web.dom.error.show",
+            "web.dom.error.debug",
+            "web.dom.runtime-error.show",
+            "web.dom.runtime-error.debug",
+            "web.html.build-error.show",
+            "web.html.build-error.debug",
+        ] {
+            assert!(
+                compiled
+                    .generated
+                    .metadata
+                    .runtime
+                    .requirements
+                    .contains(&requirement.to_owned()),
+                "missing runtime requirement {requirement}"
+            );
+        }
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("domRuntimeErrorShow<string>(_ssrg_show_stringShow)"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("(value: HtmlBuildError)"));
+        assert!(!compiled
+            .generated
+            .typescript
+            .contains("html_HtmlBuildError"));
+    }
+
+    #[test]
     fn rejects_non_string_html_style_values_before_lowering() {
         let source = r#"import * as html from "std/web/html"
 

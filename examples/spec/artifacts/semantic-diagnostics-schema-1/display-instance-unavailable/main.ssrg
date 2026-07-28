@@ -1,0 +1,8 @@
+pub fn showEffect value: Effect<{}, Never, Unit> -> String =
+  show value
+
+pub fn debugTask value: Task<Unit> -> String =
+  debug value
+
+pub fn showFunction value: (Int -> Int) -> String =
+  show value

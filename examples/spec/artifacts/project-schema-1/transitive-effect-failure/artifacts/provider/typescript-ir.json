@@ -6,10 +6,15 @@
     "core.adt",
     "core.string",
     "core.show.dictionary",
+    "core.show.bounded",
     "core.string.show",
     "effect.core.fail"
   ],
   "imports": [
+    {
+      "feature": "core.show.bounded",
+      "local": "_ssrg_show_boundedShow"
+    },
     {
       "feature": "core.string.show",
       "local": "_ssrg_show_stringShow"

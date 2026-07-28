@@ -30,6 +30,7 @@
       "core.adt",
       "core.string",
       "core.show.dictionary",
+      "core.show.bounded",
       "core.string.show",
       "core.either",
       "core.either.right",

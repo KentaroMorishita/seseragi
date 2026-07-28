@@ -6,6 +6,7 @@
     "effect.console.error",
     "core.adt",
     "core.show.dictionary",
+    "core.show.bounded",
     "effect.console.error.show",
     "core.unit",
     "effect.core.flatMap",
@@ -14,6 +15,10 @@
     "core.string"
   ],
   "imports": [
+    {
+      "feature": "core.show.bounded",
+      "local": "_ssrg_show_boundedShow"
+    },
     {
       "feature": "effect.console.error.show",
       "local": "_ssrg_show_consoleErrorShow"

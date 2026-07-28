@@ -1,0 +1,35 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/standard-error-display"
+  ],
+  "sourcesContent": [
+    "import * as dom from \"std/web/dom\"\nimport * as html from \"std/web/html\"\n\npub fn showDomError value: dom.DomError -> String =\n  show value\n\npub fn debugDomError value: dom.DomError -> String =\n  debug value\n\npub fn showDomRuntimeError value: dom.DomRuntimeError<String> -> String =\n  show value\n\npub fn debugDomRuntimeError value: dom.DomRuntimeError<String> -> String =\n  debug value\n\npub fn showHtmlBuildError value: html.HtmlBuildError -> String =\n  show value\n\npub fn debugHtmlBuildError value: html.HtmlBuildError -> String =\n  debug value\n\npub effect fn main =\n  do {\n    println (show (html.InvalidTagName \"1bad\"))\n    println (debug (html.InvalidTagName \"1bad\"))\n  }\n"
+  ],
+  "names": [
+    "showDomError",
+    "domErrorShow",
+    "debugDomError",
+    "domErrorDebug",
+    "showDomRuntimeError",
+    "domRuntimeErrorShow",
+    "stringShow",
+    "debugDomRuntimeError",
+    "domRuntimeErrorDebug",
+    "stringDebug",
+    "showHtmlBuildError",
+    "htmlBuildErrorShow",
+    "debugHtmlBuildError",
+    "htmlBuildErrorDebug",
+    "main",
+    "println",
+    "htmlBuildErrorShow",
+    "InvalidTagName",
+    "println",
+    "htmlBuildErrorDebug",
+    "InvalidTagName"
+  ],
+  "mappings": ";;;;;;AAGAA;AAGAE;AAGAE;AAGAG;AAGAG;AAGAE;AAGAE"
+}

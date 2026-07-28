@@ -1,0 +1,223 @@
+{
+  "schema": 1,
+  "module": "artifact/standard-error-display",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/web/dom",
+      "module": "artifact/standard-error-display/std/web/dom",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/standard-error-display/std/web/dom::*",
+          "localName": "dom"
+        }
+      ]
+    },
+    {
+      "specifier": "std/web/html",
+      "module": "artifact/standard-error-display/std/web/html",
+      "origin": {
+        "start": 35,
+        "end": 71
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/standard-error-display/std/web/html::*",
+          "localName": "html"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/standard-error-display::showDomError",
+      "namespace": "value",
+      "name": "showDomError",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 73,
+        "end": 137
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "dom.DomError",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/standard-error-display::debugDomError",
+      "namespace": "value",
+      "name": "debugDomError",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 139,
+        "end": 205
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "dom.DomError",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/standard-error-display::showDomRuntimeError",
+      "namespace": "value",
+      "name": "showDomRuntimeError",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 207,
+        "end": 293
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "dom.DomRuntimeError",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/standard-error-display::debugDomRuntimeError",
+      "namespace": "value",
+      "name": "debugDomRuntimeError",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 295,
+        "end": 383
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "dom.DomRuntimeError",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/standard-error-display::showHtmlBuildError",
+      "namespace": "value",
+      "name": "showHtmlBuildError",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 385,
+        "end": 462
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "html.HtmlBuildError",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/standard-error-display::debugHtmlBuildError",
+      "namespace": "value",
+      "name": "debugHtmlBuildError",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 464,
+        "end": 543
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "html.HtmlBuildError",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

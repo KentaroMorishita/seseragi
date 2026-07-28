@@ -544,6 +544,40 @@ tuple / closed structural recordのcompiler提供instanceはsealedです。同�
 user instance宣言はstandard instanceとの重複として`SES-T0202`になります。nominal Struct /
 ADT / Newtypeのinstance生成はstructural instanceとは別のderiving契約です。
 
+standard error型の表示instanceは次のとおりです。generic errorはpayload側のevidenceを
+dictionary factoryへ渡し、host objectの暗黙文字列化へfallbackしません。
+
+| error型 | Show | Debug |
+| --- | --- | --- |
+| `ConsoleError` | 利用者向けの失敗概要 | error種別を保ち、host messageを`"<redacted>"`へ置換 |
+| `StdinError` | constructorと公開payload | constructorとquoted / escaped payload |
+| `std/web/dom.DomError` | constructorと公開payload | constructorとquoted / escaped payload |
+| `std/web/dom.DomRuntimeError<E>` | `Show<E>`があるとき合成 | `Debug<E>`があるとき合成 |
+| `std/web/html.HtmlBuildError` | constructorと公開payload | constructorとquoted / escaped payload |
+
+secretを含み得る型は、Debug instanceを提供しないか、型の契約でredactionを明示します。
+standard `ConsoleError`のDebugはhost message、stack、causeを公開せず、Showもhost error objectや
+stackを直接描画しません。user定義型がDebugをderiveする場合、その全fieldがDebugへ参加するため、
+secret fieldを持つ型ではderiveせずredaction済みの明示instanceを定義します。
+
+`Effect<R, E, A>` / `Task<A>`、`Signal<A>` / `MutableSignal<A>`、function、`DomTarget`、
+`Html<Action>`、`Attribute`、その他のhost handleまたはopaque runtime valueにはstandard
+Show / Debug instanceを提供しません。これらへ`show`、`debug`、template interpolation、
+`printValue`を使うと、通常のinstance選択が`SES-T0201`と
+`no Show<T> instance`または`no Debug<T> instance`を報告します。runtime object inspectionや
+`String(value)`へfallbackしません。
+
+standard composite dictionaryとcompilerがderiveしたnominal dictionaryは、一回の表示につき
+128段の共有深度上限を持ちます。上限へ到達した子は`…`として描画し、stack overflowになるまで
+再帰しません。user定義instance内の任意再帰はlanguageが推測できないため、instance作者が
+停止条件を持たせます。
+
+surfaceごとの既定layoutは次で固定します。
+
+- template interpolation、`printValue`、Effect failureのstderrは`compact`。
+- Playgroundの実行結果と将来のvalue inspectorが保持するDebugは`auto`。
+- 明示的なrenderer APIを使うtoolは`compact` / `multiline` / `auto`を選べる。
+
 Show/Debugと出力先は別概念です。型classを実装しただけで値がconsoleへ書かれることは
 ありません。
 
@@ -579,7 +613,8 @@ broken pipeなどhost由来の失敗はConsoleErrorです。test hostはConsole 
 出力を値として検証できます。
 
 `ConsoleError` はstandard opaque error型で、ShowとDebug instanceを持ちます。Showは利用者向けの
-失敗概要を返し、host固有error objectやstack traceを文字列へ埋め込みません。
+失敗概要を返し、host固有error objectやstack traceを文字列へ埋め込みません。Debugは
+`ConsoleError { message: "<redacted>" }`としてhost messageを公開しません。
 
 standard inputは出力用Consoleと別のStdin serviceです。canonical requirement名は`stdin`で、
 `with Stdin`は`with stdin: Stdin`へ展開します。preludeの`readLine`はstandard default limitを使います。
@@ -588,6 +623,9 @@ standard inputは出力用Consoleと別のStdin serviceです。canonical requir
 fn readLine
   -> Effect<{ stdin: Stdin }, StdinError, Maybe<String>>
 ```
+
+`StdinError`はShowとDebug instanceを持ち、constructorと公開されているlimit等のpayloadだけを
+表示します。
 
 parameterなし関数なので呼び出しは`readLine ()`です。EOFはNothing、空行は`Just ""`であり、
 EOFやinput failureを空Stringへまとめません。binary read、明示limit、line Streamは10.14の`std/stdin`を

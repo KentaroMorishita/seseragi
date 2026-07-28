@@ -558,6 +558,26 @@
       }
     },
     {
+      "id": "core.show.bounded",
+      "kind": "runtime-helper",
+      "typescript": "Show renderer wrapper",
+      "boundary": "compiler-derived Show recursion limited to 128 nested values",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "boundedShow"
+      }
+    },
+    {
+      "id": "core.debug.bounded",
+      "kind": "runtime-helper",
+      "typescript": "Debug renderer wrapper",
+      "boundary": "compiler-derived Debug recursion limited to 128 nested values",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "boundedDebug"
+      }
+    },
+    {
       "id": "core.range.exclusive",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -1153,6 +1173,16 @@
       }
     },
     {
+      "id": "effect.console.error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<ConsoleError>",
+      "boundary": "developer-facing ConsoleError kind with redacted host message",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "consoleErrorDebug"
+      }
+    },
+    {
       "id": "effect.stdin.error.show",
       "kind": "runtime-binding",
       "typescript": "Show<StdinError>",
@@ -1160,6 +1190,16 @@
       "import": {
         "module": "@seseragi/runtime/show",
         "export": "stdinErrorShow"
+      }
+    },
+    {
+      "id": "effect.stdin.error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<StdinError>",
+      "boundary": "source-like developer-facing StdinError rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "stdinErrorDebug"
       }
     },
     {
@@ -1629,6 +1669,26 @@
         "export": "HtmlBuildError"
       },
       "import": null
+    },
+    {
+      "id": "web.html.build-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<HtmlBuildError>",
+      "boundary": "user-facing validated HTML name failure rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "htmlBuildErrorShow"
+      }
+    },
+    {
+      "id": "web.html.build-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<HtmlBuildError>",
+      "boundary": "source-like validated HTML name failure rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "htmlBuildErrorDebug"
+      }
     },
     {
       "id": "web.html.input-event-type",
@@ -2315,6 +2375,26 @@
       "import": null
     },
     {
+      "id": "web.dom.error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<DomError>",
+      "boundary": "user-facing DOM failure rendering without host handles",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "domErrorShow"
+      }
+    },
+    {
+      "id": "web.dom.error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<DomError>",
+      "boundary": "source-like DOM failure rendering without host handles",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "domErrorDebug"
+      }
+    },
+    {
       "id": "web.dom.runtime-error",
       "kind": "value-representation",
       "typescript": "type DomRuntimeError<E>",
@@ -2325,6 +2405,26 @@
         "export": "DomRuntimeError"
       },
       "import": null
+    },
+    {
+      "id": "web.dom.runtime-error.show",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Show<E> -> Show<DomRuntimeError<E>>",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "domRuntimeErrorShow"
+      }
+    },
+    {
+      "id": "web.dom.runtime-error.debug",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "Debug<E> -> Debug<DomRuntimeError<E>>",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "domRuntimeErrorDebug"
+      }
     },
     {
       "id": "web.dom.default-options",

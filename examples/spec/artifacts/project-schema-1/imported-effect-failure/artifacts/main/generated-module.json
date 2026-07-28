@@ -8,6 +8,7 @@
     "requirements": [
       "core.adt",
       "core.show.dictionary",
+      "core.show.bounded",
       "core.unit",
       "effect.core.flatMap",
       "effect.core.mapError",

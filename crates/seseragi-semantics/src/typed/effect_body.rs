@@ -1,6 +1,7 @@
 use crate::{
     effect_ops::{known_effect_operation_by_surface, KnownEffectOperation},
     unit_type, SymbolKind, SymbolNamespace, TypedDoStatement, TypedExpr, TypedParameter,
+    TypedTemplatePart,
 };
 use seseragi_syntax::{ByteSpan, SurfaceDoItem, SurfaceExpr, SurfacePattern};
 use std::collections::BTreeMap;
@@ -8,8 +9,8 @@ use std::collections::BTreeMap;
 use super::pure_issues::{ArrayIssue, PureCallIssue, RangeIssue, RecordIssue};
 use super::semantic_types::SemanticValueType;
 use super::surface_expr::{
-    analyze_resolved_expression, application, ensure_recovery_hole_issue, PureExpressionContext,
-    SurfaceExpressionAnalysis,
+    analyze_resolved_expression, application, ensure_recovery_hole_issue, named_type,
+    PureExpressionContext, SurfaceExpressionAnalysis,
 };
 use super::type_ref::{
     application_argument_type_from_expr, effect_success_type_from_expr, inferred_type_from_expr,
@@ -179,7 +180,7 @@ fn effect_application(
     if symbol.kind != SymbolKind::Prelude {
         return None;
     }
-    let operation = known_effect_operation_by_surface(&symbol.spelling)?;
+    let mut operation = known_effect_operation_by_surface(&symbol.spelling)?;
     if operation.surface_name == "mapError" && argument_nodes.len() != 2 {
         return None;
     }
@@ -194,6 +195,33 @@ fn effect_application(
             .map(|argument| type_pure_expression(argument, context, issues))
             .collect::<Vec<_>>()
     };
+    if operation.surface_name == "printValue" {
+        if let [value] = arguments.as_slice() {
+            let type_ref = inferred_type_from_expr(value);
+            let (trait_identity, evidence) = match context.select_show_evidence(type_ref) {
+                Ok((trait_identity, evidence)) => (trait_identity, Some(evidence)),
+                Err(constraint) => {
+                    issues.calls.push(PureCallIssue::MissingInstance {
+                        callee: *span,
+                        constraint,
+                    });
+                    ("std/prelude::Show".to_owned(), None)
+                }
+            };
+            arguments = vec![TypedExpr::Template {
+                parts: vec![TypedTemplatePart::Interpolation {
+                    value: Box::new(value.clone()),
+                    evidence,
+                    trait_identity,
+                    origin: super::effect_analysis::expression_origin(value),
+                }],
+                type_ref: named_type("String"),
+                origin: expression.span(),
+            }];
+            operation = known_effect_operation_by_surface("print")
+                .expect("printValue desugaring requires the standard print operation");
+        }
+    }
     if matches!(operation.surface_name, "readLine" | "succeed")
         && matches!(arguments.as_slice(), [TypedExpr::Unit { .. }])
     {

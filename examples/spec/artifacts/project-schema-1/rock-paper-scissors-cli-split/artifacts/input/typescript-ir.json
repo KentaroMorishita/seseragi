@@ -7,6 +7,7 @@
     "core.adt",
     "core.string",
     "core.show.dictionary",
+    "core.show.bounded",
     "effect.stdin.error.show",
     "core.string.show",
     "core.either",
@@ -20,6 +21,10 @@
     "effect.core.fromEither"
   ],
   "imports": [
+    {
+      "feature": "core.show.bounded",
+      "local": "_ssrg_show_boundedShow"
+    },
     {
       "feature": "effect.stdin.error.show",
       "local": "_ssrg_show_stdinErrorShow"

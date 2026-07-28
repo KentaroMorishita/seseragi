@@ -277,6 +277,7 @@ mod tests {
             vec![
                 "core.adt",
                 "core.show.dictionary",
+                "core.show.bounded",
                 "core.string",
                 "core.string.show"
             ]

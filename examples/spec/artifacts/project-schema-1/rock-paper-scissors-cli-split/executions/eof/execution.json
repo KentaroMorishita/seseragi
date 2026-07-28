@@ -39,6 +39,7 @@
       "core.string",
       "effect.stdin.error",
       "core.show.dictionary",
+      "core.show.bounded",
       "effect.stdin.error.show",
       "core.string.show",
       "core.either",

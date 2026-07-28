@@ -28,6 +28,12 @@ fn collect_intrinsic_issues(
                 collect_map_error_issues(arguments, resolution, issues);
             } else if operation == "std/effect::fromEither" {
                 collect_from_either_issues(arguments, *origin, issues);
+            } else if operation == "std/prelude::printValue" && arguments.len() != 1 {
+                issues.push(EffectFunctionIssue::IntrinsicArityMismatch {
+                    primary: *origin,
+                    expected: 1,
+                    actual: arguments.len(),
+                });
             }
             for argument in arguments {
                 collect_intrinsic_issues(argument, resolution, issues);

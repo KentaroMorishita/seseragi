@@ -29,8 +29,8 @@ pub type AppError deriving Show =
     assert_eq!(
         output,
         "\
-export const __ssrg$instance$Show$0: ResolvedShow<Detail> = { show: (value: Detail): string => { switch (value.tag) { case \"Detail\": return \"Detail\" + \" \" + _ssrg_show_stringShow.show(value.value); } } };
-export const __ssrg$instance$Show$1: ResolvedShow<AppError> = { show: (value: AppError): string => { switch (value.tag) { case \"Wrapped\": return \"Wrapped\" + \" \" + __ssrg$instance$Show$0.show(value.value); case \"EndOfInput\": return \"EndOfInput\"; } } };
+export const __ssrg$instance$Show$0: ResolvedShow<Detail> = _ssrg_show_boundedShow((value: Detail): string => { switch (value.tag) { case \"Detail\": return \"Detail\" + \" \" + _ssrg_show_stringShow.show(value.value); } });
+export const __ssrg$instance$Show$1: ResolvedShow<AppError> = _ssrg_show_boundedShow((value: AppError): string => { switch (value.tag) { case \"Wrapped\": return \"Wrapped\" + \" \" + __ssrg$instance$Show$0.show(value.value); case \"EndOfInput\": return \"EndOfInput\"; } });
 "
     );
 }
@@ -114,9 +114,13 @@ fn emits_runtime_imports_and_keeps_dictionary_exports_out_of_source_exports() {
     let typescript = lower_core_module_to_typescript_ir(core);
     let bundle = emit_typescript_module(typescript, source);
 
-    assert!(bundle.typescript.contains(
-        "import { stringShow as _ssrg_show_stringShow, type Show as _ssrg_show_Show } from \"@seseragi/runtime/show\""
-    ));
+    assert!(bundle
+        .typescript
+        .contains("boundedShow as _ssrg_show_boundedShow"));
+    assert!(bundle
+        .typescript
+        .contains("stringShow as _ssrg_show_stringShow"));
+    assert!(bundle.typescript.contains("type Show as _ssrg_show_Show"));
     assert!(bundle
         .typescript
         .contains("export const __ssrg$instance$Show$0: _ssrg_show_Show<AppError>"));

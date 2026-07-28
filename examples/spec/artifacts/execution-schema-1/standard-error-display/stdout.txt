@@ -1,0 +1,2 @@
+InvalidTagName 1bad
+InvalidTagName "1bad"

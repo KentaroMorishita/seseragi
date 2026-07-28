@@ -1,13 +1,23 @@
 import { createBrowserEnvironment } from "../../../../runtime/ts/src/browser/host"
 import * as effectRuntime from "../../../../runtime/ts/src/effect"
-import type { EntryContract } from "../compiler/types"
-import { createBrowserDom, type BrowserDom } from "./browser-dom"
+import {
+  renderDebug,
+  renderShow,
+  type Show,
+  unitDebug,
+} from "../../../../runtime/ts/src/show"
+import type {
+  DisplayDictionaryContract,
+  EntryContract,
+} from "../compiler/types"
+import { type BrowserDom, createBrowserDom } from "./browser-dom"
 import { runtimeModules } from "./runtime-modules"
 
 type ModuleExports = Record<string, unknown>
 
 export type ExecutionResult = {
   readonly stdout: string
+  readonly debug: string
 }
 
 export type BrowserExecution = Readonly<{
@@ -75,7 +85,12 @@ export async function startGeneratedModule(
       if (result.kind === "failure") {
         throw new Error(renderFailure(entry, generated, result.error))
       }
-      return { stdout: stdout.trimEnd() }
+      return {
+        stdout: stdout.trimEnd(),
+        debug: renderDebug(unitDebug, result.value as undefined, {
+          layout: "auto",
+        }),
+      }
     })
     .finally(() => browserDom?.dispose())
   return Object.freeze({
@@ -113,16 +128,32 @@ function renderFailure(
 ): string {
   const renderer = entry.failureRenderer
   if (renderer.kind === "never") return "seseragi: unreachable typed failure"
-  const source =
-    renderer.module === "./main.ts"
-      ? generated
-      : (runtimeModules[renderer.module] as ModuleExports | undefined)
-  const dictionary = source?.[renderer.export] as
-    | { readonly show?: (value: unknown) => unknown }
+  const dictionary = displayDictionary(generated, renderer) as
+    | Show<unknown>
     | undefined
-  const message = dictionary?.show?.(error)
-  if (typeof message !== "string") {
+  if (dictionary === undefined || typeof dictionary.show !== "function") {
     throw new Error("Show dictionary returned a non-string value")
   }
-  return message
+  return renderShow(dictionary, error, { layout: "compact" })
+}
+
+function displayDictionary(
+  generated: ModuleExports,
+  contract: DisplayDictionaryContract
+): unknown {
+  const source =
+    contract.module === "./main.ts"
+      ? generated
+      : (runtimeModules[contract.module] as ModuleExports | undefined)
+  const binding = source?.[contract.export]
+  const arguments_ = contract.arguments ?? []
+  if (arguments_.length === 0) {
+    return binding
+  }
+  if (typeof binding !== "function") {
+    throw new Error("display dictionary factory is not callable")
+  }
+  return binding(
+    ...arguments_.map((argument) => displayDictionary(generated, argument))
+  )
 }

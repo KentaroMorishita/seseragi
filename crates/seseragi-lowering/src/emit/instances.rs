@@ -77,7 +77,12 @@ fn render_derived_display_instance(
         trait_name => panic!("unsupported derived display trait {trait_name}"),
     };
     let body = render_body(&head, method);
-    let dictionary = format!("{{ {method}: {body} }}");
+    let bounded = match instance.trait_name.as_str() {
+        "Show" => "_ssrg_show_boundedShow",
+        "Debug" => "_ssrg_debug_boundedDebug",
+        trait_name => panic!("unsupported derived display trait {trait_name}"),
+    };
+    let dictionary = format!("{bounded}({body})");
     if instance.type_parameters.is_empty() && instance.constraints.is_empty() {
         return format!(
             "export const {}: {display_type_local}<{head}> = {dictionary};",

@@ -1,4 +1,4 @@
-use crate::{FailureRenderer, HostService, MainContract};
+use crate::{DisplayDictionary, FailureRenderer, HostService, MainContract};
 
 pub(super) fn entry_source(contract: &MainContract, entry_module: &str) -> String {
     let mut imports = vec!["import { run } from \"@seseragi/runtime/effect\";".to_owned()];
@@ -42,18 +42,29 @@ pub(super) fn entry_source(contract: &MainContract, entry_module: &str) -> Strin
             imports.push(format!("import {{ main }} from \"{entry_module}\";"));
             "process.stderr.write(\"seseragi: unreachable typed failure\\n\");\n  process.exitCode = 1;".to_owned()
         }
-        FailureRenderer::Show { module, export } => {
-            if module == "./main.ts" {
-                imports.push(format!(
-                    "import {{ main, {export} as failureShow }} from \"{entry_module}\";"
-                ));
-            } else {
-                imports.push(format!("import {{ main }} from \"{entry_module}\";"));
-                imports.push(format!(
-                    "import {{ {export} as failureShow }} from \"{module}\";"
-                ));
-            }
-            "const message = failureShow.show(result.error);\n  if (typeof message !== \"string\") throw new TypeError(\"Show dictionary returned a non-string value\");\n  process.stderr.write(message.endsWith(\"\\n\") ? message : message + \"\\n\");\n  process.exitCode = 1;".to_owned()
+        FailureRenderer::Show {
+            module,
+            export,
+            arguments,
+        } => {
+            imports.push(format!("import {{ main }} from \"{entry_module}\";"));
+            imports.push(
+                "import { renderShow as failureRenderShow } from \"@seseragi/runtime/show\";"
+                    .to_owned(),
+            );
+            let mut dictionary_index = 0;
+            let expression = display_dictionary_expression(
+                &DisplayDictionary {
+                    module: module.clone(),
+                    export: export.clone(),
+                    arguments: arguments.clone(),
+                },
+                entry_module,
+                &mut imports,
+                &mut dictionary_index,
+            );
+            setup.push(format!("const failureShow = {expression};"));
+            "const message = failureRenderShow(failureShow, result.error, { layout: \"compact\" });\n  if (typeof message !== \"string\") throw new TypeError(\"Show dictionary returned a non-string value\");\n  process.stderr.write(message.endsWith(\"\\n\") ? message : message + \"\\n\");\n  process.exitCode = 1;".to_owned()
         }
     };
     let cleanup_source = cleanup
@@ -71,10 +82,42 @@ pub(super) fn entry_source(contract: &MainContract, entry_module: &str) -> Strin
     )
 }
 
+fn display_dictionary_expression(
+    dictionary: &DisplayDictionary,
+    entry_module: &str,
+    imports: &mut Vec<String>,
+    next_index: &mut usize,
+) -> String {
+    let index = *next_index;
+    *next_index += 1;
+    let local = format!("failureDisplay{index}");
+    let module = if dictionary.module == "./main.ts" {
+        entry_module
+    } else {
+        &dictionary.module
+    };
+    imports.push(format!(
+        "import {{ {} as {local} }} from \"{module}\";",
+        dictionary.export
+    ));
+    if dictionary.arguments.is_empty() {
+        return local;
+    }
+    let arguments = dictionary
+        .arguments
+        .iter()
+        .map(|argument| display_dictionary_expression(argument, entry_module, imports, next_index))
+        .collect::<Vec<_>>()
+        .join(", ");
+    format!("{local}({arguments})")
+}
+
 #[cfg(test)]
 mod tests {
     use super::entry_source;
-    use crate::{EnvironmentBinding, FailureRenderer, HostService, MainContract};
+    use crate::{
+        DisplayDictionary, EnvironmentBinding, FailureRenderer, HostService, MainContract,
+    };
 
     #[test]
     fn prepares_live_process_services_and_typed_failure_rendering() {
@@ -93,6 +136,7 @@ mod tests {
                 failure_renderer: FailureRenderer::Show {
                     module: "./main.ts".to_owned(),
                     export: "__ssrg$instance$Show$0".to_owned(),
+                    arguments: Vec::new(),
                 },
             },
             "./main.ts",
@@ -101,12 +145,15 @@ mod tests {
         assert!(source.contains("liveConsole"));
         assert!(source.contains("createProcessStdin"));
         assert!(source.contains("await run(main(undefined), environment)"));
-        assert!(source.contains("failureShow.show(result.error)"));
+        assert!(source
+            .contains("failureRenderShow(failureShow, result.error, { layout: \"compact\" })"));
         assert!(source.contains("stdinAdapter1.close()"));
         assert!(source.contains("catch (_cleanupDefect)"));
         assert!(
             source.find("stdinAdapter1.close()").unwrap()
-                < source.find("failureShow.show(result.error)").unwrap()
+                < source
+                    .find("failureRenderShow(failureShow, result.error")
+                    .unwrap()
         );
     }
 
@@ -132,5 +179,28 @@ mod tests {
         assert_eq!(source.matches("import { liveConsole }").count(), 1);
         assert!(source.contains("\"first\": liveConsole"));
         assert!(source.contains("\"second\": liveConsole"));
+    }
+
+    #[test]
+    fn instantiates_a_generic_failure_dictionary_from_nested_evidence() {
+        let source = entry_source(
+            &MainContract {
+                environment: Vec::new(),
+                failure_renderer: FailureRenderer::Show {
+                    module: "@seseragi/runtime/show".to_owned(),
+                    export: "domRuntimeErrorShow".to_owned(),
+                    arguments: vec![DisplayDictionary {
+                        module: "@seseragi/runtime/show".to_owned(),
+                        export: "stringShow".to_owned(),
+                        arguments: Vec::new(),
+                    }],
+                },
+            },
+            "./main.ts",
+        );
+
+        assert!(source.contains("const failureShow = failureDisplay0(failureDisplay1);"));
+        assert!(source
+            .contains("failureRenderShow(failureShow, result.error, { layout: \"compact\" })"));
     }
 }

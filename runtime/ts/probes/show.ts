@@ -1,4 +1,6 @@
 import type { ConsoleError } from "../src/console"
+import type { DomError, DomRuntimeError } from "../src/dom"
+import type { HtmlBuildError } from "../src/html"
 import { fromArray } from "../src/list"
 import { exclusive, inclusive } from "../src/range"
 import {
@@ -6,16 +8,26 @@ import {
   arrayShow,
   boolDebug,
   boolShow,
+  boundedDebug,
+  boundedShow,
   charDebug,
   charShow,
   concat,
+  consoleErrorDebug,
   consoleErrorShow,
   type Debug,
   delimited,
+  displayDepthLimit,
+  domErrorDebug,
+  domErrorShow,
+  domRuntimeErrorDebug,
+  domRuntimeErrorShow,
   eitherDebug,
   eitherShow,
   floatDebug,
   floatShow,
+  htmlBuildErrorDebug,
+  htmlBuildErrorShow,
   indent,
   intDebug,
   intShow,
@@ -34,6 +46,7 @@ import {
   renderDocument,
   renderShow,
   type Show,
+  stdinErrorDebug,
   stdinErrorShow,
   stringDebug,
   stringShow,
@@ -64,6 +77,8 @@ const dictionaries: readonly Show<unknown>[] = [
   charShow as Show<unknown>,
   consoleErrorShow as Show<unknown>,
   stdinErrorShow as Show<unknown>,
+  domErrorShow as Show<unknown>,
+  htmlBuildErrorShow as Show<unknown>,
 ]
 if (dictionaries.some((dictionary) => typeof dictionary.show !== "function")) {
   throw new Error("a standard Show dictionary has an invalid runtime shape")
@@ -77,6 +92,10 @@ const debugDictionaries: readonly Debug<unknown>[] = [
   boolDebug as Debug<unknown>,
   unitDebug as Debug<unknown>,
   charDebug as Debug<unknown>,
+  consoleErrorDebug as Debug<unknown>,
+  stdinErrorDebug as Debug<unknown>,
+  domErrorDebug as Debug<unknown>,
+  htmlBuildErrorDebug as Debug<unknown>,
 ]
 if (
   debugDictionaries.some((dictionary) => typeof dictionary.debug !== "function")
@@ -309,6 +328,10 @@ const consoleError: ConsoleError = {
   message: "broken pipe",
 }
 assertEqual(consoleErrorShow.show(consoleError), "ConsoleError: broken pipe")
+assertEqual(
+  consoleErrorDebug.debug(consoleError),
+  'ConsoleError { message: "<redacted>" }'
+)
 
 const stdinCases: ReadonlyArray<readonly [StdinError, string]> = [
   [{ tag: "StdinUnavailable" }, "StdinUnavailable"],
@@ -326,6 +349,87 @@ const stdinCases: ReadonlyArray<readonly [StdinError, string]> = [
 ]
 for (const [error, expected] of stdinCases) {
   assertEqual(stdinErrorShow.show(error), expected)
+  assertEqual(stdinErrorDebug.debug(error), expected)
+}
+
+const domCases: ReadonlyArray<readonly [DomError, string, string]> = [
+  [
+    { tag: "InvalidSelector", value: "[" },
+    "InvalidSelector [",
+    'InvalidSelector "["',
+  ],
+  [
+    { tag: "DomTargetNotFound", value: "#missing" },
+    "DomTargetNotFound #missing",
+    'DomTargetNotFound "#missing"',
+  ],
+  [
+    { tag: "DomTargetAlreadyMounted" },
+    "DomTargetAlreadyMounted",
+    "DomTargetAlreadyMounted",
+  ],
+  [
+    { tag: "DomEventQueueOverflow", value: 1024n },
+    "DomEventQueueOverflow 1024",
+    "DomEventQueueOverflow 1024",
+  ],
+  [{ tag: "DomTargetRemoved" }, "DomTargetRemoved", "DomTargetRemoved"],
+  [
+    { tag: "DomOperationFailed", value: "replace" },
+    "DomOperationFailed replace",
+    'DomOperationFailed "replace"',
+  ],
+]
+for (const [error, shown, debugged] of domCases) {
+  assertEqual(domErrorShow.show(error), shown)
+  assertEqual(domErrorDebug.debug(error), debugged)
+}
+
+const dispatchFailure: DomRuntimeError<string> = {
+  tag: "DispatchFailure",
+  value: "denied",
+}
+assertEqual(
+  domRuntimeErrorShow(stringShow).show(dispatchFailure),
+  "DispatchFailure denied"
+)
+assertEqual(
+  domRuntimeErrorDebug(stringDebug).debug(dispatchFailure),
+  'DispatchFailure "denied"'
+)
+assertEqual(
+  domRuntimeErrorShow(stringShow).show({
+    tag: "DomFailure",
+    value: { tag: "DomTargetRemoved" },
+  }),
+  "DomFailure DomTargetRemoved"
+)
+
+const htmlBuildError: HtmlBuildError = {
+  tag: "ReservedAttributeName",
+  value: "onclick",
+}
+assertEqual(
+  htmlBuildErrorShow.show(htmlBuildError),
+  "ReservedAttributeName onclick"
+)
+assertEqual(
+  htmlBuildErrorDebug.debug(htmlBuildError),
+  'ReservedAttributeName "onclick"'
+)
+
+function recursiveShowValue(depth: number): string {
+  return depth === 0 ? "End" : `Link ${recursiveShow.show(depth - 1)}`
+}
+const recursiveShow: Show<number> = boundedShow(recursiveShowValue)
+function recursiveDebugValue(depth: number): string {
+  return depth === 0 ? "End" : `Link ${recursiveDebug.debug(depth - 1)}`
+}
+const recursiveDebug: Debug<number> = boundedDebug(recursiveDebugValue)
+const deepShow = recursiveShow.show(displayDepthLimit * 2)
+const deepDebug = recursiveDebug.debug(displayDepthLimit * 2)
+if (!deepShow.endsWith("…") || !deepDebug.endsWith("…")) {
+  throw new Error("recursive display did not stop at the shared depth limit")
 }
 
 process.stdout.write("show runtime probe passed\n")

@@ -1,0 +1,26 @@
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+
+pub fn showDomError value: dom.DomError -> String =
+  show value
+
+pub fn debugDomError value: dom.DomError -> String =
+  debug value
+
+pub fn showDomRuntimeError value: dom.DomRuntimeError<String> -> String =
+  show value
+
+pub fn debugDomRuntimeError value: dom.DomRuntimeError<String> -> String =
+  debug value
+
+pub fn showHtmlBuildError value: html.HtmlBuildError -> String =
+  show value
+
+pub fn debugHtmlBuildError value: html.HtmlBuildError -> String =
+  debug value
+
+pub effect fn main =
+  do {
+    println (show (html.InvalidTagName "1bad"))
+    println (debug (html.InvalidTagName "1bad"))
+  }

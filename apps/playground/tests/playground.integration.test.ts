@@ -5,6 +5,7 @@ import { queryAnalysisAt } from "../src/analysis/document"
 import type {
   AnalysisDocument,
   CompileResponse,
+  EntryContract,
   FormatResponse,
 } from "../src/compiler/types"
 import { executeGeneratedModule } from "../src/runtime/browser-execution"
@@ -242,9 +243,7 @@ describe("Playground sample catalog", () => {
           ["join", "sum", "forEach", "map", "Task"].includes(item.name)
         )
         .map((item) => item.name)
-    ).toEqual(
-      expect.arrayContaining(["join", "sum", "forEach", "map", "Task"])
-    )
+    ).toEqual(expect.arrayContaining(["join", "sum", "forEach", "map", "Task"]))
     expect(
       analysis.standardLibrary.find((item) => item.name === "Task")?.signature
     ).toBe("alias Task<A> = Effect<{}, Never, A>")
@@ -347,7 +346,33 @@ describe("Playground sample catalog", () => {
         response.generated.typescript,
         response.entry
       )
-    ).toEqual({ stdout: expectedOutput.trimEnd() })
+    ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
+  })
+
+  test("renders generic standard failures from nested Show evidence", async () => {
+    const entry: EntryContract = {
+      environment: [],
+      failureRenderer: {
+        kind: "show",
+        module: "@seseragi/runtime/show",
+        export: "domRuntimeErrorShow",
+        arguments: [
+          {
+            module: "@seseragi/runtime/show",
+            export: "stringShow",
+          },
+        ],
+      },
+    }
+    const source = `
+      import { fail } from "@seseragi/runtime/effect"
+      export const main = (_unit: undefined) =>
+        fail({ tag: "DispatchFailure", value: "denied" })
+    `
+
+    await expect(executeGeneratedModule(source, entry)).rejects.toThrow(
+      "DispatchFailure denied"
+    )
   })
 
   test("renders HTML output in an isolated preview", async () => {
@@ -398,7 +423,7 @@ describe("Playground sample catalog", () => {
           response.entry,
           sample.stdin
         )
-      ).toEqual({ stdout: sample.expectedOutput })
+      ).toEqual({ stdout: sample.expectedOutput, debug: "()" })
     })
   }
 

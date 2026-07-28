@@ -12,7 +12,10 @@ mod package;
 #[cfg(not(target_arch = "wasm32"))]
 mod process;
 
-pub use contract::{main_contract, EnvironmentBinding, FailureRenderer, HostService, MainContract};
+pub use contract::{
+    main_contract, DisplayDictionary, EnvironmentBinding, FailureRenderer, HostService,
+    MainContract,
+};
 #[cfg(not(target_arch = "wasm32"))]
 pub use package::stage_typescript_package;
 #[cfg(not(target_arch = "wasm32"))]

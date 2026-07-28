@@ -6,7 +6,9 @@
     "core.adt",
     "core.int64",
     "core.show.dictionary",
+    "core.show.bounded",
     "core.debug.dictionary",
+    "core.debug.bounded",
     "core.int64.show",
     "core.int64.debug",
     "core.array.show",
@@ -33,6 +35,14 @@
     "effect.console.println"
   ],
   "imports": [
+    {
+      "feature": "core.show.bounded",
+      "local": "_ssrg_show_boundedShow"
+    },
+    {
+      "feature": "core.debug.bounded",
+      "local": "_ssrg_debug_boundedDebug"
+    },
     {
       "feature": "core.int64.show",
       "local": "_ssrg_show_intShow"

@@ -5,12 +5,17 @@
   "runtimeRequirements": [
     "core.adt",
     "core.show.dictionary",
+    "core.show.bounded",
     "core.string",
     "core.string.show",
     "core.unit",
     "effect.console.println"
   ],
   "imports": [
+    {
+      "feature": "core.show.bounded",
+      "local": "_ssrg_show_boundedShow"
+    },
     {
       "feature": "core.string.show",
       "local": "_ssrg_show_stringShow"

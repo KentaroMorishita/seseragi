@@ -1,0 +1,599 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 127,
+        "end": 131
+      },
+      "related": [
+        {
+          "message": "no Show<dom.DomError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 73,
+            "end": 137
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Show<dom.DomError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 73,
+            "end": 137
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 194,
+        "end": 199
+      },
+      "related": [
+        {
+          "message": "no Debug<dom.DomError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 139,
+            "end": 205
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Debug<dom.DomError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 139,
+            "end": 205
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d3",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 283,
+        "end": 287
+      },
+      "related": [
+        {
+          "message": "no Show<dom.DomRuntimeError<String>> instance matches the inferred call arguments",
+          "primary": {
+            "start": 207,
+            "end": 293
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Show<dom.DomRuntimeError<String>> instance matches the inferred call arguments",
+          "primary": {
+            "start": 207,
+            "end": 293
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d4",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 372,
+        "end": 377
+      },
+      "related": [
+        {
+          "message": "no Debug<dom.DomRuntimeError<String>> instance matches the inferred call arguments",
+          "primary": {
+            "start": 295,
+            "end": 383
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Debug<dom.DomRuntimeError<String>> instance matches the inferred call arguments",
+          "primary": {
+            "start": 295,
+            "end": 383
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d5",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 452,
+        "end": 456
+      },
+      "related": [
+        {
+          "message": "no Show<html.HtmlBuildError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 385,
+            "end": 462
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Show<html.HtmlBuildError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 385,
+            "end": 462
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d6",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 532,
+        "end": 537
+      },
+      "related": [
+        {
+          "message": "no Debug<html.HtmlBuildError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 464,
+            "end": 543
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Debug<html.HtmlBuildError> instance matches the inferred call arguments",
+          "primary": {
+            "start": 464,
+            "end": 543
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d7",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 586,
+        "end": 590
+      },
+      "related": [
+        {
+          "message": "no Show<A> instance matches the inferred call arguments",
+          "primary": {
+            "start": 545,
+            "end": 673
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Show<A> instance matches the inferred call arguments",
+          "primary": {
+            "start": 545,
+            "end": 673
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d8",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "instance.missing",
+      "message": "A required trait instance is not available",
+      "primary": {
+        "start": 634,
+        "end": 639
+      },
+      "related": [
+        {
+          "message": "no Debug<A> instance matches the inferred call arguments",
+          "primary": {
+            "start": 545,
+            "end": 673
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "no Debug<A> instance matches the inferred call arguments",
+          "primary": {
+            "start": 545,
+            "end": 673
+          }
+        }
+      ],
+      "notes": [
+        "Trait instances are selected from the current lexical and import scope."
+      ],
+      "helps": [
+        "Define or import a matching instance, or use a type with an available instance."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d9",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 100,
+        "end": 112
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 73,
+            "end": 137
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 73,
+            "end": 137
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d10",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 167,
+        "end": 179
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 139,
+            "end": 205
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 139,
+            "end": 205
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d11",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 241,
+        "end": 268
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 207,
+            "end": 293
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 207,
+            "end": 293
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d12",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 330,
+        "end": 357
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 295,
+            "end": 383
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 295,
+            "end": 383
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d13",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 418,
+        "end": 437
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 385,
+            "end": 462
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 385,
+            "end": 462
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d14",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 498,
+        "end": 517
+      },
+      "related": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 464,
+            "end": 543
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "pure function body",
+          "primary": {
+            "start": 464,
+            "end": 543
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d15",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 592,
+        "end": 611
+      },
+      "related": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 545,
+            "end": 673
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 545,
+            "end": 673
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d16",
+      "code": "SES-N0001",
+      "severity": "Error",
+      "messageKey": "name.unresolved",
+      "message": "Name could not be resolved",
+      "primary": {
+        "start": 641,
+        "end": 660
+      },
+      "related": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 545,
+            "end": 673
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "effect function body",
+          "primary": {
+            "start": 545,
+            "end": 673
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Check the spelling, or define or import the name before using it."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

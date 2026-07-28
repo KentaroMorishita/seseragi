@@ -1399,6 +1399,21 @@
       "constraints": []
     },
     {
+      "identity": "std/prelude::printValue",
+      "name": "printValue",
+      "module": "std/prelude",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "printValue<A> value: A -> Effect<{console: Console}, ConsoleError, Unit> where Show<A>",
+      "description": "Renders a value through its Show instance and writes it through Console.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Show<A>"
+      ]
+    },
+    {
       "identity": "std/prelude::println",
       "name": "println",
       "module": "std/prelude",
@@ -1594,7 +1609,7 @@
       "name": "HtmlBuildError",
       "module": "std/web/html",
       "category": "HTML",
-      "kind": "type",
+      "kind": "opaque-type",
       "signature": "HtmlBuildError",
       "description": "Describes a rejected custom HTML tag or attribute name.",
       "typeParameters": [],

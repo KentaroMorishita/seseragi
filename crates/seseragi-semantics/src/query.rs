@@ -1094,6 +1094,11 @@ fn effect_operation_callable(operation: crate::KnownEffectOperation) -> Analysis
             vec![named_parameter("text", "String")],
             "Effect<{console: Console}, ConsoleError, Unit>".to_owned(),
         ),
+        "printValue" => (
+            vec!["A".to_owned()],
+            vec![named_parameter("value", "A")],
+            "Effect<{console: Console}, ConsoleError, Unit>".to_owned(),
+        ),
         "succeed" => (
             vec!["A".to_owned()],
             vec![named_parameter("value", "A")],
@@ -1124,6 +1129,11 @@ fn effect_operation_callable(operation: crate::KnownEffectOperation) -> Analysis
         ),
         _ => (Vec::new(), Vec::new(), "Effect<{}, Never, Unit>".to_owned()),
     };
+    let constraints = if operation.surface_name == "printValue" {
+        vec!["Show<A>".to_owned()]
+    } else {
+        Vec::new()
+    };
     finish_callable(
         operation.semantic_name.to_owned(),
         operation.surface_name.to_owned(),
@@ -1135,7 +1145,7 @@ fn effect_operation_callable(operation: crate::KnownEffectOperation) -> Analysis
         type_parameters,
         parameters,
         result,
-        Vec::new(),
+        constraints,
     )
 }
 
@@ -1259,6 +1269,9 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/prelude::Right" => "Constructs the success side of Either.",
         "std/prelude::println" => "Writes text followed by a newline through Console.",
         "std/prelude::print" => "Writes text through Console without adding a newline.",
+        "std/prelude::printValue" => {
+            "Renders a value through its Show instance and writes it through Console."
+        }
         "std/prelude::readLine" => "Reads one optional line through Stdin.",
         "std/effect::succeed" => "Creates an Effect that succeeds with a value.",
         "std/effect::fail" => "Creates an Effect that fails with a typed error.",

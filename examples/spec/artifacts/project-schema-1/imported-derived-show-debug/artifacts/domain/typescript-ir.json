@@ -7,13 +7,23 @@
     "core.string",
     "core.maybe",
     "core.show.dictionary",
+    "core.show.bounded",
     "core.debug.dictionary",
+    "core.debug.bounded",
     "core.string.show",
     "core.string.debug",
     "core.maybe.show",
     "core.maybe.debug"
   ],
   "imports": [
+    {
+      "feature": "core.show.bounded",
+      "local": "_ssrg_show_boundedShow"
+    },
+    {
+      "feature": "core.debug.bounded",
+      "local": "_ssrg_debug_boundedDebug"
+    },
     {
       "feature": "core.string.show",
       "local": "_ssrg_show_stringShow"

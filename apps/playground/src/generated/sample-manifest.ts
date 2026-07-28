@@ -904,7 +904,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     definition: {
       "id": "unary-operators",
       "title": "単項演算子と値表示",
-      "summary": "unary - / !の型と値をbinding・argument・Debugまで保ちます。",
+      "summary": "unary - / !をtemplate・printValue・Debugへ直接渡します。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
@@ -912,6 +912,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
         "Int",
         "Float",
         "Bool",
+        "Show",
         "Debug"
       ],
       "capabilities": [
@@ -927,7 +928,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/unary-operators/main.ssrg",
       "guidePath": "examples/samples/unary-operators/guide.md",
       "expectedOutputPath": "examples/samples/unary-operators/stdout.txt",
-      "sourceHash": "sha256:841807590b7e3cbab4f8193c28ff051456f798a60cc3d5f9d22004dfb3a0c7a1"
+      "sourceHash": "sha256:d284d3d9fd8987ee58602f28cdbcaa550f57f95ea7021b82934a280581282437"
     },
     source: sample24Source,
     guide: sample24Guide,

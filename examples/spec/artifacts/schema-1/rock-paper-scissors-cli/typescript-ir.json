@@ -8,6 +8,7 @@
     "core.adt",
     "core.string",
     "core.show.dictionary",
+    "core.show.bounded",
     "effect.stdin.error.show",
     "core.string.show",
     "effect.console.error.show",
@@ -23,6 +24,10 @@
     "effect.console.println"
   ],
   "imports": [
+    {
+      "feature": "core.show.bounded",
+      "local": "_ssrg_show_boundedShow"
+    },
     {
       "feature": "effect.stdin.error.show",
       "local": "_ssrg_show_stdinErrorShow"

@@ -6,6 +6,7 @@
     "core.adt",
     "core.string",
     "core.show.dictionary",
+    "core.show.bounded",
     "core.string.show",
     "core.either",
     "core.either.right",
@@ -13,6 +14,10 @@
     "effect.core.fromEither"
   ],
   "imports": [
+    {
+      "feature": "core.show.bounded",
+      "local": "_ssrg_show_boundedShow"
+    },
     {
       "feature": "core.string.show",
       "local": "_ssrg_show_stringShow"

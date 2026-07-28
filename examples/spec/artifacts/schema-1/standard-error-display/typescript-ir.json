@@ -1,0 +1,370 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/standard-error-display",
+  "runtimeRequirements": [
+    "web.dom.error",
+    "web.dom.runtime-error",
+    "web.html.build-error-type",
+    "web.dom.error.show",
+    "core.string",
+    "web.dom.error.debug",
+    "core.string.show",
+    "web.dom.runtime-error.show",
+    "core.string.debug",
+    "web.dom.runtime-error.debug",
+    "web.html.build-error.show",
+    "web.html.build-error.debug",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println",
+    "web.html.error.invalid-tag-name"
+  ],
+  "imports": [
+    {
+      "feature": "web.dom.error.show",
+      "local": "_ssrg_show_domErrorShow"
+    },
+    {
+      "feature": "web.dom.error.debug",
+      "local": "_ssrg_debug_domErrorDebug"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "web.dom.runtime-error.show",
+      "local": "_ssrg_show_domRuntimeErrorShow"
+    },
+    {
+      "feature": "core.string.debug",
+      "local": "_ssrg_debug_stringDebug"
+    },
+    {
+      "feature": "web.dom.runtime-error.debug",
+      "local": "_ssrg_debug_domRuntimeErrorDebug"
+    },
+    {
+      "feature": "web.html.build-error.show",
+      "local": "_ssrg_show_htmlBuildErrorShow"
+    },
+    {
+      "feature": "web.html.build-error.debug",
+      "local": "_ssrg_debug_htmlBuildErrorDebug"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "web.html.error.invalid-tag-name",
+      "local": "_ssrg_html_InvalidTagName"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "web.dom.error",
+      "local": "DomError"
+    },
+    {
+      "feature": "web.dom.runtime-error",
+      "local": "DomRuntimeError"
+    },
+    {
+      "feature": "web.html.build-error-type",
+      "local": "HtmlBuildError"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "showDomError",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "DomError",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_show_domErrorShow"
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 73,
+        "end": 137
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugDomError",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "DomError",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_debug_domErrorDebug"
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 139,
+        "end": 205
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "showDomRuntimeError",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "DomRuntimeError<string>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_show_domRuntimeErrorShow",
+          "typeArguments": [
+            {
+              "kind": "string"
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_show_stringShow"
+            }
+          ]
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 207,
+        "end": 293
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugDomRuntimeError",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "DomRuntimeError<string>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_debug_domRuntimeErrorDebug",
+          "typeArguments": [
+            {
+              "kind": "string"
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_debug_stringDebug"
+            }
+          ]
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 295,
+        "end": 383
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "showHtmlBuildError",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "HtmlBuildError",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_show_htmlBuildErrorShow"
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 385,
+        "end": 462
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugHtmlBuildError",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "HtmlBuildError",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_debug_htmlBuildErrorDebug"
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 464,
+        "end": 543
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_htmlBuildErrorShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_InvalidTagName",
+                      "arguments": [
+                        {
+                          "kind": "string",
+                          "value": "1bad"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_debug_htmlBuildErrorDebug"
+              },
+              "method": "debug",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_html_InvalidTagName",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "1bad"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 545,
+        "end": 673
+      }
+    }
+  ]
+}

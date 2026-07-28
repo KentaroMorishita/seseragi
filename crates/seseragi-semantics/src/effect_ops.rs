@@ -34,6 +34,14 @@ const KNOWN_EFFECT_OPERATIONS: &[KnownEffectOperation] = &[
         success_type_arguments: &[],
     },
     KnownEffectOperation {
+        surface_name: "printValue",
+        semantic_name: "std/prelude::printValue",
+        requirement: Some(("console", "Console")),
+        failure_type: "ConsoleError",
+        success_type: "Unit",
+        success_type_arguments: &[],
+    },
+    KnownEffectOperation {
         surface_name: "succeed",
         semantic_name: "std/effect::succeed",
         requirement: None,
@@ -112,6 +120,14 @@ mod tests {
         let operation = known_effect_operation_by_surface("print").unwrap();
         assert_eq!(operation.semantic_name, "std/prelude::print");
         assert_eq!(operation.success_type, "Unit");
+    }
+
+    #[test]
+    fn resolves_print_value_by_surface_name() {
+        let operation = known_effect_operation_by_surface("printValue").unwrap();
+        assert_eq!(operation.semantic_name, "std/prelude::printValue");
+        assert_eq!(operation.requirement, Some(("console", "Console")));
+        assert_eq!(operation.failure_type, "ConsoleError");
     }
 
     #[test]

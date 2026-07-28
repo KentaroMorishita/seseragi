@@ -481,6 +481,84 @@
     {
       "trait": "Debug",
       "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "ConsoleError",
+      "typeConstructorCanonical": "std/prelude::ConsoleError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/prelude::ConsoleError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "StdinError",
+      "typeConstructorCanonical": "std/prelude::StdinError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/prelude::StdinError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "DomError",
+      "typeConstructorCanonical": "std/web/dom::DomError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/web/dom::DomError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "DomError",
+      "typeConstructorCanonical": "std/web/dom::DomError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/web/dom::DomError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "DomRuntimeError",
+      "typeConstructorCanonical": "std/web/dom::DomRuntimeError",
+      "typeConstructorArity": 1,
+      "identity": "std/web/dom::DomRuntimeError::Show",
+      "constraints": [
+        {
+          "trait": "Show",
+          "traitCanonical": "std/prelude::Show",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "DomRuntimeError",
+      "typeConstructorCanonical": "std/web/dom::DomRuntimeError",
+      "typeConstructorArity": 1,
+      "identity": "std/web/dom::DomRuntimeError::Debug",
+      "constraints": [
+        {
+          "trait": "Debug",
+          "traitCanonical": "std/prelude::Debug",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "HtmlBuildError",
+      "typeConstructorCanonical": "std/web/html::HtmlBuildError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/web/html::HtmlBuildError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "HtmlBuildError",
+      "typeConstructorCanonical": "std/web/html::HtmlBuildError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/web/html::HtmlBuildError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
       "typeConstructor": "String",
       "typeConstructorCanonical": "std/prelude::String",
       "typeConstructorArity": 0,

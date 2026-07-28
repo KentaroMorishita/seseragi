@@ -64,6 +64,7 @@
       "core.adt",
       "core.string",
       "core.show.dictionary",
+      "core.show.bounded",
       "effect.stdin.error.show",
       "core.string.show",
       "effect.console.error.show",

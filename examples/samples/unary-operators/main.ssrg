@@ -4,6 +4,16 @@ let inverted = !True
 
 pub effect fn main =
   do {
+    println `let: ${negative}, ${negativeZero}, ${inverted}`
+    println `direct: ${-2}, ${-0.0}, ${!True}`
+    printValue negative
+    println ""
+    printValue (-2)
+    println ""
+    printValue inverted
+    println ""
+    printValue (!True)
+    println ""
     println (debug negative)
     println (debug negativeZero)
     println (debug inverted)

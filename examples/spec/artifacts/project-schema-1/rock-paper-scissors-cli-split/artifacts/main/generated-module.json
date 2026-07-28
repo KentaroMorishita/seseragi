@@ -9,6 +9,7 @@
       "effect.console.error",
       "core.adt",
       "core.show.dictionary",
+      "core.show.bounded",
       "effect.console.error.show",
       "core.unit",
       "effect.core.flatMap",

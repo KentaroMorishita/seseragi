@@ -361,11 +361,17 @@ fn missing_standard_requirement(
                     })
             });
     }
-    let instance = crate::prelude::standard_instance(&constraint.name, type_ref)?;
+    let standard_type_ref =
+        if crate::prelude::standard_instance(&constraint.name, type_ref).is_some() {
+            type_ref.clone()
+        } else {
+            contextual_standard_type_ref(type_ref, resolution)
+        };
+    let instance = crate::prelude::standard_instance(&constraint.name, &standard_type_ref)?;
     if standard_type_is_shadowed(instance, type_ref, resolution) {
         return None;
     }
-    let requirements = crate::prelude::standard_instance_constraints(instance, type_ref)?;
+    let requirements = crate::prelude::standard_instance_constraints(instance, &standard_type_ref)?;
     requirements.into_iter().find_map(|required| {
         let required_trait_identity = format!("std/prelude::{}", required.name);
         select_resolved_evidence(&required, &required_trait_identity, resolution, scoped)
@@ -520,15 +526,22 @@ fn select_contextual_standard_instance(
             evidence_arguments,
         });
     }
-    let Some(instance) = crate::prelude::standard_instance(&constraint.name, type_ref) else {
+    let standard_type_ref =
+        if crate::prelude::standard_instance(&constraint.name, type_ref).is_some() {
+            type_ref.clone()
+        } else {
+            contextual_standard_type_ref(type_ref, resolution)
+        };
+    let Some(instance) = crate::prelude::standard_instance(&constraint.name, &standard_type_ref)
+    else {
         return select_standard_instance(Some(trait_identity), constraint);
     };
     if standard_type_is_shadowed(instance, type_ref, resolution) {
         return None;
     }
-    let requirements = crate::prelude::standard_instance_constraints(instance, type_ref)?;
+    let requirements = crate::prelude::standard_instance_constraints(instance, &standard_type_ref)?;
     if requirements.is_empty() {
-        return select_standard_instance(Some(trait_identity), constraint);
+        return Some(standard_evidence(instance.identity.to_owned()));
     }
     let evidence_arguments = requirements
         .into_iter()
@@ -549,9 +562,50 @@ fn select_contextual_standard_instance(
         .collect::<Option<Vec<_>>>()?;
     Some(TypedInstanceEvidence::Standard {
         identity: instance.identity.to_owned(),
-        type_arguments: standard_instance_type_arguments(instance, type_ref)?,
+        type_arguments: standard_instance_type_arguments(instance, &standard_type_ref)?,
         evidence_arguments,
     })
+}
+
+fn contextual_standard_type_ref(
+    type_ref: &TypedType,
+    resolution: &TypedResolution<'_>,
+) -> TypedType {
+    let (name, arguments) = match type_ref {
+        TypedType::Named { name, arguments }
+        | TypedType::ExternalNamed {
+            name, arguments, ..
+        } => (name.clone(), arguments.clone()),
+        _ => return type_ref.clone(),
+    };
+    let semantic = resolution.semantic_value_from_typed_type(type_ref);
+    let canonical = match semantic.key {
+        super::semantic_types::SemanticTypeKey::Adt { owner, .. }
+        | super::semantic_types::SemanticTypeKey::Struct { owner, .. } => resolution
+            .symbol(owner)
+            .and_then(|symbol| symbol.canonical.clone()),
+        super::semantic_types::SemanticTypeKey::ExternalNominal { canonical, .. } => {
+            Some(canonical)
+        }
+        _ => None,
+    }
+    .or_else(|| {
+        resolution
+            .resolved()
+            .imports
+            .iter()
+            .find(|import| {
+                import.in_scope && import.export.namespace == "type" && import.local_name == name
+            })
+            .map(|import| import.export.symbol.clone())
+    });
+    canonical
+        .map(|canonical| TypedType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        })
+        .unwrap_or_else(|| type_ref.clone())
 }
 
 pub(super) fn select_standard_instance(

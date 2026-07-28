@@ -50,7 +50,14 @@ export type EntryContract = {
         readonly kind: "show"
         readonly module: string
         readonly export: string
+        readonly arguments?: readonly DisplayDictionaryContract[]
       }
+}
+
+export type DisplayDictionaryContract = {
+  readonly module: string
+  readonly export: string
+  readonly arguments?: readonly DisplayDictionaryContract[]
 }
 
 export type DiagnosticArtifact = {

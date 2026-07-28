@@ -340,6 +340,40 @@ mod tests {
     }
 
     #[test]
+    fn desugars_print_value_through_show_evidence_and_console_print() {
+        let typed = type_module(
+            "artifact/print-value/main.ssrg",
+            "pub effect fn main = printValue (-2)\n",
+        );
+
+        let TypedDecl::EffectFn { body, .. } = &typed.declarations[0] else {
+            panic!("expected effect function declaration");
+        };
+        let TypedExpr::EffectCall {
+            operation,
+            arguments,
+            ..
+        } = body
+        else {
+            panic!("expected printValue to become a standard effect call");
+        };
+        assert_eq!(operation, "std/prelude::print");
+        let [TypedExpr::Template { parts, .. }] = arguments.as_slice() else {
+            panic!("expected printValue to render through a template");
+        };
+        assert!(matches!(
+            parts.as_slice(),
+            [crate::TypedTemplatePart::Interpolation {
+                evidence: Some(crate::TypedCallEvidence {
+                    evidence: crate::TypedInstanceEvidence::Standard { identity, .. },
+                    ..
+                }),
+                ..
+            }] if identity == "Show<std/prelude::Int>"
+        ));
+    }
+
+    #[test]
     fn types_basic_public_let() {
         let typed = type_module("artifact/basic/main.ssrg", "pub let answer: Int = 42\n");
 

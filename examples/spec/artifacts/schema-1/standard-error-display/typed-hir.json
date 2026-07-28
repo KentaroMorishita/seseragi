@@ -1,0 +1,958 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/standard-error-display",
+  "externalTypeBindings": [
+    {
+      "spelling": "dom.DomError",
+      "canonical": "std/web/dom::DomError",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomError"
+      }
+    },
+    {
+      "spelling": "dom.DomRuntimeError",
+      "canonical": "std/web/dom::DomRuntimeError",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomRuntimeError"
+      }
+    },
+    {
+      "spelling": "html.HtmlBuildError",
+      "canonical": "std/web/html::HtmlBuildError",
+      "provider": {
+        "module": "std/web/html",
+        "export": "HtmlBuildError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/web/dom",
+      "module": "std/web/dom",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "DomError",
+          "local": "dom.DomError",
+          "canonical": "std/web/dom::DomError",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "DomRuntimeError",
+          "local": "dom.DomRuntimeError",
+          "canonical": "std/web/dom::DomRuntimeError",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "start": 35,
+        "end": 71
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "HtmlBuildError",
+          "local": "html.HtmlBuildError",
+          "canonical": "std/web/html::HtmlBuildError",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "InvalidTagName",
+          "local": "html.InvalidTagName",
+          "canonical": "std/web/html::InvalidTagName",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/standard-error-display::showDomError",
+      "visibility": "public",
+      "origin": {
+        "start": 73,
+        "end": 137
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "external-named",
+            "name": "dom.DomError",
+            "canonical": "std/web/dom::DomError",
+            "arguments": []
+          },
+          "origin": {
+            "start": 93,
+            "end": 98
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::Show::show",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "external-named",
+              "name": "dom.DomError",
+              "canonical": "std/web/dom::DomError",
+              "arguments": []
+            },
+            "origin": {
+              "start": 132,
+              "end": 137
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Show",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "dom.DomError",
+                  "canonical": "std/web/dom::DomError",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/web/dom::DomError>"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Show",
+          "method": "show"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 127,
+          "end": 137
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/standard-error-display::debugDomError",
+      "visibility": "public",
+      "origin": {
+        "start": 139,
+        "end": 205
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "external-named",
+            "name": "dom.DomError",
+            "canonical": "std/web/dom::DomError",
+            "arguments": []
+          },
+          "origin": {
+            "start": 160,
+            "end": 165
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::Debug::debug",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "external-named",
+              "name": "dom.DomError",
+              "canonical": "std/web/dom::DomError",
+              "arguments": []
+            },
+            "origin": {
+              "start": 200,
+              "end": 205
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Debug",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "dom.DomError",
+                  "canonical": "std/web/dom::DomError",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "Debug<std/web/dom::DomError>"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Debug",
+          "method": "debug"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 194,
+          "end": 205
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/standard-error-display::showDomRuntimeError",
+      "visibility": "public",
+      "origin": {
+        "start": 207,
+        "end": 293
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "external-named",
+            "name": "dom.DomRuntimeError",
+            "canonical": "std/web/dom::DomRuntimeError",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 234,
+            "end": 239
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::Show::show",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "external-named",
+              "name": "dom.DomRuntimeError",
+              "canonical": "std/web/dom::DomRuntimeError",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 288,
+              "end": 293
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Show",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "dom.DomRuntimeError",
+                  "canonical": "std/web/dom::DomRuntimeError",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/web/dom::DomRuntimeError::Show",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::String>"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Show",
+          "method": "show"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 283,
+          "end": 293
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/standard-error-display::debugDomRuntimeError",
+      "visibility": "public",
+      "origin": {
+        "start": 295,
+        "end": 383
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "external-named",
+            "name": "dom.DomRuntimeError",
+            "canonical": "std/web/dom::DomRuntimeError",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 323,
+            "end": 328
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::Debug::debug",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "external-named",
+              "name": "dom.DomRuntimeError",
+              "canonical": "std/web/dom::DomRuntimeError",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 378,
+              "end": 383
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Debug",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "dom.DomRuntimeError",
+                  "canonical": "std/web/dom::DomRuntimeError",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/web/dom::DomRuntimeError::Debug",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Debug",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Debug<std/prelude::String>"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Debug",
+          "method": "debug"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 372,
+          "end": 383
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/standard-error-display::showHtmlBuildError",
+      "visibility": "public",
+      "origin": {
+        "start": 385,
+        "end": 462
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "external-named",
+            "name": "html.HtmlBuildError",
+            "canonical": "std/web/html::HtmlBuildError",
+            "arguments": []
+          },
+          "origin": {
+            "start": 411,
+            "end": 416
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::Show::show",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "external-named",
+              "name": "html.HtmlBuildError",
+              "canonical": "std/web/html::HtmlBuildError",
+              "arguments": []
+            },
+            "origin": {
+              "start": 457,
+              "end": 462
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Show",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.HtmlBuildError",
+                  "canonical": "std/web/html::HtmlBuildError",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/web/html::HtmlBuildError>"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Show",
+          "method": "show"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 452,
+          "end": 462
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/standard-error-display::debugHtmlBuildError",
+      "visibility": "public",
+      "origin": {
+        "start": 464,
+        "end": 543
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "external-named",
+            "name": "html.HtmlBuildError",
+            "canonical": "std/web/html::HtmlBuildError",
+            "arguments": []
+          },
+          "origin": {
+            "start": 491,
+            "end": 496
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::Debug::debug",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "external-named",
+              "name": "html.HtmlBuildError",
+              "canonical": "std/web/html::HtmlBuildError",
+              "arguments": []
+            },
+            "origin": {
+              "start": 538,
+              "end": 543
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Debug",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.HtmlBuildError",
+                  "canonical": "std/web/html::HtmlBuildError",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "Debug<std/web/html::HtmlBuildError>"
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Debug",
+          "method": "debug"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 532,
+          "end": 543
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/standard-error-display::main",
+      "visibility": "public",
+      "origin": {
+        "start": 545,
+        "end": 673
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::InvalidTagName",
+                      "arguments": [
+                        {
+                          "kind": "string",
+                          "value": "1bad",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 612,
+                            "end": 618
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "html.HtmlBuildError",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 592,
+                        "end": 618
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "html.HtmlBuildError",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/web/html::HtmlBuildError>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 586,
+                    "end": 619
+                  }
+                }
+              ],
+              "origin": {
+                "start": 577,
+                "end": 620
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "std/prelude::Debug::debug",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/web/html::InvalidTagName",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "1bad",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 661,
+                        "end": 667
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "html.HtmlBuildError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 641,
+                    "end": 667
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Debug",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "html.HtmlBuildError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Debug<std/web/html::HtmlBuildError>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Debug",
+                "method": "debug"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 634,
+                "end": 668
+              }
+            }
+          ],
+          "origin": {
+            "start": 625,
+            "end": 669
+          }
+        },
+        "origin": {
+          "start": 568,
+          "end": 673
+        }
+      }
+    }
+  ]
+}

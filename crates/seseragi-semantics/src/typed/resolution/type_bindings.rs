@@ -1,5 +1,5 @@
 use crate::prelude::is_external_nominal_type;
-use crate::{ExternalTypeBinding, ResolvedModule, SymbolNamespace};
+use crate::{ExternalTypeBinding, ExternalTypeProvider, ResolvedModule, SymbolNamespace};
 
 pub(super) fn collect_external_type_bindings(
     resolved: &ResolvedModule,
@@ -46,6 +46,43 @@ pub(super) fn collect_external_type_bindings(
             if !bindings.contains(&binding) {
                 bindings.push(binding);
             }
+        }
+    }
+    for reference in &resolved.references {
+        if reference.namespace != SymbolNamespace::Type {
+            continue;
+        }
+        let Some(symbol) = reference
+            .target
+            .and_then(|target| resolved.symbols.iter().find(|symbol| symbol.id == target))
+        else {
+            continue;
+        };
+        let Some(canonical) = symbol.canonical.as_deref().filter(|canonical| {
+            matches!(
+                *canonical,
+                "std/web/dom::DomError"
+                    | "std/web/dom::DomRuntimeError"
+                    | "std/web/html::HtmlBuildError"
+            )
+        }) else {
+            continue;
+        };
+        let Some(import) = resolved.imports.iter().find(|import| {
+            import.in_scope && import.symbol == symbol.id && import.export.namespace == "type"
+        }) else {
+            continue;
+        };
+        let binding = ExternalTypeBinding {
+            spelling: reference.spelling.clone(),
+            canonical: canonical.to_owned(),
+            provider: Some(ExternalTypeProvider {
+                module: import.module.clone(),
+                export: import.export.name.clone(),
+            }),
+        };
+        if !bindings.contains(&binding) {
+            bindings.push(binding);
         }
     }
     bindings

@@ -1,0 +1,1319 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/standard-error-display",
+  "dependencies": [
+    {
+      "specifier": "std/web/dom",
+      "module": "artifact/standard-error-display/std/web/dom",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/standard-error-display/std/web/dom::*",
+          "localName": "dom"
+        }
+      ]
+    },
+    {
+      "specifier": "std/web/html",
+      "module": "artifact/standard-error-display/std/web/html",
+      "origin": {
+        "start": 35,
+        "end": 71
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/standard-error-display/std/web/html::*",
+          "localName": "html"
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showDomError",
+      "nameSpan": {
+        "start": 80,
+        "end": 92
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 93,
+            "end": 98
+          },
+          "type": {
+            "kind": "named",
+            "name": "dom.DomError",
+            "span": {
+              "start": 100,
+              "end": 112
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 116,
+          "end": 122
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 127,
+            "end": 131
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 132,
+            "end": 137
+          }
+        },
+        "span": {
+          "start": 127,
+          "end": 137
+        }
+      },
+      "span": {
+        "start": 73,
+        "end": 137
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugDomError",
+      "nameSpan": {
+        "start": 146,
+        "end": 159
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 160,
+            "end": 165
+          },
+          "type": {
+            "kind": "named",
+            "name": "dom.DomError",
+            "span": {
+              "start": 167,
+              "end": 179
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 183,
+          "end": 189
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 194,
+            "end": 199
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 200,
+            "end": 205
+          }
+        },
+        "span": {
+          "start": 194,
+          "end": 205
+        }
+      },
+      "span": {
+        "start": 139,
+        "end": 205
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showDomRuntimeError",
+      "nameSpan": {
+        "start": 214,
+        "end": 233
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 234,
+            "end": 239
+          },
+          "type": {
+            "kind": "named",
+            "name": "dom.DomRuntimeError",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 261,
+                  "end": 267
+                }
+              }
+            ],
+            "span": {
+              "start": 241,
+              "end": 268
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 272,
+          "end": 278
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 283,
+            "end": 287
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 288,
+            "end": 293
+          }
+        },
+        "span": {
+          "start": 283,
+          "end": 293
+        }
+      },
+      "span": {
+        "start": 207,
+        "end": 293
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugDomRuntimeError",
+      "nameSpan": {
+        "start": 302,
+        "end": 322
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 323,
+            "end": 328
+          },
+          "type": {
+            "kind": "named",
+            "name": "dom.DomRuntimeError",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 350,
+                  "end": 356
+                }
+              }
+            ],
+            "span": {
+              "start": 330,
+              "end": 357
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 361,
+          "end": 367
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 372,
+            "end": 377
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 378,
+            "end": 383
+          }
+        },
+        "span": {
+          "start": 372,
+          "end": 383
+        }
+      },
+      "span": {
+        "start": 295,
+        "end": 383
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showHtmlBuildError",
+      "nameSpan": {
+        "start": 392,
+        "end": 410
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 411,
+            "end": 416
+          },
+          "type": {
+            "kind": "named",
+            "name": "html.HtmlBuildError",
+            "span": {
+              "start": 418,
+              "end": 437
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 441,
+          "end": 447
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 452,
+            "end": 456
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 457,
+            "end": 462
+          }
+        },
+        "span": {
+          "start": 452,
+          "end": 462
+        }
+      },
+      "span": {
+        "start": 385,
+        "end": 462
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugHtmlBuildError",
+      "nameSpan": {
+        "start": 471,
+        "end": 490
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 491,
+            "end": 496
+          },
+          "type": {
+            "kind": "named",
+            "name": "html.HtmlBuildError",
+            "span": {
+              "start": 498,
+              "end": 517
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 521,
+          "end": 527
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 532,
+            "end": 537
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 538,
+            "end": 543
+          }
+        },
+        "span": {
+          "start": 532,
+          "end": 543
+        }
+      },
+      "span": {
+        "start": 464,
+        "end": 543
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 559,
+        "end": 563
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 577,
+                  "end": 584
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "show",
+                    "span": {
+                      "start": 586,
+                      "end": 590
+                    }
+                  },
+                  "argument": {
+                    "kind": "grouped",
+                    "value": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "member",
+                        "receiver": {
+                          "kind": "name",
+                          "name": "html",
+                          "span": {
+                            "start": 592,
+                            "end": 596
+                          }
+                        },
+                        "field": "InvalidTagName",
+                        "fieldSpan": {
+                          "start": 597,
+                          "end": 611
+                        },
+                        "span": {
+                          "start": 592,
+                          "end": 611
+                        }
+                      },
+                      "argument": {
+                        "kind": "string",
+                        "raw": "\"1bad\"",
+                        "span": {
+                          "start": 612,
+                          "end": 618
+                        }
+                      },
+                      "span": {
+                        "start": 592,
+                        "end": 618
+                      }
+                    },
+                    "span": {
+                      "start": 591,
+                      "end": 619
+                    }
+                  },
+                  "span": {
+                    "start": 586,
+                    "end": 619
+                  }
+                },
+                "span": {
+                  "start": 585,
+                  "end": 620
+                }
+              },
+              "span": {
+                "start": 577,
+                "end": 620
+              }
+            },
+            "span": {
+              "start": 577,
+              "end": 620
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 625,
+              "end": 632
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "debug",
+                "span": {
+                  "start": 634,
+                  "end": 639
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "member",
+                    "receiver": {
+                      "kind": "name",
+                      "name": "html",
+                      "span": {
+                        "start": 641,
+                        "end": 645
+                      }
+                    },
+                    "field": "InvalidTagName",
+                    "fieldSpan": {
+                      "start": 646,
+                      "end": 660
+                    },
+                    "span": {
+                      "start": 641,
+                      "end": 660
+                    }
+                  },
+                  "argument": {
+                    "kind": "string",
+                    "raw": "\"1bad\"",
+                    "span": {
+                      "start": 661,
+                      "end": 667
+                    }
+                  },
+                  "span": {
+                    "start": 641,
+                    "end": 667
+                  }
+                },
+                "span": {
+                  "start": 640,
+                  "end": 668
+                }
+              },
+              "span": {
+                "start": 634,
+                "end": 668
+              }
+            },
+            "span": {
+              "start": 633,
+              "end": 669
+            }
+          },
+          "span": {
+            "start": 625,
+            "end": 669
+          }
+        },
+        "span": {
+          "start": 568,
+          "end": 673
+        }
+      },
+      "span": {
+        "start": 545,
+        "end": 673
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 73,
+        "end": 673
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 73,
+        "end": 137
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 139,
+        "end": 205
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 207,
+        "end": 293
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 295,
+        "end": 383
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 385,
+        "end": 462
+      }
+    },
+    {
+      "id": 6,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 464,
+        "end": 543
+      }
+    },
+    {
+      "id": 7,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 545,
+        "end": 673
+      }
+    },
+    {
+      "id": 8,
+      "parent": 7,
+      "kind": "do-block",
+      "origin": {
+        "start": 568,
+        "end": 673
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "showDomError",
+      "canonical": "artifact/standard-error-display::showDomError",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 80,
+        "end": 92
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "debugDomError",
+      "canonical": "artifact/standard-error-display::debugDomError",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 146,
+        "end": 159
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "showDomRuntimeError",
+      "canonical": "artifact/standard-error-display::showDomRuntimeError",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 214,
+        "end": 233
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "debugDomRuntimeError",
+      "canonical": "artifact/standard-error-display::debugDomRuntimeError",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 302,
+        "end": 322
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "showHtmlBuildError",
+      "canonical": "artifact/standard-error-display::showHtmlBuildError",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 392,
+        "end": 410
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "debugHtmlBuildError",
+      "canonical": "artifact/standard-error-display::debugHtmlBuildError",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 471,
+        "end": 490
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "main",
+      "canonical": "artifact/standard-error-display::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 559,
+        "end": 563
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "dom",
+      "canonical": "artifact/standard-error-display/std/web/dom::*",
+      "namespace": "module",
+      "kind": "module-import",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 34
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "html",
+      "canonical": "artifact/standard-error-display/std/web/html::*",
+      "namespace": "module",
+      "kind": "module-import",
+      "scope": 0,
+      "origin": {
+        "start": 35,
+        "end": 71
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 93,
+        "end": 98
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "Show",
+      "canonical": "std/prelude::Show",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "show",
+      "canonical": "std/prelude::Show::show",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 2,
+      "origin": {
+        "start": 160,
+        "end": 165
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "Debug",
+      "canonical": "std/prelude::Debug",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "debug",
+      "canonical": "std/prelude::Debug::debug",
+      "namespace": "value",
+      "kind": "trait-method",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 234,
+        "end": 239
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 4,
+      "origin": {
+        "start": 323,
+        "end": 328
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 5,
+      "origin": {
+        "start": 411,
+        "end": 416
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 6,
+      "origin": {
+        "start": 491,
+        "end": 496
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "dom.DomError",
+      "namespace": "type",
+      "origin": {
+        "start": 100,
+        "end": 112
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 116,
+        "end": 122
+      }
+    },
+    {
+      "spelling": "show",
+      "namespace": "value",
+      "target": 12,
+      "candidates": [
+        12
+      ],
+      "origin": {
+        "start": 127,
+        "end": 131
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 9,
+      "origin": {
+        "start": 132,
+        "end": 137
+      }
+    },
+    {
+      "spelling": "dom.DomError",
+      "namespace": "type",
+      "origin": {
+        "start": 167,
+        "end": 179
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 183,
+        "end": 189
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 15,
+      "candidates": [
+        15
+      ],
+      "origin": {
+        "start": 194,
+        "end": 199
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 200,
+        "end": 205
+      }
+    },
+    {
+      "spelling": "dom.DomRuntimeError",
+      "namespace": "type",
+      "origin": {
+        "start": 241,
+        "end": 268
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 261,
+        "end": 267
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 272,
+        "end": 278
+      }
+    },
+    {
+      "spelling": "show",
+      "namespace": "value",
+      "target": 12,
+      "candidates": [
+        12
+      ],
+      "origin": {
+        "start": 283,
+        "end": 287
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 16,
+      "origin": {
+        "start": 288,
+        "end": 293
+      }
+    },
+    {
+      "spelling": "dom.DomRuntimeError",
+      "namespace": "type",
+      "origin": {
+        "start": 330,
+        "end": 357
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 350,
+        "end": 356
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 361,
+        "end": 367
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 15,
+      "candidates": [
+        15
+      ],
+      "origin": {
+        "start": 372,
+        "end": 377
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 17,
+      "origin": {
+        "start": 378,
+        "end": 383
+      }
+    },
+    {
+      "spelling": "html.HtmlBuildError",
+      "namespace": "type",
+      "origin": {
+        "start": 418,
+        "end": 437
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 441,
+        "end": 447
+      }
+    },
+    {
+      "spelling": "show",
+      "namespace": "value",
+      "target": 12,
+      "candidates": [
+        12
+      ],
+      "origin": {
+        "start": 452,
+        "end": 456
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 18,
+      "origin": {
+        "start": 457,
+        "end": 462
+      }
+    },
+    {
+      "spelling": "html.HtmlBuildError",
+      "namespace": "type",
+      "origin": {
+        "start": 498,
+        "end": 517
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 521,
+        "end": 527
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 15,
+      "candidates": [
+        15
+      ],
+      "origin": {
+        "start": 532,
+        "end": 537
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 19,
+      "origin": {
+        "start": 538,
+        "end": 543
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 20,
+      "origin": {
+        "start": 577,
+        "end": 584
+      }
+    },
+    {
+      "spelling": "show",
+      "namespace": "value",
+      "target": 12,
+      "candidates": [
+        12
+      ],
+      "origin": {
+        "start": 586,
+        "end": 590
+      }
+    },
+    {
+      "spelling": "html.InvalidTagName",
+      "namespace": "value",
+      "origin": {
+        "start": 592,
+        "end": 611
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 20,
+      "origin": {
+        "start": 625,
+        "end": 632
+      }
+    },
+    {
+      "spelling": "debug",
+      "namespace": "value",
+      "target": 15,
+      "candidates": [
+        15
+      ],
+      "origin": {
+        "start": 634,
+        "end": 639
+      }
+    },
+    {
+      "spelling": "html.InvalidTagName",
+      "namespace": "value",
+      "origin": {
+        "start": 641,
+        "end": 660
+      }
+    }
+  ],
+  "issues": [
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 100,
+        "end": 112
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 167,
+        "end": 179
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 241,
+        "end": 268
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 330,
+        "end": 357
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 418,
+        "end": 437
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 498,
+        "end": 517
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 592,
+        "end": 611
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 641,
+        "end": 660
+      }
+    }
+  ]
+}

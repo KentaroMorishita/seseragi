@@ -459,7 +459,7 @@ Actionとして`Task<Unit>`を使う場合も同じ契約です。SSRはevent ha
 ## 13.5 safe tag、attribute、style、URL
 
 ```seseragi
-type HtmlBuildError deriving Eq, Show =
+type HtmlBuildError deriving Eq, Show, Debug =
   | InvalidTagName String
   | InvalidAttributeName String
   | ReservedAttributeName String
@@ -561,7 +561,7 @@ browserが行うtable補正などHTML parser固有normalizationが必要な構�
 ## 13.8 Dom serviceとtarget
 
 ```seseragi
-type DomError deriving Eq, Show =
+type DomError deriving Eq, Show, Debug =
   | InvalidSelector String
   | DomTargetNotFound String
   | DomTargetAlreadyMounted
@@ -621,6 +621,10 @@ fn app<State, Action>
   }
   -> Effect<{ dom: Dom }, String, Unit>
 ```
+
+`DomRuntimeError<E>`は`Show<E>`があるときShow、`Debug<E>`があるときDebugを条件付きで
+合成します。`DomTarget`、`DomMount<E>`、`Html<Action>`、`Attribute`等のopaque handleには
+Show / Debugを提供せず、表示を要求した箇所で`SES-T0201`になります。
 
 Dom serviceのcanonical requirement名は`dom`で、`with Dom`は`with dom: Dom`へ展開します。queryは現在documentの
 CSS selectorを一度評価し、最初のElementだけをtargetにします。0件はDomTargetNotFound、不正selectorは

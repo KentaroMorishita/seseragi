@@ -52,7 +52,21 @@ const HOST_SERVICES: &[HostServiceSpec] = &[
 #[serde(tag = "kind", rename_all = "camelCase")]
 pub enum FailureRenderer {
     Never,
-    Show { module: String, export: String },
+    Show {
+        module: String,
+        export: String,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        arguments: Vec<DisplayDictionary>,
+    },
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DisplayDictionary {
+    pub module: String,
+    pub export: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub arguments: Vec<DisplayDictionary>,
 }
 
 pub fn main_contract(compiled: &CompiledModule) -> Result<MainContract, String> {
@@ -159,22 +173,12 @@ fn failure_renderer(
     if is_named(failure, "Never") {
         return Ok(FailureRenderer::Never);
     }
-    if let TypedType::Named { name, arguments } = failure {
-        if arguments.is_empty() {
-            let standard = match name.as_str() {
-                "Int" => Some("intShow"),
-                "String" => Some("stringShow"),
-                "ConsoleError" => Some("consoleErrorShow"),
-                "StdinError" => Some("stdinErrorShow"),
-                _ => None,
-            };
-            if let Some(export) = standard {
-                return Ok(FailureRenderer::Show {
-                    module: "@seseragi/runtime/show".to_owned(),
-                    export: export.to_owned(),
-                });
-            }
-        }
+    if let Some(dictionary) = standard_show_dictionary(failure) {
+        return Ok(FailureRenderer::Show {
+            module: dictionary.module,
+            export: dictionary.export,
+            arguments: dictionary.arguments,
+        });
     }
 
     let selected = compiled
@@ -198,7 +202,62 @@ fn failure_renderer(
     Ok(FailureRenderer::Show {
         module: "./main.ts".to_owned(),
         export: generated.dictionary_export.clone(),
+        arguments: Vec::new(),
     })
+}
+
+fn standard_show_dictionary(type_ref: &TypedType) -> Option<DisplayDictionary> {
+    const RUNTIME_SHOW: &str = "@seseragi/runtime/show";
+    let dictionary = |export: &str| DisplayDictionary {
+        module: RUNTIME_SHOW.to_owned(),
+        export: export.to_owned(),
+        arguments: Vec::new(),
+    };
+    match type_ref {
+        TypedType::Named { name, arguments } if arguments.is_empty() => {
+            let export = match name.as_str() {
+                "Int" => "intShow",
+                "Float" => "floatShow",
+                "Bool" => "boolShow",
+                "Char" => "charShow",
+                "String" => "stringShow",
+                "Unit" => "unitShow",
+                "ConsoleError" => "consoleErrorShow",
+                "StdinError" => "stdinErrorShow",
+                _ => return None,
+            };
+            Some(dictionary(export))
+        }
+        TypedType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if canonical == "std/web/dom::DomError" && arguments.is_empty() => {
+            Some(dictionary("domErrorShow"))
+        }
+        TypedType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if canonical == "std/web/html::HtmlBuildError" && arguments.is_empty() => {
+            Some(dictionary("htmlBuildErrorShow"))
+        }
+        TypedType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if canonical == "std/web/dom::DomRuntimeError" => {
+            let [failure] = arguments.as_slice() else {
+                return None;
+            };
+            Some(DisplayDictionary {
+                module: RUNTIME_SHOW.to_owned(),
+                export: "domRuntimeErrorShow".to_owned(),
+                arguments: vec![standard_show_dictionary(failure)?],
+            })
+        }
+        _ => None,
+    }
 }
 
 fn is_named(type_ref: &TypedType, expected: &str) -> bool {
@@ -207,8 +266,11 @@ fn is_named(type_ref: &TypedType, expected: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::{main_contract, FailureRenderer, HostService};
+    use super::{
+        main_contract, standard_show_dictionary, DisplayDictionary, FailureRenderer, HostService,
+    };
     use seseragi_driver::{compile_module, CompileInput};
+    use seseragi_semantics::TypedType;
 
     #[test]
     fn derives_host_services_and_failure_dictionary_from_compiler_output() {
@@ -221,8 +283,9 @@ mod tests {
         assert_eq!(contract.environment[0].service, HostService::Console);
         assert!(matches!(
             contract.failure_renderer,
-            FailureRenderer::Show { ref module, ref export }
+            FailureRenderer::Show { ref module, ref export, ref arguments }
                 if module == "./main.ts" && export == "__ssrg$instance$Show$0"
+                    && arguments.is_empty()
         ));
     }
 
@@ -234,8 +297,9 @@ mod tests {
 
         assert!(matches!(
             contract.failure_renderer,
-            FailureRenderer::Show { ref module, ref export }
+            FailureRenderer::Show { ref module, ref export, ref arguments }
                 if module == "@seseragi/runtime/show" && export == "intShow"
+                    && arguments.is_empty()
         ));
     }
 
@@ -256,8 +320,34 @@ mod tests {
         assert_eq!(contract.environment[0].service, HostService::Dom);
         assert!(matches!(
             contract.failure_renderer,
-            FailureRenderer::Show { ref module, ref export }
+            FailureRenderer::Show { ref module, ref export, ref arguments }
                 if module == "@seseragi/runtime/show" && export == "stringShow"
+                    && arguments.is_empty()
         ));
+    }
+
+    #[test]
+    fn composes_the_dom_runtime_error_show_dictionary_from_payload_evidence() {
+        let dictionary = standard_show_dictionary(&TypedType::ExternalNamed {
+            name: "DomRuntimeError".to_owned(),
+            canonical: "std/web/dom::DomRuntimeError".to_owned(),
+            arguments: vec![TypedType::Named {
+                name: "String".to_owned(),
+                arguments: Vec::new(),
+            }],
+        });
+
+        assert_eq!(
+            dictionary,
+            Some(DisplayDictionary {
+                module: "@seseragi/runtime/show".to_owned(),
+                export: "domRuntimeErrorShow".to_owned(),
+                arguments: vec![DisplayDictionary {
+                    module: "@seseragi/runtime/show".to_owned(),
+                    export: "stringShow".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            })
+        );
     }
 }

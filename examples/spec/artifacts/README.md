@@ -295,6 +295,12 @@ operation-only standard traitのdictionary ABIは独立した後続gateです。
 `schema-1/struct-profile`は`Show<Int>` dictionaryをtemplate interpolationから選び、実際のdecimal出力を固定します。
 `Add` / `Eq` / `Iterable` / `Reducible`は専用operation ABIのままであり、このfixtureは存在しないdictionaryを捏造しません。
 
+`schema-1/standard-error-display`はnamespace importした`DomError`、`DomRuntimeError<String>`、
+`HtmlBuildError`をcanonical provider identityへ戻し、Show / Debug dictionaryと
+`DomRuntimeError<E>`のpayload evidenceを生成TypeScriptまで固定します。
+`execution-schema-1/standard-error-display`は公開constructorから作った`HtmlBuildError`をShowとDebugで
+actual Console出力し、user-facingとquoted developer表示の差を固定します。
+
 `schema-1/generic-struct`は`pub struct Box<A> { value: A }`のconstructionから`A = Int`を推論し、
 `pub let inferred`のcontractを`Box<Int>`としてTypedInterfaceへ固定します。generic `replace`は元のBoxから同じargumentを保つ
 spread update、generic `unwrap`はStruct patternとmember substitutionを通り、生成TypeScriptはnominal brandを保った

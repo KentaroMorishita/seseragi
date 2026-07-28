@@ -24,6 +24,7 @@ pub type AppError deriving Show =
             "core.adt",
             "core.string",
             "core.show.dictionary",
+            "core.show.bounded",
             "core.string.show",
         ]
     );
@@ -36,10 +37,16 @@ pub type AppError deriving Show =
     );
     assert_eq!(
         typescript.imports,
-        vec![crate::TypeScriptImport {
-            feature: "core.string.show".to_owned(),
-            local: "_ssrg_show_stringShow".to_owned(),
-        }]
+        vec![
+            crate::TypeScriptImport {
+                feature: "core.show.bounded".to_owned(),
+                local: "_ssrg_show_boundedShow".to_owned(),
+            },
+            crate::TypeScriptImport {
+                feature: "core.string.show".to_owned(),
+                local: "_ssrg_show_stringShow".to_owned(),
+            },
+        ]
     );
 
     let detail = &typescript.instances[0];
@@ -121,10 +128,16 @@ pub type Detail deriving Show =
 
     assert_eq!(
         typescript.imports,
-        vec![crate::TypeScriptImport {
-            feature: "core.string.show".to_owned(),
-            local: "_ssrg_show_stringShow_1".to_owned(),
-        }]
+        vec![
+            crate::TypeScriptImport {
+                feature: "core.show.bounded".to_owned(),
+                local: "_ssrg_show_boundedShow".to_owned(),
+            },
+            crate::TypeScriptImport {
+                feature: "core.string.show".to_owned(),
+                local: "_ssrg_show_stringShow_1".to_owned(),
+            },
+        ]
     );
     let TypeScriptInstanceImplementation::DerivedShow { variants, .. } =
         &typescript.instances[0].implementation

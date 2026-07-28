@@ -560,7 +560,7 @@ fn web_html_interface() -> ModuleInterface {
             ["Action"],
             Some(named("Action")),
         ),
-        adt_type_export("std/web/html", "HtmlBuildError", []),
+        opaque_adt_type_export("std/web/html", "HtmlBuildError", []),
         constructor_export(
             "std/web/html",
             "HtmlBuildError",
@@ -1227,16 +1227,6 @@ fn alias_type_export<const N: usize>(
         methods: Vec::new(),
         representation: Some(representation),
     }
-}
-
-fn adt_type_export<const N: usize>(
-    module: &str,
-    name: &str,
-    parameters: [&str; N],
-) -> InterfaceExport {
-    let mut export = type_export(module, name, N as u32, "type");
-    export.scheme.type_parameters = parameters.into_iter().map(TypeParameter::value).collect();
-    export
 }
 
 fn opaque_adt_type_export<const N: usize>(

@@ -8,6 +8,7 @@
     "requirements": [
       "core.adt",
       "core.show.dictionary",
+      "core.show.bounded",
       "core.string",
       "core.string.show",
       "core.unit",

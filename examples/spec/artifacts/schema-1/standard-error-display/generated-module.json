@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "module": "artifact/standard-error-display",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "web.dom.error",
+      "web.dom.runtime-error",
+      "web.html.build-error-type",
+      "web.dom.error.show",
+      "core.string",
+      "web.dom.error.debug",
+      "core.string.show",
+      "web.dom.runtime-error.show",
+      "core.string.debug",
+      "web.dom.runtime-error.debug",
+      "web.html.build-error.show",
+      "web.html.build-error.debug",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "web.html.error.invalid-tag-name"
+    ]
+  },
+  "exports": [
+    "showDomError",
+    "debugDomError",
+    "showDomRuntimeError",
+    "debugDomRuntimeError",
+    "showHtmlBuildError",
+    "debugHtmlBuildError",
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

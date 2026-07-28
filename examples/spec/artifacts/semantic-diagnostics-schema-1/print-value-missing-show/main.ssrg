@@ -1,0 +1,5 @@
+type Token =
+  | Token
+
+pub effect fn main =
+  printValue Token

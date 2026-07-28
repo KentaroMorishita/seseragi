@@ -13,8 +13,8 @@ use super::runtime::{
 use super::types::{lower_core_parameter_to_typescript, type_ref_from_core_type};
 use super::{
     expr::{lower_core_expr_to_typescript, typescript_expr_contains_await},
-    push_unique, TypeScriptExpr, TypeScriptImport, TypeScriptParameter, TypeScriptType,
-    TypeScriptTypeImport,
+    push_import_unique, push_unique, TypeScriptExpr, TypeScriptImport, TypeScriptParameter,
+    TypeScriptType, TypeScriptTypeImport,
 };
 
 mod evidence;
@@ -25,6 +25,10 @@ const SHOW_DICTIONARY_FEATURE: &str = "core.show.dictionary";
 const SHOW_DICTIONARY_TYPE_LOCAL: &str = "_ssrg_show_Show";
 const DEBUG_DICTIONARY_FEATURE: &str = "core.debug.dictionary";
 const DEBUG_DICTIONARY_TYPE_LOCAL: &str = "_ssrg_debug_Debug";
+const BOUNDED_SHOW_FEATURE: &str = "core.show.bounded";
+const BOUNDED_SHOW_LOCAL: &str = "_ssrg_show_boundedShow";
+const BOUNDED_DEBUG_FEATURE: &str = "core.debug.bounded";
+const BOUNDED_DEBUG_LOCAL: &str = "_ssrg_debug_boundedDebug";
 
 pub(crate) fn evidence_parameter_name(index: usize) -> String {
     format!("__ssrg$evidence${index}")
@@ -168,6 +172,14 @@ pub(super) fn lower_core_instances_to_typescript(
             )
     }) {
         push_unique(runtime_requirements, SHOW_DICTIONARY_FEATURE);
+        push_unique(runtime_requirements, BOUNDED_SHOW_FEATURE);
+        push_import_unique(
+            imports,
+            TypeScriptImport {
+                feature: BOUNDED_SHOW_FEATURE.to_owned(),
+                local: BOUNDED_SHOW_LOCAL.to_owned(),
+            },
+        );
         push_type_import_unique(
             type_imports,
             TypeScriptTypeImport {
@@ -184,6 +196,14 @@ pub(super) fn lower_core_instances_to_typescript(
             )
     }) {
         push_unique(runtime_requirements, DEBUG_DICTIONARY_FEATURE);
+        push_unique(runtime_requirements, BOUNDED_DEBUG_FEATURE);
+        push_import_unique(
+            imports,
+            TypeScriptImport {
+                feature: BOUNDED_DEBUG_FEATURE.to_owned(),
+                local: BOUNDED_DEBUG_LOCAL.to_owned(),
+            },
+        );
         push_type_import_unique(
             type_imports,
             TypeScriptTypeImport {
