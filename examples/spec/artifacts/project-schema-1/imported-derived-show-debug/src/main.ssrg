@@ -1,0 +1,7 @@
+import { Code, Remote } from "./domain"
+
+pub fn render value: Remote<Code> -> String =
+  show value
+
+pub fn inspect value: Remote<Code> -> String =
+  debug value

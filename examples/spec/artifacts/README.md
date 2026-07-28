@@ -106,6 +106,14 @@ SurfaceAstからTypedHir、CoreIr、TypeScriptIrへ値を失わず運びます�
 nominal fieldへnestedに置いたFloatをTypeScript `number`として生成し、同名execution fixtureで
 `Show<Float>`、`Debug<Float>`、composite Debugのactual outputと`-0.0`の符号保持を固定します。
 
+`schema-1/derived-show-debug-nominal/`はADT、Struct、Newtypeの`deriving Show, Debug`を
+通常のinstanceとしてTypedHir、CoreIr、TypeScriptIr、生成dictionary factoryへ運びます。field / payloadの
+Array、Range、tuple、closed record、注釈なし算術結果、Float literalから必要なgeneric constraintを生成し、
+同名execution fixtureで宣言順・variant名・field名・Newtype constructor名を保つsource-like出力を固定します。
+`project-schema-1/imported-derived-show-debug/`と`projects/imported-derived-show-debug`はgenericなderived
+instanceとpayload evidenceをmodule境界越しに選択して実行し、対応するsemantic diagnostic fixtureは
+不足instanceとexplicit instanceとのcoherence conflictをlowering前に停止します。
+
 `schema-1/user-add-operator/`はlocal `Add<Score, Int, Score>`を期待関数型から選び、operator section `(+)`を
 生成dictionaryのcurried `add` callbackへlowerしてstandard Array `reduce`へ渡します。
 `execution-schema-1/user-add-operator/`はactual outputを固定し、`project-schema-1/imported-user-add-operator/`は

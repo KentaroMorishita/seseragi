@@ -26,7 +26,7 @@ fn reports_unknown_deriving_trait_with_registered_name_code() {
 fn reports_missing_show_instance_for_unsupported_payload() {
     let artifact = semantic_diagnostics(
         "artifact/unsupported-derived-show/main.ssrg",
-        "type Labels deriving Show = | Labels Array<String>\n",
+        "type Callback deriving Show = | Callback (Int -> Int)\n",
     );
 
     assert_eq!(artifact.diagnostics.len(), 1);
@@ -37,23 +37,39 @@ fn reports_missing_show_instance_for_unsupported_payload() {
     );
     assert_eq!(
         artifact.diagnostics[0].related[0].message,
-        "required Show<Array<String>> instance is not available"
+        "required Show<function> instance is not available"
     );
 }
 
 #[test]
-fn reports_generic_derived_show_as_unsupported_without_inventing_constraints() {
+fn accepts_generic_derived_show_with_generated_constraints() {
     let artifact = semantic_diagnostics(
         "artifact/generic-derived-show/main.ssrg",
         "type Box<A> deriving Show = | Box A\n",
     );
 
-    assert_eq!(artifact.diagnostics.len(), 1);
-    assert_eq!(artifact.diagnostics[0].code, "SES-T0201");
-    assert_eq!(
-        artifact.diagnostics[0].related[0].message,
-        "derived Show<Box> for generic ADTs is not implemented yet"
+    assert!(
+        artifact.diagnostics.is_empty(),
+        "{:#?}",
+        artifact.diagnostics
     );
+}
+
+#[test]
+fn reports_explicit_and_derived_display_instance_as_duplicate() {
+    let artifact = semantic_diagnostics(
+        "artifact/duplicate-derived-show/main.ssrg",
+        "\
+type Badge deriving Show = | Active
+instance Show<Badge> { fn show value: Badge -> String = \"active\" }
+",
+    );
+
+    assert!(artifact.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0202"
+            && diagnostic.message_key == "trait.instance-duplicate"
+            && diagnostic.related[0].message.contains("Show instance")
+    }));
 }
 
 #[test]

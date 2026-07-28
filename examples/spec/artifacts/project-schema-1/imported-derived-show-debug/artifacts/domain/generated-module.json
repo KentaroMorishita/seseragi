@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-derived-show-debug::domain",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.string",
+      "core.maybe",
+      "core.show.dictionary",
+      "core.debug.dictionary",
+      "core.string.show",
+      "core.string.debug",
+      "core.maybe.show",
+      "core.maybe.debug"
+    ]
+  },
+  "exports": [
+    "Code",
+    "Missing",
+    "Remote"
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-derived-show-debug::domain::Code>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Code",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Code",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    },
+    {
+      "identity": "Debug<fixture/imported-derived-show-debug::domain::Code>",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Code",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Code",
+      "dictionaryExport": "__ssrg$instance$Debug$1"
+    },
+    {
+      "identity": "Show<fixture/imported-derived-show-debug::domain::Remote<$0>>",
+      "trait": "Show",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Remote",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Remote<$0>",
+      "dictionaryExport": "__ssrg$instance$Show$2"
+    },
+    {
+      "identity": "Debug<fixture/imported-derived-show-debug::domain::Remote<$0>>",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Remote",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Remote<$0>",
+      "dictionaryExport": "__ssrg$instance$Debug$3"
+    }
+  ],
+  "outputs": {
+    "typescript": "dist/imported-derived-show-debug/domain.ts",
+    "sourceMap": "dist/imported-derived-show-debug/domain.ts.map"
+  }
+}

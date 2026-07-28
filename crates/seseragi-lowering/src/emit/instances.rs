@@ -1,10 +1,12 @@
 use crate::typescript::types::render_typescript_type;
 use crate::{
-    TypeScriptDerivedShowVariant, TypeScriptInstance, TypeScriptInstanceImplementation,
-    TypeScriptInstanceMethod, TypeScriptShowDictionaryReference, TypeScriptTypeImport,
+    TypeScriptDerivedShowField, TypeScriptDerivedShowVariant, TypeScriptInstance,
+    TypeScriptInstanceImplementation, TypeScriptInstanceMethod, TypeScriptShowDictionaryReference,
+    TypeScriptTypeImport,
 };
 
 const SHOW_DICTIONARY_FEATURE: &str = "core.show.dictionary";
+const DEBUG_DICTIONARY_FEATURE: &str = "core.debug.dictionary";
 
 /// Emits one compiler-private exported dictionary per TypeScript IR instance.
 ///
@@ -18,38 +20,88 @@ pub(super) fn render_typescript_instances(
     if instances.is_empty() {
         return;
     }
-    let show_type_local = type_imports
-        .iter()
-        .find(|import| import.feature == SHOW_DICTIONARY_FEATURE)
-        .map(|import| import.local.as_str());
-
     for instance in instances {
-        output.push_str(&render_instance(instance, show_type_local));
+        let dictionary_feature = match instance.trait_name.as_str() {
+            "Show" => SHOW_DICTIONARY_FEATURE,
+            "Debug" => DEBUG_DICTIONARY_FEATURE,
+            _ => "",
+        };
+        let display_type_local = type_imports
+            .iter()
+            .find(|import| import.feature == dictionary_feature)
+            .map(|import| import.local.as_str());
+        output.push_str(&render_instance(instance, display_type_local));
         output.push('\n');
     }
 }
 
-fn render_instance(instance: &TypeScriptInstance, show_type_local: Option<&str>) -> String {
+fn render_instance(instance: &TypeScriptInstance, display_type_local: Option<&str>) -> String {
     match &instance.implementation {
         TypeScriptInstanceImplementation::DerivedShow { adt_name, variants } => {
-            let show_type_local = show_type_local
-                .expect("TypeScript Show instances require the resolved Show type import");
-            let head = render_typescript_type(
-                instance
-                    .arguments
-                    .first()
-                    .expect("DerivedShow instance must retain one head argument"),
-            );
-            let body = render_derived_show_body(adt_name, variants);
-            format!(
-                "export const {}: {show_type_local}<{head}> = {{ show: {body} }};",
-                instance.dictionary_export
-            )
+            let _ = adt_name;
+            render_derived_display_instance(instance, display_type_local, |head, method| {
+                render_derived_adt_body(head, method, variants)
+            })
+        }
+        TypeScriptInstanceImplementation::DerivedStructShow {
+            struct_name,
+            fields,
+        } => {
+            let _ = struct_name;
+            render_derived_display_instance(instance, display_type_local, |head, method| {
+                render_derived_struct_body(head, method, fields)
+            })
         }
         TypeScriptInstanceImplementation::UserDefined { methods } => {
             render_user_defined_instance(instance, methods)
         }
     }
+}
+
+fn render_derived_display_instance(
+    instance: &TypeScriptInstance,
+    display_type_local: Option<&str>,
+    render_body: impl FnOnce(&str, &str) -> String,
+) -> String {
+    let display_type_local = display_type_local
+        .expect("TypeScript derived display instances require their dictionary type import");
+    let head = render_typescript_type(
+        instance
+            .arguments
+            .first()
+            .expect("derived display instance must retain one head argument"),
+    );
+    let method = match instance.trait_name.as_str() {
+        "Show" => "show",
+        "Debug" => "debug",
+        trait_name => panic!("unsupported derived display trait {trait_name}"),
+    };
+    let body = render_body(&head, method);
+    let dictionary = format!("{{ {method}: {body} }}");
+    if instance.type_parameters.is_empty() && instance.constraints.is_empty() {
+        return format!(
+            "export const {}: {display_type_local}<{head}> = {dictionary};",
+            instance.dictionary_export
+        );
+    }
+    let generics = super::render_arrow_type_parameters(&instance.type_parameters);
+    let evidence = instance
+        .constraints
+        .iter()
+        .enumerate()
+        .map(|(index, _)| {
+            format!(
+                "{}: {}",
+                crate::typescript::evidence_parameter_name(index),
+                super::ERASED_EVIDENCE_TYPE,
+            )
+        })
+        .collect::<Vec<_>>()
+        .join(", ");
+    format!(
+        "export const {} = {generics}({evidence}): {display_type_local}<{head}> => ({dictionary});",
+        instance.dictionary_export
+    )
 }
 
 fn render_user_defined_instance(
@@ -107,37 +159,74 @@ fn render_user_defined_instance(
     )
 }
 
-fn render_derived_show_body(adt_name: &str, variants: &[TypeScriptDerivedShowVariant]) -> String {
+fn render_derived_adt_body(
+    head: &str,
+    method: &str,
+    variants: &[TypeScriptDerivedShowVariant],
+) -> String {
     if variants.is_empty() {
-        return format!("(value: {adt_name}): string => value");
+        return format!("(value: {head}): string => value");
     }
     let cases = variants
         .iter()
-        .map(render_derived_show_variant)
+        .map(|variant| render_derived_adt_variant(variant, method))
         .collect::<Vec<_>>()
         .join(" ");
-    format!("(value: {adt_name}): string => {{ switch (value.tag) {{ {cases} }} }}")
+    format!("(value: {head}): string => {{ switch (value.tag) {{ {cases} }} }}")
 }
 
-fn render_derived_show_variant(variant: &TypeScriptDerivedShowVariant) -> String {
+fn render_derived_adt_variant(variant: &TypeScriptDerivedShowVariant, method: &str) -> String {
     let tag = format!("{:?}", variant.tag);
     let result = match &variant.payload {
         None => tag.clone(),
         Some(payload) => format!(
-            "{tag} + \" \" + {}.show(value.value)",
-            render_dictionary_reference(&payload.dictionary)
+            "{tag} + \" \" + {}.{method}(value.value)",
+            render_dictionary_reference(&payload.dictionary),
         ),
     };
     format!("case {tag}: return {result};")
 }
 
-fn render_dictionary_reference(reference: &TypeScriptShowDictionaryReference) -> &str {
+fn render_derived_struct_body(
+    head: &str,
+    method: &str,
+    fields: &[TypeScriptDerivedShowField],
+) -> String {
+    let rendered_fields = fields
+        .iter()
+        .map(|field| {
+            format!(
+                "{:?} + {}.{method}(value[{:?}])",
+                format!("{}: ", field.name),
+                render_dictionary_reference(&field.dictionary),
+                field.name,
+            )
+        })
+        .collect::<Vec<_>>()
+        .join(" + \", \" + ");
+    let type_name = head.split('<').next().unwrap_or(head);
+    let body = if rendered_fields.is_empty() {
+        format!("{:?}", format!("{type_name} {{}}"))
+    } else {
+        format!(
+            "{:?} + {rendered_fields} + {:?}",
+            format!("{type_name} {{ "),
+            " }"
+        )
+    };
+    format!("(value: {head}): string => {body}")
+}
+
+fn render_dictionary_reference(reference: &TypeScriptShowDictionaryReference) -> String {
     match reference {
-        TypeScriptShowDictionaryReference::Runtime { local, .. } => local,
+        TypeScriptShowDictionaryReference::Runtime { local, .. } => local.clone(),
         TypeScriptShowDictionaryReference::Local {
             dictionary_export, ..
-        } => dictionary_export,
-        TypeScriptShowDictionaryReference::Imported { local, .. } => local,
+        } => dictionary_export.clone(),
+        TypeScriptShowDictionaryReference::Imported { local, .. } => local.clone(),
+        TypeScriptShowDictionaryReference::Expression { expression } => {
+            format!("({})", super::render_typescript_expr(expression))
+        }
     }
 }
 

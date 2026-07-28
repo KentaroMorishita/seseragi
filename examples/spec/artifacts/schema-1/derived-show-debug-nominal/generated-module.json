@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "module": "artifact/derived-show-debug-nominal",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.int64",
+      "core.show.dictionary",
+      "core.debug.dictionary",
+      "core.int64.show",
+      "core.int64.debug",
+      "core.array.show",
+      "core.array.debug",
+      "core.string.show",
+      "core.range.show",
+      "core.tuple.show",
+      "core.bool.show",
+      "core.record.show",
+      "core.string.debug",
+      "core.range.debug",
+      "core.tuple.debug",
+      "core.bool.debug",
+      "core.record.debug",
+      "core.float64.debug",
+      "core.string",
+      "core.range",
+      "core.range.inclusive",
+      "core.bool",
+      "core.int64.add",
+      "core.float64",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "UserId",
+    "Empty",
+    "Packet",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "Show<artifact/derived-show-debug-nominal::UserId>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::UserId",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    },
+    {
+      "identity": "Debug<artifact/derived-show-debug-nominal::UserId>",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::UserId",
+      "dictionaryExport": "__ssrg$instance$Debug$1"
+    },
+    {
+      "identity": "Show<artifact/derived-show-debug-nominal::Packet<$0>>",
+      "trait": "Show",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Packet<$0>",
+      "dictionaryExport": "__ssrg$instance$Show$2"
+    },
+    {
+      "identity": "Debug<artifact/derived-show-debug-nominal::Packet<$0>>",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Packet<$0>",
+      "dictionaryExport": "__ssrg$instance$Debug$3"
+    },
+    {
+      "identity": "Show<artifact/derived-show-debug-nominal::Envelope<$0>>",
+      "trait": "Show",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Envelope",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Envelope<$0>",
+      "dictionaryExport": "__ssrg$instance$Show$4"
+    },
+    {
+      "identity": "Debug<artifact/derived-show-debug-nominal::Envelope<$0>>",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Envelope",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Envelope<$0>",
+      "dictionaryExport": "__ssrg$instance$Debug$5"
+    },
+    {
+      "identity": "Debug<artifact/derived-show-debug-nominal::Stats>",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Stats",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Stats",
+      "dictionaryExport": "__ssrg$instance$Debug$6"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-derived-show-debug::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.string"
+    ]
+  },
+  "exports": [
+    "render",
+    "inspect"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-derived-show-debug/main.ts",
+    "sourceMap": "dist/imported-derived-show-debug/main.ts.map"
+  }
+}

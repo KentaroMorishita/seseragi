@@ -1,0 +1,23 @@
+{
+  "version": 3,
+  "file": "dist/imported-derived-show-debug/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-derived-show-debug::domain"
+  ],
+  "sourcesContent": [
+    "pub newtype Code deriving Show, Debug = String\n\npub type Remote<A> deriving Show, Debug =\n  | Missing\n  | Remote Maybe<A>\n"
+  ],
+  "names": [
+    "Code",
+    "Code",
+    "Remote",
+    "Missing",
+    "Remote",
+    "__ssrg$instance$Show$0",
+    "__ssrg$instance$Debug$1",
+    "__ssrg$instance$Show$2",
+    "__ssrg$instance$Debug$3"
+  ],
+  "mappings": ";;AAAAA;;AAAYC;AAEZC;;;AACIC;AACAC;AAJJC;AAAAC;AAEAC;AAAAC"
+}

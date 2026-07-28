@@ -81,13 +81,12 @@ fn rewrite_instance_imports(
                 .iter_mut()
                 .filter_map(|variant| variant.payload.as_mut())
             {
-                if let TypeScriptShowDictionaryReference::Runtime { local, .. } =
-                    &mut payload.dictionary
-                {
-                    if let Some(fresh) = renames.get(local) {
-                        *local = fresh.clone();
-                    }
-                }
+                rewrite_dictionary_reference(&mut payload.dictionary, renames);
+            }
+        }
+        TypeScriptInstanceImplementation::DerivedStructShow { fields, .. } => {
+            for field in fields {
+                rewrite_dictionary_reference(&mut field.dictionary, renames);
             }
         }
         TypeScriptInstanceImplementation::UserDefined { methods } => {
@@ -95,6 +94,24 @@ fn rewrite_instance_imports(
                 rewrite_expr(&mut method.body, renames);
             }
         }
+    }
+}
+
+fn rewrite_dictionary_reference(
+    reference: &mut TypeScriptShowDictionaryReference,
+    renames: &BTreeMap<String, String>,
+) {
+    match reference {
+        TypeScriptShowDictionaryReference::Runtime { local, .. } => {
+            if let Some(fresh) = renames.get(local) {
+                *local = fresh.clone();
+            }
+        }
+        TypeScriptShowDictionaryReference::Expression { expression } => {
+            rewrite_expr(expression, renames);
+        }
+        TypeScriptShowDictionaryReference::Local { .. }
+        | TypeScriptShowDictionaryReference::Imported { .. } => {}
     }
 }
 

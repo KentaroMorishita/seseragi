@@ -1,0 +1,3 @@
+struct Callback deriving Debug {
+  run: (Int -> Int),
+}

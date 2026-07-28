@@ -1,0 +1,259 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "fixture/imported-derived-show-debug::main",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-derived-show-debug::domain",
+      "origin": {
+        "start": 0,
+        "end": 39
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "name": "Code",
+          "symbol": "fixture/imported-derived-show-debug::domain::Code"
+        },
+        {
+          "namespace": "value",
+          "name": "Code",
+          "symbol": "fixture/imported-derived-show-debug::domain::Code"
+        },
+        {
+          "namespace": "type",
+          "name": "Remote",
+          "symbol": "fixture/imported-derived-show-debug::domain::Remote"
+        },
+        {
+          "namespace": "value",
+          "name": "Remote",
+          "symbol": "fixture/imported-derived-show-debug::domain::Remote"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "fixture/imported-derived-show-debug::main::render",
+      "namespace": "value",
+      "name": "render",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 41,
+        "end": 99
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Remote",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Code",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-derived-show-debug::main::inspect",
+      "namespace": "value",
+      "name": "inspect",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 101,
+        "end": 161
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Remote",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Code",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Debug<fixture/imported-derived-show-debug::domain::Code>",
+      "providerModule": "fixture/imported-derived-show-debug::domain",
+      "traitIdentity": "Debug",
+      "argumentIdentities": [
+        "fixture/imported-derived-show-debug::domain::Code"
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Code",
+      "trait": "Debug",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Debug",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Code",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 46
+      }
+    },
+    {
+      "identity": "Debug<fixture/imported-derived-show-debug::domain::Remote<$0>>",
+      "providerModule": "fixture/imported-derived-show-debug::domain",
+      "traitIdentity": "Debug",
+      "argumentIdentities": [
+        "fixture/imported-derived-show-debug::domain::Remote<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Remote<$0>",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Debug",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Remote",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 48,
+        "end": 121
+      }
+    },
+    {
+      "identity": "Show<fixture/imported-derived-show-debug::domain::Code>",
+      "providerModule": "fixture/imported-derived-show-debug::domain",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "fixture/imported-derived-show-debug::domain::Code"
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Code",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Code",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 46
+      }
+    },
+    {
+      "identity": "Show<fixture/imported-derived-show-debug::domain::Remote<$0>>",
+      "providerModule": "fixture/imported-derived-show-debug::domain",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "fixture/imported-derived-show-debug::domain::Remote<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Remote<$0>",
+      "trait": "Show",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Remote",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 48,
+        "end": 121
+      }
+    }
+  ]
+}

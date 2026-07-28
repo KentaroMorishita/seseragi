@@ -1,0 +1,14 @@
+import { Code, Missing, Remote } from "./domain"
+
+let value: Remote<Code> =
+  Remote (Just (Code "A1"))
+
+let missing: Remote<Code> =
+  Missing
+
+pub effect fn main =
+  do {
+    println (show value)
+    println (debug value)
+    println (show missing)
+  }

@@ -79,10 +79,79 @@ fn accepts_payload_with_a_local_derived_show_instance() {
 fn excludes_derived_show_when_a_payload_instance_is_not_supported() {
     let typed = type_module(
         "artifact/unsupported-derived-show/main.ssrg",
-        "type Labels deriving Show = | Labels Array<String>\n",
+        "type Callback deriving Show = | Callback (Int -> Int)\n",
     );
 
     assert!(typed.instances.is_empty());
+}
+
+#[test]
+fn derives_show_and_debug_for_generic_adt_struct_and_newtype() {
+    let typed = type_module(
+        "artifact/generic-derived-display/main.ssrg",
+        "\
+type Box<A> deriving Show, Debug = | Box Array<A>
+struct Profile<A> deriving Show, Debug { name: String, value: A }
+newtype UserId deriving Show, Debug = Int
+",
+    );
+
+    assert_eq!(typed.instances.len(), 6);
+    for trait_name in ["Show", "Debug"] {
+        let boxed = typed
+            .instances
+            .iter()
+            .find(|instance| {
+                instance.trait_name == trait_name
+                    && instance
+                        .type_identity
+                        .as_deref()
+                        .is_some_and(|identity| identity.contains("::Box<$0>"))
+            })
+            .expect("generic ADT display instance");
+        assert_eq!(boxed.type_parameters, ["A"]);
+        assert_eq!(
+            boxed.constraints,
+            [crate::TypedConstraint {
+                name: trait_name.to_owned(),
+                arguments: vec![named("A")],
+            }]
+        );
+        assert!(matches!(
+            &boxed.implementation,
+            TypedInstanceImplementation::DerivedShow {
+                payload_evidence,
+                ..
+            } if matches!(
+                payload_evidence.as_slice(),
+                [evidence] if matches!(
+                    &evidence.evidence,
+                    TypedInstanceEvidence::Standard {
+                        evidence_arguments,
+                        ..
+                    } if matches!(
+                        evidence_arguments.as_slice(),
+                        [crate::TypedCallEvidence {
+                            evidence: TypedInstanceEvidence::Parameter { index: 0 },
+                            ..
+                        }]
+                    )
+                )
+            )
+        ));
+    }
+
+    assert!(typed.instances.iter().any(|instance| {
+        instance
+            .type_identity
+            .as_deref()
+            .is_some_and(|identity| identity.contains("::Profile<$0>"))
+            && instance.trait_name == "Debug"
+    }));
+    assert!(typed.instances.iter().any(|instance| {
+        instance.type_identity.as_deref() == Some("artifact/generic-derived-display::UserId")
+            && instance.trait_name == "Show"
+    }));
 }
 
 #[test]

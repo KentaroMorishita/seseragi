@@ -1,6 +1,8 @@
 use std::collections::BTreeMap;
 
-use crate::{CoreAdt, CoreInstance, CoreInstanceImplementation, CoreInstanceMethod, SourceSpan};
+use crate::{
+    CoreAdt, CoreInstance, CoreInstanceImplementation, CoreInstanceMethod, CoreStruct, SourceSpan,
+};
 use serde::{Deserialize, Serialize};
 
 use super::names::{local_name, safe_identifier};
@@ -21,6 +23,8 @@ use evidence::resolve_show_dictionary;
 
 const SHOW_DICTIONARY_FEATURE: &str = "core.show.dictionary";
 const SHOW_DICTIONARY_TYPE_LOCAL: &str = "_ssrg_show_Show";
+const DEBUG_DICTIONARY_FEATURE: &str = "core.debug.dictionary";
+const DEBUG_DICTIONARY_TYPE_LOCAL: &str = "_ssrg_debug_Debug";
 
 pub(crate) fn evidence_parameter_name(index: usize) -> String {
     format!("__ssrg$evidence${index}")
@@ -65,6 +69,10 @@ pub enum TypeScriptInstanceImplementation {
         adt_name: String,
         variants: Vec<TypeScriptDerivedShowVariant>,
     },
+    DerivedStructShow {
+        struct_name: String,
+        fields: Vec<TypeScriptDerivedShowField>,
+    },
     UserDefined {
         methods: Vec<TypeScriptInstanceMethod>,
     },
@@ -103,6 +111,15 @@ pub struct TypeScriptDerivedShowPayload {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeScriptDerivedShowField {
+    pub name: String,
+    #[serde(rename = "type")]
+    pub type_ref: TypeScriptType,
+    pub dictionary: TypeScriptShowDictionaryReference,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(
     tag = "kind",
     rename_all = "kebab-case",
@@ -123,11 +140,15 @@ pub enum TypeScriptShowDictionaryReference {
         provider_module: String,
         local: String,
     },
+    Expression {
+        expression: Box<TypeScriptExpr>,
+    },
 }
 
 pub(super) fn lower_core_instances_to_typescript(
     instances: &[CoreInstance],
     adts: &[CoreAdt],
+    structs: &[CoreStruct],
     imported_instance_names: &BTreeMap<(String, String), String>,
     imported_value_names: &BTreeMap<String, String>,
     imported_type_names: &BTreeMap<String, String>,
@@ -140,10 +161,11 @@ pub(super) fn lower_core_instances_to_typescript(
     }
 
     if instances.iter().any(|instance| {
-        matches!(
-            instance.implementation,
-            CoreInstanceImplementation::DerivedShow { .. }
-        )
+        instance.trait_name == "Show"
+            && matches!(
+                instance.implementation,
+                CoreInstanceImplementation::DerivedShow { .. }
+            )
     }) {
         push_unique(runtime_requirements, SHOW_DICTIONARY_FEATURE);
         push_type_import_unique(
@@ -154,7 +176,22 @@ pub(super) fn lower_core_instances_to_typescript(
             },
         );
     }
-
+    if instances.iter().any(|instance| {
+        instance.trait_name == "Debug"
+            && matches!(
+                instance.implementation,
+                CoreInstanceImplementation::DerivedShow { .. }
+            )
+    }) {
+        push_unique(runtime_requirements, DEBUG_DICTIONARY_FEATURE);
+        push_type_import_unique(
+            type_imports,
+            TypeScriptTypeImport {
+                feature: DEBUG_DICTIONARY_FEATURE.to_owned(),
+                local: DEBUG_DICTIONARY_TYPE_LOCAL.to_owned(),
+            },
+        );
+    }
     let dictionary_exports = instances
         .iter()
         .enumerate()
@@ -167,6 +204,7 @@ pub(super) fn lower_core_instances_to_typescript(
         .collect::<BTreeMap<_, _>>();
     let context = InstanceLoweringContext {
         adts,
+        structs,
         dictionary_exports: &dictionary_exports,
         imported_instance_names,
         imported_value_names,
@@ -184,6 +222,7 @@ pub(super) fn lower_core_instances_to_typescript(
 
 struct InstanceLoweringContext<'a> {
     adts: &'a [CoreAdt],
+    structs: &'a [CoreStruct],
     dictionary_exports: &'a BTreeMap<&'a str, String>,
     imported_instance_names: &'a BTreeMap<(String, String), String>,
     imported_value_names: &'a BTreeMap<String, String>,
@@ -202,40 +241,76 @@ fn lower_instance(
             adt_symbol,
             payload_evidence,
         } => {
-            let adt = context
-                .adts
-                .iter()
-                .find(|adt| adt.symbol == *adt_symbol)
-                .expect("selected DerivedShow instance must reference a lowered ADT");
-            TypeScriptInstanceImplementation::DerivedShow {
-                adt_name: local_name(&adt.symbol),
-                variants: adt
-                    .variants
+            if let Some(adt) = context.adts.iter().find(|adt| adt.symbol == *adt_symbol) {
+                TypeScriptInstanceImplementation::DerivedShow {
+                    adt_name: local_name(&adt.symbol),
+                    variants: adt
+                        .variants
+                        .iter()
+                        .map(|variant| TypeScriptDerivedShowVariant {
+                            name: local_name(&variant.symbol),
+                            tag: variant.name.clone(),
+                            payload: variant.payload.as_ref().map(|payload| {
+                                let evidence = payload_evidence
+                                    .iter()
+                                    .find(|evidence| evidence.variant_symbol == variant.symbol)
+                                    .expect(
+                                        "selected DerivedShow payload must retain typed evidence",
+                                    );
+                                TypeScriptDerivedShowPayload {
+                                    type_ref: type_ref_from_core_type(
+                                        payload,
+                                        context.imported_type_names,
+                                    ),
+                                    dictionary: resolve_show_dictionary(
+                                        &evidence.evidence,
+                                        context.dictionary_exports,
+                                        context.imported_instance_names,
+                                        context.imported_value_names,
+                                        context.imported_type_names,
+                                        runtime_requirements,
+                                        imports,
+                                    ),
+                                }
+                            }),
+                        })
+                        .collect(),
+                }
+            } else {
+                let structure = context
+                    .structs
                     .iter()
-                    .map(|variant| TypeScriptDerivedShowVariant {
-                        name: local_name(&variant.symbol),
-                        tag: variant.name.clone(),
-                        payload: variant.payload.as_ref().map(|payload| {
+                    .find(|structure| structure.symbol == *adt_symbol)
+                    .expect("selected DerivedShow instance must reference a lowered nominal type");
+                TypeScriptInstanceImplementation::DerivedStructShow {
+                    struct_name: local_name(&structure.symbol),
+                    fields: structure
+                        .fields
+                        .iter()
+                        .map(|field| {
                             let evidence = payload_evidence
                                 .iter()
-                                .find(|evidence| evidence.variant_symbol == variant.symbol)
-                                .expect("selected DerivedShow payload must retain typed evidence");
-                            TypeScriptDerivedShowPayload {
+                                .find(|evidence| evidence.variant_symbol == field.name)
+                                .expect("selected DerivedShow field must retain typed evidence");
+                            TypeScriptDerivedShowField {
+                                name: field.name.clone(),
                                 type_ref: type_ref_from_core_type(
-                                    payload,
+                                    &field.type_ref,
                                     context.imported_type_names,
                                 ),
                                 dictionary: resolve_show_dictionary(
                                     &evidence.evidence,
                                     context.dictionary_exports,
                                     context.imported_instance_names,
+                                    context.imported_value_names,
+                                    context.imported_type_names,
                                     runtime_requirements,
                                     imports,
                                 ),
                             }
-                        }),
-                    })
-                    .collect(),
+                        })
+                        .collect(),
+                }
             }
         }
         CoreInstanceImplementation::UserDefined { methods } => {

@@ -1,0 +1,1050 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "newtype",
+      "visibility": "public",
+      "name": "UserId",
+      "nameSpan": {
+        "start": 100,
+        "end": 106
+      },
+      "deriving": [
+        "Show",
+        "Debug"
+      ],
+      "representation": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 130,
+          "end": 133
+        }
+      },
+      "span": {
+        "start": 88,
+        "end": 133
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "public",
+      "name": "Packet",
+      "nameSpan": {
+        "start": 144,
+        "end": 150
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "deriving": [
+        "Show",
+        "Debug"
+      ],
+      "variants": [
+        {
+          "name": "Empty",
+          "nameSpan": {
+            "start": 181,
+            "end": 186
+          },
+          "span": {
+            "start": 179,
+            "end": 186
+          }
+        },
+        {
+          "name": "Packet",
+          "nameSpan": {
+            "start": 191,
+            "end": 197
+          },
+          "payload": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 204,
+                  "end": 205
+                }
+              }
+            ],
+            "span": {
+              "start": 198,
+              "end": 206
+            }
+          },
+          "span": {
+            "start": 189,
+            "end": 206
+          }
+        }
+      ],
+      "span": {
+        "start": 135,
+        "end": 206
+      }
+    },
+    {
+      "kind": "alias",
+      "visibility": "private",
+      "name": "Metadata",
+      "nameSpan": {
+        "start": 214,
+        "end": 222
+      },
+      "target": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "active",
+            "nameSpan": {
+              "start": 227,
+              "end": 233
+            },
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "span": {
+                "start": 235,
+                "end": 239
+              }
+            }
+          }
+        ],
+        "span": {
+          "start": 225,
+          "end": 241
+        }
+      },
+      "span": {
+        "start": 208,
+        "end": 241
+      }
+    },
+    {
+      "kind": "struct",
+      "visibility": "public",
+      "name": "Envelope",
+      "nameSpan": {
+        "start": 254,
+        "end": 262
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "deriving": [
+        "Show",
+        "Debug"
+      ],
+      "fields": [
+        {
+          "name": "label",
+          "nameSpan": {
+            "start": 291,
+            "end": 296
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 298,
+              "end": 304
+            }
+          }
+        },
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 308,
+            "end": 313
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 315,
+              "end": 316
+            }
+          }
+        },
+        {
+          "name": "range",
+          "nameSpan": {
+            "start": 320,
+            "end": 325
+          },
+          "type": {
+            "kind": "named",
+            "name": "Range",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 333,
+                  "end": 336
+                }
+              }
+            ],
+            "span": {
+              "start": 327,
+              "end": 337
+            }
+          }
+        },
+        {
+          "name": "summary",
+          "nameSpan": {
+            "start": 341,
+            "end": 348
+          },
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 351,
+                  "end": 354
+                }
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 356,
+                  "end": 362
+                }
+              }
+            ],
+            "span": {
+              "start": 350,
+              "end": 363
+            }
+          }
+        },
+        {
+          "name": "metadata",
+          "nameSpan": {
+            "start": 367,
+            "end": 375
+          },
+          "type": {
+            "kind": "named",
+            "name": "Metadata",
+            "span": {
+              "start": 377,
+              "end": 385
+            }
+          }
+        }
+      ],
+      "span": {
+        "start": 243,
+        "end": 388
+      }
+    },
+    {
+      "kind": "struct",
+      "visibility": "public",
+      "name": "Stats",
+      "nameSpan": {
+        "start": 401,
+        "end": 406
+      },
+      "deriving": [
+        "Debug"
+      ],
+      "fields": [
+        {
+          "name": "total",
+          "nameSpan": {
+            "start": 426,
+            "end": 431
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 433,
+              "end": 436
+            }
+          }
+        },
+        {
+          "name": "ratio",
+          "nameSpan": {
+            "start": 440,
+            "end": 445
+          },
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "span": {
+              "start": 447,
+              "end": 452
+            }
+          }
+        }
+      ],
+      "span": {
+        "start": 390,
+        "end": 455
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "packet",
+      "nameSpan": {
+        "start": 461,
+        "end": 467
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Packet",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "UserId",
+            "span": {
+              "start": 476,
+              "end": 482
+            }
+          }
+        ],
+        "span": {
+          "start": 469,
+          "end": 483
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "Packet",
+          "span": {
+            "start": 488,
+            "end": 494
+          }
+        },
+        "argument": {
+          "kind": "array",
+          "elements": [
+            {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "UserId",
+                "span": {
+                  "start": 496,
+                  "end": 502
+                }
+              },
+              "argument": {
+                "kind": "integer",
+                "raw": "7",
+                "span": {
+                  "start": 503,
+                  "end": 504
+                }
+              },
+              "span": {
+                "start": 496,
+                "end": 504
+              }
+            },
+            {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "UserId",
+                "span": {
+                  "start": 506,
+                  "end": 512
+                }
+              },
+              "argument": {
+                "kind": "integer",
+                "raw": "9",
+                "span": {
+                  "start": 513,
+                  "end": 514
+                }
+              },
+              "span": {
+                "start": 506,
+                "end": 514
+              }
+            }
+          ],
+          "span": {
+            "start": 495,
+            "end": 515
+          }
+        },
+        "span": {
+          "start": 488,
+          "end": 515
+        }
+      },
+      "span": {
+        "start": 457,
+        "end": 515
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "empty",
+      "nameSpan": {
+        "start": 521,
+        "end": 526
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Packet",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 535,
+              "end": 538
+            }
+          }
+        ],
+        "span": {
+          "start": 528,
+          "end": 539
+        }
+      },
+      "body": {
+        "kind": "name",
+        "name": "Empty",
+        "span": {
+          "start": 542,
+          "end": 547
+        }
+      },
+      "span": {
+        "start": 517,
+        "end": 547
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "envelope",
+      "nameSpan": {
+        "start": 553,
+        "end": 561
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Envelope",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Packet",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "UserId",
+                "span": {
+                  "start": 579,
+                  "end": 585
+                }
+              }
+            ],
+            "span": {
+              "start": 572,
+              "end": 586
+            }
+          }
+        ],
+        "span": {
+          "start": 563,
+          "end": 587
+        }
+      },
+      "body": {
+        "kind": "struct",
+        "name": "Envelope",
+        "nameSpan": {
+          "start": 592,
+          "end": 600
+        },
+        "items": [
+          {
+            "kind": "field",
+            "name": "label",
+            "nameSpan": {
+              "start": 607,
+              "end": 612
+            },
+            "value": {
+              "kind": "string",
+              "raw": "\"metrics\"",
+              "span": {
+                "start": 614,
+                "end": 623
+              }
+            },
+            "span": {
+              "start": 607,
+              "end": 623
+            }
+          },
+          {
+            "kind": "field",
+            "name": "value",
+            "nameSpan": {
+              "start": 629,
+              "end": 634
+            },
+            "value": {
+              "kind": "name",
+              "name": "packet",
+              "span": {
+                "start": 636,
+                "end": 642
+              }
+            },
+            "span": {
+              "start": 629,
+              "end": 642
+            }
+          },
+          {
+            "kind": "field",
+            "name": "range",
+            "nameSpan": {
+              "start": 648,
+              "end": 653
+            },
+            "value": {
+              "kind": "binary",
+              "operator": "..=",
+              "operatorSpan": {
+                "start": 656,
+                "end": 659
+              },
+              "left": {
+                "kind": "integer",
+                "raw": "1",
+                "span": {
+                  "start": 655,
+                  "end": 656
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "raw": "3",
+                "span": {
+                  "start": 659,
+                  "end": 660
+                }
+              },
+              "span": {
+                "start": 655,
+                "end": 660
+              }
+            },
+            "span": {
+              "start": 648,
+              "end": 660
+            }
+          },
+          {
+            "kind": "field",
+            "name": "summary",
+            "nameSpan": {
+              "start": 666,
+              "end": 673
+            },
+            "value": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "raw": "42",
+                  "span": {
+                    "start": 676,
+                    "end": 678
+                  }
+                },
+                {
+                  "kind": "string",
+                  "raw": "\"ready\"",
+                  "span": {
+                    "start": 680,
+                    "end": 687
+                  }
+                }
+              ],
+              "span": {
+                "start": 675,
+                "end": 688
+              }
+            },
+            "span": {
+              "start": 666,
+              "end": 688
+            }
+          },
+          {
+            "kind": "field",
+            "name": "metadata",
+            "nameSpan": {
+              "start": 694,
+              "end": 702
+            },
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "active",
+                  "nameSpan": {
+                    "start": 706,
+                    "end": 712
+                  },
+                  "value": {
+                    "kind": "boolean",
+                    "value": true,
+                    "span": {
+                      "start": 714,
+                      "end": 718
+                    }
+                  },
+                  "span": {
+                    "start": 706,
+                    "end": 718
+                  }
+                }
+              ],
+              "span": {
+                "start": 704,
+                "end": 720
+              }
+            },
+            "span": {
+              "start": 694,
+              "end": 720
+            }
+          }
+        ],
+        "span": {
+          "start": 592,
+          "end": 725
+        }
+      },
+      "span": {
+        "start": 549,
+        "end": 725
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "stats",
+      "nameSpan": {
+        "start": 731,
+        "end": 736
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Stats",
+        "span": {
+          "start": 738,
+          "end": 743
+        }
+      },
+      "body": {
+        "kind": "struct",
+        "name": "Stats",
+        "nameSpan": {
+          "start": 748,
+          "end": 753
+        },
+        "items": [
+          {
+            "kind": "field",
+            "name": "total",
+            "nameSpan": {
+              "start": 760,
+              "end": 765
+            },
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "operatorSpan": {
+                "start": 770,
+                "end": 771
+              },
+              "left": {
+                "kind": "integer",
+                "raw": "20",
+                "span": {
+                  "start": 767,
+                  "end": 769
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "raw": "22",
+                "span": {
+                  "start": 772,
+                  "end": 774
+                }
+              },
+              "span": {
+                "start": 767,
+                "end": 774
+              }
+            },
+            "span": {
+              "start": 760,
+              "end": 774
+            }
+          },
+          {
+            "kind": "field",
+            "name": "ratio",
+            "nameSpan": {
+              "start": 780,
+              "end": 785
+            },
+            "value": {
+              "kind": "float",
+              "raw": "1.25",
+              "span": {
+                "start": 787,
+                "end": 791
+              }
+            },
+            "span": {
+              "start": 780,
+              "end": 791
+            }
+          }
+        ],
+        "span": {
+          "start": 748,
+          "end": 796
+        }
+      },
+      "span": {
+        "start": 727,
+        "end": 796
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 812,
+        "end": 816
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 830,
+                  "end": 837
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "show",
+                    "span": {
+                      "start": 839,
+                      "end": 843
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "packet",
+                    "span": {
+                      "start": 844,
+                      "end": 850
+                    }
+                  },
+                  "span": {
+                    "start": 839,
+                    "end": 850
+                  }
+                },
+                "span": {
+                  "start": 838,
+                  "end": 851
+                }
+              },
+              "span": {
+                "start": 830,
+                "end": 851
+              }
+            },
+            "span": {
+              "start": 830,
+              "end": 851
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 856,
+                  "end": 863
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debug",
+                    "span": {
+                      "start": 865,
+                      "end": 870
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "envelope",
+                    "span": {
+                      "start": 871,
+                      "end": 879
+                    }
+                  },
+                  "span": {
+                    "start": 865,
+                    "end": 879
+                  }
+                },
+                "span": {
+                  "start": 864,
+                  "end": 880
+                }
+              },
+              "span": {
+                "start": 856,
+                "end": 880
+              }
+            },
+            "span": {
+              "start": 856,
+              "end": 880
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 885,
+                  "end": 892
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debug",
+                    "span": {
+                      "start": 894,
+                      "end": 899
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "stats",
+                    "span": {
+                      "start": 900,
+                      "end": 905
+                    }
+                  },
+                  "span": {
+                    "start": 894,
+                    "end": 905
+                  }
+                },
+                "span": {
+                  "start": 893,
+                  "end": 906
+                }
+              },
+              "span": {
+                "start": 885,
+                "end": 906
+              }
+            },
+            "span": {
+              "start": 885,
+              "end": 906
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 911,
+                  "end": 918
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "show",
+                    "span": {
+                      "start": 920,
+                      "end": 924
+                    }
+                  },
+                  "argument": {
+                    "kind": "grouped",
+                    "value": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "UserId",
+                        "span": {
+                          "start": 926,
+                          "end": 932
+                        }
+                      },
+                      "argument": {
+                        "kind": "integer",
+                        "raw": "42",
+                        "span": {
+                          "start": 933,
+                          "end": 935
+                        }
+                      },
+                      "span": {
+                        "start": 926,
+                        "end": 935
+                      }
+                    },
+                    "span": {
+                      "start": 925,
+                      "end": 936
+                    }
+                  },
+                  "span": {
+                    "start": 920,
+                    "end": 936
+                  }
+                },
+                "span": {
+                  "start": 919,
+                  "end": 937
+                }
+              },
+              "span": {
+                "start": 911,
+                "end": 937
+              }
+            },
+            "span": {
+              "start": 911,
+              "end": 937
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 942,
+              "end": 949
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "show",
+                "span": {
+                  "start": 951,
+                  "end": 955
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "empty",
+                "span": {
+                  "start": 956,
+                  "end": 961
+                }
+              },
+              "span": {
+                "start": 951,
+                "end": 961
+              }
+            },
+            "span": {
+              "start": 950,
+              "end": 962
+            }
+          },
+          "span": {
+            "start": 942,
+            "end": 962
+          }
+        },
+        "span": {
+          "start": 821,
+          "end": 966
+        }
+      },
+      "span": {
+        "start": 798,
+        "end": 966
+      }
+    }
+  ]
+}

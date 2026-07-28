@@ -1,0 +1,2219 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/derived-show-debug-nominal",
+  "instances": [
+    {
+      "identity": "Show<artifact/derived-show-debug-nominal::UserId>",
+      "traitIdentity": "Show",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/derived-show-debug-nominal::UserId"
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::UserId",
+      "constraints": [],
+      "origin": {
+        "start": 88,
+        "end": 133
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/derived-show-debug-nominal::UserId",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "artifact/derived-show-debug-nominal::UserId",
+            "typeIdentity": "std/prelude::Int",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::Int>"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Debug<artifact/derived-show-debug-nominal::UserId>",
+      "traitIdentity": "Debug",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/derived-show-debug-nominal::UserId"
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::UserId",
+      "constraints": [],
+      "origin": {
+        "start": 88,
+        "end": 133
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/derived-show-debug-nominal::UserId",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "artifact/derived-show-debug-nominal::UserId",
+            "typeIdentity": "std/prelude::Int",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Debug<std/prelude::Int>"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Show<artifact/derived-show-debug-nominal::Packet<$0>>",
+      "traitIdentity": "Show",
+      "trait": "Show",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/derived-show-debug-nominal::Packet<$0>"
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Packet<$0>",
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "constraintIdentities": [
+        "std/prelude::Show"
+      ],
+      "origin": {
+        "start": 135,
+        "end": 206
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/derived-show-debug-nominal::Packet",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "artifact/derived-show-debug-nominal::Packet",
+            "typeIdentity": "std/prelude::Array<$0>",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Show",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 0
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Debug<artifact/derived-show-debug-nominal::Packet<$0>>",
+      "traitIdentity": "Debug",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/derived-show-debug-nominal::Packet<$0>"
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Packet<$0>",
+      "constraints": [
+        {
+          "name": "Debug",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "constraintIdentities": [
+        "std/prelude::Debug"
+      ],
+      "origin": {
+        "start": 135,
+        "end": 206
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/derived-show-debug-nominal::Packet",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "artifact/derived-show-debug-nominal::Packet",
+            "typeIdentity": "std/prelude::Array<$0>",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/array::Debug",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Debug",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 0
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Show<artifact/derived-show-debug-nominal::Envelope<$0>>",
+      "traitIdentity": "Show",
+      "trait": "Show",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Envelope",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/derived-show-debug-nominal::Envelope<$0>"
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Envelope<$0>",
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "constraintIdentities": [
+        "std/prelude::Show"
+      ],
+      "origin": {
+        "start": 243,
+        "end": 388
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/derived-show-debug-nominal::Envelope",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "label",
+            "typeIdentity": "std/prelude::String",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::String>"
+            }
+          },
+          {
+            "variantSymbol": "value",
+            "typeIdentity": "$0",
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          },
+          {
+            "variantSymbol": "range",
+            "typeIdentity": "std/prelude::Range<std/prelude::Int>",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/range::Show",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variantSymbol": "summary",
+            "typeIdentity": "(std/prelude::Int,std/prelude::String)",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/tuple::Show",
+              "typeArguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Int>"
+                  }
+                },
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::String>"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variantSymbol": "metadata",
+            "typeIdentity": "artifact/derived-show-debug-nominal::Metadata",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/record::Show",
+              "typeArguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "active",
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/prelude::Bool>"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Debug<artifact/derived-show-debug-nominal::Envelope<$0>>",
+      "traitIdentity": "Debug",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Envelope",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/derived-show-debug-nominal::Envelope<$0>"
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Envelope<$0>",
+      "constraints": [
+        {
+          "name": "Debug",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "constraintIdentities": [
+        "std/prelude::Debug"
+      ],
+      "origin": {
+        "start": 243,
+        "end": 388
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/derived-show-debug-nominal::Envelope",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "label",
+            "typeIdentity": "std/prelude::String",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Debug<std/prelude::String>"
+            }
+          },
+          {
+            "variantSymbol": "value",
+            "typeIdentity": "$0",
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          },
+          {
+            "variantSymbol": "range",
+            "typeIdentity": "std/prelude::Range<std/prelude::Int>",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/range::Debug",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Debug",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Debug<std/prelude::Int>"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variantSymbol": "summary",
+            "typeIdentity": "(std/prelude::Int,std/prelude::String)",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/tuple::Debug",
+              "typeArguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Debug",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Debug<std/prelude::Int>"
+                  }
+                },
+                {
+                  "constraint": {
+                    "name": "Debug",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Debug<std/prelude::String>"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "variantSymbol": "metadata",
+            "typeIdentity": "artifact/derived-show-debug-nominal::Metadata",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/record::Debug",
+              "typeArguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "active",
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Debug",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Debug<std/prelude::Bool>"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Debug<artifact/derived-show-debug-nominal::Stats>",
+      "traitIdentity": "Debug",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Stats",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/derived-show-debug-nominal::Stats"
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Stats",
+      "constraints": [],
+      "origin": {
+        "start": 390,
+        "end": 455
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/derived-show-debug-nominal::Stats",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "total",
+            "typeIdentity": "std/prelude::Int",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Debug<std/prelude::Int>"
+            }
+          },
+          {
+            "variantSymbol": "ratio",
+            "typeIdentity": "std/prelude::Float",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Debug<std/prelude::Float>"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/derived-show-debug-nominal::UserId",
+      "name": "UserId",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/derived-show-debug-nominal::UserId",
+          "name": "UserId",
+          "payload": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "UserId",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 100,
+            "end": 106
+          }
+        }
+      ],
+      "origin": {
+        "start": 88,
+        "end": 133
+      }
+    },
+    {
+      "kind": "adt",
+      "symbol": "artifact/derived-show-debug-nominal::Packet",
+      "name": "Packet",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "symbol": "artifact/derived-show-debug-nominal::Empty",
+          "name": "Empty",
+          "scheme": {
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Packet",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          },
+          "origin": {
+            "start": 181,
+            "end": 186
+          }
+        },
+        {
+          "symbol": "artifact/derived-show-debug-nominal::Packet",
+          "name": "Packet",
+          "payload": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "scheme": {
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "result": {
+                "kind": "named",
+                "name": "Packet",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            }
+          },
+          "origin": {
+            "start": 191,
+            "end": 197
+          }
+        }
+      ],
+      "origin": {
+        "start": 135,
+        "end": 206
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "artifact/derived-show-debug-nominal::Metadata",
+      "name": "Metadata",
+      "visibility": "private",
+      "typeParameters": [],
+      "target": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "active",
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          }
+        ]
+      },
+      "origin": {
+        "start": 208,
+        "end": 241
+      }
+    },
+    {
+      "kind": "struct",
+      "symbol": "artifact/derived-show-debug-nominal::Envelope",
+      "name": "Envelope",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "label",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 291,
+            "end": 296
+          }
+        },
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "start": 308,
+            "end": 313
+          }
+        },
+        {
+          "name": "range",
+          "type": {
+            "kind": "named",
+            "name": "Range",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 320,
+            "end": 325
+          }
+        },
+        {
+          "name": "summary",
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 341,
+            "end": 348
+          }
+        },
+        {
+          "name": "metadata",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "active",
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "start": 367,
+            "end": 375
+          }
+        }
+      ],
+      "origin": {
+        "start": 243,
+        "end": 388
+      }
+    },
+    {
+      "kind": "struct",
+      "symbol": "artifact/derived-show-debug-nominal::Stats",
+      "name": "Stats",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "total",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 426,
+            "end": 431
+          }
+        },
+        {
+          "name": "ratio",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 440,
+            "end": 445
+          }
+        }
+      ],
+      "origin": {
+        "start": 390,
+        "end": 455
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/derived-show-debug-nominal::packet",
+      "visibility": "private",
+      "origin": {
+        "start": 457,
+        "end": 515
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "UserId",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "call",
+        "callee": "artifact/derived-show-debug-nominal::Packet",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "call",
+                "callee": "artifact/derived-show-debug-nominal::UserId",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "7",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 503,
+                      "end": 504
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "UserId",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 496,
+                  "end": 504
+                }
+              },
+              {
+                "kind": "call",
+                "callee": "artifact/derived-show-debug-nominal::UserId",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "9",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 513,
+                      "end": 514
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "UserId",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 506,
+                  "end": 514
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "UserId",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 495,
+              "end": 515
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "UserId",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 488,
+          "end": 515
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/derived-show-debug-nominal::empty",
+      "visibility": "private",
+      "origin": {
+        "start": 517,
+        "end": 547
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "variable",
+        "name": "artifact/derived-show-debug-nominal::Empty",
+        "type": {
+          "kind": "named",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 542,
+          "end": 547
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/derived-show-debug-nominal::envelope",
+      "visibility": "private",
+      "origin": {
+        "start": 549,
+        "end": 725
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Envelope",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Packet",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "UserId",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "label",
+            "value": {
+              "kind": "string",
+              "value": "metrics",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 614,
+                "end": 623
+              }
+            },
+            "origin": {
+              "start": 607,
+              "end": 623
+            }
+          },
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "variable",
+              "name": "packet",
+              "type": {
+                "kind": "named",
+                "name": "Packet",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "UserId",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 636,
+                "end": 642
+              }
+            },
+            "origin": {
+              "start": 629,
+              "end": 642
+            }
+          },
+          {
+            "kind": "field",
+            "name": "range",
+            "value": {
+              "kind": "binary",
+              "operator": "..=",
+              "left": {
+                "kind": "integer",
+                "value": "1",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 655,
+                  "end": 656
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "value": "3",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 659,
+                  "end": 660
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Range",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 655,
+                "end": 660
+              }
+            },
+            "origin": {
+              "start": 648,
+              "end": 660
+            }
+          },
+          {
+            "kind": "field",
+            "name": "summary",
+            "value": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "value": "42",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 676,
+                    "end": 678
+                  }
+                },
+                {
+                  "kind": "string",
+                  "value": "ready",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 680,
+                    "end": 687
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 675,
+                "end": 688
+              }
+            },
+            "origin": {
+              "start": 666,
+              "end": 688
+            }
+          },
+          {
+            "kind": "field",
+            "name": "metadata",
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "active",
+                  "value": {
+                    "kind": "boolean",
+                    "value": true,
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 714,
+                      "end": 718
+                    }
+                  },
+                  "origin": {
+                    "start": 706,
+                    "end": 718
+                  }
+                }
+              ],
+              "type": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "active",
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "origin": {
+                "start": 704,
+                "end": 720
+              }
+            },
+            "origin": {
+              "start": 694,
+              "end": 720
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Envelope",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Packet",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "UserId",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 592,
+          "end": 725
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/derived-show-debug-nominal::stats",
+      "visibility": "private",
+      "origin": {
+        "start": 727,
+        "end": 796
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Stats",
+          "arguments": []
+        }
+      },
+      "value": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "total",
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "integer",
+                "value": "20",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 767,
+                  "end": 769
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "value": "22",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 772,
+                  "end": 774
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 767,
+                "end": 774
+              }
+            },
+            "origin": {
+              "start": 760,
+              "end": 774
+            }
+          },
+          {
+            "kind": "field",
+            "name": "ratio",
+            "value": {
+              "kind": "float",
+              "value": "1.25",
+              "type": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "origin": {
+                "start": 787,
+                "end": 791
+              }
+            },
+            "origin": {
+              "start": 780,
+              "end": 791
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Stats",
+          "arguments": []
+        },
+        "origin": {
+          "start": 748,
+          "end": 796
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/derived-show-debug-nominal::main",
+      "visibility": "public",
+      "origin": {
+        "start": 798,
+        "end": 966
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "packet",
+                      "type": {
+                        "kind": "named",
+                        "name": "Packet",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "UserId",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 844,
+                        "end": 850
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Packet",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "UserId",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "local",
+                        "identity": "Show<artifact/derived-show-debug-nominal::Packet<$0>>",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "UserId",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Show",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "UserId",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "local",
+                              "identity": "Show<artifact/derived-show-debug-nominal::UserId>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 839,
+                    "end": 850
+                  }
+                }
+              ],
+              "origin": {
+                "start": 830,
+                "end": 851
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Debug::debug",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "envelope",
+                      "type": {
+                        "kind": "named",
+                        "name": "Envelope",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Packet",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "UserId",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 871,
+                        "end": 879
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Debug",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Envelope",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Packet",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "UserId",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "local",
+                        "identity": "Debug<artifact/derived-show-debug-nominal::Envelope<$0>>",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Packet",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "UserId",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Debug",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Packet",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "UserId",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "local",
+                              "identity": "Debug<artifact/derived-show-debug-nominal::Packet<$0>>",
+                              "typeArguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "UserId",
+                                  "arguments": []
+                                }
+                              ],
+                              "evidenceArguments": [
+                                {
+                                  "constraint": {
+                                    "name": "Debug",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "UserId",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "evidence": {
+                                    "kind": "local",
+                                    "identity": "Debug<artifact/derived-show-debug-nominal::UserId>"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Debug",
+                    "method": "debug"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 865,
+                    "end": 879
+                  }
+                }
+              ],
+              "origin": {
+                "start": 856,
+                "end": 880
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Debug::debug",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "stats",
+                      "type": {
+                        "kind": "named",
+                        "name": "Stats",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 900,
+                        "end": 905
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Debug",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Stats",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "local",
+                        "identity": "Debug<artifact/derived-show-debug-nominal::Stats>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Debug",
+                    "method": "debug"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 894,
+                    "end": 905
+                  }
+                }
+              ],
+              "origin": {
+                "start": 885,
+                "end": 906
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/derived-show-debug-nominal::UserId",
+                      "arguments": [
+                        {
+                          "kind": "integer",
+                          "value": "42",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 933,
+                            "end": 935
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "UserId",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 926,
+                        "end": 935
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "UserId",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "local",
+                        "identity": "Show<artifact/derived-show-debug-nominal::UserId>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 920,
+                    "end": 936
+                  }
+                }
+              ],
+              "origin": {
+                "start": 911,
+                "end": 937
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "empty",
+                  "type": {
+                    "kind": "named",
+                    "name": "Packet",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 956,
+                    "end": 961
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Packet",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "Show<artifact/derived-show-debug-nominal::Packet<$0>>",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Int>"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 951,
+                "end": 961
+              }
+            }
+          ],
+          "origin": {
+            "start": 942,
+            "end": 962
+          }
+        },
+        "origin": {
+          "start": 821,
+          "end": 966
+        }
+      }
+    }
+  ]
+}

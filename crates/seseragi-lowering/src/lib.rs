@@ -37,13 +37,13 @@ pub use typescript::{
     lower_core_module_to_typescript_ir, lower_core_module_to_typescript_ir_with_plan,
     TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding, TypeScriptDecisionBinding,
     TypeScriptDecisionBranch, TypeScriptDecisionProjection, TypeScriptDecisionTest,
-    TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant, TypeScriptExpr, TypeScriptFunction,
-    TypeScriptImport, TypeScriptInstance, TypeScriptInstanceConstraint,
-    TypeScriptInstanceImplementation, TypeScriptInstanceMethod, TypeScriptLoweringError,
-    TypeScriptModule, TypeScriptOutputPlan, TypeScriptParameter, TypeScriptRecordTypeField,
-    TypeScriptRecordValueItem, TypeScriptShowDictionaryReference, TypeScriptSourceImport,
-    TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptStruct, TypeScriptType,
-    TypeScriptTypeImport,
+    TypeScriptDerivedShowField, TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant,
+    TypeScriptExpr, TypeScriptFunction, TypeScriptImport, TypeScriptInstance,
+    TypeScriptInstanceConstraint, TypeScriptInstanceImplementation, TypeScriptInstanceMethod,
+    TypeScriptLoweringError, TypeScriptModule, TypeScriptOutputPlan, TypeScriptParameter,
+    TypeScriptRecordTypeField, TypeScriptRecordValueItem, TypeScriptShowDictionaryReference,
+    TypeScriptSourceImport, TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptStruct,
+    TypeScriptType, TypeScriptTypeImport,
 };
 
 #[cfg(test)]

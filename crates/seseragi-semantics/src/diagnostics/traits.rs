@@ -47,8 +47,9 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             }],
             fixes: Vec::new(),
         },
-        DerivedInstanceIssue::UnsupportedGenericShow {
-            type_name,
+        DerivedInstanceIssue::UnsupportedDerivedMember {
+            trait_name,
+            member_name,
             primary,
             declaration,
         } => Diagnostic {
@@ -59,24 +60,8 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             primary: byte_range(*primary),
             related: vec![RelatedDiagnostic {
                 message: format!(
-                    "derived Show<{type_name}> for generic ADTs is not implemented yet"
+                    "required {trait_name}<{member_name}> instance is not available"
                 ),
-                primary: byte_range(*declaration),
-            }],
-            fixes: Vec::new(),
-        },
-        DerivedInstanceIssue::UnsupportedShowPayload {
-            payload_name,
-            primary,
-            declaration,
-        } => Diagnostic {
-            id: String::new(),
-            code: "SES-T0201".to_owned(),
-            severity: DiagnosticSeverity::Error,
-            message_key: "trait.instance-missing".to_owned(),
-            primary: byte_range(*primary),
-            related: vec![RelatedDiagnostic {
-                message: format!("required Show<{payload_name}> instance is not available"),
                 primary: byte_range(*declaration),
             }],
             fixes: Vec::new(),

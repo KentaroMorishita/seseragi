@@ -1,0 +1,316 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "fixture/imported-derived-show-debug::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-derived-show-debug::domain",
+      "origin": {
+        "start": 0,
+        "end": 39
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Code",
+          "local": "Code",
+          "canonical": "fixture/imported-derived-show-debug::domain::Code",
+          "origin": {
+            "start": 9,
+            "end": 13
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Code",
+          "local": "Code",
+          "canonical": "fixture/imported-derived-show-debug::domain::Code",
+          "origin": {
+            "start": 9,
+            "end": 13
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "Remote",
+          "local": "Remote",
+          "canonical": "fixture/imported-derived-show-debug::domain::Remote",
+          "origin": {
+            "start": 15,
+            "end": 21
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Remote",
+          "local": "Remote",
+          "canonical": "fixture/imported-derived-show-debug::domain::Remote",
+          "origin": {
+            "start": 15,
+            "end": 21
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-derived-show-debug::main::render",
+      "visibility": "public",
+      "origin": {
+        "start": 41,
+        "end": 99
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Remote",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Code",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 55,
+            "end": 60
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::Show::show",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Remote",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Code",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 94,
+              "end": 99
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Show",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Remote",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Code",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "imported",
+              "identity": "Show<fixture/imported-derived-show-debug::domain::Remote<$0>>",
+              "providerModule": "fixture/imported-derived-show-debug::domain",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "Code",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Code",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "imported",
+                    "identity": "Show<fixture/imported-derived-show-debug::domain::Code>",
+                    "providerModule": "fixture/imported-derived-show-debug::domain"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Show",
+          "method": "show"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 89,
+          "end": 99
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "fixture/imported-derived-show-debug::main::inspect",
+      "visibility": "public",
+      "origin": {
+        "start": 101,
+        "end": 161
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Remote",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Code",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 116,
+            "end": 121
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/prelude::Debug::debug",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Remote",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Code",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 156,
+              "end": 161
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Debug",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Remote",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Code",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "imported",
+              "identity": "Debug<fixture/imported-derived-show-debug::domain::Remote<$0>>",
+              "providerModule": "fixture/imported-derived-show-debug::domain",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "Code",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Debug",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Code",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "imported",
+                    "identity": "Debug<fixture/imported-derived-show-debug::domain::Code>",
+                    "providerModule": "fixture/imported-derived-show-debug::domain"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "traitDispatch": {
+          "traitIdentity": "std/prelude::Debug",
+          "method": "debug"
+        },
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 150,
+          "end": 161
+        }
+      }
+    }
+  ]
+}

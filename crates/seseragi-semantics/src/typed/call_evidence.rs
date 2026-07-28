@@ -397,6 +397,25 @@ fn select_resolved_evidence(
     )
 }
 
+pub(crate) fn select_derived_instance_evidence(
+    constraint: &TypedConstraint,
+    trait_identity: &str,
+    requirements: &[TypedConstraint],
+    resolution: &TypedResolution<'_>,
+) -> Option<TypedInstanceEvidence> {
+    let scoped = requirements
+        .iter()
+        .cloned()
+        .enumerate()
+        .map(|(index, constraint)| ScopedCallEvidence {
+            trait_identity: trait_identity.to_owned(),
+            constraint,
+            index,
+        })
+        .collect::<Vec<_>>();
+    select_resolved_evidence(constraint, trait_identity, resolution, &scoped)
+}
+
 pub(super) fn select_resolved_evidence_with_stack(
     constraint: &TypedConstraint,
     trait_identity: &str,

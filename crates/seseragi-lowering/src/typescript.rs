@@ -23,9 +23,9 @@ use instances::{
     dictionary_export_name, local_instance_expression_key, lower_core_instances_to_typescript,
 };
 pub use instances::{
-    TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant, TypeScriptInstance,
-    TypeScriptInstanceConstraint, TypeScriptInstanceImplementation, TypeScriptInstanceMethod,
-    TypeScriptShowDictionaryReference,
+    TypeScriptDerivedShowField, TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant,
+    TypeScriptInstance, TypeScriptInstanceConstraint, TypeScriptInstanceImplementation,
+    TypeScriptInstanceMethod, TypeScriptShowDictionaryReference,
 };
 use module_imports::lower_module_imports;
 use names::{local_name, module_value_name};
@@ -598,6 +598,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
     let instances = lower_core_instances_to_typescript(
         &module.instances,
         &module.adts,
+        &module.structs,
         &module_imports.instance_names,
         &expression_value_names,
         &module_imports.type_names,

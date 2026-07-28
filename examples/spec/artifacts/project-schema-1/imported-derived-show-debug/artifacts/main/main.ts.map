@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "file": "dist/imported-derived-show-debug/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-derived-show-debug::main"
+  ],
+  "sourcesContent": [
+    "import { Code, Remote } from \"./domain\"\n\npub fn render value: Remote<Code> -> String =\n  show value\n\npub fn inspect value: Remote<Code> -> String =\n  debug value\n"
+  ],
+  "names": [
+    "render",
+    "Show<fixture/imported-derived-show-debug::domain::Remote<$0>>",
+    "inspect",
+    "Debug<fixture/imported-derived-show-debug::domain::Remote<$0>>"
+  ],
+  "mappings": ";;AAEAA;AAGAE"
+}

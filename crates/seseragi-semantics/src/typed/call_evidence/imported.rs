@@ -6,7 +6,6 @@ use super::super::TypedResolution;
 use super::super::{
     functions::{infer_type_parameters, substitute_type_parameters},
     semantic_types::{semantic_values_are_compatible, SemanticTypeKey, SemanticValueType},
-    type_ref::typed_type_from_interface_type,
 };
 
 pub(super) fn infer_imported_functional_instance(
@@ -341,7 +340,10 @@ fn match_imported_instance(
     scoped: &[super::ScopedCallEvidence],
     stack: &mut Vec<(String, Vec<TypedType>)>,
 ) -> Option<TypedInstanceEvidence> {
-    if instance.trait_identity != trait_identity {
+    if instance.trait_identity != trait_identity
+        && !(instance.trait_name == constraint.name
+            && trait_identity == format!("std/prelude::{}", constraint.name))
+    {
         return None;
     }
     let (type_arguments, substitutions) = if instance.type_parameters.is_empty() {
@@ -364,7 +366,15 @@ fn match_imported_instance(
         let templates = arguments
             .iter()
             .cloned()
-            .map(typed_type_from_interface_type)
+            .map(|argument| {
+                resolution
+                    .semantic_value_from_imported_type(
+                        argument,
+                        &instance.provider_module,
+                        &instance.type_parameters,
+                    )
+                    .map(|value| value.type_ref)
+            })
             .collect::<Option<Vec<_>>>()?;
         let matching_templates = templates
             .iter()
@@ -413,10 +423,16 @@ fn match_imported_instance(
                     .arguments
                     .iter()
                     .cloned()
-                    .map(typed_type_from_interface_type)
                     .map(|argument| {
-                        argument
-                            .map(|argument| substitute_type_parameters(&argument, &substitutions))
+                        resolution
+                            .semantic_value_from_imported_type(
+                                argument,
+                                &instance.provider_module,
+                                &instance.type_parameters,
+                            )
+                            .map(|value| {
+                                substitute_type_parameters(&value.type_ref, &substitutions)
+                            })
                     })
                     .collect::<Option<Vec<_>>>()?,
             };

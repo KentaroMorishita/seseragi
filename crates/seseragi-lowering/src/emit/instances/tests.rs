@@ -56,6 +56,48 @@ pub type Chain deriving Show =
 }
 
 #[test]
+fn emits_generic_adt_struct_and_newtype_show_debug_factories() {
+    let source = "\
+pub type Box<A> deriving Show, Debug =
+  | Box Array<A>
+
+pub struct Profile<A> deriving Show, Debug {
+  name: String,
+  value: A,
+}
+
+pub newtype UserId deriving Show, Debug = Int
+";
+    let typed = type_module("artifact/derived-display/main.ssrg", source);
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+
+    assert!(bundle
+        .typescript
+        .contains("export const __ssrg$instance$Show$0 = <A,>(__ssrg$evidence$0:"));
+    assert!(
+        bundle
+            .typescript
+            .contains("(_ssrg_show_arrayShow<A>(__ssrg$evidence$0)).show(value.value)"),
+        "{}",
+        bundle.typescript
+    );
+    assert!(bundle
+        .typescript
+        .contains("(_ssrg_debug_arrayDebug<A>(__ssrg$evidence$0)).debug(value.value)"));
+    assert!(bundle
+        .typescript
+        .contains("\"Profile { \" + \"name: \" + _ssrg_show_stringShow.show(value[\"name\"])"));
+    assert!(bundle.typescript.contains(
+        "case \"UserId\": return \"UserId\" + \" \" + _ssrg_show_intShow.show(value.value);"
+    ));
+    assert!(bundle
+        .typescript
+        .contains("type Debug as _ssrg_debug_Debug"));
+}
+
+#[test]
 fn emits_nothing_without_selected_instances_or_show_import() {
     let mut output = String::new();
 

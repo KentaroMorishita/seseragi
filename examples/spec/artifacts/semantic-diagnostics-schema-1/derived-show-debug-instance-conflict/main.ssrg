@@ -1,0 +1,7 @@
+type Badge deriving Show =
+  | Active
+
+instance Show<Badge> {
+  fn show value: Badge -> String =
+    "active"
+}

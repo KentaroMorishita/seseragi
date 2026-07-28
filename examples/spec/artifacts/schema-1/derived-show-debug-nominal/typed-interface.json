@@ -1,0 +1,608 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/derived-show-debug-nominal",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/derived-show-debug-nominal::UserId",
+      "namespace": "type",
+      "name": "UserId",
+      "visibility": "public",
+      "declarationKind": "newtype",
+      "declaration": {
+        "start": 88,
+        "end": 133
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "UserId",
+          "arity": 0
+        }
+      },
+      "representation": {
+        "kind": "named",
+        "name": "Int",
+        "arguments": []
+      }
+    },
+    {
+      "symbol": "artifact/derived-show-debug-nominal::UserId",
+      "namespace": "value",
+      "name": "UserId",
+      "constructorOf": "artifact/derived-show-debug-nominal::UserId",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 100,
+        "end": 106
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "UserId",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/derived-show-debug-nominal::Packet",
+      "namespace": "type",
+      "name": "Packet",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 135,
+        "end": 206
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Packet",
+          "arity": 1
+        }
+      }
+    },
+    {
+      "symbol": "artifact/derived-show-debug-nominal::Empty",
+      "namespace": "value",
+      "name": "Empty",
+      "constructorOf": "artifact/derived-show-debug-nominal::Packet",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 181,
+        "end": 186
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "symbol": "artifact/derived-show-debug-nominal::Packet",
+      "namespace": "value",
+      "name": "Packet",
+      "constructorOf": "artifact/derived-show-debug-nominal::Packet",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 191,
+        "end": 197
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "Packet",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/derived-show-debug-nominal::Envelope",
+      "namespace": "type",
+      "name": "Envelope",
+      "visibility": "public",
+      "declarationKind": "struct",
+      "declaration": {
+        "start": 243,
+        "end": 388
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Envelope",
+          "arity": 1
+        }
+      },
+      "representation": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "label",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          },
+          {
+            "name": "range",
+            "type": {
+              "kind": "named",
+              "name": "Range",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          },
+          {
+            "name": "summary",
+            "type": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            }
+          },
+          {
+            "name": "metadata",
+            "type": {
+              "kind": "named",
+              "name": "Metadata",
+              "arguments": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "artifact/derived-show-debug-nominal::Stats",
+      "namespace": "type",
+      "name": "Stats",
+      "visibility": "public",
+      "declarationKind": "struct",
+      "declaration": {
+        "start": 390,
+        "end": 455
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Stats",
+          "arity": 0
+        }
+      },
+      "representation": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "total",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          },
+          {
+            "name": "ratio",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "artifact/derived-show-debug-nominal::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 798,
+        "end": 966
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Show<artifact/derived-show-debug-nominal::UserId>",
+      "providerModule": "artifact/derived-show-debug-nominal",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "artifact/derived-show-debug-nominal::UserId"
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::UserId",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "UserId",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 88,
+        "end": 133
+      }
+    },
+    {
+      "identity": "Debug<artifact/derived-show-debug-nominal::UserId>",
+      "providerModule": "artifact/derived-show-debug-nominal",
+      "traitIdentity": "Debug",
+      "argumentIdentities": [
+        "artifact/derived-show-debug-nominal::UserId"
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::UserId",
+      "trait": "Debug",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Debug",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "UserId",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 88,
+        "end": 133
+      }
+    },
+    {
+      "identity": "Show<artifact/derived-show-debug-nominal::Packet<$0>>",
+      "providerModule": "artifact/derived-show-debug-nominal",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "artifact/derived-show-debug-nominal::Packet<$0>"
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Packet<$0>",
+      "trait": "Show",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Packet",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 135,
+        "end": 206
+      }
+    },
+    {
+      "identity": "Debug<artifact/derived-show-debug-nominal::Packet<$0>>",
+      "providerModule": "artifact/derived-show-debug-nominal",
+      "traitIdentity": "Debug",
+      "argumentIdentities": [
+        "artifact/derived-show-debug-nominal::Packet<$0>"
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Packet<$0>",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Debug",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Packet",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 135,
+        "end": 206
+      }
+    },
+    {
+      "identity": "Show<artifact/derived-show-debug-nominal::Envelope<$0>>",
+      "providerModule": "artifact/derived-show-debug-nominal",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "artifact/derived-show-debug-nominal::Envelope<$0>"
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Envelope<$0>",
+      "trait": "Show",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Envelope",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 243,
+        "end": 388
+      }
+    },
+    {
+      "identity": "Debug<artifact/derived-show-debug-nominal::Envelope<$0>>",
+      "providerModule": "artifact/derived-show-debug-nominal",
+      "traitIdentity": "Debug",
+      "argumentIdentities": [
+        "artifact/derived-show-debug-nominal::Envelope<$0>"
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Envelope<$0>",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Debug",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Envelope",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 243,
+        "end": 388
+      }
+    },
+    {
+      "identity": "Debug<artifact/derived-show-debug-nominal::Stats>",
+      "providerModule": "artifact/derived-show-debug-nominal",
+      "traitIdentity": "Debug",
+      "argumentIdentities": [
+        "artifact/derived-show-debug-nominal::Stats"
+      ],
+      "typeIdentity": "artifact/derived-show-debug-nominal::Stats",
+      "trait": "Debug",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Debug",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Stats",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 390,
+        "end": 455
+      }
+    }
+  ]
+}

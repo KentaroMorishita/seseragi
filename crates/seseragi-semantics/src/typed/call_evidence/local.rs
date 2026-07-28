@@ -299,7 +299,16 @@ pub(super) fn select_local_instance_in_context(
                 scoped,
                 stack,
             )
-            .or_else(|| match_derived_show(declaration, trait_identity, constraint, resolution))
+            .or_else(|| {
+                match_derived_display(
+                    declaration,
+                    trait_identity,
+                    constraint,
+                    resolution,
+                    scoped,
+                    stack,
+                )
+            })
         })
         .take(2)
         .collect::<Vec<_>>();
@@ -309,26 +318,48 @@ pub(super) fn select_local_instance_in_context(
     }
 }
 
-fn match_derived_show(
+fn match_derived_display(
     declaration: &SurfaceDecl,
     trait_identity: &str,
     constraint: &TypedConstraint,
     resolution: &TypedResolution<'_>,
+    scoped: &[super::ScopedCallEvidence],
+    stack: &mut Vec<(String, Vec<TypedType>)>,
 ) -> Option<TypedInstanceEvidence> {
-    if trait_identity != "std/prelude::Show" || constraint.name != "Show" {
+    if !matches!(
+        (trait_identity, constraint.name.as_str()),
+        ("std/prelude::Show", "Show") | ("std/prelude::Debug", "Debug")
+    ) {
         return None;
     }
-    let SurfaceDecl::Type {
-        name,
-        name_span,
-        type_parameters,
-        deriving,
-        ..
-    } = declaration
-    else {
-        return None;
+    let (name, name_span, type_parameters, deriving) = match declaration {
+        SurfaceDecl::Type {
+            name,
+            name_span,
+            type_parameters,
+            deriving,
+            ..
+        }
+        | SurfaceDecl::Newtype {
+            name,
+            name_span,
+            type_parameters,
+            deriving,
+            ..
+        }
+        | SurfaceDecl::Struct {
+            name,
+            name_span,
+            type_parameters,
+            deriving,
+            ..
+        } => (name, *name_span, type_parameters, deriving),
+        _ => return None,
     };
-    if !type_parameters.is_empty() || !deriving.iter().any(|derived| derived == "Show") {
+    if !deriving
+        .iter()
+        .any(|derived| derived == constraint.name.as_str())
+    {
         return None;
     }
     let [TypedType::Named {
@@ -338,17 +369,59 @@ fn match_derived_show(
     else {
         return None;
     };
-    if actual != name || !arguments.is_empty() {
+    if actual != name || arguments.len() != type_parameters.len() {
         return None;
     }
     let canonical = resolution
-        .declaration_symbol(*name_span, crate::SymbolKind::Type)?
+        .declaration_symbol(name_span, crate::SymbolKind::Type)?
         .canonical
         .as_deref()?;
+    let substitutions = type_parameters
+        .iter()
+        .zip(arguments)
+        .map(|(parameter, argument)| (parameter.name.clone(), argument.clone()))
+        .collect::<BTreeMap<_, _>>();
+    let requirements =
+        super::super::instances::derived_display_requirements(declaration, &constraint.name);
+    let evidence_arguments = requirements
+        .into_iter()
+        .map(|template| {
+            let required = TypedConstraint {
+                name: template.name,
+                arguments: template
+                    .arguments
+                    .iter()
+                    .map(|argument| substitute_type_parameters(argument, &substitutions))
+                    .collect(),
+            };
+            let evidence = super::select_resolved_evidence_with_stack(
+                &required,
+                trait_identity,
+                resolution,
+                scoped,
+                stack,
+            )?;
+            Some(TypedCallEvidence {
+                constraint: required,
+                evidence,
+            })
+        })
+        .collect::<Option<Vec<_>>>()?;
+    let canonical_head = if type_parameters.is_empty() {
+        canonical.to_owned()
+    } else {
+        format!(
+            "{canonical}<{}>",
+            (0..type_parameters.len())
+                .map(|index| format!("${index}"))
+                .collect::<Vec<_>>()
+                .join(",")
+        )
+    };
     Some(TypedInstanceEvidence::Local {
-        identity: format!("Show<{canonical}>"),
-        type_arguments: Vec::new(),
-        evidence_arguments: Vec::new(),
+        identity: format!("{}<{canonical_head}>", constraint.name),
+        type_arguments: arguments.clone(),
+        evidence_arguments,
     })
 }
 

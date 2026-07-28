@@ -1,0 +1,359 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-derived-show-debug::domain",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string",
+    "core.maybe",
+    "core.show.dictionary",
+    "core.debug.dictionary",
+    "core.string.show",
+    "core.string.debug",
+    "core.maybe.show",
+    "core.maybe.debug"
+  ],
+  "imports": [
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.string.debug",
+      "local": "_ssrg_debug_stringDebug"
+    },
+    {
+      "feature": "core.maybe.show",
+      "local": "_ssrg_show_maybeShow"
+    },
+    {
+      "feature": "core.maybe.debug",
+      "local": "_ssrg_debug_maybeDebug"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.show.dictionary",
+      "local": "_ssrg_show_Show"
+    },
+    {
+      "feature": "core.debug.dictionary",
+      "local": "_ssrg_debug_Debug"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Code",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Code",
+          "tag": "Code",
+          "payload": {
+            "kind": "string"
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 46
+      }
+    },
+    {
+      "exported": true,
+      "name": "Remote",
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Missing",
+          "tag": "Missing",
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 94,
+            "end": 101
+          }
+        },
+        {
+          "exported": true,
+          "name": "Remote",
+          "tag": "Remote",
+          "payload": {
+            "kind": "maybe",
+            "element": {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 106,
+            "end": 112
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 48,
+        "end": 121
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-derived-show-debug::domain::Code>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Code",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Code",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 46
+      },
+      "dictionaryExport": "__ssrg$instance$Show$0",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "Code",
+        "variants": [
+          {
+            "name": "Code",
+            "tag": "Code",
+            "payload": {
+              "type": {
+                "kind": "string"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "Show<std/prelude::String>",
+                "feature": "core.string.show",
+                "local": "_ssrg_show_stringShow"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Debug<fixture/imported-derived-show-debug::domain::Code>",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Code",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Code",
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 46
+      },
+      "dictionaryExport": "__ssrg$instance$Debug$1",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "Code",
+        "variants": [
+          {
+            "name": "Code",
+            "tag": "Code",
+            "payload": {
+              "type": {
+                "kind": "string"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "Debug<std/prelude::String>",
+                "feature": "core.string.debug",
+                "local": "_ssrg_debug_stringDebug"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Show<fixture/imported-derived-show-debug::domain::Remote<$0>>",
+      "trait": "Show",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Remote",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Remote<$0>",
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 48,
+        "end": 121
+      },
+      "dictionaryExport": "__ssrg$instance$Show$2",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "Remote",
+        "variants": [
+          {
+            "name": "Missing",
+            "tag": "Missing"
+          },
+          {
+            "name": "Remote",
+            "tag": "Remote",
+            "payload": {
+              "type": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_show_maybeShow",
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$0"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Debug<fixture/imported-derived-show-debug::domain::Remote<$0>>",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Remote",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Remote<$0>",
+      "constraints": [
+        {
+          "name": "Debug",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 48,
+        "end": 121
+      },
+      "dictionaryExport": "__ssrg$instance$Debug$3",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "Remote",
+        "variants": [
+          {
+            "name": "Missing",
+            "tag": "Missing"
+          },
+          {
+            "name": "Remote",
+            "tag": "Remote",
+            "payload": {
+              "type": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                }
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_debug_maybeDebug",
+                  "typeArguments": [
+                    {
+                      "kind": "reference",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$evidence$0"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

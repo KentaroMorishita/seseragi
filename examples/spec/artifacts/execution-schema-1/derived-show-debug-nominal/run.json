@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "case": "derived-show-debug-nominal",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/derived-show-debug-nominal",
+    "export": "main",
+    "compiledModule": "../../schema-1/derived-show-debug-nominal/generated-module.json",
+    "typedInterface": "../../schema-1/derived-show-debug-nominal/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.adt",
+      "core.int64",
+      "core.show.dictionary",
+      "core.debug.dictionary",
+      "core.int64.show",
+      "core.int64.debug",
+      "core.array.show",
+      "core.array.debug",
+      "core.string.show",
+      "core.range.show",
+      "core.tuple.show",
+      "core.bool.show",
+      "core.record.show",
+      "core.string.debug",
+      "core.range.debug",
+      "core.tuple.debug",
+      "core.bool.debug",
+      "core.record.debug",
+      "core.float64.debug",
+      "core.string",
+      "core.range",
+      "core.range.inclusive",
+      "core.bool",
+      "core.int64.add",
+      "core.float64",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Packet [UserId 7, UserId 9]"],
+        "stdout": "Packet [UserId 7, UserId 9]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Envelope { label: \"metrics\", value: Packet [UserId 7, UserId 9], range: 1..=3, summary: (42, \"ready\"), metadata: { active: True } }"],
+        "stdout": "Envelope { label: \"metrics\", value: Packet [UserId 7, UserId 9], range: 1..=3, summary: (42, \"ready\"), metadata: { active: True } }\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Stats { total: 42, ratio: 1.25 }"],
+        "stdout": "Stats { total: 42, ratio: 1.25 }\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["UserId 42"],
+        "stdout": "UserId 42\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Empty"],
+        "stdout": "Empty\n"
+      }
+    ]
+  }
+}

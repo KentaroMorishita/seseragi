@@ -1,4 +1,4 @@
-use crate::{ResolvedModule, TypedInstance, TypedInstanceImplementation};
+use crate::{ResolvedModule, TypedInstance};
 use seseragi_syntax::ByteSpan;
 use std::collections::BTreeMap;
 
@@ -15,6 +15,7 @@ pub(crate) use crate::instance_identity::{
     canonical_instance_head_identity, canonical_instance_identity,
 };
 pub(crate) use contracts::{analyze_instance_contracts, InstanceContractIssue};
+pub(crate) use show::derived_display_requirements;
 pub(crate) use user::canonical_type_ref;
 
 pub(crate) struct InstanceAnalysis {
@@ -29,13 +30,9 @@ pub(crate) enum DerivedInstanceIssue {
         primary: ByteSpan,
         declaration: ByteSpan,
     },
-    UnsupportedGenericShow {
-        type_name: String,
-        primary: ByteSpan,
-        declaration: ByteSpan,
-    },
-    UnsupportedShowPayload {
-        payload_name: String,
+    UnsupportedDerivedMember {
+        trait_name: String,
+        member_name: String,
         primary: ByteSpan,
         declaration: ByteSpan,
     },
@@ -74,15 +71,14 @@ pub(crate) fn analyze_instances(
 }
 
 fn local_instance_conflicts(local_instances: &[TypedInstance]) -> Vec<DerivedInstanceIssue> {
-    let mut first_by_identity = BTreeMap::<&str, ByteSpan>::new();
+    let mut first_by_head = BTreeMap::<(&str, &[String]), ByteSpan>::new();
     let mut issues = Vec::new();
-    for instance in local_instances.iter().filter(|instance| {
-        matches!(
-            instance.implementation,
-            TypedInstanceImplementation::UserDefined { .. }
-        )
-    }) {
-        if let Some(first) = first_by_identity.get(instance.identity.as_str()) {
+    for instance in local_instances {
+        let head = (
+            instance.trait_name.as_str(),
+            instance.argument_identities.as_slice(),
+        );
+        if let Some(first) = first_by_head.get(&head) {
             issues.push(DerivedInstanceIssue::DuplicateLocalInstance {
                 trait_name: instance.trait_name.clone(),
                 identity: instance.identity.clone(),
@@ -90,7 +86,7 @@ fn local_instance_conflicts(local_instances: &[TypedInstance]) -> Vec<DerivedIns
                 first: *first,
             });
         } else {
-            first_by_identity.insert(&instance.identity, instance.origin);
+            first_by_head.insert(head, instance.origin);
         }
     }
     issues
@@ -143,7 +139,7 @@ fn local_dependency_conflicts(
                 .dependency_instances
                 .iter()
                 .find(|imported| {
-                    imported.trait_identity == local.trait_identity
+                    imported.trait_name == local.trait_name
                         && local.argument_identities == imported.argument_identities
                 })
                 .map(|imported| DerivedInstanceIssue::AmbiguousInstance {

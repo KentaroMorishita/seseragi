@@ -1,0 +1,381 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "domain.ssrg",
+  "module": "fixture/imported-derived-show-debug::domain",
+  "instances": [
+    {
+      "identity": "Show<fixture/imported-derived-show-debug::domain::Code>",
+      "traitIdentity": "Show",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Code",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-derived-show-debug::domain::Code"
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Code",
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 46
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "fixture/imported-derived-show-debug::domain::Code",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "fixture/imported-derived-show-debug::domain::Code",
+            "typeIdentity": "std/prelude::String",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::String>"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Debug<fixture/imported-derived-show-debug::domain::Code>",
+      "traitIdentity": "Debug",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Code",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-derived-show-debug::domain::Code"
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Code",
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 46
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "fixture/imported-derived-show-debug::domain::Code",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "fixture/imported-derived-show-debug::domain::Code",
+            "typeIdentity": "std/prelude::String",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Debug<std/prelude::String>"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Show<fixture/imported-derived-show-debug::domain::Remote<$0>>",
+      "traitIdentity": "Show",
+      "trait": "Show",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Remote",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-derived-show-debug::domain::Remote<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Remote<$0>",
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "constraintIdentities": [
+        "std/prelude::Show"
+      ],
+      "origin": {
+        "start": 48,
+        "end": 121
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "fixture/imported-derived-show-debug::domain::Remote",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "fixture/imported-derived-show-debug::domain::Remote",
+            "typeIdentity": "std/prelude::Maybe<$0>",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/maybe::Show",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 0
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Debug<fixture/imported-derived-show-debug::domain::Remote<$0>>",
+      "traitIdentity": "Debug",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Remote",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "argumentIdentities": [
+        "fixture/imported-derived-show-debug::domain::Remote<$0>"
+      ],
+      "typeIdentity": "fixture/imported-derived-show-debug::domain::Remote<$0>",
+      "constraints": [
+        {
+          "name": "Debug",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "constraintIdentities": [
+        "std/prelude::Debug"
+      ],
+      "origin": {
+        "start": 48,
+        "end": 121
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "fixture/imported-derived-show-debug::domain::Remote",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "fixture/imported-derived-show-debug::domain::Remote",
+            "typeIdentity": "std/prelude::Maybe<$0>",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/maybe::Debug",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "Debug",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 0
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "fixture/imported-derived-show-debug::domain::Code",
+      "name": "Code",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-derived-show-debug::domain::Code",
+          "name": "Code",
+          "payload": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Code",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 46
+      }
+    },
+    {
+      "kind": "adt",
+      "symbol": "fixture/imported-derived-show-debug::domain::Remote",
+      "name": "Remote",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "symbol": "fixture/imported-derived-show-debug::domain::Missing",
+          "name": "Missing",
+          "scheme": {
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Remote",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          },
+          "origin": {
+            "start": 94,
+            "end": 101
+          }
+        },
+        {
+          "symbol": "fixture/imported-derived-show-debug::domain::Remote",
+          "name": "Remote",
+          "payload": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          },
+          "scheme": {
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              "result": {
+                "kind": "named",
+                "name": "Remote",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            }
+          },
+          "origin": {
+            "start": 106,
+            "end": 112
+          }
+        }
+      ],
+      "origin": {
+        "start": 48,
+        "end": 121
+      }
+    }
+  ]
+}

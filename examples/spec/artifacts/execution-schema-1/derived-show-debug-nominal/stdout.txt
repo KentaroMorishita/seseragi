@@ -1,0 +1,5 @@
+Packet [UserId 7, UserId 9]
+Envelope { label: "metrics", value: Packet [UserId 7, UserId 9], range: 1..=3, summary: (42, "ready"), metadata: { active: True } }
+Stats { total: 42, ratio: 1.25 }
+UserId 42
+Empty

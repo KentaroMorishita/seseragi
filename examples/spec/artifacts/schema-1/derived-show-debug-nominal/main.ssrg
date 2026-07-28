@@ -1,0 +1,50 @@
+// nominal型のderiving Show/Debugとgeneric evidenceを実行まで固定します。
+pub newtype UserId deriving Show, Debug = Int
+
+pub type Packet<A> deriving Show, Debug =
+  | Empty
+  | Packet Array<A>
+
+alias Metadata = { active: Bool }
+
+pub struct Envelope<A> deriving Show, Debug {
+  label: String,
+  value: A,
+  range: Range<Int>,
+  summary: (Int, String),
+  metadata: Metadata,
+}
+
+pub struct Stats deriving Debug {
+  total: Int,
+  ratio: Float,
+}
+
+let packet: Packet<UserId> =
+  Packet [UserId 7, UserId 9]
+
+let empty: Packet<Int> = Empty
+
+let envelope: Envelope<Packet<UserId>> =
+  Envelope {
+    label: "metrics",
+    value: packet,
+    range: 1..=3,
+    summary: (42, "ready"),
+    metadata: { active: True },
+  }
+
+let stats: Stats =
+  Stats {
+    total: 20 + 22,
+    ratio: 1.25,
+  }
+
+pub effect fn main =
+  do {
+    println (show packet)
+    println (debug envelope)
+    println (debug stats)
+    println (show (UserId 42))
+    println (show empty)
+  }
