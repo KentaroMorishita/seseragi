@@ -1222,3 +1222,26 @@ fn range_binds_between_comparison_and_arithmetic() {
                 )
     ));
 }
+
+#[test]
+fn parses_float_literals_and_negative_zero() {
+    let body = first_body("let values: Array<Float> = [1.0, 6.022e23, -0.0]\n");
+    let SurfaceExpr::Array { elements, .. } = body else {
+        panic!("expected array literal");
+    };
+
+    assert!(matches!(
+        &elements[0],
+        SurfaceExpr::Float { raw, .. } if raw == "1.0"
+    ));
+    assert!(matches!(
+        &elements[1],
+        SurfaceExpr::Float { raw, .. } if raw == "6.022e23"
+    ));
+    assert!(matches!(
+        &elements[2],
+        SurfaceExpr::Prefix { operator, operand, .. }
+            if operator == "-"
+                && matches!(operand.as_ref(), SurfaceExpr::Float { raw, .. } if raw == "0.0")
+    ));
+}

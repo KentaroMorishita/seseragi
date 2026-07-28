@@ -92,6 +92,7 @@ fn collect_failures(expression: &TypedExpr, failures: &mut Vec<EffectFailureOrig
         }
         TypedExpr::Unit { .. }
         | TypedExpr::Integer { .. }
+        | TypedExpr::Float { .. }
         | TypedExpr::String { .. }
         | TypedExpr::Template { .. }
         | TypedExpr::Boolean { .. }

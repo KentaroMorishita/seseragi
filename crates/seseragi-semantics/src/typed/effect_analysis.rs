@@ -255,6 +255,7 @@ pub(super) fn expression_origin(expression: &TypedExpr) -> ByteSpan {
     match expression {
         TypedExpr::Unit { origin, .. }
         | TypedExpr::Integer { origin, .. }
+        | TypedExpr::Float { origin, .. }
         | TypedExpr::String { origin, .. }
         | TypedExpr::Template { origin, .. }
         | TypedExpr::Boolean { origin, .. }

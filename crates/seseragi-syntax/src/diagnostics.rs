@@ -393,6 +393,7 @@ fn string_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
 
 fn literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
     let mut diagnostics = integer_literal_diagnostics(tokens);
+    diagnostics.extend(float_literal_diagnostics(tokens));
     diagnostics.extend(string_literal_diagnostics(tokens));
     diagnostics
 }
@@ -607,13 +608,86 @@ fn integer_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
 }
 
 fn integer_literal_is_in_range(tokens: &[Token], index: usize, raw: &str) -> bool {
-    let Ok(value) = raw.parse::<u128>() else {
+    if !valid_decimal_digits(raw) || (raw.starts_with('0') && raw.len() > 1) {
+        return false;
+    }
+    let normalized = raw.replace('_', "");
+    let Ok(value) = normalized.parse::<u128>() else {
         return false;
     };
     if value <= i64::MAX as u128 {
         return true;
     }
     value == (i64::MAX as u128) + 1 && has_unary_minus(tokens, index)
+}
+
+fn float_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
+    tokens
+        .iter()
+        .filter(|token| token.kind == TokenKind::LiteralFloat)
+        .filter(|token| !float_literal_is_valid(&token.raw))
+        .map(|token| Diagnostic {
+            id: String::new(),
+            code: "SES-P0203".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "literal.float-invalid".to_owned(),
+            primary: ByteRange {
+                start: token.start,
+                end: token.end,
+            },
+            related: Vec::new(),
+            fixes: Vec::new(),
+        })
+        .collect()
+}
+
+fn float_literal_is_valid(raw: &str) -> bool {
+    let (mantissa, exponent) = raw.find(['e', 'E']).map_or((raw, None), |index| {
+        (&raw[..index], Some(&raw[index + 1..]))
+    });
+    let mantissa_valid = if let Some(index) = mantissa.find('.') {
+        if mantissa[index + 1..].contains('.') {
+            return false;
+        }
+        let integer = &mantissa[..index];
+        let fraction = &mantissa[index + 1..];
+        valid_decimal_integer_part(integer) && valid_decimal_digits(fraction)
+    } else {
+        valid_decimal_integer_part(mantissa)
+    };
+    let exponent_valid = exponent.is_none_or(|exponent| {
+        let digits = exponent
+            .strip_prefix('+')
+            .or_else(|| exponent.strip_prefix('-'))
+            .unwrap_or(exponent);
+        valid_decimal_digits(digits)
+    });
+    if !mantissa_valid || !exponent_valid {
+        return false;
+    }
+    raw.replace('_', "")
+        .parse::<f64>()
+        .is_ok_and(f64::is_finite)
+}
+
+fn valid_decimal_integer_part(raw: &str) -> bool {
+    valid_decimal_digits(raw) && (!raw.starts_with('0') || raw == "0")
+}
+
+fn valid_decimal_digits(raw: &str) -> bool {
+    let mut previous_was_digit = false;
+    let mut saw_digit = false;
+    for char in raw.chars() {
+        if char.is_ascii_digit() {
+            previous_was_digit = true;
+            saw_digit = true;
+        } else if char == '_' && previous_was_digit {
+            previous_was_digit = false;
+        } else {
+            return false;
+        }
+    }
+    saw_digit && previous_was_digit
 }
 
 fn has_unary_minus(tokens: &[Token], index: usize) -> bool {
@@ -959,6 +1033,32 @@ mod tests {
             diagnostics.diagnostics[0].primary,
             ByteRange { start: 24, end: 43 }
         );
+    }
+
+    #[test]
+    fn rejects_malformed_and_overflowing_float_literals() {
+        for source in [
+            "pub let value: Float = 1.\n",
+            "pub let value: Float = .5\n",
+            "pub let value: Float = 1e\n",
+            "pub let value: Float = 1e999\n",
+        ] {
+            let diagnostics = parse_diagnostics("main.ssrg", source);
+            assert!(diagnostics
+                .diagnostics
+                .iter()
+                .any(|diagnostic| diagnostic.code == "SES-P0203"));
+        }
+    }
+
+    #[test]
+    fn accepts_valid_float_literal_spellings() {
+        let diagnostics = parse_diagnostics(
+            "main.ssrg",
+            "let values: Array<Float> = [1.0, 6.022e23, 1e9, 1.0e-9, -0.0, 1_000.25_0]\n",
+        );
+
+        assert!(diagnostics.diagnostics.is_empty());
     }
 
     #[test]

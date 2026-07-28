@@ -244,6 +244,7 @@ fn rewrite_expr(expr: &mut TypeScriptExpr, renames: &BTreeMap<String, String>) {
         }
         TypeScriptExpr::Undefined
         | TypeScriptExpr::Bigint { .. }
+        | TypeScriptExpr::Number { .. }
         | TypeScriptExpr::String { .. }
         | TypeScriptExpr::Boolean { .. }
         | TypeScriptExpr::Identifier { .. } => {}

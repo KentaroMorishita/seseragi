@@ -1546,6 +1546,30 @@ mod tests {
         ));
     }
 
+    #[test]
+    fn types_float_literals_and_preserves_negative_zero() {
+        let typed = type_module(
+            "artifact/float-literal/main.ssrg",
+            "pub let values: Array<Float> = [1.0, 6.022e23, -0.0]\n",
+        );
+        let TypedDecl::Let {
+            value: TypedExpr::Array { elements, .. },
+            ..
+        } = &typed.declarations[0]
+        else {
+            panic!("expected typed Float array");
+        };
+
+        assert!(matches!(
+            elements.as_slice(),
+            [
+                TypedExpr::Float { value: first, .. },
+                TypedExpr::Float { value: exponent, .. },
+                TypedExpr::Float { value: negative_zero, .. }
+            ] if first == "1.0" && exponent == "6.022e23" && negative_zero == "-0.0"
+        ));
+    }
+
     fn int_type() -> TypedType {
         TypedType::Named {
             name: "Int".to_owned(),

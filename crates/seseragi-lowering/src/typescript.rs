@@ -331,6 +331,9 @@ pub enum TypeScriptExpr {
     Bigint {
         value: String,
     },
+    Number {
+        value: String,
+    },
     String {
         value: String,
     },

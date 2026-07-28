@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "case": "float-literal-lowering",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/float-literal-lowering",
+    "export": "main",
+    "compiledModule": "../../schema-1/float-literal-lowering/generated-module.json",
+    "typedInterface": "../../schema-1/float-literal-lowering/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.float64",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.float64.debug",
+      "core.array.debug",
+      "core.string",
+      "core.tuple.debug",
+      "core.record.debug",
+      "core.float64.show"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["[1.0, 2.3, -0.0, 6.022e23]"],
+        "stdout": "[1.0, 2.3, -0.0, 6.022e23]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["(1.25, 1e-9)"],
+        "stdout": "(1.25, 1e-9)\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["{ value: 2.5 }"],
+        "stdout": "{ value: 2.5 }\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["1.0"],
+        "stdout": "1.0\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["-0.0"],
+        "stdout": "-0.0\n"
+      }
+    ]
+  }
+}

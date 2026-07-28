@@ -287,6 +287,7 @@ fn typed_expr_type(expression: &TypedExpr) -> TypedType {
     match expression {
         TypedExpr::Unit { type_ref, .. }
         | TypedExpr::Integer { type_ref, .. }
+        | TypedExpr::Float { type_ref, .. }
         | TypedExpr::String { type_ref, .. }
         | TypedExpr::Template { type_ref, .. }
         | TypedExpr::Boolean { type_ref, .. }

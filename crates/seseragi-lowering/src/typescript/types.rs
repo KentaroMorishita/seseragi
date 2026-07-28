@@ -11,6 +11,7 @@ pub(super) fn type_ref_from_core_expr(
     match expr {
         CoreExpr::Unit { .. } => TypeScriptType::Undefined,
         CoreExpr::Int64 { .. } => TypeScriptType::Bigint,
+        CoreExpr::Float64 { .. } => TypeScriptType::Number,
         CoreExpr::String { .. } => TypeScriptType::String,
         CoreExpr::Template { .. } => TypeScriptType::String,
         CoreExpr::Boolean { .. } => TypeScriptType::Boolean,

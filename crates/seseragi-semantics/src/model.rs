@@ -411,6 +411,12 @@ pub enum TypedExpr {
         type_ref: TypedType,
         origin: ByteSpan,
     },
+    Float {
+        value: String,
+        #[serde(rename = "type")]
+        type_ref: TypedType,
+        origin: ByteSpan,
+    },
     String {
         value: String,
         #[serde(rename = "type")]

@@ -1595,6 +1595,7 @@ fn walk_expression(expression: &TypedExpr, visit: &mut impl FnMut(&TypedExpr)) {
         }
         TypedExpr::Unit { .. }
         | TypedExpr::Integer { .. }
+        | TypedExpr::Float { .. }
         | TypedExpr::String { .. }
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. } => {}
@@ -1659,6 +1660,7 @@ fn expression_origin(expression: &TypedExpr) -> ByteSpan {
     match expression {
         TypedExpr::Unit { origin, .. }
         | TypedExpr::Integer { origin, .. }
+        | TypedExpr::Float { origin, .. }
         | TypedExpr::String { origin, .. }
         | TypedExpr::Template { origin, .. }
         | TypedExpr::Boolean { origin, .. }
@@ -1688,6 +1690,7 @@ fn expression_type(expression: &TypedExpr) -> Option<TypedType> {
     Some(match expression {
         TypedExpr::Unit { type_ref, .. }
         | TypedExpr::Integer { type_ref, .. }
+        | TypedExpr::Float { type_ref, .. }
         | TypedExpr::String { type_ref, .. }
         | TypedExpr::Template { type_ref, .. }
         | TypedExpr::Boolean { type_ref, .. }

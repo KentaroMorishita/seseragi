@@ -1,0 +1,606 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "struct",
+      "visibility": "private",
+      "name": "Measurement",
+      "nameSpan": {
+        "start": 107,
+        "end": 118
+      },
+      "fields": [
+        {
+          "name": "reading",
+          "nameSpan": {
+            "start": 123,
+            "end": 130
+          },
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "span": {
+              "start": 132,
+              "end": 137
+            }
+          }
+        }
+      ],
+      "span": {
+        "start": 100,
+        "end": 139
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "values",
+      "nameSpan": {
+        "start": 145,
+        "end": 151
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Array",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Float",
+            "span": {
+              "start": 159,
+              "end": 164
+            }
+          }
+        ],
+        "span": {
+          "start": 153,
+          "end": 165
+        }
+      },
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "float",
+            "raw": "1.0",
+            "span": {
+              "start": 169,
+              "end": 172
+            }
+          },
+          {
+            "kind": "float",
+            "raw": "2.3",
+            "span": {
+              "start": 174,
+              "end": 177
+            }
+          },
+          {
+            "kind": "prefix",
+            "operator": "-",
+            "operatorSpan": {
+              "start": 179,
+              "end": 180
+            },
+            "operand": {
+              "kind": "float",
+              "raw": "0.0",
+              "span": {
+                "start": 180,
+                "end": 183
+              }
+            },
+            "span": {
+              "start": 179,
+              "end": 183
+            }
+          },
+          {
+            "kind": "float",
+            "raw": "6.022e23",
+            "span": {
+              "start": 185,
+              "end": 193
+            }
+          }
+        ],
+        "span": {
+          "start": 168,
+          "end": 194
+        }
+      },
+      "span": {
+        "start": 141,
+        "end": 194
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "pair",
+      "nameSpan": {
+        "start": 199,
+        "end": 203
+      },
+      "typeRef": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "named",
+            "name": "Float",
+            "span": {
+              "start": 206,
+              "end": 211
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Float",
+            "span": {
+              "start": 213,
+              "end": 218
+            }
+          }
+        ],
+        "span": {
+          "start": 205,
+          "end": 219
+        }
+      },
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "float",
+            "raw": "1.25",
+            "span": {
+              "start": 223,
+              "end": 227
+            }
+          },
+          {
+            "kind": "float",
+            "raw": "1e-9",
+            "span": {
+              "start": 229,
+              "end": 233
+            }
+          }
+        ],
+        "span": {
+          "start": 222,
+          "end": 234
+        }
+      },
+      "span": {
+        "start": 195,
+        "end": 234
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "sample",
+      "nameSpan": {
+        "start": 239,
+        "end": 245
+      },
+      "typeRef": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "value",
+            "nameSpan": {
+              "start": 249,
+              "end": 254
+            },
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "span": {
+                "start": 256,
+                "end": 261
+              }
+            }
+          }
+        ],
+        "span": {
+          "start": 247,
+          "end": 263
+        }
+      },
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "nameSpan": {
+              "start": 268,
+              "end": 273
+            },
+            "value": {
+              "kind": "float",
+              "raw": "2.5",
+              "span": {
+                "start": 275,
+                "end": 278
+              }
+            },
+            "span": {
+              "start": 268,
+              "end": 278
+            }
+          }
+        ],
+        "span": {
+          "start": 266,
+          "end": 280
+        }
+      },
+      "span": {
+        "start": 235,
+        "end": 280
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "measurement",
+      "nameSpan": {
+        "start": 285,
+        "end": 296
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Measurement",
+        "span": {
+          "start": 298,
+          "end": 309
+        }
+      },
+      "body": {
+        "kind": "struct",
+        "name": "Measurement",
+        "nameSpan": {
+          "start": 312,
+          "end": 323
+        },
+        "items": [
+          {
+            "kind": "field",
+            "name": "reading",
+            "nameSpan": {
+              "start": 326,
+              "end": 333
+            },
+            "value": {
+              "kind": "prefix",
+              "operator": "-",
+              "operatorSpan": {
+                "start": 335,
+                "end": 336
+              },
+              "operand": {
+                "kind": "float",
+                "raw": "0.0",
+                "span": {
+                  "start": 336,
+                  "end": 339
+                }
+              },
+              "span": {
+                "start": 335,
+                "end": 339
+              }
+            },
+            "span": {
+              "start": 326,
+              "end": 339
+            }
+          }
+        ],
+        "span": {
+          "start": 312,
+          "end": 341
+        }
+      },
+      "span": {
+        "start": 281,
+        "end": 341
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 357,
+        "end": 361
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 375,
+                  "end": 382
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debug",
+                    "span": {
+                      "start": 384,
+                      "end": 389
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "values",
+                    "span": {
+                      "start": 390,
+                      "end": 396
+                    }
+                  },
+                  "span": {
+                    "start": 384,
+                    "end": 396
+                  }
+                },
+                "span": {
+                  "start": 383,
+                  "end": 397
+                }
+              },
+              "span": {
+                "start": 375,
+                "end": 397
+              }
+            },
+            "span": {
+              "start": 375,
+              "end": 397
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 402,
+                  "end": 409
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debug",
+                    "span": {
+                      "start": 411,
+                      "end": 416
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "pair",
+                    "span": {
+                      "start": 417,
+                      "end": 421
+                    }
+                  },
+                  "span": {
+                    "start": 411,
+                    "end": 421
+                  }
+                },
+                "span": {
+                  "start": 410,
+                  "end": 422
+                }
+              },
+              "span": {
+                "start": 402,
+                "end": 422
+              }
+            },
+            "span": {
+              "start": 402,
+              "end": 422
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 427,
+                  "end": 434
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debug",
+                    "span": {
+                      "start": 436,
+                      "end": 441
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "sample",
+                    "span": {
+                      "start": 442,
+                      "end": 448
+                    }
+                  },
+                  "span": {
+                    "start": 436,
+                    "end": 448
+                  }
+                },
+                "span": {
+                  "start": 435,
+                  "end": 449
+                }
+              },
+              "span": {
+                "start": 427,
+                "end": 449
+              }
+            },
+            "span": {
+              "start": 427,
+              "end": 449
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 454,
+                  "end": 461
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "show",
+                    "span": {
+                      "start": 463,
+                      "end": 467
+                    }
+                  },
+                  "argument": {
+                    "kind": "float",
+                    "raw": "1.0",
+                    "span": {
+                      "start": 468,
+                      "end": 471
+                    }
+                  },
+                  "span": {
+                    "start": 463,
+                    "end": 471
+                  }
+                },
+                "span": {
+                  "start": 462,
+                  "end": 472
+                }
+              },
+              "span": {
+                "start": 454,
+                "end": 472
+              }
+            },
+            "span": {
+              "start": 454,
+              "end": 472
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 477,
+              "end": 484
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "debug",
+                "span": {
+                  "start": 486,
+                  "end": 491
+                }
+              },
+              "argument": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "measurement",
+                  "span": {
+                    "start": 492,
+                    "end": 503
+                  }
+                },
+                "field": "reading",
+                "fieldSpan": {
+                  "start": 504,
+                  "end": 511
+                },
+                "span": {
+                  "start": 492,
+                  "end": 511
+                }
+              },
+              "span": {
+                "start": 486,
+                "end": 511
+              }
+            },
+            "span": {
+              "start": 485,
+              "end": 512
+            }
+          },
+          "span": {
+            "start": 477,
+            "end": 512
+          }
+        },
+        "span": {
+          "start": 366,
+          "end": 516
+        }
+      },
+      "span": {
+        "start": 343,
+        "end": 516
+      }
+    }
+  ]
+}

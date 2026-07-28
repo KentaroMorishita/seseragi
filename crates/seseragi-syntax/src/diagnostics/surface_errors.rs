@@ -148,6 +148,7 @@ fn collect_expression_errors(expression: &SurfaceExpr, errors: &mut Vec<ByteRang
         }),
         SurfaceExpr::Unit { .. }
         | SurfaceExpr::Integer { .. }
+        | SurfaceExpr::Float { .. }
         | SurfaceExpr::String { .. }
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Name { .. } => {}

@@ -1,0 +1,1002 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/float-literal-lowering",
+  "declarations": [
+    {
+      "kind": "struct",
+      "symbol": "artifact/float-literal-lowering::Measurement",
+      "name": "Measurement",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "reading",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 123,
+            "end": 130
+          }
+        }
+      ],
+      "origin": {
+        "start": 100,
+        "end": 139
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/float-literal-lowering::values",
+      "visibility": "private",
+      "origin": {
+        "start": 141,
+        "end": 194
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "float",
+            "value": "1.0",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 169,
+              "end": 172
+            }
+          },
+          {
+            "kind": "float",
+            "value": "2.3",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 174,
+              "end": 177
+            }
+          },
+          {
+            "kind": "float",
+            "value": "-0.0",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 179,
+              "end": 183
+            }
+          },
+          {
+            "kind": "float",
+            "value": "6.022e23",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 185,
+              "end": 193
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 168,
+          "end": 194
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/float-literal-lowering::pair",
+      "visibility": "private",
+      "origin": {
+        "start": 195,
+        "end": 234
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "float",
+            "value": "1.25",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 223,
+              "end": 227
+            }
+          },
+          {
+            "kind": "float",
+            "value": "1e-9",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 229,
+              "end": 233
+            }
+          }
+        ],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 222,
+          "end": 234
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/float-literal-lowering::sample",
+      "visibility": "private",
+      "origin": {
+        "start": 235,
+        "end": 280
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "float",
+              "value": "2.5",
+              "type": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "origin": {
+                "start": 275,
+                "end": 278
+              }
+            },
+            "origin": {
+              "start": 268,
+              "end": 278
+            }
+          }
+        ],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 266,
+          "end": 280
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/float-literal-lowering::measurement",
+      "visibility": "private",
+      "origin": {
+        "start": 281,
+        "end": 341
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Measurement",
+          "arguments": []
+        }
+      },
+      "value": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "reading",
+            "value": {
+              "kind": "float",
+              "value": "-0.0",
+              "type": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "origin": {
+                "start": 335,
+                "end": 339
+              }
+            },
+            "origin": {
+              "start": 326,
+              "end": 339
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Measurement",
+          "arguments": []
+        },
+        "origin": {
+          "start": 312,
+          "end": 341
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/float-literal-lowering::main",
+      "visibility": "public",
+      "origin": {
+        "start": 343,
+        "end": 516
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Debug::debug",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "values",
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 390,
+                        "end": 396
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Debug",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/array::Debug",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Debug",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Float",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Debug<std/prelude::Float>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Debug",
+                    "method": "debug"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 384,
+                    "end": 396
+                  }
+                }
+              ],
+              "origin": {
+                "start": 375,
+                "end": 397
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Debug::debug",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "pair",
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 417,
+                        "end": 421
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Debug",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/tuple::Debug",
+                        "typeArguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Debug",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Float",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Debug<std/prelude::Float>"
+                            }
+                          },
+                          {
+                            "constraint": {
+                              "name": "Debug",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Float",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Debug<std/prelude::Float>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Debug",
+                    "method": "debug"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 411,
+                    "end": 421
+                  }
+                }
+              ],
+              "origin": {
+                "start": 402,
+                "end": 422
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Debug::debug",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "sample",
+                      "type": {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "value",
+                            "type": {
+                              "kind": "named",
+                              "name": "Float",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 442,
+                        "end": 448
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Debug",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "value",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Float",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/record::Debug",
+                        "typeArguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "value",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Float",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Debug",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Float",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Debug<std/prelude::Float>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Debug",
+                    "method": "debug"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 436,
+                    "end": 448
+                  }
+                }
+              ],
+              "origin": {
+                "start": 427,
+                "end": 449
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Show::show",
+                  "arguments": [
+                    {
+                      "kind": "float",
+                      "value": "1.0",
+                      "type": {
+                        "kind": "named",
+                        "name": "Float",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 468,
+                        "end": 471
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Show",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "Show<std/prelude::Float>"
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Show",
+                    "method": "show"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 463,
+                    "end": 471
+                  }
+                }
+              ],
+              "origin": {
+                "start": 454,
+                "end": 472
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "std/prelude::Debug::debug",
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "variable",
+                    "name": "measurement",
+                    "type": {
+                      "kind": "named",
+                      "name": "Measurement",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 492,
+                      "end": 503
+                    }
+                  },
+                  "field": "reading",
+                  "type": {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 492,
+                    "end": 511
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Debug",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Float",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Debug<std/prelude::Float>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Debug",
+                "method": "debug"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 486,
+                "end": 511
+              }
+            }
+          ],
+          "origin": {
+            "start": 477,
+            "end": 512
+          }
+        },
+        "origin": {
+          "start": 366,
+          "end": 516
+        }
+      }
+    }
+  ]
+}

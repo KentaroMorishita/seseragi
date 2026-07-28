@@ -402,6 +402,7 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
     match expr {
         TypeScriptExpr::Undefined => "undefined".to_owned(),
         TypeScriptExpr::Bigint { value } => format!("{value}n"),
+        TypeScriptExpr::Number { value } => value.clone(),
         TypeScriptExpr::String { value } => format!("{value:?}"),
         TypeScriptExpr::Boolean { value } => value.to_string(),
         TypeScriptExpr::Identifier { name } => name.clone(),

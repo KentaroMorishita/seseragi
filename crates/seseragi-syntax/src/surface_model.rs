@@ -397,6 +397,10 @@ pub enum SurfaceExpr {
         raw: String,
         span: ByteSpan,
     },
+    Float {
+        raw: String,
+        span: ByteSpan,
+    },
     String {
         raw: String,
         span: ByteSpan,
@@ -529,6 +533,7 @@ impl SurfaceExpr {
         match self {
             Self::Unit { span }
             | Self::Integer { span, .. }
+            | Self::Float { span, .. }
             | Self::String { span, .. }
             | Self::Template { span, .. }
             | Self::Boolean { span, .. }

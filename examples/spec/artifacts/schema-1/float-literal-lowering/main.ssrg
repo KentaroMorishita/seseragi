@@ -1,0 +1,18 @@
+// Float literalのdecimal、exponent、signed zeroをnested valueのまま実行へ運びます。
+struct Measurement {
+  reading: Float
+}
+
+let values: Array<Float> = [1.0, 2.3, -0.0, 6.022e23]
+let pair: (Float, Float) = (1.25, 1e-9)
+let sample: { value: Float } = { value: 2.5 }
+let measurement: Measurement = Measurement { reading: -0.0 }
+
+pub effect fn main =
+  do {
+    println (debug values)
+    println (debug pair)
+    println (debug sample)
+    println (show 1.0)
+    println (debug measurement.reading)
+  }

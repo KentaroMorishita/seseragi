@@ -204,6 +204,7 @@ fn collect_local_expr_names(expr: &CoreExpr, names: &mut BTreeSet<String>) {
         }
         CoreExpr::Unit { .. }
         | CoreExpr::Int64 { .. }
+        | CoreExpr::Float64 { .. }
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. }
         | CoreExpr::Variable { .. } => {}

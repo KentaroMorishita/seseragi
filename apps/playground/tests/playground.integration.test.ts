@@ -319,6 +319,37 @@ describe("Playground sample catalog", () => {
     expect(invalid).not.toHaveProperty("source")
   })
 
+  test("compiles and executes canonical Float literals through WASM", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/float-literal-lowering/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const expectedOutput = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/execution-schema-1/float-literal-lowering/stdout.txt",
+        import.meta.url
+      )
+    ).text()
+
+    const response = await compile("float-literal-lowering.ssrg", source)
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry) {
+      throw new Error("missing Float execution entry")
+    }
+    expect(response.generated.typescript).toContain(
+      "[1.0, 2.3, -0.0, 6.022e23]"
+    )
+    expect(response.generated.typescript).not.toContain(" = _")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: expectedOutput.trimEnd() })
+  })
+
   test("renders HTML output in an isolated preview", async () => {
     const html = await Bun.file(
       new URL("../index.html", import.meta.url)

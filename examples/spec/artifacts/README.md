@@ -101,6 +101,11 @@ raw spellingをbackendへ残しません。`semantic-diagnostics-schema-1/custom
 同名execution fixtureはIntの`+` / `-` / `*` / `/` / `%` / `**` matrixとString `+`、
 注釈ありとの同値性、関数引数とArray要素への受け渡しを生成TypeScriptとactual outputまで固定します。
 
+`schema-1/float-literal-lowering/`はdecimal、exponent、unary minusによるsigned zeroを
+SurfaceAstからTypedHir、CoreIr、TypeScriptIrへ値を失わず運びます。Array、tuple、record、
+nominal fieldへnestedに置いたFloatをTypeScript `number`として生成し、同名execution fixtureで
+`Show<Float>`、`Debug<Float>`、composite Debugのactual outputと`-0.0`の符号保持を固定します。
+
 `schema-1/user-add-operator/`はlocal `Add<Score, Int, Score>`を期待関数型から選び、operator section `(+)`を
 生成dictionaryのcurried `add` callbackへlowerしてstandard Array `reduce`へ渡します。
 `execution-schema-1/user-add-operator/`はactual outputを固定し、`project-schema-1/imported-user-add-operator/`は

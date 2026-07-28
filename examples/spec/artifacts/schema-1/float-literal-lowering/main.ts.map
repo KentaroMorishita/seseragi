@@ -1,0 +1,34 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/float-literal-lowering"
+  ],
+  "sourcesContent": [
+    "// Float literalのdecimal、exponent、signed zeroをnested valueのまま実行へ運びます。\nstruct Measurement {\n  reading: Float\n}\n\nlet values: Array<Float> = [1.0, 2.3, -0.0, 6.022e23]\nlet pair: (Float, Float) = (1.25, 1e-9)\nlet sample: { value: Float } = { value: 2.5 }\nlet measurement: Measurement = Measurement { reading: -0.0 }\n\npub effect fn main =\n  do {\n    println (debug values)\n    println (debug pair)\n    println (debug sample)\n    println (show 1.0)\n    println (debug measurement.reading)\n  }\n"
+  ],
+  "names": [
+    "Measurement",
+    "values",
+    "pair",
+    "sample",
+    "measurement",
+    "main",
+    "println",
+    "arrayDebug",
+    "floatDebug",
+    "println",
+    "tupleDebug",
+    "floatDebug",
+    "floatDebug",
+    "println",
+    "recordDebug",
+    "floatDebug",
+    "println",
+    "floatShow",
+    "println",
+    "floatDebug"
+  ],
+  "mappings": ";;;;;AACAA;;;;AAIAC;AACAC;AACAC;AACAC;AAEAC"
+}

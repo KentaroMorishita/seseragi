@@ -321,6 +321,7 @@ fn normalize_expression(
         SurfaceExpr::Grouped { value, .. } => normalize_expression(value, custom, issues),
         SurfaceExpr::Unit { .. }
         | SurfaceExpr::Integer { .. }
+        | SurfaceExpr::Float { .. }
         | SurfaceExpr::String { .. }
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Name { .. }

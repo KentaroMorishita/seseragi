@@ -43,6 +43,7 @@ pub(super) fn lower_core_expr_to_typescript(
     match expr {
         CoreExpr::Unit { .. } => TypeScriptExpr::Undefined,
         CoreExpr::Int64 { value, .. } => TypeScriptExpr::Bigint { value },
+        CoreExpr::Float64 { value, .. } => TypeScriptExpr::Number { value },
         CoreExpr::String { value, .. } => TypeScriptExpr::String { value },
         CoreExpr::Template { parts, .. } => lower_template(parts, imported_values, imported_types),
         CoreExpr::Boolean { value, .. } => TypeScriptExpr::Boolean { value },
@@ -733,6 +734,7 @@ pub(super) fn typescript_expr_contains_await(expr: &TypeScriptExpr) -> bool {
         }
         TypeScriptExpr::Undefined
         | TypeScriptExpr::Bigint { .. }
+        | TypeScriptExpr::Number { .. }
         | TypeScriptExpr::String { .. }
         | TypeScriptExpr::Boolean { .. }
         | TypeScriptExpr::Identifier { .. }

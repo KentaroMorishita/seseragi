@@ -120,6 +120,10 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             value,
             origin: source_span(source, origin),
         },
+        TypedExpr::Float { value, origin, .. } => CoreExpr::Float64 {
+            value,
+            origin: source_span(source, origin),
+        },
         TypedExpr::String { value, origin, .. } => CoreExpr::String {
             value,
             origin: source_span(source, origin),

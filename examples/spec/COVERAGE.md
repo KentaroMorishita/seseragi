@@ -62,7 +62,7 @@
 | Byte / Bytes / UTF-8                          | Lesson 21         | byte range / invalid UTF-8 fixtures            | partial |
 | Hex / Base64 / Unicode grapheme / normalize   | Lesson 28         | `compile/bytes-and-unicode.ssrg`               | covered |
 | Decimal exact arithmetic / rounding           | Lesson 22         | parse / division / rounding fixtures           | partial |
-| Int / Float parse / format / safe arithmetic  | none              | `compile/number-apis.ssrg`                     | covered |
+| Int / Float parse / format / safe arithmetic  | none              | `compile/number-apis.ssrg` + `schema-1/float-literal-lowering` + `execution-schema-1/float-literal-lowering`; decimal / exponent / signed zeroのFloat literalをnested Array / tuple / record / nominal fieldからTypeScript `number`とShow / Debug実行まで固定 | covered |
 | BigInt exact arithmetic / checked failure     | Lesson 31         | `compile/big-int-apis.ssrg`                    | covered |
 | Regex / Unicode / byte spans                  | Lesson 23         | syntax / empty match / Unicode fixtures        | partial |
 | timezone / DST local resolution               | Lesson 24         | gap / overlap / tzdb mismatch fixtures         | partial |

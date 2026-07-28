@@ -296,6 +296,10 @@ pub enum CoreExpr {
         value: String,
         origin: SourceSpan,
     },
+    Float64 {
+        value: String,
+        origin: SourceSpan,
+    },
     String {
         value: String,
         origin: SourceSpan,

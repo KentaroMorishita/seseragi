@@ -47,6 +47,14 @@ impl Lexer<'_> {
                 '.' if self.starts_with("..") => {
                     self.bump_fixed_raw(TokenKind::OperatorRangeExclusive, start, "..")
                 }
+                '.' if self
+                    .source
+                    .get(start + 1..)
+                    .and_then(|rest| rest.chars().next())
+                    .is_some_and(|next| next.is_ascii_digit()) =>
+                {
+                    self.scan_number()
+                }
                 '.' => self.bump_fixed(TokenKind::PunctuationDot, start, char),
                 '<' if self.starts_with("<-")
                     || self.starts_with("<=")
@@ -67,7 +75,7 @@ impl Lexer<'_> {
                 }
                 '`' => self.scan_template(),
                 '\\' => self.bump_fixed(TokenKind::OperatorLambda, start, char),
-                '0'..='9' => self.scan_run(TokenKind::LiteralInteger, |char| char.is_ascii_digit()),
+                '0'..='9' => self.scan_number(),
                 char if char == '_' || is_xid_start(char) => self.scan_identifier(),
                 '/' if self.starts_with("//") => self.scan_line_comment(),
                 char if is_operator_char(char) => self.scan_operator_run(),
@@ -187,6 +195,60 @@ impl Lexer<'_> {
             _ => TokenKind::OperatorCustom,
         };
         self.push(kind, start, self.cursor);
+    }
+
+    fn scan_number(&mut self) {
+        let start = self.cursor;
+        let mut is_float = false;
+
+        if self.peek_char() == Some('.') {
+            is_float = true;
+            self.take_char();
+        } else {
+            self.scan_decimal_digits();
+            if self.peek_char() == Some('.')
+                && !self.starts_with("..")
+                && self
+                    .source
+                    .get(self.cursor + 1..)
+                    .and_then(|rest| rest.chars().next())
+                    .is_none_or(|next| next != '_' && !is_xid_start(next))
+            {
+                is_float = true;
+                self.take_char();
+            }
+        }
+
+        if is_float {
+            self.scan_decimal_digits();
+        }
+        if matches!(self.peek_char(), Some('e' | 'E')) {
+            is_float = true;
+            self.take_char();
+            if matches!(self.peek_char(), Some('+' | '-')) {
+                self.take_char();
+            }
+            self.scan_decimal_digits();
+        }
+
+        self.push(
+            if is_float {
+                TokenKind::LiteralFloat
+            } else {
+                TokenKind::LiteralInteger
+            },
+            start,
+            self.cursor,
+        );
+    }
+
+    fn scan_decimal_digits(&mut self) {
+        while self
+            .peek_char()
+            .is_some_and(|char| char.is_ascii_digit() || char == '_')
+        {
+            self.take_char();
+        }
     }
 
     fn scan_run(&mut self, kind: TokenKind, predicate: impl Fn(char) -> bool) {
@@ -578,6 +640,42 @@ mod tests {
         assert_eq!(
             stream.reconstructed_text(),
             "let inclusive = 1..=100\nlet exclusive = 1..10\nlet mapped = arrays.map values\nlet empty = maps.empty\n// ranges and members\n"
+        );
+    }
+
+    #[test]
+    fn lexes_decimal_exponent_and_malformed_float_literals_as_single_tokens() {
+        let stream = lex(
+            "main.ssrg",
+            "1.0 6.022e23 1e9 1.0e-9 -0.0 1_000.25_0 1. .5 1e 1..3",
+        );
+        let numbers = stream
+            .tokens
+            .iter()
+            .filter(|token| {
+                matches!(
+                    token.kind,
+                    TokenKind::LiteralInteger | TokenKind::LiteralFloat
+                )
+            })
+            .map(|token| (token.kind, token.raw.as_str()))
+            .collect::<Vec<_>>();
+
+        assert_eq!(
+            numbers,
+            vec![
+                (TokenKind::LiteralFloat, "1.0"),
+                (TokenKind::LiteralFloat, "6.022e23"),
+                (TokenKind::LiteralFloat, "1e9"),
+                (TokenKind::LiteralFloat, "1.0e-9"),
+                (TokenKind::LiteralFloat, "0.0"),
+                (TokenKind::LiteralFloat, "1_000.25_0"),
+                (TokenKind::LiteralFloat, "1."),
+                (TokenKind::LiteralFloat, ".5"),
+                (TokenKind::LiteralFloat, "1e"),
+                (TokenKind::LiteralInteger, "1"),
+                (TokenKind::LiteralInteger, "3"),
+            ]
         );
     }
 }

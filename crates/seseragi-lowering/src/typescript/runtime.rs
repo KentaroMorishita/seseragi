@@ -26,6 +26,7 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
     match expr {
         CoreExpr::Unit { .. } => push_unique(requirements, "core.unit"),
         CoreExpr::Int64 { .. } => push_unique(requirements, "core.int64"),
+        CoreExpr::Float64 { .. } => push_unique(requirements, "core.float64"),
         CoreExpr::String { .. } => push_unique(requirements, "core.string"),
         CoreExpr::Template { parts, .. } => {
             push_unique(requirements, "core.string");
@@ -406,6 +407,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
         }
         CoreExpr::Unit { .. }
         | CoreExpr::Int64 { .. }
+        | CoreExpr::Float64 { .. }
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. } => {}
         CoreExpr::Template { parts, .. } => {

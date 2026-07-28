@@ -177,6 +177,7 @@ fn visit_expression(
         }
         SurfaceExpr::Unit { .. }
         | SurfaceExpr::Integer { .. }
+        | SurfaceExpr::Float { .. }
         | SurfaceExpr::String { .. }
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Name { .. }

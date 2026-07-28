@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "module": "artifact/float-literal-lowering",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}

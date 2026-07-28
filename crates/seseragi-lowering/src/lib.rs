@@ -1327,6 +1327,26 @@ fails ConsoleError =
     }
 
     #[test]
+    fn lowers_float_literals_to_typescript_numbers_without_recovery_holes() {
+        let source = "pub let values: Array<Float> = [1.0, 2.3, -0.0, 6.022e23]\n";
+        let typed = type_module("artifact/float-literal/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let CoreExpr::Array { elements, .. } = &core.bindings[0].value else {
+            panic!("expected Core Float array");
+        };
+        assert!(elements
+            .iter()
+            .all(|value| matches!(value, CoreExpr::Float64 { .. })));
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert_eq!(bundle.metadata.runtime.requirements, vec!["core.float64"]);
+        assert!(bundle.typescript.contains("[1.0, 2.3, -0.0, 6.022e23]"));
+        assert!(!bundle.typescript.contains(" = _"));
+    }
+
+    #[test]
     fn emits_persistent_list_literals_through_the_runtime_abi() {
         let source = "pub fn values -> List<Int> = `[1, 2, 3]\n";
         let typed = type_module("artifact/list-literal/main.ssrg", source);

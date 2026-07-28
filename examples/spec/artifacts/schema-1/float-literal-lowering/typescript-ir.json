@@ -1,0 +1,426 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/float-literal-lowering",
+  "runtimeRequirements": [
+    "core.float64",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println",
+    "core.float64.debug",
+    "core.array.debug",
+    "core.string",
+    "core.tuple.debug",
+    "core.record.debug",
+    "core.float64.show"
+  ],
+  "imports": [
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.float64.debug",
+      "local": "_ssrg_debug_floatDebug"
+    },
+    {
+      "feature": "core.array.debug",
+      "local": "_ssrg_debug_arrayDebug"
+    },
+    {
+      "feature": "core.tuple.debug",
+      "local": "_ssrg_debug_tupleDebug"
+    },
+    {
+      "feature": "core.record.debug",
+      "local": "_ssrg_debug_recordDebug"
+    },
+    {
+      "feature": "core.float64.show",
+      "local": "_ssrg_show_floatShow"
+    }
+  ],
+  "structs": [
+    {
+      "exported": false,
+      "name": "Measurement",
+      "brand": "__ssrg$brand$Measurement",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "reading",
+          "optional": false,
+          "type": {
+            "kind": "number"
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 100,
+        "end": 139
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "values",
+      "type": {
+        "kind": "array",
+        "element": {
+          "kind": "number"
+        }
+      },
+      "initializer": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "number",
+            "value": "1.0"
+          },
+          {
+            "kind": "number",
+            "value": "2.3"
+          },
+          {
+            "kind": "number",
+            "value": "-0.0"
+          },
+          {
+            "kind": "number",
+            "value": "6.022e23"
+          }
+        ],
+        "elementType": {
+          "kind": "number"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 141,
+        "end": 194
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "pair",
+      "type": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "number"
+          },
+          {
+            "kind": "number"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "number",
+            "value": "1.25"
+          },
+          {
+            "kind": "number",
+            "value": "1e-9"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 195,
+        "end": 234
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "sample",
+      "type": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "value",
+            "optional": false,
+            "type": {
+              "kind": "number"
+            }
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "number",
+              "value": "2.5"
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 235,
+        "end": 280
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "measurement",
+      "type": {
+        "kind": "reference",
+        "name": "Measurement",
+        "arguments": []
+      },
+      "initializer": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "reading",
+            "value": {
+              "kind": "number",
+              "value": "-0.0"
+            }
+          }
+        ],
+        "assertedType": {
+          "kind": "reference",
+          "name": "Measurement",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 281,
+        "end": 341
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_arrayDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "number"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_floatDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "values"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_tupleDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "number"
+                          },
+                          {
+                            "kind": "number"
+                          }
+                        ]
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_floatDebug"
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_floatDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "pair"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_recordDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "record",
+                        "fields": [
+                          {
+                            "name": "value",
+                            "optional": false,
+                            "type": {
+                              "kind": "number"
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "string",
+                            "value": "value"
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "boolean",
+                            "value": false
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_floatDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "sample"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_floatShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "1.0"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_debug_floatDebug"
+              },
+              "method": "debug",
+              "arguments": [
+                {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "measurement"
+                  },
+                  "field": "reading"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 343,
+        "end": 516
+      }
+    }
+  ]
+}

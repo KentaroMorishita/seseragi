@@ -115,6 +115,7 @@ fn collect_intrinsic_issues(
         }
         TypedExpr::Unit { .. }
         | TypedExpr::Integer { .. }
+        | TypedExpr::Float { .. }
         | TypedExpr::String { .. }
         | TypedExpr::Template { .. }
         | TypedExpr::Boolean { .. }

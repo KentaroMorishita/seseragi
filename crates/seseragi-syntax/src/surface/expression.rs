@@ -275,7 +275,7 @@ impl ExpressionParser<'_> {
         self.cursor += 1;
 
         match token.kind {
-            TokenKind::OperatorArithmetic if token.raw == "*" => {
+            TokenKind::OperatorArithmetic if token.raw == "*" || token.raw == "-" => {
                 let operand = self.parse_expr_bp(70, stops)?;
                 Some(SurfaceExpr::Prefix {
                     operator: token.raw.clone(),
@@ -288,6 +288,10 @@ impl ExpressionParser<'_> {
                 })
             }
             TokenKind::LiteralInteger => Some(SurfaceExpr::Integer {
+                raw: token.raw.clone(),
+                span: token_span(token),
+            }),
+            TokenKind::LiteralFloat => Some(SurfaceExpr::Float {
                 raw: token.raw.clone(),
                 span: token_span(token),
             }),
@@ -412,6 +416,7 @@ impl ExpressionParser<'_> {
             self.kind_at_cursor(),
             Some(
                 TokenKind::LiteralInteger
+                    | TokenKind::LiteralFloat
                     | TokenKind::LiteralString
                     | TokenKind::LiteralTemplate
                     | TokenKind::LiteralBoolean

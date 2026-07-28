@@ -269,6 +269,7 @@ pub(super) fn resolve_expression(
         SurfaceExpr::Grouped { value, .. } => resolve_expression(resolver, scope, value),
         SurfaceExpr::Unit { .. }
         | SurfaceExpr::Integer { .. }
+        | SurfaceExpr::Float { .. }
         | SurfaceExpr::String { .. }
         | SurfaceExpr::Boolean { .. }
         | SurfaceExpr::Error { .. } => {}

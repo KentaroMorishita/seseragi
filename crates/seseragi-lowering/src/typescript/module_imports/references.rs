@@ -143,6 +143,7 @@ fn collect_expr_value_symbols(expr: &CoreExpr, values: &mut BTreeSet<String>) {
         }
         CoreExpr::Unit { .. }
         | CoreExpr::Int64 { .. }
+        | CoreExpr::Float64 { .. }
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. } => {}
     }
@@ -419,6 +420,7 @@ fn collect_expr_type_names(expr: &CoreExpr, references: &mut ReferencedTypes) {
         }
         CoreExpr::Unit { .. }
         | CoreExpr::Int64 { .. }
+        | CoreExpr::Float64 { .. }
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. } => {}
     }

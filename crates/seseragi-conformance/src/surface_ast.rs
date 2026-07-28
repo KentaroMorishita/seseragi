@@ -66,7 +66,7 @@ fn validate_expression(expression: &Value, path: &str) -> Result<(), String> {
     require_span(expression, path)?;
 
     match kind {
-        "unit" | "integer" | "string" | "boolean" | "name" => Ok(()),
+        "unit" | "integer" | "float" | "string" | "boolean" | "name" => Ok(()),
         "tuple" => validate_expression_array(expression, "elements", path, 2),
         "array" | "list" => validate_expression_array(expression, "elements", path, 0),
         "member" => validate_child(expression, "receiver", path),

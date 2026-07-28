@@ -342,6 +342,7 @@ fn collect_expr_names(
         }
         TypeScriptExpr::Undefined
         | TypeScriptExpr::Bigint { .. }
+        | TypeScriptExpr::Number { .. }
         | TypeScriptExpr::Boolean { .. }
         | TypeScriptExpr::Identifier { .. }
         | TypeScriptExpr::String { .. } => {}

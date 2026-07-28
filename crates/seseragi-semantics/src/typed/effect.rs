@@ -128,6 +128,7 @@ fn collect_effect_contract(
         }
         TypedExpr::Unit { .. }
         | TypedExpr::Integer { .. }
+        | TypedExpr::Float { .. }
         | TypedExpr::String { .. }
         | TypedExpr::Template { .. }
         | TypedExpr::Boolean { .. }

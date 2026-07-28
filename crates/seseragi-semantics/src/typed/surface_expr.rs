@@ -431,6 +431,7 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
     match expression {
         SurfaceExpr::Unit { .. } => Some(named_type("Unit")),
         SurfaceExpr::Integer { .. } => Some(named_type("Int")),
+        SurfaceExpr::Float { .. } => Some(named_type("Float")),
         SurfaceExpr::String { .. } => Some(named_type("String")),
         SurfaceExpr::Template { .. } => Some(named_type("String")),
         SurfaceExpr::Boolean { .. } => Some(named_type("Bool")),
@@ -577,6 +578,11 @@ pub(super) fn type_surface_expression(
                 origin: *span,
             })
         }
+        SurfaceExpr::Float { raw, span } => SurfaceExpressionAnalysis::valid(TypedExpr::Float {
+            value: raw.replace('_', ""),
+            type_ref: named_type("Float"),
+            origin: *span,
+        }),
         SurfaceExpr::String { raw, span } => SurfaceExpressionAnalysis::valid(TypedExpr::String {
             value: unquote_string(raw),
             type_ref: named_type("String"),
@@ -616,6 +622,12 @@ pub(super) fn type_surface_expression(
             span,
             ..
         } if operator == "*" => signal::type_read(operand, *span, context),
+        SurfaceExpr::Prefix {
+            operator,
+            operand,
+            span,
+            ..
+        } if operator == "-" => type_numeric_negation(operand, *span),
         SurfaceExpr::Prefix { span, .. } => SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {
                 name: String::new(),
@@ -810,9 +822,34 @@ fn recovery_hole_origin(expression: &TypedExpr) -> Option<ByteSpan> {
             .or_else(|| recovery_hole_origin(result)),
         TypedExpr::Unit { .. }
         | TypedExpr::Integer { .. }
+        | TypedExpr::Float { .. }
         | TypedExpr::String { .. }
         | TypedExpr::Boolean { .. }
         | TypedExpr::Variable { .. } => None,
+    }
+}
+
+fn type_numeric_negation(operand: &SurfaceExpr, span: ByteSpan) -> SurfaceExpressionAnalysis {
+    match operand {
+        SurfaceExpr::Integer { raw, .. } => SurfaceExpressionAnalysis::valid(TypedExpr::Integer {
+            value: format!("-{}", raw.replace('_', "")),
+            type_ref: named_type("Int"),
+            origin: span,
+        }),
+        SurfaceExpr::Float { raw, .. } => SurfaceExpressionAnalysis::valid(TypedExpr::Float {
+            value: format!("-{}", raw.replace('_', "")),
+            type_ref: named_type("Float"),
+            origin: span,
+        }),
+        _ => SurfaceExpressionAnalysis::valid_with_semantic_type(
+            TypedExpr::Variable {
+                name: String::new(),
+                evidence: Vec::new(),
+                type_ref: TypedType::Hole,
+                origin: span,
+            },
+            SemanticTypeKey::Invalid,
+        ),
     }
 }
 
