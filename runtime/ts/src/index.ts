@@ -151,6 +151,8 @@ export {
   maybeShow,
   neverDebug,
   neverShow,
+  rangeDebug,
+  rangeShow,
   renderDebug,
   renderDocument as renderValueDocument,
   renderShow,

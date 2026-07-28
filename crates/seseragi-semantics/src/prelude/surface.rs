@@ -158,7 +158,7 @@ mod tests {
                 .count(),
             8
         );
-        assert_eq!(surface.instances.len(), 47);
+        assert_eq!(surface.instances.len(), 49);
         assert_eq!(surface.coherence.standard_heads, "sealed");
 
         let monoid = surface

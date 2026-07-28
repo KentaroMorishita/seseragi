@@ -1466,6 +1466,37 @@ mod tests {
     }
 
     #[test]
+    fn composes_range_display_from_the_bound_dictionary() {
+        for (trait_name, range_identity, bound_identity) in [
+            ("Show", "std/range::Show", "Show<std/prelude::Int>"),
+            ("Debug", "std/range::Debug", "Debug<std/prelude::Int>"),
+        ] {
+            let evidence = select_call_evidence(&[TypedConstraint {
+                name: trait_name.to_owned(),
+                arguments: vec![applied("Range", vec![named("Int")])],
+            }])
+            .expect("Range display evidence")
+            .remove(0);
+
+            assert!(matches!(
+                evidence.evidence,
+                TypedInstanceEvidence::Standard {
+                    identity,
+                    evidence_arguments,
+                    ..
+                } if identity == range_identity
+                    && matches!(
+                        evidence_arguments.as_slice(),
+                        [TypedCallEvidence {
+                            evidence: TypedInstanceEvidence::Standard { identity, .. },
+                            ..
+                        }] if identity == bound_identity
+                    )
+            ));
+        }
+    }
+
+    #[test]
     fn composes_int_and_never_collection_display_evidence() {
         let debug = select_call_evidence(&[TypedConstraint {
             name: "Debug".to_owned(),

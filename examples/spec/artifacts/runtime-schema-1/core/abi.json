@@ -494,6 +494,26 @@
       "import": null
     },
     {
+      "id": "core.range.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<Range<Int>>",
+      "boundary": "source-like non-expanding Show<Range<Int>> dictionary factory",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "rangeShow"
+      }
+    },
+    {
+      "id": "core.range.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<Range<Int>>",
+      "boundary": "source-like non-expanding Debug<Range<Int>> dictionary factory",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "rangeDebug"
+      }
+    },
+    {
       "id": "core.range.exclusive",
       "kind": "runtime-helper",
       "typescript": "function",

@@ -19,12 +19,13 @@ Current scope:
   typed channel, and returns singleton `Nothing` at sticky EOF.
 - `./show`: pure `Show<A>` / `Debug<A>` dictionary shapes, immutable render
   documents, the complete Int / Float / Bool / Char / String / Unit / Never
-  primitive dictionary matrix, and conditional Array / List / Maybe / Either
-  dictionary factories. Float uses the canonical shortest round-trip decimal
-  spelling, while Never dictionaries are unreachable evidence for empty
-  branches. Compact, multiline, and width-based auto layout share one
-  recursively composed document; String / Char Debug escaping is implemented
-  directly without host JSON or stringification semantics.
+  primitive dictionary matrix, conditional Array / List / Maybe / Either
+  dictionary factories, and non-expanding source-like Range dictionaries.
+  Float uses the canonical shortest round-trip decimal spelling, while Never
+  dictionaries are unreachable evidence for empty branches. Compact,
+  multiline, and width-based auto layout share one recursively composed
+  document; String / Char Debug escaping is implemented directly without host
+  JSON or stringification semantics.
 
 Typed failureはruntime内部のprivate carrierでdefectと区別します。`fail`だけがcarrierを発生させ、`run`は
 carrierだけを`EffectResult.failure`へ変換します。任意のJavaScript throw / rejected Promiseはdefectとして

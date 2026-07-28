@@ -352,6 +352,20 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         identity: "std/either::Debug",
     },
     PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Range",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/range::Show",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Range",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/range::Debug",
+    },
+    PreludeStandardInstance {
         trait_name: "Semigroup",
         type_name: "Array",
         type_canonical: None,
@@ -859,8 +873,12 @@ pub(crate) fn standard_instance_constraint_specs(
         },
     ];
     match identity {
-        "std/array::Show" | "std/list::Show" | "std/maybe::Show" => SHOW_ELEMENT,
-        "std/array::Debug" | "std/list::Debug" | "std/maybe::Debug" => DEBUG_ELEMENT,
+        "std/array::Show" | "std/list::Show" | "std/maybe::Show" | "std/range::Show" => {
+            SHOW_ELEMENT
+        }
+        "std/array::Debug" | "std/list::Debug" | "std/maybe::Debug" | "std/range::Debug" => {
+            DEBUG_ELEMENT
+        }
         "std/either::Show" => SHOW_EITHER,
         "std/either::Debug" => DEBUG_EITHER,
         _ => &[],

@@ -1,0 +1,43 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/show-debug-range"
+  ],
+  "sourcesContent": [
+    "pub fn showRange value: Range<Int> -> String =\n  show value\n\npub fn debugRange value: Range<Int> -> String =\n  debug value\n\npub fn debugRanges values: Array<Range<Int>> -> String =\n  debug values\n\npub effect fn main =\n  do {\n    println (show (1..5))\n    println (debug (5..=5))\n    println (show (10..=1))\n    println (debug [1..3, 3..=3])\n  }\n"
+  ],
+  "names": [
+    "showRange",
+    "rangeShow",
+    "intShow",
+    "debugRange",
+    "rangeDebug",
+    "intDebug",
+    "debugRanges",
+    "arrayDebug",
+    "rangeDebug",
+    "intDebug",
+    "main",
+    "println",
+    "rangeShow",
+    "intShow",
+    "exclusive",
+    "println",
+    "rangeDebug",
+    "intDebug",
+    "inclusive",
+    "println",
+    "rangeShow",
+    "intShow",
+    "inclusive",
+    "println",
+    "arrayDebug",
+    "rangeDebug",
+    "intDebug",
+    "exclusive",
+    "inclusive"
+  ],
+  "mappings": ";;;;;AAAAA;AAGAG;AAGAG;AAGAI"
+}

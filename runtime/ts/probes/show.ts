@@ -1,5 +1,6 @@
 import type { ConsoleError } from "../src/console"
 import { fromArray } from "../src/list"
+import { exclusive, inclusive } from "../src/range"
 import {
   arrayDebug,
   arrayShow,
@@ -25,6 +26,8 @@ import {
   maybeShow,
   neverDebug,
   neverShow,
+  rangeDebug,
+  rangeShow,
   renderDebug,
   renderDocument,
   renderShow,
@@ -195,6 +198,21 @@ assertEqual(resultShow.show(Left("failure")), "Left failure")
 assertEqual(resultShow.show(Right(true)), "Right True")
 assertEqual(resultDebug.debug(Left("failure")), 'Left "failure"')
 assertEqual(resultDebug.debug(Right(false)), "Right False")
+
+const intRangeShow = rangeShow(intShow)
+const intRangeDebug = rangeDebug(intDebug)
+assertEqual(intRangeShow.show(exclusive(1n, 5n)), "1..5")
+assertEqual(intRangeShow.show(exclusive(5n, 5n)), "5..5")
+assertEqual(intRangeDebug.debug(inclusive(5n, 5n)), "5..=5")
+assertEqual(intRangeDebug.debug(inclusive(10n, 1n)), "10..=1")
+assertEqual(
+  renderShow(intRangeShow, inclusive(1n, 3n), { layout: "multiline" }),
+  "1..=3"
+)
+assertEqual(
+  arrayShow(intRangeShow).show([exclusive(1n, 5n), inclusive(10n, 1n)]),
+  "[1..5, 10..=1]"
+)
 
 const nestedDebug = arrayDebug(maybeDebug(stringDebug))
 const nestedValue = [Just("alpha"), Nothing, Just("line\nbreak")]

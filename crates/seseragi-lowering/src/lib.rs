@@ -389,6 +389,37 @@ mod tests {
     }
 
     #[test]
+    fn lowers_non_expanding_range_display_with_nested_evidence() {
+        let source = "pub fn render value: Range<Int> -> String = show value\n\
+                      pub fn inspect value: Range<Int> -> String = debug value\n\
+                      pub fn inspectMany values: Array<Range<Int>> -> String = debug values\n";
+        let typed = type_module("artifact/range-display/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+
+        for requirement in [
+            "core.range.show",
+            "core.range.debug",
+            "core.int64.show",
+            "core.int64.debug",
+            "core.array.debug",
+        ] {
+            assert!(
+                typescript
+                    .runtime_requirements
+                    .iter()
+                    .any(|actual| actual == requirement),
+                "missing runtime requirement {requirement}"
+            );
+        }
+
+        let bundle = emit_typescript_module(typescript, source);
+        assert!(bundle.typescript.contains("_ssrg_show_rangeShow<bigint>"));
+        assert!(bundle.typescript.contains("_ssrg_debug_rangeDebug<bigint>"));
+        assert!(bundle.typescript.contains("_ssrg_debug_arrayDebug"));
+    }
+
+    #[test]
     fn lowers_adt_constructors_to_tagged_typescript_values() {
         let source = "\
 pub type Hand =

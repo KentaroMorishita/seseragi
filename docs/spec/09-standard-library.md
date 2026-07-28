@@ -521,6 +521,13 @@ constructor payloadはconstructor名の次行へ一段indentします。composit
 子dictionaryのrender documentをそのまま合成し、hostの配列文字列化やobject inspectionへ
 委譲しません。
 
+`Range<Int>`は`Show<Range<Int>> where Show<Int>`と
+`Debug<Range<Int>> where Debug<Int>`を持ちます。終端を含まない値は`start..end`、含む値は
+`start..=end`としてbound自体を描画します。`5..5`のempty、`5..=5`のsingleton、
+`10..=1`のdescending emptyも同じ構造を保ち、要素列へ展開しません。現在のRangeは3.9の
+とおりunit stepであり、compact / multilineのどちらでも一行のsource-like表記です。
+Rangeがcollectionや後続のtuple・recordへ入った場合も、bound dictionaryを再帰的に合成します。
+
 Show/Debugと出力先は別概念です。型classを実装しただけで値がconsoleへ書かれることは
 ありません。
 

@@ -59,6 +59,12 @@ type ErasedEvidence = Readonly<Record<string, (...arguments_: any[]) => any>>
 type ShowEvidence<Value> = Show<Value> | ErasedEvidence
 type DebugEvidence<Value> = Debug<Value> | ErasedEvidence
 
+type DisplayRange<Value> = Readonly<{
+  start: Value
+  end: Value
+  inclusive: boolean
+}>
+
 export function text(value: string): RenderDocument {
   return Object.freeze({ kind: "text", value })
 }
@@ -290,6 +296,34 @@ export function eitherDebug<Error, Value>(
     either.tag === "Left"
       ? constructorDocument("Left", debugDocument(error, either.value))
       : constructorDocument("Right", debugDocument(value, either.value))
+  )
+}
+
+/**
+ * Range renders its bounds and inclusivity directly. It never iterates or
+ * expands the values between the bounds.
+ */
+export function rangeShow<Value>(
+  bound: ShowEvidence<Value>
+): Show<DisplayRange<Value>> {
+  return defineShow((range) =>
+    concat([
+      showDocument(bound, range.start),
+      text(range.inclusive ? "..=" : ".."),
+      showDocument(bound, range.end),
+    ])
+  )
+}
+
+export function rangeDebug<Value>(
+  bound: DebugEvidence<Value>
+): Debug<DisplayRange<Value>> {
+  return defineDebug((range) =>
+    concat([
+      debugDocument(bound, range.start),
+      text(range.inclusive ? "..=" : ".."),
+      debugDocument(bound, range.end),
+    ])
   )
 }
 

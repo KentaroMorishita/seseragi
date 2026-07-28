@@ -201,6 +201,22 @@ const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
         export_name: "eitherDebug",
         source_map_name: "eitherDebug",
     },
+    RuntimeDisplayDictionary {
+        semantic_identity: "std/range::Show",
+        runtime_feature: "core.range.show",
+        local_name: "_ssrg_show_rangeShow",
+        module: "@seseragi/runtime/show",
+        export_name: "rangeShow",
+        source_map_name: "rangeShow",
+    },
+    RuntimeDisplayDictionary {
+        semantic_identity: "std/range::Debug",
+        runtime_feature: "core.range.debug",
+        local_name: "_ssrg_debug_rangeDebug",
+        module: "@seseragi/runtime/show",
+        export_name: "rangeDebug",
+        source_map_name: "rangeDebug",
+    },
 ];
 
 pub(crate) fn runtime_display_dictionary_for_feature(
@@ -371,6 +387,18 @@ mod tests {
                 "core.either.debug",
                 "_ssrg_debug_eitherDebug",
                 "eitherDebug",
+            ),
+            (
+                "std/range::Show",
+                "core.range.show",
+                "_ssrg_show_rangeShow",
+                "rangeShow",
+            ),
+            (
+                "std/range::Debug",
+                "core.range.debug",
+                "_ssrg_debug_rangeDebug",
+                "rangeDebug",
             ),
         ] {
             let dictionary = runtime_display_dictionary_for_feature(feature).unwrap();

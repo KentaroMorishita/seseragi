@@ -1,0 +1,16 @@
+pub fn showRange value: Range<Int> -> String =
+  show value
+
+pub fn debugRange value: Range<Int> -> String =
+  debug value
+
+pub fn debugRanges values: Array<Range<Int>> -> String =
+  debug values
+
+pub effect fn main =
+  do {
+    println (show (1..5))
+    println (debug (5..=5))
+    println (show (10..=1))
+    println (debug [1..3, 3..=3])
+  }

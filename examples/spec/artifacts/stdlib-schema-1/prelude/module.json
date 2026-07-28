@@ -641,6 +641,36 @@
       ]
     },
     {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Range",
+      "typeConstructorCanonical": "std/prelude::Range",
+      "typeConstructorArity": 1,
+      "identity": "std/range::Show",
+      "constraints": [
+        {
+          "trait": "Show",
+          "traitCanonical": "std/prelude::Show",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Range",
+      "typeConstructorCanonical": "std/prelude::Range",
+      "typeConstructorArity": 1,
+      "identity": "std/range::Debug",
+      "constraints": [
+        {
+          "trait": "Debug",
+          "traitCanonical": "std/prelude::Debug",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
       "trait": "Semigroup",
       "traitCanonical": "std/prelude::Semigroup",
       "typeConstructor": "Array",

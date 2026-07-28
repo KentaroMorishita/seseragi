@@ -1,0 +1,425 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/show-debug-range",
+  "runtimeRequirements": [
+    "core.range",
+    "core.int64",
+    "core.int64.show",
+    "core.range.show",
+    "core.string",
+    "core.int64.debug",
+    "core.range.debug",
+    "core.array.debug",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println",
+    "core.range.exclusive",
+    "core.range.inclusive"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.range.show",
+      "local": "_ssrg_show_rangeShow"
+    },
+    {
+      "feature": "core.int64.debug",
+      "local": "_ssrg_debug_intDebug"
+    },
+    {
+      "feature": "core.range.debug",
+      "local": "_ssrg_debug_rangeDebug"
+    },
+    {
+      "feature": "core.array.debug",
+      "local": "_ssrg_debug_arrayDebug"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.range.exclusive",
+      "local": "_ssrg_range_exclusive"
+    },
+    {
+      "feature": "core.range.inclusive",
+      "local": "_ssrg_range_inclusive"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "showRange",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Readonly<{ start: bigint; end: bigint; inclusive: boolean }>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_show_rangeShow",
+          "typeArguments": [
+            {
+              "kind": "bigint"
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_show_intShow"
+            }
+          ]
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 59
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugRange",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Readonly<{ start: bigint; end: bigint; inclusive: boolean }>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_debug_rangeDebug",
+          "typeArguments": [
+            {
+              "kind": "bigint"
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_debug_intDebug"
+            }
+          ]
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 61,
+        "end": 122
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugRanges",
+      "parameters": [
+        {
+          "name": "values",
+          "type": "ReadonlyArray<Readonly<{ start: bigint; end: bigint; inclusive: boolean }>>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_debug_arrayDebug",
+          "typeArguments": [
+            {
+              "kind": "range"
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "type-application-call",
+              "callee": "_ssrg_debug_rangeDebug",
+              "typeArguments": [
+                {
+                  "kind": "bigint"
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_debug_intDebug"
+                }
+              ]
+            }
+          ]
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "values"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 124,
+        "end": 195
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_show_rangeShow",
+                    "typeArguments": [
+                      {
+                        "kind": "bigint"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_intShow"
+                      }
+                    ]
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_range_exclusive",
+                      "arguments": [
+                        {
+                          "kind": "bigint",
+                          "value": "1"
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "5"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_rangeDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "bigint"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_intDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_range_inclusive",
+                      "arguments": [
+                        {
+                          "kind": "bigint",
+                          "value": "5"
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "5"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_show_rangeShow",
+                    "typeArguments": [
+                      {
+                        "kind": "bigint"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_show_intShow"
+                      }
+                    ]
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_range_inclusive",
+                      "arguments": [
+                        {
+                          "kind": "bigint",
+                          "value": "10"
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "1"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "type-application-call",
+                "callee": "_ssrg_debug_arrayDebug",
+                "typeArguments": [
+                  {
+                    "kind": "range"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_rangeDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "bigint"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_intDebug"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "method": "debug",
+              "arguments": [
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_range_exclusive",
+                      "arguments": [
+                        {
+                          "kind": "bigint",
+                          "value": "1"
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "3"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_range_inclusive",
+                      "arguments": [
+                        {
+                          "kind": "bigint",
+                          "value": "3"
+                        },
+                        {
+                          "kind": "bigint",
+                          "value": "3"
+                        }
+                      ]
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "range"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 197,
+        "end": 344
+      }
+    }
+  ]
+}
