@@ -271,6 +271,57 @@ describe("Playground sample catalog", () => {
     )
   })
 
+  test("keeps concrete call results across top-level bindings in WASM analysis", async () => {
+    const source = `
+pub type Packet<A> deriving Debug =
+  | Packet A
+
+pub struct Box<A> deriving Debug {
+  value: A,
+}
+
+fn wrapMaybe<A> value: A -> Maybe<A> = Just value
+fn wrapEither<A> value: A -> Either<String, A> = Right value
+fn wrapArray<A> value: A -> Array<A> = [value]
+fn wrapList<A> value: A -> List<A> = \`[value]
+fn wrapPacket<A> value: A -> Packet<A> = Packet value
+fn wrapBox<A> value: A -> Box<A> = Box { value }
+
+let success = wrapMaybe 42
+let stopped = wrapMaybe 42
+let wrapped = wrapMaybe 42
+let eitherValue = wrapEither 42
+let arrayValue = wrapArray 42
+let listValue = wrapList 42
+let packetValue = wrapPacket 42
+let boxValue = wrapBox 42
+`
+    const analysis = await analyze(source)
+
+    expect(analysis.diagnostics.diagnostics).toEqual([])
+    for (const [name, expected] of [
+      ["success", "Maybe<Int>"],
+      ["stopped", "Maybe<Int>"],
+      ["wrapped", "Maybe<Int>"],
+      ["eitherValue", "Either<String, Int>"],
+      ["arrayValue", "Array<Int>"],
+      ["listValue", "List<Int>"],
+      ["packetValue", "Packet<Int>"],
+      ["boxValue", "Box<Int>"],
+    ] as const) {
+      const sourcePosition = source.indexOf(`let ${name}`) + "let ".length
+      const position = new TextEncoder().encode(
+        source.slice(0, sourcePosition)
+      ).length
+      expect(queryAnalysisAt(analysis, position).symbol?.typeName).toBe(
+        expected
+      )
+    }
+
+    const response = await compile("top-level-call-inference.ssrg", source)
+    expect(response.status).toBe("success")
+  })
+
   test("connects live hover and generated Reference UI without running Effects", async () => {
     const html = await Bun.file(
       new URL("../index.html", import.meta.url)

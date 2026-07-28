@@ -587,7 +587,10 @@
                   "kind": "variable",
                   "name": "cardStyle",
                   "type": {
-                    "kind": "hole"
+                    "kind": "external-named",
+                    "name": "Style",
+                    "canonical": "std/web/html::Style",
+                    "arguments": []
                   },
                   "origin": {
                     "start": 390,
@@ -1131,7 +1134,10 @@
                 {
                   "name": "style",
                   "type": {
-                    "kind": "hole"
+                    "kind": "external-named",
+                    "name": "Style",
+                    "canonical": "std/web/html::Style",
+                    "arguments": []
                   }
                 }
               ]

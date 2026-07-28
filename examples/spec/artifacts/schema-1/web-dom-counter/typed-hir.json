@@ -3383,7 +3383,10 @@
                   "kind": "variable",
                   "name": "pageStyle",
                   "type": {
-                    "kind": "hole"
+                    "kind": "external-named",
+                    "name": "html.Style",
+                    "canonical": "std/web/html::Style",
+                    "arguments": []
                   },
                   "origin": {
                     "start": 2642,
@@ -3436,7 +3439,10 @@
                                 "kind": "variable",
                                 "name": "cardStyle",
                                 "type": {
-                                  "kind": "hole"
+                                  "kind": "external-named",
+                                  "name": "html.Style",
+                                  "canonical": "std/web/html::Style",
+                                  "arguments": []
                                 },
                                 "origin": {
                                   "start": 2744,
@@ -4160,7 +4166,10 @@
                                               "kind": "variable",
                                               "name": "trackStyle",
                                               "type": {
-                                                "kind": "hole"
+                                                "kind": "external-named",
+                                                "name": "html.Style",
+                                                "canonical": "std/web/html::Style",
+                                                "arguments": []
                                               },
                                               "origin": {
                                                 "start": 3492,
@@ -4338,7 +4347,10 @@
                                             {
                                               "name": "style",
                                               "type": {
-                                                "kind": "hole"
+                                                "kind": "external-named",
+                                                "name": "html.Style",
+                                                "canonical": "std/web/html::Style",
+                                                "arguments": []
                                               }
                                             }
                                           ]
@@ -4803,7 +4815,10 @@
                               {
                                 "name": "style",
                                 "type": {
-                                  "kind": "hole"
+                                  "kind": "external-named",
+                                  "name": "html.Style",
+                                  "canonical": "std/web/html::Style",
+                                  "arguments": []
                                 }
                               }
                             ]
@@ -4925,7 +4940,10 @@
                 {
                   "name": "style",
                   "type": {
-                    "kind": "hole"
+                    "kind": "external-named",
+                    "name": "html.Style",
+                    "canonical": "std/web/html::Style",
+                    "arguments": []
                   }
                 }
               ]

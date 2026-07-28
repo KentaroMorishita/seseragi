@@ -543,7 +543,10 @@
                   "kind": "variable",
                   "name": "cardStyle",
                   "type": {
-                    "kind": "hole"
+                    "kind": "external-named",
+                    "name": "Style",
+                    "canonical": "std/web/html::Style",
+                    "arguments": []
                   },
                   "origin": {
                     "source": "main.ssrg",
@@ -1093,7 +1096,10 @@
                 {
                   "name": "style",
                   "type": {
-                    "kind": "hole"
+                    "kind": "external-named",
+                    "name": "Style",
+                    "canonical": "std/web/html::Style",
+                    "arguments": []
                   }
                 }
               ]

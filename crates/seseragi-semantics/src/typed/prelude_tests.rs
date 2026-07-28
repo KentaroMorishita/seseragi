@@ -293,6 +293,57 @@ fn retains_unannotated_standard_arithmetic_results_across_top_level_bindings() {
 }
 
 #[test]
+fn retains_concrete_generic_call_results_across_top_level_bindings() {
+    let typed = type_module(
+        "artifact/top-level-call-inference/main.ssrg",
+        "fn wrapMaybe<A> value: A -> Maybe<A> = Just value\n\
+         fn wrapEither<A> value: A -> Either<String, A> = Right value\n\
+         fn wrapArray<A> value: A -> Array<A> = [value]\n\
+         fn wrapList<A> value: A -> List<A> = `[value]\n\
+         let maybeValue = wrapMaybe 42\n\
+         let eitherValue = wrapEither 42\n\
+         let arrayValue = wrapArray 42\n\
+         let listValue = wrapList 42\n\
+         pub fn render unit: Unit -> (String, String, String, String) =\n\
+           (debug maybeValue, debug eitherValue, debug arrayValue, debug listValue)\n",
+    );
+
+    let expected = [
+        applied("Maybe", vec![named("Int")]),
+        applied("Either", vec![named("String"), named("Int")]),
+        applied("Array", vec![named("Int")]),
+        applied("List", vec![named("Int")]),
+    ];
+    for (declaration, expected) in typed.declarations[4..8].iter().zip(expected) {
+        let TypedDecl::Let { scheme, .. } = declaration else {
+            panic!("expected inferred top-level binding");
+        };
+        assert_eq!(scheme.type_ref, expected);
+    }
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[8] else {
+        panic!("expected render function");
+    };
+    let TypedExpr::Tuple { elements, .. } = body else {
+        panic!("expected rendered tuple");
+    };
+    assert!(elements.iter().all(|element| matches!(
+        element,
+        TypedExpr::Call {
+            callee,
+            evidence,
+            type_ref,
+            ..
+        } if callee == "std/prelude::Debug::debug"
+            && type_ref == &named("String")
+            && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Standard { .. },
+                ..
+            }])
+    )));
+}
+
+#[test]
 fn composes_array_show_from_a_scoped_element_dictionary() {
     let typed = type_module(
         "artifact/scoped-array-show/main.ssrg",

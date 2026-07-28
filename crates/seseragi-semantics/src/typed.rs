@@ -1690,6 +1690,31 @@ mod tests {
         ));
     }
 
+    #[test]
+    fn exports_a_concrete_unannotated_top_level_call_result() {
+        let interface = type_module_public_interface(
+            "artifact/top-level-call-inference/main.ssrg",
+            "fn wrap<A> value: A -> Maybe<A> = Just value\n\
+             pub let wrapped = wrap 42\n",
+        );
+        let wrapped = interface
+            .exports
+            .iter()
+            .find(|export| export.name == "wrapped")
+            .expect("wrapped export");
+
+        assert_eq!(
+            wrapped.scheme.type_ref,
+            InterfaceType::Named {
+                name: "Maybe".to_owned(),
+                arguments: vec![InterfaceType::Named {
+                    name: "Int".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            }
+        );
+    }
+
     fn int_type() -> TypedType {
         TypedType::Named {
             name: "Int".to_owned(),

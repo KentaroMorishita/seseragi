@@ -10,8 +10,11 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use super::functions::TopLevelPureFunction;
 use super::semantic_types::{SemanticTypeCatalog, SemanticTypeKey, SemanticValueType};
-use super::surface_expr::surface_expression_type_hint;
-use super::type_ref::typed_type_from_type_ref;
+use super::surface_expr::{
+    analyze_resolved_expression, surface_expression_type_hint, PureExpressionContext,
+    SurfaceExpressionAnalysis,
+};
+use super::type_ref::{typed_type_contains_hole, typed_type_from_type_ref};
 
 mod imported_effects;
 mod imported_types;
@@ -33,7 +36,7 @@ pub(crate) struct TypedResolution<'a> {
 impl<'a> TypedResolution<'a> {
     pub(crate) fn new(resolved: &'a ResolvedModule) -> Self {
         let semantic_types = SemanticTypeCatalog::new(resolved);
-        Self {
+        let mut resolution = Self {
             resolved,
             top_level_values: collect_top_level_value_types(resolved, &semantic_types),
             callables: collect_callables(resolved, &semantic_types),
@@ -44,7 +47,89 @@ impl<'a> TypedResolution<'a> {
             imported_effects: imported_effects::collect_imported_effects(resolved),
             semantic_values: collect_semantic_value_types(resolved, &semantic_types),
             semantic_types,
+        };
+        resolution.infer_concrete_top_level_call_results();
+        resolution
+    }
+
+    fn infer_concrete_top_level_call_results(&mut self) {
+        let bindings =
+            self.resolved
+                .declarations
+                .iter()
+                .filter_map(|declaration| {
+                    let SurfaceDecl::Let {
+                        name_span,
+                        type_ref: None,
+                        body: Some(body),
+                        ..
+                    } = declaration
+                    else {
+                        return None;
+                    };
+                    let symbol = self.resolved.symbols.iter().find(|symbol| {
+                        symbol.kind == SymbolKind::Let && symbol.origin == *name_span
+                    })?;
+                    Some((symbol.id, body.clone()))
+                })
+                .collect::<Vec<_>>();
+
+        for _ in 0..bindings.len().max(1) {
+            let mut changed = false;
+            for (symbol, body) in &bindings {
+                let inferred = {
+                    let context = PureExpressionContext::new(&[], self);
+                    let analysis = analyze_resolved_expression(body, &context);
+                    self.concrete_call_result(&analysis)
+                };
+                let Some(type_ref) = inferred else {
+                    continue;
+                };
+                let semantic = self
+                    .semantic_types
+                    .key_from_typed_type(self.resolved, &type_ref);
+                if self.top_level_values.get(symbol) != Some(&type_ref) {
+                    self.top_level_values.insert(*symbol, type_ref);
+                    changed = true;
+                }
+                if self.semantic_values.get(symbol) != Some(&semantic) {
+                    self.semantic_values.insert(*symbol, semantic);
+                    changed = true;
+                }
+            }
+            if !changed {
+                break;
+            }
         }
+    }
+
+    fn concrete_call_result(&self, analysis: &SurfaceExpressionAnalysis) -> Option<TypedType> {
+        if analysis.conditional_issue.is_some()
+            || analysis.array_issue.is_some()
+            || analysis.record_issue.is_some()
+            || analysis.range_issue.is_some()
+            || analysis.pure_call_issue.is_some()
+            || analysis.monad_do_issue.is_some()
+            || !analysis.match_issues.is_empty()
+        {
+            return None;
+        }
+        let crate::TypedExpr::Call {
+            callee, type_ref, ..
+        } = &analysis.value
+        else {
+            return None;
+        };
+        if typed_type_contains_hole(type_ref) {
+            return None;
+        }
+        let unresolved_parameters = self
+            .callables
+            .values()
+            .find(|callable| callable.symbol == *callee)
+            .map(|callable| callable.type_parameters.as_slice())
+            .unwrap_or_default();
+        (!contains_type_parameter(type_ref, unresolved_parameters)).then(|| type_ref.clone())
     }
 
     pub(crate) fn declaration_symbol(
@@ -254,6 +339,34 @@ fn collect_top_level_value_types(
             Some((symbol.id, type_ref))
         })
         .collect()
+}
+
+fn contains_type_parameter(
+    type_ref: &TypedType,
+    parameters: &[seseragi_syntax::TypeParameter],
+) -> bool {
+    match type_ref {
+        TypedType::Named { name, arguments } => {
+            parameters.iter().any(|parameter| parameter.name == *name)
+                || arguments
+                    .iter()
+                    .any(|argument| contains_type_parameter(argument, parameters))
+        }
+        TypedType::ExternalNamed { arguments, .. } => arguments
+            .iter()
+            .any(|argument| contains_type_parameter(argument, parameters)),
+        TypedType::Record { fields, .. } => fields
+            .iter()
+            .any(|field| contains_type_parameter(&field.type_ref, parameters)),
+        TypedType::Tuple { elements } => elements
+            .iter()
+            .any(|element| contains_type_parameter(element, parameters)),
+        TypedType::Function { parameter, result } => {
+            contains_type_parameter(parameter, parameters)
+                || contains_type_parameter(result, parameters)
+        }
+        TypedType::Hole => true,
+    }
 }
 
 fn collect_callables(
@@ -1494,6 +1607,15 @@ fn collect_semantic_value_types(
 mod tests {
     use super::*;
 
+    fn let_symbol(resolved: &ResolvedModule, name: &str) -> SymbolId {
+        resolved
+            .symbols
+            .iter()
+            .find(|symbol| symbol.kind == SymbolKind::Let && symbol.spelling == name)
+            .unwrap_or_else(|| panic!("missing let symbol {name}"))
+            .id
+    }
+
     #[test]
     fn includes_generic_constrained_and_higher_order_functions() {
         let resolved = crate::resolve_module(
@@ -1517,5 +1639,57 @@ mod tests {
                 && matches!(callable.constraints.as_slice(), [constraint]
                     if constraint.name == "Eq")
         }));
+    }
+
+    #[test]
+    fn infers_closed_generic_call_results_for_top_level_value_references() {
+        let resolved = crate::resolve_module(
+            "artifact/top-level-call-inference/main.ssrg",
+            "fn wrap<A> value: A -> Maybe<A> = Just value\n\
+             fn duplicate<A> first: A -> second: A -> (A, A) = (first, second)\n\
+             let wrapped = wrap 42\n\
+             let duplicated = duplicate 20 22\n",
+        );
+        let resolution = TypedResolution::new(&resolved);
+
+        assert_eq!(
+            resolution.top_level_value_type(let_symbol(&resolved, "wrapped")),
+            Some(&TypedType::Named {
+                name: "Maybe".to_owned(),
+                arguments: vec![TypedType::Named {
+                    name: "Int".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            })
+        );
+        assert_eq!(
+            resolution.top_level_value_type(let_symbol(&resolved, "duplicated")),
+            Some(&TypedType::Tuple {
+                elements: vec![
+                    TypedType::Named {
+                        name: "Int".to_owned(),
+                        arguments: Vec::new(),
+                    },
+                    TypedType::Named {
+                        name: "Int".to_owned(),
+                        arguments: Vec::new(),
+                    },
+                ],
+            })
+        );
+    }
+
+    #[test]
+    fn does_not_publish_an_unresolved_generic_call_result_as_concrete() {
+        let resolved = crate::resolve_module(
+            "artifact/unresolved-top-level-call/main.ssrg",
+            "fn unresolved<A> unit: Unit -> A = unit\nlet value = unresolved ()\n",
+        );
+        let resolution = TypedResolution::new(&resolved);
+
+        assert_eq!(
+            resolution.top_level_value_type(let_symbol(&resolved, "value")),
+            None
+        );
     }
 }

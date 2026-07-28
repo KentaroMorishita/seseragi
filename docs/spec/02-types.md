@@ -310,6 +310,12 @@ let numbers = empty<Int> ()
 非再帰的な `let` の右辺を推論した後、現在の型環境に現れないfree type variableを
 すべて量化します。型schemeは識別子を参照するたびにfreshにinstantiateします。
 
+top-level `let` の右辺が関数適用の場合も同じです。値引数と期待型から関数の型parameterを
+instantiateし、飽和適用後の具体的な戻り型をbindingの型schemeへ保存します。例えば
+`let wrapped = wrap 42` で `wrap<A>: A -> Maybe<A>` なら、`wrapped` は `Maybe<Int>` です。
+この具体型は後続宣言の型検査とtrait evidence選択でも再利用します。戻り型だけに現れる型parameterが
+未解決なら、具体型として保存したり暗黙に一つのnominal型へ固定したりせず、2.12の曖昧な呼び出しとして扱います。
+
 右辺からtrait constraintが生じた場合、量化した型variableに依存するconstraintも型schemeへ
 含めます。例えば `\x -> x + x` は概念上
 `forall A. Add<A, A, A> => A -> A` です。環境だけに依存するconstraintは一般化しません。

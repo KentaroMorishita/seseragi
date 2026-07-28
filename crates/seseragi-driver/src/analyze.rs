@@ -146,6 +146,30 @@ mod tests {
     }
 
     #[test]
+    fn analysis_exposes_concrete_unannotated_top_level_call_results() {
+        let source = "fn wrap<A> value: A -> Maybe<A> = Just value\n\
+                      pub let wrapped = wrap 42\n\
+                      pub effect fn main = debug wrapped |> println\n";
+        let analysis = analyze_module(CompileInput::new(
+            "main.ssrg",
+            "analysis/top-level-call-inference",
+            source,
+        ));
+
+        assert!(analysis.diagnostics.diagnostics.is_empty());
+        let wrapped = source.find("wrapped =").expect("wrapped declaration");
+        let symbol = analysis.symbol_at(wrapped).expect("wrapped symbol");
+        assert_eq!(symbol.name, "wrapped");
+        assert_eq!(symbol.type_name.as_deref(), Some("Maybe<Int>"));
+        assert_eq!(
+            analysis
+                .type_at(wrapped)
+                .map(|occurrence| occurrence.type_name.as_str()),
+            Some("Maybe<Int>")
+        );
+    }
+
+    #[test]
     fn exposes_document_html_tags_in_the_reference_catalog() {
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",

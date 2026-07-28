@@ -473,6 +473,46 @@ mod tests {
     }
 
     #[test]
+    fn accepts_concrete_generic_call_results_in_unannotated_top_level_bindings() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-call-inference/main.ssrg",
+            "fn addMaybe left: Maybe<Int> -> right: Maybe<Int> -> Maybe<Int> =\n\
+               do { a <- left; b <- right; pure (a + b) }\n\
+             fn wrap<A> value: A -> Maybe<A> = Just value\n\
+             let success = addMaybe (Just 20) (Just 22)\n\
+             let stopped = addMaybe (Just 20) Nothing\n\
+             let wrapped = wrap 42\n\
+             pub effect fn main = do {\n\
+               debug success |> println\n\
+               debug stopped |> println\n\
+               debug wrapped |> println\n\
+             }\n",
+        );
+
+        assert!(
+            diagnostics.diagnostics.is_empty(),
+            "concrete call results must reach later trait selection: {diagnostics:#?}"
+        );
+    }
+
+    #[test]
+    fn reports_the_concrete_top_level_call_result_when_an_instance_is_missing() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-call-missing-instance/main.ssrg",
+            "fn wrapEffect unit: Unit -> Effect<{}, Never, Unit> = pure ()\n\
+             let effectValue = wrapEffect ()\n\
+             pub fn render unit: Unit -> String = debug effectValue\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].message_key, "instance.missing");
+        assert_eq!(
+            diagnostics.diagnostics[0].related[0].message,
+            "no Debug<Effect<{}, Never, Unit>> instance matches the inferred call arguments"
+        );
+    }
+
+    #[test]
     fn reports_function_value_return_type_mismatch_instead_of_arity() {
         let diagnostics = semantic_diagnostics(
             "artifact/function-value-reference/main.ssrg",
