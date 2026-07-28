@@ -267,6 +267,19 @@ HKTは`F<_>`、unknown / recovery typeは`unknown`と表示します。renderer�
 混ぜませんが、documentには保持し、definitionや比較をsource spellingだけへ依存させません。Analysis、
 diagnostic、LSP、Playgroundへの接続は同じdocumentを利用し、各surfaceが独自に型構造を再構成しません。
 
+## 12.12.3 type display surface
+
+compiler diagnosticはplain compactを使い、function、record、nested genericを抽象語だけへ潰しません。Analysisは
+symbol、expression、callableの型をtype documentとして保持し、公開するcompact文字列とLSP向けmultiline文字列を
+同じdocumentから生成します。WASMのanalysis responseは、Playgroundで使用するcompact文字列を返し、同じ構造を
+type occurrenceごとに重複serializeしません。
+
+LSP hoverはmultiline、completion detailとsignature helpはcompactを使います。hoverのMarkdown code fenceは
+multiline plainを囲むだけで、型構造を再解釈しません。Playground tooltipとReferenceはanalysis responseの
+compact表示をそのままsyntax highlightし、別の型pretty printerを持ちません。partial applicationでは全parameterの
+型とremaining parameterの型を同じcallable documentから導出します。unknown / recovery typeを含む場合も
+`unknown`を表示し、hover、completion、Referenceはpanicしません。
+
 ## 12.13 diagnostic contract
 
 compiler、formatter、package resolver、binding generator、language serverは共通のDiagnostic data modelを

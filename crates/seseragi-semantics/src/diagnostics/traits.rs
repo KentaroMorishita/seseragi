@@ -49,23 +49,29 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
         },
         DerivedInstanceIssue::UnsupportedDerivedMember {
             trait_name,
-            member_name,
+            member_type,
             primary,
             declaration,
-        } => Diagnostic {
-            id: String::new(),
-            code: "SES-T0201".to_owned(),
-            severity: DiagnosticSeverity::Error,
-            message_key: "trait.instance-missing".to_owned(),
-            primary: byte_range(*primary),
-            related: vec![RelatedDiagnostic {
-                message: format!(
-                    "required {trait_name}<{member_name}> instance is not available"
-                ),
-                primary: byte_range(*declaration),
-            }],
-            fixes: Vec::new(),
-        },
+        } => {
+            let requirement = crate::TypeDocument::Named {
+                name: trait_name.clone(),
+                canonical: None,
+                arguments: vec![crate::TypeDocument::from_typed_type(member_type)],
+            }
+            .render(crate::TypeRenderOptions::default());
+            Diagnostic {
+                id: String::new(),
+                code: "SES-T0201".to_owned(),
+                severity: DiagnosticSeverity::Error,
+                message_key: "trait.instance-missing".to_owned(),
+                primary: byte_range(*primary),
+                related: vec![RelatedDiagnostic {
+                    message: format!("required {requirement} instance is not available"),
+                    primary: byte_range(*declaration),
+                }],
+                fixes: Vec::new(),
+            }
+        }
         DerivedInstanceIssue::AmbiguousInstance {
             trait_name,
             type_identity,

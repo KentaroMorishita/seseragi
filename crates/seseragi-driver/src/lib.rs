@@ -38,4 +38,7 @@ pub use seseragi_formatter::FormattedSource;
 pub use seseragi_semantics::{
     AnalysisCallable, AnalysisCallableOccurrence, AnalysisDocument, AnalysisParameter,
     AnalysisReferenceItem, AnalysisSymbol, AnalysisSymbolOccurrence, AnalysisTypeOccurrence,
+    TypeCallableDocument, TypeCallableParameterDocument, TypeConstraintDocument, TypeDocument,
+    TypeDocumentField, TypeParameterDocument, TypeRenderLayout, TypeRenderMarkup,
+    TypeRenderOptions, TypeSchemeDocument,
 };

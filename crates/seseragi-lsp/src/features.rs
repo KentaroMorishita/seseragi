@@ -91,15 +91,18 @@ pub(crate) fn hover(
 
     let reference = symbol.and_then(|symbol| reference_for(&document.analysis, &symbol.identity));
     let mut lines = Vec::new();
-    let signature = callable
+    let compact_signature = callable
         .map(|callable| callable.signature.clone())
-        .or_else(|| reference.and_then(|item| item.signature.clone()))
+        .or_else(|| reference.and_then(|item| item.signature.clone()));
+    let signature = callable
+        .map(|callable| callable.multiline_signature.clone())
+        .or_else(|| reference.and_then(|item| item.multiline_signature.clone()))
         .or_else(|| {
             symbol.and_then(|symbol| {
                 symbol
-                    .type_name
+                    .multiline_type_name
                     .as_ref()
-                    .map(|type_name| format!("{}: {type_name}", symbol.name))
+                    .map(|type_name| format!("{}:\n{type_name}", symbol.name))
             })
         });
     if let Some(signature) = &signature {
@@ -109,20 +112,17 @@ pub(crate) fn hover(
         lines.push(format!("`{}` · `{}`", symbol.module, symbol.identity));
     }
     if let Some(type_occurrence) = inferred {
-        let already_in_signature = signature
+        let already_in_signature = compact_signature
             .as_ref()
             .is_some_and(|value| value.contains(&type_occurrence.type_name));
         if !already_in_signature {
-            lines.push(format!("Inferred type: `{}`", type_occurrence.type_name));
+            lines.push(format!(
+                "Inferred type:\n```seseragi\n{}\n```",
+                type_occurrence.multiline_type_name
+            ));
         }
     }
     if let Some(callable) = callable {
-        if !callable.constraints.is_empty() {
-            lines.push(format!(
-                "Constraints: `{}`",
-                callable.constraints.join(", ")
-            ));
-        }
         if !callable.remaining_parameters.is_empty() {
             lines.push(format!(
                 "Remaining: {}",

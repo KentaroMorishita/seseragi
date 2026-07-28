@@ -69,7 +69,7 @@ export function connectReferenceBrowser(elements: ReferenceBrowserElements): {
     const description = elements.dialog.ownerDocument.createElement("p")
     description.textContent = item.description
     article.append(description)
-    if (item.constraints.length > 0) {
+    if (item.constraints.length > 0 && !item.signature?.includes(" where ")) {
       const constraints = elements.dialog.ownerDocument.createElement("small")
       constraints.textContent = `where ${item.constraints.join(", ")}`
       article.append(constraints)

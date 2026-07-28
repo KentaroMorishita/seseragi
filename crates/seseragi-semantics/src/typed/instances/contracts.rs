@@ -1,4 +1,4 @@
-use crate::{ResolvedModule, SymbolKind, SymbolNamespace, TypedConstraint, TypedType};
+use crate::{ResolvedModule, SymbolKind, SymbolNamespace, TypedConstraint};
 use seseragi_syntax::{
     ByteSpan, InterfaceType, SurfaceDecl, SurfaceMethod, TypeParameter, TypeRef,
 };
@@ -227,59 +227,16 @@ fn validate_instance(
 }
 
 fn render_constraint(constraint: &TypedConstraint) -> String {
-    if constraint.arguments.is_empty() {
-        return constraint.name.clone();
-    }
-    format!(
-        "{}<{}>",
-        constraint.name,
-        constraint
+    crate::TypeDocument::Named {
+        name: constraint.name.clone(),
+        canonical: None,
+        arguments: constraint
             .arguments
             .iter()
-            .map(render_typed_type)
-            .collect::<Vec<_>>()
-            .join(", ")
-    )
-}
-
-fn render_typed_type(type_ref: &TypedType) -> String {
-    match type_ref {
-        TypedType::Named { name, arguments }
-        | TypedType::ExternalNamed {
-            name, arguments, ..
-        } => {
-            if arguments.is_empty() {
-                name.clone()
-            } else {
-                format!(
-                    "{}<{}>",
-                    name,
-                    arguments
-                        .iter()
-                        .map(render_typed_type)
-                        .collect::<Vec<_>>()
-                        .join(", ")
-                )
-            }
-        }
-        TypedType::Tuple { elements } => format!(
-            "({})",
-            elements
-                .iter()
-                .map(render_typed_type)
-                .collect::<Vec<_>>()
-                .join(", ")
-        ),
-        TypedType::Function { parameter, result } => {
-            format!(
-                "({} -> {})",
-                render_typed_type(parameter),
-                render_typed_type(result)
-            )
-        }
-        TypedType::Record { .. } => "record".to_owned(),
-        TypedType::Hole => "_".to_owned(),
+            .map(crate::TypeDocument::from_typed_type)
+            .collect(),
     }
+    .render(crate::TypeRenderOptions::default())
 }
 
 fn type_ref_arity(

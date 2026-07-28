@@ -376,9 +376,10 @@ fn binary_serves_analysis_features_and_quick_fixes_over_stdio() {
     );
 
     let hover = &response(&messages, 2)["result"];
-    assert!(hover["contents"]["value"]
-        .as_str()
-        .is_some_and(|value| value.contains("add left: Int") && value.contains("features.ssrg")));
+    assert!(hover["contents"]["value"].as_str().is_some_and(|value| {
+        value.contains("```seseragi\nadd\n  left: Int\n  -> right: Int\n  -> Int\n```")
+            && value.contains("features.ssrg")
+    }));
 
     let completions = response(&messages, 3)["result"].as_array().unwrap();
     assert!(completions.iter().any(|item| item["label"] == "addOne"));

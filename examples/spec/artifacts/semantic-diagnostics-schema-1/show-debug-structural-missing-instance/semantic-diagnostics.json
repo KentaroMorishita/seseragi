@@ -15,7 +15,7 @@
       },
       "related": [
         {
-          "message": "no Show<function> instance matches the inferred call arguments",
+          "message": "no Show<Int -> Int> instance matches the inferred call arguments",
           "primary": {
             "start": 0,
             "end": 87
@@ -24,7 +24,7 @@
       ],
       "labels": [
         {
-          "message": "no Show<function> instance matches the inferred call arguments",
+          "message": "no Show<Int -> Int> instance matches the inferred call arguments",
           "primary": {
             "start": 0,
             "end": 87

@@ -515,7 +515,7 @@ mod tests {
         );
         assert_eq!(
             diagnostics.diagnostics[0].related[0].message,
-            "declared Int, body produces function"
+            "declared Int, body produces Int -> Int"
         );
     }
 

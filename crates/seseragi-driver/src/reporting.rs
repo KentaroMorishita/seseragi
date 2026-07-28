@@ -75,4 +75,16 @@ mod tests {
         assert!(rendered.contains("pub let answer: Int ="));
         assert!(rendered.contains("= help:"));
     }
+
+    #[test]
+    fn renders_structured_function_types_without_collapsing_them() {
+        let source =
+            "fn add left: Int -> right: Int -> Int = left + right\nfn use value: Int -> Int = add value\n";
+        let diagnostics = seseragi_semantics::semantic_diagnostics("app.ssrg", source);
+        let rendered = render_terminal_diagnostics(&diagnostics, source);
+
+        assert!(rendered.contains("declared Int, body produces Int -> Int"));
+        assert!(rendered.contains("= actual: Int -> Int"));
+        assert!(!rendered.contains("body produces function"));
+    }
 }

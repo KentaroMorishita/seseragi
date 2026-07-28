@@ -15,7 +15,7 @@
       },
       "related": [
         {
-          "message": "required Debug<function> instance is not available",
+          "message": "required Debug<(Int -> Int)> instance is not available",
           "primary": {
             "start": 0,
             "end": 55
@@ -24,7 +24,7 @@
       ],
       "labels": [
         {
-          "message": "required Debug<function> instance is not available",
+          "message": "required Debug<(Int -> Int)> instance is not available",
           "primary": {
             "start": 0,
             "end": 55

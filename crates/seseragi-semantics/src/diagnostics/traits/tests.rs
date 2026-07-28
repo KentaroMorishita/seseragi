@@ -37,7 +37,7 @@ fn reports_missing_show_instance_for_unsupported_payload() {
     );
     assert_eq!(
         artifact.diagnostics[0].related[0].message,
-        "required Show<function> instance is not available"
+        "required Show<(Int -> Int)> instance is not available"
     );
 }
 

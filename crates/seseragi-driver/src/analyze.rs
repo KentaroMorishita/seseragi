@@ -75,6 +75,13 @@ mod tests {
             analysis.type_at(add_reference).unwrap().type_name,
             "Int -> Int -> Int"
         );
+        assert!(matches!(
+            analysis.type_at(add_reference).unwrap().type_document,
+            seseragi_semantics::TypeDocument::Function {
+                ref parameters,
+                ..
+            } if parameters.len() == 2
+        ));
         assert_eq!(
             analysis.definition_of(add_reference),
             Some(add_symbol.definition)
@@ -82,6 +89,10 @@ mod tests {
         let callable = analysis.callable_at(add_reference).unwrap();
         assert_eq!(callable.parameters.len(), 2);
         assert_eq!(callable.result, "Int");
+        assert_eq!(
+            callable.multiline_signature,
+            "add\n  left: Int\n  -> right: Int\n  -> Int"
+        );
 
         let applied_argument = source.rfind('1').unwrap();
         let partial = analysis.callable_at(applied_argument).unwrap();
@@ -115,7 +126,23 @@ mod tests {
             task.signature.as_deref(),
             Some("alias Task<A> = Effect<{}, Never, A>")
         );
+        assert!(task
+            .multiline_signature
+            .as_deref()
+            .is_some_and(|signature| signature.contains("Effect<\n")));
         assert_eq!(task.type_parameters, ["A"]);
+
+        let map = analysis
+            .standard_library_catalog()
+            .iter()
+            .find(|item| {
+                item.name == "map" && item.constraints.iter().any(|item| item == "Functor<F<_>>")
+            })
+            .expect("map is available from the Prelude Reference catalog");
+        assert!(map
+            .multiline_signature
+            .as_deref()
+            .is_some_and(|signature| signature.contains("\n") && signature.contains("Functor<")));
     }
 
     #[test]

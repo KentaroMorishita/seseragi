@@ -1,14 +1,12 @@
 use crate::{
     typed::standard_reference_callables, ResolvedModule, ScopeId, SymbolId, SymbolKind,
-    SymbolNamespace, TypedComprehensionClause, TypedConstraint, TypedDecl, TypedDoStatement,
-    TypedEffect, TypedExpr, TypedInstanceMethod, TypedModule, TypedMonadDoStatement,
-    TypedParameter, TypedPattern, TypedScheme, TypedType,
+    SymbolNamespace, TypeCallableDocument, TypeDocument, TypeParameterDocument, TypeRenderLayout,
+    TypeRenderOptions, TypeSchemeDocument, TypedComprehensionClause, TypedConstraint, TypedDecl,
+    TypedDoStatement, TypedEffect, TypedExpr, TypedInstanceMethod, TypedModule,
+    TypedMonadDoStatement, TypedParameter, TypedPattern, TypedScheme, TypedType,
 };
 use serde::Serialize;
-use seseragi_syntax::{
-    ByteSpan, DiagnosticArtifact, InterfaceConstraint, InterfaceExport, InterfaceScheme,
-    InterfaceType,
-};
+use seseragi_syntax::{ByteSpan, DiagnosticArtifact, InterfaceExport, InterfaceType};
 use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -18,6 +16,8 @@ pub struct AnalysisParameter {
     pub name: Option<String>,
     #[serde(rename = "type")]
     pub type_name: String,
+    #[serde(skip)]
+    pub type_document: TypeDocument,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -31,6 +31,10 @@ pub struct AnalysisCallable {
     pub result: String,
     pub constraints: Vec<String>,
     pub signature: String,
+    #[serde(skip)]
+    pub multiline_signature: String,
+    #[serde(skip)]
+    pub type_document: TypeSchemeDocument,
     pub remaining_parameters: Vec<AnalysisParameter>,
 }
 
@@ -59,6 +63,10 @@ pub struct AnalysisSymbol {
     pub definition: ByteSpan,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_name: Option<String>,
+    #[serde(skip)]
+    pub multiline_type_name: Option<String>,
+    #[serde(skip)]
+    pub type_document: Option<TypeDocument>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub callable: Option<AnalysisCallable>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -80,6 +88,10 @@ pub struct AnalysisTypeOccurrence {
     pub range: ByteSpan,
     #[serde(rename = "type")]
     pub type_name: String,
+    #[serde(skip)]
+    pub multiline_type_name: String,
+    #[serde(skip)]
+    pub type_document: TypeDocument,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -99,6 +111,8 @@ pub struct AnalysisReferenceItem {
     pub kind: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub signature: Option<String>,
+    #[serde(skip)]
+    pub multiline_signature: Option<String>,
     pub description: String,
     pub type_parameters: Vec<String>,
     pub constraints: Vec<String>,
@@ -210,6 +224,14 @@ pub fn analysis_document(
                 .or_else(|| import_callables.get(&symbol.id))
                 .or_else(|| catalog_callables.get(&identity))
                 .cloned();
+            let type_document = symbol_types
+                .get(&symbol.id)
+                .map(TypeDocument::from_typed_type)
+                .or_else(|| {
+                    callable
+                        .as_ref()
+                        .map(|callable| callable.type_document.type_ref.clone())
+                });
             AnalysisSymbol {
                 id: symbol.id.0,
                 identity: identity.clone(),
@@ -225,10 +247,9 @@ pub fn analysis_document(
                         .copied()
                         .unwrap_or(symbol.origin)
                 },
-                type_name: symbol_types
-                    .get(&symbol.id)
-                    .map(render_type)
-                    .or_else(|| callable.as_ref().map(callable_type)),
+                type_name: type_document.as_ref().map(render_document_compact),
+                multiline_type_name: type_document.as_ref().map(render_document_multiline),
+                type_document,
                 callable,
                 description: standard_description(&identity).map(str::to_owned),
                 scope: symbol.scope,
@@ -259,6 +280,8 @@ pub fn analysis_document(
         Some(AnalysisTypeOccurrence {
             range: occurrence.range,
             type_name: symbol.type_name.clone()?,
+            multiline_type_name: symbol.multiline_type_name.clone()?,
+            type_document: symbol.type_document.clone()?,
         })
     }));
     deduplicate_type_occurrences(&mut type_occurrences);
@@ -614,7 +637,7 @@ fn imported_callables(resolved: &ResolvedModule) -> BTreeMap<SymbolId, AnalysisC
 }
 
 fn callable_from_interface_export(export: &InterfaceExport) -> Option<AnalysisCallable> {
-    let (parameters, result) = split_interface_function(&export.scheme.type_ref);
+    let (parameters, _) = split_interface_function(&export.scheme.type_ref);
     if parameters.is_empty() {
         return None;
     }
@@ -623,22 +646,12 @@ fn callable_from_interface_export(export: &InterfaceExport) -> Option<AnalysisCa
         export.symbol.clone(),
         export.name.clone(),
         module,
-        export
-            .scheme
-            .type_parameters
-            .iter()
-            .map(|parameter| parameter.name.clone())
-            .collect(),
         parameters
             .into_iter()
             .enumerate()
-            .map(|(index, type_ref)| AnalysisParameter {
-                name: Some(format!("arg{}", index + 1)),
-                type_name: render_interface_type(type_ref),
-            })
+            .map(|(index, _)| Some(format!("arg{}", index + 1)))
             .collect(),
-        render_interface_type(result),
-        render_interface_constraints(&export.scheme.constraints),
+        TypeSchemeDocument::from_interface_scheme(&export.scheme),
     ))
 }
 
@@ -648,7 +661,7 @@ fn callable_from_scheme(
     module: &str,
     scheme: &TypedScheme,
 ) -> Option<AnalysisCallable> {
-    let (parameters, result) = split_function(&scheme.type_ref);
+    let (parameters, _) = split_function(&scheme.type_ref);
     if parameters.is_empty() {
         return None;
     }
@@ -656,17 +669,12 @@ fn callable_from_scheme(
         identity.to_owned(),
         name.to_owned(),
         module.to_owned(),
-        scheme.type_parameters.clone(),
         parameters
             .into_iter()
             .enumerate()
-            .map(|(index, type_ref)| AnalysisParameter {
-                name: Some(format!("arg{}", index + 1)),
-                type_name: render_type(type_ref),
-            })
+            .map(|(index, _)| Some(format!("arg{}", index + 1)))
             .collect(),
-        render_type(result),
-        render_constraints(&scheme.constraints),
+        TypeSchemeDocument::from_typed_scheme(scheme),
     ))
 }
 
@@ -679,26 +687,23 @@ fn callable_from_parts(
     result: &TypedType,
     constraints: &[TypedConstraint],
 ) -> AnalysisCallable {
+    let scheme = TypedScheme {
+        type_parameters: type_parameters.to_vec(),
+        constraints: constraints.to_vec(),
+        type_ref: callable_typed_type(parameters, result),
+    };
     finish_callable(
         identity.to_owned(),
         name.to_owned(),
         module.to_owned(),
-        type_parameters.to_vec(),
         parameters
             .iter()
             .map(|parameter| match parameter {
-                TypedParameter::ImplicitUnit { type_ref } => AnalysisParameter {
-                    name: None,
-                    type_name: render_type(type_ref),
-                },
-                TypedParameter::Named { name, type_ref, .. } => AnalysisParameter {
-                    name: Some(name.clone()),
-                    type_name: render_type(type_ref),
-                },
+                TypedParameter::ImplicitUnit { .. } => None,
+                TypedParameter::Named { name, .. } => Some(name.clone()),
             })
             .collect(),
-        render_type(result),
-        render_constraints(constraints),
+        TypeSchemeDocument::from_typed_scheme(&scheme),
     )
 }
 
@@ -706,37 +711,42 @@ fn finish_callable(
     identity: String,
     name: String,
     module: String,
-    type_parameters: Vec<String>,
-    parameters: Vec<AnalysisParameter>,
-    result: String,
-    constraints: Vec<String>,
+    parameter_names: Vec<Option<String>>,
+    type_document: TypeSchemeDocument,
 ) -> AnalysisCallable {
-    let mut signature = name.clone();
-    if !type_parameters.is_empty() {
-        signature.push('<');
-        signature.push_str(&type_parameters.join(", "));
-        signature.push('>');
-    }
-    for (index, parameter) in parameters.iter().enumerate() {
-        signature.push_str(if index == 0 { " " } else { " -> " });
-        if let Some(name) = &parameter.name {
-            signature.push_str(name);
-            signature.push_str(": ");
-        }
-        if parameter.type_name.contains(" -> ") {
-            signature.push('(');
-            signature.push_str(&parameter.type_name);
-            signature.push(')');
-        } else {
-            signature.push_str(&parameter.type_name);
-        }
-    }
-    signature.push_str(" -> ");
-    signature.push_str(&result);
-    if !constraints.is_empty() {
-        signature.push_str(" where ");
-        signature.push_str(&constraints.join(", "));
-    }
+    let callable_document =
+        TypeCallableDocument::from_scheme(name.clone(), parameter_names, type_document.clone())
+            .expect("analysis callable must contain at least one function parameter");
+    let parameters = callable_document
+        .parameters
+        .iter()
+        .map(|parameter| AnalysisParameter {
+            name: parameter.name.clone(),
+            type_name: render_document_compact(&parameter.type_ref),
+            type_document: parameter.type_ref.clone(),
+        })
+        .collect();
+    let result = render_document_compact(&callable_document.result);
+    let type_parameters = callable_document
+        .type_parameters
+        .iter()
+        .map(|parameter| {
+            render_document_compact(&TypeDocument::TypeConstructor {
+                name: parameter.name.clone(),
+                arity: parameter.arity,
+            })
+        })
+        .collect();
+    let constraints = callable_document
+        .constraints
+        .iter()
+        .map(render_constraint_compact)
+        .collect();
+    let signature = callable_document.render(TypeRenderOptions::default());
+    let multiline_signature = callable_document.render(TypeRenderOptions {
+        layout: TypeRenderLayout::Multiline,
+        ..TypeRenderOptions::default()
+    });
     AnalysisCallable {
         identity,
         name,
@@ -746,6 +756,8 @@ fn finish_callable(
         result,
         constraints,
         signature,
+        multiline_signature,
+        type_document,
         remaining_parameters: Vec::new(),
     }
 }
@@ -764,6 +776,41 @@ fn callable_typed_type(parameters: &[TypedParameter], result: &TypedType) -> Typ
                 result: Box::new(result),
             }
         })
+}
+
+fn callable_type_from_types(parameters: &[TypedType], result: &TypedType) -> TypedType {
+    parameters
+        .iter()
+        .rev()
+        .fold(result.clone(), |result, parameter| TypedType::Function {
+            parameter: Box::new(parameter.clone()),
+            result: Box::new(result),
+        })
+}
+
+fn standard_callable_type_document(
+    type_parameters: &[seseragi_syntax::TypeParameter],
+    constraints: &[TypedConstraint],
+    parameters: &[TypedType],
+    result: &TypedType,
+) -> TypeSchemeDocument {
+    let scheme = TypedScheme {
+        type_parameters: type_parameters
+            .iter()
+            .map(|parameter| parameter.name.clone())
+            .collect(),
+        constraints: constraints.to_vec(),
+        type_ref: callable_type_from_types(parameters, result),
+    };
+    let mut document = TypeSchemeDocument::from_typed_scheme(&scheme);
+    document.parameters = type_parameters
+        .iter()
+        .map(|parameter| TypeParameterDocument {
+            name: parameter.name.clone(),
+            arity: parameter.arity,
+        })
+        .collect();
+    document
 }
 
 fn symbol_by_canonical(resolved: &ResolvedModule, canonical: &str) -> Option<SymbolId> {
@@ -821,13 +868,40 @@ fn local_symbol_in_range(
 pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
     let mut items = Vec::new();
 
+    let task_target = TypeDocument::Named {
+        name: "Effect".to_owned(),
+        canonical: Some("std/effect::Effect".to_owned()),
+        arguments: vec![
+            TypeDocument::Record {
+                closed: true,
+                fields: Vec::new(),
+            },
+            TypeDocument::Named {
+                name: "Never".to_owned(),
+                canonical: Some("std/prelude::Never".to_owned()),
+                arguments: Vec::new(),
+            },
+            TypeDocument::Variable {
+                name: "A".to_owned(),
+                arity: 0,
+                arguments: Vec::new(),
+            },
+        ],
+    };
     items.push(AnalysisReferenceItem {
         identity: "std/prelude::Task".to_owned(),
         name: "Task".to_owned(),
         module: "std/prelude".to_owned(),
         category: "Effect".to_owned(),
         kind: "alias".to_owned(),
-        signature: Some("alias Task<A> = Effect<{}, Never, A>".to_owned()),
+        signature: Some(format!(
+            "alias Task<A> = {}",
+            render_document_compact(&task_target)
+        )),
+        multiline_signature: Some(format!(
+            "alias Task<A> =\n{}",
+            render_document_multiline(&task_target)
+        )),
         description: standard_description("std/prelude::Task")
             .expect("Task has standard Reference documentation")
             .to_owned(),
@@ -841,21 +915,17 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
             name.to_owned(),
             module_from_identity(&callable.symbol, "std/prelude"),
             callable
-                .type_parameters
-                .iter()
-                .map(|parameter| parameter.name.clone())
-                .collect(),
-            callable
                 .parameters
                 .iter()
                 .enumerate()
-                .map(|(index, type_ref)| AnalysisParameter {
-                    name: Some(format!("arg{}", index + 1)),
-                    type_name: render_type(type_ref),
-                })
+                .map(|(index, _)| Some(format!("arg{}", index + 1)))
                 .collect(),
-            render_type(&callable.result),
-            render_constraints(&callable.constraints),
+            standard_callable_type_document(
+                &callable.type_parameters,
+                &callable.constraints,
+                &callable.parameters,
+                &callable.result,
+            ),
         );
         items.push(reference_from_callable(
             callable,
@@ -869,17 +939,27 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
     }
 
     for sum_type in crate::prelude::SUM_TYPES {
+        let sum_document = TypeDocument::Named {
+            name: sum_type.name.to_owned(),
+            canonical: Some(sum_type.canonical.to_owned()),
+            arguments: sum_type
+                .type_parameters
+                .iter()
+                .map(|name| TypeDocument::Variable {
+                    name: (*name).to_owned(),
+                    arity: 0,
+                    arguments: Vec::new(),
+                })
+                .collect(),
+        };
         items.push(AnalysisReferenceItem {
             identity: sum_type.canonical.to_owned(),
             name: sum_type.name.to_owned(),
             module: "std/prelude".to_owned(),
             category: "Maybe / Either".to_owned(),
             kind: "type".to_owned(),
-            signature: Some(format!(
-                "{}<{}>",
-                sum_type.name,
-                sum_type.type_parameters.join(", ")
-            )),
+            signature: Some(render_document_compact(&sum_document)),
+            multiline_signature: Some(render_document_multiline(&sum_document)),
             description: standard_description(sum_type.canonical)
                 .unwrap_or("Standard algebraic data type.")
                 .to_owned(),
@@ -891,14 +971,16 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
             constraints: Vec::new(),
         });
         for variant in sum_type.variants {
-            let signature = match variant.payload_parameter {
-                Some(index) => format!(
-                    "{} -> {}<{}>",
-                    sum_type.type_parameters[index],
-                    sum_type.name,
-                    sum_type.type_parameters.join(", ")
-                ),
-                None => format!("{}<{}>", sum_type.name, sum_type.type_parameters.join(", ")),
+            let variant_document = match variant.payload_parameter {
+                Some(index) => TypeDocument::Function {
+                    parameters: vec![TypeDocument::Variable {
+                        name: sum_type.type_parameters[index].to_owned(),
+                        arity: 0,
+                        arguments: Vec::new(),
+                    }],
+                    result: Box::new(sum_document.clone()),
+                },
+                None => sum_document.clone(),
             };
             items.push(AnalysisReferenceItem {
                 identity: variant.canonical.to_owned(),
@@ -906,7 +988,8 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
                 module: "std/prelude".to_owned(),
                 category: "Maybe / Either".to_owned(),
                 kind: "constructor".to_owned(),
-                signature: Some(signature),
+                signature: Some(render_document_compact(&variant_document)),
+                multiline_signature: Some(render_document_multiline(&variant_document)),
                 description: standard_description(variant.canonical)
                     .unwrap_or("Standard data constructor.")
                     .to_owned(),
@@ -923,10 +1006,17 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
     for interface in seseragi_project::standard_module_interfaces() {
         for export in &interface.exports {
             let callable = callable_from_interface_export(export);
+            let type_document = TypeSchemeDocument::from_interface_scheme(&export.scheme);
+            let mut display_type_document = type_document.clone();
+            display_type_document.parameters.clear();
             let signature = callable
                 .as_ref()
                 .map(|callable| callable.signature.clone())
-                .or_else(|| Some(render_interface_scheme(&export.scheme)));
+                .or_else(|| Some(render_scheme_compact(&display_type_document)));
+            let multiline_signature = callable
+                .as_ref()
+                .map(|callable| callable.multiline_signature.clone())
+                .or_else(|| Some(render_scheme_multiline(&display_type_document)));
             items.push(AnalysisReferenceItem {
                 identity: export.symbol.clone(),
                 name: export.name.clone(),
@@ -937,6 +1027,7 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
                     .clone()
                     .unwrap_or_else(|| export.namespace.clone()),
                 signature,
+                multiline_signature,
                 description: standard_description(&export.symbol)
                     .unwrap_or_else(|| module_description(&interface.module, export))
                     .to_owned(),
@@ -946,7 +1037,11 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
                     .iter()
                     .map(|parameter| parameter.name.clone())
                     .collect(),
-                constraints: render_interface_constraints(&export.scheme.constraints),
+                constraints: type_document
+                    .constraints
+                    .iter()
+                    .map(render_constraint_compact)
+                    .collect(),
             });
         }
     }
@@ -959,6 +1054,10 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
             category: "Operators".to_owned(),
             kind: "operator".to_owned(),
             signature: Some(format!(
+                "{} via {}.{}",
+                operator.spelling, operator.trait_name, operator.method_name
+            )),
+            multiline_signature: Some(format!(
                 "{} via {}.{}",
                 operator.spelling, operator.trait_name, operator.method_name
             )),
@@ -977,6 +1076,10 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
             category: "Operators".to_owned(),
             kind: "operator".to_owned(),
             signature: Some(format!(
+                "{} via {}.{}",
+                operator.spelling, operator.trait_name, operator.method_name
+            )),
+            multiline_signature: Some(format!(
                 "{} via {}.{}",
                 operator.spelling, operator.trait_name, operator.method_name
             )),
@@ -1002,6 +1105,7 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
             category: "Traits".to_owned(),
             kind: "trait".to_owned(),
             signature: Some(format!("trait {name}")),
+            multiline_signature: Some(format!("trait {name}")),
             description: "Standard type class used for generic dispatch.".to_owned(),
             type_parameters: Vec::new(),
             constraints: Vec::new(),
@@ -1027,6 +1131,7 @@ fn reference_from_callable(callable: AnalysisCallable, category: &str) -> Analys
         category: category.to_owned(),
         kind: "function".to_owned(),
         signature: Some(callable.signature.clone()),
+        multiline_signature: Some(callable.multiline_signature.clone()),
         description: standard_description(&callable.identity)
             .unwrap_or("Standard function provided by the compiler-owned library surface.")
             .to_owned(),
@@ -1044,21 +1149,17 @@ fn catalog_callables(catalog: &[AnalysisReferenceItem]) -> BTreeMap<String, Anal
                 name.to_owned(),
                 module_from_identity(&callable.symbol, "std/prelude"),
                 callable
-                    .type_parameters
-                    .iter()
-                    .map(|parameter| parameter.name.clone())
-                    .collect(),
-                callable
                     .parameters
                     .iter()
                     .enumerate()
-                    .map(|(index, type_ref)| AnalysisParameter {
-                        name: Some(format!("arg{}", index + 1)),
-                        type_name: render_type(type_ref),
-                    })
+                    .map(|(index, _)| Some(format!("arg{}", index + 1)))
                     .collect(),
-                render_type(&callable.result),
-                render_constraints(&callable.constraints),
+                standard_callable_type_document(
+                    &callable.type_parameters,
+                    &callable.constraints,
+                    &callable.parameters,
+                    &callable.result,
+                ),
             );
             (metadata.identity.clone(), metadata)
         })
@@ -1079,35 +1180,66 @@ fn catalog_callables(catalog: &[AnalysisReferenceItem]) -> BTreeMap<String, Anal
 }
 
 fn effect_operation_callable(operation: crate::KnownEffectOperation) -> AnalysisCallable {
-    let named_parameter = |name: &str, type_name: &str| AnalysisParameter {
-        name: Some(name.to_owned()),
-        type_name: type_name.to_owned(),
+    let effect = |environment: Vec<(&str, TypedType)>, failure: TypedType, success: TypedType| {
+        TypedType::Named {
+            name: "Effect".to_owned(),
+            arguments: vec![
+                TypedType::Record {
+                    closed: true,
+                    fields: environment
+                        .into_iter()
+                        .map(|(name, type_ref)| crate::TypedRecordField {
+                            name: name.to_owned(),
+                            optional: false,
+                            type_ref,
+                        })
+                        .collect(),
+                },
+                failure,
+                success,
+            ],
+        }
     };
     let (type_parameters, parameters, result) = match operation.surface_name {
         "readLine" => (
             Vec::new(),
-            vec![named_parameter("unit", "Unit")],
-            "Effect<{stdin: Stdin}, StdinError, Maybe<String>>".to_owned(),
+            vec![("unit", named("Unit"))],
+            effect(
+                vec![("stdin", named("Stdin"))],
+                named("StdinError"),
+                TypedType::Named {
+                    name: "Maybe".to_owned(),
+                    arguments: vec![named("String")],
+                },
+            ),
         ),
         "print" | "println" => (
             Vec::new(),
-            vec![named_parameter("text", "String")],
-            "Effect<{console: Console}, ConsoleError, Unit>".to_owned(),
+            vec![("text", named("String"))],
+            effect(
+                vec![("console", named("Console"))],
+                named("ConsoleError"),
+                named("Unit"),
+            ),
         ),
         "printValue" => (
             vec!["A".to_owned()],
-            vec![named_parameter("value", "A")],
-            "Effect<{console: Console}, ConsoleError, Unit>".to_owned(),
+            vec![("value", named("A"))],
+            effect(
+                vec![("console", named("Console"))],
+                named("ConsoleError"),
+                named("Unit"),
+            ),
         ),
         "succeed" => (
             vec!["A".to_owned()],
-            vec![named_parameter("value", "A")],
-            "Effect<{}, Never, A>".to_owned(),
+            vec![("value", named("A"))],
+            effect(Vec::new(), named("Never"), named("A")),
         ),
         "fail" => (
             vec!["E".to_owned()],
-            vec![named_parameter("error", "E")],
-            "Effect<{}, E, Never>".to_owned(),
+            vec![("error", named("E"))],
+            effect(Vec::new(), named("E"), named("Never")),
         ),
         "mapError" => (
             vec![
@@ -1117,22 +1249,59 @@ fn effect_operation_callable(operation: crate::KnownEffectOperation) -> Analysis
                 "A".to_owned(),
             ],
             vec![
-                named_parameter("mapFailure", "E -> F"),
-                named_parameter("effect", "Effect<R, E, A>"),
+                (
+                    "mapFailure",
+                    TypedType::Function {
+                        parameter: Box::new(named("E")),
+                        result: Box::new(named("F")),
+                    },
+                ),
+                (
+                    "effect",
+                    TypedType::Named {
+                        name: "Effect".to_owned(),
+                        arguments: vec![named("R"), named("E"), named("A")],
+                    },
+                ),
             ],
-            "Effect<R, F, A>".to_owned(),
+            TypedType::Named {
+                name: "Effect".to_owned(),
+                arguments: vec![named("R"), named("F"), named("A")],
+            },
         ),
         "fromEither" => (
             vec!["E".to_owned(), "A".to_owned()],
-            vec![named_parameter("value", "Either<E, A>")],
-            "Effect<{}, E, A>".to_owned(),
+            vec![(
+                "value",
+                TypedType::Named {
+                    name: "Either".to_owned(),
+                    arguments: vec![named("E"), named("A")],
+                },
+            )],
+            effect(Vec::new(), named("E"), named("A")),
         ),
-        _ => (Vec::new(), Vec::new(), "Effect<{}, Never, Unit>".to_owned()),
+        _ => (
+            Vec::new(),
+            vec![("unit", named("Unit"))],
+            effect(Vec::new(), named("Never"), named("Unit")),
+        ),
     };
     let constraints = if operation.surface_name == "printValue" {
-        vec!["Show<A>".to_owned()]
+        vec![TypedConstraint {
+            name: "Show".to_owned(),
+            arguments: vec![named("A")],
+        }]
     } else {
         Vec::new()
+    };
+    let parameter_types = parameters
+        .iter()
+        .map(|(_, type_ref)| type_ref.clone())
+        .collect::<Vec<_>>();
+    let scheme = TypedScheme {
+        type_parameters,
+        constraints,
+        type_ref: callable_type_from_types(&parameter_types, &result),
     };
     finish_callable(
         operation.semantic_name.to_owned(),
@@ -1142,10 +1311,11 @@ fn effect_operation_callable(operation: crate::KnownEffectOperation) -> Analysis
         } else {
             "std/prelude".to_owned()
         },
-        type_parameters,
-        parameters,
-        result,
-        constraints,
+        parameters
+            .into_iter()
+            .map(|(name, _)| Some(name.to_owned()))
+            .collect(),
+        TypeSchemeDocument::from_typed_scheme(&scheme),
     )
 }
 
@@ -1423,6 +1593,10 @@ fn collect_typed_occurrences(
                 types.push(AnalysisTypeOccurrence {
                     range,
                     type_name: render_type(&type_ref),
+                    multiline_type_name: render_document_multiline(&TypeDocument::from_typed_type(
+                        &type_ref,
+                    )),
+                    type_document: TypeDocument::from_typed_type(&type_ref),
                 });
             }
         }
@@ -1481,6 +1655,10 @@ fn collect_typed_occurrences(
                     types.push(AnalysisTypeOccurrence {
                         range,
                         type_name: render_type(type_ref),
+                        multiline_type_name: render_document_multiline(
+                            &TypeDocument::from_typed_type(type_ref),
+                        ),
+                        type_document: TypeDocument::from_typed_type(type_ref),
                     });
                 }
             });
@@ -1779,143 +1957,37 @@ fn deduplicate_type_occurrences(types: &mut Vec<AnalysisTypeOccurrence>) {
 }
 
 fn render_type(type_ref: &TypedType) -> String {
-    match type_ref {
-        TypedType::Named { name, arguments }
-        | TypedType::ExternalNamed {
-            name, arguments, ..
-        } => render_application(name, arguments.iter().map(render_type)),
-        TypedType::Hole => "_".to_owned(),
-        TypedType::Record { fields, .. } => format!(
-            "{{{}}}",
-            fields
-                .iter()
-                .map(|field| format!(
-                    "{}{}: {}",
-                    field.name,
-                    if field.optional { "?" } else { "" },
-                    render_type(&field.type_ref)
-                ))
-                .collect::<Vec<_>>()
-                .join(", ")
-        ),
-        TypedType::Tuple { elements } => format!(
-            "({})",
-            elements
-                .iter()
-                .map(render_type)
-                .collect::<Vec<_>>()
-                .join(", ")
-        ),
-        TypedType::Function { parameter, result } => format!(
-            "{} -> {}",
-            parenthesized_parameter(parameter),
-            render_type(result)
-        ),
-    }
+    render_document_compact(&TypeDocument::from_typed_type(type_ref))
 }
 
-fn render_interface_type(type_ref: &InterfaceType) -> String {
-    match type_ref {
-        InterfaceType::Named { name, arguments }
-        | InterfaceType::ExternalNamed {
-            name, arguments, ..
-        } => render_application(name, arguments.iter().map(render_interface_type)),
-        InterfaceType::Hole => "_".to_owned(),
-        InterfaceType::TypeConstructor { name, arity } => {
-            if *arity == 0 {
-                name.clone()
-            } else {
-                format!("{name}<{}>", vec!["_"; *arity as usize].join(", "))
-            }
-        }
-        InterfaceType::Function { parameter, result } => format!(
-            "{} -> {}",
-            parenthesized_interface_parameter(parameter),
-            render_interface_type(result)
-        ),
-        InterfaceType::Apply {
-            constructor,
-            arguments,
-        } => render_application(constructor, arguments.iter().map(render_interface_type)),
-        InterfaceType::Record { fields, .. } => format!(
-            "{{{}}}",
-            fields
-                .iter()
-                .map(|field| format!(
-                    "{}{}: {}",
-                    field.name,
-                    if field.optional { "?" } else { "" },
-                    render_interface_type(&field.type_ref)
-                ))
-                .collect::<Vec<_>>()
-                .join(", ")
-        ),
-        InterfaceType::Tuple { elements } => format!(
-            "({})",
-            elements
-                .iter()
-                .map(render_interface_type)
-                .collect::<Vec<_>>()
-                .join(", ")
-        ),
-    }
+fn render_document_compact(document: &TypeDocument) -> String {
+    document.render(TypeRenderOptions::default())
 }
 
-fn render_application(name: &str, arguments: impl Iterator<Item = String>) -> String {
-    let arguments = arguments.collect::<Vec<_>>();
-    if arguments.is_empty() {
-        name.to_owned()
-    } else {
-        format!("{name}<{}>", arguments.join(", "))
-    }
+fn render_document_multiline(document: &TypeDocument) -> String {
+    document.render(TypeRenderOptions {
+        layout: TypeRenderLayout::Multiline,
+        ..TypeRenderOptions::default()
+    })
 }
 
-fn parenthesized_parameter(type_ref: &TypedType) -> String {
-    match type_ref {
-        TypedType::Function { .. } => format!("({})", render_type(type_ref)),
-        _ => render_type(type_ref),
-    }
+fn render_scheme_compact(document: &TypeSchemeDocument) -> String {
+    document.render(TypeRenderOptions::default())
 }
 
-fn parenthesized_interface_parameter(type_ref: &InterfaceType) -> String {
-    match type_ref {
-        InterfaceType::Function { .. } => format!("({})", render_interface_type(type_ref)),
-        _ => render_interface_type(type_ref),
-    }
+fn render_scheme_multiline(document: &TypeSchemeDocument) -> String {
+    document.render(TypeRenderOptions {
+        layout: TypeRenderLayout::Multiline,
+        ..TypeRenderOptions::default()
+    })
 }
 
-fn render_constraints(constraints: &[TypedConstraint]) -> Vec<String> {
-    constraints
-        .iter()
-        .map(|constraint| {
-            render_application(
-                &constraint.name,
-                constraint.arguments.iter().map(render_type),
-            )
-        })
-        .collect()
-}
-
-fn render_interface_constraints(constraints: &[InterfaceConstraint]) -> Vec<String> {
-    constraints
-        .iter()
-        .map(|constraint| {
-            render_application(
-                &constraint.name,
-                constraint.arguments.iter().map(render_interface_type),
-            )
-        })
-        .collect()
-}
-
-fn render_interface_scheme(scheme: &InterfaceScheme) -> String {
-    let mut signature = render_interface_type(&scheme.type_ref);
-    let constraints = render_interface_constraints(&scheme.constraints);
-    if !constraints.is_empty() {
-        signature.push_str(" where ");
-        signature.push_str(&constraints.join(", "));
-    }
-    signature
+fn render_constraint_compact(constraint: &crate::TypeConstraintDocument) -> String {
+    render_document_compact(&TypeDocument::Named {
+        name: constraint.name.clone(),
+        canonical: constraint.canonical.clone(),
+        arguments: constraint.arguments.clone(),
+    })
 }
 
 fn split_function(type_ref: &TypedType) -> (Vec<&TypedType>, &TypedType) {
@@ -1954,21 +2026,6 @@ fn named(name: &str) -> TypedType {
         name: name.to_owned(),
         arguments: Vec::new(),
     }
-}
-
-fn callable_type(callable: &AnalysisCallable) -> String {
-    callable
-        .parameters
-        .iter()
-        .rev()
-        .fold(callable.result.clone(), |result, parameter| {
-            let parameter = if parameter.type_name.contains(" -> ") {
-                format!("({})", parameter.type_name)
-            } else {
-                parameter.type_name.clone()
-            };
-            format!("{parameter} -> {result}")
-        })
 }
 
 fn module_from_identity(identity: &str, fallback: &str) -> String {

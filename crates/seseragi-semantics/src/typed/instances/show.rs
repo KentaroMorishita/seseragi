@@ -220,7 +220,7 @@ fn collect_member_issues(
                 }))
                 .then(|| DerivedInstanceIssue::UnsupportedDerivedMember {
                     trait_name: candidate.trait_name.clone(),
-                    member_name: type_ref_label(&member.type_ref),
+                    member_type: derived_member_type(resolution, &member.type_ref),
                     primary: type_ref_span(&member.type_ref),
                     declaration: candidate.origin,
                 })
@@ -306,7 +306,7 @@ fn member_evidence(
     Some(TypedShowPayloadEvidence {
         variant_symbol: member.key.clone(),
         type_identity: super::canonical_type_ref(&member.type_ref, resolution, &binders)
-            .unwrap_or_else(|| type_ref_label(&member.type_ref)),
+            .unwrap_or_else(|| render_type_ref(resolution, &member.type_ref)),
         evidence,
     })
 }
@@ -552,25 +552,7 @@ fn type_ref_span(type_ref: &TypeRef) -> ByteSpan {
     }
 }
 
-fn type_ref_label(type_ref: &TypeRef) -> String {
-    match type_ref {
-        TypeRef::Named {
-            name, arguments, ..
-        } if arguments.is_empty() => name.clone(),
-        TypeRef::Named {
-            name, arguments, ..
-        } => format!(
-            "{}<{}>",
-            name,
-            arguments
-                .iter()
-                .map(type_ref_label)
-                .collect::<Vec<_>>()
-                .join(", ")
-        ),
-        TypeRef::Hole { .. } => "unknown".to_owned(),
-        TypeRef::Record { .. } => "record".to_owned(),
-        TypeRef::Tuple { .. } => "tuple".to_owned(),
-        TypeRef::Function { .. } => "function".to_owned(),
-    }
+fn render_type_ref(resolution: &TypedResolution<'_>, type_ref: &TypeRef) -> String {
+    crate::TypeDocument::from_typed_type(&derived_member_type(resolution, type_ref))
+        .render(crate::TypeRenderOptions::default())
 }

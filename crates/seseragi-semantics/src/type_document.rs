@@ -115,6 +115,28 @@ pub struct TypeSchemeDocument {
     pub type_ref: TypeDocument,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeCallableParameterDocument {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(rename = "type")]
+    pub type_ref: TypeDocument,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeCallableDocument {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub parameters: Vec<TypeCallableParameterDocument>,
+    pub result: TypeDocument,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub type_parameters: Vec<TypeParameterDocument>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub constraints: Vec<TypeConstraintDocument>,
+}
+
 impl TypeDocument {
     pub fn from_typed_type(type_ref: &TypedType) -> Self {
         typed_type_document(type_ref, &BTreeMap::new())
@@ -177,6 +199,55 @@ impl TypeSchemeDocument {
             options.markup,
             options.layout,
         )
+    }
+}
+
+impl TypeCallableDocument {
+    pub fn from_scheme(
+        name: impl Into<String>,
+        parameter_names: impl IntoIterator<Item = Option<String>>,
+        scheme: TypeSchemeDocument,
+    ) -> Option<Self> {
+        let TypeDocument::Function { parameters, result } = scheme.type_ref else {
+            return None;
+        };
+        let mut parameter_names = parameter_names.into_iter();
+        Some(Self {
+            name: name.into(),
+            parameters: parameters
+                .into_iter()
+                .map(|type_ref| TypeCallableParameterDocument {
+                    name: parameter_names.next().flatten(),
+                    type_ref,
+                })
+                .collect(),
+            result: *result,
+            type_parameters: scheme.parameters,
+            constraints: scheme.constraints,
+        })
+    }
+
+    pub fn render(&self, options: TypeRenderOptions) -> String {
+        wrap_markup(
+            render_plain_callable(self, options),
+            options.markup,
+            options.layout,
+        )
+    }
+
+    pub fn as_scheme(&self) -> TypeSchemeDocument {
+        TypeSchemeDocument {
+            parameters: self.type_parameters.clone(),
+            constraints: self.constraints.clone(),
+            type_ref: TypeDocument::Function {
+                parameters: self
+                    .parameters
+                    .iter()
+                    .map(|parameter| parameter.type_ref.clone())
+                    .collect(),
+                result: Box::new(self.result.clone()),
+            },
+        }
     }
 }
 
@@ -513,6 +584,95 @@ fn render_plain_scheme(document: &TypeSchemeDocument, options: TypeRenderOptions
                             .into_iter()
                             .map(|line| format!("{indentation}{line}")),
                     );
+                }
+            }
+            lines.join("\n")
+        }
+    }
+}
+
+fn render_plain_callable(document: &TypeCallableDocument, options: TypeRenderOptions) -> String {
+    let type_parameters = render_parameters(&document.type_parameters);
+    match options.layout {
+        TypeRenderLayout::Compact => {
+            let mut rendered = document.name.clone();
+            if !type_parameters.is_empty() {
+                rendered.push('<');
+                rendered.push_str(&type_parameters.join(", "));
+                rendered.push('>');
+            }
+            for (index, parameter) in document.parameters.iter().enumerate() {
+                rendered.push_str(if index == 0 { " " } else { " -> " });
+                if let Some(name) = &parameter.name {
+                    rendered.push_str(name);
+                    rendered.push_str(": ");
+                }
+                rendered.push_str(&render_compact(&parameter.type_ref, true));
+            }
+            rendered.push_str(" -> ");
+            rendered.push_str(&render_compact(&document.result, false));
+            let constraints = document
+                .constraints
+                .iter()
+                .map(|constraint| render_constraint(constraint, options))
+                .collect::<Vec<_>>();
+            if !constraints.is_empty() {
+                rendered.push_str(" where ");
+                rendered.push_str(&constraints.join(", "));
+            }
+            rendered
+        }
+        TypeRenderLayout::Multiline => {
+            let indentation = " ".repeat(options.indent_width as usize);
+            let mut header = document.name.clone();
+            if !type_parameters.is_empty() {
+                header.push('<');
+                header.push_str(&type_parameters.join(", "));
+                header.push('>');
+            }
+            let mut lines = vec![header];
+            for (index, parameter) in document.parameters.iter().enumerate() {
+                let mut prefix = indentation.clone();
+                if index > 0 {
+                    prefix.push_str("-> ");
+                }
+                if let Some(name) = &parameter.name {
+                    prefix.push_str(name);
+                    prefix.push_str(": ");
+                }
+                let parameter_lines =
+                    render_multiline(&parameter.type_ref, options.indent_width as usize, true);
+                lines.extend(prefix_lines(
+                    parameter_lines,
+                    &prefix,
+                    &" ".repeat(prefix.len()),
+                ));
+            }
+            let result_prefix = format!("{indentation}-> ");
+            lines.extend(prefix_lines(
+                render_multiline(&document.result, options.indent_width as usize, false),
+                &result_prefix,
+                &" ".repeat(result_prefix.len()),
+            ));
+            if !document.constraints.is_empty() {
+                lines.push("where".to_owned());
+                for constraint in &document.constraints {
+                    let mut constraint_lines = render_multiline(
+                        &TypeDocument::Named {
+                            name: constraint.name.clone(),
+                            canonical: constraint.canonical.clone(),
+                            arguments: constraint.arguments.clone(),
+                        },
+                        options.indent_width as usize,
+                        false,
+                    );
+                    if let Some(last) = constraint_lines.last_mut() {
+                        last.push(',');
+                    }
+                    lines.extend(indent_lines(
+                        constraint_lines,
+                        options.indent_width as usize,
+                    ));
                 }
             }
             lines.join("\n")
@@ -869,6 +1029,86 @@ mod tests {
                 "-> F<\n",
                 "     B,\n",
                 "   >\n",
+                "where\n",
+                "  Functor<\n",
+                "    F<_>,\n",
+                "  >,"
+            )
+        );
+    }
+
+    #[test]
+    fn renders_named_callable_compact_and_multiline_from_the_same_scheme() {
+        let scheme = TypeSchemeDocument {
+            parameters: vec![
+                TypeParameterDocument {
+                    name: "F".to_owned(),
+                    arity: 1,
+                },
+                TypeParameterDocument {
+                    name: "A".to_owned(),
+                    arity: 0,
+                },
+                TypeParameterDocument {
+                    name: "B".to_owned(),
+                    arity: 0,
+                },
+            ],
+            constraints: vec![TypeConstraintDocument {
+                name: "Functor".to_owned(),
+                canonical: Some("std/prelude::Functor".to_owned()),
+                arguments: vec![TypeDocument::TypeConstructor {
+                    name: "F".to_owned(),
+                    arity: 1,
+                }],
+            }],
+            type_ref: TypeDocument::Function {
+                parameters: vec![
+                    TypeDocument::Function {
+                        parameters: vec![named_document("A")],
+                        result: Box::new(named_document("B")),
+                    },
+                    TypeDocument::Variable {
+                        name: "F".to_owned(),
+                        arity: 1,
+                        arguments: vec![named_document("A")],
+                    },
+                ],
+                result: Box::new(TypeDocument::Variable {
+                    name: "F".to_owned(),
+                    arity: 1,
+                    arguments: vec![named_document("B")],
+                }),
+            },
+        };
+        let callable = TypeCallableDocument::from_scheme(
+            "map",
+            [Some("mapper".to_owned()), Some("source".to_owned())],
+            scheme,
+        )
+        .expect("function scheme becomes a callable document");
+
+        assert_eq!(
+            callable.render(TypeRenderOptions::default()),
+            "map<F<_>, A, B> mapper: (A -> B) -> source: F<A> -> F<B> where Functor<F<_>>"
+        );
+        assert_eq!(
+            callable.render(TypeRenderOptions {
+                layout: TypeRenderLayout::Multiline,
+                ..TypeRenderOptions::default()
+            }),
+            concat!(
+                "map<F<_>, A, B>\n",
+                "  mapper: (\n",
+                "            A\n",
+                "            -> B\n",
+                "          )\n",
+                "  -> source: F<\n",
+                "               A,\n",
+                "             >\n",
+                "  -> F<\n",
+                "       B,\n",
+                "     >\n",
                 "where\n",
                 "  Functor<\n",
                 "    F<_>,\n",

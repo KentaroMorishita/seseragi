@@ -1,4 +1,4 @@
-use crate::{ResolvedModule, TypedInstance};
+use crate::{ResolvedModule, TypedInstance, TypedType};
 use seseragi_syntax::ByteSpan;
 use std::collections::BTreeMap;
 
@@ -32,7 +32,7 @@ pub(crate) enum DerivedInstanceIssue {
     },
     UnsupportedDerivedMember {
         trait_name: String,
-        member_name: String,
+        member_type: TypedType,
         primary: ByteSpan,
         declaration: ByteSpan,
     },

@@ -36,17 +36,18 @@ export function analysisHoverAt(
   const range = utf8RangeToUtf16(source, byteRange)
   const callable = query.callable
   const fallbackName = query.symbol?.name ?? "expression"
+  const title =
+    callable?.signature ??
+    `${fallbackName}: ${query.symbol?.typeName ?? query.type ?? "_"}`
   return {
     from: range.from,
     to: Math.max(range.from + 1, range.to),
-    title:
-      callable?.signature ??
-      `${fallbackName}: ${query.symbol?.typeName ?? query.type ?? "_"}`,
+    title,
     ...(query.type === undefined ? {} : { type: query.type }),
     ...(query.symbol?.module === undefined && callable?.module === undefined
       ? {}
       : { module: callable?.module ?? query.symbol?.module }),
-    constraints: callable?.constraints ?? [],
+    constraints: title.includes(" where ") ? [] : (callable?.constraints ?? []),
     remaining:
       callable?.remainingParameters.map((parameter) =>
         parameter.name === undefined

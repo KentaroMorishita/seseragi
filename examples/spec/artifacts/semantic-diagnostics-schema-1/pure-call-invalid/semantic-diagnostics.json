@@ -15,7 +15,7 @@
       },
       "related": [
         {
-          "message": "declared Int, body produces function",
+          "message": "declared Int, body produces Int -> Int",
           "primary": {
             "start": 92,
             "end": 135
@@ -24,7 +24,7 @@
       ],
       "labels": [
         {
-          "message": "declared Int, body produces function",
+          "message": "declared Int, body produces Int -> Int",
           "primary": {
             "start": 92,
             "end": 135
@@ -39,7 +39,7 @@
       ],
       "fixes": [],
       "expectedType": "Int",
-      "actualType": "function"
+      "actualType": "Int -> Int"
     },
     {
       "id": "d2",

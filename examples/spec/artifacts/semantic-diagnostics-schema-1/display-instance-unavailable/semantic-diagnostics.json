@@ -15,7 +15,7 @@
       },
       "related": [
         {
-          "message": "no Show<Effect<record, Never, Unit>> instance matches the inferred call arguments",
+          "message": "no Show<Effect<{}, Never, Unit>> instance matches the inferred call arguments",
           "primary": {
             "start": 0,
             "end": 73
@@ -24,7 +24,7 @@
       ],
       "labels": [
         {
-          "message": "no Show<Effect<record, Never, Unit>> instance matches the inferred call arguments",
+          "message": "no Show<Effect<{}, Never, Unit>> instance matches the inferred call arguments",
           "primary": {
             "start": 0,
             "end": 73
@@ -53,7 +53,7 @@
       },
       "related": [
         {
-          "message": "no Debug<Effect<record, Never, Unit>> instance matches the inferred call arguments",
+          "message": "no Debug<Effect<{}, Never, Unit>> instance matches the inferred call arguments",
           "primary": {
             "start": 75,
             "end": 135
@@ -62,7 +62,7 @@
       ],
       "labels": [
         {
-          "message": "no Debug<Effect<record, Never, Unit>> instance matches the inferred call arguments",
+          "message": "no Debug<Effect<{}, Never, Unit>> instance matches the inferred call arguments",
           "primary": {
             "start": 75,
             "end": 135
@@ -91,7 +91,7 @@
       },
       "related": [
         {
-          "message": "no Show<function> instance matches the inferred call arguments",
+          "message": "no Show<Int -> Int> instance matches the inferred call arguments",
           "primary": {
             "start": 137,
             "end": 201
@@ -100,7 +100,7 @@
       ],
       "labels": [
         {
-          "message": "no Show<function> instance matches the inferred call arguments",
+          "message": "no Show<Int -> Int> instance matches the inferred call arguments",
           "primary": {
             "start": 137,
             "end": 201

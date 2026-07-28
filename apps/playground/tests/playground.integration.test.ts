@@ -262,7 +262,7 @@ describe("Playground sample catalog", () => {
     )
     expect(
       formItems.find((item) => item.name === "input")?.signature
-    ).toContain("onInput?: InputEvent -> Action")
+    ).toContain("onInput?: (InputEvent -> Action)")
     expect(formItems.find((item) => item.name === "form")?.signature).toContain(
       "onSubmit?: Action"
     )

@@ -1138,11 +1138,11 @@ pub fn debugAttribute value: html.Attribute -> String = debug value
             diagnostic.code == "SES-T0201" && diagnostic.message_key == "instance.missing"
         }));
         for expected in [
-            "Show<Effect<record, Never, Unit>>",
-            "Debug<Effect<record, Never, Unit>>",
+            "Show<Effect<{}, Never, Unit>>",
+            "Debug<Effect<{}, Never, Unit>>",
             "Show<signals.Signal<Int>>",
             "Debug<signals.MutableSignal<Int>>",
-            "Show<function>",
+            "Show<Int -> Int>",
             "Debug<dom.DomTarget>",
             "Show<html.Html<Unit>>",
             "Debug<html.Attribute>",
