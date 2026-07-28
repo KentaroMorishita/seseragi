@@ -1,612 +1,128 @@
 {
   "schema": 1,
   "source": "main.ssrg",
-  "module": "artifact/web-form-events",
+  "module": "artifact/expected-record-completion",
   "diagnostics": {
     "schema": 1,
-    "source": "artifact/web-form-events/main.ssrg",
+    "source": "artifact/expected-record-completion/main.ssrg",
     "positionEncoding": "utf-8",
-    "diagnostics": []
+    "diagnostics": [
+      {
+        "id": "d1",
+        "code": "SES-T0101",
+        "severity": "Error",
+        "messageKey": "call.argument-type-mismatch",
+        "message": "Argument type does not match the parameter type",
+        "primary": {
+          "start": 206,
+          "end": 270
+        },
+        "related": [
+          {
+            "message": "argument 2 expected { initial: Int, profile: { label: String, count: Int }, render: (Int -> String) }, received { initial: Int, profile: { label: String } }",
+            "primary": {
+              "start": 178,
+              "end": 270
+            }
+          }
+        ],
+        "labels": [
+          {
+            "message": "argument 2 expected { initial: Int, profile: { label: String, count: Int }, render: (Int -> String) }, received { initial: Int, profile: { label: String } }",
+            "primary": {
+              "start": 178,
+              "end": 270
+            }
+          }
+        ],
+        "notes": [
+          "Seseragi does not insert an implicit conversion between these types."
+        ],
+        "helps": [
+          "Change the expression or its annotation so the two types agree."
+        ],
+        "fixes": [],
+        "expectedType": "{ initial: Int, profile: { label: String, count: Int }, render: (Int -> String) }",
+        "actualType": "{ initial: Int, profile: { label: String } }"
+      }
+    ]
   },
   "symbols": [
     {
       "id": 0,
-      "identity": "artifact/web-form-events::Action",
-      "name": "Action",
-      "module": "artifact/web-form-events",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 43,
-        "end": 49
-      },
-      "typeName": "Action"
-    },
-    {
-      "id": 1,
-      "identity": "artifact/web-form-events::DraftChanged",
-      "name": "DraftChanged",
-      "module": "artifact/web-form-events",
+      "identity": "artifact/expected-record-completion::configure",
+      "name": "configure",
+      "module": "artifact/expected-record-completion",
       "namespace": "value",
-      "kind": "constructor",
+      "kind": "function",
       "definition": {
-        "start": 56,
-        "end": 68
+        "start": 3,
+        "end": 12
       },
-      "typeName": "String -> Action",
+      "typeName": "State -> { initial: State, profile: { label: String, count: Int }, render: (State -> String) } -> String",
       "callable": {
-        "identity": "artifact/web-form-events::DraftChanged",
-        "name": "DraftChanged",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
+        "identity": "artifact/expected-record-completion::configure",
+        "name": "configure",
+        "module": "artifact/expected-record-completion",
+        "typeParameters": [
+          "State"
+        ],
         "parameters": [
           {
-            "name": "arg1",
-            "type": "String"
+            "name": "state",
+            "type": "State"
+          },
+          {
+            "name": "options",
+            "type": "{ initial: State, profile: { label: String, count: Int }, render: (State -> String) }"
           }
         ],
-        "result": "Action",
+        "result": "String",
         "constraints": [],
-        "signature": "DraftChanged arg1: String -> Action",
+        "signature": "configure<State> state: State -> options: { initial: State, profile: { label: String, count: Int }, render: (State -> String) } -> String",
         "remainingParameters": []
       }
     },
     {
-      "id": 2,
-      "identity": "artifact/web-form-events::CheckedChanged",
-      "name": "CheckedChanged",
-      "module": "artifact/web-form-events",
+      "id": 1,
+      "identity": "artifact/expected-record-completion::result",
+      "name": "result",
+      "module": "artifact/expected-record-completion",
       "namespace": "value",
-      "kind": "constructor",
+      "kind": "let",
       "definition": {
-        "start": 80,
-        "end": 94
+        "start": 182,
+        "end": 188
       },
-      "typeName": "Bool -> Action",
-      "callable": {
-        "identity": "artifact/web-form-events::CheckedChanged",
-        "name": "CheckedChanged",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Bool"
-          }
-        ],
-        "result": "Action",
-        "constraints": [],
-        "signature": "CheckedChanged arg1: Bool -> Action",
-        "remainingParameters": []
+      "typeName": "unknown"
+    },
+    {
+      "id": 2,
+      "identity": "artifact/expected-record-completion::local(2)",
+      "name": "State",
+      "module": "artifact/expected-record-completion",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 176
       }
     },
     {
       "id": 3,
-      "identity": "artifact/web-form-events::Submitted",
-      "name": "Submitted",
-      "module": "artifact/web-form-events",
+      "identity": "artifact/expected-record-completion::local(3)",
+      "name": "state",
+      "module": "artifact/expected-record-completion",
       "namespace": "value",
-      "kind": "constructor",
+      "kind": "parameter",
       "definition": {
-        "start": 104,
-        "end": 113
+        "start": 22,
+        "end": 27
       },
-      "typeName": "Action"
+      "typeName": "State"
     },
     {
       "id": 4,
-      "identity": "artifact/web-form-events::draftAction",
-      "name": "draftAction",
-      "module": "artifact/web-form-events",
-      "namespace": "value",
-      "kind": "function",
-      "definition": {
-        "start": 118,
-        "end": 129
-      },
-      "typeName": "html.InputEvent -> Action",
-      "callable": {
-        "identity": "artifact/web-form-events::draftAction",
-        "name": "draftAction",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "event",
-            "type": "html.InputEvent"
-          }
-        ],
-        "result": "Action",
-        "constraints": [],
-        "signature": "draftAction event: html.InputEvent -> Action",
-        "remainingParameters": []
-      }
-    },
-    {
-      "id": 5,
-      "identity": "artifact/web-form-events::checkedAction",
-      "name": "checkedAction",
-      "module": "artifact/web-form-events",
-      "namespace": "value",
-      "kind": "function",
-      "definition": {
-        "start": 196,
-        "end": 209
-      },
-      "typeName": "html.ChangeEvent -> Action",
-      "callable": {
-        "identity": "artifact/web-form-events::checkedAction",
-        "name": "checkedAction",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "event",
-            "type": "html.ChangeEvent"
-          }
-        ],
-        "result": "Action",
-        "constraints": [],
-        "signature": "checkedAction event: html.ChangeEvent -> Action",
-        "remainingParameters": []
-      }
-    },
-    {
-      "id": 6,
-      "identity": "artifact/web-form-events::view",
-      "name": "view",
-      "module": "artifact/web-form-events",
-      "namespace": "value",
-      "kind": "function",
-      "definition": {
-        "start": 285,
-        "end": 289
-      },
-      "typeName": "String -> Bool -> html.Html<Action>",
-      "callable": {
-        "identity": "artifact/web-form-events::view",
-        "name": "view",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "draft",
-            "type": "String"
-          },
-          {
-            "name": "checked",
-            "type": "Bool"
-          }
-        ],
-        "result": "html.Html<Action>",
-        "constraints": [],
-        "signature": "view draft: String -> checked: Bool -> html.Html<Action>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "id": 7,
-      "identity": "std/web/html::*",
-      "name": "html",
-      "module": "std/web/html",
-      "namespace": "module",
-      "kind": "module-import",
-      "definition": {
-        "start": 12,
-        "end": 16
-      }
-    },
-    {
-      "id": 8,
-      "identity": "std/web/html::Html::T0",
-      "name": "T0",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 9,
-      "identity": "std/web/html::Html",
-      "name": "Html",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 12,
-        "end": 16
-      }
-    },
-    {
-      "id": 10,
-      "identity": "std/web/html::Style",
-      "name": "Style",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 11,
-      "identity": "std/web/html::Tag",
-      "name": "Tag",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "description": "Validated opaque name for a custom HTML element."
-    },
-    {
-      "id": 12,
-      "identity": "std/web/html::Attribute",
-      "name": "Attribute",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "description": "Validated opaque custom HTML attribute name and value."
-    },
-    {
-      "id": 13,
-      "identity": "std/web/html::InputEvent",
-      "name": "InputEvent",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 12,
-        "end": 16
-      },
-      "description": "Immutable text-input snapshot containing only the current String value."
-    },
-    {
-      "id": 14,
-      "identity": "std/web/html::ChangeEvent",
-      "name": "ChangeEvent",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 12,
-        "end": 16
-      },
-      "description": "Immutable form-control snapshot containing value and checked state."
-    },
-    {
-      "id": 15,
-      "identity": "std/web/html::KeyboardEvent",
-      "name": "KeyboardEvent",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "description": "Immutable keyboard snapshot containing key identity, repeat state, and modifier keys."
-    },
-    {
-      "id": 16,
-      "identity": "std/web/html::MouseEvent",
-      "name": "MouseEvent",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "description": "Immutable mouse snapshot containing button, coordinates, and modifier keys."
-    },
-    {
-      "id": 17,
-      "identity": "std/web/html::PointerEvent",
-      "name": "PointerEvent",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "description": "Immutable pointer snapshot distinguishing mouse, touch, and pen input."
-    },
-    {
-      "id": 18,
-      "identity": "std/web/html::ScrollEvent",
-      "name": "ScrollEvent",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "description": "Immutable scroll snapshot containing the current element offsets."
-    },
-    {
-      "id": 19,
-      "identity": "std/web/html::EventAction::Action",
-      "name": "Action",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
-    },
-    {
-      "id": 20,
-      "identity": "std/web/html::EventAction",
-      "name": "EventAction",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "description": "Explicit event outcome describing dispatch, default prevention, and propagation control."
-    },
-    {
-      "id": 21,
-      "identity": "std/web/html::IgnoreEvent",
-      "name": "IgnoreEvent",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "constructor",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "description": "Ignores an event without dispatch or browser control."
-    },
-    {
-      "id": 22,
-      "identity": "std/web/html::Dispatch",
-      "name": "Dispatch",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "constructor",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "typeName": "Action -> EventAction<Action>",
-      "callable": {
-        "identity": "std/web/html::Dispatch",
-        "name": "Dispatch",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Action"
-          }
-        ],
-        "result": "EventAction<Action>",
-        "constraints": [],
-        "signature": "Dispatch<Action> arg1: Action -> EventAction<Action>",
-        "remainingParameters": []
-      },
-      "description": "Dispatches an Action without controlling the browser event."
-    },
-    {
-      "id": 23,
-      "identity": "std/web/html::DispatchPreventDefault",
-      "name": "DispatchPreventDefault",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "constructor",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "typeName": "Action -> EventAction<Action>",
-      "callable": {
-        "identity": "std/web/html::DispatchPreventDefault",
-        "name": "DispatchPreventDefault",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Action"
-          }
-        ],
-        "result": "EventAction<Action>",
-        "constraints": [],
-        "signature": "DispatchPreventDefault<Action> arg1: Action -> EventAction<Action>",
-        "remainingParameters": []
-      },
-      "description": "Prevents the browser default before dispatching an Action."
-    },
-    {
-      "id": 24,
-      "identity": "std/web/html::DispatchStopPropagation",
-      "name": "DispatchStopPropagation",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "constructor",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "typeName": "Action -> EventAction<Action>",
-      "callable": {
-        "identity": "std/web/html::DispatchStopPropagation",
-        "name": "DispatchStopPropagation",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Action"
-          }
-        ],
-        "result": "EventAction<Action>",
-        "constraints": [],
-        "signature": "DispatchStopPropagation<Action> arg1: Action -> EventAction<Action>",
-        "remainingParameters": []
-      },
-      "description": "Stops event propagation before dispatching an Action."
-    },
-    {
-      "id": 25,
-      "identity": "std/web/html::DispatchPreventDefaultAndStop",
-      "name": "DispatchPreventDefaultAndStop",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "constructor",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "typeName": "Action -> EventAction<Action>",
-      "callable": {
-        "identity": "std/web/html::DispatchPreventDefaultAndStop",
-        "name": "DispatchPreventDefaultAndStop",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Action"
-          }
-        ],
-        "result": "EventAction<Action>",
-        "constraints": [],
-        "signature": "DispatchPreventDefaultAndStop<Action> arg1: Action -> EventAction<Action>",
-        "remainingParameters": []
-      },
-      "description": "Prevents the browser default and stops propagation before dispatching an Action."
-    },
-    {
-      "id": 26,
-      "identity": "std/web/html::HtmlBuildError",
-      "name": "HtmlBuildError",
-      "module": "std/web/html",
-      "namespace": "type",
-      "kind": "type",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "description": "Describes a rejected custom HTML tag or attribute name."
-    },
-    {
-      "id": 27,
-      "identity": "std/web/html::InvalidTagName",
-      "name": "InvalidTagName",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "constructor",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "typeName": "String -> HtmlBuildError",
-      "callable": {
-        "identity": "std/web/html::InvalidTagName",
-        "name": "InvalidTagName",
-        "module": "std/web/html",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "String"
-          }
-        ],
-        "result": "HtmlBuildError",
-        "constraints": [],
-        "signature": "InvalidTagName arg1: String -> HtmlBuildError",
-        "remainingParameters": []
-      },
-      "description": "Reports a rejected custom-element name."
-    },
-    {
-      "id": 28,
-      "identity": "std/web/html::InvalidAttributeName",
-      "name": "InvalidAttributeName",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "constructor",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "typeName": "String -> HtmlBuildError",
-      "callable": {
-        "identity": "std/web/html::InvalidAttributeName",
-        "name": "InvalidAttributeName",
-        "module": "std/web/html",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "String"
-          }
-        ],
-        "result": "HtmlBuildError",
-        "constraints": [],
-        "signature": "InvalidAttributeName arg1: String -> HtmlBuildError",
-        "remainingParameters": []
-      },
-      "description": "Reports an invalid custom attribute spelling."
-    },
-    {
-      "id": 29,
-      "identity": "std/web/html::ReservedAttributeName",
-      "name": "ReservedAttributeName",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "constructor",
-      "definition": {
-        "start": 0,
-        "end": 0
-      },
-      "typeName": "String -> HtmlBuildError",
-      "callable": {
-        "identity": "std/web/html::ReservedAttributeName",
-        "name": "ReservedAttributeName",
-        "module": "std/web/html",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "String"
-          }
-        ],
-        "result": "HtmlBuildError",
-        "constraints": [],
-        "signature": "ReservedAttributeName arg1: String -> HtmlBuildError",
-        "remainingParameters": []
-      },
-      "description": "Reports a custom attribute that collides with typed or runtime-owned props."
-    },
-    {
-      "id": 30,
       "identity": "std/prelude::String",
       "name": "String",
       "module": "std/prelude",
@@ -618,9 +134,9 @@
       }
     },
     {
-      "id": 31,
-      "identity": "std/prelude::Bool",
-      "name": "Bool",
+      "id": 5,
+      "identity": "std/prelude::Int",
+      "name": "Int",
       "module": "std/prelude",
       "namespace": "type",
       "kind": "prelude",
@@ -630,952 +146,194 @@
       }
     },
     {
-      "id": 32,
-      "identity": "artifact/web-form-events::local(32)",
-      "name": "event",
-      "module": "artifact/web-form-events",
+      "id": 6,
+      "identity": "artifact/expected-record-completion::local(6)",
+      "name": "options",
+      "module": "artifact/expected-record-completion",
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 130,
-        "end": 135
+        "start": 40,
+        "end": 47
       },
-      "typeName": "html.InputEvent"
-    },
-    {
-      "id": 33,
-      "identity": "artifact/web-form-events::local(33)",
-      "name": "event",
-      "module": "artifact/web-form-events",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 210,
-        "end": 215
-      },
-      "typeName": "html.ChangeEvent"
-    },
-    {
-      "id": 34,
-      "identity": "artifact/web-form-events::local(34)",
-      "name": "draft",
-      "module": "artifact/web-form-events",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 290,
-        "end": 295
-      },
-      "typeName": "String"
-    },
-    {
-      "id": 35,
-      "identity": "artifact/web-form-events::local(35)",
-      "name": "checked",
-      "module": "artifact/web-form-events",
-      "namespace": "value",
-      "kind": "parameter",
-      "definition": {
-        "start": 307,
-        "end": 314
-      },
-      "typeName": "Bool"
-    },
-    {
-      "id": 36,
-      "identity": "std/web/html::form",
-      "name": "form",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "imported",
-      "definition": {
-        "start": 12,
-        "end": 16
-      },
-      "typeName": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), onSubmit?: Action, name?: String, autoComplete?: String, children: C } -> Html<Action>",
-      "callable": {
-        "identity": "std/web/html::form",
-        "name": "form",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action",
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), onSubmit?: Action, name?: String, autoComplete?: String, children: C }"
-          }
-        ],
-        "result": "Html<Action>",
-        "constraints": [
-          "IntoChildren<C, Action>"
-        ],
-        "signature": "form<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), onSubmit?: Action, name?: String, autoComplete?: String, children: C } -> Html<Action> where IntoChildren<C, Action>",
-        "remainingParameters": []
-      },
-      "description": "Creates a typed form whose onSubmit message prevents native page reload."
-    },
-    {
-      "id": 37,
-      "identity": "std/web/html::label",
-      "name": "label",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "imported",
-      "definition": {
-        "start": 12,
-        "end": 16
-      },
-      "typeName": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), htmlFor?: String, children: C } -> Html<Action>",
-      "callable": {
-        "identity": "std/web/html::label",
-        "name": "label",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action",
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), htmlFor?: String, children: C }"
-          }
-        ],
-        "result": "Html<Action>",
-        "constraints": [
-          "IntoChildren<C, Action>"
-        ],
-        "signature": "label<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), htmlFor?: String, children: C } -> Html<Action> where IntoChildren<C, Action>",
-        "remainingParameters": []
-      },
-      "description": "Creates a label connected through the htmlFor prop."
-    },
-    {
-      "id": 38,
-      "identity": "std/web/html::input",
-      "name": "input",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "imported",
-      "definition": {
-        "start": 12,
-        "end": 16
-      },
-      "typeName": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
-      "callable": {
-        "identity": "std/web/html::input",
-        "name": "input",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }"
-          }
-        ],
-        "result": "Html<Action>",
-        "constraints": [],
-        "signature": "input<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
-        "remainingParameters": []
-      },
-      "description": "Creates a controlled input with typed input and change event snapshots."
-    },
-    {
-      "id": 39,
-      "identity": "std/web/html::textarea",
-      "name": "textarea",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "imported",
-      "definition": {
-        "start": 12,
-        "end": 16
-      },
-      "typeName": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
-      "callable": {
-        "identity": "std/web/html::textarea",
-        "name": "textarea",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }"
-          }
-        ],
-        "result": "Html<Action>",
-        "constraints": [],
-        "signature": "textarea<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
-        "remainingParameters": []
-      },
-      "description": "Creates a controlled textarea with typed input and change snapshots."
-    },
-    {
-      "id": 40,
-      "identity": "std/web/html::button",
-      "name": "button",
-      "module": "std/web/html",
-      "namespace": "value",
-      "kind": "imported",
-      "definition": {
-        "start": 12,
-        "end": 16
-      },
-      "typeName": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C } -> Html<Action>",
-      "callable": {
-        "identity": "std/web/html::button",
-        "name": "button",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action",
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C }"
-          }
-        ],
-        "result": "Html<Action>",
-        "constraints": [
-          "IntoChildren<C, Action>"
-        ],
-        "signature": "button<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C } -> Html<Action> where IntoChildren<C, Action>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "id": 41,
-      "identity": "std/prelude::==",
-      "name": "==",
-      "module": "std/prelude",
-      "namespace": "operator",
-      "kind": "prelude",
-      "definition": {
-        "start": 0,
-        "end": 0
-      }
+      "typeName": "{ initial: State, profile: { label: String, count: Int }, render: (State -> String) }"
     }
   ],
   "symbolOccurrences": [
     {
       "range": {
-        "start": 43,
-        "end": 49
+        "start": 3,
+        "end": 12
       },
       "symbol": 0
     },
     {
       "range": {
-        "start": 56,
-        "end": 68
+        "start": 182,
+        "end": 188
       },
       "symbol": 1
     },
     {
       "range": {
-        "start": 80,
-        "end": 94
+        "start": 0,
+        "end": 176
       },
       "symbol": 2
     },
     {
       "range": {
-        "start": 104,
-        "end": 113
+        "start": 22,
+        "end": 27
       },
       "symbol": 3
     },
     {
       "range": {
-        "start": 118,
-        "end": 129
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 196,
-        "end": 209
-      },
-      "symbol": 5
-    },
-    {
-      "range": {
-        "start": 285,
-        "end": 289
+        "start": 40,
+        "end": 47
       },
       "symbol": 6
     },
     {
       "range": {
-        "start": 12,
-        "end": 16
-      },
-      "symbol": 7
-    },
-    {
-      "range": {
-        "start": 130,
-        "end": 135
-      },
-      "symbol": 32
-    },
-    {
-      "range": {
-        "start": 210,
-        "end": 215
-      },
-      "symbol": 33
-    },
-    {
-      "range": {
-        "start": 290,
-        "end": 295
-      },
-      "symbol": 34
-    },
-    {
-      "range": {
-        "start": 307,
-        "end": 314
-      },
-      "symbol": 35
-    },
-    {
-      "range": {
-        "start": 69,
-        "end": 75
-      },
-      "symbol": 30
-    },
-    {
-      "range": {
-        "start": 95,
-        "end": 99
-      },
-      "symbol": 31
-    },
-    {
-      "range": {
-        "start": 137,
-        "end": 152
-      },
-      "symbol": 13
-    },
-    {
-      "range": {
-        "start": 156,
-        "end": 162
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 167,
-        "end": 179
-      },
-      "symbol": 1
-    },
-    {
-      "range": {
-        "start": 180,
-        "end": 185
-      },
-      "symbol": 32
-    },
-    {
-      "range": {
-        "start": 217,
-        "end": 233
-      },
-      "symbol": 14
-    },
-    {
-      "range": {
-        "start": 237,
-        "end": 243
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 248,
-        "end": 262
+        "start": 29,
+        "end": 34
       },
       "symbol": 2
     },
     {
       "range": {
-        "start": 263,
-        "end": 268
+        "start": 64,
+        "end": 69
       },
-      "symbol": 33
+      "symbol": 2
     },
     {
       "range": {
-        "start": 297,
-        "end": 303
-      },
-      "symbol": 30
-    },
-    {
-      "range": {
-        "start": 316,
-        "end": 320
-      },
-      "symbol": 31
-    },
-    {
-      "range": {
-        "start": 324,
-        "end": 341
-      },
-      "symbol": 9
-    },
-    {
-      "range": {
-        "start": 334,
-        "end": 340
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 346,
-        "end": 355
-      },
-      "symbol": 36
-    },
-    {
-      "range": {
-        "start": 372,
-        "end": 381
-      },
-      "symbol": 3
-    },
-    {
-      "range": {
-        "start": 405,
-        "end": 415
-      },
-      "symbol": 37
-    },
-    {
-      "range": {
-        "start": 463,
-        "end": 473
-      },
-      "symbol": 38
-    },
-    {
-      "range": {
-        "start": 535,
-        "end": 540
-      },
-      "symbol": 34
-    },
-    {
-      "range": {
-        "start": 646,
-        "end": 657
+        "start": 93,
+        "end": 99
       },
       "symbol": 4
     },
     {
       "range": {
-        "start": 673,
-        "end": 686
-      },
-      "symbol": 39
-    },
-    {
-      "range": {
-        "start": 748,
-        "end": 759
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 775,
-        "end": 785
-      },
-      "symbol": 38
-    },
-    {
-      "range": {
-        "start": 796,
-        "end": 803
-      },
-      "symbol": 35
-    },
-    {
-      "range": {
-        "start": 854,
-        "end": 867
+        "start": 108,
+        "end": 111
       },
       "symbol": 5
     },
     {
       "range": {
-        "start": 883,
-        "end": 894
+        "start": 127,
+        "end": 132
       },
-      "symbol": 40
+      "symbol": 2
     },
     {
       "range": {
-        "start": 945,
-        "end": 950
+        "start": 136,
+        "end": 142
       },
-      "symbol": 34
+      "symbol": 4
     },
     {
       "range": {
-        "start": 951,
-        "end": 953
+        "start": 153,
+        "end": 159
       },
-      "symbol": 41
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 193,
+        "end": 202
+      },
+      "symbol": 0
     }
   ],
   "typeOccurrences": [
     {
       "range": {
-        "start": 43,
-        "end": 49
+        "start": 3,
+        "end": 12
       },
-      "type": "Action"
+      "type": "State -> { initial: State, profile: { label: String, count: Int }, render: (State -> String) } -> String"
     },
     {
       "range": {
-        "start": 56,
-        "end": 68
+        "start": 22,
+        "end": 27
       },
-      "type": "String -> Action"
+      "type": "State"
     },
     {
       "range": {
-        "start": 80,
-        "end": 94
+        "start": 40,
+        "end": 47
       },
-      "type": "Bool -> Action"
+      "type": "{ initial: State, profile: { label: String, count: Int }, render: (State -> String) }"
     },
     {
       "range": {
-        "start": 104,
-        "end": 113
-      },
-      "type": "Action"
-    },
-    {
-      "range": {
-        "start": 118,
-        "end": 129
-      },
-      "type": "html.InputEvent -> Action"
-    },
-    {
-      "range": {
-        "start": 130,
-        "end": 135
-      },
-      "type": "html.InputEvent"
-    },
-    {
-      "range": {
-        "start": 156,
-        "end": 162
-      },
-      "type": "Action"
-    },
-    {
-      "range": {
-        "start": 167,
-        "end": 179
-      },
-      "type": "String -> Action"
-    },
-    {
-      "range": {
-        "start": 167,
-        "end": 191
-      },
-      "type": "Action"
-    },
-    {
-      "range": {
-        "start": 180,
-        "end": 185
-      },
-      "type": "html.InputEvent"
-    },
-    {
-      "range": {
-        "start": 180,
-        "end": 191
+        "start": 164,
+        "end": 176
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 196,
-        "end": 209
+        "start": 182,
+        "end": 188
       },
-      "type": "html.ChangeEvent -> Action"
+      "type": "unknown"
     },
     {
       "range": {
-        "start": 210,
-        "end": 215
+        "start": 193,
+        "end": 202
       },
-      "type": "html.ChangeEvent"
+      "type": "State -> { initial: State, profile: { label: String, count: Int }, render: (State -> String) } -> String"
     },
     {
       "range": {
-        "start": 237,
-        "end": 243
+        "start": 193,
+        "end": 270
       },
-      "type": "Action"
+      "type": "unknown"
     },
     {
       "range": {
-        "start": 248,
-        "end": 262
+        "start": 203,
+        "end": 205
       },
-      "type": "Bool -> Action"
+      "type": "Int"
     },
     {
       "range": {
-        "start": 248,
-        "end": 276
+        "start": 206,
+        "end": 270
       },
-      "type": "Action"
+      "type": "{ initial: Int, profile: { label: String } }"
     },
     {
       "range": {
-        "start": 263,
-        "end": 268
+        "start": 221,
+        "end": 223
       },
-      "type": "html.ChangeEvent"
+      "type": "Int"
     },
     {
       "range": {
-        "start": 263,
-        "end": 276
+        "start": 238,
+        "end": 266
       },
-      "type": "Bool"
+      "type": "{ label: String }"
     },
     {
       "range": {
-        "start": 285,
-        "end": 289
-      },
-      "type": "String -> Bool -> html.Html<Action>"
-    },
-    {
-      "range": {
-        "start": 290,
-        "end": 295
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 307,
-        "end": 314
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 334,
-        "end": 340
-      },
-      "type": "Action"
-    },
-    {
-      "range": {
-        "start": 346,
-        "end": 355
-      },
-      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), onSubmit?: Action, name?: String, autoComplete?: String, children: C } -> Html<Action>"
-    },
-    {
-      "range": {
-        "start": 346,
-        "end": 999
-      },
-      "type": "html.Html<Action>"
-    },
-    {
-      "range": {
-        "start": 356,
-        "end": 999
-      },
-      "type": "{ children: Array<html.Html<Action>>, onSubmit: Action }"
-    },
-    {
-      "range": {
-        "start": 372,
-        "end": 381
-      },
-      "type": "Action"
-    },
-    {
-      "range": {
-        "start": 397,
-        "end": 995
-      },
-      "type": "Array<html.Html<Action>>"
-    },
-    {
-      "range": {
-        "start": 405,
-        "end": 415
-      },
-      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), htmlFor?: String, children: C } -> Html<Action>"
-    },
-    {
-      "range": {
-        "start": 405,
-        "end": 455
-      },
-      "type": "html.Html<Action>"
-    },
-    {
-      "range": {
-        "start": 416,
-        "end": 455
-      },
-      "type": "{ children: String, htmlFor: String }"
-    },
-    {
-      "range": {
-        "start": 427,
-        "end": 434
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 446,
-        "end": 453
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 463,
-        "end": 473
-      },
-      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>"
-    },
-    {
-      "range": {
-        "start": 463,
-        "end": 665
-      },
-      "type": "html.Html<Action>"
-    },
-    {
-      "range": {
-        "start": 474,
-        "end": 665
-      },
-      "type": "{ id: String, inputType: String, name: String, onInput: (html.InputEvent -> Action), placeholder: String, required: Bool, value: String }"
-    },
-    {
-      "range": {
-        "start": 488,
-        "end": 495
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 511,
-        "end": 518
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 535,
-        "end": 540
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 560,
-        "end": 564
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 587,
-        "end": 600
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 621,
-        "end": 627
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 646,
-        "end": 657
-      },
-      "type": "html.InputEvent -> Action"
-    },
-    {
-      "range": {
-        "start": 673,
-        "end": 686
-      },
-      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>"
-    },
-    {
-      "range": {
-        "start": 673,
-        "end": 767
-      },
-      "type": "html.Html<Action>"
-    },
-    {
-      "range": {
-        "start": 687,
-        "end": 767
-      },
-      "type": "{ name: String, onInput: (html.InputEvent -> Action), value: String }"
-    },
-    {
-      "range": {
-        "start": 703,
-        "end": 710
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 727,
-        "end": 729
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 748,
-        "end": 759
-      },
-      "type": "html.InputEvent -> Action"
-    },
-    {
-      "range": {
-        "start": 775,
-        "end": 785
-      },
-      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>"
-    },
-    {
-      "range": {
-        "start": 775,
-        "end": 875
-      },
-      "type": "html.Html<Action>"
-    },
-    {
-      "range": {
-        "start": 786,
-        "end": 875
-      },
-      "type": "{ checked: Bool, inputType: String, onChange: (html.ChangeEvent -> Action) }"
-    },
-    {
-      "range": {
-        "start": 796,
-        "end": 803
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 824,
-        "end": 834
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 854,
-        "end": 867
-      },
-      "type": "html.ChangeEvent -> Action"
-    },
-    {
-      "range": {
-        "start": 883,
-        "end": 894
-      },
-      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C } -> Html<Action>"
-    },
-    {
-      "range": {
-        "start": 883,
-        "end": 989
-      },
-      "type": "html.Html<Action>"
-    },
-    {
-      "range": {
-        "start": 895,
-        "end": 989
-      },
-      "type": "{ buttonType: String, children: String, disabled: Bool }"
-    },
-    {
-      "range": {
-        "start": 917,
-        "end": 925
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 945,
-        "end": 950
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 945,
-        "end": 956
-      },
-      "type": "Bool"
-    },
-    {
-      "range": {
-        "start": 954,
-        "end": 956
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 976,
-        "end": 981
+        "start": 253,
+        "end": 260
       },
       "type": "String"
     }
@@ -1583,575 +341,85 @@
   "callableOccurrences": [
     {
       "range": {
-        "start": 56,
-        "end": 68
+        "start": 3,
+        "end": 12
       },
       "callable": {
-        "identity": "artifact/web-form-events::DraftChanged",
-        "name": "DraftChanged",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "String"
-          }
+        "identity": "artifact/expected-record-completion::configure",
+        "name": "configure",
+        "module": "artifact/expected-record-completion",
+        "typeParameters": [
+          "State"
         ],
-        "result": "Action",
-        "constraints": [],
-        "signature": "DraftChanged arg1: String -> Action",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 80,
-        "end": 94
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::CheckedChanged",
-        "name": "CheckedChanged",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
         "parameters": [
           {
-            "name": "arg1",
-            "type": "Bool"
-          }
-        ],
-        "result": "Action",
-        "constraints": [],
-        "signature": "CheckedChanged arg1: Bool -> Action",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 118,
-        "end": 129
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::draftAction",
-        "name": "draftAction",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "event",
-            "type": "html.InputEvent"
-          }
-        ],
-        "result": "Action",
-        "constraints": [],
-        "signature": "draftAction event: html.InputEvent -> Action",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 196,
-        "end": 209
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::checkedAction",
-        "name": "checkedAction",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "event",
-            "type": "html.ChangeEvent"
-          }
-        ],
-        "result": "Action",
-        "constraints": [],
-        "signature": "checkedAction event: html.ChangeEvent -> Action",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 285,
-        "end": 289
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::view",
-        "name": "view",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "draft",
-            "type": "String"
+            "name": "state",
+            "type": "State"
           },
           {
-            "name": "checked",
-            "type": "Bool"
+            "name": "options",
+            "type": "{ initial: State, profile: { label: String, count: Int }, render: (State -> String) }"
           }
         ],
-        "result": "html.Html<Action>",
+        "result": "String",
         "constraints": [],
-        "signature": "view draft: String -> checked: Bool -> html.Html<Action>",
+        "signature": "configure<State> state: State -> options: { initial: State, profile: { label: String, count: Int }, render: (State -> String) } -> String",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 167,
-        "end": 179
+        "start": 193,
+        "end": 202
       },
       "callable": {
-        "identity": "artifact/web-form-events::DraftChanged",
-        "name": "DraftChanged",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "String"
-          }
-        ],
-        "result": "Action",
-        "constraints": [],
-        "signature": "DraftChanged arg1: String -> Action",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 248,
-        "end": 262
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::CheckedChanged",
-        "name": "CheckedChanged",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Bool"
-          }
-        ],
-        "result": "Action",
-        "constraints": [],
-        "signature": "CheckedChanged arg1: Bool -> Action",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 346,
-        "end": 355
-      },
-      "callable": {
-        "identity": "std/web/html::form",
-        "name": "form",
-        "module": "std/web/html",
+        "identity": "artifact/expected-record-completion::configure",
+        "name": "configure",
+        "module": "artifact/expected-record-completion",
         "typeParameters": [
-          "Action",
-          "C"
+          "State"
         ],
         "parameters": [
           {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), onSubmit?: Action, name?: String, autoComplete?: String, children: C }"
-          }
-        ],
-        "result": "Html<Action>",
-        "constraints": [
-          "IntoChildren<C, Action>"
-        ],
-        "signature": "form<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), onSubmit?: Action, name?: String, autoComplete?: String, children: C } -> Html<Action> where IntoChildren<C, Action>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 405,
-        "end": 415
-      },
-      "callable": {
-        "identity": "std/web/html::label",
-        "name": "label",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action",
-          "C"
-        ],
-        "parameters": [
+            "name": "state",
+            "type": "State"
+          },
           {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), htmlFor?: String, children: C }"
+            "name": "options",
+            "type": "{ initial: State, profile: { label: String, count: Int }, render: (State -> String) }"
           }
         ],
-        "result": "Html<Action>",
-        "constraints": [
-          "IntoChildren<C, Action>"
-        ],
-        "signature": "label<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), htmlFor?: String, children: C } -> Html<Action> where IntoChildren<C, Action>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 463,
-        "end": 473
-      },
-      "callable": {
-        "identity": "std/web/html::input",
-        "name": "input",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }"
-          }
-        ],
-        "result": "Html<Action>",
+        "result": "String",
         "constraints": [],
-        "signature": "input<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
+        "signature": "configure<State> state: State -> options: { initial: State, profile: { label: String, count: Int }, render: (State -> String) } -> String",
         "remainingParameters": []
       }
     },
     {
       "range": {
-        "start": 646,
-        "end": 657
+        "start": 193,
+        "end": 270
       },
       "callable": {
-        "identity": "artifact/web-form-events::draftAction",
-        "name": "draftAction",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "event",
-            "type": "html.InputEvent"
-          }
-        ],
-        "result": "Action",
-        "constraints": [],
-        "signature": "draftAction event: html.InputEvent -> Action",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 673,
-        "end": 686
-      },
-      "callable": {
-        "identity": "std/web/html::textarea",
-        "name": "textarea",
-        "module": "std/web/html",
+        "identity": "artifact/expected-record-completion::configure",
+        "name": "configure",
+        "module": "artifact/expected-record-completion",
         "typeParameters": [
-          "Action"
+          "State"
         ],
         "parameters": [
           {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }"
+            "name": "state",
+            "type": "State"
+          },
+          {
+            "name": "options",
+            "type": "{ initial: State, profile: { label: String, count: Int }, render: (State -> String) }"
           }
         ],
-        "result": "Html<Action>",
+        "result": "String",
         "constraints": [],
-        "signature": "textarea<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 748,
-        "end": 759
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::draftAction",
-        "name": "draftAction",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "event",
-            "type": "html.InputEvent"
-          }
-        ],
-        "result": "Action",
-        "constraints": [],
-        "signature": "draftAction event: html.InputEvent -> Action",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 775,
-        "end": 785
-      },
-      "callable": {
-        "identity": "std/web/html::input",
-        "name": "input",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }"
-          }
-        ],
-        "result": "Html<Action>",
-        "constraints": [],
-        "signature": "input<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 854,
-        "end": 867
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::checkedAction",
-        "name": "checkedAction",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "event",
-            "type": "html.ChangeEvent"
-          }
-        ],
-        "result": "Action",
-        "constraints": [],
-        "signature": "checkedAction event: html.ChangeEvent -> Action",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 883,
-        "end": 894
-      },
-      "callable": {
-        "identity": "std/web/html::button",
-        "name": "button",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action",
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C }"
-          }
-        ],
-        "result": "Html<Action>",
-        "constraints": [
-          "IntoChildren<C, Action>"
-        ],
-        "signature": "button<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C } -> Html<Action> where IntoChildren<C, Action>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 167,
-        "end": 191
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::DraftChanged",
-        "name": "DraftChanged",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "String"
-          }
-        ],
-        "result": "Action",
-        "constraints": [],
-        "signature": "DraftChanged arg1: String -> Action",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 248,
-        "end": 276
-      },
-      "callable": {
-        "identity": "artifact/web-form-events::CheckedChanged",
-        "name": "CheckedChanged",
-        "module": "artifact/web-form-events",
-        "typeParameters": [],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "Bool"
-          }
-        ],
-        "result": "Action",
-        "constraints": [],
-        "signature": "CheckedChanged arg1: Bool -> Action",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 346,
-        "end": 999
-      },
-      "callable": {
-        "identity": "std/web/html::form",
-        "name": "form",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action",
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), onSubmit?: Action, name?: String, autoComplete?: String, children: C }"
-          }
-        ],
-        "result": "Html<Action>",
-        "constraints": [
-          "IntoChildren<C, Action>"
-        ],
-        "signature": "form<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), onSubmit?: Action, name?: String, autoComplete?: String, children: C } -> Html<Action> where IntoChildren<C, Action>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 405,
-        "end": 455
-      },
-      "callable": {
-        "identity": "std/web/html::label",
-        "name": "label",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action",
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), htmlFor?: String, children: C }"
-          }
-        ],
-        "result": "Html<Action>",
-        "constraints": [
-          "IntoChildren<C, Action>"
-        ],
-        "signature": "label<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), htmlFor?: String, children: C } -> Html<Action> where IntoChildren<C, Action>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 463,
-        "end": 665
-      },
-      "callable": {
-        "identity": "std/web/html::input",
-        "name": "input",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }"
-          }
-        ],
-        "result": "Html<Action>",
-        "constraints": [],
-        "signature": "input<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 673,
-        "end": 767
-      },
-      "callable": {
-        "identity": "std/web/html::textarea",
-        "name": "textarea",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }"
-          }
-        ],
-        "result": "Html<Action>",
-        "constraints": [],
-        "signature": "textarea<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 775,
-        "end": 875
-      },
-      "callable": {
-        "identity": "std/web/html::input",
-        "name": "input",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }"
-          }
-        ],
-        "result": "Html<Action>",
-        "constraints": [],
-        "signature": "input<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
-        "remainingParameters": []
-      }
-    },
-    {
-      "range": {
-        "start": 883,
-        "end": 989
-      },
-      "callable": {
-        "identity": "std/web/html::button",
-        "name": "button",
-        "module": "std/web/html",
-        "typeParameters": [
-          "Action",
-          "C"
-        ],
-        "parameters": [
-          {
-            "name": "arg1",
-            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C }"
-          }
-        ],
-        "result": "Html<Action>",
-        "constraints": [
-          "IntoChildren<C, Action>"
-        ],
-        "signature": "button<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C } -> Html<Action> where IntoChildren<C, Action>",
+        "signature": "configure<State> state: State -> options: { initial: State, profile: { label: String, count: Int }, render: (State -> String) } -> String",
         "remainingParameters": []
       }
     }
@@ -2159,1055 +427,29 @@
   "completionContexts": [
     {
       "range": {
-        "start": 356,
-        "end": 999
+        "start": 206,
+        "end": 270
       },
-      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), onSubmit?: Action, name?: String, autoComplete?: String, children: Array<html.Html<Action>> }",
+      "type": "{ initial: Int, profile: { label: String, count: Int }, render: (Int -> String) }",
       "recordFields": [
         {
-          "name": "id",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "className",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "title",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "hidden",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "key",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "style",
-          "optional": true,
-          "type": "Style"
-        },
-        {
-          "name": "attributes",
-          "optional": true,
-          "type": "Array<Attribute>"
-        },
-        {
-          "name": "role",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "tabIndex",
-          "optional": true,
-          "type": "Int"
-        },
-        {
-          "name": "lang",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "dir",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "draggable",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "contentEditable",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "onClick",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "preventClickDefault",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "stopClickPropagation",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "onFocus",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "onBlur",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "onKeyDown",
-          "optional": true,
-          "type": "KeyboardEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onKeyUp",
-          "optional": true,
-          "type": "KeyboardEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onMouseDown",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onMouseUp",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onPointerDown",
-          "optional": true,
-          "type": "PointerEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onPointerUp",
-          "optional": true,
-          "type": "PointerEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onDoubleClick",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onContextMenu",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onScroll",
-          "optional": true,
-          "type": "ScrollEvent -> EventAction<Action>"
-        },
-        {
-          "name": "name",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "autoComplete",
-          "optional": true,
-          "type": "String"
+          "name": "render",
+          "optional": false,
+          "type": "Int -> String"
         }
       ]
     },
     {
       "range": {
-        "start": 416,
-        "end": 455
+        "start": 238,
+        "end": 266
       },
-      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), htmlFor?: String, children: String }",
+      "type": "{ label: String, count: Int }",
       "recordFields": [
         {
-          "name": "id",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "className",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "title",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "hidden",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "key",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "style",
-          "optional": true,
-          "type": "Style"
-        },
-        {
-          "name": "attributes",
-          "optional": true,
-          "type": "Array<Attribute>"
-        },
-        {
-          "name": "role",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "tabIndex",
-          "optional": true,
+          "name": "count",
+          "optional": false,
           "type": "Int"
-        },
-        {
-          "name": "lang",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "dir",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "draggable",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "contentEditable",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "onClick",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "preventClickDefault",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "stopClickPropagation",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "onFocus",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "onBlur",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "onKeyDown",
-          "optional": true,
-          "type": "KeyboardEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onKeyUp",
-          "optional": true,
-          "type": "KeyboardEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onMouseDown",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onMouseUp",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onPointerDown",
-          "optional": true,
-          "type": "PointerEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onPointerUp",
-          "optional": true,
-          "type": "PointerEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onDoubleClick",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onContextMenu",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onScroll",
-          "optional": true,
-          "type": "ScrollEvent -> EventAction<Action>"
-        }
-      ]
-    },
-    {
-      "range": {
-        "start": 474,
-        "end": 665
-      },
-      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }",
-      "recordFields": [
-        {
-          "name": "className",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "title",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "hidden",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "key",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "style",
-          "optional": true,
-          "type": "Style"
-        },
-        {
-          "name": "attributes",
-          "optional": true,
-          "type": "Array<Attribute>"
-        },
-        {
-          "name": "role",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "tabIndex",
-          "optional": true,
-          "type": "Int"
-        },
-        {
-          "name": "lang",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "dir",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "draggable",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "contentEditable",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "onClick",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "preventClickDefault",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "stopClickPropagation",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "onFocus",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "onBlur",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "onKeyDown",
-          "optional": true,
-          "type": "KeyboardEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onKeyUp",
-          "optional": true,
-          "type": "KeyboardEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onMouseDown",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onMouseUp",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onPointerDown",
-          "optional": true,
-          "type": "PointerEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onPointerUp",
-          "optional": true,
-          "type": "PointerEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onDoubleClick",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onContextMenu",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onScroll",
-          "optional": true,
-          "type": "ScrollEvent -> EventAction<Action>"
-        },
-        {
-          "name": "checked",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "disabled",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "readOnly",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "multiple",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "autoComplete",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "autoFocus",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "min",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "max",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "step",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "pattern",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "onChange",
-          "optional": true,
-          "type": "ChangeEvent -> Action"
-        }
-      ]
-    },
-    {
-      "range": {
-        "start": 687,
-        "end": 767
-      },
-      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }",
-      "recordFields": [
-        {
-          "name": "id",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "className",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "title",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "hidden",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "key",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "style",
-          "optional": true,
-          "type": "Style"
-        },
-        {
-          "name": "attributes",
-          "optional": true,
-          "type": "Array<Attribute>"
-        },
-        {
-          "name": "role",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "tabIndex",
-          "optional": true,
-          "type": "Int"
-        },
-        {
-          "name": "lang",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "dir",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "draggable",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "contentEditable",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "onClick",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "preventClickDefault",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "stopClickPropagation",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "onFocus",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "onBlur",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "onKeyDown",
-          "optional": true,
-          "type": "KeyboardEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onKeyUp",
-          "optional": true,
-          "type": "KeyboardEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onMouseDown",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onMouseUp",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onPointerDown",
-          "optional": true,
-          "type": "PointerEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onPointerUp",
-          "optional": true,
-          "type": "PointerEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onDoubleClick",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onContextMenu",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onScroll",
-          "optional": true,
-          "type": "ScrollEvent -> EventAction<Action>"
-        },
-        {
-          "name": "disabled",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "required",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "readOnly",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "placeholder",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "autoComplete",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "autoFocus",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "rows",
-          "optional": true,
-          "type": "Int"
-        },
-        {
-          "name": "cols",
-          "optional": true,
-          "type": "Int"
-        },
-        {
-          "name": "onChange",
-          "optional": true,
-          "type": "ChangeEvent -> Action"
-        }
-      ]
-    },
-    {
-      "range": {
-        "start": 786,
-        "end": 875
-      },
-      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }",
-      "recordFields": [
-        {
-          "name": "id",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "className",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "title",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "hidden",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "key",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "style",
-          "optional": true,
-          "type": "Style"
-        },
-        {
-          "name": "attributes",
-          "optional": true,
-          "type": "Array<Attribute>"
-        },
-        {
-          "name": "role",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "tabIndex",
-          "optional": true,
-          "type": "Int"
-        },
-        {
-          "name": "lang",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "dir",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "draggable",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "contentEditable",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "onClick",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "preventClickDefault",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "stopClickPropagation",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "onFocus",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "onBlur",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "onKeyDown",
-          "optional": true,
-          "type": "KeyboardEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onKeyUp",
-          "optional": true,
-          "type": "KeyboardEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onMouseDown",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onMouseUp",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onPointerDown",
-          "optional": true,
-          "type": "PointerEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onPointerUp",
-          "optional": true,
-          "type": "PointerEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onDoubleClick",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onContextMenu",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onScroll",
-          "optional": true,
-          "type": "ScrollEvent -> EventAction<Action>"
-        },
-        {
-          "name": "value",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "name",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "disabled",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "required",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "readOnly",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "multiple",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "placeholder",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "autoComplete",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "autoFocus",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "min",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "max",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "step",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "pattern",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "onInput",
-          "optional": true,
-          "type": "InputEvent -> Action"
-        }
-      ]
-    },
-    {
-      "range": {
-        "start": 895,
-        "end": 989
-      },
-      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: String }",
-      "recordFields": [
-        {
-          "name": "id",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "className",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "title",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "hidden",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "key",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "style",
-          "optional": true,
-          "type": "Style"
-        },
-        {
-          "name": "attributes",
-          "optional": true,
-          "type": "Array<Attribute>"
-        },
-        {
-          "name": "role",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "tabIndex",
-          "optional": true,
-          "type": "Int"
-        },
-        {
-          "name": "lang",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "dir",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "draggable",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "contentEditable",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "onClick",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "preventClickDefault",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "stopClickPropagation",
-          "optional": true,
-          "type": "Bool"
-        },
-        {
-          "name": "onFocus",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "onBlur",
-          "optional": true,
-          "type": "Action"
-        },
-        {
-          "name": "onKeyDown",
-          "optional": true,
-          "type": "KeyboardEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onKeyUp",
-          "optional": true,
-          "type": "KeyboardEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onMouseDown",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onMouseUp",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onPointerDown",
-          "optional": true,
-          "type": "PointerEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onPointerUp",
-          "optional": true,
-          "type": "PointerEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onDoubleClick",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onContextMenu",
-          "optional": true,
-          "type": "MouseEvent -> EventAction<Action>"
-        },
-        {
-          "name": "onScroll",
-          "optional": true,
-          "type": "ScrollEvent -> EventAction<Action>"
-        },
-        {
-          "name": "name",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "value",
-          "optional": true,
-          "type": "String"
-        },
-        {
-          "name": "autoFocus",
-          "optional": true,
-          "type": "Bool"
         }
       ]
     }

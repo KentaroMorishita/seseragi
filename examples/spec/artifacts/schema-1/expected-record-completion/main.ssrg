@@ -1,0 +1,17 @@
+fn configure<State>
+  state: State
+  -> options: {
+    initial: State,
+    profile: { label: String, count: Int },
+    render: State -> String,
+  }
+  -> String =
+  "configured"
+
+let result =
+  configure 42 {
+    initial: 42,
+    profile: {
+      label: "count"
+    }
+  }

@@ -124,6 +124,15 @@ export type AnalysisDocument = {
     readonly range: SourceRange
     readonly callable: AnalysisCallable
   }[]
+  readonly completionContexts?: readonly {
+    readonly range: SourceRange
+    readonly type: string
+    readonly recordFields?: readonly {
+      readonly name: string
+      readonly optional: boolean
+      readonly type: string
+    }[]
+  }[]
   readonly standardLibrary: readonly AnalysisReferenceItem[]
 }
 

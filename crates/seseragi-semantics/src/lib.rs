@@ -10,7 +10,10 @@ mod standard;
 mod type_document;
 mod typed;
 
-pub use analysis::{analyze_linked_module, analyze_module_interface, AnalyzedModule};
+pub use analysis::{
+    analyze_linked_module, analyze_linked_module_recovering, analyze_module_interface,
+    AnalyzedModule,
+};
 pub use diagnostics::semantic_diagnostics;
 pub use effect_ops::{known_effect_operation_by_semantic, KnownEffectOperation};
 pub use model::*;
@@ -20,8 +23,9 @@ pub use prelude::{
 };
 pub use query::{
     analysis_document, diagnostics_only_analysis, standard_library_catalog, AnalysisCallable,
-    AnalysisCallableOccurrence, AnalysisDocument, AnalysisParameter, AnalysisReferenceItem,
-    AnalysisSymbol, AnalysisSymbolOccurrence, AnalysisTypeOccurrence,
+    AnalysisCallableOccurrence, AnalysisCompletionContext, AnalysisCompletionField,
+    AnalysisDocument, AnalysisParameter, AnalysisReferenceItem, AnalysisSymbol,
+    AnalysisSymbolOccurrence, AnalysisTypeOccurrence,
 };
 pub use resolve::{resolve_linked_module, resolve_module, resolve_module_interface};
 pub use type_document::{

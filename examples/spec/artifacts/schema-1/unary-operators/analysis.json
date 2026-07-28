@@ -1183,6 +1183,15 @@
       }
     }
   ],
+  "completionContexts": [
+    {
+      "range": {
+        "start": 511,
+        "end": 544
+      },
+      "type": "{ inverted: Bool, negative: Int }"
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/prelude::all",

@@ -1,11 +1,11 @@
 use crate::model::{CodeActionParams, Position, TextDocumentPositionParams};
 use serde_json::{json, Value};
 use seseragi_driver::{
-    analyze_module, format_module, AnalysisDocument, AnalysisReferenceItem, AnalysisSymbol,
-    CompileInput,
+    analyze_module, format_module, AnalysisCompletionContext, AnalysisDocument,
+    AnalysisReferenceItem, AnalysisSymbol, CompileInput,
 };
 use seseragi_source::{EncodedPosition, LineIndex, PositionEncoding};
-use seseragi_syntax::{parse_surface_ast, ByteSpan};
+use seseragi_syntax::{lex, parse_surface_ast, ByteSpan, TokenKind};
 use std::collections::{BTreeMap, BTreeSet};
 
 pub(crate) const SEMANTIC_TOKEN_TYPES: [&str; 22] = [
@@ -161,6 +161,34 @@ pub(crate) fn completion(
     let Some(position) = document.byte_position(params.position, encoding) else {
         return json!([]);
     };
+    if let Some(context) = completion_context(document, position) {
+        if !context.record_fields.is_empty() {
+            return Value::Array(
+                context
+                    .record_fields
+                    .iter()
+                    .map(|field| {
+                        json!({
+                            "label": field.name,
+                            "kind": 5,
+                            "detail": field.type_name,
+                            "documentation": {
+                                "kind": "markdown",
+                                "value": format!(
+                                    "Expected field of `{}`.",
+                                    context.type_name
+                                ),
+                            },
+                            "insertText": format!("{}: ", field.name),
+                            "filterText": field.name,
+                            "sortText": format!("0-{}", field.name),
+                            "data": {"kind": "expected-record-field"},
+                        })
+                    })
+                    .collect(),
+            );
+        }
+    }
     let namespace = namespace_prefix(&document.source, position);
     let namespace_module = namespace.and_then(|prefix| {
         document
@@ -196,6 +224,79 @@ pub(crate) fn completion(
         }
     }
     Value::Array(items)
+}
+
+fn completion_context(
+    document: &DocumentState,
+    position: usize,
+) -> Option<AnalysisCompletionContext> {
+    document
+        .analysis
+        .completion_at(position)
+        .cloned()
+        .or_else(|| {
+            let recovered = completion_recovery_source(&document.source, position)?;
+            analyze_module(CompileInput::new(
+                &document.analysis.module,
+                &document.analysis.module,
+                &recovered,
+            ))
+            .completion_at(position)
+            .cloned()
+        })
+}
+
+fn completion_recovery_source(source: &str, position: usize) -> Option<String> {
+    let before = source.get(..position)?;
+    let after = source.get(position..)?;
+    let tokens = lex("<completion>", before);
+    let last = tokens
+        .tokens
+        .iter()
+        .rev()
+        .find(|token| {
+            !matches!(
+                token.kind,
+                TokenKind::TriviaComment
+                    | TokenKind::TriviaNewline
+                    | TokenKind::TriviaSpace
+                    | TokenKind::Eof
+            )
+        })
+        .map(|token| token.kind);
+    let placeholder = match last {
+        Some(TokenKind::PunctuationColon) => "()",
+        Some(TokenKind::IdentifierLower) => ": ()",
+        _ => "",
+    };
+    let mut recovered = format!("{before}{placeholder}{after}");
+    let mut delimiters = Vec::new();
+    for token in lex("<completion>", &recovered).tokens {
+        match token.kind {
+            TokenKind::PunctuationBraceLeft => delimiters.push(TokenKind::PunctuationBraceRight),
+            TokenKind::PunctuationParenLeft => delimiters.push(TokenKind::PunctuationParenRight),
+            TokenKind::PunctuationListLeft | TokenKind::PunctuationSquareLeft => {
+                delimiters.push(TokenKind::PunctuationSquareRight)
+            }
+            TokenKind::PunctuationBraceRight
+            | TokenKind::PunctuationParenRight
+            | TokenKind::PunctuationSquareRight => {
+                if delimiters.last() == Some(&token.kind) {
+                    delimiters.pop();
+                }
+            }
+            _ => {}
+        }
+    }
+    for delimiter in delimiters.into_iter().rev() {
+        recovered.push(match delimiter {
+            TokenKind::PunctuationBraceRight => '}',
+            TokenKind::PunctuationParenRight => ')',
+            TokenKind::PunctuationSquareRight => ']',
+            _ => unreachable!("completion recovery stores only closing delimiters"),
+        });
+    }
+    (recovered != source).then_some(recovered)
 }
 
 pub(crate) fn signature_help(

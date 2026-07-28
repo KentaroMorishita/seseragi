@@ -1933,6 +1933,102 @@
       }
     }
   ],
+  "completionContexts": [
+    {
+      "range": {
+        "start": 546,
+        "end": 883
+      },
+      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), children: String }",
+      "recordFields": [
+        {
+          "name": "id",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "hidden",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "key",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "Style"
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "Array<Attribute>"
+        },
+        {
+          "name": "role",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "tabIndex",
+          "optional": true,
+          "type": "Int"
+        },
+        {
+          "name": "lang",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "dir",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "draggable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "contentEditable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onFocus",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onBlur",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onKeyDown",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onKeyUp",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        }
+      ]
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/prelude::all",

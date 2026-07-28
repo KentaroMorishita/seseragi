@@ -227,13 +227,20 @@ lessonへ網羅性の都合だけで無関係な構文を詰め込んではな�
 editor、language server、Playground、将来のtoolは、parserや型検査をsurfaceごとに再実装せず、同じfrontendが
 生成する一つの`AnalysisDocument`を問い合わせます。最低限のqueryは`diagnostics`、`symbolAt(position)`、
 `typeAt(position)`、`callableAt(position)`、`visibleSymbols(position)`、`definitionOf(position)`、
-`standardLibraryCatalog`です。positionとrangeはcompiler内部ではUTF-8 byte offsetとし、UTF-16などへの変換は
-adapter境界でだけ行います。scalar境界でないpositionを暗黙に別文字へ移動してはなりません。
+`completionAt(position)`、`standardLibraryCatalog`です。positionとrangeはcompiler内部ではUTF-8 byte offsetとし、
+UTF-16などへの変換はadapter境界でだけ行います。scalar境界でないpositionを暗黙に別文字へ移動してはなりません。
 
 symbolとcallableは表示名だけで同一視せず、canonical identity、module、definition range、型parameter、値parameter、
 結果型、where constraintを保持します。部分適用されたcallableは元の完全signatureに加え、残っているparameterを
 返します。local binding、parameter、pattern binding、lambda、do binding、式にも、Typed HIRから得られる型とscopeを
 対応付けます。definitionとvisible symbolはresolverのsymbol / scope graphを正本とし、source text検索で推測しません。
+
+`completionAt(position)`はcall argumentやnested expressionへ伝播した期待type documentを返します。期待型が
+structural recordの場合は、すでに記述済みまたはspreadから得たfieldを除外し、残るfield名、required / optional、
+fieldごとの期待型を候補にします。generic callableでは同じcallの既存argumentと期待resultから型parameterを置換し、
+部分適用では未適用parameterの契約を保ちます。semantic diagnosticがある編集中sourceでも、compileの停止契約を
+緩めずAnalysisだけがrecovery Typed HIRを保持できます。閉じdelimiterが欠けたcompletion requestはadapterが一時的な
+recovery snapshotを作って問い合わせ、document本体や公開diagnosticを書き換えてはなりません。
 
 標準ReferenceはUI内の手書き一覧ではありません。compilerが型付けに使うPrelude callable、trait method、Effect
 operation、operator、standard module interfaceから生成し、identity、category、kind、signature、constraint、説明を

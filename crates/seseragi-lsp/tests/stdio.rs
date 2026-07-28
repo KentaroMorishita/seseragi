@@ -152,6 +152,106 @@ fn namespace_completion_stays_scoped_inside_an_incomplete_nested_expression() {
 }
 
 #[test]
+fn expected_record_completion_uses_analysis_and_recovers_an_unclosed_record() {
+    let uri = "file:///expected-record-completion.ssrg";
+    let source = r##"import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+
+type Mode = | Ready
+type Action = | Reset
+let initial_mode: Mode = Ready
+fn update action: Action -> mode: Mode -> Mode = mode
+
+pub effect fn main =
+  dom.app {
+    target: "#app",
+    initial: initial_mode,
+    update
+  }
+"##;
+    let incomplete = r#"import * as dom from "std/web/dom"
+
+pub effect fn main =
+  dom.app {
+"#;
+    let lsp_position = |text: &str, byte_offset: usize| {
+        let position = LineIndex::new(text)
+            .try_locate_encoded(byte_offset, PositionEncoding::Utf16)
+            .unwrap();
+        json!({"line": position.line, "character": position.character})
+    };
+    let source_cursor = source.rfind("  }").expect("app record close") + 2;
+    let value_cursor = source.rfind("initial_mode,").expect("record field value") + 4;
+    let input = [
+        json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"capabilities": {"general": {"positionEncodings": ["utf-16"]}}}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": uri, "languageId": "seseragi", "version": 1, "text": source
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 2, "method": "textDocument/completion",
+            "params": {
+                "textDocument": {"uri": uri},
+                "position": lsp_position(source, source_cursor)
+            }
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 5, "method": "textDocument/completion",
+            "params": {
+                "textDocument": {"uri": uri},
+                "position": lsp_position(source, value_cursor)
+            }
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didChange",
+            "params": {
+                "textDocument": {"uri": uri, "version": 2},
+                "contentChanges": [{"text": incomplete}]
+            }
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 3, "method": "textDocument/completion",
+            "params": {
+                "textDocument": {"uri": uri},
+                "position": lsp_position(incomplete, incomplete.len())
+            }
+        }),
+        json!({"jsonrpc": "2.0", "id": 4, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+
+    let messages = run_server(&input);
+    let complete = response(&messages, 2)["result"].as_array().unwrap();
+    assert_eq!(complete.len(), 1, "{complete:?}");
+    assert_eq!(complete[0]["label"], "view");
+    assert_eq!(complete[0]["detail"], "Mode -> Html<Action>");
+    assert_eq!(complete[0]["insertText"], "view: ");
+    assert_eq!(complete[0]["kind"], 5);
+
+    let value_completions = response(&messages, 5)["result"].as_array().unwrap();
+    assert!(value_completions
+        .iter()
+        .any(|item| item["label"] == "initial_mode"));
+    assert!(!value_completions
+        .iter()
+        .any(|item| item["data"]["kind"] == "expected-record-field"));
+
+    let recovered = response(&messages, 3)["result"].as_array().unwrap();
+    assert_eq!(
+        recovered
+            .iter()
+            .map(|item| item["label"].as_str().unwrap())
+            .collect::<Vec<_>>(),
+        ["target", "initial", "update", "view"]
+    );
+}
+
+#[test]
 fn binary_serves_open_document_diagnostics_over_stdio() {
     let input = [
         json!({
@@ -384,6 +484,20 @@ fn binary_serves_analysis_features_and_quick_fixes_over_stdio() {
     let completions = response(&messages, 3)["result"].as_array().unwrap();
     assert!(completions.iter().any(|item| item["label"] == "addOne"));
     assert!(completions.iter().any(|item| item["label"] == "join"));
+    let add = completions
+        .iter()
+        .find(|item| item["label"] == "add")
+        .expect("function completion");
+    assert!(add["detail"].as_str().is_some_and(|detail| {
+        detail.contains("left: Int") && detail.contains("right: Int") && detail.ends_with("Int")
+    }));
+    let add_one = completions
+        .iter()
+        .find(|item| item["label"] == "addOne")
+        .expect("partial function completion");
+    assert!(add_one["detail"]
+        .as_str()
+        .is_some_and(|detail| { detail.contains("arg1: Int") && detail.ends_with("Int") }));
 
     let signature = &response(&messages, 4)["result"];
     assert!(signature["signatures"][0]["label"]

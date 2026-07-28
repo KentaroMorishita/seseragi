@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "source": "artifact/web-html-props/main.ssrg",
+  "source": "main.ssrg",
   "module": "artifact/web-html-props",
   "diagnostics": {
     "schema": 1,
@@ -202,10 +202,2266 @@
       }
     ]
   },
-  "symbols": [],
-  "symbolOccurrences": [],
-  "typeOccurrences": [],
-  "callableOccurrences": [],
+  "symbols": [
+    {
+      "id": 0,
+      "identity": "artifact/web-html-props::typo",
+      "name": "typo",
+      "module": "artifact/web-html-props",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 41,
+        "end": 45
+      },
+      "typeName": "Unit -> html.Html<Never>",
+      "callable": {
+        "identity": "artifact/web-html-props::typo",
+        "name": "typo",
+        "module": "artifact/web-html-props",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "type": "Unit"
+          }
+        ],
+        "result": "html.Html<Never>",
+        "constraints": [],
+        "signature": "typo Unit -> html.Html<Never>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 1,
+      "identity": "artifact/web-html-props::invalidProp",
+      "name": "invalidProp",
+      "module": "artifact/web-html-props",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 122,
+        "end": 133
+      },
+      "typeName": "Unit -> html.Html<Never>",
+      "callable": {
+        "identity": "artifact/web-html-props::invalidProp",
+        "name": "invalidProp",
+        "module": "artifact/web-html-props",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "type": "Unit"
+          }
+        ],
+        "result": "html.Html<Never>",
+        "constraints": [],
+        "signature": "invalidProp Unit -> html.Html<Never>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 2,
+      "identity": "artifact/web-html-props::missingRequired",
+      "name": "missingRequired",
+      "module": "artifact/web-html-props",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 195,
+        "end": 210
+      },
+      "typeName": "Unit -> html.Html<Never>",
+      "callable": {
+        "identity": "artifact/web-html-props::missingRequired",
+        "name": "missingRequired",
+        "module": "artifact/web-html-props",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "type": "Unit"
+          }
+        ],
+        "result": "html.Html<Never>",
+        "constraints": [],
+        "signature": "missingRequired Unit -> html.Html<Never>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 3,
+      "identity": "artifact/web-html-props::voidChildren",
+      "name": "voidChildren",
+      "module": "artifact/web-html-props",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 274,
+        "end": 286
+      },
+      "typeName": "Unit -> html.Html<Never>",
+      "callable": {
+        "identity": "artifact/web-html-props::voidChildren",
+        "name": "voidChildren",
+        "module": "artifact/web-html-props",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "type": "Unit"
+          }
+        ],
+        "result": "html.Html<Never>",
+        "constraints": [],
+        "signature": "voidChildren Unit -> html.Html<Never>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 4,
+      "identity": "artifact/web-html-props::unusedControl",
+      "name": "unusedControl",
+      "module": "artifact/web-html-props",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 347,
+        "end": 360
+      },
+      "typeName": "Unit -> html.Html<Never>",
+      "callable": {
+        "identity": "artifact/web-html-props::unusedControl",
+        "name": "unusedControl",
+        "module": "artifact/web-html-props",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "type": "Unit"
+          }
+        ],
+        "result": "html.Html<Never>",
+        "constraints": [],
+        "signature": "unusedControl Unit -> html.Html<Never>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 5,
+      "identity": "std/web/html::*",
+      "name": "html",
+      "module": "std/web/html",
+      "namespace": "module",
+      "kind": "module-import",
+      "definition": {
+        "start": 12,
+        "end": 16
+      }
+    },
+    {
+      "id": 6,
+      "identity": "std/web/html::Html::T0",
+      "name": "T0",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "identity": "std/web/html::Html",
+      "name": "Html",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 12,
+        "end": 16
+      }
+    },
+    {
+      "id": 8,
+      "identity": "std/web/html::Style",
+      "name": "Style",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 9,
+      "identity": "std/web/html::Tag",
+      "name": "Tag",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Validated opaque name for a custom HTML element."
+    },
+    {
+      "id": 10,
+      "identity": "std/web/html::Attribute",
+      "name": "Attribute",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Validated opaque custom HTML attribute name and value."
+    },
+    {
+      "id": 11,
+      "identity": "std/web/html::InputEvent",
+      "name": "InputEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Immutable text-input snapshot containing only the current String value."
+    },
+    {
+      "id": 12,
+      "identity": "std/web/html::ChangeEvent",
+      "name": "ChangeEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Immutable form-control snapshot containing value and checked state."
+    },
+    {
+      "id": 13,
+      "identity": "std/web/html::KeyboardEvent",
+      "name": "KeyboardEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Immutable keyboard snapshot containing key identity, repeat state, and modifier keys."
+    },
+    {
+      "id": 14,
+      "identity": "std/web/html::MouseEvent",
+      "name": "MouseEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Immutable mouse snapshot containing button, coordinates, and modifier keys."
+    },
+    {
+      "id": 15,
+      "identity": "std/web/html::PointerEvent",
+      "name": "PointerEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Immutable pointer snapshot distinguishing mouse, touch, and pen input."
+    },
+    {
+      "id": 16,
+      "identity": "std/web/html::ScrollEvent",
+      "name": "ScrollEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Immutable scroll snapshot containing the current element offsets."
+    },
+    {
+      "id": 17,
+      "identity": "std/web/html::EventAction::Action",
+      "name": "Action",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 18,
+      "identity": "std/web/html::EventAction",
+      "name": "EventAction",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Explicit event outcome describing dispatch, default prevention, and propagation control."
+    },
+    {
+      "id": 19,
+      "identity": "std/web/html::IgnoreEvent",
+      "name": "IgnoreEvent",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Ignores an event without dispatch or browser control."
+    },
+    {
+      "id": 20,
+      "identity": "std/web/html::Dispatch",
+      "name": "Dispatch",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "Action -> EventAction<Action>",
+      "callable": {
+        "identity": "std/web/html::Dispatch",
+        "name": "Dispatch",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Action"
+          }
+        ],
+        "result": "EventAction<Action>",
+        "constraints": [],
+        "signature": "Dispatch<Action> arg1: Action -> EventAction<Action>",
+        "remainingParameters": []
+      },
+      "description": "Dispatches an Action without controlling the browser event."
+    },
+    {
+      "id": 21,
+      "identity": "std/web/html::DispatchPreventDefault",
+      "name": "DispatchPreventDefault",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "Action -> EventAction<Action>",
+      "callable": {
+        "identity": "std/web/html::DispatchPreventDefault",
+        "name": "DispatchPreventDefault",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Action"
+          }
+        ],
+        "result": "EventAction<Action>",
+        "constraints": [],
+        "signature": "DispatchPreventDefault<Action> arg1: Action -> EventAction<Action>",
+        "remainingParameters": []
+      },
+      "description": "Prevents the browser default before dispatching an Action."
+    },
+    {
+      "id": 22,
+      "identity": "std/web/html::DispatchStopPropagation",
+      "name": "DispatchStopPropagation",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "Action -> EventAction<Action>",
+      "callable": {
+        "identity": "std/web/html::DispatchStopPropagation",
+        "name": "DispatchStopPropagation",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Action"
+          }
+        ],
+        "result": "EventAction<Action>",
+        "constraints": [],
+        "signature": "DispatchStopPropagation<Action> arg1: Action -> EventAction<Action>",
+        "remainingParameters": []
+      },
+      "description": "Stops event propagation before dispatching an Action."
+    },
+    {
+      "id": 23,
+      "identity": "std/web/html::DispatchPreventDefaultAndStop",
+      "name": "DispatchPreventDefaultAndStop",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "Action -> EventAction<Action>",
+      "callable": {
+        "identity": "std/web/html::DispatchPreventDefaultAndStop",
+        "name": "DispatchPreventDefaultAndStop",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Action"
+          }
+        ],
+        "result": "EventAction<Action>",
+        "constraints": [],
+        "signature": "DispatchPreventDefaultAndStop<Action> arg1: Action -> EventAction<Action>",
+        "remainingParameters": []
+      },
+      "description": "Prevents the browser default and stops propagation before dispatching an Action."
+    },
+    {
+      "id": 24,
+      "identity": "std/web/html::HtmlBuildError",
+      "name": "HtmlBuildError",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Describes a rejected custom HTML tag or attribute name."
+    },
+    {
+      "id": 25,
+      "identity": "std/web/html::InvalidTagName",
+      "name": "InvalidTagName",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "String -> HtmlBuildError",
+      "callable": {
+        "identity": "std/web/html::InvalidTagName",
+        "name": "InvalidTagName",
+        "module": "std/web/html",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "HtmlBuildError",
+        "constraints": [],
+        "signature": "InvalidTagName arg1: String -> HtmlBuildError",
+        "remainingParameters": []
+      },
+      "description": "Reports a rejected custom-element name."
+    },
+    {
+      "id": 26,
+      "identity": "std/web/html::InvalidAttributeName",
+      "name": "InvalidAttributeName",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "String -> HtmlBuildError",
+      "callable": {
+        "identity": "std/web/html::InvalidAttributeName",
+        "name": "InvalidAttributeName",
+        "module": "std/web/html",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "HtmlBuildError",
+        "constraints": [],
+        "signature": "InvalidAttributeName arg1: String -> HtmlBuildError",
+        "remainingParameters": []
+      },
+      "description": "Reports an invalid custom attribute spelling."
+    },
+    {
+      "id": 27,
+      "identity": "std/web/html::ReservedAttributeName",
+      "name": "ReservedAttributeName",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "String -> HtmlBuildError",
+      "callable": {
+        "identity": "std/web/html::ReservedAttributeName",
+        "name": "ReservedAttributeName",
+        "module": "std/web/html",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "HtmlBuildError",
+        "constraints": [],
+        "signature": "ReservedAttributeName arg1: String -> HtmlBuildError",
+        "remainingParameters": []
+      },
+      "description": "Reports a custom attribute that collides with typed or runtime-owned props."
+    },
+    {
+      "id": 28,
+      "identity": "std/prelude::Never",
+      "name": "Never",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 29,
+      "identity": "std/web/html::div",
+      "name": "div",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "imported",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "typeName": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), children: C } -> Html<Action>",
+      "callable": {
+        "identity": "std/web/html::div",
+        "name": "div",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), children: C }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "div<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), children: C } -> Html<Action> where IntoChildren<C, Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 30,
+      "identity": "std/web/html::textarea",
+      "name": "textarea",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "imported",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "typeName": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
+      "callable": {
+        "identity": "std/web/html::textarea",
+        "name": "textarea",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [],
+        "signature": "textarea<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
+        "remainingParameters": []
+      },
+      "description": "Creates a controlled textarea with typed input and change snapshots."
+    },
+    {
+      "id": 31,
+      "identity": "std/web/html::img",
+      "name": "img",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "imported",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "typeName": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src: String, alt: String, width?: Int, height?: Int, loading?: String } -> Html<Action>",
+      "callable": {
+        "identity": "std/web/html::img",
+        "name": "img",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src: String, alt: String, width?: Int, height?: Int, loading?: String }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [],
+        "signature": "img<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src: String, alt: String, width?: Int, height?: Int, loading?: String } -> Html<Action>",
+        "remainingParameters": []
+      },
+      "description": "Creates a void image element with required source and alt text."
+    },
+    {
+      "id": 32,
+      "identity": "std/web/html::br",
+      "name": "br",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "imported",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "typeName": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>) } -> Html<Action>",
+      "callable": {
+        "identity": "std/web/html::br",
+        "name": "br",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>) }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [],
+        "signature": "br<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>) } -> Html<Action>",
+        "remainingParameters": []
+      },
+      "description": "Creates a void line-break element without children."
+    },
+    {
+      "id": 33,
+      "identity": "std/web/html::button",
+      "name": "button",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "imported",
+      "definition": {
+        "start": 12,
+        "end": 16
+      },
+      "typeName": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C } -> Html<Action>",
+      "callable": {
+        "identity": "std/web/html::button",
+        "name": "button",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "button<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C } -> Html<Action> where IntoChildren<C, Action>",
+        "remainingParameters": []
+      }
+    }
+  ],
+  "symbolOccurrences": [
+    {
+      "range": {
+        "start": 41,
+        "end": 45
+      },
+      "symbol": 0
+    },
+    {
+      "range": {
+        "start": 122,
+        "end": 133
+      },
+      "symbol": 1
+    },
+    {
+      "range": {
+        "start": 195,
+        "end": 210
+      },
+      "symbol": 2
+    },
+    {
+      "range": {
+        "start": 274,
+        "end": 286
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 347,
+        "end": 360
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 12,
+        "end": 16
+      },
+      "symbol": 5
+    },
+    {
+      "range": {
+        "start": 49,
+        "end": 65
+      },
+      "symbol": 7
+    },
+    {
+      "range": {
+        "start": 59,
+        "end": 64
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 70,
+        "end": 78
+      },
+      "symbol": 29
+    },
+    {
+      "range": {
+        "start": 137,
+        "end": 153
+      },
+      "symbol": 7
+    },
+    {
+      "range": {
+        "start": 147,
+        "end": 152
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 158,
+        "end": 171
+      },
+      "symbol": 30
+    },
+    {
+      "range": {
+        "start": 214,
+        "end": 230
+      },
+      "symbol": 7
+    },
+    {
+      "range": {
+        "start": 224,
+        "end": 229
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 235,
+        "end": 243
+      },
+      "symbol": 31
+    },
+    {
+      "range": {
+        "start": 290,
+        "end": 306
+      },
+      "symbol": 7
+    },
+    {
+      "range": {
+        "start": 300,
+        "end": 305
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 311,
+        "end": 318
+      },
+      "symbol": 32
+    },
+    {
+      "range": {
+        "start": 364,
+        "end": 380
+      },
+      "symbol": 7
+    },
+    {
+      "range": {
+        "start": 374,
+        "end": 379
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 385,
+        "end": 396
+      },
+      "symbol": 33
+    }
+  ],
+  "typeOccurrences": [
+    {
+      "range": {
+        "start": 41,
+        "end": 45
+      },
+      "type": "Unit -> html.Html<Never>"
+    },
+    {
+      "range": {
+        "start": 70,
+        "end": 78
+      },
+      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), children: C } -> Html<Action>"
+    },
+    {
+      "range": {
+        "start": 70,
+        "end": 117
+      },
+      "type": "html.Html<Never>"
+    },
+    {
+      "range": {
+        "start": 79,
+        "end": 117
+      },
+      "type": "{ children: String, clasName: String }"
+    },
+    {
+      "range": {
+        "start": 91,
+        "end": 97
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 109,
+        "end": 115
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 122,
+        "end": 133
+      },
+      "type": "Unit -> html.Html<Never>"
+    },
+    {
+      "range": {
+        "start": 158,
+        "end": 171
+      },
+      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>"
+    },
+    {
+      "range": {
+        "start": 158,
+        "end": 190
+      },
+      "type": "html.Html<Never>"
+    },
+    {
+      "range": {
+        "start": 172,
+        "end": 190
+      },
+      "type": "{ href: String }"
+    },
+    {
+      "range": {
+        "start": 180,
+        "end": 188
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 195,
+        "end": 210
+      },
+      "type": "Unit -> html.Html<Never>"
+    },
+    {
+      "range": {
+        "start": 235,
+        "end": 243
+      },
+      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src: String, alt: String, width?: Int, height?: Int, loading?: String } -> Html<Action>"
+    },
+    {
+      "range": {
+        "start": 235,
+        "end": 269
+      },
+      "type": "unknown"
+    },
+    {
+      "range": {
+        "start": 244,
+        "end": 269
+      },
+      "type": "{ alt: String }"
+    },
+    {
+      "range": {
+        "start": 251,
+        "end": 267
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 274,
+        "end": 286
+      },
+      "type": "Unit -> html.Html<Never>"
+    },
+    {
+      "range": {
+        "start": 311,
+        "end": 318
+      },
+      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>) } -> Html<Action>"
+    },
+    {
+      "range": {
+        "start": 311,
+        "end": 342
+      },
+      "type": "html.Html<Never>"
+    },
+    {
+      "range": {
+        "start": 319,
+        "end": 342
+      },
+      "type": "{ children: String }"
+    },
+    {
+      "range": {
+        "start": 331,
+        "end": 340
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 347,
+        "end": 360
+      },
+      "type": "Unit -> html.Html<Never>"
+    },
+    {
+      "range": {
+        "start": 385,
+        "end": 396
+      },
+      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C } -> Html<Action>"
+    },
+    {
+      "range": {
+        "start": 385,
+        "end": 445
+      },
+      "type": "html.Html<Never>"
+    },
+    {
+      "range": {
+        "start": 397,
+        "end": 445
+      },
+      "type": "{ children: String, stopClickPropagation: Bool }"
+    },
+    {
+      "range": {
+        "start": 421,
+        "end": 425
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 437,
+        "end": 443
+      },
+      "type": "String"
+    }
+  ],
+  "callableOccurrences": [
+    {
+      "range": {
+        "start": 41,
+        "end": 45
+      },
+      "callable": {
+        "identity": "artifact/web-html-props::typo",
+        "name": "typo",
+        "module": "artifact/web-html-props",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "type": "Unit"
+          }
+        ],
+        "result": "html.Html<Never>",
+        "constraints": [],
+        "signature": "typo Unit -> html.Html<Never>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 122,
+        "end": 133
+      },
+      "callable": {
+        "identity": "artifact/web-html-props::invalidProp",
+        "name": "invalidProp",
+        "module": "artifact/web-html-props",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "type": "Unit"
+          }
+        ],
+        "result": "html.Html<Never>",
+        "constraints": [],
+        "signature": "invalidProp Unit -> html.Html<Never>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 195,
+        "end": 210
+      },
+      "callable": {
+        "identity": "artifact/web-html-props::missingRequired",
+        "name": "missingRequired",
+        "module": "artifact/web-html-props",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "type": "Unit"
+          }
+        ],
+        "result": "html.Html<Never>",
+        "constraints": [],
+        "signature": "missingRequired Unit -> html.Html<Never>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 274,
+        "end": 286
+      },
+      "callable": {
+        "identity": "artifact/web-html-props::voidChildren",
+        "name": "voidChildren",
+        "module": "artifact/web-html-props",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "type": "Unit"
+          }
+        ],
+        "result": "html.Html<Never>",
+        "constraints": [],
+        "signature": "voidChildren Unit -> html.Html<Never>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 347,
+        "end": 360
+      },
+      "callable": {
+        "identity": "artifact/web-html-props::unusedControl",
+        "name": "unusedControl",
+        "module": "artifact/web-html-props",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "type": "Unit"
+          }
+        ],
+        "result": "html.Html<Never>",
+        "constraints": [],
+        "signature": "unusedControl Unit -> html.Html<Never>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 70,
+        "end": 78
+      },
+      "callable": {
+        "identity": "std/web/html::div",
+        "name": "div",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), children: C }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "div<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), children: C } -> Html<Action> where IntoChildren<C, Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 158,
+        "end": 171
+      },
+      "callable": {
+        "identity": "std/web/html::textarea",
+        "name": "textarea",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [],
+        "signature": "textarea<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 235,
+        "end": 243
+      },
+      "callable": {
+        "identity": "std/web/html::img",
+        "name": "img",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src: String, alt: String, width?: Int, height?: Int, loading?: String }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [],
+        "signature": "img<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src: String, alt: String, width?: Int, height?: Int, loading?: String } -> Html<Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 311,
+        "end": 318
+      },
+      "callable": {
+        "identity": "std/web/html::br",
+        "name": "br",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>) }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [],
+        "signature": "br<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>) } -> Html<Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 385,
+        "end": 396
+      },
+      "callable": {
+        "identity": "std/web/html::button",
+        "name": "button",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "button<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C } -> Html<Action> where IntoChildren<C, Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 70,
+        "end": 117
+      },
+      "callable": {
+        "identity": "std/web/html::div",
+        "name": "div",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), children: C }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "div<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), children: C } -> Html<Action> where IntoChildren<C, Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 158,
+        "end": 190
+      },
+      "callable": {
+        "identity": "std/web/html::textarea",
+        "name": "textarea",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [],
+        "signature": "textarea<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 235,
+        "end": 269
+      },
+      "callable": {
+        "identity": "std/web/html::img",
+        "name": "img",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src: String, alt: String, width?: Int, height?: Int, loading?: String }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [],
+        "signature": "img<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src: String, alt: String, width?: Int, height?: Int, loading?: String } -> Html<Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 311,
+        "end": 342
+      },
+      "callable": {
+        "identity": "std/web/html::br",
+        "name": "br",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>) }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [],
+        "signature": "br<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>) } -> Html<Action>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 385,
+        "end": 445
+      },
+      "callable": {
+        "identity": "std/web/html::button",
+        "name": "button",
+        "module": "std/web/html",
+        "typeParameters": [
+          "Action",
+          "C"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C }"
+          }
+        ],
+        "result": "Html<Action>",
+        "constraints": [
+          "IntoChildren<C, Action>"
+        ],
+        "signature": "button<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: C } -> Html<Action> where IntoChildren<C, Action>",
+        "remainingParameters": []
+      }
+    }
+  ],
+  "completionContexts": [
+    {
+      "range": {
+        "start": 79,
+        "end": 117
+      },
+      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), children: String }",
+      "recordFields": [
+        {
+          "name": "id",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "hidden",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "key",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "Style"
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "Array<Attribute>"
+        },
+        {
+          "name": "role",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "tabIndex",
+          "optional": true,
+          "type": "Int"
+        },
+        {
+          "name": "lang",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "dir",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "draggable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "contentEditable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "preventClickDefault",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "stopClickPropagation",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onFocus",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onBlur",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onKeyDown",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onKeyUp",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseDown",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseUp",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerDown",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerUp",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onDoubleClick",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onContextMenu",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onScroll",
+          "optional": true,
+          "type": "ScrollEvent -> EventAction<Action>"
+        }
+      ]
+    },
+    {
+      "range": {
+        "start": 172,
+        "end": 190
+      },
+      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, rows?: Int, cols?: Int, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) }",
+      "recordFields": [
+        {
+          "name": "id",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "hidden",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "key",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "Style"
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "Array<Attribute>"
+        },
+        {
+          "name": "role",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "tabIndex",
+          "optional": true,
+          "type": "Int"
+        },
+        {
+          "name": "lang",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "dir",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "draggable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "contentEditable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "preventClickDefault",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "stopClickPropagation",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onFocus",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onBlur",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onKeyDown",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onKeyUp",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseDown",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseUp",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerDown",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerUp",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onDoubleClick",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onContextMenu",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onScroll",
+          "optional": true,
+          "type": "ScrollEvent -> EventAction<Action>"
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "required",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "readOnly",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "placeholder",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "autoComplete",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "autoFocus",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "rows",
+          "optional": true,
+          "type": "Int"
+        },
+        {
+          "name": "cols",
+          "optional": true,
+          "type": "Int"
+        },
+        {
+          "name": "onInput",
+          "optional": true,
+          "type": "InputEvent -> Action"
+        },
+        {
+          "name": "onChange",
+          "optional": true,
+          "type": "ChangeEvent -> Action"
+        }
+      ]
+    },
+    {
+      "range": {
+        "start": 244,
+        "end": 269
+      },
+      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src: String, alt: String, width?: Int, height?: Int, loading?: String }",
+      "recordFields": [
+        {
+          "name": "id",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "hidden",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "key",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "Style"
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "Array<Attribute>"
+        },
+        {
+          "name": "role",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "tabIndex",
+          "optional": true,
+          "type": "Int"
+        },
+        {
+          "name": "lang",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "dir",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "draggable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "contentEditable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "preventClickDefault",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "stopClickPropagation",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onFocus",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onBlur",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onKeyDown",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onKeyUp",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseDown",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseUp",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerDown",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerUp",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onDoubleClick",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onContextMenu",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onScroll",
+          "optional": true,
+          "type": "ScrollEvent -> EventAction<Action>"
+        },
+        {
+          "name": "src",
+          "optional": false,
+          "type": "String"
+        },
+        {
+          "name": "width",
+          "optional": true,
+          "type": "Int"
+        },
+        {
+          "name": "height",
+          "optional": true,
+          "type": "Int"
+        },
+        {
+          "name": "loading",
+          "optional": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "range": {
+        "start": 319,
+        "end": 342
+      },
+      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>) }",
+      "recordFields": [
+        {
+          "name": "id",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "hidden",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "key",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "Style"
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "Array<Attribute>"
+        },
+        {
+          "name": "role",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "tabIndex",
+          "optional": true,
+          "type": "Int"
+        },
+        {
+          "name": "lang",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "dir",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "draggable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "contentEditable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "preventClickDefault",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "stopClickPropagation",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onFocus",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onBlur",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onKeyDown",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onKeyUp",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseDown",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseUp",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerDown",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerUp",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onDoubleClick",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onContextMenu",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onScroll",
+          "optional": true,
+          "type": "ScrollEvent -> EventAction<Action>"
+        }
+      ]
+    },
+    {
+      "range": {
+        "start": 397,
+        "end": 445
+      },
+      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: String }",
+      "recordFields": [
+        {
+          "name": "id",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "hidden",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "key",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "Style"
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "Array<Attribute>"
+        },
+        {
+          "name": "role",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "tabIndex",
+          "optional": true,
+          "type": "Int"
+        },
+        {
+          "name": "lang",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "dir",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "draggable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "contentEditable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "preventClickDefault",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onFocus",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onBlur",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "onKeyDown",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onKeyUp",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseDown",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseUp",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerDown",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerUp",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onDoubleClick",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onContextMenu",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onScroll",
+          "optional": true,
+          "type": "ScrollEvent -> EventAction<Action>"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "buttonType",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "autoFocus",
+          "optional": true,
+          "type": "Bool"
+        }
+      ]
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/prelude::all",

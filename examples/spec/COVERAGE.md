@@ -78,7 +78,7 @@
 | foreign module load mode / single-flight      | interop guide     | `projects/foreign-pure-load`, `foreign-task-*` | covered |
 | source map / cross-language stack             | interop guide     | `projects/source-map-rejection`                | partial |
 | manifest、dependency、lockfile                | package guide     | `fixtures/projects/package-*` + split RPS manifest discovery | partial (path dependency execution + source identity audit) |
-| parser recovery、formatter、LSP、highlight    | lessons全体       | tooling snapshots + Phase 1 format round-trip   | partial |
+| parser recovery、formatter、LSP、highlight    | lessons全体       | `schema-1/expected-record-completion` + LSP stdio tests + tooling snapshots + Phase 1 format round-trip; semantic recovery Typed HIRからgeneric / nested recordの不足fieldとcompact型を共有Analysis completionへ出し、未閉じrecordもrequest-local recoveryで補完 | partial |
 | shared-driver playground / browser host       | `examples/samples/` | `apps/playground/tests/playground.integration.test.ts` + native CLI sample check | covered |
 | stable tool options / target capabilities     | none              | `projects/target-capabilities`                 | covered |
 | diagnostic schema / inference explanation     | none              | diagnostic JSON / explain snapshots            | partial |

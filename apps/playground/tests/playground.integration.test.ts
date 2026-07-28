@@ -271,6 +271,41 @@ describe("Playground sample catalog", () => {
     )
   })
 
+  test("shares generic and nested expected record completion metadata", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/expected-record-completion/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const analysis = await analyze(source)
+
+    expect(analysis.diagnostics.diagnostics[0]).toMatchObject({
+      code: "SES-T0101",
+      messageKey: "call.argument-type-mismatch",
+    })
+    expect(
+      (analysis.completionContexts ?? [])
+        .filter((context) => (context.recordFields?.length ?? 0) > 0)
+        .map((context) => ({
+          type: context.type,
+          fields: context.recordFields?.map((field) => ({
+            name: field.name,
+            type: field.type,
+          })),
+        }))
+    ).toEqual([
+      {
+        type: "{ initial: Int, profile: { label: String, count: Int }, render: (Int -> String) }",
+        fields: [{ name: "render", type: "Int -> String" }],
+      },
+      {
+        type: "{ label: String, count: Int }",
+        fields: [{ name: "count", type: "Int" }],
+      },
+    ])
+  })
+
   test("keeps concrete call results across top-level bindings in WASM analysis", async () => {
     const source = await Bun.file(
       new URL(

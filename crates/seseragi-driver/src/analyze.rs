@@ -1,8 +1,8 @@
 use crate::CompileInput;
 use seseragi_project::{link_module, standard_module_target};
 use seseragi_semantics::{
-    analysis_document, analyze_linked_module, diagnostics_only_analysis, AnalysisDocument,
-    AnalyzedModule,
+    analysis_document, analyze_linked_module, analyze_linked_module_recovering,
+    diagnostics_only_analysis, AnalysisDocument, AnalyzedModule,
 };
 use seseragi_syntax::{
     parse_diagnostics, parse_unlinked_module_interface, DiagnosticArtifact, DiagnosticSeverity,
@@ -12,7 +12,7 @@ use std::collections::BTreeMap;
 /// Runs the shared compiler frontend without lowering, code generation, or
 /// Effect execution and returns the reusable position-query snapshot.
 pub fn analyze_module(input: CompileInput<'_>) -> AnalysisDocument {
-    match analyze_module_frontend(input) {
+    match analyze_module_frontend_with(input, true) {
         Ok(analyzed) => {
             analysis_document(analyzed.diagnostics, analyzed.resolved, &analyzed.typed_hir)
         }
@@ -24,6 +24,13 @@ pub fn analyze_module(input: CompileInput<'_>) -> AnalysisDocument {
 
 pub(crate) fn analyze_module_frontend(
     input: CompileInput<'_>,
+) -> Result<AnalyzedModule, DiagnosticArtifact> {
+    analyze_module_frontend_with(input, false)
+}
+
+fn analyze_module_frontend_with(
+    input: CompileInput<'_>,
+    retain_semantic_recovery: bool,
 ) -> Result<AnalyzedModule, DiagnosticArtifact> {
     let mut diagnostics = parse_diagnostics(input.source_name(), input.source());
     if has_errors(&diagnostics) {
@@ -47,7 +54,11 @@ pub(crate) fn analyze_module_frontend(
             return Err(diagnostics);
         }
     };
-    analyze_linked_module(diagnostics, linked, input.source())
+    if retain_semantic_recovery {
+        analyze_linked_module_recovering(diagnostics, linked, input.source())
+    } else {
+        analyze_linked_module(diagnostics, linked, input.source())
+    }
 }
 
 fn has_errors(diagnostics: &DiagnosticArtifact) -> bool {
@@ -167,6 +178,114 @@ mod tests {
                 .map(|occurrence| occurrence.type_name.as_str()),
             Some("Maybe<Int>")
         );
+    }
+
+    #[test]
+    fn analysis_exposes_instantiated_missing_record_fields_at_call_sites() {
+        let source = r##"import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+
+type Mode = | Ready
+type Action = | Reset
+
+let initial_mode: Mode = Ready
+
+fn update action: Action -> mode: Mode -> Mode = mode
+
+pub effect fn main =
+  dom.app {
+    target: "#app",
+    initial: initial_mode,
+    update
+  }
+"##;
+        let analysis = analyze_module(CompileInput::new(
+            "main.ssrg",
+            "analysis/expected-record",
+            source,
+        ));
+
+        let cursor = source.rfind("  }").expect("app record close") + 2;
+        let completion = analysis
+            .completion_at(cursor)
+            .expect("app record has an expected type");
+        assert_eq!(
+            completion
+                .record_fields
+                .iter()
+                .map(|field| (field.name.as_str(), field.type_name.as_str()))
+                .collect::<Vec<_>>(),
+            [("view", "Mode -> Html<Action>")]
+        );
+    }
+
+    #[test]
+    fn analysis_selects_the_innermost_nested_record_expectation() {
+        let source = r#"fn accept
+  config: { profile: { name: String, score: Int }, enabled: Bool }
+  -> Int = 0
+
+let result =
+  accept {
+    profile: {
+      name: "Aki"
+    },
+    enabled: true
+  }
+"#;
+        let analysis = analyze_module(CompileInput::new(
+            "main.ssrg",
+            "analysis/nested-record-completion",
+            source,
+        ));
+
+        let cursor = source.find("    },").expect("nested record close") + 4;
+        let completion = analysis
+            .completion_at(cursor)
+            .expect("nested record has an expected type");
+        assert_eq!(completion.type_name, "{ name: String, score: Int }");
+        assert_eq!(completion.record_fields.len(), 1);
+        assert_eq!(completion.record_fields[0].name, "score");
+        assert_eq!(completion.record_fields[0].type_name, "Int");
+    }
+
+    #[test]
+    fn analysis_keeps_remaining_record_arguments_after_partial_application() {
+        let source = r#"fn configure
+  first: { host: String }
+  -> second: { secure: Bool, retries: Int }
+  -> Int = 0
+
+let with_host = configure { host: "localhost" }
+let result = configure { host: "localhost" } { secure: true }
+"#;
+        let analysis = analyze_module(CompileInput::new(
+            "main.ssrg",
+            "analysis/partial-record-completion",
+            source,
+        ));
+
+        let first_argument = source.find("host: \"").expect("first argument");
+        let partial = analysis
+            .callable_at(first_argument)
+            .expect("partial call remains queryable");
+        assert_eq!(partial.remaining_parameters.len(), 1);
+        assert_eq!(
+            partial.remaining_parameters[0].name.as_deref(),
+            Some("second")
+        );
+        assert_eq!(
+            partial.remaining_parameters[0].type_name,
+            "{ secure: Bool, retries: Int }"
+        );
+
+        let cursor = source.rfind('}').expect("second record close");
+        let completion = analysis
+            .completion_at(cursor)
+            .expect("the second curried argument retains its record expectation");
+        assert_eq!(completion.record_fields.len(), 1);
+        assert_eq!(completion.record_fields[0].name, "retries");
+        assert_eq!(completion.record_fields[0].type_name, "Int");
     }
 
     #[test]

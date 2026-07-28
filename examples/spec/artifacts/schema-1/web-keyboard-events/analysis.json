@@ -2000,6 +2000,311 @@
       }
     }
   ],
+  "completionContexts": [
+    {
+      "range": {
+        "start": 519,
+        "end": 676
+      },
+      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: String }",
+      "recordFields": [
+        {
+          "name": "className",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "hidden",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "key",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "Style"
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "Array<Attribute>"
+        },
+        {
+          "name": "role",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "tabIndex",
+          "optional": true,
+          "type": "Int"
+        },
+        {
+          "name": "lang",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "dir",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "draggable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "contentEditable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "Action"
+        },
+        {
+          "name": "preventClickDefault",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "stopClickPropagation",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onMouseDown",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onMouseUp",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerDown",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onPointerUp",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onDoubleClick",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onContextMenu",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Action>"
+        },
+        {
+          "name": "onScroll",
+          "optional": true,
+          "type": "ScrollEvent -> EventAction<Action>"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "buttonType",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "autoFocus",
+          "optional": true,
+          "type": "Bool"
+        }
+      ]
+    },
+    {
+      "range": {
+        "start": 754,
+        "end": 841
+      },
+      "type": "{ id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Effect<{}, Never, Unit>, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Effect<{}, Never, Unit>, onBlur?: Effect<{}, Never, Unit>, onKeyDown?: (KeyboardEvent -> EventAction<Effect<{}, Never, Unit>>), onKeyUp?: (KeyboardEvent -> EventAction<Effect<{}, Never, Unit>>), onMouseDown?: (MouseEvent -> EventAction<Effect<{}, Never, Unit>>), onMouseUp?: (MouseEvent -> EventAction<Effect<{}, Never, Unit>>), onPointerDown?: (PointerEvent -> EventAction<Effect<{}, Never, Unit>>), onPointerUp?: (PointerEvent -> EventAction<Effect<{}, Never, Unit>>), onDoubleClick?: (MouseEvent -> EventAction<Effect<{}, Never, Unit>>), onContextMenu?: (MouseEvent -> EventAction<Effect<{}, Never, Unit>>), onScroll?: (ScrollEvent -> EventAction<Effect<{}, Never, Unit>>), disabled?: Bool, buttonType?: String, name?: String, value?: String, autoFocus?: Bool, children: String }",
+      "recordFields": [
+        {
+          "name": "id",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "title",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "hidden",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "key",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "style",
+          "optional": true,
+          "type": "Style"
+        },
+        {
+          "name": "attributes",
+          "optional": true,
+          "type": "Array<Attribute>"
+        },
+        {
+          "name": "role",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "tabIndex",
+          "optional": true,
+          "type": "Int"
+        },
+        {
+          "name": "lang",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "dir",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "draggable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "contentEditable",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onClick",
+          "optional": true,
+          "type": "Effect<{}, Never, Unit>"
+        },
+        {
+          "name": "preventClickDefault",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "stopClickPropagation",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "onBlur",
+          "optional": true,
+          "type": "Effect<{}, Never, Unit>"
+        },
+        {
+          "name": "onKeyUp",
+          "optional": true,
+          "type": "KeyboardEvent -> EventAction<Effect<{}, Never, Unit>>"
+        },
+        {
+          "name": "onMouseDown",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Effect<{}, Never, Unit>>"
+        },
+        {
+          "name": "onMouseUp",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Effect<{}, Never, Unit>>"
+        },
+        {
+          "name": "onPointerDown",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Effect<{}, Never, Unit>>"
+        },
+        {
+          "name": "onPointerUp",
+          "optional": true,
+          "type": "PointerEvent -> EventAction<Effect<{}, Never, Unit>>"
+        },
+        {
+          "name": "onDoubleClick",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Effect<{}, Never, Unit>>"
+        },
+        {
+          "name": "onContextMenu",
+          "optional": true,
+          "type": "MouseEvent -> EventAction<Effect<{}, Never, Unit>>"
+        },
+        {
+          "name": "onScroll",
+          "optional": true,
+          "type": "ScrollEvent -> EventAction<Effect<{}, Never, Unit>>"
+        },
+        {
+          "name": "disabled",
+          "optional": true,
+          "type": "Bool"
+        },
+        {
+          "name": "buttonType",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": "String"
+        },
+        {
+          "name": "autoFocus",
+          "optional": true,
+          "type": "Bool"
+        }
+      ]
+    }
+  ],
   "standardLibrary": [
     {
       "identity": "std/prelude::all",

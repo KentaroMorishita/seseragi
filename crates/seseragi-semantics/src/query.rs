@@ -9,6 +9,10 @@ use serde::Serialize;
 use seseragi_syntax::{ByteSpan, DiagnosticArtifact, InterfaceExport, InterfaceType};
 use std::collections::{BTreeMap, BTreeSet};
 
+mod completion;
+
+use completion::collect_completion_contexts;
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AnalysisParameter {
@@ -103,6 +107,31 @@ pub struct AnalysisCallableOccurrence {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
+pub struct AnalysisCompletionField {
+    pub name: String,
+    pub optional: bool,
+    #[serde(rename = "type")]
+    pub type_name: String,
+    #[serde(skip)]
+    pub type_document: TypeDocument,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AnalysisCompletionContext {
+    pub range: ByteSpan,
+    #[serde(rename = "type")]
+    pub type_name: String,
+    #[serde(skip)]
+    pub type_document: TypeDocument,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub record_fields: Vec<AnalysisCompletionField>,
+    #[serde(skip)]
+    pub excluded_ranges: Vec<ByteSpan>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct AnalysisReferenceItem {
     pub identity: String,
     pub name: String,
@@ -129,6 +158,8 @@ pub struct AnalysisDocument {
     pub symbol_occurrences: Vec<AnalysisSymbolOccurrence>,
     pub type_occurrences: Vec<AnalysisTypeOccurrence>,
     pub callable_occurrences: Vec<AnalysisCallableOccurrence>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub completion_contexts: Vec<AnalysisCompletionContext>,
     pub standard_library: Vec<AnalysisReferenceItem>,
     #[serde(skip)]
     scopes: Vec<crate::ResolvedScope>,
@@ -153,6 +184,19 @@ impl AnalysisDocument {
         smallest_containing(&self.callable_occurrences, position, |item| item.range)
             .map(|item| &item.callable)
             .or_else(|| self.symbol_at(position)?.callable.as_ref())
+    }
+
+    pub fn completion_at(&self, position: usize) -> Option<&AnalysisCompletionContext> {
+        self.completion_contexts
+            .iter()
+            .filter(|context| contains(context.range, position))
+            .filter(|context| {
+                !context
+                    .excluded_ranges
+                    .iter()
+                    .any(|range| contains(*range, position))
+            })
+            .min_by_key(|context| span_length(context.range))
     }
 
     pub fn definition_of(&self, position: usize) -> Option<ByteSpan> {
@@ -291,6 +335,7 @@ pub fn analysis_document(
         .filter_map(|symbol| Some((symbol.identity.clone(), symbol.callable.as_ref()?.clone())))
         .chain(catalog_callables)
         .collect::<BTreeMap<_, _>>();
+    let completion_contexts = collect_completion_contexts(typed, &callable_by_identity);
     let mut callable_occurrences = symbol_occurrences
         .iter()
         .filter_map(|occurrence| {
@@ -323,6 +368,7 @@ pub fn analysis_document(
         symbol_occurrences,
         type_occurrences,
         callable_occurrences,
+        completion_contexts,
         standard_library: catalog,
         scopes: resolved.scopes,
     }
@@ -342,6 +388,7 @@ pub fn diagnostics_only_analysis(
         symbol_occurrences: Vec::new(),
         type_occurrences: Vec::new(),
         callable_occurrences: Vec::new(),
+        completion_contexts: Vec::new(),
         standard_library: standard_library_catalog(),
         scopes: Vec::new(),
     }
