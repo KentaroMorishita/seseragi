@@ -511,20 +511,20 @@ export type Label =
   | { readonly tag: \"Present\"; readonly value: string };
 export const Missing: Label = { tag: \"Missing\" } as const;
 export const Present = (value: string): Label => ({ tag: \"Present\", value } as const);
-export const opening: Hand = Rock;
 export const wrap = (value: string) => Present(value)
+export const opening: Hand = Rock;
 "
         );
         assert_eq!(
             bundle.source_map.names,
             vec![
-                "Hand", "Rock", "Paper", "Scissors", "Label", "Missing", "Present", "opening",
-                "wrap", "Present"
+                "Hand", "Rock", "Paper", "Scissors", "Label", "Missing", "Present", "wrap",
+                "Present", "opening"
             ]
         );
         assert_eq!(
             bundle.source_map.mappings,
-            "AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;;AACIC;AACAC;AAEJC;AAEAC"
+            "AAAAA;;;;AACIC;AACAC;AACAC;AAEJC;;;AACIC;AACAC;AAIJC;AAFAE"
         );
     }
 
@@ -1325,6 +1325,40 @@ fails ConsoleError =
         assert_eq!(bundle.source_map.file, "main.ts");
         assert_eq!(bundle.source_map.names, vec!["answer"]);
         assert_eq!(bundle.source_map.mappings, "AAAAA");
+    }
+
+    #[test]
+    fn emits_module_functions_before_top_level_value_initializers() {
+        let source = "fn make value: Int -> Maybe<Int> = Just value\n\
+                      let first: Maybe<Int> = make 42\n\
+                      pub let second: Maybe<Int> = first\n";
+        let typed = type_module("artifact/top-level-initialization/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        let function = bundle
+            .typescript
+            .find("const make =")
+            .expect("generated function");
+        let initializer = bundle
+            .typescript
+            .find("const first:")
+            .expect("generated first top-level initializer");
+        let dependent = bundle
+            .typescript
+            .find("export const second:")
+            .expect("generated dependent top-level initializer");
+        assert!(
+            function < initializer,
+            "function must be initialized before its caller:\n{}",
+            bundle.typescript
+        );
+        assert!(
+            initializer < dependent,
+            "top-level values must retain source order:\n{}",
+            bundle.typescript
+        );
     }
 
     #[test]

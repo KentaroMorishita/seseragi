@@ -10,10 +10,6 @@
   ],
   "names": [
     "Measurement",
-    "values",
-    "pair",
-    "sample",
-    "measurement",
     "main",
     "println",
     "arrayDebug",
@@ -28,7 +24,11 @@
     "println",
     "floatShow",
     "println",
-    "floatDebug"
+    "floatDebug",
+    "values",
+    "pair",
+    "sample",
+    "measurement"
   ],
-  "mappings": ";;;;;AACAA;;;;AAIAC;AACAC;AACAC;AACAC;AAEAC"
+  "mappings": ";;;;;AACAA;;;;AASAC;AALAe;AACAC;AACAC;AACAC"
 }

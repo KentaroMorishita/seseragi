@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-N0201",
+      "severity": "Error",
+      "messageKey": "module.initialization-cycle",
+      "message": "Top-level initialization depends recursively on itself",
+      "primary": {
+        "start": 140,
+        "end": 144
+      },
+      "related": [
+        {
+          "message": "value is not initialized before this call",
+          "primary": {
+            "start": 116,
+            "end": 121
+          }
+        },
+        {
+          "message": "value is initialized here",
+          "primary": {
+            "start": 127,
+            "end": 132
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "value is not initialized before this call",
+          "primary": {
+            "start": 116,
+            "end": 121
+          }
+        },
+        {
+          "message": "value is initialized here",
+          "primary": {
+            "start": 127,
+            "end": 132
+          }
+        }
+      ],
+      "notes": [
+        "Calling a function from an initializer also evaluates the values read by that call."
+      ],
+      "helps": [
+        "Break the eager call cycle, or defer the call until after module initialization."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

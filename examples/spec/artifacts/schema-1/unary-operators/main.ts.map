@@ -10,6 +10,10 @@
   ],
   "names": [
     "Snapshot",
+    "negateInt",
+    "subtract",
+    "negateFloat",
+    "invert",
     "negative",
     "subtract",
     "negativeZero",
@@ -27,11 +31,7 @@
     "record",
     "subtract",
     "snapshot",
-    "subtract",
-    "negateInt",
-    "subtract",
-    "negateFloat",
-    "invert"
+    "subtract"
   ],
-  "mappings": ";;;AACAA;;;;;;AAMAC;AACAE;AACAC;AACAC;AAEAE;AACAI;AACAC;AACAC;AACAE;AACAE;AAOAE;AACAE;AACAC"
+  "mappings": ";;;AACAA;;;;;;AAuBAC;AACAE;AACAC;AAnBAC;AACAE;AACAC;AACAC;AAEAE;AACAI;AACAC;AACAC;AACAE;AACAE"
 }

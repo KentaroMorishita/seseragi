@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "read",
+      "nameSpan": {
+        "start": 91,
+        "end": 95
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 96,
+            "end": 100
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 102,
+              "end": 106
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 110,
+          "end": 113
+        }
+      },
+      "body": {
+        "kind": "name",
+        "name": "value",
+        "span": {
+          "start": 116,
+          "end": 121
+        }
+      },
+      "span": {
+        "start": 88,
+        "end": 121
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "value",
+      "nameSpan": {
+        "start": 127,
+        "end": 132
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 134,
+          "end": 137
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "read",
+          "span": {
+            "start": 140,
+            "end": 144
+          }
+        },
+        "argument": {
+          "kind": "unit",
+          "span": {
+            "start": 145,
+            "end": 147
+          }
+        },
+        "span": {
+          "start": 140,
+          "end": 147
+        }
+      },
+      "span": {
+        "start": 123,
+        "end": 147
+      }
+    }
+  ]
+}

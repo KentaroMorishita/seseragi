@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "module": "artifact/top-level-call-inference",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/top-level-call-inference::Packet",
+      "namespace": "type",
+      "name": "Packet",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 94,
+        "end": 142
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Packet",
+          "arity": 1
+        }
+      }
+    },
+    {
+      "symbol": "artifact/top-level-call-inference::Packet",
+      "namespace": "value",
+      "name": "Packet",
+      "constructorOf": "artifact/top-level-call-inference::Packet",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 134,
+        "end": 140
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Packet",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/top-level-call-inference::Box",
+      "namespace": "type",
+      "name": "Box",
+      "visibility": "public",
+      "declarationKind": "struct",
+      "declaration": {
+        "start": 144,
+        "end": 192
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Box",
+          "arity": 1
+        }
+      },
+      "representation": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

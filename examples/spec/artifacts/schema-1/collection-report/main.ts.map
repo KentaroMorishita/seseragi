@@ -10,7 +10,6 @@
   ],
   "names": [
     "Sale",
-    "sales",
     "completed",
     "renderSale",
     "stringShow",
@@ -35,7 +34,8 @@
     "arrayReducible",
     "intShow",
     "collectionReport",
-    "report"
+    "report",
+    "sales"
   ],
-  "mappings": ";;;;;;AAEAA;;;;;AAKAC;AAOAC;AAGAC;AAGAG;AAGAM;AAWAa"
+  "mappings": ";;;;;;AAEAA;;;;;AAYAC;AAGAC;AAGAG;AAGAM;AAWAa;AA3BAE"
 }

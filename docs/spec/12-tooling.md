@@ -325,6 +325,7 @@ release noteへ記録し、同じlanguage major内では旧codeから新codeへ�
 | SES-N0102 | Error    | private symbolをmodule外から参照            |
 | SES-N0103 | Error    | module import graphが循環                   |
 | SES-N0104 | Error    | module specifierまたはexportを解決できない  |
+| SES-N0201 | Error    | top-level値の初期化順違反または循環         |
 | SES-T0001 | Error    | standard `todo` placeholderが残っている     |
 | SES-T0101 | Error    | expected typeとactual typeが一致しない      |
 | SES-T0201 | Error    | required trait instanceが存在しない         |

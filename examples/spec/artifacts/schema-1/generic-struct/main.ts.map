@@ -10,7 +10,6 @@
   ],
   "names": [
     "Box",
-    "inferred",
     "replace",
     "unwrap",
     "value",
@@ -20,7 +19,8 @@
     "println",
     "render",
     "unwrap",
-    "replace"
+    "replace",
+    "inferred"
   ],
-  "mappings": ";;;;AAAAA;;;;AAIAC;AAEAC;AAGAC;AAKAE;AAGAE"
+  "mappings": ";;;;AAAAA;;;;AAMAC;AAGAC;AAKAE;AAGAE;AAbAK"
 }

@@ -1,0 +1,254 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/top-level-call-inference",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/top-level-call-inference::Packet",
+      "namespace": "type",
+      "name": "Packet",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 94,
+        "end": 142
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Packet",
+          "arity": 1
+        }
+      }
+    },
+    {
+      "symbol": "artifact/top-level-call-inference::Packet",
+      "namespace": "value",
+      "name": "Packet",
+      "constructorOf": "artifact/top-level-call-inference::Packet",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 134,
+        "end": 140
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Packet",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/top-level-call-inference::Box",
+      "namespace": "type",
+      "name": "Box",
+      "visibility": "public",
+      "declarationKind": "struct",
+      "declaration": {
+        "start": 144,
+        "end": 192
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "Box",
+          "arity": 1
+        }
+      },
+      "representation": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "symbol": "artifact/top-level-call-inference::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 909,
+        "end": 1186
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Debug<artifact/top-level-call-inference::Packet<$0>>",
+      "providerModule": "artifact/top-level-call-inference",
+      "traitIdentity": "Debug",
+      "argumentIdentities": [
+        "artifact/top-level-call-inference::Packet<$0>"
+      ],
+      "typeIdentity": "artifact/top-level-call-inference::Packet<$0>",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Debug",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Packet",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 94,
+        "end": 142
+      }
+    },
+    {
+      "identity": "Debug<artifact/top-level-call-inference::Box<$0>>",
+      "providerModule": "artifact/top-level-call-inference",
+      "traitIdentity": "Debug",
+      "argumentIdentities": [
+        "artifact/top-level-call-inference::Box<$0>"
+      ],
+      "typeIdentity": "artifact/top-level-call-inference::Box<$0>",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "head": {
+        "kind": "apply",
+        "constructor": "Debug",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ]
+      },
+      "constraints": [
+        {
+          "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "start": 144,
+        "end": 192
+      }
+    }
+  ]
+}

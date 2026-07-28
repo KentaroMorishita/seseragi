@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "module": "artifact/top-level-initialization-cycle",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}

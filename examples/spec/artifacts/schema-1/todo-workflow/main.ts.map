@@ -10,7 +10,6 @@
   ],
   "names": [
     "Todo",
-    "initialTodos",
     "addTodo",
     "_ssrg_array_append",
     "keepTodo",
@@ -39,7 +38,8 @@
     "stringShow",
     "renderTodos",
     "stringShow",
-    "renderTodos"
+    "renderTodos",
+    "initialTodos"
   ],
-  "mappings": ";;;;;AAEAA;;;;;;AAMAC;AAKAC;AAGAE;AAGAC;AAGAG;AAGAC;AAGAE;AAGAG;AAGAI"
+  "mappings": ";;;;;AAEAA;;;;;;AAWAC;AAGAE;AAGAC;AAGAG;AAGAC;AAGAE;AAGAG;AAGAI;AA1BAa"
 }

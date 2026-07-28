@@ -9,10 +9,6 @@
     "pub fn showInt value: Int -> String =\n  show value\n\npub fn debugInt value: Int -> String =\n  debug value\n\npub fn showFloat value: Float -> String =\n  show value\n\npub fn debugFloat value: Float -> String =\n  debug value\n\npub fn showNever value: Never -> String =\n  show value\n\npub fn debugNever value: Never -> String =\n  debug value\n\npub fn showBool value: Bool -> String =\n  show value\n\npub fn debugBool value: Bool -> String =\n  debug value\n\npub fn showUnit value: Unit -> String =\n  show value\n\npub fn debugUnit value: Unit -> String =\n  debug value\n\npub fn showChar value: Char -> String =\n  show value\n\npub fn debugChar value: Char -> String =\n  debug value\n\npub fn debugString value: String -> String =\n  debug value\n\nlet absent: Maybe<Never> = Nothing\n\nlet available: Either<Never, String> = Right \"ready\"\n\npub effect fn main =\n  do {\n    println (debug 42)\n    println (show absent)\n    println (debug available)\n    println (show True)\n    println (show ())\n    println (debug \"line\\n\\\"quoted\\\"\")\n  }\n"
   ],
   "names": [
-    "absent",
-    "Nothing",
-    "available",
-    "Right",
     "showInt",
     "intShow",
     "debugInt",
@@ -54,7 +50,11 @@
     "println",
     "unitShow",
     "println",
-    "stringDebug"
+    "stringDebug",
+    "absent",
+    "Nothing",
+    "available",
+    "Right"
   ],
-  "mappings": ";;;;;AAuCAA;AAEAE;AAzCAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAOAE"
+  "mappings": ";;;;;AAAAA;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAGAE;AAOAE;AAJAgB;AAEAE"
 }

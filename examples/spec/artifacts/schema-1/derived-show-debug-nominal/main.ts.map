@@ -23,15 +23,6 @@
     "__ssrg$instance$Show$4",
     "__ssrg$instance$Debug$5",
     "__ssrg$instance$Debug$6",
-    "packet",
-    "Packet",
-    "UserId",
-    "UserId",
-    "empty",
-    "envelope",
-    "inclusive",
-    "stats",
-    "add",
     "main",
     "println",
     "__ssrg$instance$Show$2",
@@ -45,7 +36,16 @@
     "UserId",
     "println",
     "__ssrg$instance$Show$2",
-    "intShow"
+    "intShow",
+    "packet",
+    "Packet",
+    "UserId",
+    "UserId",
+    "empty",
+    "envelope",
+    "inclusive",
+    "stats",
+    "add"
   ],
-  "mappings": ";;;;;;AACAA;;AAAYC;AAEZC;;;AACIC;AACAC;;AAIJC;;;;;;;;;AAQAC;;;;;AAhBAC;AAAAC;AAEAC;AAAAC;AAMAC;AAAAC;AAQAC;AAKAC;AAGAI;AAEAC;AASAE;AAMAE"
+  "mappings": ";;;;;;AACAA;;AAAYC;AAEZC;;;AACIC;AACAC;;AAIJC;;;;;;;;;AAQAC;;;;;AAhBAC;AAAAC;AAEAC;AAAAC;AAMAC;AAAAC;AAQAC;AAyBAC;AApBAc;AAGAI;AAEAC;AASAE"
 }

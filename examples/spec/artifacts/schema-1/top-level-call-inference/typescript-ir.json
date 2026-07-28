@@ -1,0 +1,1130 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/top-level-call-inference",
+  "runtimeRequirements": [
+    "core.list",
+    "core.adt",
+    "core.debug.dictionary",
+    "core.debug.bounded",
+    "core.maybe",
+    "core.int64",
+    "core.maybe.just",
+    "core.maybe.nothing",
+    "core.either",
+    "core.string",
+    "core.maybe.monad",
+    "core.maybe.applicative",
+    "core.int64.add",
+    "core.either.right",
+    "core.list.from-array",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println",
+    "core.int64.debug",
+    "core.maybe.debug",
+    "core.string.debug",
+    "core.either.debug",
+    "core.array.debug",
+    "core.list.debug"
+  ],
+  "imports": [
+    {
+      "feature": "core.debug.bounded",
+      "local": "_ssrg_debug_boundedDebug"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    },
+    {
+      "feature": "core.maybe.nothing",
+      "local": "_ssrg_maybe_Nothing"
+    },
+    {
+      "feature": "core.maybe.monad",
+      "local": "_ssrg_maybe_monad"
+    },
+    {
+      "feature": "core.maybe.applicative",
+      "local": "_ssrg_maybe_applicative"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.either.right",
+      "local": "_ssrg_either_Right"
+    },
+    {
+      "feature": "core.list.from-array",
+      "local": "_ssrg_list_from_array"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int64.debug",
+      "local": "_ssrg_debug_intDebug"
+    },
+    {
+      "feature": "core.maybe.debug",
+      "local": "_ssrg_debug_maybeDebug"
+    },
+    {
+      "feature": "core.string.debug",
+      "local": "_ssrg_debug_stringDebug"
+    },
+    {
+      "feature": "core.either.debug",
+      "local": "_ssrg_debug_eitherDebug"
+    },
+    {
+      "feature": "core.array.debug",
+      "local": "_ssrg_debug_arrayDebug"
+    },
+    {
+      "feature": "core.list.debug",
+      "local": "_ssrg_debug_listDebug"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.list",
+      "local": "List"
+    },
+    {
+      "feature": "core.debug.dictionary",
+      "local": "_ssrg_debug_Debug"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Packet",
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Packet",
+          "tag": "Packet",
+          "payload": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 134,
+            "end": 140
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 94,
+        "end": 142
+      }
+    }
+  ],
+  "structs": [
+    {
+      "exported": true,
+      "name": "Box",
+      "brand": "__ssrg$brand$Box",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 144,
+        "end": 192
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Debug<artifact/top-level-call-inference::Packet<$0>>",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/top-level-call-inference::Packet<$0>",
+      "constraints": [
+        {
+          "name": "Debug",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 94,
+        "end": 142
+      },
+      "dictionaryExport": "__ssrg$instance$Debug$0",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "Packet",
+        "variants": [
+          {
+            "name": "Packet",
+            "tag": "Packet",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Debug<artifact/top-level-call-inference::Box<$0>>",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/top-level-call-inference::Box<$0>",
+      "constraints": [
+        {
+          "name": "Debug",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 144,
+        "end": 192
+      },
+      "dictionaryExport": "__ssrg$instance$Debug$1",
+      "implementation": {
+        "kind": "derived-struct-show",
+        "structName": "Box",
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            },
+            "dictionary": {
+              "kind": "expression",
+              "expression": {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$0"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "success",
+      "type": {
+        "kind": "maybe",
+        "element": {
+          "kind": "bigint"
+        }
+      },
+      "initializer": {
+        "kind": "call",
+        "callee": "addMaybe",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_maybe_Just",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "20"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_maybe_Just",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "22"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 649,
+        "end": 691
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "stopped",
+      "type": {
+        "kind": "maybe",
+        "element": {
+          "kind": "bigint"
+        }
+      },
+      "initializer": {
+        "kind": "call",
+        "callee": "addMaybe",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_maybe_Just",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "20"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_maybe_Nothing"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 692,
+        "end": 732
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "wrapped",
+      "type": {
+        "kind": "maybe",
+        "element": {
+          "kind": "bigint"
+        }
+      },
+      "initializer": {
+        "kind": "call",
+        "callee": "wrapMaybe",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "42"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 733,
+        "end": 759
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "eitherValue",
+      "type": {
+        "kind": "either",
+        "error": {
+          "kind": "string"
+        },
+        "value": {
+          "kind": "bigint"
+        }
+      },
+      "initializer": {
+        "kind": "call",
+        "callee": "wrapEither",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "42"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 760,
+        "end": 791
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "arrayValue",
+      "type": {
+        "kind": "array",
+        "element": {
+          "kind": "bigint"
+        }
+      },
+      "initializer": {
+        "kind": "call",
+        "callee": "wrapArray",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "42"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 792,
+        "end": 821
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "listValue",
+      "type": {
+        "kind": "list",
+        "element": {
+          "kind": "bigint"
+        }
+      },
+      "initializer": {
+        "kind": "call",
+        "callee": "wrapList",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "42"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 822,
+        "end": 849
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "packetValue",
+      "type": {
+        "kind": "reference",
+        "name": "Packet",
+        "arguments": [
+          {
+            "kind": "bigint"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "call",
+        "callee": "wrapPacket",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "42"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 850,
+        "end": 881
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "boxValue",
+      "type": {
+        "kind": "reference",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "bigint"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "call",
+        "callee": "wrapBox",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "42"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 882,
+        "end": 907
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "addMaybe",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "monad-do",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_maybe_monad"
+        },
+        "statements": [
+          {
+            "kind": "const",
+            "name": "a",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "left"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 277,
+              "end": 286
+            }
+          },
+          {
+            "kind": "const",
+            "name": "b",
+            "type": {
+              "kind": "bigint"
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "right"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 291,
+              "end": 301
+            }
+          }
+        ],
+        "result": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_maybe_applicative"
+          },
+          "method": "pure",
+          "arguments": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int64_add",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "a"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "b"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 194,
+        "end": 322
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "wrapMaybe",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_maybe_Just",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 324,
+        "end": 375
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "wrapEither",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_either_Right",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 377,
+        "end": 439
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "wrapArray",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ],
+        "elementType": {
+          "kind": "reference",
+          "name": "A",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 441,
+        "end": 489
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "wrapList",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_list_from_array",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "identifier",
+                "name": "value"
+              }
+            ],
+            "elementType": {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 491,
+        "end": 538
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "wrapPacket",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "Packet",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 540,
+        "end": 595
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "wrapBox",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "value",
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            }
+          }
+        ],
+        "assertedType": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 597,
+        "end": 647
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_maybeDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "bigint"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_intDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "success"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_maybeDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "bigint"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_intDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "stopped"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_maybeDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "bigint"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_intDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "wrapped"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_eitherDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "string"
+                      },
+                      {
+                        "kind": "bigint"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_stringDebug"
+                      },
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_intDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "eitherValue"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_arrayDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "bigint"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_intDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "arrayValue"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_listDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "bigint"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_intDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "listValue"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "__ssrg$instance$Debug$0",
+                    "typeArguments": [
+                      {
+                        "kind": "bigint"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_intDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "packetValue"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "type-application-call",
+                "callee": "__ssrg$instance$Debug$1",
+                "typeArguments": [
+                  {
+                    "kind": "bigint"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_debug_intDebug"
+                  }
+                ]
+              },
+              "method": "debug",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "boxValue"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 909,
+        "end": 1186
+      }
+    }
+  ]
+}

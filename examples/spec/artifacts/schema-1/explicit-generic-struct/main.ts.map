@@ -10,11 +10,11 @@
   ],
   "names": [
     "Marker",
-    "marker",
     "render",
     "main",
     "println",
-    "render"
+    "render",
+    "marker"
   ],
-  "mappings": ";;;AAAAA;;;;;AAKAC;AAKAC;AAGAC"
+  "mappings": ";;;AAAAA;;;;;AAUAC;AAGAC;AARAG"
 }

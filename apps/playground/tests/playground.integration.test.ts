@@ -272,30 +272,12 @@ describe("Playground sample catalog", () => {
   })
 
   test("keeps concrete call results across top-level bindings in WASM analysis", async () => {
-    const source = `
-pub type Packet<A> deriving Debug =
-  | Packet A
-
-pub struct Box<A> deriving Debug {
-  value: A,
-}
-
-fn wrapMaybe<A> value: A -> Maybe<A> = Just value
-fn wrapEither<A> value: A -> Either<String, A> = Right value
-fn wrapArray<A> value: A -> Array<A> = [value]
-fn wrapList<A> value: A -> List<A> = \`[value]
-fn wrapPacket<A> value: A -> Packet<A> = Packet value
-fn wrapBox<A> value: A -> Box<A> = Box { value }
-
-let success = wrapMaybe 42
-let stopped = wrapMaybe 42
-let wrapped = wrapMaybe 42
-let eitherValue = wrapEither 42
-let arrayValue = wrapArray 42
-let listValue = wrapList 42
-let packetValue = wrapPacket 42
-let boxValue = wrapBox 42
-`
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/top-level-call-inference/main.ssrg",
+        import.meta.url
+      )
+    ).text()
     const analysis = await analyze(source)
 
     expect(analysis.diagnostics.diagnostics).toEqual([])
@@ -320,6 +302,47 @@ let boxValue = wrapBox 42
 
     const response = await compile("top-level-call-inference.ssrg", source)
     expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry) {
+      throw new Error("missing entry")
+    }
+    const expectedOutput = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/execution-schema-1/top-level-call-inference/stdout.txt",
+        import.meta.url
+      )
+    ).text()
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry,
+        ""
+      )
+    ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
+  })
+
+  test("rejects top-level initializer cycles before browser execution", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/top-level-initialization-cycle/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const analysis = await analyze(source)
+
+    expect(analysis.diagnostics.diagnostics).toHaveLength(1)
+    expect(analysis.diagnostics.diagnostics[0]).toMatchObject({
+      code: "SES-N0201",
+      messageKey: "module.initialization-cycle",
+      message: "Top-level initialization depends recursively on itself",
+    })
+
+    const response = await compile(
+      "top-level-initialization-cycle.ssrg",
+      source
+    )
+    expect(response.status).toBe("failure")
+    if (response.status !== "failure") throw new Error("expected diagnostics")
+    expect(response.diagnostics.diagnostics[0]?.code).toBe("SES-N0201")
   })
 
   test("connects live hover and generated Reference UI without running Effects", async () => {

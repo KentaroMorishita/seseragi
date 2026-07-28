@@ -6,6 +6,6 @@ export type Marker<A> = {
   readonly "value": A;
   readonly [__ssrg$brand$Marker]: true;
 };
-export const marker: Marker<ReadonlyArray<string>> = (({ "label": "ready", "value": [] as ReadonlyArray<string> } as const) as unknown as Marker<ReadonlyArray<string>>);
 const render = (value: Marker<ReadonlyArray<string>>) => "Explicit generic Struct: " + (value)["label"]
 export const main = (_unit: undefined) => _ssrg_console_println(render(marker))
+export const marker: Marker<ReadonlyArray<string>> = (({ "label": "ready", "value": [] as ReadonlyArray<string> } as const) as unknown as Marker<ReadonlyArray<string>>);

@@ -17,13 +17,6 @@
     "StartFocus",
     "TakeBreak",
     "Reset",
-    "initialMode",
-    "pageStyle",
-    "style",
-    "cardStyle",
-    "style",
-    "trackStyle",
-    "style",
     "label",
     "title",
     "guidance",
@@ -64,7 +57,14 @@
     "actionButton",
     "update",
     "main",
-    "app"
+    "app",
+    "initialMode",
+    "pageStyle",
+    "style",
+    "cardStyle",
+    "style",
+    "trackStyle",
+    "style"
   ],
-  "mappings": ";;;;AAGAA;;;;AACIC;AACAC;AACAC;AAEJC;;;;AACIC;AACAC;AACAC;AAEJC;AAEAC;AAOAE;AAUAE;AAQAE;AAOAC;AAOAC;AAOAC;AAOAC;AAOAC;AASAI;AAWAG;AAUAI;AAYAG;AAiDAmB;AAOAC"
+  "mappings": ";;;;AAGAA;;;;AACIC;AACAC;AACAC;AAEJC;;;;AACIC;AACAC;AACAC;AA6BJC;AAOAC;AAOAC;AAOAC;AAOAC;AAOAC;AASAI;AAWAG;AAUAI;AAYAG;AAiDAmB;AAOAC;AAhKAE;AAEAC;AAOAE;AAUAE"
 }

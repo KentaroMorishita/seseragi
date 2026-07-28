@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "module": "artifact/top-level-call-inference",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.list",
+      "core.adt",
+      "core.debug.dictionary",
+      "core.debug.bounded",
+      "core.maybe",
+      "core.int64",
+      "core.maybe.just",
+      "core.maybe.nothing",
+      "core.either",
+      "core.string",
+      "core.maybe.monad",
+      "core.maybe.applicative",
+      "core.int64.add",
+      "core.either.right",
+      "core.list.from-array",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.int64.debug",
+      "core.maybe.debug",
+      "core.string.debug",
+      "core.either.debug",
+      "core.array.debug",
+      "core.list.debug"
+    ]
+  },
+  "exports": [
+    "Packet",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "Debug<artifact/top-level-call-inference::Packet<$0>>",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/top-level-call-inference::Packet<$0>",
+      "dictionaryExport": "__ssrg$instance$Debug$0"
+    },
+    {
+      "identity": "Debug<artifact/top-level-call-inference::Box<$0>>",
+      "trait": "Debug",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/top-level-call-inference::Box<$0>",
+      "dictionaryExport": "__ssrg$instance$Debug$1"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

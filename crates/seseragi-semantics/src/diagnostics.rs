@@ -18,6 +18,7 @@ mod pure_call;
 mod range;
 mod record;
 mod resolution;
+mod top_level_initialization;
 mod traits;
 mod type_labels;
 mod web_html;
@@ -57,6 +58,10 @@ pub(crate) fn semantic_diagnostics_from_resolved(
     traits::collect_trait_diagnostics(resolved, &resolution, &mut diagnostics);
     impl_blocks::collect_impl_diagnostics(resolved, &resolution, &mut diagnostics);
     aliases::collect_alias_diagnostics(resolved, &mut diagnostics);
+    top_level_initialization::collect_top_level_initialization_diagnostics(
+        resolved,
+        &mut diagnostics,
+    );
     resolution::collect_resolution_diagnostics(resolved, &mut diagnostics);
     let html_missing_prop_ranges = diagnostics
         .iter()
@@ -470,6 +475,86 @@ mod tests {
         );
 
         assert!(diagnostics.diagnostics.is_empty());
+    }
+
+    #[test]
+    fn rejects_a_direct_forward_top_level_value_reference() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-forward-value/main.ssrg",
+            "let first: Int = second\nlet second: Int = 42\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-N0201");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "module.initialization-order"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange { start: 17, end: 23 }
+        );
+    }
+
+    #[test]
+    fn rejects_a_top_level_initializer_cycle_through_a_function() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-function-cycle/main.ssrg",
+            "fn read unit: Unit -> Int = value\nlet value: Int = read ()\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-N0201");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "module.initialization-cycle"
+        );
+        assert!(diagnostics.diagnostics[0]
+            .related
+            .iter()
+            .any(|related| related.message == "value is not initialized before this call"));
+    }
+
+    #[test]
+    fn rejects_a_transitive_top_level_initializer_cycle_through_functions() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-transitive-function-cycle/main.ssrg",
+            "fn outer unit: Unit -> Int = inner ()\n\
+             fn inner unit: Unit -> Int = value\n\
+             let value: Int = outer ()\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-N0201");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "module.initialization-cycle"
+        );
+    }
+
+    #[test]
+    fn allows_initializers_to_call_functions_that_read_earlier_values() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-acyclic-function-chain/main.ssrg",
+            "let base: Int = 41\n\
+             fn addOne unit: Unit -> Int = base + 1\n\
+             let answer: Int = addOne ()\n\
+             let copied: Int = answer\n",
+        );
+
+        assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+    }
+
+    #[test]
+    fn allows_a_function_body_to_read_a_later_value_when_not_called_during_initialization() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-delayed-value/main.ssrg",
+            "fn read unit: Unit -> Int = value\n\
+             let value: Int = 42\n\
+             pub fn main unit: Unit -> Int = read ()\n",
+        );
+
+        assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
     }
 
     #[test]

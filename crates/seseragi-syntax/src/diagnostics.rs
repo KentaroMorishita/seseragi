@@ -109,6 +109,12 @@ impl Diagnostic {
             }
             "alias.cycle" => "Type alias expands recursively into itself".to_owned(),
             "alias.private-type-exposure" => "Public type alias exposes a private type".to_owned(),
+            "module.initialization-order" => {
+                "Top-level initializer reads a value before it is initialized".to_owned()
+            }
+            "module.initialization-cycle" => {
+                "Top-level initialization depends recursively on itself".to_owned()
+            }
             "web.html.void-children" => "Void HTML elements cannot receive children".to_owned(),
             "web.html.missing-required-prop" => {
                 "This HTML tag is missing a required prop".to_owned()
@@ -133,6 +139,13 @@ impl Diagnostic {
             ],
             "alias.cycle" => vec![
                 "Type aliases are transparent and therefore cannot define recursive types."
+                    .to_owned(),
+            ],
+            "module.initialization-order" => vec![
+                "Top-level let values are initialized once in source order.".to_owned(),
+            ],
+            "module.initialization-cycle" => vec![
+                "Calling a function from an initializer also evaluates the values read by that call."
                     .to_owned(),
             ],
             "call.argument-type-mismatch"
@@ -171,6 +184,12 @@ impl Diagnostic {
             }
             "alias.cycle" => {
                 "Break the expansion cycle, or use an ADT, struct, or newtype for recursive data."
+            }
+            "module.initialization-order" => {
+                "Move the required value before this binding, or defer the read inside a function."
+            }
+            "module.initialization-cycle" => {
+                "Break the eager call cycle, or defer the call until after module initialization."
             }
             "alias.private-type-exposure" => {
                 "Make the exposed type public, or keep the alias private."

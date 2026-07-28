@@ -10,5 +10,5 @@ export type Label =
   | { readonly tag: "Present"; readonly value: string };
 export const Missing: Label = { tag: "Missing" } as const;
 export const Present = (value: string): Label => ({ tag: "Present", value } as const);
-export const opening: Hand = Rock;
 export const wrap = (value: string) => Present(value)
+export const opening: Hand = Rock;

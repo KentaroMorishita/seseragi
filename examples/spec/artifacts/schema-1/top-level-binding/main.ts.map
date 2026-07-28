@@ -9,8 +9,8 @@
     "pub let answer: Int = 42\npub fn answerValue unit: Unit -> Int = answer\n"
   ],
   "names": [
-    "answer",
-    "answerValue"
+    "answerValue",
+    "answer"
   ],
-  "mappings": "AAAAA;AACAC"
+  "mappings": "AACAA;AADAC"
 }

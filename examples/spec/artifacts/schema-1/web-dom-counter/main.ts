@@ -16,10 +16,6 @@ type Action =
 const StartFocus: Action = { tag: "StartFocus" } as const;
 const TakeBreak: Action = { tag: "TakeBreak" } as const;
 const Reset: Action = { tag: "Reset" } as const;
-const initialMode: Mode = Ready;
-const pageStyle: Style = _ssrg_html_style(({ "background": "linear-gradient(135deg, #d1fae5 0%, #f8fafc 48%, #dbeafe 100%)", "minHeight": "100vh", "padding": "32px" } as const));
-const cardStyle: Style = _ssrg_html_style(({ "variables": ({ "cardShadow": "0 24px 64px #0f172a24" } as const), "backgroundColor": "#ffffff", "border": "1px solid #ffffffcc", "borderRadius": "28px", "boxShadow": "var(--card-shadow)", "padding": "32px" } as const));
-const trackStyle: Style = _ssrg_html_style(({ "backgroundColor": "#e2e8f0", "borderRadius": "999px", "height": "10px", "overflow": "hidden" } as const));
 const label = (mode: Mode) => (($ssrg_match: Mode): string => $ssrg_match.tag === "Ready" ? "READY" : $ssrg_match.tag === "Focusing" ? "FOCUS" : "BREAK")(mode)
 const title = (mode: Mode) => (($ssrg_match: Mode): string => $ssrg_match.tag === "Ready" ? "Choose your rhythm" : $ssrg_match.tag === "Focusing" ? "Deep work in progress" : "Pause with purpose")(mode)
 const guidance = (mode: Mode) => (($ssrg_match: Mode): string => $ssrg_match.tag === "Ready" ? "Pick a mode and let a typed action update the Signal." : $ssrg_match.tag === "Focusing" ? "One task. No tab hopping. You have got this." : "Look away from the screen and take a slow breath.")(mode)
@@ -32,3 +28,7 @@ const actionButton = (id: string) => (text: string) => (action: Action) => _ssrg
 const view = (mode: Mode) => _ssrg_html_main(({ "style": pageStyle, "children": [_ssrg_html_section(({ "className": "mx-auto max-w-lg", "style": cardStyle, "children": [_ssrg_html_div(({ "className": "mb-6 flex items-center justify-between", "children": [_ssrg_html_span(({ "style": badgeStyle(mode), "children": label(mode) } as const)), _ssrg_html_span(({ "className": "text-sm font-semibold text-slate-500", "children": "SESERAGI FLOW" } as const))] } as const)), _ssrg_html_h1(({ "className": "m-0 text-3xl font-bold text-slate-900 sm:text-4xl", "children": title(mode) } as const)), _ssrg_html_p(({ "className": "mb-6 mt-4 text-lg text-slate-700", "children": guidance(mode) } as const)), _ssrg_html_div(({ "style": trackStyle, "children": _ssrg_html_div(({ "style": progressStyle(mode), "children": "" } as const)) } as const)), _ssrg_html_div(({ "className": "mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3", "children": [actionButton("focus")("Start focus")(StartFocus), actionButton("break")("Take a break")(TakeBreak), actionButton("reset")("Reset the flow")(Reset)] } as const))] } as const))] } as const))
 const update = (action: Action) => (mode: Mode) => (($ssrg_match: Action): Mode => $ssrg_match.tag === "StartFocus" ? Focusing : $ssrg_match.tag === "TakeBreak" ? Resting : Ready)(action)
 export const main = (_unit: undefined) => _ssrg_dom_app(({ "target": "#app", "initial": initialMode, "update": update, "view": view } as const))
+const initialMode: Mode = Ready;
+const pageStyle: Style = _ssrg_html_style(({ "background": "linear-gradient(135deg, #d1fae5 0%, #f8fafc 48%, #dbeafe 100%)", "minHeight": "100vh", "padding": "32px" } as const));
+const cardStyle: Style = _ssrg_html_style(({ "variables": ({ "cardShadow": "0 24px 64px #0f172a24" } as const), "backgroundColor": "#ffffff", "border": "1px solid #ffffffcc", "borderRadius": "28px", "boxShadow": "var(--card-shadow)", "padding": "32px" } as const));
+const trackStyle: Style = _ssrg_html_style(({ "backgroundColor": "#e2e8f0", "borderRadius": "999px", "height": "10px", "overflow": "hidden" } as const));

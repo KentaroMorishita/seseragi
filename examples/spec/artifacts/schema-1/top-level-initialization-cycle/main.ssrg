@@ -1,0 +1,4 @@
+// initializerから呼んだ関数が同じbindingを読む循環を拒否します。
+fn read unit: Unit -> Int = value
+
+let value: Int = read ()

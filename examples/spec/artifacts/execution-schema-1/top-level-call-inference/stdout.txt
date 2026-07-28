@@ -1,0 +1,8 @@
+Just 42
+Nothing
+Just 42
+Right 42
+[42]
+`[42]
+Packet 42
+Box { value: 42 }

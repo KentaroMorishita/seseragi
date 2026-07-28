@@ -1,0 +1,226 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/top-level-initialization-cycle",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "read",
+      "nameSpan": {
+        "start": 91,
+        "end": 95
+      },
+      "parameters": [
+        {
+          "name": "unit",
+          "nameSpan": {
+            "start": 96,
+            "end": 100
+          },
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "span": {
+              "start": 102,
+              "end": 106
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 110,
+          "end": 113
+        }
+      },
+      "body": {
+        "kind": "name",
+        "name": "value",
+        "span": {
+          "start": 116,
+          "end": 121
+        }
+      },
+      "span": {
+        "start": 88,
+        "end": 121
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "value",
+      "nameSpan": {
+        "start": 127,
+        "end": 132
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 134,
+          "end": 137
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "read",
+          "span": {
+            "start": 140,
+            "end": 144
+          }
+        },
+        "argument": {
+          "kind": "unit",
+          "span": {
+            "start": 145,
+            "end": 147
+          }
+        },
+        "span": {
+          "start": 140,
+          "end": 147
+        }
+      },
+      "span": {
+        "start": 123,
+        "end": 147
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 88,
+        "end": 147
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 88,
+        "end": 121
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "read",
+      "canonical": "artifact/top-level-initialization-cycle::read",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 91,
+        "end": 95
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "value",
+      "canonical": "artifact/top-level-initialization-cycle::value",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 127,
+        "end": 132
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "unit",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 1,
+      "origin": {
+        "start": 96,
+        "end": 100
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 102,
+        "end": 106
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 110,
+        "end": 113
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 1,
+      "origin": {
+        "start": 116,
+        "end": 121
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 134,
+        "end": 137
+      }
+    },
+    {
+      "spelling": "read",
+      "namespace": "value",
+      "target": 0,
+      "origin": {
+        "start": 140,
+        "end": 144
+      }
+    }
+  ],
+  "issues": []
+}

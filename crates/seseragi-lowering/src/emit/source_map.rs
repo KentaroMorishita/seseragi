@@ -109,6 +109,24 @@ fn module_names_and_mappings(
         generated_line += 1;
     }
 
+    for function in &module.functions {
+        match function {
+            TypeScriptFunction::ConstFunction {
+                name, body, origin, ..
+            } => {
+                push_declaration_mapping(
+                    &mut names,
+                    &mut mappings,
+                    generated_line,
+                    name,
+                    origin,
+                    source_text,
+                );
+                collect_expr_names(body, helper_names, &mut names);
+                generated_line += 1;
+            }
+        }
+    }
     for binding in &module.bindings {
         match binding {
             TypeScriptBinding::Const {
@@ -126,24 +144,6 @@ fn module_names_and_mappings(
                     source_text,
                 );
                 collect_expr_names(initializer, helper_names, &mut names);
-                generated_line += 1;
-            }
-        }
-    }
-    for function in &module.functions {
-        match function {
-            TypeScriptFunction::ConstFunction {
-                name, body, origin, ..
-            } => {
-                push_declaration_mapping(
-                    &mut names,
-                    &mut mappings,
-                    generated_line,
-                    name,
-                    origin,
-                    source_text,
-                );
-                collect_expr_names(body, helper_names, &mut names);
                 generated_line += 1;
             }
         }

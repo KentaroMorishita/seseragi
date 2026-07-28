@@ -204,6 +204,11 @@ module-level function名が先に名前解決できても、関数body間の循�
 top-level `let` は、それより前の `let` とすべての関数宣言だけを参照できます。後続の
 `let` は参照できません。effectはEffect内に閉じるため、module importだけでI/Oは発生しません。
 
+backendは同一moduleの関数runtime bindingをすべて確立してから、top-level `let` をsource順に
+評価します。`let` initializerが関数を直ちに呼び、その呼び出しchainが当該`let`自身または後続の
+`let`を読む場合は、初期化前参照として`SES-N0201`で停止します。関数bodyが後続の`let`を参照していても、
+module初期化中にその関数を呼ばない場合は遅延された参照として許可します。
+
 同じmoduleを複数箇所からimportしてもtop-level値は一度だけ作られます。
 
 foreign moduleのruntime codeはparser、type checker、formatter、language server、document generatorが評価しては

@@ -11,8 +11,6 @@
   "names": [
     "Action",
     "Confirm",
-    "cardStyle",
-    "style",
     "card",
     "section",
     "h2",
@@ -26,7 +24,9 @@
     "main",
     "println",
     "renderToString",
-    "page"
+    "page",
+    "cardStyle",
+    "style"
   ],
-  "mappings": ";;;AAEAA;;AACIC;AAEJC;AASAE;AAgBAM;AAcAI"
+  "mappings": ";;;AAEAA;;AACIC;AAWJC;AAgBAM;AAcAI;AAvCAI"
 }

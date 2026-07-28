@@ -105,26 +105,6 @@ fn render_typescript(module: &TypeScriptModule) -> String {
         render_struct(&mut output, structure);
     }
     render_typescript_instances(&mut output, &module.instances, &module.type_imports);
-    for binding in &module.bindings {
-        match binding {
-            TypeScriptBinding::Const {
-                exported,
-                name,
-                type_ref,
-                initializer,
-                ..
-            } => {
-                if *exported {
-                    output.push_str("export ");
-                }
-                output.push_str(&format!(
-                    "const {name}: {} = {};\n",
-                    render_typescript_type(type_ref),
-                    render_typescript_expr(initializer)
-                ));
-            }
-        }
-    }
     for function in &module.functions {
         match function {
             TypeScriptFunction::ConstFunction {
@@ -144,6 +124,26 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                 let rendered_body =
                     render_function_body(type_parameters, &parameters, body, *is_async, Some(name));
                 output.push_str(&format!("const {name} = {rendered_body}\n",));
+            }
+        }
+    }
+    for binding in &module.bindings {
+        match binding {
+            TypeScriptBinding::Const {
+                exported,
+                name,
+                type_ref,
+                initializer,
+                ..
+            } => {
+                if *exported {
+                    output.push_str("export ");
+                }
+                output.push_str(&format!(
+                    "const {name}: {} = {};\n",
+                    render_typescript_type(type_ref),
+                    render_typescript_expr(initializer)
+                ));
             }
         }
     }
