@@ -7,6 +7,7 @@ mod prelude;
 mod query;
 mod resolve;
 mod standard;
+mod type_document;
 mod typed;
 
 pub use analysis::{analyze_linked_module, analyze_module_interface, AnalyzedModule};
@@ -23,4 +24,8 @@ pub use query::{
     AnalysisSymbol, AnalysisSymbolOccurrence, AnalysisTypeOccurrence,
 };
 pub use resolve::{resolve_linked_module, resolve_module, resolve_module_interface};
+pub use type_document::{
+    TypeConstraintDocument, TypeDocument, TypeDocumentField, TypeParameterDocument,
+    TypeRenderLayout, TypeRenderMarkup, TypeRenderOptions, TypeSchemeDocument,
+};
 pub use typed::{type_module, type_module_interface, type_module_public_interface};

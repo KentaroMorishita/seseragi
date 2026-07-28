@@ -245,6 +245,28 @@ DOM mountを行いません。不正なsourceでも共通diagnosticと標準Refe
 返します。editorが非同期にanalysisする場合、document revisionを照合し、古い結果で新しいdocumentを上書きしては
 なりません。
 
+## 12.12.2 shared type document
+
+型表示は`TypedType`やmodule interfaceをsurfaceごとに直接文字列化せず、次の情報を持つ共通type documentへ
+変換してからrenderします。
+
+- source-facing nameと、imported typeではcanonical identity
+- nominal application、type variable、higher-kinded type constructorとarity
+- 右結合functionを保ったcurried parameter列
+- tuple、required / optional fieldとopen / closedを持つstructural record
+- unknown / recovery type
+- type parameter、trait constraint、constraintのcanonical identity
+
+plain / Markdownは同じdocumentを入力とし、layoutはcompact / multilineから選びます。compactはsource-likeな
+一行表記、multilineはtype argument、tuple element、record field、constraintをsource順のまま2 spacesを既定に
+indentし、複数行delimiterではtrailing commaを付けます。function parameterにfunction型を置く場合と、
+function型をgeneric argument、tuple element、record fieldへ入れる場合は括弧を付け、意味をprecedenceへ
+依存させません。Markdown compactはinline code、Markdown multilineは`seseragi` fenced blockです。
+
+HKTは`F<_>`、unknown / recovery typeは`unknown`と表示します。rendererはcanonical identityを表示文字列へ
+混ぜませんが、documentには保持し、definitionや比較をsource spellingだけへ依存させません。Analysis、
+diagnostic、LSP、Playgroundへの接続は同じdocumentを利用し、各surfaceが独自に型構造を再構成しません。
+
 ## 12.13 diagnostic contract
 
 compiler、formatter、package resolver、binding generator、language serverは共通のDiagnostic data modelを
