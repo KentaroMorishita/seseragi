@@ -36,18 +36,19 @@ pub(super) fn local_dictionary_expression(
                 name: local_name.to_owned(),
             });
         }
+        let arguments = evidence_arguments
+            .iter()
+            .map(|evidence| {
+                local_dictionary_expression(&evidence.evidence, imported_values, imported_types)
+            })
+            .collect::<Option<Vec<_>>>()?;
         return Some(TypeScriptExpr::TypeApplicationCall {
             callee: local_name.to_owned(),
             type_arguments: type_arguments
                 .iter()
                 .map(|type_ref| type_ref_from_core_type(type_ref, imported_types))
                 .collect(),
-            arguments: evidence_arguments
-                .iter()
-                .map(|evidence| {
-                    local_dictionary_expression(&evidence.evidence, imported_values, imported_types)
-                })
-                .collect::<Option<Vec<_>>>()?,
+            arguments: structural_dictionary_arguments(identity, type_arguments, arguments)?,
         });
     }
     let (identity, type_arguments, evidence_arguments) = match evidence {
@@ -86,6 +87,58 @@ pub(super) fn local_dictionary_expression(
             .collect(),
         arguments,
     })
+}
+
+fn structural_dictionary_arguments(
+    identity: &str,
+    type_arguments: &[crate::CoreType],
+    evidence_arguments: Vec<TypeScriptExpr>,
+) -> Option<Vec<TypeScriptExpr>> {
+    match identity {
+        "std/tuple::Show" | "std/tuple::Debug" => {
+            let [crate::CoreType::Tuple { elements }] = type_arguments else {
+                return None;
+            };
+            (elements.len() == evidence_arguments.len()).then_some(evidence_arguments)
+        }
+        "std/record::Show" | "std/record::Debug" => {
+            let [crate::CoreType::Record {
+                closed: true,
+                fields,
+            }] = type_arguments
+            else {
+                return None;
+            };
+            if fields.len() != evidence_arguments.len() {
+                return None;
+            }
+            let mut fields = fields.iter().collect::<Vec<_>>();
+            fields.sort_by(|left, right| left.name.cmp(&right.name));
+            let names = TypeScriptExpr::Tuple {
+                elements: fields
+                    .iter()
+                    .map(|field| TypeScriptExpr::String {
+                        value: field.name.clone(),
+                    })
+                    .collect(),
+            };
+            let optional = TypeScriptExpr::Tuple {
+                elements: fields
+                    .iter()
+                    .map(|field| TypeScriptExpr::Boolean {
+                        value: field.optional,
+                    })
+                    .collect(),
+            };
+            Some(
+                [names, optional]
+                    .into_iter()
+                    .chain(evidence_arguments)
+                    .collect(),
+            )
+        }
+        _ => Some(evidence_arguments),
+    }
 }
 
 #[cfg(test)]
@@ -207,6 +260,101 @@ mod tests {
                     arguments.as_slice(),
                     [TypeScriptExpr::Identifier { name }]
                         if name == "__ssrg$evidence$0"
+                )
+        ));
+    }
+
+    #[test]
+    fn materializes_structural_record_metadata_without_host_key_inspection() {
+        let expression = local_dictionary_expression(
+            &CoreInstanceEvidence::Standard {
+                identity: "std/record::Debug".to_owned(),
+                type_arguments: vec![crate::CoreType::Record {
+                    closed: true,
+                    fields: vec![
+                        crate::CoreRecordField {
+                            name: "zeta".to_owned(),
+                            optional: true,
+                            type_ref: crate::CoreType::Named {
+                                name: "String".to_owned(),
+                                arguments: Vec::new(),
+                            },
+                        },
+                        crate::CoreRecordField {
+                            name: "alpha".to_owned(),
+                            optional: false,
+                            type_ref: crate::CoreType::Named {
+                                name: "Int".to_owned(),
+                                arguments: Vec::new(),
+                            },
+                        },
+                    ],
+                }],
+                evidence_arguments: vec![
+                    crate::CoreCallEvidence {
+                        constraint: crate::CoreInstanceConstraint {
+                            name: "Debug".to_owned(),
+                            arguments: vec![crate::CoreType::Named {
+                                name: "Int".to_owned(),
+                                arguments: Vec::new(),
+                            }],
+                        },
+                        evidence: CoreInstanceEvidence::Standard {
+                            identity: "Debug<std/prelude::Int>".to_owned(),
+                            type_arguments: Vec::new(),
+                            evidence_arguments: Vec::new(),
+                        },
+                    },
+                    crate::CoreCallEvidence {
+                        constraint: crate::CoreInstanceConstraint {
+                            name: "Debug".to_owned(),
+                            arguments: vec![crate::CoreType::Named {
+                                name: "String".to_owned(),
+                                arguments: Vec::new(),
+                            }],
+                        },
+                        evidence: CoreInstanceEvidence::Standard {
+                            identity: "Debug<std/prelude::String>".to_owned(),
+                            type_arguments: Vec::new(),
+                            evidence_arguments: Vec::new(),
+                        },
+                    },
+                ],
+            },
+            &BTreeMap::new(),
+            &BTreeMap::new(),
+        );
+
+        assert!(matches!(
+            expression,
+            Some(TypeScriptExpr::TypeApplicationCall {
+                callee,
+                arguments,
+                ..
+            }) if callee == "_ssrg_debug_recordDebug"
+                && matches!(
+                    arguments.as_slice(),
+                    [
+                        TypeScriptExpr::Tuple { elements: names },
+                        TypeScriptExpr::Tuple { elements: optional },
+                        TypeScriptExpr::RuntimeReference { name: alpha },
+                        TypeScriptExpr::RuntimeReference { name: zeta },
+                    ] if matches!(
+                        names.as_slice(),
+                        [
+                            TypeScriptExpr::String { value: first },
+                            TypeScriptExpr::String { value: second },
+                        ] if first == "alpha" && second == "zeta"
+                    )
+                        && matches!(
+                            optional.as_slice(),
+                            [
+                                TypeScriptExpr::Boolean { value: false },
+                                TypeScriptExpr::Boolean { value: true },
+                            ]
+                        )
+                        && alpha == "_ssrg_debug_intDebug"
+                        && zeta == "_ssrg_debug_stringDebug"
                 )
         ));
     }

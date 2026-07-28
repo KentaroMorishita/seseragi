@@ -1,0 +1,5 @@
+(42, ready)
+{ alpha: 1, zeta?: Nothing }
+{ alpha: 1, zeta?: Just "last" }
+{ label?: Nothing, ranges: [(1..3, True), (3..=3, False)] }
+{ badge: Badge.Active }

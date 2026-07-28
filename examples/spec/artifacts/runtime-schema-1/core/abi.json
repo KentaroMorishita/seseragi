@@ -514,6 +514,50 @@
       }
     },
     {
+      "id": "core.tuple.show",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "ordered element dictionaries -> structural Show<Tuple>",
+      "instanceIdentity": "std/tuple::Show",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "tupleShow"
+      }
+    },
+    {
+      "id": "core.tuple.debug",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "ordered element dictionaries -> structural Debug<Tuple>",
+      "instanceIdentity": "std/tuple::Debug",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "tupleDebug"
+      }
+    },
+    {
+      "id": "core.record.show",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "compiler field descriptor and ordered dictionaries -> structural Show<closed record>",
+      "instanceIdentity": "std/record::Show",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "recordShow"
+      }
+    },
+    {
+      "id": "core.record.debug",
+      "kind": "runtime-helper",
+      "typescript": "generic dictionary factory",
+      "boundary": "compiler field descriptor and ordered dictionaries -> structural Debug<closed record>",
+      "instanceIdentity": "std/record::Debug",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "recordDebug"
+      }
+    },
+    {
       "id": "core.range.exclusive",
       "kind": "runtime-helper",
       "typescript": "function",

@@ -217,6 +217,38 @@ const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
         export_name: "rangeDebug",
         source_map_name: "rangeDebug",
     },
+    RuntimeDisplayDictionary {
+        semantic_identity: "std/tuple::Show",
+        runtime_feature: "core.tuple.show",
+        local_name: "_ssrg_show_tupleShow",
+        module: "@seseragi/runtime/show",
+        export_name: "tupleShow",
+        source_map_name: "tupleShow",
+    },
+    RuntimeDisplayDictionary {
+        semantic_identity: "std/tuple::Debug",
+        runtime_feature: "core.tuple.debug",
+        local_name: "_ssrg_debug_tupleDebug",
+        module: "@seseragi/runtime/show",
+        export_name: "tupleDebug",
+        source_map_name: "tupleDebug",
+    },
+    RuntimeDisplayDictionary {
+        semantic_identity: "std/record::Show",
+        runtime_feature: "core.record.show",
+        local_name: "_ssrg_show_recordShow",
+        module: "@seseragi/runtime/show",
+        export_name: "recordShow",
+        source_map_name: "recordShow",
+    },
+    RuntimeDisplayDictionary {
+        semantic_identity: "std/record::Debug",
+        runtime_feature: "core.record.debug",
+        local_name: "_ssrg_debug_recordDebug",
+        module: "@seseragi/runtime/show",
+        export_name: "recordDebug",
+        source_map_name: "recordDebug",
+    },
 ];
 
 pub(crate) fn runtime_display_dictionary_for_feature(
@@ -399,6 +431,30 @@ mod tests {
                 "core.range.debug",
                 "_ssrg_debug_rangeDebug",
                 "rangeDebug",
+            ),
+            (
+                "std/tuple::Show",
+                "core.tuple.show",
+                "_ssrg_show_tupleShow",
+                "tupleShow",
+            ),
+            (
+                "std/tuple::Debug",
+                "core.tuple.debug",
+                "_ssrg_debug_tupleDebug",
+                "tupleDebug",
+            ),
+            (
+                "std/record::Show",
+                "core.record.show",
+                "_ssrg_show_recordShow",
+                "recordShow",
+            ),
+            (
+                "std/record::Debug",
+                "core.record.debug",
+                "_ssrg_debug_recordDebug",
+                "recordDebug",
             ),
         ] {
             let dictionary = runtime_display_dictionary_for_feature(feature).unwrap();

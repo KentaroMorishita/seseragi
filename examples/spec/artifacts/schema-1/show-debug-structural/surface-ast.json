@@ -1,0 +1,1292 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "private",
+      "name": "Badge",
+      "nameSpan": {
+        "start": 5,
+        "end": 10
+      },
+      "variants": [
+        {
+          "name": "Active",
+          "nameSpan": {
+            "start": 17,
+            "end": 23
+          },
+          "span": {
+            "start": 15,
+            "end": 23
+          }
+        },
+        {
+          "name": "Paused",
+          "nameSpan": {
+            "start": 28,
+            "end": 34
+          },
+          "span": {
+            "start": 26,
+            "end": 34
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 34
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Show",
+      "traitNameSpan": {
+        "start": 45,
+        "end": 49
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "span": {
+            "start": 50,
+            "end": 55
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "show",
+          "nameSpan": {
+            "start": 66,
+            "end": 70
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 71,
+                "end": 76
+              },
+              "type": {
+                "kind": "named",
+                "name": "Badge",
+                "span": {
+                  "start": 78,
+                  "end": 83
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 87,
+              "end": 93
+            }
+          },
+          "body": {
+            "kind": "match",
+            "scrutinee": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 106,
+                "end": 111
+              }
+            },
+            "arms": [
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Active",
+                  "nameSpan": {
+                    "start": 120,
+                    "end": 126
+                  },
+                  "span": {
+                    "start": 120,
+                    "end": 126
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"active\"",
+                  "span": {
+                    "start": 130,
+                    "end": 138
+                  }
+                },
+                "span": {
+                  "start": 120,
+                  "end": 138
+                }
+              },
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Paused",
+                  "nameSpan": {
+                    "start": 145,
+                    "end": 151
+                  },
+                  "span": {
+                    "start": 145,
+                    "end": 151
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"paused\"",
+                  "span": {
+                    "start": 155,
+                    "end": 163
+                  }
+                },
+                "span": {
+                  "start": 145,
+                  "end": 163
+                }
+              }
+            ],
+            "span": {
+              "start": 100,
+              "end": 169
+            }
+          },
+          "span": {
+            "start": 63,
+            "end": 169
+          }
+        }
+      ],
+      "span": {
+        "start": 36,
+        "end": 171
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Debug",
+      "traitNameSpan": {
+        "start": 182,
+        "end": 187
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Badge",
+          "span": {
+            "start": 188,
+            "end": 193
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "debug",
+          "nameSpan": {
+            "start": 204,
+            "end": 209
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 210,
+                "end": 215
+              },
+              "type": {
+                "kind": "named",
+                "name": "Badge",
+                "span": {
+                  "start": 217,
+                  "end": 222
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 226,
+              "end": 232
+            }
+          },
+          "body": {
+            "kind": "match",
+            "scrutinee": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 245,
+                "end": 250
+              }
+            },
+            "arms": [
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Active",
+                  "nameSpan": {
+                    "start": 259,
+                    "end": 265
+                  },
+                  "span": {
+                    "start": 259,
+                    "end": 265
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"Badge.Active\"",
+                  "span": {
+                    "start": 269,
+                    "end": 283
+                  }
+                },
+                "span": {
+                  "start": 259,
+                  "end": 283
+                }
+              },
+              {
+                "pattern": {
+                  "kind": "constructor",
+                  "name": "Paused",
+                  "nameSpan": {
+                    "start": 290,
+                    "end": 296
+                  },
+                  "span": {
+                    "start": 290,
+                    "end": 296
+                  }
+                },
+                "body": {
+                  "kind": "string",
+                  "raw": "\"Badge.Paused\"",
+                  "span": {
+                    "start": 300,
+                    "end": 314
+                  }
+                },
+                "span": {
+                  "start": 290,
+                  "end": 314
+                }
+              }
+            ],
+            "span": {
+              "start": 239,
+              "end": 320
+            }
+          },
+          "span": {
+            "start": 201,
+            "end": 320
+          }
+        }
+      ],
+      "span": {
+        "start": 173,
+        "end": 322
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showTuple",
+      "nameSpan": {
+        "start": 331,
+        "end": 340
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 341,
+            "end": 346
+          },
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 349,
+                  "end": 352
+                }
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 354,
+                  "end": 360
+                }
+              }
+            ],
+            "span": {
+              "start": 348,
+              "end": 361
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 365,
+          "end": 371
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 376,
+            "end": 380
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 381,
+            "end": 386
+          }
+        },
+        "span": {
+          "start": 376,
+          "end": 386
+        }
+      },
+      "span": {
+        "start": 324,
+        "end": 386
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugRecord",
+      "nameSpan": {
+        "start": 395,
+        "end": 406
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 409,
+            "end": 414
+          },
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "zeta",
+                "nameSpan": {
+                  "start": 418,
+                  "end": 422
+                },
+                "optional": true,
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "span": {
+                    "start": 425,
+                    "end": 431
+                  }
+                }
+              },
+              {
+                "name": "alpha",
+                "nameSpan": {
+                  "start": 433,
+                  "end": 438
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 440,
+                    "end": 443
+                  }
+                }
+              }
+            ],
+            "span": {
+              "start": 416,
+              "end": 445
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 449,
+          "end": 455
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 460,
+            "end": 465
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 466,
+            "end": 471
+          }
+        },
+        "span": {
+          "start": 460,
+          "end": 471
+        }
+      },
+      "span": {
+        "start": 388,
+        "end": 471
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugNested",
+      "nameSpan": {
+        "start": 480,
+        "end": 491
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 494,
+            "end": 499
+          },
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "ranges",
+                "nameSpan": {
+                  "start": 507,
+                  "end": 513
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "Range",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "span": {
+                                "start": 528,
+                                "end": 531
+                              }
+                            }
+                          ],
+                          "span": {
+                            "start": 522,
+                            "end": 532
+                          }
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Bool",
+                          "span": {
+                            "start": 534,
+                            "end": 538
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 521,
+                        "end": 539
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 515,
+                    "end": 540
+                  }
+                }
+              },
+              {
+                "name": "label",
+                "nameSpan": {
+                  "start": 546,
+                  "end": 551
+                },
+                "optional": true,
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "span": {
+                    "start": 554,
+                    "end": 560
+                  }
+                }
+              }
+            ],
+            "span": {
+              "start": 501,
+              "end": 565
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 569,
+          "end": 575
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 580,
+            "end": 585
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 586,
+            "end": 591
+          }
+        },
+        "span": {
+          "start": 580,
+          "end": 591
+        }
+      },
+      "span": {
+        "start": 473,
+        "end": 591
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "showGeneric",
+      "nameSpan": {
+        "start": 600,
+        "end": 611
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 617,
+            "end": 622
+          },
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 625,
+                  "end": 626
+                }
+              },
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "item",
+                    "nameSpan": {
+                      "start": 630,
+                      "end": 634
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "A",
+                      "span": {
+                        "start": 636,
+                        "end": 637
+                      }
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 628,
+                  "end": 639
+                }
+              }
+            ],
+            "span": {
+              "start": 624,
+              "end": 640
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 646,
+          "end": 652
+        }
+      },
+      "constraints": [
+        {
+          "name": "Show",
+          "nameSpan": {
+            "start": 661,
+            "end": 665
+          },
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "span": {
+                "start": 666,
+                "end": 667
+              }
+            }
+          ],
+          "span": {
+            "start": 661,
+            "end": 668
+          }
+        }
+      ],
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "show",
+          "span": {
+            "start": 673,
+            "end": 677
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 678,
+            "end": 683
+          }
+        },
+        "span": {
+          "start": 673,
+          "end": 683
+        }
+      },
+      "span": {
+        "start": 593,
+        "end": 683
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "debugBadgeRecord",
+      "nameSpan": {
+        "start": 692,
+        "end": 708
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 711,
+            "end": 716
+          },
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "badge",
+                "nameSpan": {
+                  "start": 720,
+                  "end": 725
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "span": {
+                    "start": 727,
+                    "end": 732
+                  }
+                }
+              }
+            ],
+            "span": {
+              "start": 718,
+              "end": 734
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 738,
+          "end": 744
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "debug",
+          "span": {
+            "start": 749,
+            "end": 754
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 755,
+            "end": 760
+          }
+        },
+        "span": {
+          "start": 749,
+          "end": 760
+        }
+      },
+      "span": {
+        "start": 685,
+        "end": 760
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 776,
+        "end": 780
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 794,
+                  "end": 801
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "showTuple",
+                    "span": {
+                      "start": 803,
+                      "end": 812
+                    }
+                  },
+                  "argument": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "raw": "42",
+                        "span": {
+                          "start": 814,
+                          "end": 816
+                        }
+                      },
+                      {
+                        "kind": "string",
+                        "raw": "\"ready\"",
+                        "span": {
+                          "start": 818,
+                          "end": 825
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 813,
+                      "end": 826
+                    }
+                  },
+                  "span": {
+                    "start": 803,
+                    "end": 826
+                  }
+                },
+                "span": {
+                  "start": 802,
+                  "end": 827
+                }
+              },
+              "span": {
+                "start": 794,
+                "end": 827
+              }
+            },
+            "span": {
+              "start": 794,
+              "end": 827
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 832,
+                  "end": 839
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debugRecord",
+                    "span": {
+                      "start": 841,
+                      "end": 852
+                    }
+                  },
+                  "argument": {
+                    "kind": "record",
+                    "items": [
+                      {
+                        "kind": "field",
+                        "name": "alpha",
+                        "nameSpan": {
+                          "start": 855,
+                          "end": 860
+                        },
+                        "value": {
+                          "kind": "integer",
+                          "raw": "1",
+                          "span": {
+                            "start": 862,
+                            "end": 863
+                          }
+                        },
+                        "span": {
+                          "start": 855,
+                          "end": 863
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 853,
+                      "end": 865
+                    }
+                  },
+                  "span": {
+                    "start": 841,
+                    "end": 865
+                  }
+                },
+                "span": {
+                  "start": 840,
+                  "end": 866
+                }
+              },
+              "span": {
+                "start": 832,
+                "end": 866
+              }
+            },
+            "span": {
+              "start": 832,
+              "end": 866
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 871,
+                  "end": 878
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debugRecord",
+                    "span": {
+                      "start": 880,
+                      "end": 891
+                    }
+                  },
+                  "argument": {
+                    "kind": "record",
+                    "items": [
+                      {
+                        "kind": "field",
+                        "name": "zeta",
+                        "nameSpan": {
+                          "start": 894,
+                          "end": 898
+                        },
+                        "value": {
+                          "kind": "string",
+                          "raw": "\"last\"",
+                          "span": {
+                            "start": 900,
+                            "end": 906
+                          }
+                        },
+                        "span": {
+                          "start": 894,
+                          "end": 906
+                        }
+                      },
+                      {
+                        "kind": "field",
+                        "name": "alpha",
+                        "nameSpan": {
+                          "start": 908,
+                          "end": 913
+                        },
+                        "value": {
+                          "kind": "integer",
+                          "raw": "1",
+                          "span": {
+                            "start": 915,
+                            "end": 916
+                          }
+                        },
+                        "span": {
+                          "start": 908,
+                          "end": 916
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 892,
+                      "end": 918
+                    }
+                  },
+                  "span": {
+                    "start": 880,
+                    "end": 918
+                  }
+                },
+                "span": {
+                  "start": 879,
+                  "end": 919
+                }
+              },
+              "span": {
+                "start": 871,
+                "end": 919
+              }
+            },
+            "span": {
+              "start": 871,
+              "end": 919
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 924,
+                  "end": 931
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debugNested",
+                    "span": {
+                      "start": 933,
+                      "end": 944
+                    }
+                  },
+                  "argument": {
+                    "kind": "record",
+                    "items": [
+                      {
+                        "kind": "field",
+                        "name": "ranges",
+                        "nameSpan": {
+                          "start": 953,
+                          "end": 959
+                        },
+                        "value": {
+                          "kind": "array",
+                          "elements": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "binary",
+                                  "operator": "..",
+                                  "operatorSpan": {
+                                    "start": 964,
+                                    "end": 966
+                                  },
+                                  "left": {
+                                    "kind": "integer",
+                                    "raw": "1",
+                                    "span": {
+                                      "start": 963,
+                                      "end": 964
+                                    }
+                                  },
+                                  "right": {
+                                    "kind": "integer",
+                                    "raw": "3",
+                                    "span": {
+                                      "start": 966,
+                                      "end": 967
+                                    }
+                                  },
+                                  "span": {
+                                    "start": 963,
+                                    "end": 967
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": true,
+                                  "span": {
+                                    "start": 969,
+                                    "end": 973
+                                  }
+                                }
+                              ],
+                              "span": {
+                                "start": 962,
+                                "end": 974
+                              }
+                            },
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "binary",
+                                  "operator": "..=",
+                                  "operatorSpan": {
+                                    "start": 978,
+                                    "end": 981
+                                  },
+                                  "left": {
+                                    "kind": "integer",
+                                    "raw": "3",
+                                    "span": {
+                                      "start": 977,
+                                      "end": 978
+                                    }
+                                  },
+                                  "right": {
+                                    "kind": "integer",
+                                    "raw": "3",
+                                    "span": {
+                                      "start": 981,
+                                      "end": 982
+                                    }
+                                  },
+                                  "span": {
+                                    "start": 977,
+                                    "end": 982
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false,
+                                  "span": {
+                                    "start": 984,
+                                    "end": 989
+                                  }
+                                }
+                              ],
+                              "span": {
+                                "start": 976,
+                                "end": 990
+                              }
+                            }
+                          ],
+                          "span": {
+                            "start": 961,
+                            "end": 991
+                          }
+                        },
+                        "span": {
+                          "start": 953,
+                          "end": 991
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 945,
+                      "end": 998
+                    }
+                  },
+                  "span": {
+                    "start": 933,
+                    "end": 998
+                  }
+                },
+                "span": {
+                  "start": 932,
+                  "end": 999
+                }
+              },
+              "span": {
+                "start": 924,
+                "end": 999
+              }
+            },
+            "span": {
+              "start": 924,
+              "end": 999
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 1004,
+              "end": 1011
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "debugBadgeRecord",
+                "span": {
+                  "start": 1013,
+                  "end": 1029
+                }
+              },
+              "argument": {
+                "kind": "record",
+                "items": [
+                  {
+                    "kind": "field",
+                    "name": "badge",
+                    "nameSpan": {
+                      "start": 1032,
+                      "end": 1037
+                    },
+                    "value": {
+                      "kind": "name",
+                      "name": "Active",
+                      "span": {
+                        "start": 1039,
+                        "end": 1045
+                      }
+                    },
+                    "span": {
+                      "start": 1032,
+                      "end": 1045
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 1030,
+                  "end": 1047
+                }
+              },
+              "span": {
+                "start": 1013,
+                "end": 1047
+              }
+            },
+            "span": {
+              "start": 1012,
+              "end": 1048
+            }
+          },
+          "span": {
+            "start": 1004,
+            "end": 1048
+          }
+        },
+        "span": {
+          "start": 785,
+          "end": 1052
+        }
+      },
+      "span": {
+        "start": 762,
+        "end": 1052
+      }
+    }
+  ]
+}

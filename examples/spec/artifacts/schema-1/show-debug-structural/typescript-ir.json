@@ -1,0 +1,989 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/show-debug-structural",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.string",
+    "core.int64",
+    "core.int64.show",
+    "core.string.show",
+    "core.tuple.show",
+    "core.int64.debug",
+    "core.string.debug",
+    "core.record.debug",
+    "core.range",
+    "core.bool",
+    "core.range.debug",
+    "core.bool.debug",
+    "core.tuple.debug",
+    "core.array.debug",
+    "core.record.show",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println",
+    "core.range.exclusive",
+    "core.range.inclusive"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.tuple.show",
+      "local": "_ssrg_show_tupleShow"
+    },
+    {
+      "feature": "core.int64.debug",
+      "local": "_ssrg_debug_intDebug"
+    },
+    {
+      "feature": "core.string.debug",
+      "local": "_ssrg_debug_stringDebug"
+    },
+    {
+      "feature": "core.record.debug",
+      "local": "_ssrg_debug_recordDebug"
+    },
+    {
+      "feature": "core.range.debug",
+      "local": "_ssrg_debug_rangeDebug"
+    },
+    {
+      "feature": "core.bool.debug",
+      "local": "_ssrg_debug_boolDebug"
+    },
+    {
+      "feature": "core.tuple.debug",
+      "local": "_ssrg_debug_tupleDebug"
+    },
+    {
+      "feature": "core.array.debug",
+      "local": "_ssrg_debug_arrayDebug"
+    },
+    {
+      "feature": "core.record.show",
+      "local": "_ssrg_show_recordShow"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.range.exclusive",
+      "local": "_ssrg_range_exclusive"
+    },
+    {
+      "feature": "core.range.inclusive",
+      "local": "_ssrg_range_inclusive"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "Badge",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Active",
+          "tag": "Active",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 17,
+            "end": 23
+          }
+        },
+        {
+          "exported": false,
+          "name": "Paused",
+          "tag": "Paused",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 28,
+            "end": 34
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 34
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Show<artifact/show-debug-structural::Badge>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/show-debug-structural::Badge",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 36,
+        "end": 171
+      },
+      "dictionaryExport": "__ssrg$instance$Show$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "show",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "Badge",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Badge",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Active"
+                    }
+                  ],
+                  "value": {
+                    "kind": "string",
+                    "value": "active"
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "string",
+                    "value": "paused"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 63,
+              "end": 169
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "std/prelude::Debug<artifact/show-debug-structural::Badge>",
+      "trait": "Debug",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Badge",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 173,
+        "end": 322
+      },
+      "dictionaryExport": "__ssrg$instance$Debug$1",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "debug",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "Badge",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "value"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Badge",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Active"
+                    }
+                  ],
+                  "value": {
+                    "kind": "string",
+                    "value": "Badge.Active"
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "string",
+                    "value": "Badge.Paused"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 201,
+              "end": 320
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "showTuple",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "readonly [bigint, string]",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_show_tupleShow",
+          "typeArguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "bigint"
+                },
+                {
+                  "kind": "string"
+                }
+              ]
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_show_intShow"
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_show_stringShow"
+            }
+          ]
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 324,
+        "end": 386
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugRecord",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly \"zeta\"?: string; readonly \"alpha\": bigint }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_debug_recordDebug",
+          "typeArguments": [
+            {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "zeta",
+                  "optional": true,
+                  "type": {
+                    "kind": "string"
+                  }
+                },
+                {
+                  "name": "alpha",
+                  "optional": false,
+                  "type": {
+                    "kind": "bigint"
+                  }
+                }
+              ]
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "string",
+                  "value": "alpha"
+                },
+                {
+                  "kind": "string",
+                  "value": "zeta"
+                }
+              ]
+            },
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "boolean",
+                  "value": false
+                },
+                {
+                  "kind": "boolean",
+                  "value": true
+                }
+              ]
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_debug_intDebug"
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_debug_stringDebug"
+            }
+          ]
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 388,
+        "end": 471
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugNested",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly \"ranges\": ReadonlyArray<readonly [Readonly<{ start: bigint; end: bigint; inclusive: boolean }>, boolean]>; readonly \"label\"?: string }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_debug_recordDebug",
+          "typeArguments": [
+            {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "ranges",
+                  "optional": false,
+                  "type": {
+                    "kind": "array",
+                    "element": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "range"
+                        },
+                        {
+                          "kind": "boolean"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "label",
+                  "optional": true,
+                  "type": {
+                    "kind": "string"
+                  }
+                }
+              ]
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "string",
+                  "value": "label"
+                },
+                {
+                  "kind": "string",
+                  "value": "ranges"
+                }
+              ]
+            },
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "boolean",
+                  "value": true
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
+            },
+            {
+              "kind": "runtime-reference",
+              "name": "_ssrg_debug_stringDebug"
+            },
+            {
+              "kind": "type-application-call",
+              "callee": "_ssrg_debug_arrayDebug",
+              "typeArguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "range"
+                    },
+                    {
+                      "kind": "boolean"
+                    }
+                  ]
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_debug_tupleDebug",
+                  "typeArguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "range"
+                        },
+                        {
+                          "kind": "boolean"
+                        }
+                      ]
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "type-application-call",
+                      "callee": "_ssrg_debug_rangeDebug",
+                      "typeArguments": [
+                        {
+                          "kind": "bigint"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_debug_intDebug"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_debug_boolDebug"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 473,
+        "end": 591
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "showGeneric",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "readonly [A, { readonly \"item\": A }]",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_show_tupleShow",
+          "typeArguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "reference",
+                  "name": "A",
+                  "arguments": []
+                },
+                {
+                  "kind": "record",
+                  "fields": [
+                    {
+                      "name": "item",
+                      "optional": false,
+                      "type": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "__ssrg$evidence$0"
+            },
+            {
+              "kind": "type-application-call",
+              "callee": "_ssrg_show_recordShow",
+              "typeArguments": [
+                {
+                  "kind": "record",
+                  "fields": [
+                    {
+                      "name": "item",
+                      "optional": false,
+                      "type": {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                }
+              ],
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "string",
+                      "value": "item"
+                    }
+                  ]
+                },
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                }
+              ]
+            }
+          ]
+        },
+        "method": "show",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 593,
+        "end": 683
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "debugBadgeRecord",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly \"badge\": Badge }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "dictionary-call",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "_ssrg_debug_recordDebug",
+          "typeArguments": [
+            {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "badge",
+                  "optional": false,
+                  "type": {
+                    "kind": "reference",
+                    "name": "Badge",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          ],
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "string",
+                  "value": "badge"
+                }
+              ]
+            },
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
+            },
+            {
+              "kind": "identifier",
+              "name": "__ssrg$instance$Debug$1"
+            }
+          ]
+        },
+        "method": "debug",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 685,
+        "end": 760
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "showTuple",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "bigint",
+                          "value": "42"
+                        },
+                        {
+                          "kind": "string",
+                          "value": "ready"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "debugRecord",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "alpha",
+                          "value": {
+                            "kind": "bigint",
+                            "value": "1"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "debugRecord",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "zeta",
+                          "value": {
+                            "kind": "string",
+                            "value": "last"
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "alpha",
+                          "value": {
+                            "kind": "bigint",
+                            "value": "1"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "debugNested",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "ranges",
+                          "value": {
+                            "kind": "array",
+                            "elements": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_range_exclusive",
+                                    "arguments": [
+                                      {
+                                        "kind": "bigint",
+                                        "value": "1"
+                                      },
+                                      {
+                                        "kind": "bigint",
+                                        "value": "3"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": true
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_range_inclusive",
+                                    "arguments": [
+                                      {
+                                        "kind": "bigint",
+                                        "value": "3"
+                                      },
+                                      {
+                                        "kind": "bigint",
+                                        "value": "3"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
+                                  }
+                                ]
+                              }
+                            ],
+                            "elementType": {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "range"
+                                },
+                                {
+                                  "kind": "boolean"
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "debugBadgeRecord",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "badge",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "Active"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 762,
+        "end": 1052
+      }
+    }
+  ]
+}

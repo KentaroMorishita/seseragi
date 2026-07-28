@@ -327,6 +327,102 @@ export function rangeDebug<Value>(
   )
 }
 
+/**
+ * Tuple dictionaries are compiler-provided from the tuple's ordered element
+ * types. Runtime values never supply their own inspection policy.
+ */
+export function tupleShow<Value extends readonly unknown[]>(
+  ...elements: ShowEvidence<any>[]
+): Show<Value> {
+  return defineShow((value) =>
+    delimited(
+      "(",
+      elements.map((element, index) => showDocument(element, value[index])),
+      ")"
+    )
+  )
+}
+
+export function tupleDebug<Value extends readonly unknown[]>(
+  ...elements: DebugEvidence<any>[]
+): Debug<Value> {
+  return defineDebug((value) =>
+    delimited(
+      "(",
+      elements.map((element, index) => debugDocument(element, value[index])),
+      ")"
+    )
+  )
+}
+
+/**
+ * Record field names, order, and optionality come from the compiler's closed
+ * structural type. The runtime never enumerates host object keys.
+ */
+export function recordShow<Value extends object>(
+  fieldNames: readonly string[],
+  optionalFields: readonly boolean[],
+  ...fields: ShowEvidence<any>[]
+): Show<Value> {
+  requireRecordDescriptor(fieldNames, optionalFields, fields)
+  return defineShow((value) => {
+    const record = value as Readonly<Record<string, unknown>>
+    return delimited(
+      "{",
+      fieldNames.map((name, index) => {
+        const optional = optionalFields[index] === true
+        if (optional && !hasOwn(record, name)) {
+          return text(`${name}?: Nothing`)
+        }
+        const field = fields[index]
+        if (field === undefined) {
+          throw new RangeError("record Show descriptor is incomplete")
+        }
+        const rendered = showDocument(field, record[name])
+        return concat([
+          text(optional ? `${name}?: Just ` : `${name}: `),
+          rendered,
+        ])
+      }),
+      "}",
+      ",",
+      true
+    )
+  })
+}
+
+export function recordDebug<Value extends object>(
+  fieldNames: readonly string[],
+  optionalFields: readonly boolean[],
+  ...fields: DebugEvidence<any>[]
+): Debug<Value> {
+  requireRecordDescriptor(fieldNames, optionalFields, fields)
+  return defineDebug((value) => {
+    const record = value as Readonly<Record<string, unknown>>
+    return delimited(
+      "{",
+      fieldNames.map((name, index) => {
+        const optional = optionalFields[index] === true
+        if (optional && !hasOwn(record, name)) {
+          return text(`${name}?: Nothing`)
+        }
+        const field = fields[index]
+        if (field === undefined) {
+          throw new RangeError("record Debug descriptor is incomplete")
+        }
+        const rendered = debugDocument(field, record[name])
+        return concat([
+          text(optional ? `${name}?: Just ` : `${name}: `),
+          rendered,
+        ])
+      }),
+      "}",
+      ",",
+      true
+    )
+  })
+}
+
 /** Stable, user-facing rendering for the opaque Console failure boundary. */
 export const consoleErrorShow = defineShow((error: ConsoleError) =>
   text(`ConsoleError: ${error.message}`)
@@ -373,6 +469,26 @@ function debugDocument<Value>(
 ): RenderDocument {
   const instance = evidence as Debug<Value>
   return instance.document?.(value) ?? text(instance.debug(value))
+}
+
+function requireRecordDescriptor(
+  fieldNames: readonly string[],
+  optionalFields: readonly boolean[],
+  fields: readonly unknown[]
+): void {
+  if (
+    fieldNames.length !== optionalFields.length ||
+    fieldNames.length !== fields.length
+  ) {
+    throw new RangeError("record display descriptor length mismatch")
+  }
+}
+
+function hasOwn(
+  record: Readonly<Record<string, unknown>>,
+  field: string
+): boolean {
+  return Object.hasOwn(record, field)
 }
 
 function canonicalFloat(value: number): string {

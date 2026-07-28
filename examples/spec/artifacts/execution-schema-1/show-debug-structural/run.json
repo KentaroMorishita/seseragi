@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "case": "show-debug-structural",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/show-debug-structural",
+    "export": "main",
+    "compiledModule": "../../schema-1/show-debug-structural/generated-module.json",
+    "typedInterface": "../../schema-1/show-debug-structural/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.adt",
+      "core.string",
+      "core.int64",
+      "core.int64.show",
+      "core.string.show",
+      "core.tuple.show",
+      "core.int64.debug",
+      "core.string.debug",
+      "core.record.debug",
+      "core.range",
+      "core.bool",
+      "core.range.debug",
+      "core.bool.debug",
+      "core.tuple.debug",
+      "core.array.debug",
+      "core.record.show",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.range.exclusive",
+      "core.range.inclusive"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "(42, ready)"
+        ],
+        "stdout": "(42, ready)\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "{ alpha: 1, zeta?: Nothing }"
+        ],
+        "stdout": "{ alpha: 1, zeta?: Nothing }\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "{ alpha: 1, zeta?: Just \"last\" }"
+        ],
+        "stdout": "{ alpha: 1, zeta?: Just \"last\" }\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "{ label?: Nothing, ranges: [(1..3, True), (3..=3, False)] }"
+        ],
+        "stdout": "{ label?: Nothing, ranges: [(1..3, True), (3..=3, False)] }\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "{ badge: Badge.Active }"
+        ],
+        "stdout": "{ badge: Badge.Active }\n"
+      }
+    ]
+  }
+}

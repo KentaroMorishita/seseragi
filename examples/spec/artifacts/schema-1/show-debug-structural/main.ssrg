@@ -1,0 +1,57 @@
+type Badge =
+  | Active
+  | Paused
+
+instance Show<Badge> {
+    fn show value: Badge -> String =
+    match value {
+      Active -> "active"
+      Paused -> "paused"
+    }
+}
+
+instance Debug<Badge> {
+    fn debug value: Badge -> String =
+    match value {
+      Active -> "Badge.Active"
+      Paused -> "Badge.Paused"
+    }
+}
+
+pub fn showTuple value: (Int, String) -> String =
+  show value
+
+pub fn debugRecord
+  value: { zeta?: String, alpha: Int }
+-> String =
+  debug value
+
+pub fn debugNested
+  value: {
+    ranges: Array<(Range<Int>, Bool)>,
+    label?: String,
+  }
+-> String =
+  debug value
+
+pub fn showGeneric<A>
+  value: (A, { item: A })
+  -> String
+  where Show<A> =
+  show value
+
+pub fn debugBadgeRecord
+  value: { badge: Badge }
+-> String =
+  debug value
+
+pub effect fn main =
+  do {
+    println (showTuple (42, "ready"))
+    println (debugRecord { alpha: 1 })
+    println (debugRecord { zeta: "last", alpha: 1 })
+    println (debugNested {
+      ranges: [(1..3, True), (3..=3, False)],
+    })
+    println (debugBadgeRecord { badge: Active })
+  }

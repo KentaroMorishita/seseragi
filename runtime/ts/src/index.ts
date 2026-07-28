@@ -153,6 +153,8 @@ export {
   neverShow,
   rangeDebug,
   rangeShow,
+  recordDebug,
+  recordShow,
   renderDebug,
   renderDocument as renderValueDocument,
   renderShow,
@@ -160,6 +162,8 @@ export {
   stringDebug,
   stringShow,
   text as renderText,
+  tupleDebug,
+  tupleShow,
   unitDebug,
   unitShow,
 } from "./show"

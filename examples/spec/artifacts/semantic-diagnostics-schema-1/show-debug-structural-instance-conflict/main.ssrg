@@ -1,0 +1,9 @@
+instance Show<(Int, String)> {
+    fn show value: (Int, String) -> String =
+    "custom"
+  }
+
+instance Debug<{ name: String }> {
+    fn debug value: { name: String } -> String =
+    "custom"
+  }

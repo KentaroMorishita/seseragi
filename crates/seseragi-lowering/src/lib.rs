@@ -420,6 +420,44 @@ mod tests {
     }
 
     #[test]
+    fn lowers_structural_tuple_and_record_display_from_compiler_descriptors() {
+        let source = "pub fn render value: (Int, String) -> String = show value\n\
+                      pub fn inspect value: { zeta?: String, alpha: Int } -> String = debug value\n\
+                      pub fn inspectNested value: { pairs: Array<(Int, Range<Int>)> } -> String = debug value\n";
+        let typed = type_module("artifact/structural-display/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+
+        for requirement in [
+            "core.tuple.show",
+            "core.record.debug",
+            "core.tuple.debug",
+            "core.array.debug",
+            "core.range.debug",
+            "core.int64.show",
+            "core.string.show",
+            "core.int64.debug",
+            "core.string.debug",
+        ] {
+            assert!(
+                typescript
+                    .runtime_requirements
+                    .iter()
+                    .any(|actual| actual == requirement),
+                "missing runtime requirement {requirement}"
+            );
+        }
+
+        let bundle = emit_typescript_module(typescript, source);
+        assert!(bundle.typescript.contains("_ssrg_show_tupleShow"));
+        assert!(bundle.typescript.contains("_ssrg_debug_recordDebug"));
+        assert!(bundle.typescript.contains("[\"alpha\", \"zeta\"] as const"));
+        assert!(bundle.typescript.contains("[false, true] as const"));
+        assert!(!bundle.typescript.contains("Object.keys"));
+        assert!(!bundle.typescript.contains("JSON.stringify"));
+    }
+
+    #[test]
     fn lowers_adt_constructors_to_tagged_typescript_values() {
         let source = "\
 pub type Hand =

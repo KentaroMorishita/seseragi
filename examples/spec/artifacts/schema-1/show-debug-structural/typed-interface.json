@@ -1,0 +1,367 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/show-debug-structural",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/show-debug-structural::showTuple",
+      "namespace": "value",
+      "name": "showTuple",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 324,
+        "end": 386
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-structural::debugRecord",
+      "namespace": "value",
+      "name": "debugRecord",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 388,
+        "end": 471
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "zeta",
+                "optional": true,
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "alpha",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-structural::debugNested",
+      "namespace": "value",
+      "name": "debugNested",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 473,
+        "end": 591
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "ranges",
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "Range",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Bool",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "label",
+                "optional": true,
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-structural::showGeneric",
+      "namespace": "value",
+      "name": "showGeneric",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 593,
+        "end": 683
+      },
+      "scheme": {
+        "typeParameters": [
+          "A"
+        ],
+        "constraints": [
+          {
+            "name": "Show",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ]
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "item",
+                    "type": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-structural::debugBadgeRecord",
+      "namespace": "value",
+      "name": "debugBadgeRecord",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 685,
+        "end": 760
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "badge",
+                "type": {
+                  "kind": "named",
+                  "name": "Badge",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/show-debug-structural::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 762,
+        "end": 1052
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "std/prelude::Show<artifact/show-debug-structural::Badge>",
+      "providerModule": "artifact/show-debug-structural",
+      "traitIdentity": "std/prelude::Show",
+      "argumentIdentities": [
+        "artifact/show-debug-structural::Badge"
+      ],
+      "typeIdentity": "artifact/show-debug-structural::Badge",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 36,
+        "end": 171
+      }
+    },
+    {
+      "identity": "std/prelude::Debug<artifact/show-debug-structural::Badge>",
+      "providerModule": "artifact/show-debug-structural",
+      "traitIdentity": "std/prelude::Debug",
+      "argumentIdentities": [
+        "artifact/show-debug-structural::Badge"
+      ],
+      "trait": "Debug",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Debug",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Badge",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 173,
+        "end": 322
+      }
+    }
+  ]
+}

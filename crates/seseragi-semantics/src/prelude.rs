@@ -922,6 +922,19 @@ pub(crate) fn overlapping_standard_instance(
     })
 }
 
+pub(crate) fn structural_display_instance_identity(
+    trait_identity: &str,
+    type_ref: &TypedType,
+) -> Option<&'static str> {
+    match (trait_identity, type_ref) {
+        ("std/prelude::Show", TypedType::Tuple { .. }) => Some("std/tuple::Show"),
+        ("std/prelude::Debug", TypedType::Tuple { .. }) => Some("std/tuple::Debug"),
+        ("std/prelude::Show", TypedType::Record { closed: true, .. }) => Some("std/record::Show"),
+        ("std/prelude::Debug", TypedType::Record { closed: true, .. }) => Some("std/record::Debug"),
+        _ => None,
+    }
+}
+
 fn standard_instance_canonical_head(
     instance: &PreludeStandardInstance,
     canonical_type_ref: &str,

@@ -28,6 +28,8 @@ import {
   neverShow,
   rangeDebug,
   rangeShow,
+  recordDebug,
+  recordShow,
   renderDebug,
   renderDocument,
   renderShow,
@@ -36,6 +38,8 @@ import {
   stringDebug,
   stringShow,
   text,
+  tupleDebug,
+  tupleShow,
   unitDebug,
   unitShow,
 } from "../src/show"
@@ -212,6 +216,64 @@ assertEqual(
 assertEqual(
   arrayShow(intRangeShow).show([exclusive(1n, 5n), inclusive(10n, 1n)]),
   "[1..5, 10..=1]"
+)
+
+const pairShow = tupleShow<readonly [bigint, string]>(intShow, stringShow)
+const pairDebug = tupleDebug<readonly [bigint, string]>(intDebug, stringDebug)
+assertEqual(pairShow.show([42n, "ready"]), "(42, ready)")
+assertEqual(pairDebug.debug([42n, "ready"]), '(42, "ready")')
+assertEqual(
+  renderDebug(pairDebug, [42n, "ready"], { layout: "multiline" }),
+  '(\n  42,\n  "ready"\n)'
+)
+
+type Profile = Readonly<{
+  alpha: bigint
+  zeta?: string
+}>
+const profileShow = recordShow<Profile>(
+  ["alpha", "zeta"],
+  [false, true],
+  intShow,
+  stringShow
+)
+const profileDebug = recordDebug<Profile>(
+  ["alpha", "zeta"],
+  [false, true],
+  intDebug,
+  stringDebug
+)
+assertEqual(profileShow.show({ alpha: 1n }), "{ alpha: 1, zeta?: Nothing }")
+assertEqual(
+  profileShow.show({ zeta: "last", alpha: 1n }),
+  "{ alpha: 1, zeta?: Just last }"
+)
+assertEqual(
+  profileDebug.debug({ zeta: "last", alpha: 1n }),
+  '{ alpha: 1, zeta?: Just "last" }'
+)
+assertEqual(
+  renderDebug(
+    profileDebug,
+    { zeta: "last", alpha: 1n },
+    {
+      layout: "multiline",
+    }
+  ),
+  '{\n  alpha: 1,\n  zeta?: Just "last"\n}'
+)
+
+type NestedRecord = Readonly<{
+  pairs: ReadonlyArray<readonly [bigint, string]>
+}>
+const nestedRecordDebug = recordDebug<NestedRecord>(
+  ["pairs"],
+  [false],
+  arrayDebug(pairDebug)
+)
+assertEqual(
+  nestedRecordDebug.debug({ pairs: [[1n, "one"]] }),
+  '{ pairs: [(1, "one")] }'
 )
 
 const nestedDebug = arrayDebug(maybeDebug(stringDebug))

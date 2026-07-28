@@ -528,6 +528,22 @@ constructor payloadはconstructor名の次行へ一段indentします。composit
 とおりunit stepであり、compact / multilineのどちらでも一行のsource-like表記です。
 Rangeがcollectionや後続のtuple・recordへ入った場合も、bound dictionaryを再帰的に合成します。
 
+tupleは各要素の`Show`または`Debug`を左から右へ満たすとき、compiler提供の構造的
+dictionaryを持ちます。compactでは`(first, second)`、multilineでは同じ要素順を一段
+indentしたdocumentとして描画します。
+
+closed structural recordは、全fieldの対応するdictionaryを満たすときcompiler提供の
+`Show` / `Debug`を持ちます。structural recordのfield順は型上の宣言順ではなくfield名の
+昇順をcanonical順とし、compilerがfield名・optional flag・dictionaryを同じ順序でruntimeへ
+渡します。required fieldは`name: value`、optional fieldは存在時に
+`name?: Just value`、欠如時に`name?: Nothing`と表示するため、Unit等のpresent値とabsenceを
+混同しません。open recordは未知のfieldを失わず描画できないため構造的instanceを持ちません。
+runtimeは`Object.keys`、`JSON.stringify`、host inspectionを使用しません。
+
+tuple / closed structural recordのcompiler提供instanceはsealedです。同じ構造headへの明示的な
+user instance宣言はstandard instanceとの重複として`SES-T0202`になります。nominal Struct /
+ADT / Newtypeのinstance生成はstructural instanceとは別のderiving契約です。
+
 Show/Debugと出力先は別概念です。型classを実装しただけで値がconsoleへ書かれることは
 ありません。
 

@@ -1,0 +1,53 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/show-debug-structural"
+  ],
+  "sourcesContent": [
+    "type Badge =\n  | Active\n  | Paused\n\ninstance Show<Badge> {\n    fn show value: Badge -> String =\n    match value {\n      Active -> \"active\"\n      Paused -> \"paused\"\n    }\n}\n\ninstance Debug<Badge> {\n    fn debug value: Badge -> String =\n    match value {\n      Active -> \"Badge.Active\"\n      Paused -> \"Badge.Paused\"\n    }\n}\n\npub fn showTuple value: (Int, String) -> String =\n  show value\n\npub fn debugRecord\n  value: { zeta?: String, alpha: Int }\n-> String =\n  debug value\n\npub fn debugNested\n  value: {\n    ranges: Array<(Range<Int>, Bool)>,\n    label?: String,\n  }\n-> String =\n  debug value\n\npub fn showGeneric<A>\n  value: (A, { item: A })\n  -> String\n  where Show<A> =\n  show value\n\npub fn debugBadgeRecord\n  value: { badge: Badge }\n-> String =\n  debug value\n\npub effect fn main =\n  do {\n    println (showTuple (42, \"ready\"))\n    println (debugRecord { alpha: 1 })\n    println (debugRecord { zeta: \"last\", alpha: 1 })\n    println (debugNested {\n      ranges: [(1..3, True), (3..=3, False)],\n    })\n    println (debugBadgeRecord { badge: Active })\n  }\n"
+  ],
+  "names": [
+    "Badge",
+    "Active",
+    "Paused",
+    "__ssrg$instance$Show$0",
+    "__ssrg$instance$Debug$1",
+    "showTuple",
+    "tupleShow",
+    "intShow",
+    "stringShow",
+    "debugRecord",
+    "recordDebug",
+    "intDebug",
+    "stringDebug",
+    "debugNested",
+    "recordDebug",
+    "stringDebug",
+    "arrayDebug",
+    "tupleDebug",
+    "rangeDebug",
+    "intDebug",
+    "boolDebug",
+    "showGeneric",
+    "tupleShow",
+    "recordShow",
+    "debugBadgeRecord",
+    "recordDebug",
+    "main",
+    "println",
+    "showTuple",
+    "println",
+    "debugRecord",
+    "println",
+    "debugRecord",
+    "println",
+    "debugNested",
+    "exclusive",
+    "inclusive",
+    "println",
+    "debugBadgeRecord"
+  ],
+  "mappings": ";;;;;AAAAA;;;AACIC;AACAC;AAEJC;AAQAC;AAQAC;AAGAI;AAKAI;AAQAQ;AAMAG;AAKAE"
+}
