@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "module": "artifact/arithmetic-result-inference",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}

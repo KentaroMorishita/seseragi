@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "module": "artifact/arithmetic-result-inference",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int64",
+      "core.int64.subtract",
+      "core.int64.add",
+      "core.int64.multiply",
+      "core.int64.divide",
+      "core.int64.remainder",
+      "core.int64.power",
+      "core.string",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.int64.debug",
+      "core.array.debug",
+      "core.string.debug"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

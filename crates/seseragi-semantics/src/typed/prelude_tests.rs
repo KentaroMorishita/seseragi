@@ -224,6 +224,75 @@ fn selects_array_reducible_evidence_for_standard_reduce() {
 }
 
 #[test]
+fn retains_unannotated_standard_arithmetic_results_across_top_level_bindings() {
+    let typed = type_module(
+        "artifact/arithmetic-result-inference/main.ssrg",
+        "let difference = 1 - 2\n\
+         let annotated: Int = 1 - 2\n\
+         let joined = \"Sese\" + \"ragi\"\n\
+         pub fn render unit: Unit -> (String, String, String) =\n\
+           (debug difference, debug annotated, debug joined)\n",
+    );
+
+    for index in [0, 1] {
+        let TypedDecl::Let { scheme, value, .. } = &typed.declarations[index] else {
+            panic!("expected arithmetic binding");
+        };
+        assert_eq!(scheme.type_ref, named("Int"));
+        assert!(matches!(
+            value,
+            TypedExpr::Binary {
+                type_ref,
+                evidence,
+                ..
+            } if type_ref == &named("Int")
+                && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                    evidence: TypedInstanceEvidence::Standard { identity, .. },
+                    ..
+                }] if identity == "std/int::Sub")
+        ));
+    }
+
+    let TypedDecl::Let { scheme, value, .. } = &typed.declarations[2] else {
+        panic!("expected String Add binding");
+    };
+    assert_eq!(scheme.type_ref, named("String"));
+    assert!(matches!(
+        value,
+        TypedExpr::Binary {
+            type_ref,
+            evidence,
+            ..
+        } if type_ref == &named("String")
+            && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Standard { identity, .. },
+                ..
+            }] if identity == "std/string::Add")
+    ));
+
+    let TypedDecl::Fn { body, .. } = &typed.declarations[3] else {
+        panic!("expected render function");
+    };
+    let TypedExpr::Tuple { elements, .. } = body else {
+        panic!("expected rendered tuple");
+    };
+    assert!(elements.iter().all(|element| matches!(
+        element,
+        TypedExpr::Call {
+            callee,
+            evidence,
+            type_ref,
+            ..
+        } if callee == "std/prelude::Debug::debug"
+            && type_ref == &named("String")
+            && matches!(evidence.as_slice(), [crate::TypedCallEvidence {
+                evidence: TypedInstanceEvidence::Standard { .. },
+                ..
+            }])
+    )));
+}
+
+#[test]
 fn composes_array_show_from_a_scoped_element_dictionary() {
     let typed = type_module(
         "artifact/scoped-array-show/main.ssrg",

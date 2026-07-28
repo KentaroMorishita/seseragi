@@ -1,0 +1,440 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/arithmetic-result-inference",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.int64.subtract",
+    "core.int64.add",
+    "core.int64.multiply",
+    "core.int64.divide",
+    "core.int64.remainder",
+    "core.int64.power",
+    "core.string",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println",
+    "core.int64.debug",
+    "core.array.debug",
+    "core.string.debug"
+  ],
+  "imports": [
+    {
+      "feature": "core.int64.subtract",
+      "local": "_ssrg_int64_subtract"
+    },
+    {
+      "feature": "core.int64.add",
+      "local": "_ssrg_int64_add"
+    },
+    {
+      "feature": "core.int64.multiply",
+      "local": "_ssrg_int64_multiply"
+    },
+    {
+      "feature": "core.int64.divide",
+      "local": "_ssrg_int64_divide"
+    },
+    {
+      "feature": "core.int64.remainder",
+      "local": "_ssrg_int64_remainder"
+    },
+    {
+      "feature": "core.int64.power",
+      "local": "_ssrg_int64_power"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int64.debug",
+      "local": "_ssrg_debug_intDebug"
+    },
+    {
+      "feature": "core.array.debug",
+      "local": "_ssrg_debug_arrayDebug"
+    },
+    {
+      "feature": "core.string.debug",
+      "local": "_ssrg_debug_stringDebug"
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "difference",
+      "type": {
+        "kind": "bigint"
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_subtract",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "1"
+          },
+          {
+            "kind": "bigint",
+            "value": "2"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 101,
+        "end": 123
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "annotated",
+      "type": {
+        "kind": "bigint"
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int64_subtract",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "1"
+          },
+          {
+            "kind": "bigint",
+            "value": "2"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 125,
+        "end": 151
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "arithmeticMatrix",
+      "type": {
+        "kind": "array",
+        "element": {
+          "kind": "bigint"
+        }
+      },
+      "initializer": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int64_add",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "1"
+              },
+              {
+                "kind": "bigint",
+                "value": "2"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int64_subtract",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "4"
+              },
+              {
+                "kind": "bigint",
+                "value": "1"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int64_multiply",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "2"
+              },
+              {
+                "kind": "bigint",
+                "value": "3"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int64_divide",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "8"
+              },
+              {
+                "kind": "bigint",
+                "value": "2"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int64_remainder",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "7"
+              },
+              {
+                "kind": "bigint",
+                "value": "4"
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int64_power",
+            "arguments": [
+              {
+                "kind": "bigint",
+                "value": "2"
+              },
+              {
+                "kind": "bigint",
+                "value": "3"
+              }
+            ]
+          }
+        ],
+        "elementType": {
+          "kind": "bigint"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 153,
+        "end": 233
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "joined",
+      "type": {
+        "kind": "string"
+      },
+      "initializer": {
+        "kind": "binary",
+        "operator": "+",
+        "left": {
+          "kind": "string",
+          "value": "Sese"
+        },
+        "right": {
+          "kind": "string",
+          "value": "ragi"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 235,
+        "end": 263
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "acceptInt",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "bigint",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "value"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 265,
+        "end": 305
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_debug_intDebug"
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "difference"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_debug_intDebug"
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "annotated"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_arrayDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "bigint"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_intDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "arithmeticMatrix"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_debug_intDebug"
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "acceptInt",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_int64_subtract",
+                          "arguments": [
+                            {
+                              "kind": "bigint",
+                              "value": "10"
+                            },
+                            {
+                              "kind": "bigint",
+                              "value": "3"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_debug_stringDebug"
+              },
+              "method": "debug",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "joined"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 307,
+        "end": 504
+      }
+    }
+  ]
+}

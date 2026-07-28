@@ -1,0 +1,41 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/arithmetic-result-inference"
+  ],
+  "sourcesContent": [
+    "// Standard arithmetic instanceの一意なoutput型は、注釈なしletでも保持されます。\nlet difference = 1 - 2\n\nlet annotated: Int = 1 - 2\n\nlet arithmeticMatrix = [\n  1 + 2,\n  4 - 1,\n  2 * 3,\n  8 / 2,\n  7 % 4,\n  2 ** 3\n]\n\nlet joined = \"Sese\" + \"ragi\"\n\nfn acceptInt value: Int -> Int =\n  value\n\npub effect fn main =\n  do {\n    println (debug difference)\n    println (debug annotated)\n    println (debug arithmeticMatrix)\n    println (debug (acceptInt (10 - 3)))\n    println (debug joined)\n  }\n"
+  ],
+  "names": [
+    "difference",
+    "subtract",
+    "annotated",
+    "subtract",
+    "arithmeticMatrix",
+    "add",
+    "subtract",
+    "multiply",
+    "divide",
+    "remainder",
+    "power",
+    "joined",
+    "acceptInt",
+    "main",
+    "println",
+    "intDebug",
+    "println",
+    "intDebug",
+    "println",
+    "arrayDebug",
+    "intDebug",
+    "println",
+    "intDebug",
+    "acceptInt",
+    "subtract",
+    "println",
+    "stringDebug"
+  ],
+  "mappings": ";;;;;AACAA;AAEAE;AAEAE;AASAO;AAEAC;AAGAC"
+}

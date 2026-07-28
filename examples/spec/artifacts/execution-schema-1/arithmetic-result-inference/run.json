@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "case": "arithmetic-result-inference",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/arithmetic-result-inference",
+    "export": "main",
+    "compiledModule": "../../schema-1/arithmetic-result-inference/generated-module.json",
+    "typedInterface": "../../schema-1/arithmetic-result-inference/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.int64",
+      "core.int64.subtract",
+      "core.int64.add",
+      "core.int64.multiply",
+      "core.int64.divide",
+      "core.int64.remainder",
+      "core.int64.power",
+      "core.string",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.int64.debug",
+      "core.array.debug",
+      "core.string.debug"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["-1"],
+        "stdout": "-1\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["-1"],
+        "stdout": "-1\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["[3, 3, 6, 4, 3, 8]"],
+        "stdout": "[3, 3, 6, 4, 3, 8]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["7"],
+        "stdout": "7\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["\"Seseragi\""],
+        "stdout": "\"Seseragi\"\n"
+      }
+    ]
+  }
+}

@@ -1106,7 +1106,7 @@ fn contains_declared_type_parameter(
     }
 }
 
-fn standard_binary_output(
+pub(crate) fn standard_binary_output(
     trait_name: &str,
     left: &TypedType,
     right: &TypedType,

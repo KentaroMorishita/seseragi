@@ -1,0 +1,27 @@
+// Standard arithmetic instanceの一意なoutput型は、注釈なしletでも保持されます。
+let difference = 1 - 2
+
+let annotated: Int = 1 - 2
+
+let arithmeticMatrix = [
+  1 + 2,
+  4 - 1,
+  2 * 3,
+  8 / 2,
+  7 % 4,
+  2 ** 3
+]
+
+let joined = "Sese" + "ragi"
+
+fn acceptInt value: Int -> Int =
+  value
+
+pub effect fn main =
+  do {
+    println (debug difference)
+    println (debug annotated)
+    println (debug arithmeticMatrix)
+    println (debug (acceptInt (10 - 3)))
+    println (debug joined)
+  }

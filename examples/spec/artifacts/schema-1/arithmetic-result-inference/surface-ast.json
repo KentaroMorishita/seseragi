@@ -1,0 +1,702 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "difference",
+      "nameSpan": {
+        "start": 105,
+        "end": 115
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "binary",
+        "operator": "-",
+        "operatorSpan": {
+          "start": 120,
+          "end": 121
+        },
+        "left": {
+          "kind": "integer",
+          "raw": "1",
+          "span": {
+            "start": 118,
+            "end": 119
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "raw": "2",
+          "span": {
+            "start": 122,
+            "end": 123
+          }
+        },
+        "span": {
+          "start": 118,
+          "end": 123
+        }
+      },
+      "span": {
+        "start": 101,
+        "end": 123
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "annotated",
+      "nameSpan": {
+        "start": 129,
+        "end": 138
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 140,
+          "end": 143
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "-",
+        "operatorSpan": {
+          "start": 148,
+          "end": 149
+        },
+        "left": {
+          "kind": "integer",
+          "raw": "1",
+          "span": {
+            "start": 146,
+            "end": 147
+          }
+        },
+        "right": {
+          "kind": "integer",
+          "raw": "2",
+          "span": {
+            "start": 150,
+            "end": 151
+          }
+        },
+        "span": {
+          "start": 146,
+          "end": 151
+        }
+      },
+      "span": {
+        "start": 125,
+        "end": 151
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "arithmeticMatrix",
+      "nameSpan": {
+        "start": 157,
+        "end": 173
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "binary",
+            "operator": "+",
+            "operatorSpan": {
+              "start": 182,
+              "end": 183
+            },
+            "left": {
+              "kind": "integer",
+              "raw": "1",
+              "span": {
+                "start": 180,
+                "end": 181
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "2",
+              "span": {
+                "start": 184,
+                "end": 185
+              }
+            },
+            "span": {
+              "start": 180,
+              "end": 185
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "-",
+            "operatorSpan": {
+              "start": 191,
+              "end": 192
+            },
+            "left": {
+              "kind": "integer",
+              "raw": "4",
+              "span": {
+                "start": 189,
+                "end": 190
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "1",
+              "span": {
+                "start": 193,
+                "end": 194
+              }
+            },
+            "span": {
+              "start": 189,
+              "end": 194
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "*",
+            "operatorSpan": {
+              "start": 200,
+              "end": 201
+            },
+            "left": {
+              "kind": "integer",
+              "raw": "2",
+              "span": {
+                "start": 198,
+                "end": 199
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "3",
+              "span": {
+                "start": 202,
+                "end": 203
+              }
+            },
+            "span": {
+              "start": 198,
+              "end": 203
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "/",
+            "operatorSpan": {
+              "start": 209,
+              "end": 210
+            },
+            "left": {
+              "kind": "integer",
+              "raw": "8",
+              "span": {
+                "start": 207,
+                "end": 208
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "2",
+              "span": {
+                "start": 211,
+                "end": 212
+              }
+            },
+            "span": {
+              "start": 207,
+              "end": 212
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "%",
+            "operatorSpan": {
+              "start": 218,
+              "end": 219
+            },
+            "left": {
+              "kind": "integer",
+              "raw": "7",
+              "span": {
+                "start": 216,
+                "end": 217
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "4",
+              "span": {
+                "start": 220,
+                "end": 221
+              }
+            },
+            "span": {
+              "start": 216,
+              "end": 221
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "**",
+            "operatorSpan": {
+              "start": 227,
+              "end": 229
+            },
+            "left": {
+              "kind": "integer",
+              "raw": "2",
+              "span": {
+                "start": 225,
+                "end": 226
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "raw": "3",
+              "span": {
+                "start": 230,
+                "end": 231
+              }
+            },
+            "span": {
+              "start": 225,
+              "end": 231
+            }
+          }
+        ],
+        "span": {
+          "start": 176,
+          "end": 233
+        }
+      },
+      "span": {
+        "start": 153,
+        "end": 233
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "private",
+      "name": "joined",
+      "nameSpan": {
+        "start": 239,
+        "end": 245
+      },
+      "typeRef": null,
+      "body": {
+        "kind": "binary",
+        "operator": "+",
+        "operatorSpan": {
+          "start": 255,
+          "end": 256
+        },
+        "left": {
+          "kind": "string",
+          "raw": "\"Sese\"",
+          "span": {
+            "start": 248,
+            "end": 254
+          }
+        },
+        "right": {
+          "kind": "string",
+          "raw": "\"ragi\"",
+          "span": {
+            "start": 257,
+            "end": 263
+          }
+        },
+        "span": {
+          "start": 248,
+          "end": 263
+        }
+      },
+      "span": {
+        "start": 235,
+        "end": 263
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "acceptInt",
+      "nameSpan": {
+        "start": 268,
+        "end": 277
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 278,
+            "end": 283
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 285,
+              "end": 288
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 292,
+          "end": 295
+        }
+      },
+      "body": {
+        "kind": "name",
+        "name": "value",
+        "span": {
+          "start": 300,
+          "end": 305
+        }
+      },
+      "span": {
+        "start": 265,
+        "end": 305
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 321,
+        "end": 325
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 339,
+                  "end": 346
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debug",
+                    "span": {
+                      "start": 348,
+                      "end": 353
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "difference",
+                    "span": {
+                      "start": 354,
+                      "end": 364
+                    }
+                  },
+                  "span": {
+                    "start": 348,
+                    "end": 364
+                  }
+                },
+                "span": {
+                  "start": 347,
+                  "end": 365
+                }
+              },
+              "span": {
+                "start": 339,
+                "end": 365
+              }
+            },
+            "span": {
+              "start": 339,
+              "end": 365
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 370,
+                  "end": 377
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debug",
+                    "span": {
+                      "start": 379,
+                      "end": 384
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "annotated",
+                    "span": {
+                      "start": 385,
+                      "end": 394
+                    }
+                  },
+                  "span": {
+                    "start": 379,
+                    "end": 394
+                  }
+                },
+                "span": {
+                  "start": 378,
+                  "end": 395
+                }
+              },
+              "span": {
+                "start": 370,
+                "end": 395
+              }
+            },
+            "span": {
+              "start": 370,
+              "end": 395
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 400,
+                  "end": 407
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debug",
+                    "span": {
+                      "start": 409,
+                      "end": 414
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "arithmeticMatrix",
+                    "span": {
+                      "start": 415,
+                      "end": 431
+                    }
+                  },
+                  "span": {
+                    "start": 409,
+                    "end": 431
+                  }
+                },
+                "span": {
+                  "start": 408,
+                  "end": 432
+                }
+              },
+              "span": {
+                "start": 400,
+                "end": 432
+              }
+            },
+            "span": {
+              "start": 400,
+              "end": 432
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 437,
+                  "end": 444
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debug",
+                    "span": {
+                      "start": 446,
+                      "end": 451
+                    }
+                  },
+                  "argument": {
+                    "kind": "grouped",
+                    "value": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "acceptInt",
+                        "span": {
+                          "start": 453,
+                          "end": 462
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "binary",
+                          "operator": "-",
+                          "operatorSpan": {
+                            "start": 467,
+                            "end": 468
+                          },
+                          "left": {
+                            "kind": "integer",
+                            "raw": "10",
+                            "span": {
+                              "start": 464,
+                              "end": 466
+                            }
+                          },
+                          "right": {
+                            "kind": "integer",
+                            "raw": "3",
+                            "span": {
+                              "start": 469,
+                              "end": 470
+                            }
+                          },
+                          "span": {
+                            "start": 464,
+                            "end": 470
+                          }
+                        },
+                        "span": {
+                          "start": 463,
+                          "end": 471
+                        }
+                      },
+                      "span": {
+                        "start": 453,
+                        "end": 471
+                      }
+                    },
+                    "span": {
+                      "start": 452,
+                      "end": 472
+                    }
+                  },
+                  "span": {
+                    "start": 446,
+                    "end": 472
+                  }
+                },
+                "span": {
+                  "start": 445,
+                  "end": 473
+                }
+              },
+              "span": {
+                "start": 437,
+                "end": 473
+              }
+            },
+            "span": {
+              "start": 437,
+              "end": 473
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 478,
+              "end": 485
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "debug",
+                "span": {
+                  "start": 487,
+                  "end": 492
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "joined",
+                "span": {
+                  "start": 493,
+                  "end": 499
+                }
+              },
+              "span": {
+                "start": 487,
+                "end": 499
+              }
+            },
+            "span": {
+              "start": 486,
+              "end": 500
+            }
+          },
+          "span": {
+            "start": 478,
+            "end": 500
+          }
+        },
+        "span": {
+          "start": 330,
+          "end": 504
+        }
+      },
+      "span": {
+        "start": 307,
+        "end": 504
+      }
+    }
+  ]
+}

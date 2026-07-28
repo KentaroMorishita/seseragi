@@ -538,10 +538,23 @@ pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<T
             .first()
             .and_then(|arm| surface_expression_type_hint(&arm.body)),
         SurfaceExpr::Block { result, .. } => surface_expression_type_hint(result),
+        SurfaceExpr::Binary {
+            operator,
+            left,
+            right,
+            ..
+        } => {
+            let standard = standard_operator(operator)
+                .filter(|operator| operator.kind == StandardOperatorKind::Arithmetic)?;
+            super::call_evidence::standard_binary_output(
+                standard.trait_name,
+                &surface_expression_type_hint(left)?,
+                &surface_expression_type_hint(right)?,
+            )
+        }
         SurfaceExpr::Name { .. }
         | SurfaceExpr::Member { .. }
         | SurfaceExpr::Application { .. }
-        | SurfaceExpr::Binary { .. }
         | SurfaceExpr::InfixChain { .. }
         | SurfaceExpr::Do { .. }
         | SurfaceExpr::Error { .. } => None,
