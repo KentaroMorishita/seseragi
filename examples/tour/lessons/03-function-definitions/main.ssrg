@@ -1,0 +1,6 @@
+// parameterとreturn typeを持つpure関数です。
+fn greeting name: String -> String =
+  `Hello, ${name}!`
+
+pub effect fn main =
+  println "greeting: String -> String"

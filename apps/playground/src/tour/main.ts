@@ -42,6 +42,7 @@ const chapterLabel = requiredElement("#tour-chapter-label", HTMLElement)
 const lessonTitle = requiredElement("#tour-lesson-title", HTMLElement)
 const lessonSummary = requiredElement("#tour-lesson-summary", HTMLElement)
 const focusList = requiredElement("#tour-focus-list", HTMLUListElement)
+const lessonGuide = requiredElement("#tour-guide", HTMLElement)
 const challenge = requiredElement("#tour-challenge", HTMLElement)
 const topicList = requiredElement("#tour-topic-list", HTMLUListElement)
 const previousButton = requiredElement(
@@ -81,7 +82,7 @@ let progress: TourProgress = loadTourProgress(
   requestedLesson
 )
 let currentLesson = findTourLesson(progress.currentLessonId)
-let source = currentLesson.sample.source
+let source = currentLesson.source
 let outputMode: "text" | "html" = currentLesson.outputMode
 let latestAnalysis: AnalysisDocument | undefined
 let activeExecution: BrowserExecution | undefined
@@ -205,11 +206,11 @@ function loadLesson(
   currentLesson = findTourLesson(lessonId)
   progress = visitTourLesson(progress, currentLesson.id)
   persistProgress()
-  source = currentLesson.sample.source
+  source = currentLesson.source
   outputMode = currentLesson.outputMode
   latestAnalysis = undefined
-  stdinInput.value = currentLesson.sample.stdin
-  inputSection.hidden = currentLesson.sample.stdin === ""
+  stdinInput.value = currentLesson.stdin
+  inputSection.hidden = currentLesson.stdin === ""
   replaceEditorSource(editor, source)
   editor.dispatch(setDiagnostics(editor.state, []))
   showTextOutput("Runを押すと結果がここに表示されます。")
@@ -227,6 +228,7 @@ function renderLesson(): void {
   chapterLabel.textContent = chapter?.title ?? ""
   lessonTitle.textContent = currentLesson.title
   lessonSummary.textContent = currentLesson.summary
+  lessonGuide.textContent = currentLesson.guide.trim()
   challenge.textContent = currentLesson.challenge
   focusList.replaceChildren(
     ...currentLesson.focus.map((focus) => listItem(focus))
@@ -291,8 +293,8 @@ function completeCurrentLesson(): void {
 
 function resetLesson(): void {
   cancelActiveExecution()
-  source = currentLesson.sample.source
-  stdinInput.value = currentLesson.sample.stdin
+  source = currentLesson.source
+  stdinInput.value = currentLesson.stdin
   replaceEditorSource(editor, source)
   editor.dispatch(setDiagnostics(editor.state, []))
   showTextOutput("Lessonを初期状態へ戻しました。")

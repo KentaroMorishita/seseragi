@@ -1,0 +1,11 @@
+fn greeting name: String -> String = `Hello, ${name}!`
+
+fn emphasize value: String -> String = `**${value}**`
+
+fn message name: String -> String = emphasize $ greeting name
+
+// 値の流れを上から下へ読みます。
+pub effect fn main =
+  "Seseragi"
+  |> message
+  |> println

@@ -17,6 +17,7 @@ import {
   validateSampleCatalog,
 } from "../src/sample-catalog"
 import { learningPaths, samples } from "../src/samples"
+import { tourLessons } from "../src/tour/curriculum"
 
 type WasmBindings = {
   readonly default: (input: {
@@ -74,6 +75,27 @@ async function format(source: string): Promise<FormatResponse> {
 }
 
 describe("Playground sample catalog", () => {
+  test("compiles and executes the canonical Tour foundation lessons", async () => {
+    const foundationLessons = tourLessons.filter(
+      ({ contentKind }) => contentKind === "canonical"
+    )
+    expect(foundationLessons.map(({ order }) => order)).toEqual([1, 2, 3, 4, 5])
+
+    for (const lesson of foundationLessons) {
+      const response = await compile(`${lesson.id}.ssrg`, lesson.source)
+      expect(response.status).toBe("success")
+      if (response.status !== "success" || !response.entry) {
+        throw new Error(`Tour lesson ${lesson.id} has no execution entry`)
+      }
+      const result = await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry,
+        lesson.stdin
+      )
+      expect(result.stdout).toBe(lesson.expectedOutput)
+    }
+  })
+
   test("discovers every stable-slug sample directory without a central import map", async () => {
     const entries = await readdir(
       new URL("../../../examples/samples", import.meta.url),

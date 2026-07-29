@@ -1,0 +1,2 @@
+// mainから文字列を一行出力します。
+pub effect fn main = println "Hello, Seseragi!"

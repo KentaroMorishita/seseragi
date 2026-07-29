@@ -305,6 +305,13 @@
   line-height: 1.75;
 }
 
+.tour-guide {
+  color: #96aaa2;
+  font-size: 13px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+
 .tour-focus-list,
 .tour-topic-list {
   margin: 0;

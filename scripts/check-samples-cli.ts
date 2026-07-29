@@ -5,6 +5,7 @@ import {
   parseSampleMetadata,
   validateSampleCatalog,
 } from "../apps/playground/src/sample-catalog"
+import { loadTourLessons } from "./tour-lessons"
 
 const repositoryRoot = resolve(import.meta.dir, "..")
 const samplesRoot = resolve(repositoryRoot, "examples/samples")
@@ -33,6 +34,11 @@ validateSampleCatalog(
   samples.map(({ metadata }) => metadata),
   paths
 )
+const tourLessons = await loadTourLessons(repositoryRoot)
+const cargoTargetDirectory = resolve(
+  repositoryRoot,
+  process.env.CARGO_TARGET_DIR ?? "target"
+)
 
 const build = Bun.spawn(["cargo", "build", "-q", "-p", "seseragi-cli"], {
   cwd: repositoryRoot,
@@ -41,7 +47,7 @@ const build = Bun.spawn(["cargo", "build", "-q", "-p", "seseragi-cli"], {
 })
 if ((await build.exited) !== 0) throw new Error("failed to build seseragi CLI")
 
-const executable = resolve(repositoryRoot, "target/debug/seseragi")
+const executable = resolve(cargoTargetDirectory, "debug/seseragi")
 let checked = 0
 for (const { directory, metadata } of samples) {
   if (metadata.interactive) continue
@@ -78,6 +84,60 @@ for (const { directory, metadata } of samples) {
   checked += 1
 }
 
+let checkedTourLessons = 0
+for (const lesson of tourLessons) {
+  if (lesson.metadata.interactive) continue
+  if (lesson.expectedOutputPath === undefined) {
+    throw new Error(`Tour lesson ${lesson.metadata.id} has no expected output`)
+  }
+  const formatCheck = Bun.spawn(
+    [executable, "format", "--check", lesson.sourcePath],
+    {
+      cwd: repositoryRoot,
+      stdout: "pipe",
+      stderr: "pipe",
+    }
+  )
+  const [formatStatus, formatStdout, formatStderr] = await Promise.all([
+    formatCheck.exited,
+    new Response(formatCheck.stdout).text(),
+    new Response(formatCheck.stderr).text(),
+  ])
+  if (formatStatus !== 0) {
+    throw new Error(
+      `Tour lesson ${lesson.metadata.id} is not formatted:\n${formatStdout}${formatStderr}`
+    )
+  }
+  const stdin = lesson.stdinPath ? await readFile(lesson.stdinPath, "utf8") : ""
+  const expected = await readFile(lesson.expectedOutputPath, "utf8")
+  const run = Bun.spawn([executable, "run", lesson.sourcePath], {
+    cwd: repositoryRoot,
+    stdin: "pipe",
+    stdout: "pipe",
+    stderr: "pipe",
+  })
+  run.stdin.write(stdin)
+  run.stdin.end()
+  const [status, stdout, stderr] = await Promise.all([
+    run.exited,
+    new Response(run.stdout).text(),
+    new Response(run.stderr).text(),
+  ])
+  if (status !== 0) {
+    throw new Error(
+      `Tour lesson ${lesson.metadata.id} failed in CLI:\n${stderr}`
+    )
+  }
+  const normalizedExpected = expected.replace(/\r?\n$/u, "")
+  const normalizedStdout = stdout.replace(/\r?\n$/u, "")
+  if (normalizedStdout !== normalizedExpected) {
+    throw new Error(
+      `Tour lesson ${lesson.metadata.id} output mismatch\nexpected: ${JSON.stringify(normalizedExpected)}\nactual: ${JSON.stringify(normalizedStdout)}`
+    )
+  }
+  checkedTourLessons += 1
+}
+
 console.log(
-  `Validated ${checked} executable samples with the native Seseragi CLI (${samples.length - checked} browser-interactive skipped).`
+  `Validated ${checked} executable samples and ${checkedTourLessons} Tour lessons with the native Seseragi CLI (${samples.length - checked + tourLessons.length - checkedTourLessons} browser-interactive skipped).`
 )

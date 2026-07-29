@@ -11,6 +11,20 @@ Tour UIとlesson sourceを作る後続Issueは、lesson ID、順序、初出topi
 - `examples/samples/` は現在実行できるsourceの正本です。`seedSamples`は教材作成時の実装根拠であり、sourceをそのまま複製する指示ではありません。
 - `examples/spec/lessons/` は完成仕様のdesign curriculumです。現行stdlibにないsurfaceをTourへ持ち込む根拠には使いません。
 
+## Lesson artifact
+
+実装済みlessonの正本は`lessons/<lesson-id>/`です。各directoryは次のfileを持ちます。
+
+- `lesson.json`: challenge、interactive性、教材fileの対応を宣言します。
+- `main.ssrg`: 初期表示され、CLIとbrowserの両方でcompile・実行するsourceです。
+- `guide.md`: sourceだけでは説明しない背景と構文の読み方です。
+- `stdout.txt`: browser-interactiveでないlessonの期待出力です。
+
+metadataの契約は`lesson.schema.json`、Playgroundから読む生成manifestは
+`apps/playground/src/generated/tour-manifest.ts`です。manifestを直接編集せず、
+`apps/playground`で`bun run tour:generate`を実行します。段階的な教材作成中は
+未実装lessonだけが`seedSamples`の既存sourceへfallbackします。
+
 ## 14 lesson
 
 | # | Lesson | 中心概念 | 初出surface | 担当 |

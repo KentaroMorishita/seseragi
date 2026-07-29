@@ -6,11 +6,14 @@
   "scripts": {
     "samples:generate": "bun ../../scripts/generate-playground-samples.ts",
     "samples:check": "bun ../../scripts/generate-playground-samples.ts --check",
-    "dev": "bun run samples:generate && vite",
-    "build": "bun run samples:check && vite build",
+    "tour:generate": "bun ../../scripts/generate-playground-tour.ts",
+    "tour:check": "bun ../../scripts/generate-playground-tour.ts --check",
+    "catalog:check": "bun run samples:check && bun run tour:check",
+    "dev": "bun run samples:generate && bun run tour:generate && vite",
+    "build": "bun run catalog:check && vite build",
     "build:wasm": "../../scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg",
-    "test": "bun run samples:check && bun test",
-    "typecheck": "bun run samples:check && tsc --noEmit"
+    "test": "bun run catalog:check && bun test",
+    "typecheck": "bun run catalog:check && tsc --noEmit"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.0.0",

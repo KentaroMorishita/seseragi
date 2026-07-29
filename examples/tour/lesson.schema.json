@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seseragi.dev/schemas/tour-lesson.schema.json",
+  "title": "Seseragi Tour lesson content",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "id", "challenge", "files"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]{2}-[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "challenge": { "type": "string", "minLength": 1 },
+    "interactive": { "type": "boolean" },
+    "files": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "guide"],
+      "properties": {
+        "source": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+        "guide": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+        "stdin": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+        "expectedOutput": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        }
+      }
+    }
+  }
+}

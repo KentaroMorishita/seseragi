@@ -21,7 +21,7 @@ class MemoryStorage {
 }
 
 describe("Tour curriculum UI", () => {
-  test("maps the canonical 14 lessons to executable seed sources", () => {
+  test("maps the curriculum to canonical lesson content and executable seeds", () => {
     expect(tourChapters).toHaveLength(3)
     expect(tourLessons).toHaveLength(14)
     expect(tourLessons.map(({ order }) => order)).toEqual(
@@ -30,8 +30,19 @@ describe("Tour curriculum UI", () => {
     for (const lesson of tourLessons) {
       expect(lesson.focus.length).toBeGreaterThanOrEqual(1)
       expect(lesson.focus.length).toBeLessThanOrEqual(2)
-      expect(lesson.sample.source.trim()).not.toBe("")
-      expect(lesson.seedSamples).toContain(lesson.sample.id)
+      expect(lesson.source.trim()).not.toBe("")
+      expect(lesson.guide.trim()).not.toBe("")
+    }
+    for (const lesson of tourLessons.slice(0, 5)) {
+      expect(lesson.contentKind).toBe("canonical")
+      expect(lesson.sourcePath).toBe(
+        `examples/tour/lessons/${lesson.id}/main.ssrg`
+      )
+      expect(lesson.expectedOutput.trim()).not.toBe("")
+      expect(lesson.interactive).toBe(false)
+    }
+    for (const lesson of tourLessons.slice(5)) {
+      expect(lesson.contentKind).toBe("seed")
     }
   })
 
@@ -85,12 +96,14 @@ describe("Tour curriculum UI", () => {
     expect(tourHtml).toContain('id="tour-run-button"')
     expect(tourHtml).toContain('id="tour-reset-button"')
     expect(tourHtml).toContain('id="tour-format-button"')
+    expect(tourHtml).toContain('id="tour-guide"')
     expect(tourHtml).toContain('id="tour-input-section"')
     expect(tourHtml).toContain('id="tour-output"')
     expect(tourHtml).toContain('id="tour-html-preview"')
     expect(tourMain).toContain("compileSingleFile(source)")
     expect(tourMain).toContain("formatSingleFile(requestedSource)")
     expect(tourMain).toContain("startGeneratedModule(")
+    expect(tourMain).toContain("currentLesson.guide")
     expect(tourMain).not.toContain("compile_single_file(")
     expect(vite).toContain("tour:")
     expect(vite).toContain("tour/index.html")
