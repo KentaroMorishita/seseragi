@@ -19,9 +19,9 @@ import {
 } from "@codemirror/search"
 import {
   EditorState,
-  StateField,
   type Extension,
   type Line,
+  StateField,
 } from "@codemirror/state"
 import {
   crosshairCursor,
@@ -30,11 +30,15 @@ import {
   drawSelection,
   dropCursor,
   EditorView,
+  type KeyBinding,
   keymap,
   rectangularSelection,
   scrollPastEnd,
-  type KeyBinding,
 } from "@codemirror/view"
+import {
+  compactSearchPanelKeymap,
+  createCompactSearchPanel,
+} from "./search-panel"
 
 export const editorSelectionClassNames = {
   primary: "cm-primarySelectionText",
@@ -121,6 +125,7 @@ export const indentationFoldService = foldService.of(
 
 export const editorKeymap: readonly KeyBinding[] = [
   ...closeBracketsKeymap,
+  ...compactSearchPanelKeymap,
   ...searchKeymap,
   ...foldKeymap,
   ...defaultKeymap,
@@ -141,7 +146,7 @@ export const editingExtensions: Extension = [
   indentOnInput(),
   foldGutter(),
   indentationFoldService,
-  search({ top: true }),
+  search({ top: true, createPanel: createCompactSearchPanel }),
   highlightSelectionMatches({ minSelectionLength: 1 }),
   selectionMarkField,
   keymap.of(editorKeymap),

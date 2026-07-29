@@ -13,14 +13,15 @@ import {
   EditorState,
   type StateCommand,
 } from "@codemirror/state"
+import { editorWhitespaceExtensions } from "../src/editor/create-editor"
 import {
   editingExtensions,
   editorKeymap,
   editorSelectionClassNames,
   selectionMarkField,
 } from "../src/editor/editing-extensions"
-import { editorWhitespaceExtensions } from "../src/editor/create-editor"
 import { indentationWhitespaceField } from "../src/editor/indent-whitespace"
+import { searchMatchStatus } from "../src/editor/search-panel"
 import { seseragiLanguage } from "../src/editor/seseragi-language"
 import { editorSelectionColors } from "../src/editor/theme"
 
@@ -125,6 +126,41 @@ describe("Playground editor operations", () => {
     ])
   })
 
+  test("reports total and current matches for compact search options", () => {
+    const state = EditorState.create({
+      doc: "value Value values value",
+      selection: EditorSelection.range(19, 24),
+      extensions: editorExtensions,
+    })
+
+    expect(
+      searchMatchStatus(
+        state,
+        new SearchQuery({ search: "value", caseSensitive: true })
+      )
+    ).toEqual({ current: 3, total: 3, valid: true })
+    expect(
+      searchMatchStatus(
+        state,
+        new SearchQuery({ search: "value", wholeWord: true })
+      )
+    ).toEqual({ current: 3, total: 3, valid: true })
+    expect(
+      searchMatchStatus(
+        state,
+        new SearchQuery({ search: "value\\b", regexp: true })
+      )
+    ).toEqual({ current: 3, total: 3, valid: true })
+    expect(
+      searchMatchStatus(state, new SearchQuery({ search: "[", regexp: true }))
+    ).toEqual({ current: 0, total: 0, valid: false })
+    expect(searchMatchStatus(state, new SearchQuery({ search: "" }))).toEqual({
+      current: 0,
+      total: 0,
+      valid: true,
+    })
+  })
+
   test("folds indented blocks without declaration-specific rules", () => {
     const source = [
       "fn greeting name: String -> String =",
@@ -150,6 +186,7 @@ describe("Playground editor operations", () => {
 
     for (const expected of [
       "Mod-f",
+      "Mod-h",
       "Mod-d",
       "Mod-/",
       "Alt-ArrowUp",
@@ -218,5 +255,33 @@ describe("Playground editor operations", () => {
     expect(theme).not.toContain('boxShadow: "inset 0 -2px')
     expect(theme).toContain("editorSelectionColors.primary")
     expect(theme).toContain("editorSelectionColors.secondary")
+  })
+
+  test("replaces the default search toolbar with an accessible compact panel", async () => {
+    const [panel, styles] = await Promise.all([
+      Bun.file(
+        new URL("../src/editor/search-panel.ts", import.meta.url)
+      ).text(),
+      Bun.file(new URL("../src/styles.css", import.meta.url)).text(),
+    ])
+
+    for (const accessibleName of [
+      "Find and replace",
+      "Show replace",
+      "Match case",
+      "Match whole word",
+      "Use regular expression",
+      "Previous match",
+      "Next match",
+      "Replace current match",
+      "Replace all matches",
+      "Close find and replace",
+    ]) {
+      expect(panel).toContain(accessibleName)
+    }
+    expect(panel).toContain('setAttribute("main-field", "true")')
+    expect(styles).toContain(".ssrg-search-panel")
+    expect(styles).toContain("width: min(560px, calc(100% - 16px))")
+    expect(styles).toContain("width: calc(100% - 8px)")
   })
 })

@@ -44,7 +44,7 @@ export function createEditor(
         EditorView.contentAttributes.of({
           "aria-label": "Seseragi source editor",
           "aria-keyshortcuts":
-            "Control+F Meta+F Control+/ Meta+/ Alt+ArrowUp Alt+ArrowDown",
+            "Control+F Meta+F Control+H Meta+H Control+/ Meta+/ Alt+ArrowUp Alt+ArrowDown",
         }),
         seseragiLanguage,
         ...seseragiEditorTheme,

@@ -80,32 +80,11 @@ export const seseragiEditorTheme = [
       },
       ".cm-foldPlaceholder": { backgroundColor: "transparent", border: "none" },
       ".cm-panels": {
+        color: colors.text,
+      },
+      ".cm-panels:not(.cm-panels-top)": {
         backgroundColor: "#101b18",
         color: colors.text,
-      },
-      ".cm-search": {
-        alignItems: "center",
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "6px",
-        padding: "8px 10px",
-      },
-      ".cm-search input": {
-        backgroundColor: "#0b1210",
-        border: "1px solid #355149",
-        borderRadius: "6px",
-        color: colors.text,
-        padding: "5px 7px",
-      },
-      ".cm-search button": {
-        backgroundColor: "#1a302a",
-        border: "1px solid #355149",
-        borderRadius: "6px",
-        color: colors.text,
-        padding: "4px 8px",
-      },
-      ".cm-search button:hover": {
-        backgroundColor: "#24443a",
       },
       ".cm-diagnostic": { padding: "6px 10px" },
       ".cm-tooltip": {
