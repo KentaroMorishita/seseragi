@@ -1,7 +1,7 @@
 use crate::typed::{PureCallIssue, PureFunctionAnalysis};
 use seseragi_syntax::{ByteRange, Diagnostic, DiagnosticSeverity, RelatedDiagnostic};
 
-use super::type_labels::type_label;
+use super::{type_difference::type_difference, type_labels::type_label};
 
 pub(super) fn collect_pure_function_diagnostics(
     analysis: &PureFunctionAnalysis,
@@ -17,12 +17,13 @@ pub(super) fn call_diagnostic(
     issue: PureCallIssue,
     function_span: seseragi_syntax::ByteSpan,
 ) -> Diagnostic {
-    let (code, message_key, primary, related_message) = match issue {
+    let (code, message_key, primary, related_message, type_difference) = match issue {
         PureCallIssue::InvalidExpression { expression } => (
             "SES-T0101",
             "expression.invalid",
             expression,
             "the expression could not be resolved to a typed language construct".to_owned(),
+            None,
         ),
         PureCallIssue::Arity {
             callee,
@@ -37,42 +38,53 @@ pub(super) fn call_diagnostic(
                 expected,
                 argument_word(expected)
             ),
+            None,
         ),
         PureCallIssue::ArgumentType {
             argument,
             index,
             expected,
             actual,
-        } => (
-            "SES-T0101",
-            "call.argument-type-mismatch",
-            argument,
-            format!(
-                "argument {} expected {}, received {}",
-                index + 1,
-                type_label(&expected),
-                type_label(&actual)
-            ),
-        ),
+        } => {
+            let difference = type_difference(&expected, &actual);
+            (
+                "SES-T0101",
+                "call.argument-type-mismatch",
+                argument,
+                format!(
+                    "argument {} expected {}, received {}",
+                    index + 1,
+                    type_label(&expected),
+                    type_label(&actual)
+                ),
+                difference,
+            )
+        }
         PureCallIssue::UnaryOperandType {
             operand,
             operator,
             expected,
             actual,
-        } => (
-            "SES-T0101",
-            "unary.operand-type-mismatch",
-            operand,
-            format!(
-                "unary `{operator}` expects {}, received {}",
-                expected
-                    .iter()
-                    .map(type_label)
-                    .collect::<Vec<_>>()
-                    .join(" or "),
-                type_label(&actual)
-            ),
-        ),
+        } => {
+            let difference = (expected.len() == 1)
+                .then(|| type_difference(&expected[0], &actual))
+                .flatten();
+            (
+                "SES-T0101",
+                "unary.operand-type-mismatch",
+                operand,
+                format!(
+                    "unary `{operator}` expects {}, received {}",
+                    expected
+                        .iter()
+                        .map(type_label)
+                        .collect::<Vec<_>>()
+                        .join(" or "),
+                    type_label(&actual)
+                ),
+                difference,
+            )
+        }
         PureCallIssue::MissingInstance { callee, constraint } => (
             "SES-T0201",
             "instance.missing",
@@ -81,18 +93,21 @@ pub(super) fn call_diagnostic(
                 "no {} instance matches the inferred call arguments",
                 constraint_label(&constraint)
             ),
+            None,
         ),
         PureCallIssue::TraitMethodAmbiguous { callee } => (
             "SES-T0202",
             "trait.method-ambiguous",
             callee,
             "multiple trait methods remain valid after type and instance selection".to_owned(),
+            None,
         ),
         PureCallIssue::TraitMethodNoMatch { callee } => (
             "SES-T0101",
             "trait.method-no-match",
             callee,
             "no same-named trait method accepts the inferred call arguments".to_owned(),
+            None,
         ),
         PureCallIssue::LambdaParameterTypeUnresolved { parameter } => (
             "SES-T0101",
@@ -100,13 +115,13 @@ pub(super) fn call_diagnostic(
             parameter,
             "add a parameter type annotation or use the lambda where a function type is expected"
                 .to_owned(),
+            None,
         ),
         PureCallIssue::LambdaParameterTypeMismatch {
             parameter,
             expected,
             actual,
-        } => (
-            "SES-T0101",
+        } => mismatch(
             "lambda.parameter-type-mismatch",
             parameter,
             format!(
@@ -114,13 +129,14 @@ pub(super) fn call_diagnostic(
                 type_label(&expected),
                 type_label(&actual)
             ),
+            &expected,
+            &actual,
         ),
         PureCallIssue::LambdaBodyTypeMismatch {
             body,
             expected,
             actual,
-        } => (
-            "SES-T0101",
+        } => mismatch(
             "lambda.body-type-mismatch",
             body,
             format!(
@@ -128,13 +144,14 @@ pub(super) fn call_diagnostic(
                 type_label(&expected),
                 type_label(&actual)
             ),
+            &expected,
+            &actual,
         ),
         PureCallIssue::LocalBindingTypeMismatch {
             binding,
             expected,
             actual,
-        } => (
-            "SES-T0101",
+        } => mismatch(
             "let.type-mismatch",
             binding,
             format!(
@@ -142,13 +159,14 @@ pub(super) fn call_diagnostic(
                 type_label(&expected),
                 type_label(&actual)
             ),
+            &expected,
+            &actual,
         ),
         PureCallIssue::LocalFunctionBodyTypeMismatch {
             body,
             expected,
             actual,
-        } => (
-            "SES-T0101",
+        } => mismatch(
             "function.return-type-mismatch",
             body,
             format!(
@@ -156,6 +174,8 @@ pub(super) fn call_diagnostic(
                 type_label(&expected),
                 type_label(&actual)
             ),
+            &expected,
+            &actual,
         ),
         PureCallIssue::EffectfulForBodyNotEffect { body, actual } => (
             "SES-T0101",
@@ -165,6 +185,7 @@ pub(super) fn call_diagnostic(
                 "effectful for expects an Effect body, received {}",
                 type_label(&actual)
             ),
+            None,
         ),
         PureCallIssue::EffectfulForBodyNotUnit { body, actual } => (
             "SES-T0101",
@@ -174,15 +195,18 @@ pub(super) fn call_diagnostic(
                 "effectful for expects a Unit-producing body, received {}",
                 type_label(&actual)
             ),
+            None,
         ),
         PureCallIssue::EffectfulForRefutablePattern { pattern } => (
             "SES-T0101",
             "for.refutable-pattern",
             pattern,
             "effectful for requires an irrefutable binding pattern".to_owned(),
+            None,
         ),
     };
     Diagnostic {
+        type_difference,
         id: String::new(),
         code: code.to_owned(),
         severity: DiagnosticSeverity::Error,
@@ -200,6 +224,28 @@ pub(super) fn call_diagnostic(
         }],
         fixes: Vec::new(),
     }
+}
+
+fn mismatch(
+    message_key: &'static str,
+    primary: seseragi_syntax::ByteSpan,
+    message: String,
+    expected: &crate::TypedType,
+    actual: &crate::TypedType,
+) -> (
+    &'static str,
+    &'static str,
+    seseragi_syntax::ByteSpan,
+    String,
+    Option<seseragi_syntax::TypeDifference>,
+) {
+    (
+        "SES-T0101",
+        message_key,
+        primary,
+        message,
+        type_difference(expected, actual),
+    )
 }
 
 fn constraint_label(constraint: &crate::TypedConstraint) -> String {

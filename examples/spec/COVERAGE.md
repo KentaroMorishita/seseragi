@@ -81,7 +81,7 @@
 | parser recovery、formatter、LSP、highlight    | lessons全体       | `schema-1/expected-record-completion` + LSP stdio tests + tooling snapshots + Phase 1 format round-trip; semantic recovery Typed HIRからgeneric / nested recordの不足fieldとcompact型を共有Analysis completionへ出し、未閉じrecordもrequest-local recoveryで補完 | partial |
 | shared-driver playground / browser host       | `examples/samples/` | `apps/playground/tests/playground.integration.test.ts` + native CLI sample check | covered |
 | stable tool options / target capabilities     | none              | `projects/target-capabilities`                 | covered |
-| diagnostic schema / inference explanation     | none              | diagnostic JSON / explain snapshots            | partial |
+| diagnostic schema / inference explanation     | none              | `semantic-diagnostics-schema-1/structured-type-differences` + driver / LSP / Playground renderer tests; recordのmissing / extra field、function parameter / result、nested genericの構造化pathを共通diagnostic dataで固定。constraint graphを使うinference explain snapshotは未接続 | partial |
 | document comments / doctest                   | none              | `projects/doc-tests`                           | partial |
 | closed deprecation metadata / tooling         | none              | `compile/deprecation-metadata.ssrg`            | covered |
 | JsonEncode / JsonDecode deriving              | Lesson 26         | codec wire / strict field fixtures             | partial |

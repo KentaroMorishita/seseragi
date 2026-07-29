@@ -20,6 +20,7 @@ mod record;
 mod resolution;
 mod top_level_initialization;
 mod traits;
+mod type_difference;
 mod type_labels;
 mod web_html;
 

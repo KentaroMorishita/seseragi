@@ -43,7 +43,41 @@
         ],
         "fixes": [],
         "expectedType": "{ initial: Int, profile: { label: String, count: Int }, render: (Int -> String) }",
-        "actualType": "{ initial: Int, profile: { label: String } }"
+        "actualType": "{ initial: Int, profile: { label: String } }",
+        "typeDifference": {
+          "expectedType": "{ initial: Int, profile: { label: String, count: Int }, render: (Int -> String) }",
+          "actualType": "{ initial: Int, profile: { label: String } }",
+          "entries": [
+            {
+              "path": [
+                {
+                  "kind": "record-field",
+                  "name": "profile"
+                },
+                {
+                  "kind": "record-field",
+                  "name": "count"
+                }
+              ],
+              "kind": "missing-record-field",
+              "message": "profile.count is missing; expected Int",
+              "expectedType": "Int",
+              "actualType": null
+            },
+            {
+              "path": [
+                {
+                  "kind": "record-field",
+                  "name": "render"
+                }
+              ],
+              "kind": "missing-record-field",
+              "message": "render is missing; expected Int -> String",
+              "expectedType": "Int -> String",
+              "actualType": null
+            }
+          ]
+        }
       }
     ]
   },

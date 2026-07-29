@@ -1,0 +1,17 @@
+fn acceptRecord value: { profile: { name: String, score: Int }, enabled: Bool } -> Int =
+  value.profile.score
+
+fn acceptFunction transform: (Int -> String) -> String = transform 1
+
+fn acceptNested values: Array<Maybe<Int>> -> Int = 0
+
+fn stringToInt value: String -> Int = 0
+
+let badRecord = acceptRecord {
+  profile: { name: "Mio", extra: True },
+  stale: 1,
+}
+
+let badFunction = acceptFunction stringToInt
+
+fn badNested values: Array<Maybe<String>> -> Int = acceptNested values

@@ -1,0 +1,236 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "call.argument-type-mismatch",
+      "message": "Argument type does not match the parameter type",
+      "primary": {
+        "start": 306,
+        "end": 362
+      },
+      "related": [
+        {
+          "message": "argument 1 expected { profile: { name: String, score: Int }, enabled: Bool }, received { profile: { extra: Bool, name: String }, stale: Int }",
+          "primary": {
+            "start": 277,
+            "end": 362
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "argument 1 expected { profile: { name: String, score: Int }, enabled: Bool }, received { profile: { extra: Bool, name: String }, stale: Int }",
+          "primary": {
+            "start": 277,
+            "end": 362
+          }
+        }
+      ],
+      "notes": [
+        "Seseragi does not insert an implicit conversion between these types."
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": [],
+      "expectedType": "{ profile: { name: String, score: Int }, enabled: Bool }",
+      "actualType": "{ profile: { extra: Bool, name: String }, stale: Int }",
+      "typeDifference": {
+        "expectedType": "{ profile: { name: String, score: Int }, enabled: Bool }",
+        "actualType": "{ profile: { extra: Bool, name: String }, stale: Int }",
+        "entries": [
+          {
+            "path": [
+              {
+                "kind": "record-field",
+                "name": "profile"
+              },
+              {
+                "kind": "record-field",
+                "name": "score"
+              }
+            ],
+            "kind": "missing-record-field",
+            "message": "profile.score is missing; expected Int",
+            "expectedType": "Int",
+            "actualType": null
+          },
+          {
+            "path": [
+              {
+                "kind": "record-field",
+                "name": "profile"
+              },
+              {
+                "kind": "record-field",
+                "name": "extra"
+              }
+            ],
+            "kind": "extra-record-field",
+            "message": "profile.extra is extra; actual type is Bool",
+            "expectedType": null,
+            "actualType": "Bool"
+          },
+          {
+            "path": [
+              {
+                "kind": "record-field",
+                "name": "enabled"
+              }
+            ],
+            "kind": "missing-record-field",
+            "message": "enabled is missing; expected Bool",
+            "expectedType": "Bool",
+            "actualType": null
+          },
+          {
+            "path": [
+              {
+                "kind": "record-field",
+                "name": "stale"
+              }
+            ],
+            "kind": "extra-record-field",
+            "message": "stale is extra; actual type is Int",
+            "expectedType": null,
+            "actualType": "Int"
+          }
+        ]
+      }
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "call.argument-type-mismatch",
+      "message": "Argument type does not match the parameter type",
+      "primary": {
+        "start": 397,
+        "end": 408
+      },
+      "related": [
+        {
+          "message": "argument 1 expected Int -> String, received String -> Int",
+          "primary": {
+            "start": 364,
+            "end": 408
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "argument 1 expected Int -> String, received String -> Int",
+          "primary": {
+            "start": 364,
+            "end": 408
+          }
+        }
+      ],
+      "notes": [
+        "Seseragi does not insert an implicit conversion between these types."
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": [],
+      "expectedType": "Int -> String",
+      "actualType": "String -> Int",
+      "typeDifference": {
+        "expectedType": "Int -> String",
+        "actualType": "String -> Int",
+        "entries": [
+          {
+            "path": [
+              {
+                "kind": "function-parameter",
+                "index": 0
+              }
+            ],
+            "kind": "type-mismatch",
+            "message": "parameter 1: expected Int, actual String",
+            "expectedType": "Int",
+            "actualType": "String"
+          },
+          {
+            "path": [
+              {
+                "kind": "function-result"
+              }
+            ],
+            "kind": "type-mismatch",
+            "message": "return type: expected String, actual Int",
+            "expectedType": "String",
+            "actualType": "Int"
+          }
+        ]
+      }
+    },
+    {
+      "id": "d3",
+      "code": "SES-T0101",
+      "severity": "Error",
+      "messageKey": "call.argument-type-mismatch",
+      "message": "Argument type does not match the parameter type",
+      "primary": {
+        "start": 474,
+        "end": 480
+      },
+      "related": [
+        {
+          "message": "argument 1 expected Array<Maybe<Int>>, received Array<Maybe<String>>",
+          "primary": {
+            "start": 410,
+            "end": 480
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "argument 1 expected Array<Maybe<Int>>, received Array<Maybe<String>>",
+          "primary": {
+            "start": 410,
+            "end": 480
+          }
+        }
+      ],
+      "notes": [
+        "Seseragi does not insert an implicit conversion between these types."
+      ],
+      "helps": [
+        "Change the expression or its annotation so the two types agree."
+      ],
+      "fixes": [],
+      "expectedType": "Array<Maybe<Int>>",
+      "actualType": "Array<Maybe<String>>",
+      "typeDifference": {
+        "expectedType": "Array<Maybe<Int>>",
+        "actualType": "Array<Maybe<String>>",
+        "entries": [
+          {
+            "path": [
+              {
+                "kind": "type-argument",
+                "name": "Array",
+                "index": 0
+              },
+              {
+                "kind": "type-argument",
+                "name": "Maybe",
+                "index": 0
+              }
+            ],
+            "kind": "type-mismatch",
+            "message": "Array type argument 1 > Maybe type argument 1: expected Int, actual String",
+            "expectedType": "Int",
+            "actualType": "String"
+          }
+        ]
+      }
+    }
+  ]
+}

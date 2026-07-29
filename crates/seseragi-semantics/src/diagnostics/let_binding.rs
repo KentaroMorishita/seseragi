@@ -6,7 +6,7 @@ use seseragi_syntax::{
     ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, RelatedDiagnostic, SurfaceExpr, TypeRef,
 };
 
-use super::type_labels::type_label;
+use super::{type_difference::type_difference, type_labels::type_label};
 
 pub(super) fn collect_let_binding_diagnostics(
     annotation: Option<&TypeRef>,
@@ -63,6 +63,7 @@ pub(super) fn collect_let_binding_diagnostics(
     }
 
     diagnostics.push(Diagnostic {
+        type_difference: type_difference(&expected, &actual),
         id: String::new(),
         code: "SES-T0101".to_owned(),
         severity: DiagnosticSeverity::Error,

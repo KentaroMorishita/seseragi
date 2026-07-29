@@ -51,6 +51,7 @@ pub(super) fn collect_monad_do_diagnostic(
         ),
     };
     diagnostics.push(Diagnostic {
+        type_difference: None,
         id: String::new(),
         code: "SES-T0101".to_owned(),
         severity: DiagnosticSeverity::Error,

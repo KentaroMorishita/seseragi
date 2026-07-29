@@ -68,8 +68,21 @@
       "notes": [],
       "helps": [],
       "fixes": [],
-      "expectedType": null,
-      "actualType": null
+      "expectedType": "Bool",
+      "actualType": "Int",
+      "typeDifference": {
+        "expectedType": "Bool",
+        "actualType": "Int",
+        "entries": [
+          {
+            "path": [],
+            "kind": "type-mismatch",
+            "message": "expected Bool, actual Int",
+            "expectedType": "Bool",
+            "actualType": "Int"
+          }
+        ]
+      }
     }
   ]
 }

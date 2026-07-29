@@ -28,6 +28,7 @@ pub(super) fn collect_impl_diagnostics(
         };
         let Some(owner) = resolution.local_nominal_owner(target) else {
             diagnostics.push(Diagnostic {
+                type_difference: None,
                 id: String::new(),
                 code: "SES-T0503".to_owned(),
                 severity: DiagnosticSeverity::Error,
@@ -57,6 +58,7 @@ pub(super) fn collect_impl_diagnostics(
                     let Some(operator) = seseragi_syntax::declarable_standard_operator(spelling)
                     else {
                         diagnostics.push(Diagnostic {
+                            type_difference: None,
                             id: String::new(),
                             code: "SES-T0504".to_owned(),
                             severity: DiagnosticSeverity::Error,
@@ -130,6 +132,7 @@ pub(super) fn collect_impl_diagnostics(
             let key = (owner, method.name.clone());
             if let Some(first) = methods.get(&key) {
                 diagnostics.push(Diagnostic {
+                    type_difference: None,
                     id: String::new(),
                     code: "SES-N0002".to_owned(),
                     severity: DiagnosticSeverity::Error,
@@ -150,6 +153,7 @@ pub(super) fn collect_impl_diagnostics(
 
 fn invalid_self_diagnostic(primary: ByteSpan, declaration: ByteSpan, message: &str) -> Diagnostic {
     Diagnostic {
+        type_difference: None,
         id: String::new(),
         code: "SES-T0503".to_owned(),
         severity: DiagnosticSeverity::Error,
@@ -169,6 +173,7 @@ fn invalid_operator_signature(
     message: &str,
 ) -> Diagnostic {
     Diagnostic {
+        type_difference: None,
         id: String::new(),
         code: "SES-T0505".to_owned(),
         severity: DiagnosticSeverity::Error,

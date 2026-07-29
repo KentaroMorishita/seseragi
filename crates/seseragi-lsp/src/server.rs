@@ -361,6 +361,16 @@ mod tests {
             PositionEncoding::Utf16,
         )
         .unwrap();
+        let structured = publish(
+            "file:///structured-mismatch.ssrg",
+            &DocumentState::analyze(
+                "file:///structured-mismatch.ssrg",
+                1,
+                "pub fn bad value: (String -> Int) -> (Int -> String) = value\n".to_owned(),
+            ),
+            PositionEncoding::Utf16,
+        )
+        .unwrap();
 
         assert_eq!(unresolved["params"]["diagnostics"][0]["code"], "SES-N0001");
         assert_eq!(mismatch["params"]["diagnostics"][0]["code"], "SES-T0101");
@@ -382,6 +392,16 @@ mod tests {
         assert_eq!(
             mismatch["params"]["diagnostics"][0]["data"]["actualType"],
             "Int"
+        );
+        assert_eq!(
+            structured["params"]["diagnostics"][0]["data"]["typeDifference"]["entries"][0]
+                ["message"],
+            "parameter 1: expected Int, actual String"
+        );
+        assert_eq!(
+            structured["params"]["diagnostics"][0]["data"]["typeDifference"]["entries"][1]
+                ["message"],
+            "return type: expected String, actual Int"
         );
     }
 

@@ -39,7 +39,25 @@
       ],
       "fixes": [],
       "expectedType": "(Int, Bool)",
-      "actualType": "(Int, String)"
+      "actualType": "(Int, String)",
+      "typeDifference": {
+        "expectedType": "(Int, Bool)",
+        "actualType": "(Int, String)",
+        "entries": [
+          {
+            "path": [
+              {
+                "kind": "tuple-element",
+                "index": 1
+              }
+            ],
+            "kind": "type-mismatch",
+            "message": "tuple element 2: expected Bool, actual String",
+            "expectedType": "Bool",
+            "actualType": "String"
+          }
+        ]
+      }
     }
   ]
 }

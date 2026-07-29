@@ -50,6 +50,8 @@ struct LspDiagnosticData {
     fixes: Vec<seseragi_syntax::DiagnosticFix>,
     expected_type: Option<String>,
     actual_type: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    type_difference: Option<seseragi_syntax::TypeDifference>,
 }
 
 pub fn convert(
@@ -99,6 +101,7 @@ pub fn convert(
                     fixes: diagnostic.fixes.clone(),
                     expected_type,
                     actual_type,
+                    type_difference: diagnostic.type_difference.clone(),
                 },
             })
         })
@@ -152,6 +155,7 @@ mod tests {
             source: "file:///unicode.ssrg".to_owned(),
             position_encoding: "utf-8-byte-offset".to_owned(),
             diagnostics: vec![Diagnostic {
+                type_difference: None,
                 id: "D1".to_owned(),
                 code: "SES-N0001".to_owned(),
                 severity: DiagnosticSeverity::Error,

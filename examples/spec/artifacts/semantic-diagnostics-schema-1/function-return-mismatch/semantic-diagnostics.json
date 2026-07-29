@@ -39,7 +39,20 @@
       ],
       "fixes": [],
       "expectedType": "Int",
-      "actualType": "String"
+      "actualType": "String",
+      "typeDifference": {
+        "expectedType": "Int",
+        "actualType": "String",
+        "entries": [
+          {
+            "path": [],
+            "kind": "type-mismatch",
+            "message": "expected Int, actual String",
+            "expectedType": "Int",
+            "actualType": "String"
+          }
+        ]
+      }
     }
   ]
 }

@@ -215,6 +215,8 @@ describe("Playground sample catalog", () => {
     expect(cards).toContain('formatSourceLocation("main.ssrg"')
     expect(cards).toContain("location.dataset.byteStart")
     expect(cards).toContain("Expected")
+    expect(cards).toContain("difference.message")
+    expect(cards).toContain("diagnostic-card-differences")
     expect(cards).toContain("Help:")
     expect(cards).toContain("Fix:")
   })
@@ -619,7 +621,7 @@ describe("Playground sample catalog", () => {
     })
   })
 
-  test("exposes type differences and field spelling fixes", async () => {
+  test("exposes structured type differences and field spelling fixes", async () => {
     const mismatch = await compile(
       "mismatch.ssrg",
       'fn one value: Int -> Int = value\npub fn main -> Int = one "no"\n'
@@ -629,7 +631,38 @@ describe("Playground sample catalog", () => {
       messageKey: "call.argument-type-mismatch",
       expectedType: "Int",
       actualType: "String",
+      typeDifference: {
+        entries: [{ message: "expected Int, actual String" }],
+      },
     })
+
+    const structuredSource = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/semantic-diagnostics-schema-1/structured-type-differences/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const structured = await compile("structured.ssrg", structuredSource)
+    expect(structured.status).toBe("failure")
+    expect(
+      structured.diagnostics.diagnostics.map((diagnostic) =>
+        diagnostic.typeDifference?.entries.map((entry) => entry.message)
+      )
+    ).toEqual([
+      [
+        "profile.score is missing; expected Int",
+        "profile.extra is extra; actual type is Bool",
+        "enabled is missing; expected Bool",
+        "stale is extra; actual type is Int",
+      ],
+      [
+        "parameter 1: expected Int, actual String",
+        "return type: expected String, actual Int",
+      ],
+      [
+        "Array type argument 1 > Maybe type argument 1: expected Int, actual String",
+      ],
+    ])
 
     const field = await compile(
       "field.ssrg",

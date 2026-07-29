@@ -36,6 +36,7 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             primary,
             declaration,
         } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-N0001".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -60,6 +61,7 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             }
             .render(crate::TypeRenderOptions::default());
             Diagnostic {
+                type_difference: None,
                 id: String::new(),
                 code: "SES-T0201".to_owned(),
                 severity: DiagnosticSeverity::Error,
@@ -78,6 +80,7 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             provider_module,
             primary,
         } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-T0202".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -97,6 +100,7 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             primary,
             first,
         } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-T0202".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -113,6 +117,7 @@ fn diagnostic(issue: &DerivedInstanceIssue) -> Diagnostic {
             standard_identity,
             primary,
         } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-T0202".to_owned(),
             severity: DiagnosticSeverity::Error,

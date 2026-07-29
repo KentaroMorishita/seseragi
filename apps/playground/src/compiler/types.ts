@@ -24,7 +24,39 @@ export type Diagnostic = {
   readonly fixes: readonly DiagnosticFix[]
   readonly expectedType: string | null
   readonly actualType: string | null
+  readonly typeDifference?: TypeDifference
 }
+
+export type TypeDifference = {
+  readonly expectedType: string
+  readonly actualType: string
+  readonly entries: readonly TypeDifferenceEntry[]
+}
+
+export type TypeDifferenceEntry = {
+  readonly path: readonly TypeDifferencePathSegment[]
+  readonly kind:
+    | "type-mismatch"
+    | "missing-record-field"
+    | "extra-record-field"
+    | "field-optionality"
+    | "missing-function-parameter"
+    | "extra-function-parameter"
+  readonly message: string
+  readonly expectedType: string | null
+  readonly actualType: string | null
+}
+
+export type TypeDifferencePathSegment =
+  | { readonly kind: "record-field"; readonly name: string }
+  | { readonly kind: "function-parameter"; readonly index: number }
+  | { readonly kind: "function-result" }
+  | {
+      readonly kind: "type-argument"
+      readonly name: string
+      readonly index: number
+    }
+  | { readonly kind: "tuple-element"; readonly index: number }
 
 export type DiagnosticLabel = {
   readonly message: string

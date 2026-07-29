@@ -35,7 +35,20 @@
       "helps": [],
       "fixes": [],
       "expectedType": "Bool",
-      "actualType": "Int"
+      "actualType": "Int",
+      "typeDifference": {
+        "expectedType": "Bool",
+        "actualType": "Int",
+        "entries": [
+          {
+            "path": [],
+            "kind": "type-mismatch",
+            "message": "expected Bool, actual Int",
+            "expectedType": "Bool",
+            "actualType": "Int"
+          }
+        ]
+      }
     },
     {
       "id": "d2",
@@ -86,8 +99,21 @@
         "Change the expression or its annotation so the two types agree."
       ],
       "fixes": [],
-      "expectedType": null,
-      "actualType": null
+      "expectedType": "Int",
+      "actualType": "String",
+      "typeDifference": {
+        "expectedType": "Int",
+        "actualType": "String",
+        "entries": [
+          {
+            "path": [],
+            "kind": "type-mismatch",
+            "message": "expected Int, actual String",
+            "expectedType": "Int",
+            "actualType": "String"
+          }
+        ]
+      }
     }
   ]
 }

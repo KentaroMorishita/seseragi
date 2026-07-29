@@ -872,6 +872,17 @@ textarea {
   margin: 0;
   color: #bde7d6;
 }
+.diagnostic-card-differences {
+  margin: 10px 0 0;
+  padding: 9px 10px 9px 28px;
+  border-left: 2px solid #d1a75f;
+  border-radius: 0 7px 7px 0;
+  color: #efd6a8;
+  background: #17150f;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.55;
+}
 .diagnostic-card-labels {
   margin: 10px 0 0;
   padding-left: 18px;

@@ -16,7 +16,8 @@ mod token;
 pub use cst::{parse_cst, parse_cst_from_tokens, CstArtifact, CstError, CstMissing, CstNode};
 pub use diagnostics::{
     parse_diagnostics, ByteRange, Diagnostic, DiagnosticArtifact, DiagnosticEdit, DiagnosticFix,
-    DiagnosticSeverity, RelatedDiagnostic,
+    DiagnosticSeverity, RelatedDiagnostic, TypeDifference, TypeDifferenceEntry, TypeDifferenceKind,
+    TypeDifferencePathSegment,
 };
 pub use interface::{
     parse_import_free_module_interface, parse_module_interface, parse_unlinked_module_interface,

@@ -38,8 +38,21 @@
         "Change the expression or its annotation so the two types agree."
       ],
       "fixes": [],
-      "expectedType": null,
-      "actualType": null
+      "expectedType": "String",
+      "actualType": "Int",
+      "typeDifference": {
+        "expectedType": "String",
+        "actualType": "Int",
+        "entries": [
+          {
+            "path": [],
+            "kind": "type-mismatch",
+            "message": "expected String, actual Int",
+            "expectedType": "String",
+            "actualType": "Int"
+          }
+        ]
+      }
     },
     {
       "id": "d2",

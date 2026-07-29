@@ -1,7 +1,7 @@
 use crate::typed::FunctionBodyIssue;
 use seseragi_syntax::{ByteRange, Diagnostic, DiagnosticSeverity, RelatedDiagnostic};
 
-use super::type_labels::type_label;
+use super::{type_difference::type_difference, type_labels::type_label};
 
 pub(super) fn collect_function_body_diagnostics(
     issue: Option<&FunctionBodyIssue>,
@@ -18,6 +18,7 @@ pub(super) fn collect_function_body_diagnostics(
     };
 
     diagnostics.push(Diagnostic {
+        type_difference: type_difference(expected, actual),
         id: String::new(),
         code: "SES-T0101".to_owned(),
         severity: DiagnosticSeverity::Error,

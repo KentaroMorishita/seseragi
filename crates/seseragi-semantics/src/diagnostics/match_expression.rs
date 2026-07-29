@@ -1,7 +1,7 @@
 use crate::typed::MatchIssue;
 use seseragi_syntax::{ByteRange, Diagnostic, DiagnosticSeverity, RelatedDiagnostic};
 
-use super::type_labels::type_label;
+use super::{type_difference::type_difference, type_labels::type_label};
 
 pub(super) fn collect_match_diagnostics(issues: &[MatchIssue], diagnostics: &mut Vec<Diagnostic>) {
     diagnostics.extend(issues.iter().map(diagnostic));
@@ -10,6 +10,7 @@ pub(super) fn collect_match_diagnostics(issues: &[MatchIssue], diagnostics: &mut
 fn diagnostic(issue: &MatchIssue) -> Diagnostic {
     match issue {
         MatchIssue::PatternMismatch { pattern, message } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-T0101".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -22,6 +23,13 @@ fn diagnostic(issue: &MatchIssue) -> Diagnostic {
             fixes: Vec::new(),
         },
         MatchIssue::GuardNotBool { guard, actual } => Diagnostic {
+            type_difference: type_difference(
+                &crate::TypedType::Named {
+                    name: "Bool".to_owned(),
+                    arguments: Vec::new(),
+                },
+                actual,
+            ),
             id: String::new(),
             code: "SES-T0101".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -39,6 +47,7 @@ fn diagnostic(issue: &MatchIssue) -> Diagnostic {
             expected,
             actual,
         } => Diagnostic {
+            type_difference: type_difference(expected, actual),
             id: String::new(),
             code: "SES-T0101".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -60,6 +69,7 @@ fn diagnostic(issue: &MatchIssue) -> Diagnostic {
             expression,
             missing,
         } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-T0301".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -72,6 +82,7 @@ fn diagnostic(issue: &MatchIssue) -> Diagnostic {
             fixes: Vec::new(),
         },
         MatchIssue::Unreachable { arm } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-T0302".to_owned(),
             severity: DiagnosticSeverity::Error,

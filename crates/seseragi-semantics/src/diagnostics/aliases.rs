@@ -398,6 +398,7 @@ fn walk_type(type_ref: &TypeRef, visit: &mut impl FnMut(&TypeRef)) {
 
 fn error(code: &str, message_key: &str, span: ByteSpan) -> Diagnostic {
     Diagnostic {
+        type_difference: None,
         id: String::new(),
         code: code.to_owned(),
         severity: DiagnosticSeverity::Error,

@@ -4,7 +4,7 @@ use seseragi_syntax::{
     RelatedDiagnostic,
 };
 
-use super::type_labels::type_label;
+use super::{type_difference::type_difference, type_labels::type_label};
 
 pub(super) fn collect_record_diagnostic(
     issue: Option<&RecordIssue>,
@@ -18,11 +18,12 @@ pub(super) fn collect_record_diagnostic(
 }
 
 pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> Diagnostic {
-    let (message_key, primary, message, suggestion) = match issue {
+    let (message_key, primary, message, suggestion, type_difference) = match issue {
         RecordIssue::DuplicateField { field, name } => (
             "record.duplicate-field",
             *field,
             format!("record field `{name}` is declared more than once"),
+            None,
             None,
         ),
         RecordIssue::MissingField {
@@ -34,6 +35,7 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
             *field,
             unresolved_field_message("record type", name, suggestion.as_deref()),
             suggestion.as_deref(),
+            None,
         ),
         RecordIssue::AccessOnNonRecord { receiver, actual } => (
             "record.access-on-non-record",
@@ -43,6 +45,7 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
                 type_label(actual)
             ),
             None,
+            None,
         ),
         RecordIssue::SpreadOnNonRecord { spread, actual } => (
             "record.spread-on-non-record",
@@ -51,6 +54,7 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
                 "record spread requires a record, received {}",
                 type_label(actual)
             ),
+            None,
             None,
         ),
         RecordIssue::UnknownStructField {
@@ -67,17 +71,20 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
                 suggestion.as_deref(),
             ),
             suggestion.as_deref(),
+            None,
         ),
         RecordIssue::MissingStructField { structure, name } => (
             "struct.field-missing",
             *structure,
             format!("struct construction is missing required field `{name}`"),
             None,
+            None,
         ),
         RecordIssue::StructRepresentationPrivate { structure, name } => (
             "struct.representation-private",
             *structure,
             format!("struct `{name}` representation is private to its defining module"),
+            None,
             None,
         ),
         RecordIssue::StructTypeArgumentArity {
@@ -90,6 +97,7 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
             *structure,
             format!("struct `{name}` requires {expected} type arguments, received {actual}"),
             None,
+            None,
         ),
         RecordIssue::StructTypeArgumentsUnresolved { structure, name } => (
             "struct.type-arguments-unresolved",
@@ -97,6 +105,7 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
             format!(
                 "struct `{name}` type arguments cannot be inferred from its fields or expected type"
             ),
+            None,
             None,
         ),
         RecordIssue::StructFieldType {
@@ -113,6 +122,7 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
                 type_label(actual)
             ),
             None,
+            type_difference(expected, actual),
         ),
         RecordIssue::StructSpreadType {
             spread,
@@ -127,11 +137,13 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
                 type_label(actual)
             ),
             None,
+            type_difference(expected, actual),
         ),
         RecordIssue::StructSpreadPosition { spread } => (
             "struct.spread-not-first",
             *spread,
             "struct spread must be the first item".to_owned(),
+            None,
             None,
         ),
         RecordIssue::MultipleStructSpreads { spread } => (
@@ -139,9 +151,11 @@ pub(super) fn record_diagnostic(issue: &RecordIssue, declaration: ByteSpan) -> D
             *spread,
             "struct construction accepts at most one spread".to_owned(),
             None,
+            None,
         ),
     };
     Diagnostic {
+        type_difference,
         id: String::new(),
         code: "SES-T0101".to_owned(),
         severity: DiagnosticSeverity::Error,

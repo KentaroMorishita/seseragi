@@ -16,6 +16,7 @@ pub(super) fn collect_range_diagnostic(
 
 pub(super) fn range_diagnostic(issue: &RangeIssue, declaration: ByteSpan) -> Diagnostic {
     Diagnostic {
+        type_difference: None,
         id: String::new(),
         code: "SES-T0101".to_owned(),
         severity: DiagnosticSeverity::Error,

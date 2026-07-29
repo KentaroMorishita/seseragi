@@ -47,6 +47,11 @@ pub fn render_terminal_diagnostics(artifact: &DiagnosticArtifact, source: &str) 
         if let Some(actual) = actual {
             rendered.push_str(&format!("  = actual: {actual}\n"));
         }
+        if let Some(difference) = &diagnostic.type_difference {
+            for entry in &difference.entries {
+                rendered.push_str(&format!("  = diff: {}\n", entry.message));
+            }
+        }
         for note in diagnostic.notes() {
             rendered.push_str(&format!("  = note: {note}\n"));
         }
@@ -86,5 +91,18 @@ mod tests {
         assert!(rendered.contains("declared Int, body produces Int -> Int"));
         assert!(rendered.contains("= actual: Int -> Int"));
         assert!(!rendered.contains("body produces function"));
+    }
+
+    #[test]
+    fn renders_shared_structured_type_difference_entries() {
+        let source = concat!(
+            "fn accept value: { name: String, score: Int } -> Int = value.score\n",
+            "pub fn main -> Int = accept { name: \"Mio\", extra: True }\n",
+        );
+        let diagnostics = seseragi_semantics::semantic_diagnostics("app.ssrg", source);
+        let rendered = render_terminal_diagnostics(&diagnostics, source);
+
+        assert!(rendered.contains("= diff: score is missing; expected Int"));
+        assert!(rendered.contains("= diff: extra is extra; actual type is Bool"));
     }
 }

@@ -165,6 +165,7 @@ fn covered_by_existing_error(range: ByteRange, existing: &[Diagnostic]) -> bool 
 
 fn expected_expression(primary: ByteRange) -> Diagnostic {
     Diagnostic {
+        type_difference: None,
         id: String::new(),
         code: "SES-P0001".to_owned(),
         severity: DiagnosticSeverity::Error,

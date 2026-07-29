@@ -95,6 +95,10 @@ fn exposes_expected_actual_types_and_a_spelling_fix() {
         mismatch.expected_actual_types(),
         (Some("Int".to_owned()), Some("String".to_owned()))
     );
+    assert_eq!(
+        mismatch.type_difference.as_ref().unwrap().entries[0].message,
+        "expected Int, actual String"
+    );
 
     let field = first_diagnostic(
         "field.ssrg",

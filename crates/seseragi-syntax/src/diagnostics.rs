@@ -32,6 +32,7 @@ pub struct Diagnostic {
     pub primary: ByteRange,
     pub related: Vec<RelatedDiagnostic>,
     pub fixes: Vec<DiagnosticFix>,
+    pub type_difference: Option<TypeDifference>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -50,6 +51,8 @@ struct DiagnosticWire {
     fixes: Vec<DiagnosticFix>,
     expected_type: Option<String>,
     actual_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    type_difference: Option<TypeDifference>,
 }
 
 impl From<Diagnostic> for DiagnosticWire {
@@ -62,6 +65,7 @@ impl From<Diagnostic> for DiagnosticWire {
             helps: diagnostic.helps(),
             expected_type,
             actual_type,
+            type_difference: diagnostic.type_difference.clone(),
             id: diagnostic.id,
             code: diagnostic.code,
             severity: diagnostic.severity,
@@ -231,6 +235,12 @@ impl Diagnostic {
     }
 
     pub fn expected_actual_types(&self) -> (Option<String>, Option<String>) {
+        if let Some(difference) = &self.type_difference {
+            return (
+                Some(difference.expected_type.clone()),
+                Some(difference.actual_type.clone()),
+            );
+        }
         if self.message_key == "match.branch-type-mismatch" && self.related.len() >= 2 {
             return (
                 self.related[0]
@@ -269,6 +279,49 @@ impl Diagnostic {
         }
         (None, None)
     }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeDifference {
+    pub expected_type: String,
+    pub actual_type: String,
+    pub entries: Vec<TypeDifferenceEntry>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TypeDifferenceEntry {
+    pub path: Vec<TypeDifferencePathSegment>,
+    pub kind: TypeDifferenceKind,
+    pub message: String,
+    pub expected_type: Option<String>,
+    pub actual_type: Option<String>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "kebab-case",
+    rename_all_fields = "camelCase"
+)]
+pub enum TypeDifferencePathSegment {
+    RecordField { name: String },
+    FunctionParameter { index: usize },
+    FunctionResult,
+    TypeArgument { name: String, index: usize },
+    TupleElement { index: usize },
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum TypeDifferenceKind {
+    TypeMismatch,
+    MissingRecordField,
+    ExtraRecordField,
+    FieldOptionality,
+    MissingFunctionParameter,
+    ExtraFunctionParameter,
 }
 
 fn split_pair(message: &str, left: &str, separator: &str) -> Option<(String, String)> {
@@ -367,6 +420,7 @@ fn template_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
                 continue;
             };
             diagnostics.push(Diagnostic {
+                type_difference: None,
                 id: String::new(),
                 code: "SES-P0201".to_owned(),
                 severity: DiagnosticSeverity::Error,
@@ -395,6 +449,7 @@ fn string_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
         .filter_map(|token| {
             let error = decode_string_literal(&token.raw).err()?;
             Some(Diagnostic {
+                type_difference: None,
                 id: String::new(),
                 code: "SES-P0201".to_owned(),
                 severity: DiagnosticSeverity::Error,
@@ -459,6 +514,7 @@ fn missing_surface_declaration_diagnostics(
                 return None;
             }
             Some(Diagnostic {
+                type_difference: None,
                 id: String::new(),
                 code: "SES-P0001".to_owned(),
                 severity: DiagnosticSeverity::Error,
@@ -519,6 +575,7 @@ fn missing_surface_body_diagnostics(
                 malformed_pure_body_range(tokens, span.start, span.end)
             }?;
             Some(Diagnostic {
+                type_difference: None,
                 id: String::new(),
                 code: "SES-P0001".to_owned(),
                 severity: DiagnosticSeverity::Error,
@@ -612,6 +669,7 @@ fn integer_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
         .filter(|(_, token)| token.kind == TokenKind::LiteralInteger)
         .filter(|(index, token)| !integer_literal_is_in_range(tokens, *index, &token.raw))
         .map(|(_, token)| Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-P0203".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -646,6 +704,7 @@ fn float_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
         .filter(|token| token.kind == TokenKind::LiteralFloat)
         .filter(|token| !float_literal_is_valid(&token.raw))
         .map(|token| Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-P0203".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -773,6 +832,7 @@ fn diagnostic_from_cst_error(
 ) -> Diagnostic {
     let primary = primary_range_for_error(error, missing, tokens);
     Diagnostic {
+        type_difference: None,
         id: format!("d{}", index + 1),
         code: error.code.clone(),
         severity: DiagnosticSeverity::Error,

@@ -16,6 +16,7 @@ pub(super) fn collect_resolution_diagnostics(
             continue;
         }
         diagnostics.push(Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: issue.code.clone(),
             severity: DiagnosticSeverity::Error,

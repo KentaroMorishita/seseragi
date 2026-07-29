@@ -24,6 +24,7 @@ pub(super) fn collect_effect_fn_diagnostics(
 fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diagnostic {
     match issue {
         EffectFunctionIssue::CompactContractClause { primary } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-P0001".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -33,6 +34,7 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
             fixes: Vec::new(),
         },
         EffectFunctionIssue::MissingDoResult { primary } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-P0001".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -45,6 +47,7 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
             fixes: Vec::new(),
         },
         EffectFunctionIssue::CompactFailureConflict { primary, failures } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-E0001".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -62,6 +65,7 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
             fixes: Vec::new(),
         },
         EffectFunctionIssue::DoStatementNotEffect { primary } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-T0101".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -71,6 +75,7 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
             fixes: Vec::new(),
         },
         EffectFunctionIssue::BindValueNotEffect { primary, bind } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-T0101".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -80,6 +85,7 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
             fixes: Vec::new(),
         },
         EffectFunctionIssue::CompactBodyNotEffect { primary } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-T0101".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -89,6 +95,7 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
             fixes: Vec::new(),
         },
         EffectFunctionIssue::MapErrorMapperNotFunction { primary, actual } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-T0101".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -104,6 +111,7 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
             fixes: Vec::new(),
         },
         EffectFunctionIssue::MapErrorSourceNotEffect { primary } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-T0101".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -117,6 +125,7 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
             expected,
             actual,
         } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-E0001".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -137,6 +146,7 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
             expected,
             actual,
         } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-T0101".to_owned(),
             severity: DiagnosticSeverity::Error,
@@ -157,6 +167,7 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
             fixes: Vec::new(),
         },
         EffectFunctionIssue::FromEitherSourceNotEither { primary, actual } => Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-T0101".to_owned(),
             severity: DiagnosticSeverity::Error,

@@ -39,7 +39,20 @@
       ],
       "fixes": [],
       "expectedType": "Int",
-      "actualType": "Int -> Int"
+      "actualType": "Int -> Int",
+      "typeDifference": {
+        "expectedType": "Int",
+        "actualType": "Int -> Int",
+        "entries": [
+          {
+            "path": [],
+            "kind": "type-mismatch",
+            "message": "expected Int, actual Int -> Int",
+            "expectedType": "Int",
+            "actualType": "Int -> Int"
+          }
+        ]
+      }
     },
     {
       "id": "d2",
@@ -113,7 +126,20 @@
       ],
       "fixes": [],
       "expectedType": "Int",
-      "actualType": "String"
+      "actualType": "String",
+      "typeDifference": {
+        "expectedType": "Int",
+        "actualType": "String",
+        "entries": [
+          {
+            "path": [],
+            "kind": "type-mismatch",
+            "message": "expected Int, actual String",
+            "expectedType": "Int",
+            "actualType": "String"
+          }
+        ]
+      }
     }
   ]
 }

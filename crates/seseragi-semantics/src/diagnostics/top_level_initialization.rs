@@ -315,6 +315,7 @@ impl DependencyWalker<'_, '_, '_> {
             primary: byte_range(self.binding.name_span),
         });
         self.diagnostics.push(Diagnostic {
+            type_difference: None,
             id: String::new(),
             code: "SES-N0201".to_owned(),
             severity: DiagnosticSeverity::Error,

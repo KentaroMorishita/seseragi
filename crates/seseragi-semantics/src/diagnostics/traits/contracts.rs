@@ -119,6 +119,7 @@ pub(super) fn diagnostic(issue: &InstanceContractIssue) -> Diagnostic {
         ),
     };
     Diagnostic {
+        type_difference: None,
         id: String::new(),
         code: code.to_owned(),
         severity: DiagnosticSeverity::Error,

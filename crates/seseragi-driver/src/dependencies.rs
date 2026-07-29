@@ -21,6 +21,7 @@ pub(super) fn append_link_diagnostics(errors: Vec<LinkError>, artifact: &mut Dia
             };
             let origin = error.origin();
             Diagnostic {
+                type_difference: None,
                 id: format!("d{}", next_id + index),
                 code: code.to_owned(),
                 severity: DiagnosticSeverity::Error,

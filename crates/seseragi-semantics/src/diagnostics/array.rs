@@ -1,7 +1,7 @@
 use crate::typed::ArrayIssue;
 use seseragi_syntax::{ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, RelatedDiagnostic};
 
-use super::type_labels::type_label;
+use super::{type_difference::type_difference, type_labels::type_label};
 
 pub(super) fn collect_array_diagnostic(
     issue: Option<&ArrayIssue>,
@@ -15,7 +15,7 @@ pub(super) fn collect_array_diagnostic(
 }
 
 pub(super) fn array_diagnostic(issue: &ArrayIssue, declaration: ByteSpan) -> Diagnostic {
-    let (message_key, primary, message) = match issue {
+    let (message_key, primary, message, type_difference) = match issue {
         ArrayIssue::EmptyWithoutExpectedType {
             collection,
             literal,
@@ -23,6 +23,7 @@ pub(super) fn array_diagnostic(issue: &ArrayIssue, declaration: ByteSpan) -> Dia
             format!("{}.empty-element-type-unknown", collection.to_lowercase()),
             *literal,
             format!("add a {collection} element type annotation"),
+            None,
         ),
         ArrayIssue::ElementTypeMismatch {
             collection,
@@ -39,9 +40,11 @@ pub(super) fn array_diagnostic(issue: &ArrayIssue, declaration: ByteSpan) -> Dia
                 type_label(expected),
                 type_label(actual)
             ),
+            type_difference(expected, actual),
         ),
     };
     Diagnostic {
+        type_difference,
         id: String::new(),
         code: "SES-T0101".to_owned(),
         severity: DiagnosticSeverity::Error,

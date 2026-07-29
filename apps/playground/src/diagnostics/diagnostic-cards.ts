@@ -63,6 +63,17 @@ export function renderDiagnosticCards(
         card.append(types)
       }
 
+      if (diagnostic.typeDifference?.entries.length) {
+        const differences = document.createElement("ul")
+        differences.className = "diagnostic-card-differences"
+        for (const difference of diagnostic.typeDifference.entries) {
+          const item = document.createElement("li")
+          item.textContent = difference.message
+          differences.append(item)
+        }
+        card.append(differences)
+      }
+
       const labels =
         diagnostic.labels.length > 0 ? diagnostic.labels : diagnostic.related
       if (labels.length > 0) {

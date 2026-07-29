@@ -301,6 +301,7 @@ fn html_tag_name(function: &SurfaceExpr, resolution: &TypedResolution<'_>) -> Op
 
 fn void_children_diagnostic(tag: &str, primary: ByteSpan) -> Diagnostic {
     Diagnostic {
+        type_difference: None,
         id: String::new(),
         code: "SES-T0701".to_owned(),
         severity: DiagnosticSeverity::Error,
@@ -316,6 +317,7 @@ fn void_children_diagnostic(tag: &str, primary: ByteSpan) -> Diagnostic {
 
 fn missing_required_prop_diagnostic(tag: &str, name: &str, primary: ByteSpan) -> Diagnostic {
     Diagnostic {
+        type_difference: None,
         id: String::new(),
         code: "SES-T0702".to_owned(),
         severity: DiagnosticSeverity::Error,
@@ -343,6 +345,7 @@ fn unknown_prop_diagnostic(
         },
     );
     Diagnostic {
+        type_difference: None,
         id: String::new(),
         code: "SES-L0101".to_owned(),
         severity: DiagnosticSeverity::Warning,
@@ -371,6 +374,7 @@ fn event_control_without_handler_diagnostic(
     primary: ByteSpan,
 ) -> Diagnostic {
     Diagnostic {
+        type_difference: None,
         id: String::new(),
         code: "SES-L0101".to_owned(),
         severity: DiagnosticSeverity::Warning,

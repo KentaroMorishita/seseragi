@@ -39,7 +39,20 @@
       ],
       "fixes": [],
       "expectedType": "Int",
-      "actualType": "UserId"
+      "actualType": "UserId",
+      "typeDifference": {
+        "expectedType": "Int",
+        "actualType": "UserId",
+        "entries": [
+          {
+            "path": [],
+            "kind": "type-mismatch",
+            "message": "expected Int, actual UserId",
+            "expectedType": "Int",
+            "actualType": "UserId"
+          }
+        ]
+      }
     }
   ]
 }

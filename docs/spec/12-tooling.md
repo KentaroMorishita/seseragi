@@ -302,11 +302,19 @@ notes: zero or more source-independent explanations
 helps: zero or more concrete next actions
 fixes: zero or more versioned text edit groups
 expectedType / actualType: type mismatchの場合のuser syntaxによる型表示
+typeDifference: 構造化された型差分（差分が確定できる場合）
 ```
 
 compiler内部は分類・fixture互換性のため `messageKey` を保持できますが、これは公開messageではありません。
 CLI、LSP、Playgroundは共通modelの `message` を表示し、`messageKey` を見出し、tooltip、本文へ露出しません。
-LSPはlabelsをrelated informationへ変換し、notes、helps、fixes、expectedType / actualTypeをdiagnostic dataへ
+`typeDifference`は共通type document同士を比較して作り、rootの`expectedType` / `actualType`と、source順の
+`entries`を持ちます。各entryはrecord field、function parameter / result、type argument、tuple elementからなる
+構造化path、`missing-record-field` / `extra-record-field` / `field-optionality` / `type-mismatch`等のkind、
+そのpathにおけるexpected / actual typeと共通messageを持ちます。recordのmissing / extra field、functionの
+parameter / result、nested genericの内側の相違をroot型の再掲だけへ潰してはなりません。unknown / recovery typeを
+含むpairでは推測した差分を公開せず、一次のparse / resolution diagnosticだけを保ちます。
+
+LSPはlabelsをrelated informationへ変換し、notes、helps、fixes、expectedType / actualType、typeDifferenceをdiagnostic dataへ
 保存します。Playgroundは同じlabelsと型差分をcardとして表示し、primary rangeからeditorへ移動できます。
 fieldの綴りがvisible field集合の一つへ十分近い場合だけ、そのfield rangeを置換するfixを提供します。
 
