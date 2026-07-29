@@ -1,0 +1,10 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "08-collections-and-ranges",
+  "challenge": "ArrayとListの数値、またはRangeの終端を変え、三つの結果をもう一度Runしてください。",
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

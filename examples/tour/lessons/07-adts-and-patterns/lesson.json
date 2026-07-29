@@ -1,0 +1,10 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "07-adts-and-patterns",
+  "challenge": "`Shipped \"Osaka\"`を`Preparing`へ変え、別のmatch armが選ばれることを確かめてください。",
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

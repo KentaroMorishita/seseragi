@@ -1,0 +1,17 @@
+fn renderName value: Maybe<String> -> String =
+  match value {
+    Nothing -> "name: none"
+    Just name -> `name: ${name}`
+  }
+
+fn renderResult value: Either<String, Int> -> String =
+  match value {
+    Left error -> `result: ${error}`
+    Right number -> `result: ${number}`
+  }
+
+fn report name: Maybe<String> -> result: Either<String, Int> -> String =
+  `${renderName name} / ${renderResult result}`
+
+// MaybeとEitherのconstructorをmatchで分けます。
+pub effect fn main = report Nothing (Right 42) |> println

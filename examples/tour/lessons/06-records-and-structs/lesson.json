@@ -1,0 +1,10 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "06-records-and-structs",
+  "challenge": "`Profile`とRecordのspread更新で、表示する名前とsuffixを変えてRunしてください。",
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

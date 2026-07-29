@@ -33,7 +33,7 @@ describe("Tour curriculum UI", () => {
       expect(lesson.source.trim()).not.toBe("")
       expect(lesson.guide.trim()).not.toBe("")
     }
-    for (const lesson of tourLessons.slice(0, 5)) {
+    for (const lesson of tourLessons.slice(0, 9)) {
       expect(lesson.contentKind).toBe("canonical")
       expect(lesson.sourcePath).toBe(
         `examples/tour/lessons/${lesson.id}/main.ssrg`
@@ -41,7 +41,12 @@ describe("Tour curriculum UI", () => {
       expect(lesson.expectedOutput.trim()).not.toBe("")
       expect(lesson.interactive).toBe(false)
     }
-    for (const lesson of tourLessons.slice(5)) {
+    for (const lesson of tourLessons.slice(5, 9)) {
+      const previous = tourLessons[lesson.order - 2]
+      if (previous === undefined) throw new Error("missing previous lesson")
+      expect(lesson.prerequisites).toEqual([previous.id])
+    }
+    for (const lesson of tourLessons.slice(9)) {
       expect(lesson.contentKind).toBe("seed")
     }
   })

@@ -75,13 +75,15 @@ async function format(source: string): Promise<FormatResponse> {
 }
 
 describe("Playground sample catalog", () => {
-  test("compiles and executes the canonical Tour foundation lessons", async () => {
-    const foundationLessons = tourLessons.filter(
+  test("compiles and executes every canonical Tour lesson", async () => {
+    const canonicalLessons = tourLessons.filter(
       ({ contentKind }) => contentKind === "canonical"
     )
-    expect(foundationLessons.map(({ order }) => order)).toEqual([1, 2, 3, 4, 5])
+    expect(canonicalLessons.map(({ order }) => order)).toEqual(
+      Array.from({ length: 9 }, (_, index) => index + 1)
+    )
 
-    for (const lesson of foundationLessons) {
+    for (const lesson of canonicalLessons) {
       const response = await compile(`${lesson.id}.ssrg`, lesson.source)
       expect(response.status).toBe("success")
       if (response.status !== "success" || !response.entry) {

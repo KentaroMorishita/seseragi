@@ -1,0 +1,10 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "09-maybe-and-either",
+  "challenge": "`Nothing`を`Just \"Mio\"`へ、`Right 42`を`Left \"invalid\"`へ変えてRunしてください。",
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

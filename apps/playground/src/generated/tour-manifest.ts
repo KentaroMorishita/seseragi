@@ -21,6 +21,22 @@ import lesson4Source from "../../../../examples/tour/lessons/05-pipelines/main.s
 import lesson4Guide from "../../../../examples/tour/lessons/05-pipelines/guide.md?raw"
 import lesson4Output from "../../../../examples/tour/lessons/05-pipelines/stdout.txt?raw"
 
+import lesson5Source from "../../../../examples/tour/lessons/06-records-and-structs/main.ssrg?raw"
+import lesson5Guide from "../../../../examples/tour/lessons/06-records-and-structs/guide.md?raw"
+import lesson5Output from "../../../../examples/tour/lessons/06-records-and-structs/stdout.txt?raw"
+
+import lesson6Source from "../../../../examples/tour/lessons/07-adts-and-patterns/main.ssrg?raw"
+import lesson6Guide from "../../../../examples/tour/lessons/07-adts-and-patterns/guide.md?raw"
+import lesson6Output from "../../../../examples/tour/lessons/07-adts-and-patterns/stdout.txt?raw"
+
+import lesson7Source from "../../../../examples/tour/lessons/08-collections-and-ranges/main.ssrg?raw"
+import lesson7Guide from "../../../../examples/tour/lessons/08-collections-and-ranges/guide.md?raw"
+import lesson7Output from "../../../../examples/tour/lessons/08-collections-and-ranges/stdout.txt?raw"
+
+import lesson8Source from "../../../../examples/tour/lessons/09-maybe-and-either/main.ssrg?raw"
+import lesson8Guide from "../../../../examples/tour/lessons/09-maybe-and-either/guide.md?raw"
+import lesson8Output from "../../../../examples/tour/lessons/09-maybe-and-either/stdout.txt?raw"
+
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
     id: "01-hello-world",
@@ -71,5 +87,45 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson4Guide,
     stdin: "",
     expectedOutput: (lesson4Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "06-records-and-structs",
+    challenge: "`Profile`とRecordのspread更新で、表示する名前とsuffixを変えてRunしてください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/06-records-and-structs/main.ssrg",
+    source: lesson5Source,
+    guide: lesson5Guide,
+    stdin: "",
+    expectedOutput: (lesson5Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "07-adts-and-patterns",
+    challenge: "`Shipped \"Osaka\"`を`Preparing`へ変え、別のmatch armが選ばれることを確かめてください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/07-adts-and-patterns/main.ssrg",
+    source: lesson6Source,
+    guide: lesson6Guide,
+    stdin: "",
+    expectedOutput: (lesson6Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "08-collections-and-ranges",
+    challenge: "ArrayとListの数値、またはRangeの終端を変え、三つの結果をもう一度Runしてください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/08-collections-and-ranges/main.ssrg",
+    source: lesson7Source,
+    guide: lesson7Guide,
+    stdin: "",
+    expectedOutput: (lesson7Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "09-maybe-and-either",
+    challenge: "`Nothing`を`Just \"Mio\"`へ、`Right 42`を`Left \"invalid\"`へ変えてRunしてください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/09-maybe-and-either/main.ssrg",
+    source: lesson8Source,
+    guide: lesson8Guide,
+    stdin: "",
+    expectedOutput: (lesson8Output).replace(/\r?\n$/u, ""),
   }
 ]
