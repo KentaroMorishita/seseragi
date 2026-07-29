@@ -20,6 +20,7 @@ bunx biome format --write \
   apps/playground/src/runtime \
   apps/playground/src/tour \
   apps/playground/src/ui \
+  apps/playground/src/workspace \
   apps/playground/tests \
   extensions/seseragi-spec-preview/extension.js \
   extensions/seseragi-spec-preview/extension-core.js \

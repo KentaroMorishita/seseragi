@@ -647,3 +647,17 @@ runtime、fixtureが接続される前に除外を解除しません。Tour gene
 `examples/spec/COVERAGE.md`はcompiler fixtureと意味論の網羅性、`examples/tour/curriculum.json`は教材で説明する概念の
 網羅性を管理します。Tourで実行できることはcompiler fixtureの代わりにならず、fixtureが存在することだけで教材へ
 説明済みとはみなしません。
+
+## 12.21 Playground virtual workspace
+
+browser Playgroundのfile状態は、file source、folder、entry file / module、active file、open / dirty file、展開folder、
+Explorerの表示・幅を一つのvirtual workspace modelで管理します。single-file sampleも特別扱いせず、cleanな
+`main.ssrg`だけを持つworkspaceとして読み込みます。
+
+workspace pathはrootからの相対pathで、separatorは`/`だけを使います。absolute path、末尾separator、重複separator、
+`.` / `..` segment、NULを受理しません。file / folderのcreate、rename、deleteは入力stateを変更せず、全検証後の新しい
+stateを返します。失敗時にpathやtab参照の一部だけを変更しません。
+
+folder renameは配下のfile / folderに加え、entry、active、open、dirty、expandedの各参照を同時に更新します。entry fileの
+module名はrename後のpathから再計算し、entry fileを削除した場合はentryを未選択へ戻します。active file削除後はopen順の
+右隣、左隣、残存fileのpath順先頭の優先順位で次のactive fileを選びます。

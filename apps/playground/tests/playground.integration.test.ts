@@ -481,7 +481,7 @@ describe("Playground sample catalog", () => {
     expect(html).toContain('id="reference-search"')
     expect(html).toContain('id="reference-category"')
     expect(main).toContain("createLiveAnalysis({")
-    expect(main).toContain("analysisHoverAt(latestAnalysis")
+    expect(main).toMatch(/analysisHoverAt\(\s*latestAnalysis,/)
     expect(main).toContain(
       "referenceBrowser.setCatalog(analysis.standardLibrary)"
     )

@@ -33,6 +33,11 @@ import { connectPreviewFullscreen } from "./ui/preview-fullscreen"
 import { connectReferenceBrowser } from "./ui/reference-browser"
 import { connectSampleBrowser } from "./ui/sample-browser"
 import { connectSampleGuide } from "./ui/sample-guide"
+import {
+  activeWorkspaceSource,
+  createSingleFileWorkspace,
+  updateActiveWorkspaceSource,
+} from "./workspace/model"
 
 const editorHost = requiredElement("#editor", HTMLDivElement)
 const sampleBrowserButton = requiredElement(
@@ -226,7 +231,8 @@ connectPreviewFullscreen(outputSection, fullscreenPreviewButton)
 
 const initialSample =
   samples.find((sample) => sample.id === "hello-world") ?? samples[0]
-let source = initialSample?.source ?? ""
+let workspaceState = createSingleFileWorkspace(initialSample?.source ?? "")
+let applyingWorkspaceSource = false
 let outputMode: "text" | "html" = initialSample?.outputMode ?? "text"
 let htmlPreviewUrl: string | undefined
 let activeExecution: BrowserExecution | undefined
@@ -261,14 +267,21 @@ const sampleBrowser = connectSampleBrowser(
 
 const editor = createEditor(
   editorHost,
-  source,
+  activeWorkspaceSource(workspaceState),
   (nextSource) => {
-    source = nextSource
+    if (!applyingWorkspaceSource) {
+      workspaceState = updateActiveWorkspaceSource(workspaceState, nextSource)
+    }
     latestAnalysis = undefined
     editor.dispatch(setDiagnostics(editor.state, []))
-    liveAnalysis.schedule(source)
+    liveAnalysis.schedule(nextSource)
   },
-  (position) => analysisHoverAt(latestAnalysis, source, position)
+  (position) =>
+    analysisHoverAt(
+      latestAnalysis,
+      activeWorkspaceSource(workspaceState),
+      position
+    )
 )
 const whitespaceStorageKey = "seseragi.playground.showWhitespace"
 let showWhitespace = localStorage.getItem(whitespaceStorageKey) === "true"
@@ -309,7 +322,7 @@ const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
     }
   },
 })
-liveAnalysis.schedule(source)
+liveAnalysis.schedule(activeWorkspaceSource(workspaceState))
 
 if (initialSample) {
   stdinInput.value = initialSample.stdin
@@ -327,11 +340,12 @@ const resetSample = (): void => {
 resetSampleButton.addEventListener("click", resetSample)
 mobileResetButton.addEventListener("click", resetSample)
 const formatSource = async (): Promise<void> => {
-  const requestedSource = source
+  const requestedFile = workspaceState.activeFile
+  const requestedSource = activeWorkspaceSource(workspaceState)
   setStatus("running", "Formatting…")
   try {
     const formatted = await formatSingleFile(requestedSource)
-    if (source !== requestedSource) return
+    if (!workspaceRequestIsCurrent(requestedFile, requestedSource)) return
     if (formatted.status === "failure") {
       const diagnostics = formatted.diagnostics.diagnostics
       editor.dispatch(
@@ -347,11 +361,14 @@ const formatSource = async (): Promise<void> => {
       setStatus("success", "Already formatted")
       return
     }
-    source = formatted.source
-    replaceEditorSource(editor, source)
+    workspaceState = updateActiveWorkspaceSource(
+      workspaceState,
+      formatted.source
+    )
+    replaceEditorFromWorkspace(formatted.source)
     setStatus("success", "Formatted")
   } catch (error) {
-    if (source !== requestedSource) return
+    if (!workspaceRequestIsCurrent(requestedFile, requestedSource)) return
     setStatus(
       "error",
       error instanceof Error ? error.message : "Formatting failed"
@@ -372,8 +389,8 @@ stdinToggleButton.addEventListener("click", () => {
 })
 clearSourceButton.addEventListener("click", () => {
   cancelActiveExecution()
-  source = ""
-  replaceEditorSource(editor, source)
+  workspaceState = updateActiveWorkspaceSource(workspaceState, "")
+  replaceEditorFromWorkspace("")
   editor.dispatch(setDiagnostics(editor.state, []))
   editor.focus()
   setStatus("ready", "Source cleared")
@@ -396,16 +413,35 @@ document.addEventListener("keydown", (event) => {
 function loadSample(sample: (typeof samples)[number], status: string): void {
   cancelActiveExecution()
   currentSample = sample
-  source = sample.source
+  workspaceState = createSingleFileWorkspace(sample.source)
   outputMode = sample.outputMode
   stdinInput.value = sample.stdin
   setStdinVisible(sample.stdin !== "")
   sampleBrowser.setCurrent(sample)
   sampleGuide.setSample(sample)
-  replaceEditorSource(editor, source)
+  replaceEditorFromWorkspace(sample.source)
   editor.dispatch(setDiagnostics(editor.state, []))
   showTextOutput("Runを押すと結果がここに表示されます。")
   setStatus("ready", status)
+}
+
+function replaceEditorFromWorkspace(nextSource: string): void {
+  applyingWorkspaceSource = true
+  try {
+    replaceEditorSource(editor, nextSource)
+  } finally {
+    applyingWorkspaceSource = false
+  }
+}
+
+function workspaceRequestIsCurrent(
+  requestedFile: string | undefined,
+  requestedSource: string
+): boolean {
+  return (
+    workspaceState.activeFile === requestedFile &&
+    activeWorkspaceSource(workspaceState) === requestedSource
+  )
 }
 
 function setStdinVisible(visible: boolean): void {
@@ -425,21 +461,27 @@ function setWhitespaceVisible(visible: boolean): void {
 async function run(): Promise<void> {
   cancelActiveExecution()
   const revision = runRevision
+  const requestedFile = workspaceState.activeFile
+  const requestedSource = activeWorkspaceSource(workspaceState)
   runButton.disabled = true
   showTextOutput("Compiling with the shared Rust driver…")
   setStatus("running", "Compiling…")
 
   try {
-    const compiled = await compileSingleFile(source)
+    const compiled = await compileSingleFile(requestedSource)
     if (revision !== runRevision) return
+    if (!workspaceRequestIsCurrent(requestedFile, requestedSource)) {
+      setStatus("ready", "Source changed")
+      return
+    }
     const diagnostics = compiled.diagnostics.diagnostics
     editor.dispatch(
       setDiagnostics(editor.state, [
-        ...toEditorDiagnostics(source, diagnostics),
+        ...toEditorDiagnostics(requestedSource, diagnostics),
       ])
     )
     if (compiled.status === "failure") {
-      showDiagnostics(diagnostics)
+      showDiagnostics(diagnostics, requestedSource)
       setStatus("error", `${diagnostics.length} diagnostic(s)`)
       showIoOnSmallScreens()
       return
@@ -461,6 +503,12 @@ async function run(): Promise<void> {
     if (revision !== runRevision) {
       clearHtmlPreview()
       setOutputMode("text")
+      return
+    }
+    if (!workspaceRequestIsCurrent(requestedFile, requestedSource)) {
+      clearHtmlPreview()
+      setOutputMode("text")
+      setStatus("ready", "Source changed")
       return
     }
     const execution = await startGeneratedModule(
@@ -502,6 +550,10 @@ async function run(): Promise<void> {
     )
   } catch (error) {
     if (revision !== runRevision) return
+    if (!workspaceRequestIsCurrent(requestedFile, requestedSource)) {
+      setStatus("ready", "Source changed")
+      return
+    }
     showTextOutput(error instanceof Error ? error.message : String(error))
     setStatus("error", "Execution failed")
     showIoOnSmallScreens()
@@ -535,7 +587,7 @@ function showTextOutput(message: string): void {
 
 function showDiagnostics(
   diagnostics: readonly Diagnostic[],
-  analyzedSource = source
+  analyzedSource = activeWorkspaceSource(workspaceState)
 ): void {
   clearHtmlPreview()
   setOutputMode("text")
