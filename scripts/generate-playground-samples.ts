@@ -2,7 +2,7 @@ import { createHash } from "node:crypto"
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises"
 import { relative, resolve, sep } from "node:path"
 import {
-  parseLearningPaths,
+  parseDiscoverGroups,
   parseSampleMetadata,
   type PlaygroundSampleDefinition,
   validateSampleCatalog,
@@ -85,17 +85,17 @@ const loadedSamples = await Promise.all(
   })
 )
 
-const learningPaths = parseLearningPaths(
+const discoverGroups = parseDiscoverGroups(
   JSON.parse(
-    await readFile(resolve(samplesRoot, "learning-paths.json"), "utf8")
+    await readFile(resolve(samplesRoot, "discover-groups.json"), "utf8")
   )
 )
 validateSampleCatalog(
   loadedSamples.map(({ definition }) => definition),
-  learningPaths
+  discoverGroups
 )
 
-const generated = renderGeneratedModule(loadedSamples, learningPaths)
+const generated = renderGeneratedModule(loadedSamples, discoverGroups)
 if (checkOnly) {
   const current = await readFile(outputPath, "utf8").catch(() => "")
   if (current !== generated) {
@@ -114,10 +114,10 @@ if (checkOnly) {
 
 function renderGeneratedModule(
   samples: readonly LoadedSample[],
-  paths: ReturnType<typeof parseLearningPaths>
+  groups: ReturnType<typeof parseDiscoverGroups>
 ): string {
   const imports: string[] = [
-    'import type { GeneratedSample, LearningPathDefinition } from "../sample-catalog"',
+    'import type { DiscoverGroupDefinition, GeneratedSample } from "../sample-catalog"',
     "",
   ]
   for (const [index, sample] of samples.entries()) {
@@ -159,8 +159,8 @@ function renderGeneratedModule(
     records.join(",\n"),
     "]",
     "",
-    "export const generatedLearningPaths: readonly LearningPathDefinition[] =",
-    `${indent(JSON.stringify(paths, null, 2), 2)}`,
+    "export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =",
+    `${indent(JSON.stringify(groups, null, 2), 2)}`,
     "",
   ].join("\n")
 }

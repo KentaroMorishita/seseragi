@@ -16,7 +16,7 @@ import {
   sampleKinds,
   validateSampleCatalog,
 } from "../src/sample-catalog"
-import { learningPaths, samples } from "../src/samples"
+import { discoverGroups, samples } from "../src/samples"
 import { tourLessons } from "../src/tour/curriculum"
 
 type WasmBindings = {
@@ -124,8 +124,8 @@ describe("Playground sample catalog", () => {
     expect(samplesSource).not.toContain("examples/playground")
   })
 
-  test("validates identity, metadata, paths and generated source hashes", () => {
-    validateSampleCatalog(samples, learningPaths)
+  test("validates identity, metadata, Discover groups and source hashes", () => {
+    validateSampleCatalog(samples, discoverGroups)
     expect(new Set(samples.map((sample) => sample.id)).size).toBe(
       samples.length
     )
@@ -151,7 +151,39 @@ describe("Playground sample catalog", () => {
         `sha256:${createHash("sha256").update(sample.source).digest("hex")}`
       )
     }
-    expect(learningPaths.length).toBeGreaterThan(1)
+    expect(discoverGroups.length).toBeGreaterThan(1)
+    expect(
+      discoverGroups.flatMap(({ samples: sampleIds }) => sampleIds).sort()
+    ).toEqual(
+      samples
+        .filter(({ kind }) => kind !== "lesson")
+        .map(({ id }) => id)
+        .sort()
+    )
+    expect(
+      samples.filter(({ kind }) => kind === "lesson").map(({ id }) => id)
+    ).toEqual([
+      "data-and-patterns",
+      "effects-and-do",
+      "functions-and-pipelines",
+      "generic-structs",
+      "hello-world",
+      "signal-composition",
+      "strings-and-templates",
+      "traits-and-instances",
+    ])
+    expect(
+      samples
+        .filter(({ id }) =>
+          [
+            "collection-patterns",
+            "local-functions",
+            "newtypes",
+            "type-aliases",
+          ].includes(id)
+        )
+        .map(({ kind }) => kind)
+    ).toEqual(["recipe", "recipe", "recipe", "recipe"])
     expect(samples.some((sample) => sample.featured)).toBe(true)
     expect(samples.some((sample) => sample.isNew)).toBe(true)
   })
@@ -168,7 +200,7 @@ describe("Playground sample catalog", () => {
     }
   })
 
-  test("separates guided learning paths from searchable discovery", async () => {
+  test("keeps Tour as Learn and groups each Recipe or Showcase once", async () => {
     const html = await Bun.file(
       new URL("../index.html", import.meta.url)
     ).text()
@@ -179,23 +211,29 @@ describe("Playground sample catalog", () => {
     expect(html).toContain('id="sample-browser-button"')
     expect(html).toContain('id="sample-browser-learn-tab"')
     expect(html).toContain('id="sample-browser-discover-tab"')
-    expect(html).toContain('id="sample-learning-paths"')
+    expect(html).toContain("CANONICAL LEARNING PATH")
+    expect(html).toContain("14 lesson")
+    expect(html).toContain('class="sample-learn-link" href="./tour/"')
+    expect(html).not.toContain('id="sample-learning-paths"')
     expect(html).toContain('id="sample-search"')
     expect(html).toContain('id="sample-kind-filter"')
     expect(html).toContain('id="sample-topic-filter"')
     expect(html).toContain('id="sample-capability-filter"')
     expect(html).toContain('id="sample-featured-filter"')
     expect(html).toContain('id="sample-new-filter"')
+    expect(html).not.toContain('<option value="lesson">')
     expect(html).not.toContain('id="sample-select"')
     expect(html).not.toContain("初級 01")
     expect(main).toContain("connectSampleBrowser(")
-    expect(main).toContain("learningPaths")
+    expect(main).toContain("discoverGroups")
     expect(main).toContain("currentContext: currentSampleContext")
     const browser = await Bun.file(
       new URL("../src/ui/sample-browser.ts", import.meta.url)
     ).text()
-    expect(browser).toContain("前提:")
-    expect(browser).toContain("次:")
+    expect(browser).toContain('kind !== "lesson"')
+    expect(browser).toContain("sample-discover-group")
+    expect(browser).not.toContain("前提:")
+    expect(browser).not.toContain("次:")
   })
 
   test("keeps Input and clear controls independent", async () => {
@@ -630,7 +668,7 @@ describe("Playground sample catalog", () => {
     expect(sample?.source).not.toContain("dom.app {")
   })
 
-  test("shows transparent user aliases and Task in the learning catalog", () => {
+  test("keeps transparent aliases and Task in the Recipe catalog", () => {
     const sample = samples.find((candidate) => candidate.id === "type-aliases")
 
     expect(sample?.source).toContain("alias Pair<A>")

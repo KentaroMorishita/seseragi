@@ -23,7 +23,7 @@ import {
   type BrowserExecution,
   startGeneratedModule,
 } from "./runtime/browser-execution"
-import { learningPaths, samples } from "./samples"
+import { discoverGroups, samples } from "./samples"
 import "./styles.css"
 import { requiredElement } from "./ui/elements"
 import { connectMobilePanels } from "./ui/mobile-panels"
@@ -87,10 +87,6 @@ const sampleBrowserLearnPanel = requiredElement(
 )
 const sampleBrowserDiscoverPanel = requiredElement(
   "#sample-browser-discover-panel",
-  HTMLElement
-)
-const sampleLearningPaths = requiredElement(
-  "#sample-learning-paths",
   HTMLElement
 )
 const sampleSearch = requiredElement("#sample-search", HTMLInputElement)
@@ -229,8 +225,7 @@ const referenceBrowser = connectReferenceBrowser({
 connectPreviewFullscreen(outputSection, fullscreenPreviewButton)
 
 const initialSample =
-  samples.find((sample) => sample.id === learningPaths[0]?.samples[0]) ??
-  samples[0]
+  samples.find((sample) => sample.id === "hello-world") ?? samples[0]
 let source = initialSample?.source ?? ""
 let outputMode: "text" | "html" = initialSample?.outputMode ?? "text"
 let htmlPreviewUrl: string | undefined
@@ -248,7 +243,6 @@ const sampleBrowser = connectSampleBrowser(
     discoverTab: sampleBrowserDiscoverTab,
     learnPanel: sampleBrowserLearnPanel,
     discoverPanel: sampleBrowserDiscoverPanel,
-    learningPaths: sampleLearningPaths,
     search: sampleSearch,
     kindFilter: sampleKindFilter,
     topicFilter: sampleTopicFilter,
@@ -261,7 +255,7 @@ const sampleBrowser = connectSampleBrowser(
     currentTitle: currentSampleTitle,
   },
   samples,
-  learningPaths,
+  discoverGroups,
   (sample) => loadSample(sample, "Sample loaded")
 )
 

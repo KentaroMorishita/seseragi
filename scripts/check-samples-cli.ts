@@ -1,7 +1,7 @@
 import { readdir, readFile } from "node:fs/promises"
 import { resolve } from "node:path"
 import {
-  parseLearningPaths,
+  parseDiscoverGroups,
   parseSampleMetadata,
   validateSampleCatalog,
 } from "../apps/playground/src/sample-catalog"
@@ -25,14 +25,14 @@ const samples = await Promise.all(
     return { directory, metadata }
   })
 )
-const paths = parseLearningPaths(
+const discoverGroups = parseDiscoverGroups(
   JSON.parse(
-    await readFile(resolve(samplesRoot, "learning-paths.json"), "utf8")
+    await readFile(resolve(samplesRoot, "discover-groups.json"), "utf8")
   )
 )
 validateSampleCatalog(
   samples.map(({ metadata }) => metadata),
-  paths
+  discoverGroups
 )
 const tourLessons = await loadTourLessons(repositoryRoot)
 const cargoTargetDirectory = resolve(

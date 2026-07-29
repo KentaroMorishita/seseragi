@@ -215,7 +215,7 @@
   "sampleAudit": [
     {
       "sampleId": "collection-patterns",
-      "currentKind": "lesson",
+      "currentKind": "recipe",
       "decision": "tour-seed-and-recipe",
       "tourLessons": ["08-collections-and-ranges"],
       "reason": "rest patternと再帰は基礎lessonの後に試す目的別例として残す。"
@@ -324,14 +324,14 @@
     },
     {
       "sampleId": "local-functions",
-      "currentKind": "lesson",
+      "currentKind": "recipe",
       "decision": "discover-recipe",
       "tourLessons": [],
       "reason": "scope・capture・recursionをまとめて試す発展Recipeへ再分類する。"
     },
     {
       "sampleId": "newtypes",
-      "currentKind": "lesson",
+      "currentKind": "recipe",
       "decision": "discover-recipe",
       "tourLessons": [],
       "reason": "domain境界を作る目的別Recipeへ再分類する。"
@@ -380,7 +380,7 @@
     },
     {
       "sampleId": "type-aliases",
-      "currentKind": "lesson",
+      "currentKind": "recipe",
       "decision": "discover-recipe",
       "tourLessons": [],
       "reason": "aliasとTask表記を確認する発展Recipeへ再分類する。"
@@ -393,44 +393,7 @@
       "reason": "primitive表示と単項operatorの目的別確認として残す。"
     }
   ],
-  "currentPathDuplicates": [
-    {
-      "sampleId": "collection-patterns",
-      "paths": ["collection-recipes", "functions-and-recursion"]
-    },
-    {
-      "sampleId": "collections",
-      "paths": ["collection-recipes", "first-steps", "functions-and-recursion"]
-    },
-    {
-      "sampleId": "data-and-patterns",
-      "paths": ["collection-recipes", "data-and-types", "first-steps"]
-    },
-    {
-      "sampleId": "feature-composition",
-      "paths": ["signal-and-state", "web-ui"]
-    },
-    {
-      "sampleId": "functions-and-pipelines",
-      "paths": ["collection-recipes", "first-steps", "functions-and-recursion"]
-    },
-    {
-      "sampleId": "hello-world",
-      "paths": ["first-steps", "text-and-output"]
-    },
-    {
-      "sampleId": "interactive-app",
-      "paths": ["signal-and-state", "web-ui"]
-    },
-    {
-      "sampleId": "signal-composition",
-      "paths": ["signal-and-state", "traits-and-abstraction"]
-    },
-    {
-      "sampleId": "strings-and-templates",
-      "paths": ["first-steps", "text-and-output"]
-    }
-  ],
+  "currentPathDuplicates": [],
   "excludedDesignSurfaces": [
     {
       "surface": "concurrency-and-streams",

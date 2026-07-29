@@ -3,7 +3,7 @@
   "id": "type-aliases",
   "title": "型aliasとTask",
   "summary": "透明なgeneric aliasと標準Taskを、Signal更新まで実行して確認します。",
-  "kind": "lesson",
+  "kind": "recipe",
   "difficulty": "intermediate",
   "topics": ["type alias", "generics", "Task", "Signal"],
   "capabilities": ["console"],

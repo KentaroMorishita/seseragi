@@ -1,0 +1,60 @@
+{
+  "$schema": "./discover-groups.schema.json",
+  "schema": 1,
+  "groups": [
+    {
+      "id": "functions-and-collections",
+      "title": "関数・Collection・定番問題",
+      "summary": "再帰、Range、pattern、集計を目的のある小さなprogramへ組み合わせます。",
+      "kind": "recipe",
+      "samples": [
+        "local-functions",
+        "fibonacci-sequence",
+        "fizzbuzz",
+        "collections",
+        "collection-patterns"
+      ]
+    },
+    {
+      "id": "domain-recipes",
+      "title": "値・domain・表示",
+      "summary": "Record、newtype、alias、operatorで値の境界と表示を確かめます。",
+      "kind": "recipe",
+      "samples": [
+        "records",
+        "newtypes",
+        "type-aliases",
+        "unary-operators"
+      ]
+    },
+    {
+      "id": "effects-and-abstraction",
+      "title": "入力・失敗・抽象化",
+      "summary": "標準入力、Either、Monad、implを既習概念から一段深く試します。",
+      "kind": "recipe",
+      "samples": [
+        "stdin-greeting",
+        "either-and-monad",
+        "impl-and-operators"
+      ]
+    },
+    {
+      "id": "signal-showcases",
+      "title": "Signalと状態設計",
+      "summary": "transaction、pure reducer、feature-owned stateを完成したUIで確認します。",
+      "kind": "showcase",
+      "samples": [
+        "signal-state",
+        "interactive-app",
+        "feature-composition"
+      ]
+    },
+    {
+      "id": "web-ui-showcases",
+      "title": "ComponentとWeb UI",
+      "summary": "文書componentからform・IME・accessibilityを統合したアプリまで動かします。",
+      "kind": "showcase",
+      "samples": ["html-components", "form-todo"]
+    }
+  ]
+}

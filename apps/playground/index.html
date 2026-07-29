@@ -129,8 +129,8 @@
         <div class="sample-browser-dialog-header">
           <div>
             <span class="sample-browser-kicker">SAMPLE CATALOG</span>
-            <h2 id="sample-browser-title">動かしながらSeseragiを学ぶ</h2>
-            <p>学習pathで進むか、目的・topicからサンプルを探せます。</p>
+            <h2 id="sample-browser-title">学ぶ、試す、完成例を動かす</h2>
+            <p>基礎はTourで順に学び、RecipeとShowcaseは目的・topicから探せます。</p>
           </div>
           <button
             id="sample-browser-close"
@@ -162,7 +162,20 @@
             role="tabpanel"
             aria-labelledby="sample-browser-learn-tab"
           >
-            <div id="sample-learning-paths" class="sample-learning-paths"></div>
+            <div class="sample-learn-callout">
+              <span class="sample-browser-kicker">CANONICAL LEARNING PATH</span>
+              <h3>A Tour of Seseragi</h3>
+              <p>
+                Hello worldからEffect、Signal、Web UIまで、14 lessonを一つの順序で進みます。
+                各lessonで説明、編集可能なsource、実行結果、変更課題を確認できます。
+              </p>
+              <ul>
+                <li>未説明の構文を飛ばさず、直前lessonから積み上げる</li>
+                <li>console lessonとHTML Previewを同じ実行基盤で試す</li>
+                <li>進捗を保存し、前へ・次へ・lesson一覧から移動する</li>
+              </ul>
+              <a class="sample-learn-link" href="./tour/">Tourを始める</a>
+            </div>
           </section>
           <section
             id="sample-browser-discover-panel"
@@ -171,6 +184,10 @@
             aria-labelledby="sample-browser-discover-tab"
             hidden
           >
+            <div class="sample-discover-intro">
+              <strong>Recipe</strong>は既習概念を目的別に組み合わせる例、
+              <strong>Showcase</strong>は複数surfaceを統合した完成例です。
+            </div>
             <div class="sample-discover-filters">
               <label class="sample-search-field">
                 <span>検索</span>
@@ -180,7 +197,6 @@
                 <span>Kind</span>
                 <select id="sample-kind-filter">
                   <option value="">すべて</option>
-                  <option value="lesson">Lesson</option>
                   <option value="recipe">Recipe</option>
                   <option value="showcase">Showcase</option>
                 </select>
@@ -202,7 +218,7 @@
               <label class="sample-check"><input id="sample-new-filter" type="checkbox" /> New</label>
             </div>
             <p id="sample-result-count" class="sample-result-count"></p>
-            <div id="sample-discover-results" class="sample-card-grid"></div>
+            <div id="sample-discover-results" class="sample-discover-groups"></div>
           </section>
         </div>
       </dialog>

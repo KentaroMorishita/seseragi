@@ -1,18 +1,18 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://seseragi.dev/schemas/playground-learning-paths-1.json",
+  "$id": "https://seseragi.dev/schemas/playground-discover-groups-1.json",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "paths"],
+  "required": ["schema", "groups"],
   "properties": {
     "$schema": { "type": "string" },
     "schema": { "const": 1 },
-    "paths": {
+    "groups": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "title", "summary", "samples"],
+        "required": ["id", "title", "summary", "kind", "samples"],
         "properties": {
           "id": {
             "type": "string",
@@ -20,6 +20,7 @@
           },
           "title": { "type": "string", "minLength": 1 },
           "summary": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["recipe", "showcase"] },
           "samples": {
             "type": "array",
             "minItems": 1,

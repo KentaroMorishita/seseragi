@@ -51,10 +51,11 @@ export type GeneratedSample = {
   readonly expectedOutput: string
 }
 
-export type LearningPathDefinition = {
+export type DiscoverGroupDefinition = {
   readonly id: string
   readonly title: string
   readonly summary: string
+  readonly kind: Exclude<SampleKind, "lesson">
   readonly samples: readonly string[]
 }
 
@@ -156,38 +157,46 @@ export function parseSampleMetadata(
   }
 }
 
-export function parseLearningPaths(value: unknown): LearningPathDefinition[] {
-  const root = expectObject(value, "learning paths")
-  assertAllowedKeys(root, ["$schema", "schema", "paths"], "learning paths")
-  if (root.schema !== 1) throw new Error("learning paths.schema must be 1")
-  if (!Array.isArray(root.paths))
-    throw new Error("learning paths.paths must be an array")
+export function parseDiscoverGroups(value: unknown): DiscoverGroupDefinition[] {
+  const root = expectObject(value, "discover groups")
+  assertAllowedKeys(root, ["$schema", "schema", "groups"], "discover groups")
+  if (root.schema !== 1) throw new Error("discover groups.schema must be 1")
+  if (!Array.isArray(root.groups))
+    throw new Error("discover groups.groups must be an array")
 
-  return root.paths.map((rawPath, index) => {
-    const path = expectObject(rawPath, `learning path ${index}`)
+  return root.groups.map((rawGroup, index) => {
+    const group = expectObject(rawGroup, `discover group ${index}`)
     assertAllowedKeys(
-      path,
-      ["id", "title", "summary", "samples"],
-      `learning path ${index}`
+      group,
+      ["id", "title", "summary", "kind", "samples"],
+      `discover group ${index}`
     )
-    const id = expectSlug(path.id, `learning path ${index}.id`)
+    const id = expectSlug(group.id, `discover group ${index}.id`)
     return {
       id,
-      title: expectNonEmptyString(path.title, `learning path ${id}.title`),
+      title: expectNonEmptyString(group.title, `discover group ${id}.title`),
       summary: expectNonEmptyString(
-        path.summary,
-        `learning path ${id}.summary`
+        group.summary,
+        `discover group ${id}.summary`
       ),
-      samples: expectUniqueSlugs(path.samples, `learning path ${id}.samples`),
+      kind: expectEnum(
+        group.kind,
+        ["recipe", "showcase"] as const,
+        `discover group ${id}.kind`
+      ),
+      samples: expectUniqueSlugs(group.samples, `discover group ${id}.samples`),
     }
   })
 }
 
 export function validateSampleCatalog(
-  samples: readonly Pick<SampleMetadata, "id" | "prerequisites">[],
-  learningPaths: readonly LearningPathDefinition[]
+  samples: readonly Pick<SampleMetadata, "id" | "kind" | "prerequisites">[],
+  discoverGroups: readonly DiscoverGroupDefinition[]
 ): void {
-  const byId = new Map<string, Pick<SampleMetadata, "id" | "prerequisites">>()
+  const byId = new Map<
+    string,
+    Pick<SampleMetadata, "id" | "kind" | "prerequisites">
+  >()
   for (const sample of samples) {
     if (byId.has(sample.id))
       throw new Error(`duplicate sample id: ${sample.id}`)
@@ -205,20 +214,43 @@ export function validateSampleCatalog(
   }
   assertAcyclicPrerequisites(byId)
 
-  const pathIds = new Set<string>()
-  for (const path of learningPaths) {
-    if (pathIds.has(path.id))
-      throw new Error(`duplicate learning path id: ${path.id}`)
-    pathIds.add(path.id)
-    if (path.samples.length === 0) {
-      throw new Error(`learning path ${path.id} must not be empty`)
+  const groupIds = new Set<string>()
+  const sampleGroups = new Map<string, string>()
+  for (const group of discoverGroups) {
+    if (groupIds.has(group.id))
+      throw new Error(`duplicate discover group id: ${group.id}`)
+    groupIds.add(group.id)
+    if (group.samples.length === 0) {
+      throw new Error(`discover group ${group.id} must not be empty`)
     }
-    for (const sampleId of path.samples) {
-      if (!byId.has(sampleId)) {
+    for (const sampleId of group.samples) {
+      const sample = byId.get(sampleId)
+      if (!sample) {
         throw new Error(
-          `learning path ${path.id} references missing sample ${sampleId}`
+          `discover group ${group.id} references missing sample ${sampleId}`
         )
       }
+      if (sample.kind !== group.kind) {
+        throw new Error(
+          `discover group ${group.id} requires ${group.kind} samples, but ${sampleId} is ${sample.kind}`
+        )
+      }
+      const existingGroup = sampleGroups.get(sampleId)
+      if (existingGroup) {
+        throw new Error(
+          `sample ${sampleId} appears in multiple discover groups: ${existingGroup}, ${group.id}`
+        )
+      }
+      sampleGroups.set(sampleId, group.id)
+    }
+  }
+
+  for (const sample of samples) {
+    if (sample.kind === "lesson") continue
+    if (!sampleGroups.has(sample.id)) {
+      throw new Error(
+        `${sample.kind} sample ${sample.id} is missing from discover groups`
+      )
     }
   }
 }
@@ -248,7 +280,10 @@ function parseSampleFiles(value: unknown, id: string): SampleFiles {
 }
 
 function assertAcyclicPrerequisites(
-  byId: ReadonlyMap<string, Pick<SampleMetadata, "id" | "prerequisites">>
+  byId: ReadonlyMap<
+    string,
+    Pick<SampleMetadata, "id" | "kind" | "prerequisites">
+  >
 ): void {
   const visiting = new Set<string>()
   const visited = new Set<string>()

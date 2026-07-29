@@ -17,9 +17,10 @@ examples/samples/<sample-id>/
   stdout.txt      # interactive以外
 ```
 
-`sample.json`は[`sample.schema.json`](./sample.schema.json)に従います。学習順はsample
-metadataへ持たせず、[`learning-paths.json`](./learning-paths.json)で定義します。一つのsampleを
-複数pathから参照できます。
+`sample.json`は[`sample.schema.json`](./sample.schema.json)に従います。基礎学習の正本は
+[`../tour/`](../tour/)の14 lessonです。通常PlaygroundのDiscoverへ出すRecipe / Showcaseは
+[`discover-groups.json`](./discover-groups.json)へ目的別に一度だけ配置します。Tour作成の根拠として
+保持する`lesson` sampleはDiscoverへ表示しません。
 
 ```sh
 cd apps/playground
@@ -27,8 +28,8 @@ bun run samples:generate
 ```
 
 generatorはdirectoryを自動発見し、metadata schema、ID重複、source/output欠落、前提graphの
-循環、学習path参照を検査します。生成manifestはsource hashを持ち、`samples:check`がstaleを
-検出します。中央のimport一覧やID対応表は手で編集しません。
+循環、Discover groupのkind・参照・一意配置を検査します。生成manifestはsource hashを持ち、
+`samples:check`がstaleを検出します。中央のimport一覧やID対応表は手で編集しません。
 
 `stdout.txt`はbrowser/CLI hostが返すstdoutとbyte単位で一致させ、不要な末尾newlineを
 追加しません。説明はsourceへ大量に埋め込まず`guide.md`へ書きます。

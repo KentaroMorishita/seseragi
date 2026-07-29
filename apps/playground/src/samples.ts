@@ -1,9 +1,9 @@
 import {
-  generatedLearningPaths,
+  generatedDiscoverGroups,
   generatedSamples,
 } from "./generated/sample-manifest"
 import type {
-  LearningPathDefinition,
+  DiscoverGroupDefinition,
   PlaygroundSampleDefinition,
 } from "./sample-catalog"
 
@@ -18,5 +18,5 @@ export const samples: readonly PlaygroundSample[] = generatedSamples.map(
   ({ definition, ...content }) => ({ ...definition, ...content })
 )
 
-export const learningPaths: readonly LearningPathDefinition[] =
-  generatedLearningPaths
+export const discoverGroups: readonly DiscoverGroupDefinition[] =
+  generatedDiscoverGroups

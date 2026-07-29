@@ -50,8 +50,9 @@ topicは一つの`introduces`にだけ置き、後続lessonは説明済みとし
 ## 既存sampleの監査方針
 
 `sampleAudit`は25 sampleを重複なく分類しています。
-`currentPathDuplicates`は現行`learning-paths.json`で複数pathに現れる9 sampleと、そのpathを列挙します。
-#124 はこの重複を解消し、Tourの一方向の順序とDiscoverの目的別分類へ置き換えます。
+`currentPathDuplicates`は未解決の重複を表し、現在は空です。通常Playgroundの
+[`discover-groups.json`](../samples/discover-groups.json)はRecipe / Showcaseを目的別groupへ
+一度だけ配置し、Tour seed-only sampleは表示対象にしません。
 
 - `tour-seed-only`: stable sourceは実装根拠として保持し、Learn上の役割はTourへ移します。
 - `tour-seed-and-recipe`: 一部をTourへ借り、目的別の完成例はDiscoverのRecipeに残します。
@@ -59,7 +60,8 @@ topicは一つの`introduces`にだけ置き、後続lessonは説明済みとし
 - `discover-recipe`: Tourを水増しせず、既習概念を試すRecipeへ移します。
 - `discover-showcase`: 統合完成例としてShowcaseに残します。
 
-#124 はこの判定を通常PlaygroundのLearn / Discover導線へ反映します。stable slugとsource fileは壊しません。
+通常PlaygroundではLearnがTourへの単一導線、DiscoverがRecipe / Showcaseの検索・分類surfaceです。
+stable slugとsource fileは役割の再分類後も維持します。
 
 ## 現行Tourへ入れない完成仕様surface
 

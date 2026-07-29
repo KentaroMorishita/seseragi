@@ -1,5 +1,5 @@
 import type {
-  LearningPathDefinition,
+  DiscoverGroupDefinition,
   SampleCapability,
   SampleKind,
 } from "../sample-catalog"
@@ -13,7 +13,6 @@ type SampleBrowserElements = {
   readonly discoverTab: HTMLButtonElement
   readonly learnPanel: HTMLElement
   readonly discoverPanel: HTMLElement
-  readonly learningPaths: HTMLElement
   readonly search: HTMLInputElement
   readonly kindFilter: HTMLSelectElement
   readonly topicFilter: HTMLSelectElement
@@ -29,51 +28,17 @@ type SampleBrowserElements = {
 export function connectSampleBrowser(
   elements: SampleBrowserElements,
   samples: readonly PlaygroundSample[],
-  paths: readonly LearningPathDefinition[],
+  groups: readonly DiscoverGroupDefinition[],
   onSelect: (sample: PlaygroundSample) => void
 ): { readonly setCurrent: (sample: PlaygroundSample) => void } {
   const ownerDocument = elements.dialog.ownerDocument
   const byId = new Map(samples.map((sample) => [sample.id, sample]))
+  const discoverSamples = samples.filter(({ kind }) => kind !== "lesson")
   let currentSample = samples[0]
 
-  for (const path of paths) {
-    const section = ownerDocument.createElement("section")
-    section.className = "sample-path"
-    const heading = ownerDocument.createElement("div")
-    heading.className = "sample-path-heading"
-    const title = ownerDocument.createElement("h3")
-    title.textContent = path.title
-    const summary = ownerDocument.createElement("p")
-    summary.textContent = path.summary
-    heading.append(title, summary)
-    const list = ownerDocument.createElement("div")
-    list.className = "sample-card-grid"
-    path.samples.forEach((sampleId, index) => {
-      const sample = byId.get(sampleId)
-      if (!sample) return
-      const prerequisites = sample.prerequisites
-        .map((id) => byId.get(id)?.title ?? id)
-        .join("、")
-      const nextId = path.samples[index + 1]
-      const next = nextId
-        ? (byId.get(nextId)?.title ?? nextId)
-        : "このpathは完了"
-      list.append(
-        createSampleCard(
-          sample,
-          `${index + 1} / ${path.samples.length}`,
-          `前提: ${prerequisites || "なし"} · 次: ${next}`,
-          `${path.title} · ${index + 1}/${path.samples.length}`
-        )
-      )
-    })
-    section.append(heading, list)
-    elements.learningPaths.append(section)
-  }
-
-  const topics = [...new Set(samples.flatMap((sample) => sample.topics))].sort(
-    (left, right) => left.localeCompare(right)
-  )
+  const topics = [
+    ...new Set(discoverSamples.flatMap((sample) => sample.topics)),
+  ].sort((left, right) => left.localeCompare(right))
   for (const topic of topics) {
     const option = ownerDocument.createElement("option")
     option.value = topic
@@ -86,7 +51,7 @@ export function connectSampleBrowser(
     const kind = elements.kindFilter.value as SampleKind | ""
     const topic = elements.topicFilter.value
     const capability = elements.capabilityFilter.value as SampleCapability | ""
-    const filtered = samples.filter((sample) => {
+    const filtered = discoverSamples.filter((sample) => {
       const searchable = [sample.title, sample.summary, ...sample.topics]
         .join(" ")
         .toLocaleLowerCase()
@@ -100,15 +65,43 @@ export function connectSampleBrowser(
       )
     })
     elements.resultCount.textContent = `${filtered.length} samples`
+    const filteredIds = new Set(filtered.map(({ id }) => id))
     elements.results.replaceChildren(
-      ...filtered.map((sample) => createSampleCard(sample))
+      ...groups.flatMap((group) => {
+        const groupSamples = group.samples
+          .map((id) => byId.get(id))
+          .filter(
+            (sample): sample is PlaygroundSample =>
+              sample !== undefined && filteredIds.has(sample.id)
+          )
+        if (groupSamples.length === 0) return []
+
+        const section = ownerDocument.createElement("section")
+        section.className = "sample-discover-group"
+        section.dataset.groupId = group.id
+        const heading = ownerDocument.createElement("div")
+        heading.className = "sample-discover-heading"
+        const label = ownerDocument.createElement("span")
+        label.className = "sample-discover-kind"
+        label.textContent = kindLabel(group.kind)
+        const title = ownerDocument.createElement("h3")
+        title.textContent = group.title
+        const summary = ownerDocument.createElement("p")
+        summary.textContent = group.summary
+        heading.append(label, title, summary)
+        const list = ownerDocument.createElement("div")
+        list.className = "sample-card-grid"
+        list.append(
+          ...groupSamples.map((sample) => createSampleCard(sample, group.title))
+        )
+        section.append(heading, list)
+        return [section]
+      })
     )
   }
 
   function createSampleCard(
     sample: PlaygroundSample,
-    pathProgress?: string,
-    route?: string,
     context = "Discover"
   ): HTMLButtonElement {
     const card = ownerDocument.createElement("button")
@@ -119,13 +112,7 @@ export function connectSampleBrowser(
 
     const meta = ownerDocument.createElement("span")
     meta.className = "sample-card-meta"
-    meta.textContent = [
-      pathProgress,
-      difficultyLabel(sample.difficulty),
-      kindLabel(sample.kind),
-    ]
-      .filter(Boolean)
-      .join(" · ")
+    meta.textContent = `${difficultyLabel(sample.difficulty)} · ${kindLabel(sample.kind)}`
     const name = ownerDocument.createElement("strong")
     name.textContent = sample.title
     const summary = ownerDocument.createElement("span")
@@ -134,16 +121,12 @@ export function connectSampleBrowser(
     const topics = ownerDocument.createElement("span")
     topics.className = "sample-card-topics"
     topics.textContent = sample.topics.join(" · ")
-    const routeText = ownerDocument.createElement("span")
-    routeText.className = "sample-card-route"
-    routeText.textContent = route ?? ""
     const badges = ownerDocument.createElement("span")
     badges.className = "sample-card-badges"
     if (sample.featured) badges.append(createBadge("FEATURED"))
     if (sample.isNew) badges.append(createBadge("NEW"))
 
     card.append(meta, name, summary, topics)
-    if (route) card.append(routeText)
     card.append(badges)
     card.addEventListener("click", () => {
       onSelect(sample)
@@ -167,10 +150,9 @@ export function connectSampleBrowser(
     context?: string
   ): void => {
     currentSample = sample
-    const firstPath = paths.find((path) => path.samples.includes(sample.id))
-    const index = firstPath?.samples.indexOf(sample.id) ?? -1
-    const defaultContext = firstPath
-      ? `${firstPath.title} · ${index + 1}/${firstPath.samples.length}`
+    const group = groups.find(({ samples }) => samples.includes(sample.id))
+    const defaultContext = group
+      ? group.title
       : `${difficultyLabel(sample.difficulty)} · ${kindLabel(sample.kind)}`
     elements.currentContext.textContent = context ?? defaultContext
     elements.currentTitle.textContent = sample.title

@@ -3,7 +3,7 @@
   "id": "collection-patterns",
   "title": "Collection patternと再帰",
   "summary": "ArrayとListを空・先頭・残りへ分け、同じ再帰処理を比較します。",
-  "kind": "lesson",
+  "kind": "recipe",
   "difficulty": "intermediate",
   "topics": ["Array", "List", "pattern", "rest", "recursion"],
   "capabilities": ["console"],

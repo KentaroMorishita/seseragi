@@ -3,7 +3,7 @@
   "id": "newtypes",
   "title": "newtypeで境界を作る",
   "summary": "実行時コストを増やさず、Intと混ざらないdomainのIDを作ります。",
-  "kind": "lesson",
+  "kind": "recipe",
   "difficulty": "intermediate",
   "topics": ["newtype", "nominal type", "pattern"],
   "capabilities": ["console"],

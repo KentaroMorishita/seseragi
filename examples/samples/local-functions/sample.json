@@ -3,7 +3,7 @@
   "id": "local-functions",
   "title": "Local functionと再帰",
   "summary": "Pure blockで値をcaptureし、generic関数とself recursionを組み立てます。",
-  "kind": "lesson",
+  "kind": "recipe",
   "difficulty": "intermediate",
   "topics": ["local function", "scope", "capture", "recursion", "generic"],
   "capabilities": ["console"],
