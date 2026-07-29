@@ -108,6 +108,32 @@ mod tests {
     }
 
     #[test]
+    fn rejects_local_alias_arity_mismatches_before_lowering() {
+        const SOURCE: &str = include_str!(
+            "../../../examples/spec/artifacts/semantic-diagnostics-schema-1/local-alias-arity/main.ssrg"
+        );
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/local-alias-arity",
+            SOURCE,
+        ))
+        .expect_err("local alias arity mismatches must stop before lowering");
+
+        assert_eq!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .filter(|diagnostic| diagnostic.code == "SES-T0601")
+                .count(),
+            6
+        );
+        assert!(diagnostics
+            .diagnostics
+            .iter()
+            .all(|diagnostic| diagnostic.message_key == "alias.arity-mismatch"));
+    }
+
+    #[test]
     fn stops_non_referenceable_operator_sections_before_lowering() {
         let source = "pub let invalid = (&&)\n";
         let diagnostics = compile_module(CompileInput::new(

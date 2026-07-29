@@ -1,0 +1,19 @@
+alias Pair<A> = { left: A, right: A }
+
+fn broken -> Int = {
+  let value: {
+    direct: Pair<Int, String>,
+    nested: Array<(
+      Pair<Int, String>,
+      Int -> Pair<Int, String>
+    )>
+  } = {
+    direct: { left: 1, right: 2 },
+    nested: []
+  }
+
+  fn local item: Pair<Int, String> -> Pair<Int, String>
+    where Show<Pair<Int, String>> = item
+
+  0
+}

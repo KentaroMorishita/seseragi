@@ -1,6 +1,8 @@
 use crate::{ResolvedModule, SymbolId, SymbolKind, SymbolNamespace};
 use seseragi_syntax::{
-    ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, SurfaceDecl, TypeRef, Visibility,
+    ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, SurfaceBlockItem,
+    SurfaceComprehensionClause, SurfaceDecl, SurfaceDoItem, SurfaceExpr, SurfaceImplMember,
+    SurfaceTemplatePart, TypeRef, Visibility,
 };
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -340,7 +342,7 @@ fn walk_module_types(declarations: &[SurfaceDecl], visit: &mut impl FnMut(&TypeR
                 }
                 for member in members {
                     match member {
-                        seseragi_syntax::SurfaceImplMember::Method { method, .. } => {
+                        SurfaceImplMember::Method { method, .. } => {
                             for parameter in &method.parameters {
                                 walk_type(&parameter.type_ref, visit);
                             }
@@ -351,7 +353,7 @@ fn walk_module_types(declarations: &[SurfaceDecl], visit: &mut impl FnMut(&TypeR
                                 }
                             }
                         }
-                        seseragi_syntax::SurfaceImplMember::Operator {
+                        SurfaceImplMember::Operator {
                             parameters,
                             return_type,
                             ..
@@ -365,6 +367,213 @@ fn walk_module_types(declarations: &[SurfaceDecl], visit: &mut impl FnMut(&TypeR
                 }
             }
         }
+        walk_declaration_expression_types(declaration, visit);
+    }
+}
+
+fn walk_declaration_expression_types(declaration: &SurfaceDecl, visit: &mut impl FnMut(&TypeRef)) {
+    match declaration {
+        SurfaceDecl::Let { body, .. }
+        | SurfaceDecl::EffectFn { body, .. }
+        | SurfaceDecl::Fn { body, .. }
+        | SurfaceDecl::Operator { body, .. } => {
+            if let Some(body) = body {
+                walk_expression_types(body, visit);
+            }
+        }
+        SurfaceDecl::Trait { methods, .. } | SurfaceDecl::Instance { methods, .. } => {
+            for method in methods {
+                if let Some(body) = &method.body {
+                    walk_expression_types(body, visit);
+                }
+            }
+        }
+        SurfaceDecl::Impl { members, .. } => {
+            for member in members {
+                let body = match member {
+                    SurfaceImplMember::Method { method, .. } => method.body.as_ref(),
+                    SurfaceImplMember::Operator { body, .. } => body.as_ref(),
+                };
+                if let Some(body) = body {
+                    walk_expression_types(body, visit);
+                }
+            }
+        }
+        SurfaceDecl::Newtype { .. }
+        | SurfaceDecl::Alias { .. }
+        | SurfaceDecl::Type { .. }
+        | SurfaceDecl::Struct { .. } => {}
+    }
+}
+
+fn walk_expression_types(expression: &SurfaceExpr, visit: &mut impl FnMut(&TypeRef)) {
+    match expression {
+        SurfaceExpr::Template { parts, .. } => {
+            for part in parts {
+                if let SurfaceTemplatePart::Interpolation { value, .. } = part {
+                    walk_expression_types(value, visit);
+                }
+            }
+        }
+        SurfaceExpr::Member { receiver, .. }
+        | SurfaceExpr::Prefix {
+            operand: receiver, ..
+        }
+        | SurfaceExpr::Grouped {
+            value: receiver, ..
+        } => walk_expression_types(receiver, visit),
+        SurfaceExpr::Lambda {
+            parameter, body, ..
+        } => {
+            if let Some(type_ref) = &parameter.type_ref {
+                walk_type(type_ref, visit);
+            }
+            walk_expression_types(body, visit);
+        }
+        SurfaceExpr::Application {
+            function, argument, ..
+        }
+        | SurfaceExpr::Assignment {
+            target: function,
+            value: argument,
+            ..
+        }
+        | SurfaceExpr::Binary {
+            left: function,
+            right: argument,
+            ..
+        } => {
+            walk_expression_types(function, visit);
+            walk_expression_types(argument, visit);
+        }
+        SurfaceExpr::EffectfulFor { source, body, .. } => {
+            walk_expression_types(source, visit);
+            walk_expression_types(body, visit);
+        }
+        SurfaceExpr::Tuple { elements, .. }
+        | SurfaceExpr::Array { elements, .. }
+        | SurfaceExpr::List { elements, .. } => {
+            for element in elements {
+                walk_expression_types(element, visit);
+            }
+        }
+        SurfaceExpr::Record { items, .. } => {
+            for item in items {
+                walk_expression_types(item.value(), visit);
+            }
+        }
+        SurfaceExpr::Struct {
+            type_arguments,
+            items,
+            ..
+        } => {
+            if let Some(type_arguments) = type_arguments {
+                for type_argument in type_arguments {
+                    walk_type(type_argument, visit);
+                }
+            }
+            for item in items {
+                walk_expression_types(item.value(), visit);
+            }
+        }
+        SurfaceExpr::ArrayComprehension {
+            element, clauses, ..
+        }
+        | SurfaceExpr::ListComprehension {
+            element, clauses, ..
+        } => {
+            walk_expression_types(element, visit);
+            for clause in clauses {
+                match clause {
+                    SurfaceComprehensionClause::Generator { source, .. } => {
+                        walk_expression_types(source, visit)
+                    }
+                    SurfaceComprehensionClause::Guard { condition, .. } => {
+                        walk_expression_types(condition, visit)
+                    }
+                }
+            }
+        }
+        SurfaceExpr::InfixChain { first, steps, .. } => {
+            walk_expression_types(first, visit);
+            for step in steps {
+                walk_expression_types(&step.operand, visit);
+            }
+        }
+        SurfaceExpr::If {
+            condition,
+            then_branch,
+            else_branch,
+            ..
+        } => {
+            walk_expression_types(condition, visit);
+            walk_expression_types(then_branch, visit);
+            walk_expression_types(else_branch, visit);
+        }
+        SurfaceExpr::Match {
+            scrutinee, arms, ..
+        } => {
+            walk_expression_types(scrutinee, visit);
+            for arm in arms {
+                if let Some(guard) = &arm.guard {
+                    walk_expression_types(guard, visit);
+                }
+                walk_expression_types(&arm.body, visit);
+            }
+        }
+        SurfaceExpr::Block { items, result, .. } => {
+            for item in items {
+                match item {
+                    SurfaceBlockItem::Let {
+                        type_ref, value, ..
+                    } => {
+                        if let Some(type_ref) = type_ref {
+                            walk_type(type_ref, visit);
+                        }
+                        walk_expression_types(value, visit);
+                    }
+                    SurfaceBlockItem::Function {
+                        parameters,
+                        return_type,
+                        constraints,
+                        value,
+                        ..
+                    } => {
+                        for parameter in parameters {
+                            walk_type(&parameter.type_ref, visit);
+                        }
+                        walk_type(return_type, visit);
+                        for constraint in constraints {
+                            for argument in &constraint.arguments {
+                                walk_type(argument, visit);
+                            }
+                        }
+                        walk_expression_types(value, visit);
+                    }
+                }
+            }
+            walk_expression_types(result, visit);
+        }
+        SurfaceExpr::Do { items, result, .. } => {
+            for item in items {
+                let value = match item {
+                    SurfaceDoItem::Bind { value, .. }
+                    | SurfaceDoItem::Let { value, .. }
+                    | SurfaceDoItem::Expression { value, .. } => value,
+                };
+                walk_expression_types(value, visit);
+            }
+            if let Some(result) = result {
+                walk_expression_types(result, visit);
+            }
+        }
+        SurfaceExpr::Unit { .. }
+        | SurfaceExpr::Integer { .. }
+        | SurfaceExpr::Float { .. }
+        | SurfaceExpr::String { .. }
+        | SurfaceExpr::Boolean { .. }
+        | SurfaceExpr::Name { .. }
+        | SurfaceExpr::Error { .. } => {}
     }
 }
 
@@ -455,6 +664,57 @@ mod tests {
         );
         assert!(
             artifact.diagnostics.is_empty(),
+            "{:#?}",
+            artifact.diagnostics
+        );
+    }
+
+    #[test]
+    fn reports_nested_local_alias_arity_mismatches_without_ignoring_annotations() {
+        let artifact = crate::semantic_diagnostics(
+            "artifact/local-alias-arity/main.ssrg",
+            concat!(
+                "alias Pair<A> = { left: A, right: A }\n",
+                "fn broken -> Int = {\n",
+                "  let value: { direct: Pair<Int, String>, nested: Array<(Pair<Int, String>, Int -> Pair<Int, String>)> } = ()\n",
+                "  fn local item: Pair<Int, String> -> Pair<Int, String>\n",
+                "    where Show<Pair<Int, String>> = item\n",
+                "  0\n",
+                "}\n",
+            ),
+        );
+        let alias_diagnostics = artifact
+            .diagnostics
+            .iter()
+            .filter(|diagnostic| diagnostic.code == "SES-T0601")
+            .collect::<Vec<_>>();
+
+        assert_eq!(alias_diagnostics.len(), 6, "{:#?}", artifact.diagnostics);
+        assert!(alias_diagnostics
+            .iter()
+            .all(|diagnostic| diagnostic.message_key == "alias.arity-mismatch"));
+    }
+
+    #[test]
+    fn accepts_nested_local_alias_applications_with_the_declared_arity() {
+        let artifact = crate::semantic_diagnostics(
+            "artifact/valid-local-alias-arity/main.ssrg",
+            concat!(
+                "alias Pair<A> = { left: A, right: A }\n",
+                "fn valid -> Int = {\n",
+                "  let value: { direct: Pair<Int>, nested: Array<(Pair<Int>, Int -> Pair<Int>)> } = ()\n",
+                "  fn local item: Pair<Int> -> Pair<Int>\n",
+                "    where Show<Pair<Int>> = item\n",
+                "  0\n",
+                "}\n",
+            ),
+        );
+
+        assert!(
+            artifact
+                .diagnostics
+                .iter()
+                .all(|diagnostic| diagnostic.code != "SES-T0601"),
             "{:#?}",
             artifact.diagnostics
         );

@@ -412,6 +412,9 @@ aliasは型へ別名を付けますが、新しいnominal型を作りません�
 
 alias利用時は型引数の個数を検査し、宣言parameterを引数でcapture-avoiding substitution
 してから型検査します。直接・間接を問わず、aliasの循環はコンパイルエラーです。
+このarity検査はmodule-level宣言だけでなく、local `let` annotation、lambda annotation、local functionの
+parameter・return type・constraintにも同じように適用し、record、tuple、function、generic typeの内側を再帰します。
+arity不一致をrecovery型へ変換する場合も、元の利用箇所の診断を省略してはなりません。
 値を区別したい場合はnewtype、struct、ADTのいずれかを使います。
 
 alias右辺にはrecord、function、ADT、imported type、Effectを含む通常の型を記述できます。

@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0601",
+      "severity": "Error",
+      "messageKey": "alias.arity-mismatch",
+      "message": "Type alias was used with the wrong number of arguments",
+      "primary": {
+        "start": 87,
+        "end": 104
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Add or remove type arguments so the alias application matches its declaration."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0601",
+      "severity": "Error",
+      "messageKey": "alias.arity-mismatch",
+      "message": "Type alias was used with the wrong number of arguments",
+      "primary": {
+        "start": 132,
+        "end": 149
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Add or remove type arguments so the alias application matches its declaration."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d3",
+      "code": "SES-T0601",
+      "severity": "Error",
+      "messageKey": "alias.arity-mismatch",
+      "message": "Type alias was used with the wrong number of arguments",
+      "primary": {
+        "start": 164,
+        "end": 181
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Add or remove type arguments so the alias application matches its declaration."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d4",
+      "code": "SES-T0601",
+      "severity": "Error",
+      "messageKey": "alias.arity-mismatch",
+      "message": "Type alias was used with the wrong number of arguments",
+      "primary": {
+        "start": 269,
+        "end": 286
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Add or remove type arguments so the alias application matches its declaration."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d5",
+      "code": "SES-T0601",
+      "severity": "Error",
+      "messageKey": "alias.arity-mismatch",
+      "message": "Type alias was used with the wrong number of arguments",
+      "primary": {
+        "start": 290,
+        "end": 307
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Add or remove type arguments so the alias application matches its declaration."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d6",
+      "code": "SES-T0601",
+      "severity": "Error",
+      "messageKey": "alias.arity-mismatch",
+      "message": "Type alias was used with the wrong number of arguments",
+      "primary": {
+        "start": 323,
+        "end": 340
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Add or remove type arguments so the alias application matches its declaration."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}
