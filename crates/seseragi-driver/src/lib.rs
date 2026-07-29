@@ -31,7 +31,8 @@ pub use output_plan::{
     TypeScriptModuleOutput, TypeScriptOutputPlanError,
 };
 pub use project_compile::{
-    compile_project, CompiledProject, ProjectCompileError, ProjectModuleInput,
+    analyze_project, compile_project, AnalyzedProject, CompiledProject, ProjectCompileError,
+    ProjectModuleInput,
 };
 pub use reporting::render_terminal_diagnostics;
 pub use seseragi_formatter::FormattedSource;

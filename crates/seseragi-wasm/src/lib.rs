@@ -11,6 +11,10 @@ use seseragi_runtime::{main_contract, MainContract};
 use seseragi_syntax::DiagnosticArtifact;
 use wasm_bindgen::prelude::*;
 
+mod project;
+
+pub use project::{analyze_project, compile_project, format_project_file};
+
 #[derive(Serialize)]
 #[serde(tag = "status", rename_all = "camelCase")]
 enum CompileResponse {

@@ -6,6 +6,9 @@ use seseragi_project::{
     link_module, standard_module_target, LinkError, LinkTargetError, ModuleGraph, ModuleGraphError,
     ModuleLinkTarget,
 };
+use seseragi_semantics::{
+    analysis_document, analyze_linked_module_recovering, AnalysisDocument, AnalyzedModule,
+};
 use seseragi_syntax::{
     parse_diagnostics, parse_unlinked_module_interface, DiagnosticArtifact, DiagnosticSeverity,
 };
@@ -54,6 +57,12 @@ impl ProjectModuleInput {
 pub struct CompiledProject {
     pub order: Vec<String>,
     pub modules: BTreeMap<String, CompiledModule>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct AnalyzedProject {
+    pub order: Vec<String>,
+    pub documents: BTreeMap<String, AnalysisDocument>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -218,6 +227,109 @@ pub fn compile_project(
         order,
         modules: compiled,
     })
+}
+
+/// Analyzes a closed project graph in dependency order without lowering or
+/// code generation.
+///
+/// Like [`compile_project`], the caller owns source discovery and graph
+/// identity. Public interfaces from already-analyzed dependencies are linked
+/// before each document is resolved and typed, so imported symbols and types
+/// are available to browser and editor queries.
+pub fn analyze_project(
+    graph: ModuleGraph<String>,
+    input_iter: impl IntoIterator<Item = ProjectModuleInput>,
+) -> Result<AnalyzedProject, ProjectCompileError> {
+    let order = graph
+        .topological_order()
+        .map_err(ProjectCompileError::Graph)?;
+    let inputs = validation::index_project_inputs(&order, input_iter)?;
+    let mut analyzed: BTreeMap<String, AnalyzedModule> = BTreeMap::new();
+
+    for module in &order {
+        let input = inputs.get(module).expect("graph input was validated");
+        let diagnostics = parse_diagnostics(input.source_name.clone(), &input.source);
+        if has_errors(&diagnostics) {
+            return Err(ProjectCompileError::Diagnostics {
+                module: module.clone(),
+                diagnostics,
+            });
+        }
+        let unlinked = parse_unlinked_module_interface(
+            input.source_name.clone(),
+            input.module_id.clone(),
+            &input.source,
+        );
+        validation::ensure_graph_imports_match(
+            module,
+            graph
+                .dependencies_for(module)
+                .expect("graph order contains only registered modules"),
+            &unlinked,
+        )?;
+        let mut targets = unlinked
+            .imports
+            .iter()
+            .filter_map(|import| {
+                standard_module_target(&import.specifier)
+                    .map(|target| (import.specifier.clone(), target))
+            })
+            .collect::<BTreeMap<_, _>>();
+        for (specifier, dependency) in graph
+            .dependencies_for(module)
+            .expect("graph order contains only registered modules")
+        {
+            let dependency_input = inputs.get(&dependency).expect("graph input was validated");
+            let dependency_analyzed = analyzed
+                .get(&dependency)
+                .expect("topological order analyzes dependencies first");
+            let dependency_unlinked = parse_unlinked_module_interface(
+                dependency_input.source_name.clone(),
+                dependency_input.module_id.clone(),
+                &dependency_input.source,
+            );
+            let dependency_interface = dependency_analyzed
+                .typed_interface
+                .clone()
+                .into_link_interface();
+            let same_package = match (&input.package_scope, &dependency_input.package_scope) {
+                (None, None) => true,
+                (Some(importer), Some(dependency)) => importer == dependency,
+                _ => false,
+            };
+            let target = if same_package {
+                ModuleLinkTarget::same_package(dependency_unlinked.header, dependency_interface)
+                    .map_err(|error| ProjectCompileError::LinkTarget {
+                        module: module.clone(),
+                        error,
+                    })?
+            } else {
+                ModuleLinkTarget::external(dependency_interface)
+            };
+            targets.insert(specifier, target);
+        }
+        let linked =
+            link_module(unlinked, &targets).map_err(|errors| ProjectCompileError::Link {
+                module: module.clone(),
+                errors,
+            })?;
+        let document = analyze_linked_module_recovering(diagnostics, linked, &input.source)
+            .map_err(|diagnostics| ProjectCompileError::Diagnostics {
+                module: module.clone(),
+                diagnostics,
+            })?;
+        analyzed.insert(module.clone(), document);
+    }
+
+    let documents = analyzed
+        .into_iter()
+        .map(|(module, analyzed)| {
+            let document =
+                analysis_document(analyzed.diagnostics, analyzed.resolved, &analyzed.typed_hir);
+            (module, document)
+        })
+        .collect();
+    Ok(AnalyzedProject { order, documents })
 }
 
 fn has_errors(diagnostics: &DiagnosticArtifact) -> bool {
@@ -718,6 +830,45 @@ mod tests {
             .typescript
             .contains("__ssrg$method$Box$map as map"));
         assert!(main.generated.typescript.contains("get(map(box(value))"));
+    }
+
+    #[test]
+    fn analyzes_imported_symbols_and_types_across_the_project_graph() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module(
+                "playground/main".to_owned(),
+                [("./domain".to_owned(), "playground/domain".to_owned())],
+            )
+            .unwrap();
+        graph
+            .add_module("playground/domain".to_owned(), [])
+            .unwrap();
+        let main_source = "import { double } from \"./domain\"\n\nlet answer = double 21\n";
+
+        let project = analyze_project(
+            graph,
+            [
+                ProjectModuleInput::new(
+                    "domain.ssrg",
+                    "playground/domain",
+                    "pub fn double value: Int -> Int = value + value\n",
+                    "domain.js",
+                ),
+                ProjectModuleInput::new("main.ssrg", "playground/main", main_source, "main.js"),
+            ],
+        )
+        .unwrap();
+
+        assert_eq!(project.order, ["playground/domain", "playground/main"]);
+        let main = project.documents.get("playground/main").unwrap();
+        let imported = main_source.rfind("double 21").unwrap();
+        assert_eq!(main.symbol_at(imported).unwrap().name, "double");
+        assert_eq!(main.type_at(imported).unwrap().type_name, "Int -> Int");
+        assert_eq!(
+            main.symbol_at(imported).unwrap().module,
+            "playground/domain"
+        );
     }
 }
 

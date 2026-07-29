@@ -2,6 +2,12 @@
 /* eslint-disable */
 
 /**
+ * Analyzes every source in an in-memory browser workspace after linking its
+ * local imports to the same typed public interfaces used by compilation.
+ */
+export function analyze_project(request: string): string;
+
+/**
  * Analyzes one source without lowering, code generation, Effect execution,
  * or DOM mounting. The returned occurrence tables back hover and Reference
  * queries while diagnostics remain identical to compile responses.
@@ -9,10 +15,20 @@
 export function analyze_single_file(source_name: string, module_id: string, source: string): string;
 
 /**
+ * Compiles an in-memory browser workspace through the shared project driver.
+ */
+export function compile_project(request: string): string;
+
+/**
  * Compiles one already-identified source with the same driver used by the
  * native CLI and LSP, returning a versioned JSON envelope for JavaScript.
  */
 export function compile_single_file(source_name: string, module_id: string, source: string): string;
+
+/**
+ * Formats one path selected from the versioned workspace request.
+ */
+export function format_project_file(request: string, path: string): string;
 
 /**
  * Formats one source snapshot with the same formatter used by the native CLI
@@ -25,6 +41,9 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
+    readonly analyze_project: (a: number, b: number) => [number, number];
+    readonly compile_project: (a: number, b: number) => [number, number];
+    readonly format_project_file: (a: number, b: number, c: number, d: number) => [number, number];
     readonly analyze_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
     readonly compile_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
     readonly format_single_file: (a: number, b: number, c: number, d: number) => [number, number];

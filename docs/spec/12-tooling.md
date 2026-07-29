@@ -661,3 +661,18 @@ stateを返します。失敗時にpathやtab参照の一部だけを変更し�
 folder renameは配下のfile / folderに加え、entry、active、open、dirty、expandedの各参照を同時に更新します。entry fileの
 module名はrename後のpathから再計算し、entry fileを削除した場合はentryを未選択へ戻します。active file削除後はopen順の
 右隣、左隣、残存fileのpath順先頭の優先順位で次のactive fileを選びます。
+
+## 12.22 Playground project compiler boundary
+
+Playgroundはbrowser専用compilerを持たず、schema 1のJSON requestでvirtual workspaceをWASMへ渡し、native CLIと同じ
+project graph、link、型解析、TypeScript loweringを利用します。requestは`entry` file pathと`files: [{ path, source }]`を持ち、
+各pathは12.21の正規化済み相対pathかつ`.ssrg`で終わらなければなりません。logical module identityはpathから一意に決まり、
+generated ESM pathは同じmodule pathの`.js`として計画します。
+
+project compile responseはdependency順のgenerated module群、entry moduleとその`main`契約、file別diagnosticを返します。
+project analysis responseはfileごとのanalysis documentを返し、local import先のpublic symbol・typeも同じlink済みidentityで参照
+できます。diagnostic artifactはsource rangeを保持し、graph・specifier errorもworkspace pathと、該当importがある場合はそのrangeを
+返します。missing moduleは`SES-N0104`、cycleは`SES-N0103`で拒否します。
+
+Formatはworkspace requestと対象pathを受けますが、書き換えるのは指定fileだけです。single-file Playgroundは
+`main.ssrg`一つのschema 1 requestを組み立てる互換adapterとして、同じproject compile・analysis・format境界を利用します。

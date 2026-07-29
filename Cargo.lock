@@ -259,6 +259,7 @@ dependencies = [
  "serde_json",
  "seseragi-driver",
  "seseragi-lowering",
+ "seseragi-project",
  "seseragi-runtime",
  "seseragi-syntax",
  "wasm-bindgen",

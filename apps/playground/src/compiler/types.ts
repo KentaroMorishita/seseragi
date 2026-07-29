@@ -168,9 +168,86 @@ export type AnalysisDocument = {
   readonly standardLibrary: readonly AnalysisReferenceItem[]
 }
 
-type GeneratedBundle = {
+export type GeneratedBundle = {
   readonly typescript: string
 }
+
+export type ProjectRequest = {
+  readonly schema: 1
+  readonly entry: string
+  readonly files: readonly {
+    readonly path: string
+    readonly source: string
+  }[]
+}
+
+export type ProjectProblem = {
+  readonly code: string
+  readonly message: string
+  readonly path?: string
+  readonly primary?: SourceRange
+}
+
+export type ProjectFileDiagnostics = {
+  readonly path: string
+  readonly diagnostics: DiagnosticArtifact
+}
+
+export type ProjectCompileResponse =
+  | {
+      readonly status: "success"
+      readonly schema: number
+      readonly diagnostics: readonly ProjectFileDiagnostics[]
+      readonly modules: readonly {
+        readonly path: string
+        readonly module: string
+        readonly generated: GeneratedBundle
+      }[]
+      readonly entry: {
+        readonly path: string
+        readonly module: string
+        readonly contract?: EntryContract
+        readonly error?: string
+      }
+    }
+  | {
+      readonly status: "failure"
+      readonly schema: number
+      readonly diagnostics: readonly ProjectFileDiagnostics[]
+      readonly problems: readonly ProjectProblem[]
+    }
+
+export type ProjectAnalysisResponse =
+  | {
+      readonly status: "success"
+      readonly schema: number
+      readonly documents: readonly {
+        readonly path: string
+        readonly module: string
+        readonly document: AnalysisDocument
+      }[]
+    }
+  | {
+      readonly status: "failure"
+      readonly schema: number
+      readonly diagnostics: readonly ProjectFileDiagnostics[]
+      readonly problems: readonly ProjectProblem[]
+    }
+
+export type ProjectFormatResponse =
+  | {
+      readonly status: "success"
+      readonly schema: number
+      readonly path: string
+      readonly source: string
+      readonly changed: boolean
+    }
+  | {
+      readonly status: "failure"
+      readonly schema: number
+      readonly diagnostics: readonly ProjectFileDiagnostics[]
+      readonly problems: readonly ProjectProblem[]
+    }
 
 export type CompileResponse =
   | {

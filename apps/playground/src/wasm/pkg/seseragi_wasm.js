@@ -1,6 +1,27 @@
 /* @ts-self-types="./seseragi_wasm.d.ts" */
 
 /**
+ * Analyzes every source in an in-memory browser workspace after linking its
+ * local imports to the same typed public interfaces used by compilation.
+ * @param {string} request
+ * @returns {string}
+ */
+export function analyze_project(request) {
+    let deferred2_0;
+    let deferred2_1;
+    try {
+        const ptr0 = passStringToWasm0(request, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.analyze_project(ptr0, len0);
+        deferred2_0 = ret[0];
+        deferred2_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+    }
+}
+
+/**
  * Analyzes one source without lowering, code generation, Effect execution,
  * or DOM mounting. The returned occurrence tables back hover and Reference
  * queries while diagnostics remain identical to compile responses.
@@ -29,6 +50,26 @@ export function analyze_single_file(source_name, module_id, source) {
 }
 
 /**
+ * Compiles an in-memory browser workspace through the shared project driver.
+ * @param {string} request
+ * @returns {string}
+ */
+export function compile_project(request) {
+    let deferred2_0;
+    let deferred2_1;
+    try {
+        const ptr0 = passStringToWasm0(request, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.compile_project(ptr0, len0);
+        deferred2_0 = ret[0];
+        deferred2_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+    }
+}
+
+/**
  * Compiles one already-identified source with the same driver used by the
  * native CLI and LSP, returning a versioned JSON envelope for JavaScript.
  * @param {string} source_name
@@ -52,6 +93,29 @@ export function compile_single_file(source_name, module_id, source) {
         return getStringFromWasm0(ret[0], ret[1]);
     } finally {
         wasm.__wbindgen_free(deferred4_0, deferred4_1, 1);
+    }
+}
+
+/**
+ * Formats one path selected from the versioned workspace request.
+ * @param {string} request
+ * @param {string} path
+ * @returns {string}
+ */
+export function format_project_file(request, path) {
+    let deferred3_0;
+    let deferred3_1;
+    try {
+        const ptr0 = passStringToWasm0(request, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len1 = WASM_VECTOR_LEN;
+        const ret = wasm.format_project_file(ptr0, len0, ptr1, len1);
+        deferred3_0 = ret[0];
+        deferred3_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred3_0, deferred3_1, 1);
     }
 }
 

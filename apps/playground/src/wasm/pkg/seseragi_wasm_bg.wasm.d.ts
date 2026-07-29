@@ -1,6 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export const analyze_project: (a: number, b: number) => [number, number];
+export const compile_project: (a: number, b: number) => [number, number];
+export const format_project_file: (a: number, b: number, c: number, d: number) => [number, number];
 export const analyze_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
 export const compile_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
 export const format_single_file: (a: number, b: number, c: number, d: number) => [number, number];

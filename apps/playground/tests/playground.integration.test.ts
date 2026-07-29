@@ -8,6 +8,10 @@ import type {
   CompileResponse,
   EntryContract,
   FormatResponse,
+  ProjectAnalysisResponse,
+  ProjectCompileResponse,
+  ProjectFormatResponse,
+  ProjectRequest,
 } from "../src/compiler/types"
 import { executeGeneratedModule } from "../src/runtime/browser-execution"
 import {
@@ -34,6 +38,9 @@ type WasmBindings = {
     source: string
   ) => string
   readonly format_single_file: (sourceName: string, source: string) => string
+  readonly compile_project: (request: string) => string
+  readonly analyze_project: (request: string) => string
+  readonly format_project_file: (request: string, path: string) => string
 }
 
 let bindings: WasmBindings | undefined
@@ -73,6 +80,141 @@ async function format(source: string): Promise<FormatResponse> {
   const wasm = await loadBindings()
   return JSON.parse(wasm.format_single_file("main.ssrg", source))
 }
+
+async function compileProject(
+  request: ProjectRequest
+): Promise<ProjectCompileResponse> {
+  const wasm = await loadBindings()
+  return JSON.parse(wasm.compile_project(JSON.stringify(request)))
+}
+
+async function analyzeProject(
+  request: ProjectRequest
+): Promise<ProjectAnalysisResponse> {
+  const wasm = await loadBindings()
+  return JSON.parse(wasm.analyze_project(JSON.stringify(request)))
+}
+
+async function formatProjectFile(
+  request: ProjectRequest,
+  path: string
+): Promise<ProjectFormatResponse> {
+  const wasm = await loadBindings()
+  return JSON.parse(wasm.format_project_file(JSON.stringify(request), path))
+}
+
+describe("Playground project compiler boundary", () => {
+  const request: ProjectRequest = {
+    schema: 1,
+    entry: "main.ssrg",
+    files: [
+      {
+        path: "feature/counter.ssrg",
+        source: "pub fn increment value: Int -> Int = value + 1\n",
+      },
+      {
+        path: "main.ssrg",
+        source:
+          'import { increment } from "./feature/counter"\n\n' +
+          "pub effect fn main = increment 41 |> debug |> println\n",
+      },
+    ],
+  }
+
+  test("compiles generated modules and an entry contract in dependency order", async () => {
+    const response = await compileProject(request)
+
+    expect(response.status).toBe("success")
+    if (response.status !== "success") return
+    expect(response.modules.map(({ path }) => path)).toEqual([
+      "feature/counter.ssrg",
+      "main.ssrg",
+    ])
+    expect(response.modules[1]?.generated.typescript).toContain(
+      'from "./feature/counter.js"'
+    )
+    expect(response.entry).toMatchObject({
+      path: "main.ssrg",
+      module: "playground/main",
+      contract: {
+        environment: [{ field: "console", service: "console" }],
+      },
+    })
+  })
+
+  test("returns file-addressed analysis for imported symbols and types", async () => {
+    const response = await analyzeProject(request)
+
+    expect(response.status).toBe("success")
+    if (response.status !== "success") return
+    const main = response.documents.find(({ path }) => path === "main.ssrg")
+    expect(main?.document.diagnostics.diagnostics).toEqual([])
+    expect(
+      main?.document.symbols.some(
+        ({ name, module }) =>
+          name === "increment" && module === "playground/feature/counter"
+      )
+    ).toBe(true)
+    expect(
+      main?.document.typeOccurrences.some(
+        ({ type: typeName }) => typeName === "Int -> Int"
+      )
+    ).toBe(true)
+  })
+
+  test("reports graph failures with file paths and ranges", async () => {
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [
+        {
+          path: "main.ssrg",
+          source: 'import { missing } from "./missing"\n',
+        },
+      ],
+    })
+
+    expect(response.status).toBe("failure")
+    if (response.status !== "failure") return
+    expect(response.problems[0]).toMatchObject({
+      code: "SES-N0104",
+      path: "main.ssrg",
+    })
+    expect(response.problems[0]?.primary?.end).toBeGreaterThan(0)
+  })
+
+  test("formats an active path through the same workspace request", async () => {
+    const response = await formatProjectFile(
+      {
+        ...request,
+        files: request.files.map((file) =>
+          file.path === "main.ssrg"
+            ? { ...file, source: `${file.source.trimEnd()}   \r\n` }
+            : file
+        ),
+      },
+      "main.ssrg"
+    )
+
+    expect(response.status).toBe("success")
+    if (response.status !== "success") return
+    expect(response.path).toBe("main.ssrg")
+    expect(response.changed).toBe(true)
+    expect(response.source.endsWith("   \r\n")).toBe(false)
+  })
+
+  test("routes the single-file adapter through the project boundary", async () => {
+    const driver = await Bun.file(
+      new URL("../src/compiler/wasm-driver.ts", import.meta.url)
+    ).text()
+
+    expect(driver).toContain("compileProject(singleFileRequest(source))")
+    expect(driver).toContain("analyzeProject(singleFileRequest(source))")
+    expect(driver).toMatch(
+      /formatProjectFile\(\s*singleFileRequest\(source\),\s*"main\.ssrg"/
+    )
+  })
+})
 
 describe("Playground sample catalog", () => {
   test("compiles and executes every canonical Tour lesson", async () => {
