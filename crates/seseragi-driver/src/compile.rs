@@ -1276,6 +1276,46 @@ pub fn debugAttribute value: html.Attribute -> String = debug value
     }
 
     #[test]
+    fn exposes_public_int_values_as_typescript_numbers_with_portable_metadata() {
+        let source = "pub let answer: Int = 42\n\npub fn increment value: Int -> Int = value + 1\n";
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/typescript-int-number",
+            source,
+        ))
+        .expect("public Int values must lower to the safe-number ABI");
+
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("export const answer: number = 42;"));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("export const increment = (value: number)"));
+        assert!(!compiled.generated.typescript.contains("bigint"));
+        assert!(!compiled.generated.typescript.contains("42n"));
+        assert_eq!(
+            compiled.generated.metadata.runtime.requirements,
+            vec!["core.int", "core.int.add"]
+        );
+        assert_eq!(
+            compiled.generated.source_map.sources,
+            vec!["seseragi://artifact/typescript-int-number"]
+        );
+        assert!(compiled
+            .generated
+            .source_map
+            .names
+            .contains(&"answer".to_owned()));
+        assert!(compiled
+            .generated
+            .source_map
+            .names
+            .contains(&"increment".to_owned()));
+    }
+
+    #[test]
     fn rejects_non_string_html_style_values_before_lowering() {
         let source = r#"import * as html from "std/web/html"
 

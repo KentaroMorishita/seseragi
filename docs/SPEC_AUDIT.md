@@ -364,6 +364,14 @@ Rust producerはSurfaceAstから浅いModuleInterfaceを生成し、`schema-1/ba
 `interface.json`と比較するようになりました。現段階ではrelative import、operator export、instance headは
 `interface-schema-1/rich`の手書きcontractに留め、shallow frontend producerの対象外です。
 
+### 2026-07-29: Int safe integer TypeScript / JSON境界
+
+以前のWave 0記録にある`core.int64` / TypeScript `bigint`表現は、その時点のartifact contractを説明する履歴です。
+現行契約ではIntを`core.int`のTypeScript `number`へ移行し、public TypeScript ABIも`number`に統一しました。
+foreign入力とJavaScript JSON value入力はfinite、integral、safe integerを検査し、host `-0`をSeseragi `0`へ
+正規化します。`.d.ts` converterはhost `number`を既定でFloat、明示overrideでIntとし、host `bigint`は
+任意精度BigIntへ対応させます。IntとBigIntのadapter、runtime feature、暗黙変換は共有しません。
+
 ## 次のpass
 
 1. grammar productionごとのpositive / negative / formatter round-trip対応を機械化する。

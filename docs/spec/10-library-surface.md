@@ -1231,6 +1231,9 @@ Bool、String、Int、Decimal、Unit、Json、Maybe、Either、Array、List、tu
 JsonEncode / JsonDecode instanceを提供します。UnitとNothingはJsonNull、Justは内容、Eitherは
 `{"tag":"Left","value":...}` / `{"tag":"Right","value":...}` です。FloatはNaN / infinityとdecimal
 round-trip policyが一意でないためstandard instanceを持たず、Decimalまたは明示converterを使います。
+IntはJsonNumberへ整数値としてencodeし、decodeはexact Decimalが整数かつsafe integer範囲内であることを検査します。
+JavaScript JSON value adapterでも通常の`number`を使い、finite / integral / safe integerを検査して`-0`を`0`へ
+正規化します。BigIntはJSON numberへ暗黙encodeせず、canonical decimal Stringなどの明示codecを使います。
 
 Map<String, V>はobject、ほかのMap<K, V>はentryの2要素Array列、SetはArrayとして10.5の順序と重複規則を使います。
 structural recordのfieldはUnicode scalarの辞書順でencodeし、decodeでは全fieldを必須として未知fieldを拒否します。

@@ -187,7 +187,7 @@ Js.Callback<Args, Result>
 | `Char`   | `string`       |
 | `String` | `string`       |
 | `Float`  | `number`       |
-| `Int`    | `bigint`       |
+| `Int`    | `number`       |
 | `BigInt` | `bigint`       |
 | `Unit`   | `undefined`    |
 | `Never`  | `never`        |
@@ -195,11 +195,12 @@ Js.Callback<Args, Result>
 
 CharはUnicode scalar一個を表すJavaScript stringへ写像し、入力時にscalar数が一個であることと
 unpaired surrogateを含まないことを検査します。TypeScriptの`string`からCharを自動推論しません。
-`Int` は64 bit精度を失わないため `bigint` へ写像します。`number` をIntとして受け取るbindingは
-`Js.Number` として受け、有限・整数・範囲内であることをdecoderで検査します。
-`BigInt` は`std/big-int`の任意精度整数で、host `bigint` と値を保って相互変換します。同じhost型から
-IntとBigIntを推論で選べないため、`.d.ts` converterは8.4のとおり既定でIntを生成し、BigIntにはsymbol
-overrideまたは手書きbindingを要求します。
+`Int` はsafe integer範囲のhost `number`へ写像します。foreign入力は`typeof value === "number"`、finite、
+integral、`Number.isSafeInteger`の順に検査し、hostの`-0`をSeseragiの`0`へ正規化します。出力もsafe integer
+であることを検査して通常の`number`を返します。`Float`もhost型は`number`ですが、Intとの選択はbindingの
+Seseragi型または8.4のconverter設定で決まり、値から推論しません。
+`BigInt` は`std/big-int`の任意精度整数で、host `bigint` と値を保って相互変換します。Intとの暗黙変換や
+同一adapterの共有は行いません。
 BytesとUint8Arrayは10.8の規則により両方向でcopyし、mutable viewを共有しません。
 
 ## 7.7 collectionとrecord
@@ -294,7 +295,7 @@ cancellationをforeign signatureから推測しません。
 次のとおりです。
 
 - 公開関数はuncurried functionとして公開する。
-- `Int` は `bigint`、`Float` は `number`。
+- `Int` と `Float` は `number`、`BigInt` は `bigint`。
 - recordとtupleはreadonly TypeScript型。
 - nominal structはreadonly objectと非公開 `unique symbol` brand。
 - ADTは `tag` を持つdiscriminated union。
@@ -309,11 +310,11 @@ pub fn add x: Int -> y: Int -> Int = x + y
 は概念上、次のdeclarationを生成します。
 
 ```typescript
-export declare function add(x: bigint, y: bigint): bigint;
+export declare function add(x: number, y: number): number;
 ```
 
-wrapperはTypeScript引数を境界検査してからSeseragi関数を呼びます。検査不能な値を
-unchecked castしません。
+wrapperはInt引数へfinite / integral / safe integer検査とnegative-zero正規化を適用してからSeseragi関数を
+呼び、Int戻り値も同じsafe integer契約を検査して`number`として返します。検査不能な値をunchecked castしません。
 
 environment requirementが残る `Effect<R, E, A>` はTypeScriptへ直接exportできません。
 Seseragi側の公開wrapperでenvironmentをprovideし、Taskへ変換してからexportします。

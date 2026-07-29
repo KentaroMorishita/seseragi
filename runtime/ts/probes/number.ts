@@ -1,14 +1,26 @@
 import {
-  MAX_INT,
-  MIN_INT,
+  fromInt,
+  isNegativeZero,
+  parse as parseFloatValue,
+  roundIntegral,
+  toInt,
+  totalCompare,
+} from "../src/float"
+import {
   checkedAdd,
   checkedDivide,
   checkedMultiply,
   checkedPower,
   checkedRemainder,
   checkedSubtract,
+  decodeForeignInt,
+  decodeJsonInt,
+  encodeForeignInt,
+  encodeJsonInt,
   format,
   formatRadix,
+  MAX_INT,
+  MIN_INT,
   parse,
   parseRadix,
   saturatingAdd,
@@ -16,23 +28,66 @@ import {
   saturatingPower,
   saturatingSubtract,
 } from "../src/int"
-import {
-  fromInt,
-  parse as parseFloat,
-  isNegativeZero,
-  roundIntegral,
-  toInt,
-  totalCompare,
-} from "../src/float"
 import { HalfEven, HalfUp, TowardZero } from "../src/number"
 
 function assert(condition: boolean, message: string): void {
   if (!condition) throw new Error(message)
 }
 
-function assertTag(value: Readonly<{ readonly tag: string }>, tag: string): void {
+function assertTag(
+  value: Readonly<{ readonly tag: string }>,
+  tag: string
+): void {
   assert(value.tag === tag, `expected ${tag}, got ${value.tag}`)
 }
+
+function assertThrows(
+  operation: () => unknown,
+  errorType: typeof TypeError | typeof RangeError,
+  message: string
+): void {
+  try {
+    operation()
+  } catch (error) {
+    assert(error instanceof errorType, message)
+    return
+  }
+  throw new Error(message)
+}
+
+for (const decode of [decodeForeignInt, decodeJsonInt]) {
+  assert(decode(MAX_INT) === MAX_INT, "boundary accepts maximum Int")
+  const decodedZero = decode(-0)
+  assert(
+    decodedZero === 0 && !Object.is(decodedZero, -0),
+    "boundary normalizes negative zero"
+  )
+  assertThrows(() => decode("42"), TypeError, "boundary rejects non-number")
+  assertThrows(() => decode(Number.NaN), RangeError, "boundary rejects NaN")
+  assertThrows(
+    () => decode(Number.POSITIVE_INFINITY),
+    RangeError,
+    "boundary rejects infinity"
+  )
+  assertThrows(() => decode(1.5), RangeError, "boundary rejects fraction")
+  assertThrows(
+    () => decode(MAX_INT + 1),
+    RangeError,
+    "boundary rejects unsafe integer"
+  )
+}
+assert(encodeForeignInt(MIN_INT) === MIN_INT, "foreign encode uses number")
+assert(encodeJsonInt(MAX_INT) === MAX_INT, "JSON encode uses number")
+assertThrows(
+  () => encodeForeignInt(MAX_INT + 1),
+  RangeError,
+  "foreign encode validates Int"
+)
+assertThrows(
+  () => encodeJsonInt(Number.NaN),
+  RangeError,
+  "JSON encode validates Int"
+)
 
 assertTag(parse(""), "Left")
 assertTag(parse("9007199254740992"), "Left")
@@ -81,9 +136,15 @@ assert(
   "Float to Int must normalize negative zero"
 )
 assert(roundIntegral(HalfEven, 3.5) === 4, "half-even odd tie")
-assert(isNegativeZero(roundIntegral(TowardZero, -0.25)), "Float keeps signed zero")
-assert(isNegativeZero(roundIntegral(HalfEven, -0.5)), "half-even keeps negative zero")
-const invalidExponent = parseFloat("1e+")
+assert(
+  isNegativeZero(roundIntegral(TowardZero, -0.25)),
+  "Float keeps signed zero"
+)
+assert(
+  isNegativeZero(roundIntegral(HalfEven, -0.5)),
+  "half-even keeps negative zero"
+)
+const invalidExponent = parseFloatValue("1e+")
 assert(
   invalidExponent.tag === "Left" &&
     invalidExponent.value.tag === "InvalidFloat" &&

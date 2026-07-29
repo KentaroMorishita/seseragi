@@ -12,6 +12,46 @@
       "import": null
     },
     {
+      "id": "core.int.foreign.decode",
+      "kind": "runtime-helper",
+      "typescript": "unknown -> number",
+      "boundary": "finite integral safe-integer validation and negative-zero normalization",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "decodeForeignInt"
+      }
+    },
+    {
+      "id": "core.int.foreign.encode",
+      "kind": "runtime-helper",
+      "typescript": "number -> number",
+      "boundary": "validated safe-integer number output",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "encodeForeignInt"
+      }
+    },
+    {
+      "id": "core.int.json.decode",
+      "kind": "runtime-helper",
+      "typescript": "unknown JSON number -> number",
+      "boundary": "finite integral safe-integer JSON number validation and negative-zero normalization",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "decodeJsonInt"
+      }
+    },
+    {
+      "id": "core.int.json.encode",
+      "kind": "runtime-helper",
+      "typescript": "number -> JSON number",
+      "boundary": "validated safe-integer JSON number output",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "encodeJsonInt"
+      }
+    },
+    {
       "id": "core.int.show",
       "kind": "runtime-binding",
       "typescript": "Show<number>",

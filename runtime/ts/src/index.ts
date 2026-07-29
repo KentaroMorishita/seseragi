@@ -21,7 +21,11 @@ export {
 } from "./effect"
 export {
   add,
+  decodeForeignInt,
+  decodeJsonInt,
   divide,
+  encodeForeignInt,
+  encodeJsonInt,
   intAdd,
   intMul,
   intOne,

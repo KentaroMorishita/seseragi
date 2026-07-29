@@ -1324,6 +1324,11 @@ Int coreは`-9007199254740991..9007199254740991`のsafe integerとして表現�
 公開し、loweringはcanonical symbolを `@seseragi/runtime/int`、`float`、`number` のABI featureへ写像します。
 Intのchecked演算はexactな内部計算からMaybe / Eitherを作り、saturating演算はsafe境界へclampします。
 FloatからIntへの変換はRoundingModeを明示し、finite判定、丸め、safe integer検査、negative-zero正規化の順です。
+生成TypeScriptのpublic Int型も`number`とし、foreign / JavaScript JSON value境界は
+`decodeForeignInt` / `encodeForeignInt` / `decodeJsonInt` / `encodeJsonInt`へ集約します。decoderはhost値を
+number、finite、integral、safe integerの順に検査し、`-0`を`0`へ正規化します。これらは
+`core.int.{foreign,json}.{decode,encode}`としてruntime ABIへ登録し、package exportとconformance probeを同じ
+契約へ接続します。任意精度BigIntはhost `bigint`のまま別adapterを使います。
 
 project resolverはpackage identityの文法をdriverへ再実装しません。driverのmodule IDはopaqueな入力とし、NFC、root tag、
 dependency export map、symlink / case衝突はP2-1の唯一の所有者が決めます。これによりmodule graph追加時にAST、resolver、

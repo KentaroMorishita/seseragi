@@ -1,7 +1,9 @@
+import { BigInt } from "std/big-int"
+
 pub foreign "typescript" from "fixture-api" {
   opaque type Config
 
-  task fn fetchName id: Int -> String
+  task fn fetchName id: BigInt -> String
   task fn first<A> values: Array<A> -> Js.UndefinedOr<A>
   task fn useConfig config: Config -> Unit
 }

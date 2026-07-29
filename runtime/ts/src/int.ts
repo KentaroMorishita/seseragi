@@ -1,5 +1,5 @@
 import type { Unit } from "./effect"
-import { Just, Left, Nothing, Right, type Either, type Maybe } from "./sum"
+import { type Either, Just, Left, type Maybe, Nothing, Right } from "./sum"
 
 export const MIN_INT = Number.MIN_SAFE_INTEGER
 export const MAX_INT = Number.MAX_SAFE_INTEGER
@@ -9,6 +9,26 @@ export function assertInt(value: number): number {
     throw new RangeError("Seseragi Int overflow")
   }
   return value === 0 ? 0 : value
+}
+
+/** Decode an untrusted TypeScript value at a generated foreign boundary. */
+export function decodeForeignInt(value: unknown): number {
+  return decodeIntBoundary("foreign TypeScript", value)
+}
+
+/** Encode a Seseragi Int for a generated TypeScript wrapper. */
+export function encodeForeignInt(value: number): number {
+  return assertInt(value)
+}
+
+/** Decode an untrusted JavaScript JSON value as a Seseragi Int. */
+export function decodeJsonInt(value: unknown): number {
+  return decodeIntBoundary("JSON", value)
+}
+
+/** Encode a Seseragi Int as a JavaScript JSON number value. */
+export function encodeJsonInt(value: number): number {
+  return assertInt(value)
 }
 
 export function add(left: number, right: number): number {
@@ -275,6 +295,22 @@ function parseInteger(
 
 function validRadix(radix: number): boolean {
   return Number.isSafeInteger(radix) && radix >= 2 && radix <= 36
+}
+
+function decodeIntBoundary(boundary: string, value: unknown): number {
+  if (typeof value !== "number") {
+    throw new TypeError(`${boundary} Int input must be a number`)
+  }
+  if (!Number.isFinite(value)) {
+    throw new RangeError(`${boundary} Int input must be finite`)
+  }
+  if (!Number.isInteger(value)) {
+    throw new RangeError(`${boundary} Int input must be integral`)
+  }
+  if (!Number.isSafeInteger(value)) {
+    throw new RangeError(`${boundary} Int input must be a safe integer`)
+  }
+  return value === 0 ? 0 : value
 }
 
 function digitValue(code: number): number {

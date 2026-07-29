@@ -111,7 +111,7 @@
 
 - preludeの境界
 - collection / text / number / JSON / time / random
-- Int / Floatのcanonical parse / format、丸め、checked / saturating / wrapping arithmetic
+- Int / Floatのcanonical parse / format、丸め、checked / saturating arithmeticとsafe integer境界
 - Decimalのcanonical value、exact arithmetic、明示的なprecision / rounding context
 - Map / Setのprocess-local hash seed、ordered / canonical serialization contract
 - linear-time Regex subset、UTF-8 span、toolchain共通のUnicode data version

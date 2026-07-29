@@ -72,6 +72,10 @@ pub(crate) fn check_typescript_runtime_package(
     }
     if runtime_helper_is_declared(abi, "core.int.api.parse")
         || runtime_helper_is_declared(abi, "core.float64.api.to-int")
+        || runtime_helper_is_declared(abi, "core.int.foreign.decode")
+        || runtime_helper_is_declared(abi, "core.int.foreign.encode")
+        || runtime_helper_is_declared(abi, "core.int.json.decode")
+        || runtime_helper_is_declared(abi, "core.int.json.encode")
     {
         numeric::check_typescript_runtime_numeric_surface(root)?;
     }

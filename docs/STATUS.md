@@ -506,6 +506,10 @@ canonical single-module / project / execution artifactとruntime package probe�
 checked / saturating negate・absを公開しません。`std/float.fromInt` は全Intでexact、`toInt` は明示した
 RoundingModeで丸めた後にsafe範囲を検査します。`schema-1/numeric-safe-api`とruntime numeric probeが
 標準surface、runtime import、境界値、division、rounding、conversionを固定します。
+public generated TypeScriptでもIntは`number`として公開し、foreign / JavaScript JSON value adapterは
+finite・integral・safe integerを順に検査してhost `-0`を`0`へ正規化します。runtime ABIの
+`core.int.{foreign,json}.{decode,encode}`、package export、driverのpublic Int出力・metadata・source map test、
+runtime probeでこの境界を固定します。BigIntはhost `bigint`の独立した型としてこの経路へ混在させません。
 
 Formatter-0は`seseragi-formatter`へline layout責務を分離し、`seseragi-driver::format_module`をCLI / LSP /
 playgroundが再利用できるpublic entrypointにしました。`seseragi format`はfile I/Oだけ、`--check`は差分判定だけを
